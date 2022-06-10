@@ -24,9 +24,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StringFunctionsTest {
 
@@ -53,7 +51,7 @@ public class StringFunctionsTest {
     public void getLowercaseValueCorrectInput() {
         final Object[] input = {"AwdC"};
         Object retrieved = StringFunctions.LOWERCASE.getValue(input);
-        assertEquals("awdc", retrieved);
+        assertThat(retrieved).isEqualTo("awdc");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -72,7 +70,7 @@ public class StringFunctionsTest {
     public void getUppercaseValueCorrectInput() {
         final Object[] input = {"AwdC"};
         Object retrieved = StringFunctions.UPPERCASE.getValue(input);
-        assertEquals("AWDC", retrieved);
+        assertThat(retrieved).isEqualTo("AWDC");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -91,7 +89,7 @@ public class StringFunctionsTest {
     public void getStringLengthValueCorrectInput() {
         final Object[] input = {"AwdC"};
         Object retrieved = StringFunctions.STRING_LENGTH.getValue(input);
-        assertEquals(4, retrieved);
+        assertThat(retrieved).isEqualTo(4);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -110,7 +108,7 @@ public class StringFunctionsTest {
     public void getSubstringValueCorrectInput() {
         final Object[] input = {"aBc9x", 2, 3};
         Object retrieved = StringFunctions.SUBSTRING.getValue(input);
-        assertEquals("Bc9", retrieved);
+        assertThat(retrieved).isEqualTo("Bc9");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -129,10 +127,10 @@ public class StringFunctionsTest {
     public void getTrimBlanksValueCorrectInput() {
         final Object[] input1 = {" aBcas9x  "};
         Object retrieved = StringFunctions.TRIM_BLANKS.getValue(input1);
-        assertEquals("aBcas9x", retrieved);
+        assertThat(retrieved).isEqualTo("aBcas9x");
         final Object[] input2 = {" aB ca  s9x  "};
         retrieved = StringFunctions.TRIM_BLANKS.getValue(input2);
-        assertEquals("aB ca  s9x", retrieved);
+        assertThat(retrieved).isEqualTo("aB ca  s9x");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -151,16 +149,16 @@ public class StringFunctionsTest {
     public void getConcatValueCorrectInput() {
         final Object[] input1 = {" aBc", "as9x  "};
         Object retrieved = StringFunctions.CONCAT.getValue(input1);
-        assertEquals(" aBcas9x  ", retrieved);
+        assertThat(retrieved).isEqualTo(" aBcas9x  ");
         final Object[] input2 = {" aB ", "ca  s9x"};
         retrieved = StringFunctions.CONCAT.getValue(input2);
-        assertEquals(" aB ca  s9x", retrieved);
+        assertThat(retrieved).isEqualTo(" aB ca  s9x");
         final Object[] input3 = {2, "-", 2000};
         retrieved = StringFunctions.CONCAT.getValue(input3);
-        assertEquals("2-2000", retrieved);
+        assertThat(retrieved).isEqualTo("2-2000");
         final Object[] input4 = {2, null, 2000};
         retrieved = StringFunctions.CONCAT.getValue(input4);
-        assertEquals("2null2000", retrieved);
+        assertThat(retrieved).isEqualTo("2null2000");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -173,7 +171,7 @@ public class StringFunctionsTest {
     public void getReplaceValueCorrectInput() {
         final Object[] input = {"BBBB", "B+", "c"};
         Object retrieved = StringFunctions.REPLACE.getValue(input);
-        assertEquals("c", retrieved);
+        assertThat(retrieved).isEqualTo("c");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -191,15 +189,15 @@ public class StringFunctionsTest {
     @Test
     public void getMatchesValueCorrectInput() {
         final Object[] input1 = {"BBBB", "B+"};
-        assertTrue((boolean)StringFunctions.MATCHES.getValue(input1));
+        assertThat((boolean)StringFunctions.MATCHES.getValue(input1)).isTrue();
         final Object[] input2 = {"BBBB", "."};
-        assertTrue((boolean)StringFunctions.MATCHES.getValue(input2));
+        assertThat((boolean)StringFunctions.MATCHES.getValue(input2)).isTrue();
         final Object[] input3 = {"aBcDDeFF", "DeF"};
-        assertTrue((boolean)StringFunctions.MATCHES.getValue(input3));
+        assertThat((boolean)StringFunctions.MATCHES.getValue(input3)).isTrue();
         final Object[] input4 = {"BBBB", "\\d"};
-        assertFalse((boolean)StringFunctions.MATCHES.getValue(input4));
+        assertThat((boolean)StringFunctions.MATCHES.getValue(input4)).isFalse();
         final Object[] input5 = {"aBcDDeFF", "dell"};
-        assertFalse((boolean)StringFunctions.MATCHES.getValue(input5));
+        assertThat((boolean)StringFunctions.MATCHES.getValue(input5)).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -218,13 +216,13 @@ public class StringFunctionsTest {
     public void getFormatNumberValueCorrectInput() {
         final Object[] input1 = {2, "%3d"};
         Object retrieved = StringFunctions.FORMAT_NUMBER.getValue(input1);
-        assertEquals("  2", retrieved);
+        assertThat(retrieved).isEqualTo("  2");
         final Object[] input2 = {4.2352989244d, "%.2f"};
         retrieved = StringFunctions.FORMAT_NUMBER.getValue(input2);
-        assertEquals("4.24", retrieved);
+        assertThat(retrieved).isEqualTo("4.24");
         final Object[] input3 = {4.2352989244d, "%.3f"};
         retrieved = StringFunctions.FORMAT_NUMBER.getValue(input3);
-        assertEquals("4.235", retrieved);
+        assertThat(retrieved).isEqualTo("4.235");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -244,12 +242,12 @@ public class StringFunctionsTest {
         Date inputDate = new GregorianCalendar(2004, Calendar.AUGUST, 20).getTime();
         final Object[] input1 = {inputDate, "%m/%d/%y"};
         Object retrieved = StringFunctions.FORMAT_DATE_TIME.getValue(input1);
-        assertEquals("08/20/04", retrieved);
+        assertThat(retrieved).isEqualTo("08/20/04");
         final Object[] input2 = {inputDate, "%B/%d/%y"};
         retrieved = StringFunctions.FORMAT_DATE_TIME.getValue(input2);
         String month = String.format("%1$tB", inputDate);
         String expected = String.format("%s/20/04", month);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test(expected = IllegalArgumentException.class)

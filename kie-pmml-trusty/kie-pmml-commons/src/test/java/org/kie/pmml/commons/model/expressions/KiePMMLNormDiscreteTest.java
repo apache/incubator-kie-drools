@@ -22,8 +22,7 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLNormDiscreteTest {
@@ -36,8 +35,8 @@ public class KiePMMLNormDiscreteTest {
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
-        assertNotNull(retrieved);
-        assertEquals(mapMissingTo, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(mapMissingTo);
     }
 
     @Test
@@ -48,8 +47,8 @@ public class KiePMMLNormDiscreteTest {
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
         ProcessingDTO processingDTO = getProcessingDTO(Collections.singletonList(new KiePMMLNameValue(fieldName, fieldValue)));
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
-        assertNotNull(retrieved);
-        assertEquals(1.0, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(1.0);
     }
 
     @Test
@@ -60,8 +59,8 @@ public class KiePMMLNormDiscreteTest {
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
         ProcessingDTO processingDTO = getProcessingDTO(Collections.singletonList(new KiePMMLNameValue(fieldName, "anotherValue")));
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
-        assertNotNull(retrieved);
-        assertEquals(0.0, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(0.0);
     }
 
     private KiePMMLNormDiscrete getKiePMMLNormDiscrete(String name,

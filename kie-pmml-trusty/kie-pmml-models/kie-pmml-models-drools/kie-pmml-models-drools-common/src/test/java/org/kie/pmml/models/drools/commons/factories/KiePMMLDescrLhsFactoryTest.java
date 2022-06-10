@@ -42,11 +42,7 @@ import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrLhsFactory.INPUT_FIELD;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrLhsFactory.INPUT_FIELD_CONDITIONAL;
@@ -71,16 +67,16 @@ public class KiePMMLDescrLhsFactoryTest {
         String statusToSet = "STATUS_TO_SET";
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareLhs(rule);
-        assertNotNull(lhsBuilder.getDescr());
-        assertNotNull(lhsBuilder.getDescr().getDescrs());
-        assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
-        assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof PatternDescr);
+        assertThat(lhsBuilder.getDescr()).isNotNull();
+        assertThat(lhsBuilder.getDescr().getDescrs()).isNotNull();
+        assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
+        assertThat(lhsBuilder.getDescr().getDescrs().get(0)).isInstanceOf(PatternDescr.class);
         PatternDescr patternDescr = (PatternDescr) lhsBuilder.getDescr().getDescrs().get(0);
-        assertEquals(KiePMMLStatusHolder.class.getSimpleName(), patternDescr.getObjectType());
-        assertEquals(STATUS_HOLDER, patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(KiePMMLStatusHolder.class.getSimpleName());
+        assertThat(patternDescr.getIdentifier()).isEqualTo(STATUS_HOLDER);
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
-        assertTrue(andDescr.getDescrs().isEmpty());
+        assertThat(andDescr.getDescrs()).isEmpty();
     }
 
     @Test
@@ -92,41 +88,41 @@ public class KiePMMLDescrLhsFactoryTest {
                                                             Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
                                                                               new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.and());
-        assertNotNull(lhsBuilder.getDescr());
-        assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
-        assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof AndDescr);
+        assertThat(lhsBuilder.getDescr()).isNotNull();
+        assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
+        assertThat(lhsBuilder.getDescr().getDescrs().get(0)).isInstanceOf(AndDescr.class);
         AndDescr baseAndDescr = (AndDescr) lhsBuilder.getDescr().getDescrs().get(0);
         final List<BaseDescr> descrs = baseAndDescr.getDescrs();
-        assertNotNull(descrs);
-        assertEquals(2, descrs.size());
+        assertThat(descrs).isNotNull();
+        assertThat(descrs).hasSize(2);
         // First KiePMMLFieldOperatorValue
-        assertTrue(descrs.get(0) instanceof PatternDescr);
+        assertThat(descrs.get(0)).isInstanceOf(PatternDescr.class);
         PatternDescr patternDescr = (PatternDescr) descrs.get(0);
-        assertEquals(temperatureField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(temperatureField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         String expected = "value < 35";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
         // Second KiePMMLFieldOperatorValue
-        assertTrue(descrs.get(1) instanceof PatternDescr);
+        assertThat(descrs.get(1)).isInstanceOf(PatternDescr.class);
         patternDescr = (PatternDescr) descrs.get(1);
-        assertEquals(humidityField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(humidityField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         expected = "value > 85";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
     }
 
     @Test
@@ -142,60 +138,60 @@ public class KiePMMLDescrLhsFactoryTest {
                 Collections.singletonList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.AND,
                                                                         Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), nestedKiePMMLFieldOperatorValues));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.and());
-        assertNotNull(lhsBuilder.getDescr());
-        assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
-        assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof AndDescr);
+        assertThat(lhsBuilder.getDescr()).isNotNull();
+        assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
+        assertThat(lhsBuilder.getDescr().getDescrs().get(0)).isInstanceOf(AndDescr.class);
         AndDescr baseAndDescr = (AndDescr) lhsBuilder.getDescr().getDescrs().get(0);
         final List<BaseDescr> descrs = baseAndDescr.getDescrs();
-        assertNotNull(descrs);
-        assertEquals(2, descrs.size());
+        assertThat(descrs).isNotNull();
+        assertThat(descrs).hasSize(2);
         // First KiePMMLFieldOperatorValue
-        assertTrue(descrs.get(0) instanceof PatternDescr);
+        assertThat(descrs.get(0)).isInstanceOf(PatternDescr.class);
         PatternDescr patternDescr = (PatternDescr) descrs.get(0);
-        assertEquals(temperatureField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(temperatureField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         String expected = "value < 35";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
         // Nested KiePMMLFieldOperatorValues
-        assertTrue(descrs.get(1) instanceof AndDescr);
+        assertThat(descrs.get(1)).isInstanceOf(AndDescr.class);
         AndDescr nestedAndDescr = (AndDescr) descrs.get(1);
-        assertEquals(2, nestedAndDescr.getDescrs().size());
+        assertThat(nestedAndDescr.getDescrs()).hasSize(2);
         final List<BaseDescr> nestedDescrs = nestedAndDescr.getDescrs();
         // First nested KiePMMLFieldOperatorValue
-        assertTrue(nestedDescrs.get(0) instanceof PatternDescr);
+        assertThat(nestedDescrs.get(0)).isInstanceOf(PatternDescr.class);
         patternDescr = (PatternDescr) nestedDescrs.get(0);
-        assertEquals(humidityField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(humidityField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         expected = "value < 56";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
         // Second nested KiePMMLFieldOperatorValue
-        assertTrue(nestedDescrs.get(1) instanceof PatternDescr);
+        assertThat(nestedDescrs.get(1)).isInstanceOf(PatternDescr.class);
         patternDescr = (PatternDescr) nestedDescrs.get(1);
-        assertEquals(humidityField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(humidityField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         expected = "value > 91";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
     }
 
     @Test
@@ -207,41 +203,41 @@ public class KiePMMLDescrLhsFactoryTest {
                                                             Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
                                                                               new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.or());
-        assertNotNull(lhsBuilder.getDescr());
-        assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
-        assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof OrDescr);
+        assertThat(lhsBuilder.getDescr()).isNotNull();
+        assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
+        assertThat(lhsBuilder.getDescr().getDescrs().get(0)).isInstanceOf(OrDescr.class);
         OrDescr baseOrDescr = (OrDescr) lhsBuilder.getDescr().getDescrs().get(0);
         final List<BaseDescr> descrs = baseOrDescr.getDescrs();
-        assertNotNull(descrs);
-        assertEquals(2, descrs.size());
+        assertThat(descrs).isNotNull();
+        assertThat(descrs).hasSize(2);
         // First KiePMMLFieldOperatorValue
-        assertTrue(descrs.get(0) instanceof PatternDescr);
+        assertThat(descrs.get(0)).isInstanceOf(PatternDescr.class);
         PatternDescr patternDescr = (PatternDescr) descrs.get(0);
-        assertEquals(temperatureField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(temperatureField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         String expected = "value < 35";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
         // Second KiePMMLFieldOperatorValue
-        assertTrue(descrs.get(1) instanceof PatternDescr);
+        assertThat(descrs.get(1)).isInstanceOf(PatternDescr.class);
         patternDescr = (PatternDescr) descrs.get(1);
-        assertEquals(humidityField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(humidityField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         expected = "value > 85";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -269,80 +265,80 @@ public class KiePMMLDescrLhsFactoryTest {
                         new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
                                                       Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsXor(xorConstraints);
-        assertNotNull(lhsBuilder.getDescr());
-        assertNotNull(lhsBuilder.getDescr().getDescrs());
-        assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
-        assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof AndDescr);
+        assertThat(lhsBuilder.getDescr()).isNotNull();
+        assertThat(lhsBuilder.getDescr().getDescrs()).isNotNull();
+        assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
+        assertThat(lhsBuilder.getDescr().getDescrs().get(0)).isInstanceOf(AndDescr.class);
         AndDescr rootAndDescr = (AndDescr) lhsBuilder.getDescr().getDescrs().get(0);
-        assertEquals(2, rootAndDescr.getDescrs().size());
-        assertTrue(rootAndDescr.getDescrs().get(0) instanceof NotDescr);
-        assertTrue(rootAndDescr.getDescrs().get(1) instanceof ExistsDescr);
+        assertThat(rootAndDescr.getDescrs()).hasSize(2);
+        assertThat(rootAndDescr.getDescrs().get(0)).isInstanceOf(NotDescr.class);
+        assertThat(rootAndDescr.getDescrs().get(1)).isInstanceOf(ExistsDescr.class);
         // "Not" construct
         NotDescr notDescr = (NotDescr) rootAndDescr.getDescrs().get(0);
-        assertEquals(1, notDescr.getDescrs().size());
-        assertTrue(notDescr.getDescrs().get(0) instanceof AndDescr);
+        assertThat(notDescr.getDescrs()).hasSize(1);
+        assertThat(notDescr.getDescrs().get(0)).isInstanceOf(AndDescr.class);
         AndDescr notAndDescr = (AndDescr) notDescr.getDescrs().get(0);
-        assertTrue(notAndDescr.getDescrs().get(0) instanceof PatternDescr);
-        assertTrue(notAndDescr.getDescrs().get(1) instanceof PatternDescr);
+        assertThat(notAndDescr.getDescrs().get(0)).isInstanceOf(PatternDescr.class);
+        assertThat(notAndDescr.getDescrs().get(1)).isInstanceOf(PatternDescr.class);
         PatternDescr patternDescr = (PatternDescr) notAndDescr.getDescrs().get(0);
-        assertEquals(temperatureField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(temperatureField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         String expected = "value < 35";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
         patternDescr = (PatternDescr) notAndDescr.getDescrs().get(1);
-        assertEquals(temperatureField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(temperatureField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         expected = "value > 85";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
         // "Exists" construct
         ExistsDescr existsDescr = (ExistsDescr) rootAndDescr.getDescrs().get(1);
-        assertEquals(1, existsDescr.getDescrs().size());
-        assertTrue(existsDescr.getDescrs().get(0) instanceof OrDescr);
+        assertThat(existsDescr.getDescrs()).hasSize(1);
+        assertThat(existsDescr.getDescrs().get(0)).isInstanceOf(OrDescr.class);
         OrDescr existsOrDescr = (OrDescr) existsDescr.getDescrs().get(0);
-        assertEquals(2, existsOrDescr.getDescrs().size());
-        assertTrue(existsOrDescr.getDescrs().get(0) instanceof PatternDescr);
-        assertTrue(existsOrDescr.getDescrs().get(1) instanceof OrDescr);
+        assertThat(existsOrDescr.getDescrs()).hasSize(2);
+        assertThat(existsOrDescr.getDescrs().get(0)).isInstanceOf(PatternDescr.class);
+        assertThat(existsOrDescr.getDescrs().get(1)).isInstanceOf(OrDescr.class);
         patternDescr = (PatternDescr) existsOrDescr.getDescrs().get(0);
-        assertEquals(temperatureField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(temperatureField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         expected = "value < 35";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
         OrDescr nestedOrDescr = (OrDescr) existsOrDescr.getDescrs().get(1);
-        assertEquals(1, nestedOrDescr.getDescrs().size());
-        assertTrue(nestedOrDescr.getDescrs().get(0) instanceof PatternDescr);
+        assertThat(nestedOrDescr.getDescrs()).hasSize(1);
+        assertThat(nestedOrDescr.getDescrs().get(0)).isInstanceOf(PatternDescr.class);
         patternDescr = (PatternDescr) nestedOrDescr.getDescrs().get(0);
-        assertEquals(temperatureField, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(temperatureField);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         expected = "value > 85";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
     }
 
     @Test
@@ -352,22 +348,22 @@ public class KiePMMLDescrLhsFactoryTest {
         final CEDescrBuilder<CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, NotDescr>, ExistsDescr> existsBuilder = lhsBuilder.not().exists();
         KiePMMLDescrLhsFactory.factory(lhsBuilder).commonDeclarePatternWithConstraint(existsBuilder, patternType,
                                                                                       constraintsString);
-        assertNotNull(existsBuilder.getDescr());
+        assertThat(existsBuilder.getDescr()).isNotNull();
         final List<BaseDescr> descrs = existsBuilder.getDescr().getDescrs();
-        assertNotNull(descrs);
-        assertEquals(1, descrs.size());
-        assertTrue(descrs.get(0) instanceof PatternDescr);
+        assertThat(descrs).isNotNull();
+        assertThat(descrs).hasSize(1);
+        assertThat(descrs.get(0)).isInstanceOf(PatternDescr.class);
         PatternDescr patternDescr = (PatternDescr) descrs.get(0);
-        assertEquals(patternType, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(patternType);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
-        assertEquals(constraintsString, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(constraintsString);
     }
 
     @Test
@@ -376,21 +372,21 @@ public class KiePMMLDescrLhsFactoryTest {
         String patternType = "INPUT1";
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintIn(patternType, values);
         final List<BaseDescr> descrs = lhsBuilder.getDescr().getDescrs();
-        assertNotNull(descrs);
-        assertEquals(1, descrs.size());
-        assertTrue(descrs.get(0) instanceof PatternDescr);
+        assertThat(descrs).isNotNull();
+        assertThat(descrs).hasSize(1);
+        assertThat(descrs.get(0)).isInstanceOf(PatternDescr.class);
         PatternDescr patternDescr = (PatternDescr) descrs.get(0);
-        assertEquals(patternType, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(patternType);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         String expected = "value in (-5, 0.5, 1, 10)";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
     }
 
     @Test
@@ -399,24 +395,24 @@ public class KiePMMLDescrLhsFactoryTest {
         String patternType = "INPUT2";
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintNotIn(patternType, values);
         final List<BaseDescr> descrs = lhsBuilder.getDescr().getDescrs();
-        assertNotNull(descrs);
-        assertEquals(1, descrs.size());
-        assertTrue(descrs.get(0) instanceof NotDescr);
+        assertThat(descrs).isNotNull();
+        assertThat(descrs).hasSize(1);
+        assertThat(descrs.get(0)).isInstanceOf(NotDescr.class);
         NotDescr notDescr = (NotDescr) descrs.get(0);
-        assertEquals(1, notDescr.getDescrs().size());
-        assertTrue(notDescr.getDescrs().get(0) instanceof PatternDescr);
+        assertThat(notDescr.getDescrs()).hasSize(1);
+        assertThat(notDescr.getDescrs().get(0)).isInstanceOf(PatternDescr.class);
         PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get(0);
-        assertEquals(patternType, patternDescr.getObjectType());
-        assertNull(patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(patternType);
+        assertThat(patternDescr.getIdentifier()).isNull();
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        assertThat(andDescr.getDescrs()).hasSize(1);
+        assertThat(andDescr.getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
         ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        assertThat(exprConstraintDescr.isNegated()).isFalse();
+        assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
         String expected = "value in (3, 8.5)";
-        assertEquals(expected, exprConstraintDescr.getExpression());
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
     }
 
     @Test
@@ -425,21 +421,21 @@ public class KiePMMLDescrLhsFactoryTest {
         String ifBreakOperator = "<";
         Object ifBreakValue = 24;
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareIfBreak(ifBreakField, ifBreakOperator, ifBreakValue);
-        assertNotNull(lhsBuilder.getDescr());
+        assertThat(lhsBuilder.getDescr()).isNotNull();
         final List<BaseDescr> descrs = lhsBuilder.getDescr().getDescrs();
-        assertNotNull(descrs);
-        assertEquals(2, descrs.size());
-        assertTrue(descrs.get(0) instanceof PatternDescr);
-        assertTrue(descrs.get(1) instanceof ConditionalBranchDescr);
+        assertThat(descrs).isNotNull();
+        assertThat(descrs).hasSize(2);
+        assertThat(descrs.get(0)).isInstanceOf(PatternDescr.class);
+        assertThat(descrs.get(1)).isInstanceOf(ConditionalBranchDescr.class);
         PatternDescr patternDescr = (PatternDescr) descrs.get(0);
-        assertEquals(ifBreakField, patternDescr.getObjectType());
-        assertEquals(INPUT_FIELD, patternDescr.getIdentifier());
-        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        assertThat(patternDescr.getObjectType()).isEqualTo(ifBreakField);
+        assertThat(patternDescr.getIdentifier()).isEqualTo(INPUT_FIELD);
+        assertThat(patternDescr.getConstraint()).isInstanceOf(AndDescr.class);
         ConditionalBranchDescr conditionalBranchDescr = (ConditionalBranchDescr) descrs.get(1);
         String expectedCondition = String.format(INPUT_FIELD_CONDITIONAL, ifBreakOperator, ifBreakValue);
-        assertEquals(expectedCondition, conditionalBranchDescr.getCondition().getContent());
-        assertTrue(conditionalBranchDescr.getConsequence().isBreaking());
-        assertEquals(BREAK_LABEL, conditionalBranchDescr.getConsequence().getText());
+        assertThat(conditionalBranchDescr.getCondition().getContent()).isEqualTo(expectedCondition);
+        assertThat(conditionalBranchDescr.getConsequence().isBreaking()).isTrue();
+        assertThat(conditionalBranchDescr.getConsequence().getText()).isEqualTo(BREAK_LABEL);
     }
 
     @Test
@@ -447,6 +443,6 @@ public class KiePMMLDescrLhsFactoryTest {
         List<Object> values = Arrays.asList("-5", "0.5", "1", "10");
         String retrieved = KiePMMLDescrLhsFactory.factory(lhsBuilder).getInNotInConstraint(values);
         String expected = "value in (-5, 0.5, 1, 10)";
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 }

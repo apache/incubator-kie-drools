@@ -16,24 +16,14 @@ package org.drools.decisiontable;
 
 import java.io.InputStream;
 
-import com.sample.FactData;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.DecisionTableConfiguration;
-import org.kie.internal.builder.DecisionTableInputType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Ignore
 public class MakeSureMultiLinesWorkTest {
@@ -47,6 +37,6 @@ public class MakeSureMultiLinesWorkTest {
         kieHelper.addResource(ResourceFactory.newInputStreamResource(dtableIs),
                               ResourceType.DTABLE);
         KieBase kbase = kieHelper.build();
-        assertNotNull(kbase);
+        assertThat(kbase).isNotNull();
     }
 }

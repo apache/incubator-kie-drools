@@ -25,9 +25,9 @@ import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.traits.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -48,7 +48,7 @@ public class StandaloneTest {
         // --> just call getProxy
         Entity core = new Entity( "x" );
         Thing thing = factory.don( core, Thing.class );
-        assertNotNull( thing );
+        assertThat(thing).isNotNull();
     }
 
 

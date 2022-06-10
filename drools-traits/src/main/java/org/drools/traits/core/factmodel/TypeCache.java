@@ -17,6 +17,8 @@
 package org.drools.traits.core.factmodel;
 
 import org.drools.core.WorkingMemory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -30,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 public class TypeCache implements Externalizable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TypeCache.class);
 
     private Map<String,TypeWrapper> typeCache = new LinkedHashMap<String, TypeWrapper>();
     private boolean needsInit = false;
@@ -78,7 +82,7 @@ public class TypeCache implements Externalizable {
                 try {
                     wrapper.setKlass( Class.forName( wrapper.getName(), false, wm.getKnowledgeBase().getRootClassLoader() ) );
                 } catch ( ClassNotFoundException e ) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    LOG.error("Exception", e);  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
         }

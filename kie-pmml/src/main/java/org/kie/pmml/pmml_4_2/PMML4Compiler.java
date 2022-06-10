@@ -78,11 +78,14 @@ import org.kie.pmml.pmml_4_2.model.mining.MiningSegmentation;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 
 public class PMML4Compiler {
+    private static final Logger LOG = LoggerFactory.getLogger(PMML4Compiler.class);
 
     public static final String PMML_NAMESPACE = DEFAULT_ROOT_PACKAGE;
     public static final String PMML_DROOLS = DEFAULT_ROOT_PACKAGE;
@@ -275,7 +278,7 @@ public class PMML4Compiler {
         try {
             schema = sf.newSchema(PMML4Compiler.class.getClassLoader().getResource(SCHEMA_PATH));
         } catch (SAXException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
     }
 
@@ -450,7 +453,7 @@ public class PMML4Compiler {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
     }
 
@@ -461,7 +464,7 @@ public class PMML4Compiler {
             theory = compile(cpr.getInputStream(), classLoader);
         } catch (IOException e) {
             results.add(new PMMLError(e.toString()));
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return theory;
     }
@@ -472,7 +475,7 @@ public class PMML4Compiler {
             theory = compile(resource.getInputStream(), classLoader);
         } catch (IOException e) {
             results.add(new PMMLError(e.toString()));
-            e.printStackTrace();
+            LOG.error("Exception", e);
             return new Resource[0];
         }
         return new Resource[]{buildOutputResource(resource, theory)};
@@ -715,16 +718,16 @@ public class PMML4Compiler {
             writer = new OutputStreamWriter(ostream, "UTF-8");
             writer.write(s);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         } finally {
             try {
                 if (writer != null) {
                     writer.flush();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
             }
         }
     }
@@ -791,7 +794,7 @@ public class PMML4Compiler {
 
             marshaller.marshal(model, target);
         } catch (JAXBException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
     }
     

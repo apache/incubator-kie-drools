@@ -33,8 +33,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class AlphaNetworkCompilerTest extends BaseModelTest {
@@ -127,7 +127,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         }
         CompositeObjectSinkAdapter sinkAdaptor = (CompositeObjectSinkAdapter) objectSinkPropagator;
 
-        assertNotNull(sinkAdaptor.getHashedSinkMap());
+        assertThat(sinkAdaptor.getHashedSinkMap()).isNotNull();
         assertEquals(3, sinkAdaptor.getHashedSinkMap().size());
 
         final Person p = new Person("Toshiya", 45);

@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.Pattern;
@@ -37,8 +36,8 @@ import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.definition.rule.Rule;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -68,7 +67,7 @@ public class AnnotationsOnPatternTest {
                 "end ";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).hasSize(1);
+        assertThat(kieBuilder.getResults().getMessages()).hasSize(1);
     }
 
     @Test
@@ -83,7 +82,7 @@ public class AnnotationsOnPatternTest {
                 "end ";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).hasSize(1);
+        assertThat(kieBuilder.getResults().getMessages()).hasSize(1);
     }
 
     @Test
@@ -106,7 +105,7 @@ public class AnnotationsOnPatternTest {
         assertEquals( Arrays.asList(String.class, Integer.class),
                 Arrays.asList((Class[]) adef.getPropertyValue("klasses")));
 
-        assertNotNull(adef);
+        assertThat(adef).isNotNull();
     }
 
     @Test
@@ -128,10 +127,10 @@ public class AnnotationsOnPatternTest {
         assertEquals(1, defs.size());
 
         final AnnotationDefinition outer = defs.get(Outer.class.getName().replace("$", "."));
-        assertNotNull(outer);
+        assertThat(outer).isNotNull();
 
         final Object val = outer.getPropertyValue("value");
-        assertNotNull(val);
+        assertThat(val).isNotNull();
         assertTrue(val instanceof AnnotationDefinition);
 
         final AnnotationDefinition inner = (AnnotationDefinition) val;
@@ -157,10 +156,10 @@ public class AnnotationsOnPatternTest {
         assertEquals(1, defs.size());
 
         final AnnotationDefinition outer = defs.get(Outer.class.getName().replace("$", "."));
-        assertNotNull(outer);
+        assertThat(outer).isNotNull();
 
         final Object val = outer.getPropertyValue("values");
-        assertNotNull(val);
+        assertThat(val).isNotNull();
         assertTrue(val instanceof AnnotationDefinition[]);
     }
 
@@ -181,7 +180,7 @@ public class AnnotationsOnPatternTest {
         assertTrue(rule.getMetaData().containsKey(Inner.class.getName().replace("$", ".")));
 
         final Object obj = rule.getMetaData().get(Inner.class.getName().replace("$", "."));
-        assertNotNull(obj);
+        assertThat(obj).isNotNull();
         assertTrue(obj instanceof Map);
         assertEquals("b", ((Map) obj).get("test"));
         assertEquals("a", ((Map) obj).get("text"));
@@ -205,7 +204,7 @@ public class AnnotationsOnPatternTest {
         assertEquals(1, defs.size());
 
         final AnnotationDefinition simple = defs.get(AnnotationsTest.Simple.class.getName().replace("$", "."));
-        assertNotNull(simple);
+        assertThat(simple).isNotNull();
 
         final Object val = simple.getPropertyValue("numbers");
         assertTrue(val instanceof int[]);
@@ -244,7 +243,7 @@ public class AnnotationsOnPatternTest {
         final Map<String, AnnotationDefinition> annotations = ((Pattern) nested.get(0)).getAnnotations();
 
         assertEquals(1, annotations.size());
-        assertNotNull(annotations.keySet().iterator().next());
+        assertThat(annotations.keySet().iterator().next()).isNotNull();
     }
 
     public @interface Inner {

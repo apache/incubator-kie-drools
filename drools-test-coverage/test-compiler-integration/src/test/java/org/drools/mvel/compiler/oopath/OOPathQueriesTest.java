@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.oopath.model.Room;
 import org.drools.mvel.compiler.oopath.model.SensorEvent;
 import org.drools.mvel.compiler.oopath.model.Thing;
@@ -242,6 +241,6 @@ public class OOPathQueriesTest {
         ksession.insert(key);
 
         ksession.fireAllRules();
-        Assertions.assertThat(list).containsExactlyInAnyOrder("desk", "chair", "key", "draw", "computer");
+        assertThat(list).containsExactlyInAnyOrder("desk", "chair", "key", "draw", "computer");
     }
 }

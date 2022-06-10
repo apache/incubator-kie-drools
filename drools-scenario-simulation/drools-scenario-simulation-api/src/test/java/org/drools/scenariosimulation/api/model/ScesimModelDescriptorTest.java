@@ -26,9 +26,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -56,7 +56,7 @@ public class ScesimModelDescriptorTest {
     public void getFactIdentifiers() {
         scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
         final Set<FactIdentifier> retrieved = scesimModelDescriptor.getFactIdentifiers();
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(1, retrieved.size());
         assertEquals(factIdentifier, retrieved.iterator().next());
     }
@@ -112,7 +112,7 @@ public class ScesimModelDescriptorTest {
     public void removeFactMappingByIndex() {
         int testingIndex = 0;
         scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
-        assertNotNull(scesimModelDescriptor.getFactMappingByIndex(testingIndex));
+        assertThat(scesimModelDescriptor.getFactMappingByIndex(testingIndex)).isNotNull();
         scesimModelDescriptor.removeFactMappingByIndex(testingIndex);
         expectedException.expect(IndexOutOfBoundsException.class);
         scesimModelDescriptor.getFactMappingByIndex(testingIndex);
@@ -159,7 +159,7 @@ public class ScesimModelDescriptorTest {
         scesimModelDescriptor
                 .addFactMapping(FactIdentifier.create("tEsT", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 4", FactMappingType.EXPECT));
         final Stream<FactMapping> retrieved = scesimModelDescriptor.getFactMappingsByFactName("test");
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         assertEquals(5, retrieved.count());
     }
 

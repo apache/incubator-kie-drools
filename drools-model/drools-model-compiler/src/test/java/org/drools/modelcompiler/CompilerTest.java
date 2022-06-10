@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -42,7 +41,6 @@ import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,11 +51,9 @@ import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -2393,7 +2389,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(integerToShort);
         int rulesFired = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rulesFired);
+        assertEquals(1, rulesFired);
         assertThat(integerToShort).isEqualTo(new IntegerToShort(true, Short.MAX_VALUE, Short.MAX_VALUE, (double)0));
     }
 
@@ -2421,7 +2417,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(integerToShort);
         int rulesFired = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rulesFired);
+        assertEquals(1, rulesFired);
         assertThat(integerToShort).isEqualTo(new IntegerToShort(true, Short.MAX_VALUE, (short)-12, (double)0));
     }
 
@@ -2450,7 +2446,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(integerToShort);
         int rulesFired = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rulesFired);
+        assertEquals(1, rulesFired);
         assertThat(integerToShort).isEqualTo(new IntegerToShort(true, Short.MAX_VALUE, (short)17, (double)1));
     }
 
@@ -2481,7 +2477,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.setGlobal("functions", new GlobalFunctions());
         int rulesFired = ksession.fireAllRules();
 
-        Assert.assertEquals(1, rulesFired);
+        assertEquals(1, rulesFired);
         assertThat(integerToShort).isEqualTo(new IntegerToShort(true, 1, (short)0));
     }
 
@@ -2496,7 +2492,7 @@ public class CompilerTest extends BaseModelTest {
                 "end";
 
         KieSession ksession = getKieSession( str );
-        assertNotNull( ksession);
+        assertThat(ksession).isNotNull();
     }
 
     @Test // DROOLS-6034
@@ -2524,7 +2520,7 @@ public class CompilerTest extends BaseModelTest {
         kSession.insert( luca );
         assertEquals(1, kSession.fireAllRules());
 
-        Assertions.assertThat(children).containsOnly("Andrea");
+        assertThat(children).containsOnly("Andrea");
     }
 
     @Test // DROOLS-6034
@@ -2554,7 +2550,7 @@ public class CompilerTest extends BaseModelTest {
         kSession.insert( luca );
         assertEquals(1, kSession.fireAllRules());
 
-        Assertions.assertThat(children).containsOnly("Andrea");
+        assertThat(children).containsOnly("Andrea");
     }
 
     @Test // DROOLS-6034
@@ -2585,7 +2581,7 @@ public class CompilerTest extends BaseModelTest {
         kSession.insert( luca );
         assertEquals(1, kSession.fireAllRules());
 
-        Assertions.assertThat(children).containsOnly("Luca");
+        assertThat(children).containsOnly("Luca");
     }
 
     @Test
@@ -2816,9 +2812,6 @@ public class CompilerTest extends BaseModelTest {
 
     @Test
     public void testNPEOnConstraint() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]"));
-
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "rule R when\n" +
@@ -2831,14 +2824,12 @@ public class CompilerTest extends BaseModelTest {
         Person me = new Person( "Luca");
         me.setMoney(null);
         ksession.insert( me );
-        ksession.fireAllRules();
-    }
+        assertThatExceptionOfType(RuntimeException.class)
+    		.isThrownBy(() -> ksession.fireAllRules())
+    		.withMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]");    }
 
     @Test
     public void testSharedPredicateInformation() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl]"));
-
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "rule R1 when\n" +
@@ -2856,13 +2847,14 @@ public class CompilerTest extends BaseModelTest {
         me.setSalary(null);
         me.setMoney(null);
         ksession.insert(me);
-        ksession.fireAllRules();
+        
+        assertThatExceptionOfType(RuntimeException.class)
+        	.isThrownBy(() -> ksession.fireAllRules())
+        	.withMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl]");
     }
 
     @Test
     public void testSharedPredicateInformationWithNonSharedRule() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R3\" in r0.drl]"));
 
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -2885,13 +2877,15 @@ public class CompilerTest extends BaseModelTest {
         me.setSalary(null);
         me.setMoney(null);
         ksession.insert(me);
-        ksession.fireAllRules();
+        
+        assertThatExceptionOfType(RuntimeException.class)
+    	.isThrownBy(() -> ksession.fireAllRules())
+    	.withMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R3\" in r0.drl]");
+    	
     }
 
     @Test
     public void testSharedPredicateInformationWithMultipleFiles() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl] [Rule \"R3\", \"R4\" in r1.drl]"));
 
         String str1 =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -2920,14 +2914,15 @@ public class CompilerTest extends BaseModelTest {
         me.setSalary(null);
         me.setMoney(null);
         ksession.insert(me);
-        ksession.fireAllRules();
+        
+        assertThatExceptionOfType(RuntimeException.class)
+    		.isThrownBy(() -> ksession.fireAllRules())
+    		.withMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl] [Rule \"R3\", \"R4\" in r1.drl]");   
+        
     }
 
     @Test
     public void testSharedBetaPredicateInformationWithMultipleFiles() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(equalTo("Error evaluating constraint '$i < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl] [Rule \"R3\", \"R4\" in r1.drl]"));
-
         String str1 =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "rule R1 when\n" +
@@ -2960,15 +2955,14 @@ public class CompilerTest extends BaseModelTest {
         me.setMoney(null);
         ksession.insert(Integer.valueOf(10));
         ksession.insert(me);
-        ksession.fireAllRules();
+
+        assertThatExceptionOfType(RuntimeException.class)
+    		.isThrownBy(() -> ksession.fireAllRules())
+    		.withMessage("Error evaluating constraint '$i < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl] [Rule \"R3\", \"R4\" in r1.drl]");   
     }
 
     @Test
     public void testSharedPredicateInformationExceedMaxRuleDefs() {
-        exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(containsString("Error evaluating constraint '$i < salary * 20' in "));
-        exceptionRule.expectMessage(containsString(" and in more rules"));
-
         // shared by 11 rules
         String str1 =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -3039,7 +3033,12 @@ public class CompilerTest extends BaseModelTest {
         me.setMoney(null);
         ksession.insert(Integer.valueOf(10));
         ksession.insert(me);
-        ksession.fireAllRules();
+        
+        assertThatExceptionOfType(RuntimeException.class)
+    		.isThrownBy(() -> ksession.fireAllRules())
+    		.withMessageContaining("Error evaluating constraint '$i < salary * 20' in ")
+    		.withMessageContaining(" and in more rules");       
+        
     }
 
     @Test

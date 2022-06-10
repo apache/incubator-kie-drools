@@ -17,10 +17,11 @@ package org.drools.mvel.compiler.commons.jci.compilers;
 
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Index;
-import org.kie.memorycompiler.jdknative.NativeJavaCompilerSettings;
 import org.junit.Test;
+import org.kie.memorycompiler.jdknative.NativeJavaCompilerSettings;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NativeJavaCompilerSettingsTest {
 
@@ -28,12 +29,12 @@ public class NativeJavaCompilerSettingsTest {
     public void defaultSettings() {
         NativeJavaCompilerSettings settings = new NativeJavaCompilerSettings();
         List<String> options = settings.toOptionsList();
-        Assertions.assertThat(options).hasSize(6);
-        Assertions.assertThat(options).contains("-source", "-target", "-encoding");
+        assertThat(options).hasSize(6);
+        assertThat(options).contains("-source", "-target", "-encoding");
         // check the order is correct, value of the option needs to be right after the option name
-        Assertions.assertThat(options).contains("1.8", Index.atIndex(options.indexOf("-source") + 1));
-        Assertions.assertThat(options).contains("1.8", Index.atIndex(options.indexOf("-target") + 1));
-        Assertions.assertThat(options).contains("UTF-8", Index.atIndex(options.indexOf("-encoding") + 1));
+        assertThat(options).contains("1.8", Index.atIndex(options.indexOf("-source") + 1));
+        assertThat(options).contains("1.8", Index.atIndex(options.indexOf("-target") + 1));
+        assertThat(options).contains("UTF-8", Index.atIndex(options.indexOf("-encoding") + 1));
     }
 
     @Test
@@ -47,14 +48,14 @@ public class NativeJavaCompilerSettingsTest {
         settings.setTargetVersion("1.9");
         List<String> options = settings.toOptionsList();
 
-        Assertions.assertThat(options).hasSize(9);
-        Assertions.assertThat(options).contains("-g");
-        Assertions.assertThat(options).contains("-Xlint:all");
-        Assertions.assertThat(options).contains("-deprecation");
+        assertThat(options).hasSize(9);
+        assertThat(options).contains("-g");
+        assertThat(options).contains("-Xlint:all");
+        assertThat(options).contains("-deprecation");
         // check the order is correct, value of the option needs to be right after the option name
-        Assertions.assertThat(options).contains("1.9", Index.atIndex(options.indexOf("-source") + 1));
-        Assertions.assertThat(options).contains("1.9", Index.atIndex(options.indexOf("-target") + 1));
-        Assertions.assertThat(options).contains("My-Custom-Encoding", Index.atIndex(options.indexOf("-encoding") + 1));
+        assertThat(options).contains("1.9", Index.atIndex(options.indexOf("-source") + 1));
+        assertThat(options).contains("1.9", Index.atIndex(options.indexOf("-target") + 1));
+        assertThat(options).contains("My-Custom-Encoding", Index.atIndex(options.indexOf("-encoding") + 1));
     }
 
 }

@@ -24,7 +24,6 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -39,9 +38,9 @@ import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
@@ -139,14 +138,14 @@ public class AnnotationsTest {
 
         final Class clazz = kbase.getFactType("org.drools.compiler.test",
                                               "AnnotatedBean").getFactClass();
-        assertNotNull(clazz);
+        assertThat(clazz).isNotNull();
         try {
             final Field fld = clazz.getDeclaredField("name");
             assertEquals(3,
                          fld.getAnnotations().length);
-            assertNotNull(fld.getAnnotation(Deprecated.class));
-            assertNotNull(fld.getAnnotation(Position.class));
-            assertNotNull(fld.getAnnotation(Key.class));
+            assertThat(fld.getAnnotation(Deprecated.class)).isNotNull();
+            assertThat(fld.getAnnotation(Position.class)).isNotNull();
+            assertThat(fld.getAnnotation(Key.class)).isNotNull();
 
             final Position pos = fld.getAnnotation(Position.class);
             assertEquals(0,
@@ -158,9 +157,9 @@ public class AnnotationsTest {
         final Annotation[] anns = clazz.getAnnotations();
         assertEquals(3,
                      anns.length);
-        assertNotNull(clazz.getAnnotation(Deprecated.class));
-        assertNotNull(clazz.getAnnotation(Annot.class));
-        assertNotNull(clazz.getAnnotation(Role.class));
+        assertThat(clazz.getAnnotation(Deprecated.class)).isNotNull();
+        assertThat(clazz.getAnnotation(Annot.class)).isNotNull();
+        assertThat(clazz.getAnnotation(Role.class)).isNotNull();
 
         final Annot ann = (Annot) clazz.getAnnotation(Annot.class);
         assertEquals(7,
@@ -183,7 +182,7 @@ public class AnnotationsTest {
 
         final Class clazz2 = kbase.getFactType("org.drools.compiler.test",
                                                "SecondBean").getFactClass();
-        assertNotNull(clazz2);
+        assertThat(clazz2).isNotNull();
         final Annotation[] anns2 = clazz2.getAnnotations();
         assertEquals(0,
                      anns2.length);
@@ -191,13 +190,13 @@ public class AnnotationsTest {
         Annot ann2 = null;
         try {
             final Field fld2 = clazz2.getDeclaredField("field");
-            assertNotNull(fld2.getAnnotation(Annot.class));
+            assertThat(fld2.getAnnotation(Annot.class)).isNotNull();
             ann2 = fld2.getAnnotation(Annot.class);
         } catch (final NoSuchFieldException nsfe) {
             fail("field name has not been generated correctly : " + nsfe.getMessage());
         }
 
-        assertNotNull(ann2);
+        assertThat(ann2).isNotNull();
         assertEquals(0,
                      ann2.intProp());
         assertEquals("foo",
@@ -225,7 +224,7 @@ public class AnnotationsTest {
                 " end \n ";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).isEmpty();
 
         final String drl2 = "package org.drools.compiler.test;\n " +
                 "" +
@@ -239,7 +238,7 @@ public class AnnotationsTest {
                 " end \n ";
 
         final KieBuilder kieBuilder2 = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl2);
-        Assertions.assertThat(kieBuilder2.getResults().getMessages()).hasSize(3);
+        assertThat(kieBuilder2.getResults().getMessages()).hasSize(3);
     }
 
     @Test
@@ -291,7 +290,7 @@ public class AnnotationsTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("annotations-test", kieBaseTestConfiguration, drl);
         final FactType ft = kbase.getFactType("org.drools.test", "Annot");
-        assertNotNull(ft);
+        assertThat(ft).isNotNull();
     }
 
     public @interface Simple {

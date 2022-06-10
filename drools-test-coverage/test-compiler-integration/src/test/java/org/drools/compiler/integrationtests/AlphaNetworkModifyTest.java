@@ -35,8 +35,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class AlphaNetworkModifyTest {
@@ -103,9 +103,9 @@ public class AlphaNetworkModifyTest {
             final ObjectTypeNode otnCheese = getObjectTypeNode(kbase, "Cheese" );
             final ObjectTypeNode otnPet = getObjectTypeNode(kbase, "Pet" );
 
-            assertNotNull(otnPerson);
-            assertNotNull(otnCheese);
-            assertNotNull(otnPet);
+            assertThat(otnPerson).isNotNull();
+            assertThat(otnCheese).isNotNull();
+            assertThat(otnPet).isNotNull();
 
             assertEquals( 0, otnPerson.getOtnIdCounter() );
             assertEquals( 0, otnCheese.getOtnIdCounter() );
@@ -161,7 +161,7 @@ public class AlphaNetworkModifyTest {
             wm.fireAllRules();
 
             final ObjectTypeNode otnInit = getObjectTypeNode(kbase, "InitialFactImpl" );
-            assertNotNull(otnInit);
+            assertThat(otnInit).isNotNull();
             final LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otnInit.getObjectSinkPropagator().getSinks()[0];
 
             final LeftTupleSink[] sinks = liaNode.getSinkPropagator().getSinks();
@@ -217,7 +217,7 @@ public class AlphaNetworkModifyTest {
 
 
             final ObjectTypeNode otnInit = getObjectTypeNode(kbase, "InitialFactImpl" );
-            assertNotNull(otnInit);
+            assertThat(otnInit).isNotNull();
             final LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otnInit.getObjectSinkPropagator().getSinks()[0];
 
             final LeftTupleSink[] sinks = liaNode.getSinkPropagator().getSinks();
@@ -228,8 +228,8 @@ public class AlphaNetworkModifyTest {
 
             final ObjectTypeNode otnPerson = getObjectTypeNode(kbase, "Person" );
             final ObjectTypeNode otnCheese = getObjectTypeNode(kbase, "Cheese" );
-            assertNotNull(otnPerson);
-            assertNotNull(otnCheese);
+            assertThat(otnPerson).isNotNull();
+            assertThat(otnCheese).isNotNull();
             assertEquals( 0, otnPerson.getOtnIdCounter() );
             assertEquals( 0, otnCheese.getOtnIdCounter() );
             wm.insert( new Person() );

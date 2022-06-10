@@ -21,7 +21,7 @@
   <parent>
     <artifactId>drools-test-coverage-parent</artifactId>
     <groupId>org.drools.testcoverage</groupId>
-    <version>7.67.0-SNAPSHOT</version>
+    <version>7.72.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -113,18 +113,13 @@
     </dependency>
 
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-xjc</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

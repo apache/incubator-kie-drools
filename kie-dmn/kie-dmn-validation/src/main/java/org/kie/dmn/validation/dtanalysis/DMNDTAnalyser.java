@@ -22,6 +22,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +32,7 @@ import java.util.stream.Stream;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -38,6 +40,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
+import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
@@ -50,7 +53,11 @@ import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.ast.Visitor;
 import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
 import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.HitPolicy;
@@ -115,10 +122,11 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
     }
 
     private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionTable dt, Set<Validation> flags) {
+        LOG.debug("Starting analsysis for DT with id: {}", dt.getId());
         DDTATable ddtaTable = new DDTATable();
         compileTableInputClauses(model, dt, ddtaTable);
         compileTableOutputClauses(model, dt, ddtaTable);
-        compileTableRules(dt, ddtaTable);
+        compileTableRules(model, dt, ddtaTable);
         compileTableComputeColStringMissingEnum(model, dt, ddtaTable);
         printDebugTableInfo(ddtaTable);
         DTAnalysis analysis = new DTAnalysis(dt, ddtaTable);
@@ -156,6 +164,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             List<PosNegBlock> selectedBlocks = new MCDCAnalyser(ddtaTable, dt).compute();
             analysis.setMCDCSelectedBlocks(selectedBlocks);
         }
+        LOG.debug("Finished analsysis for DT with id: {}", dt.getId());
         return analysis;
     }
 
@@ -167,9 +176,13 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 Interval infStringDomain = ddtaTable.getInputs().get(iColIdx).getDomainMinMax();
                 boolean areAllSinglePointOrAll = true;
                 for (int jRowIdx = 0; jRowIdx < dt.getRule().size() && areAllSinglePointOrAll; jRowIdx++) {
-                    List<Interval> r = ddtaTable.getRule().get(jRowIdx).getInputEntry().get(iColIdx).getIntervals();
-                    for (Interval interval : r) {
-                        areAllSinglePointOrAll = areAllSinglePointOrAll && (infStringDomain.equals(interval) || interval.isSingularity());
+                    DDTAInputEntry colRowInputEntry = ddtaTable.getRule().get(jRowIdx).getInputEntry().get(iColIdx);
+                    if (colRowInputEntry.isAllSingularities()) {
+                        LOG.debug("col {} row {} are all singularities, assuming positive `areAllSinglePointOrAll`={} and continue. {}", iColIdx, jRowIdx, areAllSinglePointOrAll, colRowInputEntry.getUts());
+                    } else {
+                        for (Interval interval : colRowInputEntry.getIntervals()) {
+                            areAllSinglePointOrAll = areAllSinglePointOrAll && infStringDomain.equals(interval);
+                        }
                     }
                 }
                 if (areAllSinglePointOrAll) {
@@ -196,20 +209,24 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         }
     }
 
-    private void compileTableRules(DecisionTable dt, DDTATable ddtaTable) {
+    private void compileTableRules(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
         for (int jRowIdx = 0; jRowIdx < dt.getRule().size(); jRowIdx++) {
             DecisionRule r = dt.getRule().get(jRowIdx);
 
             DDTARule ddtaRule = new DDTARule();
             int jColIdx = 0;
             for (UnaryTests ie : r.getInputEntry()) {
-                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), FEEL.newCompilerContext());
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), feelCtx(model, dt));
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
+                if (interpreted == UnaryTestInterpretedExecutableExpression.EMPTY) {
+                    throw new DMNDTAnalysisException("Gaps/Overlaps analysis cannot be performed for InputEntry with unary test containing: " + ie.getText(), dt);
+                }
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
 
                 DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(jColIdx);
 
-                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals(utln.getElements(), utln.isNegated(), ddtaInputClause.getDomainMinMax(), ddtaInputClause.getDiscreteValues(), jRowIdx + 1, jColIdx + 1));
+                ToIntervals toIntervals = toIntervals(utln.getElements(), utln.isNegated(), ddtaInputClause.getDomainMinMax(), ddtaInputClause.getDiscreteValues(), jRowIdx + 1, jColIdx + 1);
+                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals.intervals, toIntervals.allSingularities);
                 for (Interval interval : ddtaInputEntry.getIntervals()) {
                     Interval domainMinMax = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
                     if (!domainMinMax.includes(interval)) {
@@ -220,7 +237,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 jColIdx++;
             }
             for (LiteralExpression oe : r.getOutputEntry()) {
-                ProcessedExpression compile = (ProcessedExpression) FEEL.compile(oe.getText(), FEEL.newCompilerContext());
+                ProcessedExpression compile = (ProcessedExpression) FEEL.compile(oe.getText(), feelCtx(model, dt));
                 InterpretedExecutableExpression interpreted = compile.getInterpreted();
                 BaseNode outputEntryNode = (BaseNode) interpreted.getASTNode();
                 Comparable<?> value = valueFromNode(outputEntryNode, outputClauseVisitor);
@@ -230,7 +247,27 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             ddtaTable.addRule(ddtaRule);
         }
     }
-
+    
+    /**
+     * Builds a feel context containing the named keys for the DRG node dependencies.
+     * This helps to detect when a Unary test contains symbols (named reference) and therefore static analysis is not supported (ref DROOLS-4607)
+     */
+    private CompilerContext feelCtx(DMNModel model, DecisionTable dt) {
+        CompilerContext feelCtx = FEEL.newCompilerContext();
+        DMNModelInstrumentedBase parentDRGelement = dt.getParentDRDElement();
+        DMNBaseNode parentNode = null;
+        if (parentDRGelement instanceof Decision) {
+            Decision decision = (Decision) parentDRGelement;
+            parentNode = (DMNBaseNode) model.getDecisionByName(decision.getName());
+        } else if (parentDRGelement instanceof BusinessKnowledgeModel) {
+            BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) parentDRGelement;
+            parentNode = (DMNBaseNode) model.getBusinessKnowledgeModelByName(bkm.getName());
+        }
+        if (parentNode != null) {
+            parentNode.getDependencies().keySet().forEach(k -> feelCtx.addInputVariableType(k, BuiltInType.UNKNOWN));
+        }
+        return feelCtx;
+    }
 
     private void compileTableInputClauses(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
         for (int jColIdx = 0; jColIdx < dt.getInput().size(); jColIdx++) {
@@ -247,26 +284,45 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(allowedValues, FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
-                if (utln.getElements().size() != 1) {
-                    verifyUnaryTestsAllEQ(utln, dt);
-                    List<Comparable<?>> discreteValues = getDiscreteValues(utln);
+                List<BaseNode> utlnElements = new ArrayList<>(utln.getElements());
+                boolean allowNull = removeEQNullUnaryTest(utlnElements);
+                if (utlnElements.size() != 1) {
+                    verifyUnaryTestsAllEQ(utlnElements, dt);
+                    List<Comparable<?>> discreteValues = getDiscreteValues(utlnElements);
+                    List<Comparable<?>> inputOrder = Collections.unmodifiableList(new ArrayList<>(discreteValues));
                     Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
-                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues, getDiscreteValues(utln));
+                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, allowNull, discreteValues, inputOrder);
                     ddtaTable.getInputs().add(ic);
-                } else if (utln.getElements().size() == 1) {
-                    UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);
+                } else if (utlnElements.size() == 1) {
+                    UnaryTestNode utn0 = (UnaryTestNode) utlnElements.get(0);
                     Interval interval = utnToInterval(utn0, infDomain, null, 0, jColIdx + 1);
-                    DDTAInputClause ic = new DDTAInputClause(interval);
+                    DDTAInputClause ic = new DDTAInputClause(interval, allowNull);
                     ddtaTable.getInputs().add(ic);
                 } else {
                     throw new IllegalStateException("inputValues not null but utln: " + utln);
                 }
             } else {
-                DDTAInputClause ic = new DDTAInputClause(infDomain);
+                DDTAInputClause ic = new DDTAInputClause(infDomain, false);
                 ddtaTable.getInputs().add(ic);
             }
         }
+    }
+
+    private boolean removeEQNullUnaryTest(List<BaseNode> utlnElements) {
+        boolean found = false;
+        ListIterator<BaseNode> it = utlnElements.listIterator();
+        while (it.hasNext()) {
+            BaseNode cur = it.next();
+            if (cur instanceof UnaryTestNode) {
+                UnaryTestNode utn = (UnaryTestNode) cur;
+                if (utn.getOperator() == UnaryOperator.EQ && utn.getValue() instanceof NullNode) {
+                    it.remove();
+                    found = true;
+                }
+            }
+        }
+        return found;
     }
 
     private void compileTableOutputClauses(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
@@ -287,16 +343,18 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(allowedValues, FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
-                if (utln.getElements().size() != 1) {
-                    verifyUnaryTestsAllEQ(utln, dt);
-                    List<Comparable<?>> discreteValues = getDiscreteValues(utln);
-                    List<Comparable<?>> outputOrder = new ArrayList<>(discreteValues);
+                List<BaseNode> utlnElements = new ArrayList<>(utln.getElements());
+                boolean allowNull = removeEQNullUnaryTest(utlnElements);
+                if (utlnElements.size() != 1) {
+                    verifyUnaryTestsAllEQ(utlnElements, dt);
+                    List<Comparable<?>> discreteValues = getDiscreteValues(utlnElements);
+                    List<Comparable<?>> outputOrder = Collections.unmodifiableList(new ArrayList<>(discreteValues));
                     Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
                     DDTAOutputClause ic = new DDTAOutputClause(discreteDomainMinMax, discreteValues, outputOrder);
                     ddtaTable.getOutputs().add(ic);
-                } else if (utln.getElements().size() == 1) {
-                    UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);
+                } else if (utlnElements.size() == 1) {
+                    UnaryTestNode utn0 = (UnaryTestNode) utlnElements.get(0);
                     Interval interval = utnToInterval(utn0, infDomain, null, 0, jColIdx + 1);
                     DDTAOutputClause ic = new DDTAOutputClause(interval);
                     ddtaTable.getOutputs().add(ic);
@@ -310,18 +368,18 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         }
     }
 
-    private void verifyUnaryTestsAllEQ(UnaryTestListNode utln, DecisionTable dt) {
-        if (!utln.getElements().stream().allMatch(e -> e instanceof UnaryTestNode && ((UnaryTestNode) e).getOperator() == UnaryOperator.EQ)) {
-            throw new DMNDTAnalysisException("Multiple constraint on column: " + utln, dt);
+    private void verifyUnaryTestsAllEQ(List<BaseNode> utlnElements, DecisionTable dt) {
+        if (!utlnElements.stream().allMatch(e -> e instanceof UnaryTestNode && ((UnaryTestNode) e).getOperator() == UnaryOperator.EQ)) {
+            throw new DMNDTAnalysisException("Multiple constraint on column: " + utlnElements, dt);
         }
     }
 
     /**
-     * Transform a UnaryTestListNode into a List of discrete values for input/output clause enumeration
+     * Transform a UnaryTestListNode's elements into a List of discrete values for input/output clause enumeration
      */
-    private List<Comparable<?>> getDiscreteValues(UnaryTestListNode utln) {
+    private List<Comparable<?>> getDiscreteValues(List<BaseNode> utlnElements) {
         List<Comparable<?>> discreteValues = new ArrayList<>();
-        for (BaseNode e : utln.getElements()) {
+        for (BaseNode e : utlnElements) {
             BaseNode value = ((UnaryTestNode) e).getValue();
             if (!(value instanceof NullNode)) { // to retrieve value from input/output clause enumeration, null is ignored.
                 Comparable<?> v = valueFromNode(value);
@@ -497,10 +555,10 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                             0, 0);
     }
 
-    private List<Interval> toIntervals(List<BaseNode> elements, boolean isNegated, Interval minMax, List discreteValues, int rule, int col) {
+    private ToIntervals toIntervals(List<BaseNode> elements, boolean isNegated, Interval minMax, List discreteValues, int rule, int col) {
         List<Interval> results = new ArrayList<>();
         if (elements.size() == 1 && elements.get(0) instanceof UnaryTestNode && ((UnaryTestNode) elements.get(0)).getValue() instanceof NullNode) {
-            return Collections.emptyList();
+            return new ToIntervals(Collections.emptyList(), false);
         }
         if (discreteValues != null && !discreteValues.isEmpty() && areAllEQUnaryTest(elements) && elements.size() > 1) {
             int bitsetLogicalSize = discreteValues.size(); // JDK BitSet size will always be larger.
@@ -538,6 +596,8 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             if (lowerBoundIdx >= 0 && upperBoundIdx >= 0) {
                 results.add(createIntervalOfRule(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
             }
+            final boolean allSingularities = results.stream().allMatch(Interval::isSingularity);
+            return new ToIntervals(results, allSingularities);
         } else {
             for (BaseNode n : elements) {
                 if (n instanceof DashNode) {
@@ -546,14 +606,26 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 }
                 UnaryTestNode ut = (UnaryTestNode) n;
                 Interval interval = utnToInterval(ut, minMax, discreteValues, rule, col);
-                if (isNegated) {
-                    results.addAll(Interval.invertOverDomain(interval, minMax));
-                } else {
-                    results.add(interval);
-                }
+                results.add(interval);
             }
+            final boolean allSingularities = results.stream().allMatch(Interval::isSingularity); // intentionally record singularities before negating / not()
+            if (isNegated) {
+                return new ToIntervals(Interval.invertOverDomain(results, minMax), allSingularities);
+            }
+            return new ToIntervals(results, allSingularities);
         }
-        return results;
+    }
+    
+    private static class ToIntervals {
+        public final List<Interval> intervals;
+        public final boolean allSingularities;
+        
+        public ToIntervals(List<Interval> intervals, boolean allSingularities) {
+            this.intervals = intervals;
+            this.allSingularities = allSingularities;
+        }
+        
+
     }
 
     private static Interval createIntervalOfRule(List discreteValues, int rule, int col, int lowerBoundIdx, int upperBoundIdx) {

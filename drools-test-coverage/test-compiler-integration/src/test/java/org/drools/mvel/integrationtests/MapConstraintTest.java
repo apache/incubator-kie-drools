@@ -41,11 +41,9 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -62,8 +60,7 @@ public class MapConstraintTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -77,7 +74,7 @@ public class MapConstraintTest {
         final Map map = new HashMap();
         map.put("name", "Edson");
         map.put("surname", "Tirelli");
-        map.put("age", "28");
+        map.put("age", 28);
 
         ksession.insert(map);
 
@@ -147,14 +144,14 @@ public class MapConstraintTest {
         final ArgumentCaptor<AfterMatchFiredEvent> arg = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael, times(4)).afterMatchFired(arg.capture());
         org.kie.api.event.rule.AfterMatchFiredEvent aaf = arg.getAllValues().get(0);
-        assertThat(aaf.getMatch().getRule().getName(), is("1. home != null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("1. home != null");
         aaf = arg.getAllValues().get(1);
-        assertThat(aaf.getMatch().getRule().getName(), is("2. not home == null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("2. not home == null");
 
         aaf = arg.getAllValues().get(2);
-        assertThat(aaf.getMatch().getRule().getName(), is("7. work == null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("7. work == null");
         aaf = arg.getAllValues().get(3);
-        assertThat(aaf.getMatch().getRule().getName(), is("8. not work != null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("8. not work != null");
     }
 
     @Test
@@ -273,7 +270,7 @@ public class MapConstraintTest {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
         KieSession session = kbase.newKieSession();
-        assertNotNull(session);
+        assertThat(session).isNotNull();
 
         final Pet pet1 = new Pet("Toni");
         pet1.getAttributes().put("key", "value");
@@ -283,5 +280,39 @@ public class MapConstraintTest {
         session.insert(pet2);
 
         session.fireAllRules();
+    }
+
+    @Test
+    public void testMapOfMap() {
+        // DROOLS-6599
+        final String str =
+                "package org.drools.compiler\n" +
+                "import " + MapOfMapContainerBean.class.getCanonicalName() + ";\n" +
+                "import java.util.Map\n" +
+                "rule \"test\"\n" +
+                "when\n" +
+                "  MapOfMapContainerBean( map['key1']['key2'] == \"ok\" )\n" +
+                "then\n" +
+                "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
+
+        MapOfMapContainerBean bean = new MapOfMapContainerBean();
+        Map<String, Map<String, String>> map = bean.getMap();
+        Map<String, String> innerMap = new HashMap<>();
+        innerMap.put("key2", "ok");
+        map.put("key1", innerMap);
+
+        ksession.insert(bean);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    public static class MapOfMapContainerBean {
+        private final Map<String, Map<String, String>> map = new HashMap<>();
+
+        public Map<String, Map<String, String>> getMap() {
+            return map;
+        }
     }
 }

@@ -32,9 +32,7 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getPredicateASTFactoryData;
@@ -61,52 +59,52 @@ public class KiePMMLSimplePredicateASTFactoryTest {
                                                                                      fieldTypeMap);
         KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData)
                 .declareRuleFromSimplePredicateSurrogate(agendaActivationGroup, result, true);
-        assertEquals(2, rules.size());
+        assertThat(rules).hasSize(2);
         // This is the "TRUE" matching rule
         KiePMMLDroolsRule retrieved = rules.get(0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String baseExpectedRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN,
                                                 currentRule,
                                                 fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
-        assertEquals(expectedRule, retrieved.getName());
-        assertEquals(DONE, retrieved.getStatusToSet());
-        assertNull(retrieved.getStatusConstraint());
-        assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
-        assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
-        assertNull(retrieved.getIfBreakField());
-        assertNull(retrieved.getIfBreakOperator());
-        assertNull(retrieved.getIfBreakValue());
-        assertNull(retrieved.getNotConstraints());
-        assertNotNull(retrieved.getAndConstraints());
-        assertEquals(1, retrieved.getAndConstraints().size());
+        assertThat(retrieved.getName()).isEqualTo(expectedRule);
+        assertThat(retrieved.getStatusToSet()).isEqualTo(DONE);
+        assertThat(retrieved.getStatusConstraint()).isNull();
+        assertThat(retrieved.getAgendaGroup()).isEqualTo(agendaActivationGroup);
+        assertThat(retrieved.getActivationGroup()).isEqualTo(agendaActivationGroup);
+        assertThat(retrieved.getIfBreakField()).isNull();
+        assertThat(retrieved.getIfBreakOperator()).isNull();
+        assertThat(retrieved.getIfBreakValue()).isNull();
+        assertThat(retrieved.getNotConstraints()).isNull();
+        assertThat(retrieved.getAndConstraints()).isNotNull();
+        assertThat(retrieved.getAndConstraints()).hasSize(1);
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
-        assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals(BOOLEAN_OPERATOR.SURROGATE, kiePMMLFieldOperatorValue.getOperator());
-        assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
-        assertEquals(result, retrieved.getResult());
-        assertEquals(ResultCode.OK, retrieved.getResultCode());
+        assertThat(kiePMMLFieldOperatorValue.getName()).isEqualTo("OUTLOOK");
+        assertThat(kiePMMLFieldOperatorValue.getOperator()).isEqualTo(BOOLEAN_OPERATOR.SURROGATE);
+        assertThat(kiePMMLFieldOperatorValue.getConstraintsAsString()).isEqualTo("value < \"VALUE\"");
+        assertThat(retrieved.getResult()).isEqualTo(result);
+        assertThat(retrieved.getResultCode()).isEqualTo(ResultCode.OK);
         // This is the "FALSE" matching rule
         retrieved = rules.get(1);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         expectedRule = baseExpectedRule + "_FALSE";
-        assertEquals(expectedRule, retrieved.getName());
-        assertEquals(parentPath, retrieved.getStatusToSet());
-        assertNull(retrieved.getStatusConstraint());
-        assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
-        assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
-        assertNull(retrieved.getIfBreakField());
-        assertNull(retrieved.getIfBreakOperator());
-        assertNull(retrieved.getIfBreakValue());
-        assertNull(retrieved.getAndConstraints());
-        assertNotNull(retrieved.getNotConstraints());
-        assertEquals(1, retrieved.getNotConstraints().size());
+        assertThat(retrieved.getName()).isEqualTo(expectedRule);
+        assertThat(retrieved.getStatusToSet()).isEqualTo(parentPath);
+        assertThat(retrieved.getStatusConstraint()).isNull();
+        assertThat(retrieved.getAgendaGroup()).isEqualTo(agendaActivationGroup);
+        assertThat(retrieved.getActivationGroup()).isEqualTo(agendaActivationGroup);
+        assertThat(retrieved.getIfBreakField()).isNull();
+        assertThat(retrieved.getIfBreakOperator()).isNull();
+        assertThat(retrieved.getIfBreakValue()).isNull();
+        assertThat(retrieved.getAndConstraints()).isNull();
+        assertThat(retrieved.getNotConstraints()).isNotNull();
+        assertThat(retrieved.getNotConstraints()).hasSize(1);
         kiePMMLFieldOperatorValue = retrieved.getNotConstraints().get(0);
-        assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals(BOOLEAN_OPERATOR.SURROGATE, kiePMMLFieldOperatorValue.getOperator());
-        assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
-        assertNull(retrieved.getResult());
-        assertNull(retrieved.getResultCode());
+        assertThat(kiePMMLFieldOperatorValue.getName()).isEqualTo("OUTLOOK");
+        assertThat(kiePMMLFieldOperatorValue.getOperator()).isEqualTo(BOOLEAN_OPERATOR.SURROGATE);
+        assertThat(kiePMMLFieldOperatorValue.getConstraintsAsString()).isEqualTo("value < \"VALUE\"");
+        assertThat(retrieved.getResult()).isNull();
+        assertThat(retrieved.getResultCode()).isNull();
     }
 
     @Test
@@ -129,51 +127,51 @@ public class KiePMMLSimplePredicateASTFactoryTest {
                                                                                      fieldTypeMap);
         KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData)
                 .declareRuleFromSimplePredicateSurrogate(agendaActivationGroup, result, false);
-        assertEquals(2, rules.size());
+        assertThat(rules).hasSize(2);
         // This is the "TRUE" matching rule
         KiePMMLDroolsRule retrieved = rules.get(0);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         String baseExpectedRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN,
                                                 currentRule,
                                                 fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
-        assertEquals(expectedRule, retrieved.getName());
-        assertEquals(currentRule, retrieved.getStatusToSet());
-        assertNull(retrieved.getStatusConstraint());
-        assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
-        assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
-        assertNull(retrieved.getIfBreakField());
-        assertNull(retrieved.getIfBreakOperator());
-        assertNull(retrieved.getIfBreakValue());
-        assertNotNull(retrieved.getAndConstraints());
-        assertEquals(1, retrieved.getAndConstraints().size());
+        assertThat(retrieved.getName()).isEqualTo(expectedRule);
+        assertThat(retrieved.getStatusToSet()).isEqualTo(currentRule);
+        assertThat(retrieved.getStatusConstraint()).isNull();
+        assertThat(retrieved.getAgendaGroup()).isEqualTo(agendaActivationGroup);
+        assertThat(retrieved.getActivationGroup()).isEqualTo(agendaActivationGroup);
+        assertThat(retrieved.getIfBreakField()).isNull();
+        assertThat(retrieved.getIfBreakOperator()).isNull();
+        assertThat(retrieved.getIfBreakValue()).isNull();
+        assertThat(retrieved.getAndConstraints()).isNotNull();
+        assertThat(retrieved.getAndConstraints()).hasSize(1);
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
-        assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals(BOOLEAN_OPERATOR.SURROGATE, kiePMMLFieldOperatorValue.getOperator());
-        assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
-        assertNull(retrieved.getResult());
-        assertNull(retrieved.getResultCode());
+        assertThat(kiePMMLFieldOperatorValue.getName()).isEqualTo("OUTLOOK");
+        assertThat(kiePMMLFieldOperatorValue.getOperator()).isEqualTo(BOOLEAN_OPERATOR.SURROGATE);
+        assertThat(kiePMMLFieldOperatorValue.getConstraintsAsString()).isEqualTo("value < \"VALUE\"");
+        assertThat(retrieved.getResult()).isNull();
+        assertThat(retrieved.getResultCode()).isNull();
         // This is the "FALSE" matching rule
         retrieved = rules.get(1);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         expectedRule = baseExpectedRule + "_FALSE";
-        assertEquals(expectedRule, retrieved.getName());
-        assertEquals(parentPath, retrieved.getStatusToSet());
-        assertNull(retrieved.getStatusConstraint());
-        assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
-        assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
-        assertNull(retrieved.getIfBreakField());
-        assertNull(retrieved.getIfBreakOperator());
-        assertNull(retrieved.getIfBreakValue());
-        assertNull(retrieved.getAndConstraints());
-        assertNotNull(retrieved.getNotConstraints());
-        assertEquals(1, retrieved.getNotConstraints().size());
+        assertThat(retrieved.getName()).isEqualTo(expectedRule);
+        assertThat(retrieved.getStatusToSet()).isEqualTo(parentPath);
+        assertThat(retrieved.getStatusConstraint()).isNull();
+        assertThat(retrieved.getAgendaGroup()).isEqualTo(agendaActivationGroup);
+        assertThat(retrieved.getActivationGroup()).isEqualTo(agendaActivationGroup);
+        assertThat(retrieved.getIfBreakField()).isNull();
+        assertThat(retrieved.getIfBreakOperator()).isNull();
+        assertThat(retrieved.getIfBreakValue()).isNull();
+        assertThat(retrieved.getAndConstraints()).isNull();
+        assertThat(retrieved.getNotConstraints()).isNotNull();
+        assertThat(retrieved.getNotConstraints()).hasSize(1);
         kiePMMLFieldOperatorValue = retrieved.getNotConstraints().get(0);
-        assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals(BOOLEAN_OPERATOR.SURROGATE, kiePMMLFieldOperatorValue.getOperator());
-        assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
-        assertNull(retrieved.getResult());
-        assertNull(retrieved.getResultCode());
+        assertThat(kiePMMLFieldOperatorValue.getName()).isEqualTo("OUTLOOK");
+        assertThat(kiePMMLFieldOperatorValue.getOperator()).isEqualTo(BOOLEAN_OPERATOR.SURROGATE);
+        assertThat(kiePMMLFieldOperatorValue.getConstraintsAsString()).isEqualTo("value < \"VALUE\"");
+        assertThat(retrieved.getResult()).isNull();
+        assertThat(retrieved.getResultCode()).isNull();
     }
 
     @Test
@@ -195,22 +193,22 @@ public class KiePMMLSimplePredicateASTFactoryTest {
                                                                                      currentRule,
                                                                                      fieldTypeMap);
         KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimplePredicate(result, true);
-        assertEquals(1, rules.size());
+        assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
-        assertNotNull(retrieved);
-        assertEquals(currentRule, retrieved.getName());
-        assertEquals(DONE, retrieved.getStatusToSet());
-        assertEquals(String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(ResultCode.OK, retrieved.getResultCode());
-        assertEquals(result, retrieved.getResult());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getName()).isEqualTo(currentRule);
+        assertThat(retrieved.getStatusToSet()).isEqualTo(DONE);
+        assertThat(retrieved.getStatusConstraint()).isEqualTo(String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath));
+        assertThat(retrieved.getResultCode()).isEqualTo(ResultCode.OK);
+        assertThat(retrieved.getResult()).isEqualTo(result);
         final List<KiePMMLFieldOperatorValue> andConstraints = retrieved.getAndConstraints();
-        assertNotNull(andConstraints);
-        assertEquals(1, andConstraints.size());
+        assertThat(andConstraints).isNotNull();
+        assertThat(andConstraints).hasSize(1);
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
-        assertEquals(declaredType, kiePMMLFieldOperatorValue.getName());
-        assertEquals(BOOLEAN_OPERATOR.AND, kiePMMLFieldOperatorValue.getOperator());
+        assertThat(kiePMMLFieldOperatorValue.getName()).isEqualTo(declaredType);
+        assertThat(kiePMMLFieldOperatorValue.getOperator()).isEqualTo(BOOLEAN_OPERATOR.AND);
         String expectedValue = "value < \"" + simplePredicate.getValue() + "\"";
-        assertEquals(expectedValue, kiePMMLFieldOperatorValue.getConstraintsAsString());
+        assertThat(kiePMMLFieldOperatorValue.getConstraintsAsString()).isEqualTo(expectedValue);
     }
 
     @Test
@@ -232,21 +230,21 @@ public class KiePMMLSimplePredicateASTFactoryTest {
                                                                                      currentRule,
                                                                                      fieldTypeMap);
         KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimplePredicate(result, false);
-        assertEquals(1, rules.size());
+        assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
-        assertNotNull(retrieved);
-        assertEquals(currentRule, retrieved.getName());
-        assertEquals(currentRule, retrieved.getStatusToSet());
-        assertEquals(String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(currentRule, retrieved.getStatusToSet());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getName()).isEqualTo(currentRule);
+        assertThat(retrieved.getStatusToSet()).isEqualTo(currentRule);
+        assertThat(retrieved.getStatusConstraint()).isEqualTo(String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath));
+        assertThat(retrieved.getStatusToSet()).isEqualTo(currentRule);
         final List<KiePMMLFieldOperatorValue> andConstraints = retrieved.getAndConstraints();
-        assertNotNull(andConstraints);
-        assertEquals(1, andConstraints.size());
+        assertThat(andConstraints).isNotNull();
+        assertThat(andConstraints).hasSize(1);
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
-        assertEquals(declaredType, kiePMMLFieldOperatorValue.getName());
-        assertEquals(BOOLEAN_OPERATOR.AND, kiePMMLFieldOperatorValue.getOperator());
+        assertThat(kiePMMLFieldOperatorValue.getName()).isEqualTo(declaredType);
+        assertThat(kiePMMLFieldOperatorValue.getOperator()).isEqualTo(BOOLEAN_OPERATOR.AND);
         String expectedValue = "value < \"" + simplePredicate.getValue() + "\"";
-        assertEquals(expectedValue, kiePMMLFieldOperatorValue.getConstraintsAsString());
+        assertThat(kiePMMLFieldOperatorValue.getConstraintsAsString()).isEqualTo(expectedValue);
     }
 
     private SimplePredicate getSimplePredicate(final String predicateName,

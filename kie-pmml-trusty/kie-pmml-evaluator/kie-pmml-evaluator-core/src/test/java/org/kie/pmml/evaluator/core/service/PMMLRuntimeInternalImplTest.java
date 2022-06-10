@@ -42,9 +42,7 @@ import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
 import org.kie.pmml.evaluator.core.implementations.PMMLRuntimeStep;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.api.enums.ResultCode.OK;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -122,7 +120,7 @@ public class PMMLRuntimeInternalImplTest {
             Optional<PMMLStep> retrieved =
                     pmmlSteps.stream().filter(pmmlStep -> pmml_step.equals(((PMMLRuntimeStep) pmmlStep).getPmmlStep()))
                     .findFirst();
-            assertTrue(retrieved.isPresent());
+            assertThat(retrieved).isPresent();
             commonValuateStep(retrieved.get(), pmml_step, modelMock, requestData);
         });
     }
@@ -138,7 +136,7 @@ public class PMMLRuntimeInternalImplTest {
             Optional<PMMLStep> retrieved =
                     pmmlSteps.stream().filter(pmmlStep -> pmml_step.equals(((PMMLRuntimeStep) pmmlStep).getPmmlStep()))
                     .findFirst();
-            assertTrue(retrieved.isPresent());
+            assertThat(retrieved).isPresent();
             commonValuateStep(retrieved.get(), pmml_step, modelMock, requestData);
         });
     }
@@ -154,21 +152,21 @@ public class PMMLRuntimeInternalImplTest {
 
     private void commonValuateStep(final PMMLStep toVerify, final PMML_STEP pmmlStep, final KiePMMLModel kiePMMLModel,
                                    final PMMLRequestData requestData) {
-        assertNotNull(toVerify);
-        assertTrue(toVerify instanceof PMMLRuntimeStep);
-        assertEquals(pmmlStep, ((PMMLRuntimeStep) toVerify).getPmmlStep());
+        assertThat(toVerify).isNotNull();
+        assertThat(toVerify).isInstanceOf(PMMLRuntimeStep.class);
+        assertThat(((PMMLRuntimeStep) toVerify).getPmmlStep()).isEqualTo(pmmlStep);
         Map<String, Object> info = toVerify.getInfo();
-        assertEquals(info.get("MODEL"), kiePMMLModel.getName());
-        assertEquals(info.get("CORRELATION ID"), requestData.getCorrelationId());
-        assertEquals(info.get("REQUEST MODEL"), requestData.getModelName());
+        assertThat(kiePMMLModel.getName()).isEqualTo(info.get("MODEL"));
+        assertThat(requestData.getCorrelationId()).isEqualTo(info.get("CORRELATION ID"));
+        assertThat(requestData.getModelName()).isEqualTo(info.get("REQUEST MODEL"));
         requestData.getRequestParams()
                 .forEach(requestParam ->
-                                 assertEquals(requestParam.getValue(), info.get(requestParam.getName())));
+                                 assertThat(info.get(requestParam.getName())).isEqualTo(requestParam.getValue()));
     }
 
     private void commonManageException(KiePMMLException toManage) {
         String expectedMessage = String.format("Failed to retrieve model with name %s", MODEL_NAME);
-        assertEquals(expectedMessage, toManage.getMessage());
+        assertThat(toManage.getMessage()).isEqualTo(expectedMessage);
     }
 
     private KiePMMLModel getKiePMMLModelMock() {

@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PMMLNaiveBayesModelEvaluatorTest {
 
@@ -32,7 +32,7 @@ public class PMMLNaiveBayesModelEvaluatorTest {
 
     @Test
     public void getPMMLModelType(){
-        assertEquals(PMML_MODEL.NAIVEBAYES_MODEL, evaluator.getPMMLModelType());
+        assertThat(evaluator.getPMMLModelType()).isEqualTo(PMML_MODEL.NAIVEBAYES_MODEL);
     }
 
 }

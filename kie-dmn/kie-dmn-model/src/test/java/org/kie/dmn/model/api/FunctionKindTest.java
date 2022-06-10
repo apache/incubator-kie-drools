@@ -16,10 +16,10 @@
 
 package org.kie.dmn.model.api;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class FunctionKindTest {
 
@@ -29,7 +29,7 @@ public class FunctionKindTest {
         assertThat(FunctionKind.fromValue("Java")).isEqualTo(FunctionKind.JAVA);
         assertThat(FunctionKind.fromValue("JAVA")).isEqualTo(FunctionKind.JAVA);
         assertThat(FunctionKind.fromValue("PMML")).isEqualTo(FunctionKind.PMML);
-        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> FunctionKind.fromValue("asd"));
+        assertThatIllegalArgumentException().isThrownBy(() -> FunctionKind.fromValue("asd"));
     }
 
 }

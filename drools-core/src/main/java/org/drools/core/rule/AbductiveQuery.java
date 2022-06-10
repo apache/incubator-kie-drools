@@ -28,8 +28,12 @@ import java.util.List;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.ObjectType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbductiveQuery extends QueryImpl implements Externalizable, AcceptsClassObjectType {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbductiveQuery.class);
 
     private ObjectType returnType;
     private transient Constructor cachedConstructor;
@@ -142,7 +146,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
             }
             return constructor.newInstance( args );
         } catch ( Exception e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             return null;
         }
     }
@@ -172,7 +176,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
             try {
                 findConstructor( null );
             } catch ( NoSuchMethodException e ) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
                 cachedConstructor = null;
                 returnType = null;
             }

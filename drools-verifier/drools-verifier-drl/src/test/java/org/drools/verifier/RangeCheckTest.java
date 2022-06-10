@@ -16,11 +16,6 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
@@ -29,6 +24,11 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class RangeCheckTest {
 
@@ -56,7 +56,7 @@ public class RangeCheckTest {
         assertTrue( works );
 
         VerifierReport result = verifier.getResult();
-        assertNotNull( result );
+        assertThat(result).isNotNull();
 
         for ( VerifierMessageBase message : result.getBySeverity( Severity.ERROR ) ) {
             System.out.println( message );

@@ -20,11 +20,15 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This shows off a decision table.
  */
 public class TroubleTicketExampleWithDT {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TroubleTicketExampleWithDT.class);
 
     public static void main(final String[] args) {
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
@@ -73,7 +77,7 @@ public class TroubleTicketExampleWithDT {
             System.err.println( "[[ Sleeping 5 seconds ]]" );
             Thread.sleep( 5000 );
         } catch ( final InterruptedException e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
 
         System.err.println( "[[ awake ]]" );

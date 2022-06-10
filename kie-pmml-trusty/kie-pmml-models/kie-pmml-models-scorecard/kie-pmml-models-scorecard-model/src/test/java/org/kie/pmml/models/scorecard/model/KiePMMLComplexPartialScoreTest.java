@@ -29,7 +29,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLComplexPartialScoreTest {
 
@@ -49,7 +49,7 @@ public class KiePMMLComplexPartialScoreTest {
                                                                                        kiePMMLConstant1);
         Object retrieved = complexPartialScore.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
                                                  Collections.emptyMap());
-        assertEquals(value1, retrieved);
+        assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class KiePMMLComplexPartialScoreTest {
         inputData.put(PARAM_1, value1);
         Object retrieved = complexPartialScore.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
                                                  inputData);
-        assertEquals(value1, retrieved);
+        assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class KiePMMLComplexPartialScoreTest {
         Object retrieved = complexPartialScore.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
                                                  getInputData());
         Object expected = value1 / value2;
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class KiePMMLComplexPartialScoreTest {
         Object retrieved = complexPartialScore.evaluate(Collections.emptyList(), getDerivedFields(), Collections.emptyList(),
                                                  Collections.emptyMap());
         Object expected = value1 / value2;
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     private Map<String, Object> getInputData() {

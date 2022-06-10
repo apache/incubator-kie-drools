@@ -23,9 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.models.mining.model.AbstractKiePMMLMiningModelTest.getKiePMMLSegments;
 
 public class KiePMMLSegmentationTest {
@@ -39,22 +37,22 @@ public class KiePMMLSegmentationTest {
     public static void setup() {
         BUILDER = KiePMMLSegmentation.builder(SEGMENTATION_NAME, Collections.emptyList(),
                                               MULTIPLE_MODELMETHOD);
-        assertNotNull(BUILDER);
+        assertThat(BUILDER).isNotNull();
         KIE_PMML_SEGMENTATION = BUILDER.build();
-        assertNotNull(KIE_PMML_SEGMENTATION);
+        assertThat(KIE_PMML_SEGMENTATION).isNotNull();
     }
 
     @Test
     public void getMultipleModelMethod() {
-        assertEquals(MULTIPLE_MODELMETHOD, KIE_PMML_SEGMENTATION.getMultipleModelMethod());
+        assertThat(KIE_PMML_SEGMENTATION.getMultipleModelMethod()).isEqualTo(MULTIPLE_MODELMETHOD);
     }
 
     @Test
     public void getSegments() {
-        assertNull(KIE_PMML_SEGMENTATION.getSegments());
+        assertThat(KIE_PMML_SEGMENTATION.getSegments()).isNull();
         final List<KiePMMLSegment> segments = getKiePMMLSegments();
         KIE_PMML_SEGMENTATION = BUILDER.withSegments(segments).build();
-        assertEquals(segments, KIE_PMML_SEGMENTATION.getSegments());
+        assertThat(KIE_PMML_SEGMENTATION.getSegments()).isEqualTo(segments);
     }
 
 

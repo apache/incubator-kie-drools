@@ -17,7 +17,6 @@ package org.drools.modelcompiler;
 
 import java.util.function.Supplier;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.AverageAccumulateFunction;
 import org.drools.model.Index;
 import org.drools.model.PatternDSL;
@@ -31,6 +30,7 @@ import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.declarationOf;
@@ -109,6 +109,6 @@ public class ToStringTest {
                 "consequences: {default=" + consequenceToString +
                 "}), consequences: {default=" + consequenceToString + "})";
 
-        Assertions.assertThat(rule).hasToString(expectedToString);
+        assertThat(rule).hasToString(expectedToString);
     }
 }

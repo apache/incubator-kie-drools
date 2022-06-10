@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.67.0-SNAPSHOT</version>
+    <version>7.72.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.kie</groupId>
@@ -69,6 +69,8 @@
       </activation>
       <modules>
         <module>kie-dmn-xls2dmn-cli</module>
+        <module>kie-dmn-core-jsr223-jq</module>
+        <module>kie-dmn-core-jsr223</module>
       </modules>
     </profile>
   </profiles>

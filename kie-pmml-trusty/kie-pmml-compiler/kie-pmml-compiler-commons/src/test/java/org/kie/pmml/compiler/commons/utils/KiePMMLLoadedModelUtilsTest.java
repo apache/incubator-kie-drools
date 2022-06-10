@@ -27,10 +27,7 @@ import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.api.enums.OP_TYPE.CATEGORICAL;
 import static org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
@@ -60,8 +57,8 @@ public class KiePMMLLoadedModelUtilsTest {
     public void getTargetFieldNoTarget() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE), NO_TARGET_SOURCE);
         final List<Field<?>> fields = getFieldsFromDataDictionary(pmmlModel.getDataDictionary());
-        assertTrue(getTargetFieldName(fields, pmmlModel.getModels().get(0)).isPresent());
-        assertFalse(getTargetFields(fields, pmmlModel.getModels().get(0)).isEmpty());
+        assertThat(getTargetFieldName(fields, pmmlModel.getModels().get(0))).isPresent();
+        assertThat(getTargetFields(fields, pmmlModel.getModels().get(0))).isNotEmpty();
     }
 
     @Test
@@ -69,11 +66,11 @@ public class KiePMMLLoadedModelUtilsTest {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
         final List<Field<?>> fields = getFieldsFromDataDictionary(pmmlModel.getDataDictionary());
         final Optional<String> retrieved = getTargetFieldName(fields, pmmlModel.getModels().get(0));
-        assertTrue(retrieved.isPresent());
-        assertEquals(WHAT_I_DO_TARGET_FIELD, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(WHAT_I_DO_TARGET_FIELD);
         final List<KiePMMLNameOpType> retrieveds = getTargetFields(fields, pmmlModel.getModels().get(0));
-        assertEquals(1, retrieveds.size());
-        assertEquals(WHAT_I_DO_TARGET_FIELD, retrieveds.get(0).getName());
+        assertThat(retrieveds).hasSize(1);
+        assertThat(retrieveds.get(0).getName()).isEqualTo(WHAT_I_DO_TARGET_FIELD);
     }
 
     @Test
@@ -81,27 +78,27 @@ public class KiePMMLLoadedModelUtilsTest {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
         final List<Field<?>> fields = getFieldsFromDataDictionary(pmmlModel.getDataDictionary());
         final Optional<String> retrieved = getTargetFieldName(fields, pmmlModel.getModels().get(0));
-        assertTrue(retrieved.isPresent());
-        assertEquals(CAR_LOCATION_FIELD, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(CAR_LOCATION_FIELD);
         final List<KiePMMLNameOpType> retrieveds = getTargetFields(fields, pmmlModel.getModels().get(0));
-        assertEquals(1, retrieveds.size());
-        assertEquals(CAR_LOCATION_FIELD, retrieveds.get(0).getName());
+        assertThat(retrieveds).hasSize(1);
+        assertThat(retrieveds.get(0).getName()).isEqualTo(CAR_LOCATION_FIELD);
     }
 
     @Test
     public void getOpTypeFromDataFieldExisting() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE), NO_TARGET_SOURCE);
         final OP_TYPE retrieved = getOpType(getFieldsFromDataDictionary(pmmlModel.getDataDictionary()), pmmlModel.getModels().get(0), TEMPERATURE_FIELD);
-        assertNotNull(retrieved);
-        assertEquals(CONTINUOUS, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(CONTINUOUS);
     }
 
     @Test
     public void getOpTypeFromMiningFieldExisting() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
         final OP_TYPE retrieved = getOpType(getFieldsFromDataDictionary(pmmlModel.getDataDictionary()), pmmlModel.getModels().get(0), OUTLOOK_FIELD);
-        assertNotNull(retrieved);
-        assertEquals(CATEGORICAL, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(CATEGORICAL);
     }
 
     @Test(expected = KiePMMLInternalException.class)
@@ -116,13 +113,13 @@ public class KiePMMLLoadedModelUtilsTest {
         final List<Model> models = pmmlModel.getModels();
         for (int i = 0; i < models.size(); i ++) {
             Model model = models.get(i);
-            assertNotNull(model.getModelName());
-            assertFalse(model.getModelName().isEmpty());
+            assertThat(model.getModelName()).isNotNull();
+            assertThat(model.getModelName()).isNotEmpty();
             String expected = String.format(MODELNAME_TEMPLATE,
                                             NO_MODELNAME_SAMPLE_NAME,
                                             model.getClass().getSimpleName(),
                                             i);
-            assertEquals(expected, model.getModelName());
+            assertThat(model.getModelName()).isEqualTo(expected);
         }
 
     }

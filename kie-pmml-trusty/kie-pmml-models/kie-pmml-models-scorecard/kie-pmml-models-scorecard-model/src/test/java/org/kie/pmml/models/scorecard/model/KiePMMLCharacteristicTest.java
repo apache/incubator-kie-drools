@@ -23,9 +23,7 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLCharacteristicTest {
 
@@ -51,8 +49,8 @@ public class KiePMMLCharacteristicTest {
                 .withBaselineScore(baselineScore)
                 .withReasonCode(REASON_CODE)
                 .build();
-        assertNull(kiePMMLCharacteristic.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                      Collections.emptyMap()));
+        assertThat(kiePMMLCharacteristic.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+                                      Collections.emptyMap())).isNull();
     }
 
     @Test
@@ -68,9 +66,9 @@ public class KiePMMLCharacteristicTest {
                 .withReasonCode(REASON_CODE)
                 .build();
         KiePMMLCharacteristic.ReasonCodeValue retrieved = kiePMMLCharacteristic.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyMap());
-        assertNotNull(retrieved);
-        assertEquals(REASON_CODE, retrieved.getReasonCode());
-        assertEquals(value1, retrieved.getScore());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getReasonCode()).isEqualTo(REASON_CODE);
+        assertThat(retrieved.getScore()).isEqualTo(value1);
     }
 
     @Test
@@ -86,9 +84,9 @@ public class KiePMMLCharacteristicTest {
                 .withReasonCode(REASON_CODE)
                 .build();
         KiePMMLCharacteristic.ReasonCodeValue retrieved = kiePMMLCharacteristic.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyMap());
-        assertNotNull(retrieved);
-        assertEquals(REASON_CODE, retrieved.getReasonCode());
-        assertEquals(value2, retrieved.getScore());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getReasonCode()).isEqualTo(REASON_CODE);
+        assertThat(retrieved.getScore()).isEqualTo(value2);
     }
 
     @Test
@@ -106,9 +104,9 @@ public class KiePMMLCharacteristicTest {
                 .withReasonCode(REASON_CODE)
                 .build();
         KiePMMLCharacteristic.ReasonCodeValue retrieved = kiePMMLCharacteristic.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyMap());
-        assertNotNull(retrieved);
-        assertEquals(REASON_CODE_1, retrieved.getReasonCode());
-        assertEquals(value1, retrieved.getScore());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getReasonCode()).isEqualTo(REASON_CODE_1);
+        assertThat(retrieved.getScore()).isEqualTo(value1);
     }
 
     @Test
@@ -126,8 +124,8 @@ public class KiePMMLCharacteristicTest {
                 .withReasonCode(REASON_CODE)
                 .build();
         KiePMMLCharacteristic.ReasonCodeValue retrieved = kiePMMLCharacteristic.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyMap());
-        assertNotNull(retrieved);
-        assertEquals(REASON_CODE_2, retrieved.getReasonCode());
-        assertEquals(value2, retrieved.getScore());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getReasonCode()).isEqualTo(REASON_CODE_2);
+        assertThat(retrieved.getScore()).isEqualTo(value2);
     }
 }

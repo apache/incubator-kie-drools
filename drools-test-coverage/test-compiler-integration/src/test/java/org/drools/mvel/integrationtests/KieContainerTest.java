@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
@@ -48,10 +47,10 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
 import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class KieContainerTest {
@@ -284,7 +283,7 @@ public class KieContainerTest {
             // There can be multiple items in the list if an updateToVersion is triggered during a fireAllRules
             // (updateToVersion can be called multiple times during fireAllRules, especially on slower machines)
             // in that case it may fire with the old rule and multiple new ones
-            Assertions.assertThat(list).isNotEmpty();
+            assertThat(list).isNotEmpty();
             if (list.get(0).equals("rule9")) {
                 break;
             }
@@ -369,7 +368,7 @@ public class KieContainerTest {
         // make sure the package resource correctly lists all its child resources (files in this case)
         URL url = classLoader.getResources("org/drools/testdrl").nextElement();
         List<String> lines = IOUtils.readLines(url.openStream());
-        Assertions.assertThat(lines).contains("rules1.drl", "rules1.drl.properties", "rules2.drl", "rules2.drl.properties");
+        assertThat(lines).contains("rules1.drl", "rules1.drl.properties", "rules2.drl", "rules2.drl.properties");
 
         assertUrlEnumerationContainsMatch("^mfs\\:/$", classLoader.getResources(""));
     }
@@ -398,7 +397,7 @@ public class KieContainerTest {
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
 
         KieSessionModel sessionModel = kieContainer.getKieSessionModel(null);
-        assertNotNull(sessionModel);
+        assertThat(sessionModel).isNotNull();
         assertEquals("testKsession", sessionModel.getName());
     }
 
@@ -423,7 +422,7 @@ public class KieContainerTest {
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
 
         KieSessionModel sessionModel = kieContainer.getKieSessionModel(null);
-        assertNotNull(sessionModel);
+        assertThat(sessionModel).isNotNull();
     }
 
     private String createDRL(String ruleName) {

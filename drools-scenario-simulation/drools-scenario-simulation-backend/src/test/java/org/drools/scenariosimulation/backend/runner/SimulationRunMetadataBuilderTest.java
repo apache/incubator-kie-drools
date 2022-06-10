@@ -33,10 +33,10 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGeneratedDMNMessageList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class SimulationRunMetadataBuilderTest {
 
@@ -83,9 +83,9 @@ public class SimulationRunMetadataBuilderTest {
         assertEquals(1, build.getOutputCounter().get("d2"), 0.1);
         assertEquals(2, build.getScenarioCounter().get(scenarioWithIndex1).size(), 0.1);
         AuditLog retrieved = build.getAuditLog();
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         final List<AuditLogLine> auditLogLines = retrieved.getAuditLogLines();
-        assertNotNull(auditLogLines);
+        assertThat(auditLogLines).isNotNull();
         assertEquals(auditLogLines.size(), messagesResult1decision1.size() + messagesResult1decision2.size() + messagesResult2decision1.size() + messagesResult2decision3.size());
 
         checkAuditLogLine(auditLogLines, expectedResult1Decision1, expectedResult1Decision2, expectedResult2Decision1, expectedResult2Decision3);

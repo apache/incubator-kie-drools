@@ -43,8 +43,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -105,7 +105,7 @@ public class GeneratedClassNamesTest extends BaseModelTest {
     }
 
     private void assertGeneratedClassNames(Set<String> generatedClassNames) {
-        assertNotNull(generatedClassNames);
+        assertThat(generatedClassNames).isNotNull();
         String[] nameFragments = new String[]{"Rules", "LambdaConsequence", "LambdaPredicate", "LambdaExtractor", "DomainClassesMetadata", "ProjectModel", "$"};
         for (String nameFragment : nameFragments) {
             boolean contains = false;
@@ -242,7 +242,7 @@ public class GeneratedClassNamesTest extends BaseModelTest {
     }
 
     private void assertGeneratedClassNamesWithDep(Set<String> generatedClassNames) {
-        assertNotNull(generatedClassNames);
+        assertThat(generatedClassNames).isNotNull();
         String[] nameFragments = new String[]{"Rules", "LambdaConsequence", "LambdaPredicate", "LambdaExtractor", "DomainClassesMetadata", "$"};
         for (String nameFragment : nameFragments) {
             boolean containsDep = false;

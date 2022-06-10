@@ -16,6 +16,9 @@
 
 package org.drools.template.parser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Matcher;
@@ -26,6 +29,7 @@ import java.util.regex.Pattern;
  * [] indicates a column that represents an array (comma-delimited) of values.
  */
 public class ColumnFactory {
+    private static final Logger LOG = LoggerFactory.getLogger(ColumnFactory.class);
     private final static Pattern PATTERN = Pattern.compile("((\\$)*([a-zA-Z0-9_]*))(\\[\\])?(:\\s*([a-zA-Z]*)(\\[\\])?)?");
 
     public Column getColumn(String value) {
@@ -55,25 +59,25 @@ public class ColumnFactory {
             Constructor<Column> constructor = klass.getConstructor(new Class[]{String.class});
             return constructor.newInstance(new Object[]{name});
         } catch (SecurityException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             throw new RuntimeException(e);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             throw new RuntimeException(e);
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             throw new RuntimeException(e);
         }
     }

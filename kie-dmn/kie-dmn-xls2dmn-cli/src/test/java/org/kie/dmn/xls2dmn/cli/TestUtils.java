@@ -31,8 +31,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestUtils {
 
@@ -46,7 +45,7 @@ public class TestUtils {
 
     public static DMNRuntime validateRuntime(File outFile) {
         List<DMNMessage> validate = DMNValidatorFactory.newValidator().validate(outFile);
-        assertThat(validate.stream().filter(m -> m.getLevel() == Level.ERROR).count(), is(0L));
+        assertThat(validate.stream().filter(m -> m.getLevel() == Level.ERROR).count()).isEqualTo(0L);
 
         Either<Exception, DMNRuntime> fromResources = DMNRuntimeBuilder.fromDefaults()
                                                                        .buildConfiguration()

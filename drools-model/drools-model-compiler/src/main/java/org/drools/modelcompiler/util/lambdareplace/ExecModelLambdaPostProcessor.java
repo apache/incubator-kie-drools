@@ -62,10 +62,12 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOr
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.DSL_NAMESPACE;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_EXPR_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
 import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
@@ -215,8 +217,18 @@ public class ExecModelLambdaPostProcessor {
                 .filter(MethodCallExpr.class::isInstance)
                 .map(MethodCallExpr.class::cast)
                 .map(DrlxParseUtil::findLastMethodInChain)
-                .map(MethodCallExpr::getNameAsString)
-                .anyMatch(name -> name.startsWith("D.") && ModelGenerator.temporalOperators.contains(name.substring(2)));
+                .anyMatch(mce -> {
+                              if (mce.getScope().isPresent() && mce.getScope().get().equals(DSL_NAMESPACE)) {
+                                  String methodName = mce.getNameAsString();
+                                  if (ModelGenerator.temporalOperators.contains(methodName)) {
+                                      return true;
+                                  } else if (methodName.equals(NOT_CALL)) {
+                                      return containsTemporalPredicate(mce);
+                                  }
+                              }
+                              return false;
+                          }
+                );
     }
 
     private boolean isExecuteNonNestedCall(MethodCallExpr mc) {

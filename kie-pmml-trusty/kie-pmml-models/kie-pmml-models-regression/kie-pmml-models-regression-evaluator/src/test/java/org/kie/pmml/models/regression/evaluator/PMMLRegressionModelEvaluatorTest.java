@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PMMLRegressionModelEvaluatorTest {
 
@@ -17,6 +17,6 @@ public class PMMLRegressionModelEvaluatorTest {
 
     @Test
     public void getPMMLModelType() {
-        assertEquals(PMML_MODEL.REGRESSION_MODEL, executor.getPMMLModelType());
+        assertThat(executor.getPMMLModelType()).isEqualTo(PMML_MODEL.REGRESSION_MODEL);
     }
 }

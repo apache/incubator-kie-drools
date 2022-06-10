@@ -33,6 +33,11 @@ public class UnaryTestInterpretedExecutableExpression implements CompiledFEELExp
         public List<UnaryTest> apply(EvaluationContext evaluationContext) {
             return Collections.emptyList();
         }
+
+        @Override
+        public ASTNode getASTNode() {
+            throw new UnsupportedOperationException("Unsupported for EMPTY");
+        }
     };
     private final CompiledExpressionImpl expr;
 

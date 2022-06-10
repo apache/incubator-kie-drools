@@ -25,8 +25,8 @@ import org.junit.Test;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieSession;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class ChannelTest extends BaseModelTest {
 
@@ -54,7 +54,7 @@ public class ChannelTest extends BaseModelTest {
         ksession.insert(me);
         ksession.fireAllRules();
 
-        assertThat(testChannel.getChannelMessages(), hasItem("Test Message"));
+        assertThat(testChannel.getChannelMessages()).contains("Test Message");
     }
 
     @Test

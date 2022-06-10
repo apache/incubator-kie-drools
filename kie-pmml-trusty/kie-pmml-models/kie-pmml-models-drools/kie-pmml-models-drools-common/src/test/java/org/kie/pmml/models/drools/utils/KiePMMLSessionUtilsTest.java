@@ -18,6 +18,7 @@ package org.kie.pmml.models.drools.utils;
 
 import java.util.List;
 
+import org.assertj.core.data.Offset;
 import org.drools.core.command.runtime.SetGlobalCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -29,10 +30,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class KiePMMLSessionUtilsTest {
@@ -51,59 +49,59 @@ public class KiePMMLSessionUtilsTest {
 
     @Test
     public void builder() {
-        assertNotNull(builder);
-        assertNotNull(kiePMMLSessionUtils);
+        assertThat(builder).isNotNull();
+        assertThat(kiePMMLSessionUtils).isNotNull();
     }
 
     @Test
     public void kiePMMLSessionUtils() {
         List<Command> retrieved = kiePMMLSessionUtils.commands;
-        assertNotNull(retrieved);
-        assertEquals(3, retrieved.size());
-        assertTrue(retrieved.get(0) instanceof InsertObjectCommand);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSize(3);
+        assertThat(retrieved.get(0)).isInstanceOf(InsertObjectCommand.class);
         InsertObjectCommand insertObjectCommand = (InsertObjectCommand) retrieved.get(0);
-        assertEquals("DEFAULT", insertObjectCommand.getEntryPoint());
-        assertNotNull(insertObjectCommand.getObject());
-        assertTrue(insertObjectCommand.getObject() instanceof KiePMMLStatusHolder);
+        assertThat(insertObjectCommand.getEntryPoint()).isEqualTo("DEFAULT");
+        assertThat(insertObjectCommand.getObject()).isNotNull();
+        assertThat(insertObjectCommand.getObject()).isInstanceOf(KiePMMLStatusHolder.class);
         KiePMMLStatusHolder kiePMMLStatusHolder = (KiePMMLStatusHolder) insertObjectCommand.getObject();
-        assertEquals(0.0, kiePMMLStatusHolder.getAccumulator(), 0.0);
-        assertNull(kiePMMLStatusHolder.getStatus());
-        assertTrue(retrieved.get(1) instanceof InsertObjectCommand);
+        assertThat(kiePMMLStatusHolder.getAccumulator()).isCloseTo(0.0, Offset.offset(0.0));
+        assertThat(kiePMMLStatusHolder.getStatus()).isNull();
+        assertThat(retrieved.get(1)).isInstanceOf(InsertObjectCommand.class);
         insertObjectCommand = (InsertObjectCommand) retrieved.get(1);
-        assertEquals("DEFAULT", insertObjectCommand.getEntryPoint());
-        assertNotNull(insertObjectCommand.getObject());
-        assertTrue(insertObjectCommand.getObject() instanceof PMML4Result);
-        assertEquals(PMML4_RESULT, insertObjectCommand.getObject());
-        assertTrue(retrieved.get(2) instanceof SetGlobalCommand);
+        assertThat(insertObjectCommand.getEntryPoint()).isEqualTo("DEFAULT");
+        assertThat(insertObjectCommand.getObject()).isNotNull();
+        assertThat(insertObjectCommand.getObject()).isInstanceOf(PMML4Result.class);
+        assertThat(insertObjectCommand.getObject()).isEqualTo(PMML4_RESULT);
+        assertThat(retrieved.get(2)).isInstanceOf(SetGlobalCommand.class);
         SetGlobalCommand setGlobalCommand = (SetGlobalCommand) retrieved.get(2);
-        assertEquals("$pmml4Result", setGlobalCommand.getIdentifier());
-        assertTrue(setGlobalCommand.getObject() instanceof PMML4Result);
-        assertEquals(PMML4_RESULT, setGlobalCommand.getObject());
+        assertThat(setGlobalCommand.getIdentifier()).isEqualTo("$pmml4Result");
+        assertThat(setGlobalCommand.getObject()).isInstanceOf(PMML4Result.class);
+        assertThat(setGlobalCommand.getObject()).isEqualTo(PMML4_RESULT);
     }
 
     @Test
     public void getKieSession() {
         StatelessKieSession retrieved = kiePMMLSessionUtils.getKieSession(KIE_BASE);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
     public void insertObjectInSession() {
         final List<Command> retrieved = kiePMMLSessionUtils.commands;
-        assertNotNull(retrieved);
-        assertEquals(3, retrieved.size());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSize(3);
         final Object toInsert = "TO_INSERT";
         final String globalName = "GLOBAL_NAME";
         kiePMMLSessionUtils.insertObjectInSession(toInsert, globalName);
-        assertEquals(5, retrieved.size());
-        assertTrue(retrieved.get(3) instanceof InsertObjectCommand);
+        assertThat(retrieved).hasSize(5);
+        assertThat(retrieved.get(3)).isInstanceOf(InsertObjectCommand.class);
         InsertObjectCommand insertObjectCommand = (InsertObjectCommand) retrieved.get(3);
-        assertEquals("DEFAULT", insertObjectCommand.getEntryPoint());
-        assertNotNull(insertObjectCommand.getObject());
-        assertEquals(toInsert, insertObjectCommand.getObject());
-        assertTrue(retrieved.get(4) instanceof SetGlobalCommand);
+        assertThat(insertObjectCommand.getEntryPoint()).isEqualTo("DEFAULT");
+        assertThat(insertObjectCommand.getObject()).isNotNull();
+        assertThat(insertObjectCommand.getObject()).isEqualTo(toInsert);
+        assertThat(retrieved.get(4)).isInstanceOf(SetGlobalCommand.class);
         SetGlobalCommand setGlobalCommand = (SetGlobalCommand) retrieved.get(4);
-        assertEquals(globalName, setGlobalCommand.getIdentifier());
-        assertEquals(toInsert, setGlobalCommand.getObject());
+        assertThat(setGlobalCommand.getIdentifier()).isEqualTo(globalName);
+        assertThat(setGlobalCommand.getObject()).isEqualTo(toInsert);
     }
 }

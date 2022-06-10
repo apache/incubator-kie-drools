@@ -32,7 +32,6 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -40,12 +39,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
-import org.kie.api.runtime.rule.FactHandle;
 
-import static java.util.Arrays.asList;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -227,7 +222,7 @@ public class TimerAndCalendarWithRealTimeTest {
         await().until(agendaIsNotEmpty());
         ksession.fireAllRules();
 
-        await().until(list::size, greaterThanOrEqualTo(1));
+        await().until(() -> list.size() >= 1);
 
         kbase.removeRule("org.drools.compiler.test", "TimerRule");
         ksession.fireAllRules();
@@ -268,153 +263,11 @@ public class TimerAndCalendarWithRealTimeTest {
 
         long start = System.currentTimeMillis();
 
-        await().until(list::size, equalTo(1));
+        await().until(() -> list.size()  == 1);
 
         long end = System.currentTimeMillis();
 
         assertTrue(end - start >= 1000);
-    }
-
-    @Ignore("DROOLS-6479 - Fixing timing issues")
-    @Test(timeout = 10000)
-    public void testHaltWithTimer() throws Exception {
-        final String drl = "// fire once, for a String, create an Integer, halt!\n" +
-                           "rule x\n" +
-                           "timer(int:0 1000)\n" +
-                           "when\n" +
-                           "    $s: String( this == \"halt\" )\n" +
-                           "then\n" +
-                           "    insert( new Integer(1) );\n" +
-                           "    drools.halt();\n" +
-                           "end";
-
-        final KieBase kbase =
-                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        ksession = kbase.newKieSession();
-        new Thread(ksession::fireUntilHalt).start();
-        // Thread.sleep(1000);
-
-        ksession.insert("halt");
-
-        // replace with latches
-        Thread.sleep(2000);
-
-        // now check that rule "halt" fired once, creating one Integer
-        assertEquals(2, ksession.getFactCount());
-        //ksession.delete(handle);
-    }
-
-    @Ignore("DROOLS-6479 - Fixing timing issues")
-    @Test(timeout = 10000)
-    public void testHaltAfterSomeTimeThenRestart() throws Exception {
-        final String drl = "package org.kie.test;" +
-                           "global java.util.List list; \n" +
-                           "\n" +
-                           "\n" +
-                           "rule FireAtWill\n" +
-                           "timer(int:0 100)\n" +
-                           "when  \n" +
-                           "then \n" +
-                           "  list.add( 0 );\n" +
-                           "end\n" +
-                           "\n" +
-                           "rule ImDone\n" +
-                           "when\n" +
-                           "  String( this == \"halt\" )\n" +
-                           "then\n" +
-                           "  drools.halt();\n" +
-                           "end\n" +
-                           "\n" +
-                           "rule Hi \n" +
-                           "salience 10 \n" +
-                           "when \n" +
-                           "  String( this == \"trigger\" ) \n" +
-                           "then \n " +
-                           "  list.add( 5 ); \n" +
-                           "end \n" +
-                           "\n" +
-                           "rule Lo \n" +
-                           "salience -5 \n" +
-                           "when \n" +
-                           "  String( this == \"trigger\" ) \n" +
-                           "then \n " +
-                           "  list.add( -5 ); \n" +
-                           "end \n";
-
-        final KieBase kbase =
-                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        ksession = kbase.newKieSession();
-
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-
-        new Thread(ksession::fireUntilHalt).start();
-
-        Thread.sleep(250);
-
-        assertEquals(asList(0, 0, 0), list);
-
-        ksession.insert("halt");
-        ksession.insert("trigger");
-        Thread.sleep(300);
-        assertEquals(asList(0, 0, 0), list);
-
-        new Thread(ksession::fireUntilHalt).start();
-        Thread.sleep(200);
-
-        assertEquals(asList(0, 0, 0, 5, 0, -5, 0, 0), list);
-    }
-
-    @Ignore("DROOLS-6479 - Fixing timing issues")
-    @Test(timeout = 10000)
-    public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
-        final String drl = "package org.kie.test;" +
-                           "global java.util.List list; \n" +
-                           "\n" +
-                           "\n" +
-                           "rule FireAtWill\n" +
-                           "   timer(int:0 200)\n" +
-                           "when  \n" +
-                           "  eval(true)" +
-                           "  String( this == \"trigger\" )" +
-                           "then \n" +
-                           "  list.add( 0 );\n" +
-                           "end\n" +
-                           "\n" +
-                           "rule ImDone\n" +
-                           "when\n" +
-                           "  String( this == \"halt\" )\n" +
-                           "then\n" +
-                           "  drools.halt();\n" +
-                           "end\n" +
-                           "\n";
-
-        final KieBase kbase =
-                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        ksession = kbase.newKieSession();
-
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-
-        final FactHandle handle = ksession.insert("trigger");
-
-        new Thread(ksession::fireUntilHalt).start();
-
-        Thread.sleep(350);
-        assertEquals(2, list.size()); // delay 0, repeat after 100
-        assertEquals(asList(0, 0), list);
-
-        ksession.insert("halt");
-
-        Thread.sleep(200);
-        ksession.delete(handle);
-        assertEquals(2, list.size()); // halted, no more rule firing
-
-        new Thread(ksession::fireUntilHalt).start();
-        Thread.sleep(200);
-
-        assertEquals(2, list.size());
-        assertEquals(asList(0, 0), list);
     }
 
     private void awaitUntilRulesThatFiredAre(int rulesToFire) throws InterruptedException {

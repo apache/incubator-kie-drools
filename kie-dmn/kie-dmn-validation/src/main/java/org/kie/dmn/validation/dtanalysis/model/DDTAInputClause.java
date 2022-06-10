@@ -24,17 +24,20 @@ public class DDTAInputClause implements Domain {
     private final Interval domainMinMax;
     private final List discreteValues;
     private final List<Comparable<?>> discreteDMNOrder;
+    private final boolean allowNull;
 
-    public DDTAInputClause(Interval domainMinMax) {
+    public DDTAInputClause(Interval domainMinMax, boolean allowNull) {
         this.domainMinMax = domainMinMax;
         this.discreteValues = Collections.emptyList();
         this.discreteDMNOrder = Collections.emptyList();
+        this.allowNull = allowNull;
     }
 
-    public DDTAInputClause(Interval domainMinMax, List discreteValues, List<Comparable<?>> discreteDMNOrder) {
+    public DDTAInputClause(Interval domainMinMax, boolean allowNull, List discreteValues, List<Comparable<?>> discreteDMNOrder) {
         this.domainMinMax = domainMinMax;
         this.discreteValues = discreteValues;
         this.discreteDMNOrder = discreteDMNOrder;
+        this.allowNull = allowNull;
     }
 
     @Override
@@ -70,4 +73,10 @@ public class DDTAInputClause implements Domain {
         return discreteDMNOrder;
     }
 
+    /**
+     * the null was explicitly specified in lov
+     */
+    public boolean isAllowNull() {
+        return allowNull;
+    }
 }

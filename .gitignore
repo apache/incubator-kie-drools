@@ -5,6 +5,8 @@ local/
 .*
 !.gitignore
 !.github
+!.git-blame-ignore-revs
+!.openrewrite
 nbproject
 *.ipr
 *.iws

@@ -18,7 +18,7 @@ package org.drools.template.model;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -65,7 +65,7 @@ public class PackageRenderTest {
         ruleSet.renderDRL(out);
 
         final String drl = out.getDRL();
-        assertNotNull(drl);
+        assertThat(drl).isNotNull();
         System.out.println(drl);
         assertTrue(drl.indexOf("rule \"myrule\"") > -1);
         assertTrue(drl.indexOf("salience 42") > -1);

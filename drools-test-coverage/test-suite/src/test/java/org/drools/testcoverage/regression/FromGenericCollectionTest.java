@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.ClassObjectFilter;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -34,6 +33,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FromGenericCollectionTest {
@@ -77,7 +78,7 @@ public class FromGenericCollectionTest {
             ksession.insert(gh);
             ksession.fireAllRules();
 
-            Assertions.assertThat(ksession.getObjects(new ClassObjectFilter(Boolean.class)).size()).isEqualTo(1);
+            assertThat(ksession.getObjects(new ClassObjectFilter(Boolean.class)).size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

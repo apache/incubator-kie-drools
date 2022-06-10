@@ -18,12 +18,11 @@ package org.drools.verifier.misc;
 
 import java.util.List;
 
-import org.drools.verifier.misc.DrlRuleParser;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 public class DrlRuleDataTest {
     @Test
@@ -59,7 +58,7 @@ public class DrlRuleDataTest {
         drl += "end";
         DrlRuleParser s = DrlRuleParser.findRulesDataFromDrl(drl).get(0);
 
-        assertNotNull(s);
+        assertThat(s).isNotNull();
 
         assertEquals(1, s.getHeader().size());
         assertEquals(0, s.getLhs().size());
@@ -119,24 +118,24 @@ public class DrlRuleDataTest {
 
         DrlRuleParser rd = list.get(0);
 
-        assertNotNull(rd);
+        assertThat(rd).isNotNull();
 
         assertEquals(1, rd.getHeader().size());
         assertEquals(2, rd.getLhs().size());
         assertEquals(3, rd.getRhs().size());
         assertEquals(1, rd.getMetadata().size());
-        assertNotNull(rd.getDescription());
+        assertThat(rd.getDescription()).isNotNull();
         assertNotSame("", rd.getDescription());
 
         DrlRuleParser rd2 = list.get(1);
 
-        assertNotNull(rd2);
+        assertThat(rd2).isNotNull();
 
         assertEquals(1, rd2.getHeader().size());
         assertEquals(2, rd2.getLhs().size());
         assertEquals(3, rd2.getRhs().size());
         assertEquals(3, rd2.getMetadata().size());
-        assertNotNull(rd2.getDescription());
+        assertThat(rd2.getDescription()).isNotNull();
 
         String description = "Really important information about this rule\n";
         description += "Another line because one was not enough\n\n";
@@ -146,12 +145,12 @@ public class DrlRuleDataTest {
 
         DrlRuleParser rd3 = list.get(2);
 
-        assertNotNull(rd3);
+        assertThat(rd3).isNotNull();
 
         assertEquals(1, rd3.getHeader().size());
         assertEquals(2, rd3.getLhs().size());
         assertEquals(3, rd3.getRhs().size());
-        assertNotNull(rd3.getDescription());
+        assertThat(rd3.getDescription()).isNotNull();
         assertEquals("", rd3.getDescription());
     }
 }

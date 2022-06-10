@@ -31,9 +31,7 @@ import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLApplyTest {
@@ -83,7 +81,7 @@ public class KiePMMLApplyTest {
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         Object retrieved = kiePMMLApply.evaluate(processingDTO);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         //
         // <Apply function="/">
         //      <Constant>33.0</Constant>
@@ -98,7 +96,7 @@ public class KiePMMLApplyTest {
         List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, value2));
         processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, Collections.emptyList());
         retrieved = kiePMMLApply.evaluate(processingDTO);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         // Apply with a Constant and a FieldRef: returns kiePMMLConstant1 divided evaluation of FieldRef from
         // derivedFields
         final KiePMMLDerivedField kiePMMLDerivedField = KiePMMLDerivedField.builder(FIELD_NAME,
@@ -111,7 +109,7 @@ public class KiePMMLApplyTest {
         kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN", "WRONG"));
         processingDTO = getProcessingDTO(Collections.emptyList(), derivedFields, kiePMMLNameValues, Collections.emptyList());
         retrieved = kiePMMLApply.evaluate(processingDTO);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         // <Apply function="isMissing">
         //      <FieldRef>FIELD_NAME</FieldRef>
         // </Apply>
@@ -121,8 +119,8 @@ public class KiePMMLApplyTest {
                 .build();
         processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.singletonList(getReferredByFieldRef(FIELD_NAME)));
         retrieved = kiePMMLApply.evaluate(processingDTO);
-        assertTrue(retrieved instanceof Boolean);
-        assertTrue((boolean) retrieved);
+        assertThat(retrieved).isInstanceOf(Boolean.class);
+        assertThat((boolean) retrieved).isTrue();
         // Apply with FieldRef: returns false with corresponding input
         kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "isMissing")
                 .withKiePMMLExpressions(Collections.singletonList(kiePMMLFieldRef))
@@ -130,8 +128,8 @@ public class KiePMMLApplyTest {
         kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, value2));
         processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, Collections.singletonList(getReferredByFieldRef(FIELD_NAME)));
         retrieved = kiePMMLApply.evaluate(processingDTO);
-        assertTrue(retrieved instanceof Boolean);
-        assertFalse((boolean) retrieved);
+        assertThat(retrieved).isInstanceOf(Boolean.class);
+        assertThat((boolean) retrieved).isFalse();
     }
 
     @Test
@@ -158,7 +156,7 @@ public class KiePMMLApplyTest {
         List<KiePMMLDefineFunction> defineFunctions = Collections.singletonList(getDefineFunctionApplyFromConstant());
         ProcessingDTO processingDTO = getProcessingDTO(defineFunctions, Collections.emptyList(), new ArrayList<>(), Collections.emptyList());
         Object retrieved = kiePMMLApply.evaluate(processingDTO);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
         //
         // Apply with a Constant and a FieldRef: returns kiePMMLConstant1 divided evaluation of FieldRef from
         // kiePMMLNameValues
@@ -178,7 +176,7 @@ public class KiePMMLApplyTest {
         processingDTO = getProcessingDTO(defineFunctions, Collections.emptyList(), new ArrayList<>(), Collections.emptyList());
         retrieved = kiePMMLApply.evaluate(processingDTO);
         Double locallyExpected = value1 / valueB;
-        assertEquals(locallyExpected, retrieved);
+        assertThat(retrieved).isEqualTo(locallyExpected);
         //
         // Apply invoking another custom function
         // <Apply function="OUTER_FUNCTION">
@@ -208,7 +206,7 @@ public class KiePMMLApplyTest {
                                         getDefineFunctionApplyFromCustomFunction());
         processingDTO = getProcessingDTO(defineFunctions, Collections.emptyList(), new ArrayList<>(), Collections.emptyList());
         retrieved = kiePMMLApply.evaluate(processingDTO);
-        assertEquals(locallyExpected, retrieved);
+        assertThat(retrieved).isEqualTo(locallyExpected);
     }
 
     private KiePMMLDefineFunction getDefineFunctionApplyFromConstant() {

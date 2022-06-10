@@ -37,8 +37,12 @@ import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.PropertyChangeSupport;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.TypeSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TypeDeclarationFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TypeDeclarationFactory.class);
 
     protected KnowledgeBuilderImpl kbuilder;
 
@@ -145,7 +149,7 @@ public class TypeDeclarationFactory {
                             kbuilder.addBuilderResult( reportDeclarationDiff( cfi, typeDescr ) );
                         }
                     } catch ( IOException e ) {
-                        e.printStackTrace();
+                        LOG.error("Exception", e);
                         type.setValid(false);
                         kbuilder.addBuilderResult( new TypeDeclarationError( typeDescr, "Unable to redeclare " + typeDescr.getType().getFullName() + " : " + e.getMessage() ) );
                     } catch ( ClassNotFoundException e ) {

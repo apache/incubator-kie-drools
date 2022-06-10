@@ -16,16 +16,20 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
+import java.util.Collection;
+
 import org.drools.testcoverage.common.KieSessionTest;
-import org.drools.testcoverage.common.util.*;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import java.util.Collection;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EqualityKeyOverrideTest extends KieSessionTest {
 
@@ -67,16 +71,16 @@ public class EqualityKeyOverrideTest extends KieSessionTest {
         FactHandle string = ksession.insert("testString");
         ksession.fireAllRules();
 
-        Assertions.assertThat(ksession.getObjects().size()).isEqualTo(2);
+        assertThat(ksession.getObjects().size()).isEqualTo(2);
 
         ksession.insert(ANY_NUMBER);
         ksession.fireAllRules();
 
-        Assertions.assertThat(ksession.getObjects().size()).isEqualTo(4);
+        assertThat(ksession.getObjects().size()).isEqualTo(4);
 
         ksession.delete(string);
         ksession.fireAllRules();
-        Assertions.assertThat(ksession.getObjects().size()).isEqualTo(2);
+        assertThat(ksession.getObjects().size()).isEqualTo(2);
     }
 
     @Override

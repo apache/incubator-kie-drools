@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
@@ -928,7 +927,7 @@ public class MvelDialectTest extends BaseModelTest {
         Arrays.asList(mario, luca, leonardo).forEach(ksession::insert);
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
+        assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
     }
 
     @Test
@@ -973,8 +972,8 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(a);
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
-        Assertions.assertThat(addresses).contains("Milan");
+        assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
+        assertThat(addresses).contains("Milan");
     }
 
     @Test
@@ -1510,6 +1509,35 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(p);
         int fired = ksession.fireAllRules();
 
+        assertEquals(1, fired);
+    }
+
+    @Test
+    public void testMVELModifyPropMethodCall() {
+        String str = "package com.example.reproducer\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify($p) {\n" +
+                "    age = 20,\n" +
+                "    addresses.clear();\n" +
+                "  }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("John");
+        List<Address> addresses = new ArrayList<>();
+        addresses.add(new Address("London"));
+        p.setAddresses(addresses);
+        ksession.insert(p);
+        int fired = ksession.fireAllRules();
+
+        assertEquals(20, p.getAge());
+        assertEquals(0, p.getAddresses().size());
         assertEquals(1, fired);
     }
 }

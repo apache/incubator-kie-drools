@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
@@ -53,11 +52,9 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -274,7 +271,7 @@ public class DescrBuilderTest {
                       pkg.getRules().size() );
 
         String drl = new DrlDumper().dump( pkg );
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
+        assertThat(expected).isEqualToIgnoringWhitespace(drl);
 
         KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.mvel.compiler",
@@ -335,7 +332,7 @@ public class DescrBuilderTest {
 
         FactType stType = kbase.getFactType( "org.beans",
                                              "StockTick" );
-        assertNotNull( stType );
+        assertThat(stType).isNotNull();
         Object st = stType.newInstance();
         stType.set( st,
                     "symbol",
@@ -470,8 +467,8 @@ public class DescrBuilderTest {
         ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael ).afterMatchFired(cap.capture());
         
-        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$sum" )).intValue(), is( 180 ) );
-        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$cnt" )).intValue(), is( 2 ) );
+        assertThat(((Number) cap.getValue().getMatch().getDeclarationValue("$sum")).intValue()).isEqualTo(180);
+        assertThat(((Number) cap.getValue().getMatch().getDeclarationValue("$cnt")).intValue()).isEqualTo(2);
     }
     
     @Test

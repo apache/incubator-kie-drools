@@ -48,7 +48,6 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.DefaultFactHandle;
@@ -150,7 +149,6 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -926,7 +924,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
             LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory( lian );
             if ( lmem.getSegmentMemory() == null ) {
-                SegmentUtilities.createSegmentMemory( lts, StatefulKnowledgeSessionImpl.this );
+                SegmentUtilities.getOrCreateSegmentMemory( lts, StatefulKnowledgeSessionImpl.this );
             }
 
             LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, StatefulKnowledgeSessionImpl.this, lmem, false, queryObject.isOpen() );
@@ -1055,10 +1053,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public void updateEntryPointsCache() {
         if (kBase.getAddedEntryNodeCache() != null) {
             for (EntryPointNode addedNode : kBase.getAddedEntryNodeCache()) {
-                EntryPointId id = addedNode.getEntryPoint();
-                if (EntryPointId.DEFAULT.equals(id)) continue;
-                WorkingMemoryEntryPoint wmEntryPoint = createNamedEntryPoint(addedNode, id, this);
-                entryPoints.put(id.getEntryPointId(), wmEntryPoint);
+                entryPoints.computeIfAbsent(addedNode.getEntryPoint().getEntryPointId(), x -> createNamedEntryPoint(addedNode, this));
             }
         }
 
@@ -1069,19 +1064,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    public NamedEntryPoint createNamedEntryPoint(EntryPointNode addedNode, EntryPointId id, StatefulKnowledgeSessionImpl wm) {
-        return kBase.getConfiguration().getComponentFactory().getNamedEntryPointFactory().createNamedEntryPoint(addedNode, id, wm);
+    private NamedEntryPoint createNamedEntryPoint(EntryPointNode addedNode, StatefulKnowledgeSessionImpl wm) {
+        return kBase.getConfiguration().getComponentFactory().getNamedEntryPointFactory().createNamedEntryPoint(addedNode, addedNode.getEntryPoint(), wm);
     }
 
     protected void initDefaultEntryPoint() {
-        this.defaultEntryPoint = createDefaultEntryPoint();
+        this.defaultEntryPoint = createNamedEntryPoint(this.kBase.getRete().getEntryPointNode( EntryPointId.DEFAULT ), this);
         this.entryPoints.clear();
-        this.entryPoints.put("DEFAULT", this.defaultEntryPoint);
-    }
-
-    protected InternalWorkingMemoryEntryPoint createDefaultEntryPoint() {
-        EntryPointNode epn = this.kBase.getRete().getEntryPointNode( EntryPointId.DEFAULT );
-        return createNamedEntryPoint(epn, EntryPointId.DEFAULT, this);
+        this.entryPoints.put(EntryPointId.DEFAULT.getEntryPointId(), this.defaultEntryPoint);
     }
 
     public SessionConfiguration getSessionConfiguration() {

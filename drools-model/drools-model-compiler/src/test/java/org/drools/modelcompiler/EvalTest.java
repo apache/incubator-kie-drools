@@ -18,7 +18,6 @@ package org.drools.modelcompiler;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.CalcFact;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
@@ -26,6 +25,7 @@ import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class EvalTest extends BaseModelTest {
@@ -435,7 +435,7 @@ public class EvalTest extends BaseModelTest {
 
         Person first = new Person("First", 10);
         ksession.insert(first);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static class GlobalFunctions {

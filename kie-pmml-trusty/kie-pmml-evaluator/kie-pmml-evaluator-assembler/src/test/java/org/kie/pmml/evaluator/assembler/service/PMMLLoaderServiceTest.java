@@ -37,10 +37,7 @@ import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.compiler.commons.factories.KiePMMLModelFactory;
 import org.kie.pmml.evaluator.assembler.rulemapping.PMMLRuleMapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class PMMLLoaderServiceTest {
@@ -48,36 +45,36 @@ public class PMMLLoaderServiceTest {
     @Test
     public void getKiePMMLModelsLoadedFromFactory() {
         final KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl();
-        assertTrue(kbuilderImpl.getPackageNames().isEmpty());
-        assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        assertThat(kbuilderImpl.getPackageNames()).isEmpty();
+        assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNull();
         final KiePMMLModelFactory kiePMMLModelFactory = getKiePMMLModelFactory();
         final List<KiePMMLModel> retrieved = PMMLLoaderService.getKiePMMLModelsLoadedFromFactory(kbuilderImpl,
                                                                                                  kiePMMLModelFactory);
-        assertEquals(kiePMMLModelFactory.getKiePMMLModels(), retrieved);
-        assertTrue(kbuilderImpl.getPackageNames().isEmpty());
-        assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        assertThat(retrieved).isEqualTo(kiePMMLModelFactory.getKiePMMLModels());
+        assertThat(kbuilderImpl.getPackageNames()).isEmpty();
+        assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNull();
     }
 
     @Test
     public void loadPMMLRuleMappersNotEmpty() {
         final KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl();
-        assertTrue(kbuilderImpl.getPackageNames().isEmpty());
-        assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        assertThat(kbuilderImpl.getPackageNames()).isEmpty();
+        assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNull();
         final List<PMMLRuleMapper> pmmlRuleMappers = getPMMLRuleMappers();
         PMMLLoaderService.loadPMMLRuleMappers(kbuilderImpl, pmmlRuleMappers);
-        assertEquals(1, kbuilderImpl.getPackageNames().size());
-        assertNotNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        assertThat(kbuilderImpl.getPackageNames()).hasSize(1);
+        assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNotNull();
     }
 
     @Test
     public void loadPMMLRuleMappersEmpty() {
         final KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl();
-        assertTrue(kbuilderImpl.getPackageNames().isEmpty());
-        assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        assertThat(kbuilderImpl.getPackageNames()).isEmpty();
+        assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNull();
         final List<PMMLRuleMapper> pmmlRuleMappers = Collections.emptyList();
         PMMLLoaderService.loadPMMLRuleMappers(kbuilderImpl, pmmlRuleMappers);
-        assertTrue(kbuilderImpl.getPackageNames().isEmpty());
-        assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        assertThat(kbuilderImpl.getPackageNames()).isEmpty();
+        assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNull();
     }
 
     private List<PMMLRuleMapper> getPMMLRuleMappers() {

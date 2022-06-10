@@ -72,6 +72,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.PhreakNotNode.updateBlockersAndPropagate;
+import static org.drools.core.phreak.SegmentUtilities.nextNodePosMask;
 import static org.drools.core.reteoo.BetaNode.getBetaMemory;
 
 public class RuleNetworkEvaluator {
@@ -222,7 +223,7 @@ public class RuleNetworkEvaluator {
                 }
 
                 nodeMem = nodeMem.getNext();
-                bit = bit << 1; // update bit to new node
+                bit = nextNodePosMask(bit); // update bit to new node
             } else {
                 // Reached end of segment, start on new segment.
                 SegmentPropagator.propagate(smem,
@@ -315,7 +316,7 @@ public class RuleNetworkEvaluator {
                         int offset = getOffset(node);
                         log.trace("{} Skip Node {}", indent(offset), node);
                     }
-                    bit = bit << 1; // shift to check the next node
+                    bit = nextNodePosMask(bit); // shift to check the next node
                     node = ((LeftTupleSource) node).getSinkPropagator().getFirstLeftTupleSink();
                     nodeMem = nodeMem.getNext();
                 }
@@ -351,7 +352,7 @@ public class RuleNetworkEvaluator {
                 // get next node and node memory in the segment
                 node = sink;
                 nodeMem = nodeMem.getNext();
-                bit = bit << 1;
+                bit = nextNodePosMask(bit);
             } else {
                 // Reached end of segment, start on new segment.
                 smem.getFirst().getStagedLeftTuples().addAll( stagedLeftTuples ); // must put back all the LTs

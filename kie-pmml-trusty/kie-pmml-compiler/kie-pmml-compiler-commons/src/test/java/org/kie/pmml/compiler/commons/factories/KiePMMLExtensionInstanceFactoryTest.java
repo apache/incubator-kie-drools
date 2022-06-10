@@ -17,7 +17,6 @@ package org.kie.pmml.compiler.commons.factories;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 
 public class KiePMMLExtensionInstanceFactoryTest {
 

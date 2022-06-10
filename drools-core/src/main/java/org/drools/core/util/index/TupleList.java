@@ -30,7 +30,6 @@ public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializa
 
     public static final long       serialVersionUID = 510l;
 
-    private TupleList<C>           previous;
     private TupleList<C>           next;
 
     private Tuple                  first;
@@ -253,14 +252,6 @@ public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializa
         return false;
     }
 
-    public TupleList getPrevious() {
-        return this.previous;
-    }
-
-    public void setPrevious(final TupleList previous) {
-        this.previous = previous;
-    }
-
     public TupleList getNext() {
         return this.next;
     }
@@ -280,7 +271,6 @@ public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializa
     }
 
     protected void copyStateInto(TupleList other) {
-        other.previous = previous;
         other.next = next;
         other.first = first;
         other.context = context;

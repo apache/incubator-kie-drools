@@ -16,16 +16,20 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
+import java.util.Collection;
+
 import org.drools.testcoverage.common.KieSessionTest;
-import org.drools.testcoverage.common.util.*;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 
-import java.util.Collection;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // BZ 1009348
 public class NotInFusionTest extends KieSessionTest {
@@ -51,7 +55,7 @@ public class NotInFusionTest extends KieSessionTest {
         KieSession ksession = session.getStateful();
         ksession.fireAllRules();
 
-        Assertions.assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
+        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
     }
 
     @Test
@@ -61,7 +65,7 @@ public class NotInFusionTest extends KieSessionTest {
         insertNotEvent(ksession);
         ksession.fireAllRules();
 
-        Assertions.assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
+        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
     }
 
     @Test
@@ -71,14 +75,14 @@ public class NotInFusionTest extends KieSessionTest {
         insertNotEvent(ksession);
         ksession.fireAllRules();
 
-        Assertions.assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
+        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
 
         insertEvent(ksession);
         insertEvent(ksession);
         insertEvent(ksession);
         ksession.fireAllRules();
 
-        Assertions.assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
+        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
     }
 
     @Test
@@ -88,7 +92,7 @@ public class NotInFusionTest extends KieSessionTest {
         insertNotEvent(ksession);
         ksession.fireAllRules();
 
-        Assertions.assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
+        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
 
         for (int i = 0; i < 3; i++) {
             insertNotEvent(ksession, "different value");
@@ -96,7 +100,7 @@ public class NotInFusionTest extends KieSessionTest {
 
         ksession.fireAllRules();
 
-        Assertions.assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
+        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
     }
 
     @Test
@@ -106,16 +110,16 @@ public class NotInFusionTest extends KieSessionTest {
         insertNotEvent(ksession);
         ksession.fireAllRules();
 
-        Assertions.assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
-        Assertions.assertThat(firedRules.isRuleFired(RULE3)).as(RULE3).isFalse();
+        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
+        assertThat(firedRules.isRuleFired(RULE3)).as(RULE3).isFalse();
 
         for (int i = 0; i < 4; i++) {
             insertNotEvent(ksession, "different value");
             ksession.fireAllRules();
         }
 
-        Assertions.assertThat(firedRules.isRuleFired(RULE3)).as(RULE3).isTrue();
-        Assertions.assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
+        assertThat(firedRules.isRuleFired(RULE3)).as(RULE3).isTrue();
+        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
     }
 
     @Test
@@ -125,7 +129,7 @@ public class NotInFusionTest extends KieSessionTest {
         ksession.insert(createNotEvent(ksession, "value"));
         ksession.fireAllRules();
 
-        Assertions.assertThat(firedRules.isRuleFired(RULE2)).isFalse();
+        assertThat(firedRules.isRuleFired(RULE2)).isFalse();
 
         for (int i = 0; i < 3; i++) {
             ksession.insert(createNotEvent(ksession, "different value"));
@@ -133,7 +137,7 @@ public class NotInFusionTest extends KieSessionTest {
 
         ksession.fireAllRules();
 
-        Assertions.assertThat(firedRules.isRuleFired(RULE2)).as(RULE2).isTrue();
+        assertThat(firedRules.isRuleFired(RULE2)).as(RULE2).isTrue();
     }
 
     private void insertNotEvent(KieSession ksession) throws Exception {

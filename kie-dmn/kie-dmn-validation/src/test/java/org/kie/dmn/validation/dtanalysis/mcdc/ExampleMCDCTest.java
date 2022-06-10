@@ -57,10 +57,7 @@ import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.COMPUTE_DECISION_TABLE_MCDC;
 
@@ -75,7 +72,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
 
         DTAnalysis analysis = getAnalysis(validate, "_452a0adf-dd49-47c3-b02d-fe0ad45902c7");
         Collection<Record> mcdcCases = computeMCDCCases(analysis.getMCDCSelectedBlocks());
-        assertThat(mcdcCases, hasSize(16));
+        assertThat(mcdcCases).hasSize(16);
 
         assertMCDCCases(resourceFileName, analysis.getSource(), mcdcCases);
         //debugOutputAndOpenXLSX(analysis.getSource(), analysis.getMCDCSelectedBlocks());
@@ -90,7 +87,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
 
         DTAnalysis analysis = getAnalysis(validate, "_e31c78b7-63ef-4112-a0bc-b0546043ebe9");
         Collection<Record> mcdcCases = computeMCDCCases(analysis.getMCDCSelectedBlocks());
-        assertThat(mcdcCases, hasSize(14));
+        assertThat(mcdcCases).hasSize(14);
 
         assertMCDCCases(resourceFileName, analysis.getSource(), mcdcCases);
         //debugOutputAndOpenXLSX(analysis.getSource(), analysis.getMCDCSelectedBlocks());
@@ -115,7 +112,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
         MCDCListener mcdcListener = new MCDCListener();
         runtime.addListener(mcdcListener);
         DMNModel dmnModel = runtime.getModels().get(0);
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         for (Record mcdcCase : mcdcCases) {
             mcdcListener.selectedRule.clear();
@@ -125,7 +122,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
             }
             DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
             LOG.debug("{}", evaluateAll);
-            assertThat(mcdcListener.selectedRule, hasItems(mcdcCase.ruleIdx + 1));
+            assertThat(mcdcListener.selectedRule).contains(mcdcCase.ruleIdx + 1);
         }
     }
 

@@ -19,9 +19,10 @@ package org.kie.pmml.api.enums.builtinfunctions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.data.Offset;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DistributionFunctionsTest {
 
@@ -45,10 +46,10 @@ public class DistributionFunctionsTest {
     public void getNormalCDFValueCorrectInput() {
         Object[] input1 = {24.11, 24.54, 1.23};
         Object retrieved = DistributionFunctions.NORMAL_CDF.getValue(input1);
-        assertEquals(0.363, (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(0.363, Offset.offset(0.001));
         Object[] input2 = {9.12, 11.35, 3.78};
         retrieved = DistributionFunctions.NORMAL_CDF.getValue(input2);
-        assertEquals(0.278,  (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(0.278, Offset.offset(0.001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -67,10 +68,10 @@ public class DistributionFunctionsTest {
     public void getNormalPDFValueCorrectInput() {
         Object[] input1 = {2, 7, 2};
         Object retrieved = DistributionFunctions.NORMAL_PDF.getValue(input1);
-        assertEquals(0.00876, (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(0.00876, Offset.offset(0.001));
         Object[] input2 = {9.12, 11.35, 3.78};
         retrieved = DistributionFunctions.NORMAL_PDF.getValue(input2);
-        assertEquals(0.08868,  (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(0.08868, Offset.offset(0.001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -89,10 +90,10 @@ public class DistributionFunctionsTest {
     public void getStdNormalCDFValueCorrectInput() {
         Object[] input1 = {2};
         Object retrieved = DistributionFunctions.STD_NORMAL_CDF.getValue(input1);
-        assertEquals(0.97725, (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(0.97725, Offset.offset(0.001));
         Object[] input2 = {1.243};
         retrieved = DistributionFunctions.STD_NORMAL_CDF.getValue(input2);
-        assertEquals(0.89307,  (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(0.89307, Offset.offset(0.001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -111,10 +112,10 @@ public class DistributionFunctionsTest {
     public void getStdNormalPDFValueCorrectInput() {
         Object[] input1 = {2};
         Object retrieved = DistributionFunctions.STD_NORMAL_PDF.getValue(input1);
-        assertEquals(0.05399, (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(0.05399, Offset.offset(0.001));
         Object[] input2 = {1.243};
         retrieved = DistributionFunctions.STD_NORMAL_PDF.getValue(input2);
-        assertEquals(0.18425,  (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(0.18425, Offset.offset(0.001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -133,10 +134,10 @@ public class DistributionFunctionsTest {
     public void getErfValueCorrectInput() {
         Object[] input1 = {2};
         Object retrieved = DistributionFunctions.ERF.getValue(input1);
-        assertEquals(0.9953223, (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(0.9953223, Offset.offset(0.001));
         Object[] input2 = {1.243};
         retrieved = DistributionFunctions.ERF.getValue(input2);
-        assertEquals(0.92123,  (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(0.92123, Offset.offset(0.001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -155,10 +156,10 @@ public class DistributionFunctionsTest {
     public void getNormalIDFValueCorrectInput() {
         Object[] input1 = {0.75, 1.23, 0.2};
         Object retrieved = DistributionFunctions.NORMAL_IDF.getValue(input1);
-        assertEquals(1.36, (Double) retrieved, 0.01);
+        assertThat((Double) retrieved).isCloseTo(1.36, Offset.offset(0.01));
         Object[] input2 = {0.912, 11.35, 3.78};
         retrieved = DistributionFunctions.NORMAL_IDF.getValue(input2);
-        assertEquals(16.46,  (Double) retrieved, 0.01);
+        assertThat((Double) retrieved).isCloseTo(16.46, Offset.offset(0.01));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -177,10 +178,10 @@ public class DistributionFunctionsTest {
     public void getStdNormalIDFValueCorrectInput() {
         Object[] input1 = {0.75};
         Object retrieved = DistributionFunctions.STD_NORMAL_IDF.getValue(input1);
-        assertEquals(0.67, (Double) retrieved, 0.01);
+        assertThat((Double) retrieved).isCloseTo(0.67, Offset.offset(0.01));
         Object[] input2 = {0.912};
         retrieved = DistributionFunctions.STD_NORMAL_IDF.getValue(input2);
-        assertEquals(1.35, (Double) retrieved, 0.01);
+        assertThat((Double) retrieved).isCloseTo(1.35, Offset.offset(0.01));
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -56,6 +55,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -865,8 +865,8 @@ public class PatternTest {
                 "end";
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(org.kie.api.builder.Message::getText).doesNotContain("");
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(org.kie.api.builder.Message::getText).doesNotContain("");
 
         drl = "package org.drools.compiler.integrationtests.drl;\n" +
                 "rule R1 when\n" +
@@ -875,8 +875,8 @@ public class PatternTest {
                 "end";
 
         kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(org.kie.api.builder.Message::getText).doesNotContain("");
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(org.kie.api.builder.Message::getText).doesNotContain("");
 
         drl = "package org.drools.compiler.integrationtests.drl;\n" +
                 "rule R1 when\n" +
@@ -885,8 +885,8 @@ public class PatternTest {
                 "end";
 
         kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(org.kie.api.builder.Message::getText).doesNotContain("");
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(org.kie.api.builder.Message::getText).doesNotContain("");
     }
 
     @Test
@@ -909,7 +909,7 @@ public class PatternTest {
                         "end";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(org.kie.api.builder.Message::getText).doesNotContain("");
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(org.kie.api.builder.Message::getText).doesNotContain("");
     }
 }

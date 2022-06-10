@@ -25,14 +25,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.backend.model.ListMapClass;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -57,10 +57,10 @@ public class BaseExpressionEvaluatorTest {
 
     @Test
     public void createObjectTest() {
-        assertNotNull(expressionEvaluator.createObject(String.class.getCanonicalName(), Collections.emptyList()));
+        assertThat(expressionEvaluator.createObject(String.class.getCanonicalName(), Collections.emptyList())).isNotNull();
         assertTrue(expressionEvaluator.createObject(Map.class.getCanonicalName(), Arrays.asList(String.class.getCanonicalName(), String.class.getCanonicalName())) instanceof Map);
 
-        Assertions.assertThatThrownBy(() -> expressionEvaluator.createObject("com.invalid.class.Name", Collections.emptyList())).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> expressionEvaluator.createObject("com.invalid.class.Name", Collections.emptyList())).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Impossible to instantiate com.invalid.class.Name");
     }
 
@@ -95,7 +95,7 @@ public class BaseExpressionEvaluatorTest {
         Map<String, String> parsedWorkbench = ((Map<String, String>) expressionEvaluator.convertResult(givenWorkbenchMapString, Map.class.getCanonicalName(), genericClasses));
 
         assertEquals(1, parsedWorkbench.size());
-        assertNotNull(parsedWorkbench.get("Home"));
+        assertThat(parsedWorkbench.get("Home")).isNotNull();
         assertEquals("123 Any Street", parsedWorkbench.get("Home"));
 
         String givenWorkbenchMapInteger = "{ \"Home\": { \"" + VALUE + "\": \"100\" } }";
@@ -105,7 +105,7 @@ public class BaseExpressionEvaluatorTest {
         Map<String, Integer> parsedIntegerFromMap = ((Map<String, Integer>) expressionEvaluator.convertResult(givenWorkbenchMapInteger, Map.class.getCanonicalName(), genericClasses));
 
         assertEquals(1, parsedIntegerFromMap.size());
-        assertNotNull(parsedIntegerFromMap.get("Home"));
+        assertThat(parsedIntegerFromMap.get("Home")).isNotNull();
         assertEquals(100, parsedIntegerFromMap.get("Home").intValue());
 
         String expectWorkbenchMapInteger = "{ \"Home\": { \"" + VALUE + "\": \"> 100\" } }";

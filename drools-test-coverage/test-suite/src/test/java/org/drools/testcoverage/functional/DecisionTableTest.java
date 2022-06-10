@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.template.parser.DecisionTableParseException;
 import org.drools.testcoverage.common.listener.OrderListener;
 import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
@@ -46,6 +45,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.DecisionTableInputType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -164,14 +164,14 @@ public class DecisionTableTest {
 
         final Person person = new Person("Paul");
         person.setId(1);
-        Assertions.assertThat(person.getName()).isEqualTo("Paul");
-        Assertions.assertThat(person.getId()).isEqualTo(1);
+        assertThat(person.getName()).isEqualTo("Paul");
+        assertThat(person.getId()).isEqualTo(1);
 
         session.insert(person);
         session.fireAllRules();
 
-        Assertions.assertThat(person.getName()).isEqualTo("Paul");
-        Assertions.assertThat(person.getId()).isEqualTo(2);
+        assertThat(person.getName()).isEqualTo("Paul");
+        assertThat(person.getId()).isEqualTo(2);
 
         session.dispose();
     }
@@ -180,31 +180,31 @@ public class DecisionTableTest {
     public void testMultipleTableXLS() {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, multipleTablesDecisionTable);
 
-        Assertions.assertThat(2).isEqualTo(kbase.getKiePackages().size());
+        assertThat(2).isEqualTo(kbase.getKiePackages().size());
 
         final KieSession session = kbase.newKieSession();
 
         // testing person object from the first table
         final Person person = new Person("Paul");
         person.setId(1);
-        Assertions.assertThat(person.getName()).isEqualTo("Paul");
-        Assertions.assertThat(person.getId()).isEqualTo(1);
+        assertThat(person.getName()).isEqualTo("Paul");
+        assertThat(person.getId()).isEqualTo(1);
 
         // testing second person, he should be renamed by rules in the second
         // table
         final Person person2 = new Person("Helmut von Seireit");
         person2.setId(1000);
-        Assertions.assertThat(person2.getName()).isEqualTo("Helmut von Seireit");
-        Assertions.assertThat(person2.getId()).isEqualTo(1000);
+        assertThat(person2.getName()).isEqualTo("Helmut von Seireit");
+        assertThat(person2.getId()).isEqualTo(1000);
 
         session.insert(person);
         session.insert(person2);
         session.fireAllRules();
 
-        Assertions.assertThat(person.getName()).isEqualTo("Paul");
-        Assertions.assertThat(person.getId()).isEqualTo(2);
-        Assertions.assertThat(person2.getName()).isEqualTo("Wilhelm von Seireit");
-        Assertions.assertThat(person2.getId()).isEqualTo(1000);
+        assertThat(person.getName()).isEqualTo("Paul");
+        assertThat(person.getId()).isEqualTo(2);
+        assertThat(person2.getName()).isEqualTo("Wilhelm von Seireit");
+        assertThat(person2.getId()).isEqualTo(1000);
 
         session.dispose();
     }
@@ -217,7 +217,7 @@ public class DecisionTableTest {
     public void testEvalTable() {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, evalDecisionTable);
 
-        Assertions.assertThat(2).isEqualTo(kbase.getKiePackages().size());
+        assertThat(2).isEqualTo(kbase.getKiePackages().size());
 
         KieSession session = kbase.newKieSession();
 
@@ -230,11 +230,11 @@ public class DecisionTableTest {
         mary.setDummy(1);
         session.insert(mary);
         session.fireAllRules();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest1")).isTrue();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest1")).isTrue();
+        assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
+        assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
         session.dispose();
 
         // eval test 2
@@ -250,11 +250,11 @@ public class DecisionTableTest {
         session.insert(inge);
         session.insert(jochen);
         session.fireAllRules();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest2")).isTrue();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest2")).isTrue();
+        assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
+        assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
         session.dispose();
 
         // eval test 3, will run four times, there are four combinations
@@ -268,11 +268,11 @@ public class DecisionTableTest {
         session.insert(karl);
         session.insert(egon);
         session.fireAllRules();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest3")).isTrue();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest3")).isTrue();
+        assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
+        assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
         session.dispose();
 
         // eval test 4
@@ -285,11 +285,11 @@ public class DecisionTableTest {
         gerda.setDummy(-10);
         session.insert(gerda);
         session.fireAllRules();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest4")).isTrue();
-        Assertions.assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest4")).isTrue();
+        assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
         session.dispose();
 
         // eval test 5 - simple binding
@@ -301,11 +301,11 @@ public class DecisionTableTest {
         final Sample sample = new Sample();
         session.insert(sample);
         session.fireAllRules();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
-        Assertions.assertThat(rulesFired.isRuleFired("simpleBindingTest")).isTrue();
+        assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
+        assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
+        assertThat(rulesFired.isRuleFired("simpleBindingTest")).isTrue();
         session.dispose();
     }
 
@@ -331,12 +331,12 @@ public class DecisionTableTest {
         session.fireAllRules();
 
         // just 4 rules should fire
-        Assertions.assertThat(listener.size()).isEqualTo(4);
+        assertThat(listener.size()).isEqualTo(4);
 
         // rules have to be fired in expected order
         final String[] expected = new String[]{"HelloWorld_11", "namedRule", "b1", "another rule"};
         for (int i = 0; i < 4; i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+            assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
 
         session.dispose();
@@ -366,8 +366,8 @@ public class DecisionTableTest {
         ksession.insert("push");
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
         listener.clear();
 
         // when location is changed of what Peter likes, push query should fire
@@ -384,8 +384,8 @@ public class DecisionTableTest {
         ksession.delete(tableHandle);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
         listener.clear();
 
         final Person paul = new Person("Paul");
@@ -393,8 +393,8 @@ public class DecisionTableTest {
         ksession.insert(paul);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
         listener.clear();
 
         ksession.dispose();
@@ -424,8 +424,8 @@ public class DecisionTableTest {
         ksession.insert("pull");
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         // when location is changed of what Peter likes, pull query should
@@ -442,8 +442,8 @@ public class DecisionTableTest {
         ksession.delete(tableHandle);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         final Person paul = new Person("Paul");
@@ -451,8 +451,8 @@ public class DecisionTableTest {
         ksession.insert(paul);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         ksession.dispose();
@@ -470,10 +470,10 @@ public class DecisionTableTest {
         ksession.addEventListener(listener);
         ksession.insert("something");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).as("Wrong number of rules fired").isEqualTo(3);
+        assertThat(listener.size()).as("Wrong number of rules fired").isEqualTo(3);
         final String[] expected = {"Rule1", "Rule2", "Rule3"};
         for (int i = 0; i < 3; i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+            assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
         ksession.dispose();
     }
@@ -486,10 +486,10 @@ public class DecisionTableTest {
         ksession.addEventListener(listener);
         ksession.insert("lockOnActive");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(3);
+        assertThat(listener.size()).isEqualTo(3);
         final String[] expected = {"a", "a2", "a3"};
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+            assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
         ksession.dispose();
     }
@@ -509,7 +509,7 @@ public class DecisionTableTest {
         // disable, we won't succeed
         final FactHandle withoutAutoFocus = ksession.insert("withoutAutoFocus");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(0);
+        assertThat(listener.size()).isEqualTo(0);
 
         // second test - we try to fire rule in agenda group with auto focus
         // enabled
@@ -518,10 +518,10 @@ public class DecisionTableTest {
         ksession.insert("autoFocus");
         ksession.delete(withoutAutoFocus);
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(2);
+        assertThat(listener.size()).isEqualTo(2);
         final String[] expected = {"b2", "b1"};
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+            assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
         ksession.dispose();
     }
@@ -536,9 +536,9 @@ public class DecisionTableTest {
         // only one rule from activation group may fire
         ksession.insert("activationGroup");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.isRuleFired("c1")).isFalse();
-        Assertions.assertThat(listener.isRuleFired("c2")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("c3")).isFalse();
+        assertThat(listener.isRuleFired("c1")).isFalse();
+        assertThat(listener.isRuleFired("c2")).isTrue();
+        assertThat(listener.isRuleFired("c3")).isFalse();
         ksession.dispose();
     }
 
@@ -571,12 +571,12 @@ public class DecisionTableTest {
             names.add(kp.getName());
         }
 
-        Assertions.assertThat(names.contains(TestConstants.PACKAGE_FUNCTIONAL)).isTrue();
-        Assertions.assertThat(names.contains(TestConstants.PACKAGE_TESTCOVERAGE_MODEL)).isTrue();
+        assertThat(names.contains(TestConstants.PACKAGE_FUNCTIONAL)).isTrue();
+        assertThat(names.contains(TestConstants.PACKAGE_TESTCOVERAGE_MODEL)).isTrue();
 
         final KiePackage kiePackage = (KiePackage) pkgs.toArray()[names.indexOf(TestConstants.PACKAGE_FUNCTIONAL)];
 
-        Assertions.assertThat(kiePackage.getRules().size()).isEqualTo(3);
+        assertThat(kiePackage.getRules().size()).isEqualTo(3);
     }
 
     public static class InputObject {

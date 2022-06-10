@@ -26,8 +26,7 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLMapValuesTest {
@@ -59,7 +58,7 @@ public class KiePMMLMapValuesTest {
     public void evaluateKeyNotFound() {
         KiePMMLMapValues kiePMMLMapValues = getKiePMMLMapValues();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
-        assertEquals(MAPMISSINGTO, kiePMMLMapValues.evaluate(processingDTO));
+        assertThat(kiePMMLMapValues.evaluate(processingDTO)).isEqualTo(MAPMISSINGTO);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class KiePMMLMapValuesTest {
                 .mapToObj(i -> new KiePMMLNameValue("FIELD-" + i, "NOT-VALUE-1-" + i))
                 .collect(Collectors.toList());
         ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
-        assertEquals(DEFAULTVALUE, kiePMMLMapValues.evaluate(processingDTO));
+        assertThat(kiePMMLMapValues.evaluate(processingDTO)).isEqualTo(DEFAULTVALUE);
     }
 
     @Test
@@ -80,7 +79,7 @@ public class KiePMMLMapValuesTest {
                 .collect(Collectors.toList());
         ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
         Object retrieved = kiePMMLMapValues.evaluate(processingDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     private KiePMMLMapValues getKiePMMLMapValues() {

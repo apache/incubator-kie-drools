@@ -65,7 +65,8 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExp
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
-import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
+import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.toBigDecimalExpression;
+import static org.drools.modelcompiler.util.ClassUtil.isAccessiblePropertiesIncludingNonGetterValueMethod;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
@@ -302,7 +303,12 @@ public abstract class AbstractExpressionBuilder {
         TypedExpression expression = leftContainsThis ? right : left;
         indexedByRightOperandExtractor.setEnclosingParameters(true);
 
-        lambdaBlock.addStatement(new ReturnStmt(expression.getExpression()));
+        Expression extractorExpression = expression.getExpression();
+        extractorExpression = DrlxParseUtil.stripEnclosedExpr(extractorExpression);
+        if (extractorExpression instanceof BinaryExpr && expression.getType() == BigDecimal.class) {
+            extractorExpression = toBigDecimalExpression(expression, context);
+        }
+        lambdaBlock.addStatement(new ReturnStmt(extractorExpression));
 
         indexedByRightOperandExtractor.setBody(lambdaBlock);
         indexedByDSL.addArgument(indexedByRightOperandExtractor);
@@ -310,7 +316,7 @@ public abstract class AbstractExpressionBuilder {
     }
 
     String getIndexIdArgument(SingleDrlxParseSuccess drlxParseResult, TypedExpression left) {
-        return isAccessibleProperties( drlxParseResult.getPatternType(), left.getFieldName() ) ?
+        return isAccessiblePropertiesIncludingNonGetterValueMethod( drlxParseResult.getPatternType(), left.getFieldName() ) ?
                 context.getPackageModel().getDomainClassName( drlxParseResult.getPatternType() ) + ".getPropertyIndex(\"" + left.getFieldName() + "\")" :
                 "-1";
     }

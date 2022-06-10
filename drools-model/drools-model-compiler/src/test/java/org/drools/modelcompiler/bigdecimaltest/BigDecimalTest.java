@@ -1,7 +1,27 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ *
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.modelcompiler.bigdecimaltest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.BaseModelTest;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -358,5 +378,177 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert("300");
 
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    public static class BdHolder {
+
+        private BigDecimal bd1;
+        private BigDecimal bd2;
+
+        public BdHolder() {
+            super();
+        }
+
+        public BdHolder(BigDecimal bd1, BigDecimal bd2) {
+            super();
+            this.bd1 = bd1;
+            this.bd2 = bd2;
+        }
+
+        public BigDecimal getBd1() {
+            return bd1;
+        }
+
+        public void setBd1(BigDecimal bd1) {
+            this.bd1 = bd1;
+        }
+
+        public BigDecimal getBd2() {
+            return bd2;
+        }
+
+        public void setBd2(BigDecimal bd2) {
+            this.bd2 = bd2;
+        }
+    }
+
+    @Test
+    public void testMultiply() {
+        testBigDecimalArithmeticOperation("BdHolder(bd2 == bd1 * 10)", "10", "100");
+    }
+
+    @Test
+    public void testMultiplyWithNegativeValue() {
+        testBigDecimalArithmeticOperation("BdHolder(bd2 == bd1 * -1)", "10", "-10");
+    }
+
+    @Test
+    public void testMultiplyWithBindVariable() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 * 10)", "10", "100");
+    }
+
+    @Test
+    public void testMultiplyWithBindVariableWithNegativeValue() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 * -1)", "10", "-10");
+    }
+
+    @Test
+    public void testMultiplyWithBindVariableWithNegativeValueEnclosed() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 * (-1))", "10", "-10");
+    }
+
+    @Test
+    public void testMultiplyWithBindVariableWithNegativeValueEnclosedBoth() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == ($bd1 * -1))", "10", "-10");
+    }
+
+    @Test
+    public void testMultiplyWithBindVariableWithNegativeValueEnclosedNest() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == ($bd1 * (-1)))", "10", "-10");
+    }
+
+    @Test
+    public void testAddWithBindVariable() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 + 10)", "10", "20");
+    }
+
+    @Test
+    public void testSubtractWithBindVariable() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 - 10)", "10", "0");
+    }
+
+    @Test
+    public void testDivideWithBindVariable() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 / 10)", "10", "1");
+    }
+
+    @Test
+    public void testModWithBindVariable() {
+        testBigDecimalArithmeticOperation("BdHolder($bd1 : bd1, bd2 == $bd1 % 10)", "10", "0");
+    }
+
+    private void testBigDecimalArithmeticOperation(String pattern, String bd1, String bd2) {
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + BdHolder.class.getCanonicalName() + ";\n" +
+                     "rule R1 dialect \"mvel\" when\n" +
+                     pattern + "\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        BdHolder holder = new BdHolder(new BigDecimal(bd1), new BigDecimal(bd2));
+        ksession.insert(holder);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBigDecimalLiteralLhsNegative() {
+        // DROOLS-6596
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + BdHolder.class.getCanonicalName() + ";\n" +
+                     "rule R1 dialect \"mvel\" when\n" +
+                     "    $holder : BdHolder(bd1 > -10.5B)\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        BdHolder holder = new BdHolder();
+        holder.setBd1(new BigDecimal("10"));
+        ksession.insert(holder);
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
+    }
+
+    @Test
+    public void testBigDecimalLiteralRhsNegative() {
+        // DROOLS-6596
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + BdHolder.class.getCanonicalName() + ";\n" +
+                     "rule R1 dialect \"mvel\" when\n" +
+                     "    $holder : BdHolder()\n" +
+                     "then\n" +
+                     "    $holder.bd1 = -10.5B;\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        BdHolder holder = new BdHolder();
+        ksession.insert(holder);
+        ksession.fireAllRules();
+
+        assertEquals(new BigDecimal("-10.5"), holder.getBd1());
+    }
+
+    @Test
+    public void testBigDecimalLiteralWithBinding() {
+        // DROOLS-6936
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                        "import " + BdHolder.class.getCanonicalName() + ";\n" +
+                        "global java.util.List result;\n" +
+                        "rule R1 dialect \"mvel\"\n" +
+                        "when\n" +
+                        "    $holder : BdHolder($bd1 : bd1, $zero : 0B)\n" +
+                        "then\n" +
+                        "    result.add($zero);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        List<BigDecimal> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        BdHolder holder = new BdHolder();
+        holder.setBd1(new BigDecimal("10"));
+        ksession.insert(holder);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(result).containsExactly(new BigDecimal("0"));
     }
 }

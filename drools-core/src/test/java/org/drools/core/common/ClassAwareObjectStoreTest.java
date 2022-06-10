@@ -14,11 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -35,7 +31,7 @@ public class ClassAwareObjectStoreTest {
         insertObjectWithFactHandle(bigDecimalValue);
 
         Collection<Object> result = collect(underTest.iterateObjects());
-        assertThat(result.size(), is(equalTo(2)));
+        assertThat(result).hasSize(2);
     }
 
     @Test
@@ -46,8 +42,8 @@ public class ClassAwareObjectStoreTest {
         insertObjectWithFactHandle(object);
         Collection<Object> results = collect(underTest.iterateObjects(SimpleClass.class));
 
-        assertThat(results.size(), is(equalTo(1)));
-        assertThat(results, hasItem(object));
+        assertThat(results).hasSize(1);
+        assertThat(results).contains(object);
     }
 
     @Test
@@ -57,9 +53,9 @@ public class ClassAwareObjectStoreTest {
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
-        assertThat(result.size(), is(equalTo(2)));
-        assertThat(result, hasItem(isA(SubClass.class)));
-        assertThat(result, hasItem(isA(SuperClass.class)));
+        assertThat(result).hasSize(2);
+        assertThat(result).hasAtLeastOneElementOfType(SubClass.class);
+        assertThat(result).hasAtLeastOneElementOfType(SuperClass.class);
     }
 
     @Test
@@ -69,8 +65,8 @@ public class ClassAwareObjectStoreTest {
 
         Collection<Object> result = collect(underTest.iterateObjects(SubClass.class));
 
-        assertThat(result.size(), is(equalTo(1)));
-        assertThat(result, hasItem(isA(SubClass.class)));
+        assertThat(result).hasSize(1);
+        assertThat(result).hasAtLeastOneElementOfType(SubClass.class);
     }
 
     /**
@@ -84,9 +80,9 @@ public class ClassAwareObjectStoreTest {
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
-        assertThat(result.size(), is(equalTo(2)));
-        assertThat(result, hasItem(isA(SubClass.class)));
-        assertThat(result, hasItem(isA(SuperClass.class)));
+        assertThat(result).hasSize(2);
+        assertThat(result).hasAtLeastOneElementOfType(SubClass.class);
+        assertThat(result).hasAtLeastOneElementOfType(SuperClass.class);
     }
 
     @Test
@@ -95,8 +91,8 @@ public class ClassAwareObjectStoreTest {
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
-        assertThat(result.size(), is(equalTo(1)));
-        assertThat(result, hasItem(isA(SubClass.class)));
+        assertThat(result).hasSize(1);
+        assertThat(result).hasAtLeastOneElementOfType(SubClass.class);
     }
 
     @Test
@@ -107,9 +103,9 @@ public class ClassAwareObjectStoreTest {
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
-        assertThat(result.size(), is(equalTo(2)));
+        assertThat(result).hasSize(2);
         // Check there's no duplication of results
-        assertThat(new HashSet<Object>(result).size(), is(equalTo(2)));
+        assertThat(new HashSet<Object>(result)).hasSize(2);
     }
 
     @Test
@@ -122,19 +118,19 @@ public class ClassAwareObjectStoreTest {
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
-        assertThat(result.size(), is(equalTo(2)));
+        assertThat(result).hasSize(2);
         // Check there's no duplication of results
-        assertThat(new HashSet<Object>(result).size(), is(equalTo(2)));
+        assertThat(new HashSet<Object>(result)).hasSize(2);
     }
 
     @Test
     public void clearRemovesInsertedObjects() throws Exception {
         insertObjectWithFactHandle(new SimpleClass());
-        assertThat(collect(underTest.iterateObjects()).size(), is(equalTo(1)));
+        assertThat(collect(underTest.iterateObjects())).hasSize(1);
 
         underTest.clear();
 
-        assertThat(collect(underTest.iterateObjects()).size(), is(equalTo(0)));
+        assertThat(collect(underTest.iterateObjects())).hasSize(0);
     }
 
     @Test
@@ -149,8 +145,8 @@ public class ClassAwareObjectStoreTest {
             }
         }));
 
-        assertThat(result.size(), is(equalTo(1)));
-        assertThat(result, hasItem(isA(SubClass.class)));
+        assertThat(result).hasSize(1);
+        assertThat(result).hasAtLeastOneElementOfType(SubClass.class);
     }
 
     @Test
@@ -158,8 +154,8 @@ public class ClassAwareObjectStoreTest {
         insertObjectWithFactHandle(new SuperClass());
         insertObjectWithFactHandle(new SubClass());
 
-        assertThat(collect(underTest.iterateFactHandles(SubClass.class)).size(), is(equalTo(1)));
-        assertThat(collect(underTest.iterateFactHandles(SuperClass.class)).size(), is(equalTo(2)));
+        assertThat(collect(underTest.iterateFactHandles(SubClass.class))).hasSize(1);
+        assertThat(collect(underTest.iterateFactHandles(SuperClass.class))).hasSize(2);
     }
 
 

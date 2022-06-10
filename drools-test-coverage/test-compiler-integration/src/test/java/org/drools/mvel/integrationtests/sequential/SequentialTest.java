@@ -26,8 +26,8 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Message;
 import org.drools.mvel.compiler.Person;
-import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.DynamicRulesTest;
+import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -58,8 +58,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -314,52 +314,52 @@ public class SequentialTest {
         ksession.addEventListener( new AgendaEventListener() {
 
             public void matchCancelled( MatchCancelledEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void matchCreated( MatchCreatedEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void afterMatchFired( AfterMatchFiredEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void agendaGroupPopped( AgendaGroupPoppedEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void agendaGroupPushed( AgendaGroupPushedEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void beforeMatchFired( BeforeMatchFiredEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
@@ -368,17 +368,17 @@ public class SequentialTest {
         ksession.addEventListener( new RuleRuntimeEventListener() {
 
             public void objectInserted( ObjectInsertedEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void objectDeleted( ObjectDeletedEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 
             public void objectUpdated( ObjectUpdatedEvent event ) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 list.add( event );
             }
 

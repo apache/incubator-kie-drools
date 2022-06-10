@@ -70,10 +70,8 @@ import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomCastInteger;
@@ -126,9 +124,9 @@ public class KiePMMLModelFactoryUtilsTest {
     @BeforeClass
     public static void setup() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(SOURCE), "");
-        assertNotNull(pmmlModel);
+        assertThat(pmmlModel).isNotNull();
         model = (TreeModel) pmmlModel.getModels().get(0);
-        assertNotNull(model);
+        assertThat(model).isNotNull();
         compilationUnit = getFromFileName(TEMPLATE_SOURCE);
     }
 
@@ -142,8 +140,8 @@ public class KiePMMLModelFactoryUtilsTest {
         constructorDeclaration = classOrInterfaceDeclaration
                 .getDefaultConstructor()
                 .orElseThrow(() -> new RuntimeException("Failed to retrieve default constructor from " + TEMPLATE_SOURCE));
-        assertNotNull(constructorDeclaration);
-        assertNotNull(constructorDeclaration.getBody());
+        assertThat(constructorDeclaration).isNotNull();
+        assertThat(constructorDeclaration.getBody()).isNotNull();
 
         staticGetterMethod = classOrInterfaceDeclaration
                 .getMethodsByName(GET_MODEL)
@@ -151,12 +149,12 @@ public class KiePMMLModelFactoryUtilsTest {
 
         Optional<ExplicitConstructorInvocationStmt> optSuperInvocation =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(constructorDeclaration.getBody());
-        assertTrue(optSuperInvocation.isPresent());
+        assertThat(optSuperInvocation).isPresent();
         superInvocation = optSuperInvocation.get();
-        assertEquals("Template", constructorDeclaration.getName().asString()); // as in the original template
-        assertEquals("super(name, Collections.emptyList(), operator, second);", superInvocation.toString()); // as in
+        assertThat(constructorDeclaration.getName().asString()).isEqualTo("Template"); // as in the original template
+        assertThat(superInvocation.toString()).isEqualTo("super(name, Collections.emptyList(), operator, second);"); // as in
         // the original template
-        assertTrue(clonedCompilationUnit.getClassByName(TEMPLATE_CLASS_NAME).isPresent());
+        assertThat(clonedCompilationUnit.getClassByName(TEMPLATE_CLASS_NAME)).isPresent();
     }
 
     @Test
@@ -223,7 +221,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final MethodDeclaration retrieved = modelTemplate.getMethodsByName(GET_CREATED_KIEPMMLMININGFIELDS).get(0);
         String text = getFileContent(TEST_12_SOURCE);
         BlockStmt expected = JavaParserUtils.parseBlock(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved.getBody().get()));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved.getBody().get())).isTrue();
     }
 
     @Test
@@ -238,7 +236,7 @@ public class KiePMMLModelFactoryUtilsTest {
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_MININGFIELDS).get(0);
         String text = getFileContent(TEST_14_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     @Test
@@ -253,7 +251,7 @@ public class KiePMMLModelFactoryUtilsTest {
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_OUTPUTFIELDS).get(0);
         String text = getFileContent(TEST_13_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     @Test
@@ -268,7 +266,7 @@ public class KiePMMLModelFactoryUtilsTest {
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_KIEPMMLMININGFIELDS).get(0);
         String text = getFileContent(TEST_12_SOURCE);
         BlockStmt expected = JavaParserUtils.parseBlock(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved.getBody().get()));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved.getBody().get())).isTrue();
     }
 
     @Test
@@ -279,7 +277,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final MethodDeclaration retrieved = modelTemplate.getMethodsByName(GET_CREATED_KIEPMMLOUTPUTFIELDS).get(0);
         String text = getFileContent(TEST_11_SOURCE);
         BlockStmt expected = JavaParserUtils.parseBlock(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved.getBody().get()));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved.getBody().get())).isTrue();
     }
 
     @Test
@@ -290,7 +288,7 @@ public class KiePMMLModelFactoryUtilsTest {
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_KIEPMMLOUTPUTFIELDS).get(0);
         String text = getFileContent(TEST_11_SOURCE);
         BlockStmt expected = JavaParserUtils.parseBlock(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved.getBody().get()));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved.getBody().get())).isTrue();
     }
 
     @Test
@@ -343,7 +341,7 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                                kiePMMLTargets.get(2).getMax(),
                                                                                kiePMMLTargets.get(2).getRescaleConstant(),
                                                                                kiePMMLTargets.get(2).getRescaleFactor()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     @Test
@@ -354,7 +352,7 @@ public class KiePMMLModelFactoryUtilsTest {
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_TRANSFORMATION_DICTIONARY).get(0);
         String text = getFileContent(TEST_09_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     @Test
@@ -365,27 +363,27 @@ public class KiePMMLModelFactoryUtilsTest {
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_LOCAL_TRANSFORMATIONS).get(0);
         String text = getFileContent(TEST_08_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     @Test
     public void addTransformationsInClassOrInterfaceDeclaration() throws IOException {
-        assertTrue(classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary").isEmpty());
-        assertTrue(classOrInterfaceDeclaration.getMethodsByName("createLocalTransformations").isEmpty());
+        assertThat(classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary")).isEmpty();
+        assertThat(classOrInterfaceDeclaration.getMethodsByName("createLocalTransformations")).isEmpty();
         KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration(classOrInterfaceDeclaration,
                                                                                  pmmlModel.getTransformationDictionary(),
                                                                                  model.getLocalTransformations());
-        assertEquals(1, classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary").size());
-        assertEquals(1, classOrInterfaceDeclaration.getMethodsByName("createLocalTransformations").size());
+        assertThat(classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary")).hasSize(1);
+        assertThat(classOrInterfaceDeclaration.getMethodsByName("createLocalTransformations")).hasSize(1);
         String text = getFileContent(TEST_01_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
         MethodDeclaration retrieved =
                 classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary").get(0);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         text = getFileContent(TEST_02_SOURCE);
         expected = JavaParserUtils.parseMethod(text);
         retrieved = classOrInterfaceDeclaration.getMethodsByName("createLocalTransformations").get(0);
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     @Test
@@ -398,7 +396,7 @@ public class KiePMMLModelFactoryUtilsTest {
         BlockStmt body = constructorDeclaration.getBody();
         String text = getFileContent(TEST_03_SOURCE);
         Statement expected = JavaParserUtils.parseConstructorBlock(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, body));
+        assertThat(JavaParserUtils.equalsNode(expected, body)).isTrue();
     }
 
     @Test
@@ -410,8 +408,8 @@ public class KiePMMLModelFactoryUtilsTest {
         KiePMMLModelFactoryUtils.initStaticGetter(compilationDTO, classOrInterfaceDeclaration);
         String text = getFileContent(TEST_04_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertEquals(expected.toString(), staticGetterMethod.toString());
-        assertTrue(JavaParserUtils.equalsNode(expected, staticGetterMethod));
+        assertThat(staticGetterMethod.toString()).isEqualTo(expected.toString());
+        assertThat(JavaParserUtils.equalsNode(expected, staticGetterMethod)).isTrue();
     }
 
     @Test
@@ -434,24 +432,24 @@ public class KiePMMLModelFactoryUtilsTest {
                 })
                 .collect(Collectors.toList());
         Expression retrieved = KiePMMLModelFactoryUtils.createIntervalsExpression(intervals);
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof MethodCallExpr);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(MethodCallExpr.class);
         MethodCallExpr mtdExp = (MethodCallExpr) retrieved;
         String expected = "java.util.Arrays";
-        assertEquals(expected, mtdExp.getScope().get().asNameExpr().toString());
+        assertThat(mtdExp.getScope().get().asNameExpr().toString()).isEqualTo(expected);
         expected = "asList";
-        assertEquals(expected, mtdExp.getName().asString());
+        assertThat(mtdExp.getName().asString()).isEqualTo(expected);
         NodeList<Expression> arguments = mtdExp.getArguments();
-        assertEquals(intervals.size(), arguments.size());
+        assertThat(arguments).hasSameSizeAs(intervals);
         arguments.forEach(argument -> {
-            assertTrue(argument instanceof ObjectCreationExpr);
+            assertThat(argument).isInstanceOf(ObjectCreationExpr.class);
             ObjectCreationExpr objCrt = (ObjectCreationExpr) argument;
-            assertEquals(Interval.class.getCanonicalName(), objCrt.getType().asString());
+            assertThat(objCrt.getType().asString()).isEqualTo(Interval.class.getCanonicalName());
             Optional<Interval> intervalOpt = intervals.stream()
                     .filter(interval -> String.valueOf(interval.getLeftMargin()).equals(objCrt.getArgument(0).asNameExpr().toString()) &&
                             String.valueOf(interval.getRightMargin()).equals(objCrt.getArgument(1).asNameExpr().toString()))
                     .findFirst();
-            assertTrue(intervalOpt.isPresent());
+            assertThat(intervalOpt).isPresent();
         });
     }
 
@@ -459,28 +457,28 @@ public class KiePMMLModelFactoryUtilsTest {
     public void getObjectCreationExprFromInterval() {
         Interval interval = new Interval(null, -14);
         ObjectCreationExpr retrieved = KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
-        assertNotNull(retrieved);
-        assertEquals(Interval.class.getCanonicalName(), retrieved.getType().asString());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getType().asString()).isEqualTo(Interval.class.getCanonicalName());
         NodeList<Expression> arguments = retrieved.getArguments();
-        assertEquals(2, arguments.size());
-        assertTrue(arguments.get(0) instanceof NullLiteralExpr);
-        assertEquals(String.valueOf(interval.getRightMargin()), arguments.get(1).asNameExpr().toString());
+        assertThat(arguments).hasSize(2);
+        assertThat(arguments.get(0)).isInstanceOf(NullLiteralExpr.class);
+        assertThat(arguments.get(1).asNameExpr().toString()).isEqualTo(String.valueOf(interval.getRightMargin()));
         interval = new Interval(-13, 10);
         retrieved = KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
-        assertNotNull(retrieved);
-        assertEquals(Interval.class.getCanonicalName(), retrieved.getType().asString());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getType().asString()).isEqualTo(Interval.class.getCanonicalName());
         arguments = retrieved.getArguments();
-        assertEquals(2, arguments.size());
-        assertEquals(String.valueOf(interval.getLeftMargin()), arguments.get(0).asNameExpr().toString());
-        assertEquals(String.valueOf(interval.getRightMargin()), arguments.get(1).asNameExpr().toString());
+        assertThat(arguments).hasSize(2);
+        assertThat(arguments.get(0).asNameExpr().toString()).isEqualTo(String.valueOf(interval.getLeftMargin()));
+        assertThat(arguments.get(1).asNameExpr().toString()).isEqualTo(String.valueOf(interval.getRightMargin()));
         interval = new Interval(-13, null);
         retrieved = KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
-        assertNotNull(retrieved);
-        assertEquals(Interval.class.getCanonicalName(), retrieved.getType().asString());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getType().asString()).isEqualTo(Interval.class.getCanonicalName());
         arguments = retrieved.getArguments();
-        assertEquals(2, arguments.size());
-        assertEquals(String.valueOf(interval.getLeftMargin()), arguments.get(0).asNameExpr().toString());
-        assertTrue(arguments.get(1) instanceof NullLiteralExpr);
+        assertThat(arguments).hasSize(2);
+        assertThat(arguments.get(0).asNameExpr().toString()).isEqualTo(String.valueOf(interval.getLeftMargin()));
+        assertThat(arguments.get(1)).isInstanceOf(NullLiteralExpr.class);
     }
 
     @Test
@@ -502,7 +500,7 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                       createLocalTransformations);
         String text = getFileContent(TEST_07_SOURCE);
         BlockStmt expected = JavaParserUtils.parseConstructorBlock(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, constructorDeclaration.getBody()));
+        assertThat(JavaParserUtils.equalsNode(expected, constructorDeclaration.getBody())).isTrue();
     }
 
     @Test
@@ -516,7 +514,7 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                                    compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
         String text = getFileContent(TEST_06_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, methodDeclaration));
+        assertThat(JavaParserUtils.equalsNode(expected, methodDeclaration)).isTrue();
     }
 
     @Test
@@ -530,80 +528,80 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                                    compilationDTO.getOutput().getOutputFields());
         String text = getFileContent(TEST_05_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, methodDeclaration));
+        assertThat(JavaParserUtils.equalsNode(expected, methodDeclaration)).isTrue();
     }
 
     private void commonVerifyMiningFieldsObjectCreation(List<Expression> toVerify, List<MiningField> miningFields) {
         toVerify.forEach(expression -> {
-            assertTrue(expression instanceof ObjectCreationExpr);
+            assertThat(expression).isInstanceOf(ObjectCreationExpr.class);
             ObjectCreationExpr objCrt = (ObjectCreationExpr) expression;
-            assertEquals(MiningField.class.getCanonicalName(), objCrt.getType().asString());
+            assertThat(objCrt.getType().asString()).isEqualTo(MiningField.class.getCanonicalName());
             Optional<MiningField> miningFieldOpt = miningFields.stream()
                     .filter(miningField -> miningField.getName().equals(objCrt.getArgument(0).asStringLiteralExpr().asString()))
                     .findFirst();
-            assertTrue(miningFieldOpt.isPresent());
+            assertThat(miningFieldOpt).isPresent();
             MiningField miningField = miningFieldOpt.get();
-            assertEquals(MiningField.class.getCanonicalName(), objCrt.getType().asString());
+            assertThat(objCrt.getType().asString()).isEqualTo(MiningField.class.getCanonicalName());
             String expected = miningField.getUsageType() != null ?
                     FIELD_USAGE_TYPE.class.getCanonicalName() + "." + miningField.getUsageType() : "null";
-            assertEquals(expected, objCrt.getArgument(1).toString());
+            assertThat(objCrt.getArgument(1).toString()).isEqualTo(expected);
             expected = miningField.getOpType() != null ?
                     OP_TYPE.class.getCanonicalName() + "." + miningField.getOpType() : "null";
-            assertEquals(expected, objCrt.getArgument(2).toString());
+            assertThat(objCrt.getArgument(2).toString()).isEqualTo(expected);
             expected = miningField.getDataType() != null ?
                     DATA_TYPE.class.getCanonicalName() + "." + miningField.getDataType() : "null";
-            assertEquals(expected, objCrt.getArgument(3).toString());
+            assertThat(objCrt.getArgument(3).toString()).isEqualTo(expected);
             expected = miningField.getMissingValueTreatmentMethod() != null ?
                     MISSING_VALUE_TREATMENT_METHOD.class.getCanonicalName() + "." + miningField.getMissingValueTreatmentMethod() : "null";
-            assertEquals(expected, objCrt.getArgument(4).toString());
+            assertThat(objCrt.getArgument(4).toString()).isEqualTo(expected);
             expected = miningField.getInvalidValueTreatmentMethod() != null ?
                     INVALID_VALUE_TREATMENT_METHOD.class.getCanonicalName() + "." + miningField.getInvalidValueTreatmentMethod() : "null";
-            assertEquals(expected, objCrt.getArgument(5).toString());
+            assertThat(objCrt.getArgument(5).toString()).isEqualTo(expected);
             expected = miningField.getMissingValueReplacement() != null ? miningField.getMissingValueReplacement() :
                     "null";
-            assertEquals(expected, objCrt.getArgument(6).asStringLiteralExpr().asString());
+            assertThat(objCrt.getArgument(6).asStringLiteralExpr().asString()).isEqualTo(expected);
             expected = miningField.getInvalidValueReplacement() != null ? miningField.getInvalidValueReplacement() :
                     "null";
-            assertEquals(expected, objCrt.getArgument(7).asStringLiteralExpr().asString());
+            assertThat(objCrt.getArgument(7).asStringLiteralExpr().asString()).isEqualTo(expected);
             MethodCallExpr allowedValuesMethod = objCrt.getArgument(8).asMethodCallExpr();
             IntStream.range(0, 3).forEach(i -> {
                 String exp = miningField.getAllowedValues().get(i);
-                assertEquals(exp, allowedValuesMethod.getArgument(i).asStringLiteralExpr().asString());
+                assertThat(allowedValuesMethod.getArgument(i).asStringLiteralExpr().asString()).isEqualTo(exp);
             });
             MethodCallExpr intervalsMethod = objCrt.getArgument(9).asMethodCallExpr();
             IntStream.range(0, 3).forEach(i -> {
                 Interval interval = miningField.getIntervals().get(i);
                 ObjectCreationExpr objectCreationExpr = intervalsMethod.getArgument(i).asObjectCreationExpr();
                 String exp = interval.getLeftMargin().toString();
-                assertEquals(exp, objectCreationExpr.getArgument(0).asNameExpr().toString());
+                assertThat(objectCreationExpr.getArgument(0).asNameExpr().toString()).isEqualTo(exp);
                 exp = interval.getRightMargin().toString();
-                assertEquals(exp, objectCreationExpr.getArgument(1).asNameExpr().toString());
+                assertThat(objectCreationExpr.getArgument(1).asNameExpr().toString()).isEqualTo(exp);
             });
         });
     }
 
     private void commonVerifyOutputFieldsObjectCreation(List<Expression> toVerify, List<OutputField> outputFields) {
         toVerify.forEach(argument -> {
-            assertTrue(argument instanceof ObjectCreationExpr);
+            assertThat(argument).isInstanceOf(ObjectCreationExpr.class);
             ObjectCreationExpr objCrt = (ObjectCreationExpr) argument;
-            assertEquals(OutputField.class.getCanonicalName(), objCrt.getType().asString());
+            assertThat(objCrt.getType().asString()).isEqualTo(OutputField.class.getCanonicalName());
             Optional<OutputField> outputFieldOpt = outputFields.stream()
                     .filter(outputField -> outputField.getName().equals(objCrt.getArgument(0).asStringLiteralExpr().asString()))
                     .findFirst();
-            assertTrue(outputFieldOpt.isPresent());
+            assertThat(outputFieldOpt).isPresent();
             OutputField outputField = outputFieldOpt.get();
             String expected = OP_TYPE.class.getCanonicalName() + "." + outputField.getOpType();
-            assertEquals(expected, objCrt.getArgument(1).asNameExpr().toString());
+            assertThat(objCrt.getArgument(1).asNameExpr().toString()).isEqualTo(expected);
             expected = DATA_TYPE.class.getCanonicalName() + "." + outputField.getDataType();
-            assertEquals(expected, objCrt.getArgument(2).asNameExpr().toString());
+            assertThat(objCrt.getArgument(2).asNameExpr().toString()).isEqualTo(expected);
             expected = outputField.getTargetField();
-            assertEquals(expected, objCrt.getArgument(3).asStringLiteralExpr().asString());
+            assertThat(objCrt.getArgument(3).asStringLiteralExpr().asString()).isEqualTo(expected);
             expected = RESULT_FEATURE.class.getCanonicalName() + "." + outputField.getResultFeature();
-            assertEquals(expected, objCrt.getArgument(4).asNameExpr().toString());
+            assertThat(objCrt.getArgument(4).asNameExpr().toString()).isEqualTo(expected);
             MethodCallExpr allowedValuesMethod = objCrt.getArgument(5).asMethodCallExpr();
             IntStream.range(0, 3).forEach(i -> {
                 String exp = outputField.getAllowedValues().get(i);
-                assertEquals(exp, allowedValuesMethod.getArgument(i).asStringLiteralExpr().asString());
+                assertThat(allowedValuesMethod.getArgument(i).asStringLiteralExpr().asString()).isEqualTo(exp);
             });
         });
     }
@@ -611,14 +609,14 @@ public class KiePMMLModelFactoryUtilsTest {
     private void commonVerifyKiePMMLTargetFieldsMethodCallExpr(List<Expression> toVerify,
                                                                List<TargetField> targetFields) {
         toVerify.forEach(argument -> {
-            assertTrue(argument instanceof MethodCallExpr);
+            assertThat(argument).isInstanceOf(MethodCallExpr.class);
             MethodCallExpr mtdfClExpr = (MethodCallExpr) argument;
-            assertEquals("build", mtdfClExpr.getName().asString());
+            assertThat(mtdfClExpr.getName().asString()).isEqualTo("build");
             final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", mtdfClExpr);
             Optional<TargetField> targetFieldOpt = targetFields.stream()
                     .filter(targetField -> targetField.getName().equals(builder.getArgument(0).asStringLiteralExpr().asString()))
                     .findFirst();
-            assertTrue(targetFieldOpt.isPresent());
+            assertThat(targetFieldOpt).isPresent();
             TargetField targetField = targetFieldOpt.get();
             try {
                 commonVerifyKiePMMLTargetFieldsMethodCallExpr(mtdfClExpr, targetField);
@@ -654,16 +652,16 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                             kieTargetField.getMax(),
                                                                             kieTargetField.getRescaleConstant(),
                                                                             kieTargetField.getRescaleFactor()));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLTarget.class,
                                                KiePMMLTargetValue.class, TargetField.class, TargetValue.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
     private void commonVerifySuperInvocation(String generatedClassName, String name) {
-        assertEquals(generatedClassName, constructorDeclaration.getName().asString()); // modified by invocation
+        assertThat(constructorDeclaration.getName().asString()).isEqualTo(generatedClassName); // modified by invocation
         String expected = String.format("super(\"%s\", Collections.emptyList(), operator, second);", name);
-        assertEquals(expected, superInvocation.toString()); // modified by invocation
+        assertThat(superInvocation.toString()).isEqualTo(expected); // modified by invocation
     }
 
     /**
@@ -685,7 +683,7 @@ public class KiePMMLModelFactoryUtilsTest {
                 .map(expression -> (MethodCallExpr) expression)
                 .filter(methodCallExpr -> evaluateMethodCallExpr(methodCallExpr, scope, method))
                 .collect(Collectors.toList());
-        assertEquals(expectedSize, toReturn.size());
+        assertThat(toReturn).hasSize(expectedSize);
         return toReturn;
     }
 

@@ -56,8 +56,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -114,7 +114,7 @@ public class MemoryLeakTest {
             }
         }
 
-        assertNotNull( joinNode );
+        assertThat(joinNode).isNotNull();
         InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
         BetaMemory memory = (BetaMemory) wm.getNodeMemory( joinNode );
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
@@ -153,7 +153,7 @@ public class MemoryLeakTest {
             }
         }
 
-        assertNotNull( liaNode );
+        assertThat(liaNode).isNotNull();
         InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
         LeftInputAdapterNode.LiaNodeMemory memory = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( liaNode );
         TupleSets<LeftTuple> stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();

@@ -16,19 +16,22 @@
 
 package org.drools.testcoverage.regression;
 
-import org.assertj.core.api.Assertions;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.model.Person;
-import org.drools.testcoverage.common.util.*;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.testcoverage.common.util.KieUtil.getCommands;
 
 /**
@@ -57,7 +60,7 @@ public class MultiRestrictionPatternTest extends KieSessionTest {
 
         session.execute(getCommands().newBatchExecution(commands, null));
 
-        Assertions.assertThat(firedRules.isRuleFired("or1")).isTrue();
+        assertThat(firedRules.isRuleFired("or1")).isTrue();
     }
 
     @Test
@@ -68,7 +71,7 @@ public class MultiRestrictionPatternTest extends KieSessionTest {
 
         session.execute(getCommands().newBatchExecution(commands, null));
 
-        Assertions.assertThat(firedRules.isRuleFired("or2")).isTrue();
+        assertThat(firedRules.isRuleFired("or2")).isTrue();
     }
 
     @Test
@@ -81,7 +84,7 @@ public class MultiRestrictionPatternTest extends KieSessionTest {
 
         session.execute(getCommands().newBatchExecution(commands, null));
 
-        Assertions.assertThat(firedRules.isRuleFired("and")).isTrue();
+        assertThat(firedRules.isRuleFired("and")).isTrue();
     }
 
     @Override

@@ -15,15 +15,15 @@
 
 package org.drools.decisiontable;
 
+import java.io.InputStream;
+
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
-import java.io.InputStream;
-
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LinkedWorkbookTest {
 
@@ -35,7 +35,7 @@ public class LinkedWorkbookTest {
         kieHelper.addResource(ResourceFactory.newInputStreamResource(dtableIs),
                 ResourceType.DTABLE);
         KieBase kbase = kieHelper.build();
-        assertNotNull(kbase);
+        assertThat(kbase).isNotNull();
     }
 
 }

@@ -151,8 +151,8 @@ abstract class GeneratedMvelParserBase {
      */
     JavaToken orIfInvalid(JavaToken firstChoice, JavaToken secondChoice) {
         if (storeTokens) {
-            assertNotNull(firstChoice);
-            assertNotNull(secondChoice);
+        	assertNotNull(firstChoice);
+        	assertNotNull(secondChoice);
             if (firstChoice.valid() || secondChoice.invalid()) {
                 return firstChoice;
             }

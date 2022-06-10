@@ -19,9 +19,10 @@ package org.kie.pmml.api.enums.builtinfunctions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.data.Offset;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MathematicalFunctionsTest {
 
@@ -51,7 +52,7 @@ public class MathematicalFunctionsTest {
     public void getExpm1ValueCorrectInput() {
         Object[] input = {24.11};
         Object retrieved = MathematicalFunctions.EXPM1.getValue(input);
-        assertEquals(2.956922613825104E10, (Double) retrieved, 0.0000001);
+        assertThat((Double) retrieved).isCloseTo(2.956922613825104E10, Offset.offset(0.0000001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -70,7 +71,7 @@ public class MathematicalFunctionsTest {
     public void getHypotValueCorrectInput() {
         Object[] input = {24.11, 11};
         Object retrieved = MathematicalFunctions.HYPOT.getValue(input);
-        assertEquals(26.500, (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(26.500, Offset.offset(0.001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -89,7 +90,7 @@ public class MathematicalFunctionsTest {
     public void getLn1pValueCorrectInput() {
         Object[] input = {24.11};
         Object retrieved = MathematicalFunctions.LN1P.getValue(input);
-        assertEquals(3.223, (Double) retrieved, 0.001);
+        assertThat((Double) retrieved).isCloseTo(3.223, Offset.offset(0.001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -107,11 +108,11 @@ public class MathematicalFunctionsTest {
     @Test
     public void getRintValueCorrectInput() {
         Object[] input1 = {24.11};
-        Object retrieved = MathematicalFunctions.RINT.getValue(input1);
-        assertEquals(24, (Double) retrieved, 0);
+        Double retrieved = (Double) MathematicalFunctions.RINT.getValue(input1);
+        assertThat(retrieved).isCloseTo(24.0, Offset.offset(0.0));
         Object[] input2 = {24.91};
-        retrieved = MathematicalFunctions.RINT.getValue(input2);
-        assertEquals(25, (Double) retrieved, 0);
+        retrieved = (Double) MathematicalFunctions.RINT.getValue(input2);
+        assertThat(retrieved).isCloseTo(25, Offset.offset(0.0));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -130,7 +131,7 @@ public class MathematicalFunctionsTest {
     public void getSinValueCorrectInput() {
         Object[] input = {24.11};
         Object retrieved = MathematicalFunctions.SIN.getValue(input);
-        assertEquals(-0.8535, (Double) retrieved, 0.0001);
+        assertThat((Double) retrieved).isCloseTo(-0.8535, Offset.offset(0.0001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -149,7 +150,7 @@ public class MathematicalFunctionsTest {
     public void getAsinValueCorrectInput() {
         Object[] input = {0.93};
         Object retrieved = MathematicalFunctions.ASIN.getValue(input);
-        assertEquals(1.1944, (Double) retrieved, 0.0001);
+        assertThat((Double) retrieved).isCloseTo(1.1944, Offset.offset(0.0001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -168,7 +169,7 @@ public class MathematicalFunctionsTest {
     public void getSinhValueCorrectInput() {
         Object[] input = {0.93};
         Object retrieved = MathematicalFunctions.SINH.getValue(input);
-        assertEquals(1.0699, (Double) retrieved, 0.0001);
+        assertThat((Double) retrieved).isCloseTo(1.0699, Offset.offset(0.0001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -187,7 +188,7 @@ public class MathematicalFunctionsTest {
     public void getCosValueCorrectInput() {
         Object[] input = {0.93};
         Object retrieved = MathematicalFunctions.COS.getValue(input);
-        assertEquals(0.5978, (Double) retrieved, 0.0001);
+        assertThat((Double) retrieved).isCloseTo(0.5978, Offset.offset(0.0001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -206,7 +207,7 @@ public class MathematicalFunctionsTest {
     public void getAcosValueCorrectInput() {
         Object[] input = {0.93};
         Object retrieved = MathematicalFunctions.ACOS.getValue(input);
-        assertEquals(0.3763, (Double) retrieved, 0.0001);
+        assertThat((Double) retrieved).isCloseTo(0.3763, Offset.offset(0.0001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -225,7 +226,7 @@ public class MathematicalFunctionsTest {
     public void getCoshValueCorrectInput() {
         Object[] input = {0.93};
         Object retrieved = MathematicalFunctions.COSH.getValue(input);
-        assertEquals(1.4645, (Double) retrieved, 0.0001);
+        assertThat((Double) retrieved).isCloseTo(1.4645, Offset.offset(0.0001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -244,7 +245,7 @@ public class MathematicalFunctionsTest {
     public void getTanValueCorrectInput() {
         Object[] input = {0.93};
         Object retrieved = MathematicalFunctions.TAN.getValue(input);
-        assertEquals(1.3408, (Double) retrieved, 0.0001);
+        assertThat((Double) retrieved).isCloseTo(1.3408, Offset.offset(0.0001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -263,7 +264,7 @@ public class MathematicalFunctionsTest {
     public void getAtanValueCorrectInput() {
         Object[] input = {0.93};
         Object retrieved = MathematicalFunctions.ATAN.getValue(input);
-        assertEquals(0.7491, (Double) retrieved, 0.0001);
+        assertThat((Double) retrieved).isCloseTo(0.7491, Offset.offset(0.0001));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -282,7 +283,7 @@ public class MathematicalFunctionsTest {
     public void getTanhValueCorrectInput() {
         Object[] input = {0.93};
         Object retrieved = MathematicalFunctions.TANH.getValue(input);
-        assertEquals(0.7305, (Double) retrieved, 0.0001);
+        assertThat((Double) retrieved).isCloseTo(0.7305, Offset.offset(0.0001));
     }
 
     @Test(expected = IllegalArgumentException.class)

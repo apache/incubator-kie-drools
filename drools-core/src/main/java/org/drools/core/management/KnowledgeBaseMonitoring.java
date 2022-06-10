@@ -106,7 +106,7 @@ public class KnowledgeBaseMonitoring
                                                globalsType,
                                                index);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
     }
 
@@ -181,7 +181,7 @@ public class KnowledgeBaseMonitoring
                                              operations,
                                              notifications );
         } catch ( Exception e ) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
     }
 
@@ -290,7 +290,7 @@ public class KnowledgeBaseMonitoring
                 resultList.add( new Attribute( attributeNames[i],
                                                value ) );
             } catch ( Exception e ) {
-                e.printStackTrace();
+                logger.error("Exception", e);
             }
         }
         return (resultList);

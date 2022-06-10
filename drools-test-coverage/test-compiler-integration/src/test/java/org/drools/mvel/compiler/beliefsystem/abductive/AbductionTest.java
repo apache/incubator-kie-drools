@@ -56,8 +56,8 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -827,8 +827,8 @@ public class AbductionTest {
         Query q1 = session.getKieBase().getQuery( "org.drools.abductive.test", "foo" );
         Query q2 = session.getKieBase().getQuery( "org.drools.abductive.test", "bar" );
 
-        assertNotNull( q1 );
-        assertNotNull( q2 );
+        assertThat(q1).isNotNull();
+        assertThat(q2).isNotNull();
 
         QueryResults q10res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "foo", "foo", null ));
         QueryResults q11res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "foo", "foo", Variable.v ));

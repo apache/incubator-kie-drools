@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.A;
 import org.drools.testcoverage.common.model.B;
 import org.drools.testcoverage.common.model.C;
@@ -44,10 +43,8 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -75,7 +72,7 @@ public class DRLTest {
                 "end\n";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test
@@ -125,10 +122,10 @@ public class DRLTest {
         try {
             final Rule rule = kbase.getRule("org.drools.compiler.integrationtests.drl", "test meta attributes");
 
-            assertNotNull(rule);
-            assertThat(rule.getMetaData().get("id"), is(1234));
-            assertThat(rule.getMetaData().get("author"), is("john_doe"));
-            assertThat(rule.getMetaData().get("text"), is("It's an escaped\" string"));
+            assertThat(rule).isNotNull();
+            assertThat(rule.getMetaData().get("id")).isEqualTo(1234);
+            assertThat(rule.getMetaData().get("author")).isEqualTo("john_doe");
+            assertThat(rule.getMetaData().get("text")).isEqualTo("It's an escaped\" string");
         } finally {
             ksession.dispose();
         }
@@ -154,8 +151,8 @@ public class DRLTest {
                 "end";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
     }
 
     @Test
@@ -173,8 +170,8 @@ public class DRLTest {
                 "end";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
     }
 
     @Test
@@ -263,8 +260,8 @@ public class DRLTest {
                 "end";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
     }
 
     @Test
@@ -281,8 +278,8 @@ public class DRLTest {
                 "end";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
     }
 
     @Test
@@ -310,7 +307,7 @@ public class DRLTest {
 
         // no package defined, so it is set to the default
         final FactType factType = kbase.getFactType("defaultpkg", "Person");
-        assertNotNull(factType);
+        assertThat(factType).isNotNull();
         final Object bob = factType.newInstance();
         factType.set(bob, "name", "Bob");
         factType.set(bob, "age", 30);
@@ -375,7 +372,7 @@ public class DRLTest {
             kieSession.insert(new D(100003));
             kieSession.insert(new E(100004));
 
-            Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(50);
+            assertThat(kieSession.fireAllRules()).isEqualTo(50);
         } finally {
             kieSession.dispose();
         }

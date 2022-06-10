@@ -47,9 +47,7 @@ import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class PostProcessTest {
@@ -84,16 +82,16 @@ public class PostProcessTest {
         PMML4Result toModify = new PMML4Result();
         toModify.setResultCode(ResultCode.FAIL.getName());
         toModify.addResultVariable(FIELD_NAME, 4.33);
-        assertEquals(4.33, toModify.getResultVariables().get(FIELD_NAME));
+        assertThat(toModify.getResultVariables().get(FIELD_NAME)).isEqualTo(4.33);
         ProcessingDTO processingDTO = getProcessingDTO(model, new ArrayList<>());
         PostProcess.executeTargets(toModify, processingDTO);
-        assertEquals(4.33, toModify.getResultVariables().get(FIELD_NAME));
+        assertThat(toModify.getResultVariables().get(FIELD_NAME)).isEqualTo(4.33);
         toModify.setResultCode(ResultCode.OK.getName());
         PostProcess.executeTargets(toModify, processingDTO);
-        assertEquals(4.33, toModify.getResultVariables().get(FIELD_NAME));
+        assertThat(toModify.getResultVariables().get(FIELD_NAME)).isEqualTo(4.33);
         toModify.setResultObjectName(FIELD_NAME);
         PostProcess.executeTargets(toModify, processingDTO);
-        assertEquals(4.34, toModify.getResultVariables().get(FIELD_NAME));
+        assertThat(toModify.getResultVariables().get(FIELD_NAME)).isEqualTo(4.34);
     }
 
     @Test
@@ -107,7 +105,7 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate, processingDTO);
 
-        assertTrue(toUpdate.getResultVariables().isEmpty());
+        assertThat(toUpdate.getResultVariables()).isEmpty();
     }
 
     @Test
@@ -124,9 +122,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate, processingDTO);
 
-        assertFalse(toUpdate.getResultVariables().isEmpty());
-        assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(kiePMMLNameValue.getValue(), toUpdate.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate.getResultVariables().get(OUTPUT_NAME)).isEqualTo(kiePMMLNameValue.getValue());
     }
 
     @Test
@@ -139,7 +137,7 @@ public class PostProcessTest {
         PMML4Result toUpdate = new PMML4Result();
 
         PostProcess.populateOutputFields(toUpdate, processingDTO);
-        assertTrue(toUpdate.getResultVariables().isEmpty());
+        assertThat(toUpdate.getResultVariables()).isEmpty();
     }
 
     @Test
@@ -156,9 +154,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate, processingDTO);
 
-        assertFalse(toUpdate.getResultVariables().isEmpty());
-        assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(kiePMMLConstant.getValue(), toUpdate.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate.getResultVariables().get(OUTPUT_NAME)).isEqualTo(kiePMMLConstant.getValue());
     }
 
     @Test
@@ -183,9 +181,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate, processingDTO);
 
-        assertFalse(toUpdate.getResultVariables().isEmpty());
-        assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(value1 / value2, toUpdate.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1 / value2);
     }
 
     @Test
@@ -227,9 +225,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate1, processingDTO1);
 
-        assertFalse(toUpdate1.getResultVariables().isEmpty());
-        assertTrue(toUpdate1.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(value1 / value2, toUpdate1.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate1.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate1.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate1.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1 / value2);
 
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
@@ -244,9 +242,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate2, processingDTO2);
 
-        assertFalse(toUpdate2.getResultVariables().isEmpty());
-        assertTrue(toUpdate2.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(value1 / value2, toUpdate2.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate2.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate2.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate2.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1 / value2);
     }
 
     @Test
@@ -297,9 +295,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate1, processingDTO1);
 
-        assertFalse(toUpdate1.getResultVariables().isEmpty());
-        assertTrue(toUpdate1.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(value1 / value2, toUpdate1.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate1.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate1.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate1.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1 / value2);
 
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
@@ -314,9 +312,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate2, processingDTO2);
 
-        assertFalse(toUpdate2.getResultVariables().isEmpty());
-        assertTrue(toUpdate2.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(value1 / value2, toUpdate2.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate2.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate2.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate2.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1 / value2);
     }
 
     @Test
@@ -364,9 +362,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate1, processingDTO1);
 
-        assertFalse(toUpdate1.getResultVariables().isEmpty());
-        assertTrue(toUpdate1.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(value1 / value2, toUpdate1.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate1.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate1.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate1.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1 / value2);
 
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
@@ -381,9 +379,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate2, processingDTO2);
 
-        assertFalse(toUpdate2.getResultVariables().isEmpty());
-        assertTrue(toUpdate2.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(value1 / value2, toUpdate2.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate2.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate2.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate2.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1 / value2);
     }
 
     @Test
@@ -426,9 +424,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate, processingDTO);
 
-        assertFalse(toUpdate.getResultVariables().isEmpty());
-        assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(value1, toUpdate.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1);
     }
 
     @Test
@@ -479,9 +477,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate, processingDTO);
 
-        assertFalse(toUpdate.getResultVariables().isEmpty());
-        assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(value1, toUpdate.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1);
     }
 
     @Test
@@ -532,9 +530,9 @@ public class PostProcessTest {
         PMML4Result toUpdate = new PMML4Result();
 
         PostProcess.populateOutputFields(toUpdate, processingDTO);
-        assertFalse(toUpdate.getResultVariables().isEmpty());
-        assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(value1/value2, toUpdate.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1/value2);
     }
 
     @Test
@@ -551,9 +549,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate, processingDTO);
 
-        assertFalse(toUpdate.getResultVariables().isEmpty());
-        assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(kiePMMLConstant.getValue(), toUpdate.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate.getResultVariables().get(OUTPUT_NAME)).isEqualTo(kiePMMLConstant.getValue());
     }
 
     @Test
@@ -573,9 +571,9 @@ public class PostProcessTest {
 
         PostProcess.populateOutputFields(toUpdate, processingDTO);
 
-        assertFalse(toUpdate.getResultVariables().isEmpty());
-        assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
-        assertEquals(variableValue, toUpdate.getResultVariables().get(OUTPUT_NAME));
+        assertThat(toUpdate.getResultVariables()).isNotEmpty();
+        assertThat(toUpdate.getResultVariables()).containsKey(OUTPUT_NAME);
+        assertThat(toUpdate.getResultVariables().get(OUTPUT_NAME)).isEqualTo(variableValue);
     }
 
     private static ProcessingDTO buildProcessingDTOWithDefaultNameValues(KiePMMLModel kiePMMLModel) {

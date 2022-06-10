@@ -16,10 +16,10 @@
 
 package org.kie.dmn.model.api.dmndi;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class KnownColorTest {
 
@@ -42,6 +42,6 @@ public class KnownColorTest {
         assertThat(KnownColor.fromValue("black")).isEqualTo(KnownColor.BLACK);
         assertThat(KnownColor.fromValue("silver")).isEqualTo(KnownColor.SILVER);
         assertThat(KnownColor.fromValue("gray")).isEqualTo(KnownColor.GRAY);
-        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> KnownColor.fromValue("asd"));
+        assertThatIllegalArgumentException().isThrownBy(() -> KnownColor.fromValue("asd"));
     }
 }

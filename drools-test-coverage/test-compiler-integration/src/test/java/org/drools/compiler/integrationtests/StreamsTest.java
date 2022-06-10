@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -35,7 +34,6 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -50,13 +48,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.mockito.ArgumentCaptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -115,10 +110,10 @@ public class StreamsTest {
             final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
             final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
 
-            assertNotNull(handle1);
-            assertNotNull(handle2);
-            assertNotNull(handle3);
-            assertNotNull(handle4);
+            assertThat(handle1).isNotNull();
+            assertThat(handle2).isNotNull();
+            assertThat(handle3).isNotNull();
+            assertThat(handle4).isNotNull();
 
             assertTrue(handle1.isEvent());
             assertTrue(handle2.isEvent());
@@ -141,10 +136,10 @@ public class StreamsTest {
             final InternalFactHandle handle7 = (InternalFactHandle) entry.insert(tick7);
             final InternalFactHandle handle8 = (InternalFactHandle) entry.insert(tick8);
 
-            assertNotNull(handle5);
-            assertNotNull(handle6);
-            assertNotNull(handle7);
-            assertNotNull(handle8);
+            assertThat(handle5).isNotNull();
+            assertThat(handle6).isNotNull();
+            assertThat(handle7).isNotNull();
+            assertThat(handle8).isNotNull();
 
             assertTrue(handle5.isEvent());
             assertTrue(handle6.isEvent());
@@ -181,10 +176,10 @@ public class StreamsTest {
             final InternalFactHandle handle7 = (InternalFactHandle) entry.insert(tick7);
             final InternalFactHandle handle8 = (InternalFactHandle) entry.insert(tick8);
 
-            assertNotNull(handle5);
-            assertNotNull(handle6);
-            assertNotNull(handle7);
-            assertNotNull(handle8);
+            assertThat(handle5).isNotNull();
+            assertThat(handle6).isNotNull();
+            assertThat(handle7).isNotNull();
+            assertThat(handle8).isNotNull();
 
             assertTrue(handle5.isEvent());
             assertTrue(handle6.isEvent());
@@ -245,10 +240,10 @@ public class StreamsTest {
             final InternalFactHandle handle7 = (InternalFactHandle) entry.insert(tick7);
             final InternalFactHandle handle8 = (InternalFactHandle) entry.insert(tick8);
 
-            assertNotNull(handle5);
-            assertNotNull(handle6);
-            assertNotNull(handle7);
-            assertNotNull(handle8);
+            assertThat(handle5).isNotNull();
+            assertThat(handle6).isNotNull();
+            assertThat(handle7).isNotNull();
+            assertThat(handle8).isNotNull();
 
             assertTrue(handle5.isEvent());
             assertTrue(handle6.isEvent());
@@ -319,9 +314,9 @@ public class StreamsTest {
             verify(ael, times(3)).afterMatchFired(captor.capture());
             final List<org.kie.api.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-            assertThat(aafe.get(0).getMatch().getRule().getName(), is("R1"));
-            assertThat(aafe.get(1).getMatch().getRule().getName(), is("R2"));
-            assertThat(aafe.get(2).getMatch().getRule().getName(), is("R3"));
+            assertThat(aafe.get(0).getMatch().getRule().getName()).isEqualTo("R1");
+            assertThat(aafe.get(1).getMatch().getRule().getName()).isEqualTo("R2");
+            assertThat(aafe.get(2).getMatch().getRule().getName()).isEqualTo("R3");
         } finally {
             ksession.dispose();
         }
@@ -355,7 +350,7 @@ public class StreamsTest {
             verify(ael, times(1)).afterMatchFired(captor.capture());
             final List<org.kie.api.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-            assertThat(aafe.get(0).getMatch().getRule().getName(), is("R1"));
+            assertThat(aafe.get(0).getMatch().getRule().getName()).isEqualTo("R1");
         } finally {
             ksession.dispose();
         }
@@ -414,15 +409,15 @@ public class StreamsTest {
             ksession.insert(st2);
 
             verify(wml, times(2)).objectInserted(any(org.kie.api.event.rule.ObjectInsertedEvent.class));
-            assertThat(ksession.getObjects().size(), equalTo(2));
-            assertThat((Collection<Object>) ksession.getObjects(), CoreMatchers.hasItems(st1, st2));
+            assertThat(ksession.getObjects()).hasSize(2);
+            assertThat((Collection<Object>) ksession.getObjects()).contains(st1, st2);
 
             ksession.fireAllRules();
 
             clock.advanceTime(3, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertThat(ksession.getObjects().size(), equalTo(0));
+            assertThat(ksession.getObjects()).hasSize(0);
         } finally {
             ksession.dispose();
         }
@@ -460,17 +455,17 @@ public class StreamsTest {
             ksession.insert(st1);
             ksession.insert(st2);
 
-            assertThat(ksession.fireAllRules(), equalTo(2));
+            assertThat(ksession.fireAllRules()).isEqualTo(2);
 
             verify(wml, times(2)).objectInserted(any(org.kie.api.event.rule.ObjectInsertedEvent.class));
             verify(ael, times(2)).matchCreated(any(MatchCreatedEvent.class));
-            assertThat(ksession.getObjects().size(), equalTo(2));
-            assertThat((Collection<Object>) ksession.getObjects(), CoreMatchers.hasItems(st1, st2));
+            assertThat(ksession.getObjects()).hasSize(2);
+            assertThat((Collection<Object>) ksession.getObjects()).contains(st1, st2);
 
             clock.advanceTime(3, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertThat(ksession.getObjects().size(), equalTo(0));
+            assertThat(ksession.getObjects()).hasSize(0);
         } finally {
             ksession.dispose();
         }
@@ -525,8 +520,8 @@ public class StreamsTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("stream-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
-            assertNotNull(ksession.getEntryPoint("UsedEntryPoint"));
-            assertNotNull(ksession.getEntryPoint("UnusedEntryPoint"));
+            assertThat(ksession.getEntryPoint("UsedEntryPoint")).isNotNull();
+            assertThat(ksession.getEntryPoint("UnusedEntryPoint")).isNotNull();
         } finally {
             ksession.dispose();
         }
@@ -574,8 +569,8 @@ public class StreamsTest {
             verify(ael, times(1)).afterMatchFired(captor.capture());
 
             final AfterMatchFiredEvent aafe = captor.getValue();
-            assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(), is(95));
-            assertThat(((Number) aafe.getMatch().getDeclarationValue("$cnt")).intValue(), is(3));
+            assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue()).isEqualTo(95);
+            assertThat(((Number) aafe.getMatch().getDeclarationValue("$cnt")).intValue()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -617,7 +612,7 @@ public class StreamsTest {
             verify(ael, times(1)).afterMatchFired(captor.capture());
 
             final AfterMatchFiredEvent aafe = captor.getValue();
-            assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(), is(33));
+            assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue()).isEqualTo(33);
         } finally {
             ksession.dispose();
         }
@@ -654,8 +649,8 @@ public class StreamsTest {
             verify(ael, times(1)).afterMatchFired(captor.capture());
 
             final AfterMatchFiredEvent aafe = captor.getValue();
-            assertThat(aafe.getMatch().getDeclarationValue("f1"), CoreMatchers.is(st1));
-            assertThat(aafe.getMatch().getDeclarationValue("f2"), CoreMatchers.is(st2));
+            assertThat(aafe.getMatch().getDeclarationValue("f1")).isEqualTo(st1);
+            assertThat(aafe.getMatch().getDeclarationValue("f2")).isEqualTo(st2);
         } finally {
             ksession.dispose();
         }
@@ -674,7 +669,7 @@ public class StreamsTest {
                 "end\n";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages())
+        assertThat(kieBuilder.getResults().getMessages())
                 .withFailMessage("Should have raised a compilation error as Cheese is not declared as an event.")
                 .isNotEmpty();
     }

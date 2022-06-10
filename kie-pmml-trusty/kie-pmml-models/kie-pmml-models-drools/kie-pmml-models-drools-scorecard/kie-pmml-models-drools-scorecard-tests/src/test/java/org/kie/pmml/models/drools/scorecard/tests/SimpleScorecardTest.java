@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +30,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class SimpleScorecardTest extends AbstractPMMLTest {
@@ -81,10 +80,10 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         inputData.put("input3", 34.1);
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE1_FIELD)).isEqualTo(reasonCode1);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);
+        assertThat(pmml4Result.getResultVariables().get(REASON_CODE1_FIELD)).isEqualTo(reasonCode1);
+        assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -101,7 +100,7 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         inputData.put("input1", String.valueOf(input1));
         inputData.put("input2", String.valueOf(input2));
         inputData.put("input3", "34.1");
-        assertNotNull(evaluate(pmmlRuntime, inputData, MODEL_NAME));
+        assertThat(evaluate(pmmlRuntime, inputData, MODEL_NAME)).isNotNull();
     }
 
     @Test(expected = KiePMMLException.class)

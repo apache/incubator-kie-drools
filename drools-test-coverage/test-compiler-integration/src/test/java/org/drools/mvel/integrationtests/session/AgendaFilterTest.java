@@ -37,9 +37,8 @@ import org.kie.api.runtime.conf.DirectFiringOption;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.mockito.ArgumentCaptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -94,7 +93,7 @@ public class AgendaFilterTest {
 
         final ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael).afterMatchFired(arg.capture());
-        assertThat(arg.getValue().getMatch().getRule().getName(), is(expectedMatchingRuleName));
+        assertThat(arg.getValue().getMatch().getRule().getName()).isEqualTo(expectedMatchingRuleName);
     }
 
     @Test

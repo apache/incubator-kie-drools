@@ -94,7 +94,7 @@ public class MemoryVisitor extends ReflectiveVisitor
                 visit( sink1 );
             }
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
         this.indent--;
     }
@@ -112,7 +112,7 @@ public class MemoryVisitor extends ReflectiveVisitor
                 visit( sink1 );
             }
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
         this.indent--;
     }
@@ -130,7 +130,7 @@ public class MemoryVisitor extends ReflectiveVisitor
                 visit( sink1 );
             }
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
         this.indent--;
     }
@@ -143,7 +143,7 @@ public class MemoryVisitor extends ReflectiveVisitor
             checkObjectHashTable( memory.getRightTupleMemory() );
             checkLeftTupleMemory( memory.getLeftTupleMemory() );
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
 
         this.indent++;
@@ -156,7 +156,7 @@ public class MemoryVisitor extends ReflectiveVisitor
                 visit( sink1 );
             }
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
         this.indent--;
     }
@@ -168,7 +168,7 @@ public class MemoryVisitor extends ReflectiveVisitor
             checkObjectHashTable( memory.getRightTupleMemory() );
             checkLeftTupleMemory( memory.getLeftTupleMemory() );
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
 
         this.indent++;
@@ -181,7 +181,7 @@ public class MemoryVisitor extends ReflectiveVisitor
                 visit( sink1 );
             }
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
         this.indent--;
     }
@@ -245,7 +245,7 @@ public class MemoryVisitor extends ReflectiveVisitor
                 logger.info( indent() + "error" );
             }
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
 
         logger.info( indent() + "FieldIndexFacts: " + memory.size() + ":" + factCount );

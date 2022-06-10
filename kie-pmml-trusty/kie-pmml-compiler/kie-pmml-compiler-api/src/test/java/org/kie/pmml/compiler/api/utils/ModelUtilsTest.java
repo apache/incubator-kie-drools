@@ -55,11 +55,7 @@ import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getArray;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getDataField;
@@ -70,7 +66,6 @@ import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDa
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataType;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomMiningField;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomOutputField;
-import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomRow;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomRowWithCells;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTarget;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getTarget;
@@ -115,15 +110,15 @@ public class ModelUtilsTest {
         model.setMiningSchema(miningSchema);
         final List<Field<?>> fields = getFieldsFromDataDictionary(dataDictionary);
         Optional<String> retrieved = ModelUtils.getTargetFieldName(fields, model);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved.isPresent()).isFalse();
         usageType = MiningField.UsageType.PREDICTED;
         miningField = getMiningField(fieldName, usageType);
         miningSchema = new MiningSchema();
         miningSchema.addMiningFields(miningField);
         model.setMiningSchema(miningSchema);
         retrieved = ModelUtils.getTargetFieldName(fields, model);
-        assertTrue(retrieved.isPresent());
-        assertEquals(fieldName, retrieved.get());
+        assertThat(retrieved.isPresent()).isTrue();
+        assertThat(retrieved.get()).isEqualTo(fieldName);
     }
 
     @Test
@@ -139,8 +134,8 @@ public class ModelUtilsTest {
         final Model model = new RegressionModel();
         model.setMiningSchema(miningSchema);
         DATA_TYPE retrieved = ModelUtils.getTargetFieldType(getFieldsFromDataDictionary(dataDictionary), model);
-        assertNotNull(retrieved);
-        assertEquals(DATA_TYPE.STRING, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(DATA_TYPE.STRING);
     }
 
     @Test(expected = Exception.class)
@@ -172,8 +167,8 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(getFieldsFromDataDictionary(dataDictionary), model);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isEmpty());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEmpty();
     }
 
     @Test
@@ -191,20 +186,20 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(getFieldsFromDataDictionary(dataDictionary), model);
-        assertNotNull(retrieved);
-        assertEquals(miningSchema.getMiningFields().size(), retrieved.size());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSameSizeAs(miningSchema.getMiningFields());
         retrieved.forEach(kiePMMLNameOpType -> {
-            assertTrue(miningSchema.getMiningFields()
+            assertThat(miningSchema.getMiningFields()
                                .stream()
-                               .anyMatch(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue())));
+                               .anyMatch(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))).isTrue();
             Optional<DataField> optionalDataField = dataDictionary.getDataFields()
                     .stream()
                     .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))
                     .findFirst();
-            assertTrue(optionalDataField.isPresent());
+            assertThat(optionalDataField).isPresent();
             DataField dataField = optionalDataField.get();
             OP_TYPE expected = OP_TYPE.byName(dataField.getOpType().value());
-            assertEquals(expected, kiePMMLNameOpType.getOpType());
+            assertThat(kiePMMLNameOpType.getOpType()).isEqualTo(expected);
         });
     }
 
@@ -223,17 +218,17 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(getFieldsFromDataDictionary(dataDictionary), model);
-        assertNotNull(retrieved);
-        assertEquals(miningSchema.getMiningFields().size(), retrieved.size());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSameSizeAs(miningSchema.getMiningFields());
         retrieved.forEach(kiePMMLNameOpType -> {
             Optional<MiningField> optionalMiningField = miningSchema.getMiningFields()
                     .stream()
                     .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))
                     .findFirst();
-            assertTrue(optionalMiningField.isPresent());
+            assertThat(optionalMiningField).isPresent();
             MiningField miningField = optionalMiningField.get();
             OP_TYPE expected = OP_TYPE.byName(miningField.getOpType().value());
-            assertEquals(expected, kiePMMLNameOpType.getOpType());
+            assertThat(kiePMMLNameOpType.getOpType()).isEqualTo(expected);
         });
     }
 
@@ -256,17 +251,17 @@ public class ModelUtilsTest {
         model.setMiningSchema(miningSchema);
         model.setTargets(targets);
         List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(getFieldsFromDataDictionary(dataDictionary), model);
-        assertNotNull(retrieved);
-        assertEquals(miningSchema.getMiningFields().size(), retrieved.size());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSameSizeAs(miningSchema.getMiningFields());
         retrieved.forEach(kiePMMLNameOpType -> {
             Optional<MiningField> optionalMiningField = miningSchema.getMiningFields()
                     .stream()
                     .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))
                     .findFirst();
-            assertTrue(optionalMiningField.isPresent());
+            assertThat(optionalMiningField).isPresent();
             MiningField miningField = optionalMiningField.get();
             OP_TYPE expected = OP_TYPE.byName(miningField.getOpType().value());
-            assertEquals(expected, kiePMMLNameOpType.getOpType());
+            assertThat(kiePMMLNameOpType.getOpType()).isEqualTo(expected);
         });
     }
 
@@ -289,17 +284,17 @@ public class ModelUtilsTest {
         model.setMiningSchema(miningSchema);
         model.setTargets(targets);
         List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(getFieldsFromDataDictionary(dataDictionary), model);
-        assertNotNull(retrieved);
-        assertEquals(miningSchema.getMiningFields().size(), retrieved.size());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSameSizeAs(miningSchema.getMiningFields());
         retrieved.forEach(kiePMMLNameOpType -> {
             Optional<Target> optionalTarget = targets.getTargets()
                     .stream()
                     .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getField().getValue()))
                     .findFirst();
-            assertTrue(optionalTarget.isPresent());
+            assertThat(optionalTarget).isPresent();
             Target target = optionalTarget.get();
             OP_TYPE expected = OP_TYPE.byName(target.getOpType().value());
-            assertEquals(expected, kiePMMLNameOpType.getOpType());
+            assertThat(kiePMMLNameOpType.getOpType()).isEqualTo(expected);
         });
     }
 
@@ -317,9 +312,9 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         Map<String, DATA_TYPE> retrieved = ModelUtils.getTargetFieldsTypeMap(getFieldsFromDataDictionary(dataDictionary), model);
-        assertNotNull(retrieved);
-        assertEquals(miningSchema.getMiningFields().size(), retrieved.size());
-        assertTrue(retrieved instanceof LinkedHashMap);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSameSizeAs(miningSchema.getMiningFields());
+        assertThat(retrieved).isInstanceOf(LinkedHashMap.class);
         final Iterator<Map.Entry<String, DATA_TYPE>> iterator = retrieved.entrySet().iterator();
         for (int i = 0; i < miningSchema.getMiningFields().size(); i++) {
             MiningField miningField = miningSchema.getMiningFields().get(i);
@@ -329,7 +324,7 @@ public class ModelUtilsTest {
                     .get();
             DATA_TYPE expected = DATA_TYPE.byName(dataField.getDataType().value());
             final Map.Entry<String, DATA_TYPE> next = iterator.next();
-            assertEquals(expected, next.getValue());
+            assertThat(next.getValue()).isEqualTo(expected);
         }
     }
 
@@ -347,8 +342,8 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         Map<String, DATA_TYPE> retrieved = ModelUtils.getTargetFieldsTypeMap(getFieldsFromDataDictionary(dataDictionary), model);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isEmpty());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEmpty();
     }
 
     @Test
@@ -369,8 +364,8 @@ public class ModelUtilsTest {
         model.setMiningSchema(miningSchema);
         model.setTargets(targets);
         Map<String, DATA_TYPE> retrieved = ModelUtils.getTargetFieldsTypeMap(getFieldsFromDataDictionary(dataDictionary), model);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isEmpty());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEmpty();
     }
 
     @Test
@@ -386,9 +381,9 @@ public class ModelUtilsTest {
         dataDictionary.getDataFields().forEach(dataField -> {
                                                    OP_TYPE retrieved = ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
                                                                                             dataField.getName().getValue());
-                                                   assertNotNull(retrieved);
+                                                   assertThat(retrieved).isNotNull();
                                                    OP_TYPE expected = OP_TYPE.byName(dataField.getOpType().value());
-                                                    assertEquals(expected, retrieved);
+                                                    assertThat(retrieved).isEqualTo(expected);
                                                });
     }
 
@@ -422,9 +417,9 @@ public class ModelUtilsTest {
         miningSchema.getMiningFields().forEach(miningField -> {
             OP_TYPE retrieved = ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
                                                      miningField.getName().getValue());
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
             OP_TYPE expected = OP_TYPE.byName(miningField.getOpType().value());
-            assertEquals(expected, retrieved);
+            assertThat(retrieved).isEqualTo(expected);
         });
     }
 
@@ -469,9 +464,9 @@ public class ModelUtilsTest {
         targets.getTargets().forEach(target -> {
             OP_TYPE retrieved = ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
                                                      target.getField().getValue());
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
             OP_TYPE expected = OP_TYPE.byName(target.getOpType().value());
-            assertEquals(expected, retrieved);
+            assertThat(retrieved).isEqualTo(expected);
         });
     }
 
@@ -502,13 +497,13 @@ public class ModelUtilsTest {
     @Test
     public void getOpTypeFromFields() {
         Optional<OP_TYPE> opType = ModelUtils.getOpTypeFromFields(null, "vsd");
-        assertNotNull(opType);
-        assertFalse(opType.isPresent());
+        assertThat(opType).isNotNull();
+        assertThat(opType.isPresent()).isFalse();
         final DataDictionary dataDictionary = new DataDictionary();
         final List<Field<?>> fields = getFieldsFromDataDictionary(dataDictionary);
         opType = ModelUtils.getOpTypeFromFields(fields, "vsd");
-        assertNotNull(opType);
-        assertFalse(opType.isPresent());
+        assertThat(opType).isNotNull();
+        assertThat(opType.isPresent()).isFalse();
         IntStream.range(0, 3).forEach(i -> {
             final DataField dataField = getRandomDataField();
             dataDictionary.addDataFields(dataField);
@@ -517,54 +512,54 @@ public class ModelUtilsTest {
         fields.addAll(getFieldsFromDataDictionary(dataDictionary));
         dataDictionary.getDataFields().forEach(dataField -> {
             Optional<OP_TYPE> retrieved = ModelUtils.getOpTypeFromFields(fields, dataField.getName().getValue());
-            assertNotNull(retrieved);
-            assertTrue(retrieved.isPresent());
+            assertThat(retrieved).isNotNull();
+            assertThat(retrieved).isPresent();
             OP_TYPE expected = OP_TYPE.byName(dataField.getOpType().value());
-            assertEquals(expected, retrieved.get());
+            assertThat(retrieved.get()).isEqualTo(expected);
         });
     }
 
     @Test
     public void getOpTypeFromMiningFields() {
         Optional<OP_TYPE> opType = ModelUtils.getOpTypeFromMiningFields(null, "vsd");
-        assertNotNull(opType);
-        assertFalse(opType.isPresent());
+        assertThat(opType).isNotNull();
+        assertThat(opType.isPresent()).isFalse();
         final MiningSchema miningSchema = new MiningSchema();
         opType = ModelUtils.getOpTypeFromMiningFields(miningSchema, "vsd");
-        assertNotNull(opType);
-        assertFalse(opType.isPresent());
+        assertThat(opType).isNotNull();
+        assertThat(opType.isPresent()).isFalse();
         IntStream.range(0, 3).forEach(i -> {
             final MiningField miningField = getRandomMiningField();
             miningSchema.addMiningFields(miningField);
         });
         miningSchema.getMiningFields().forEach(miningField -> {
             Optional<OP_TYPE> retrieved = ModelUtils.getOpTypeFromMiningFields(miningSchema, miningField.getName().getValue());
-            assertNotNull(retrieved);
-            assertTrue(retrieved.isPresent());
+            assertThat(retrieved).isNotNull();
+            assertThat(retrieved).isPresent();
             OP_TYPE expected = OP_TYPE.byName(miningField.getOpType().value());
-            assertEquals(expected, retrieved.get());
+            assertThat(retrieved.get()).isEqualTo(expected);
         });
     }
 
     @Test
     public void getOpTypeFromTargets() {
         Optional<OP_TYPE> opType = ModelUtils.getOpTypeFromTargets(null, "vsd");
-        assertNotNull(opType);
-        assertFalse(opType.isPresent());
+        assertThat(opType).isNotNull();
+        assertThat(opType.isPresent()).isFalse();
         final Targets targets = new Targets();
         opType = ModelUtils.getOpTypeFromTargets(targets, "vsd");
-        assertNotNull(opType);
-        assertFalse(opType.isPresent());
+        assertThat(opType).isNotNull();
+        assertThat(opType.isPresent()).isFalse();
         IntStream.range(0, 3).forEach(i -> {
             final Target target = getRandomTarget();
             targets.addTargets(target);
         });
         targets.getTargets().forEach(target -> {
             Optional<OP_TYPE> retrieved = ModelUtils.getOpTypeFromTargets(targets, target.getField().getValue());
-            assertNotNull(retrieved);
-            assertTrue(retrieved.isPresent());
+            assertThat(retrieved).isNotNull();
+            assertThat(retrieved).isPresent();
             OP_TYPE expected = OP_TYPE.byName(target.getOpType().value());
-            assertEquals(expected, retrieved.get());
+            assertThat(retrieved.get()).isEqualTo(expected);
         });
     }
 
@@ -598,16 +593,16 @@ public class ModelUtilsTest {
         dataDictionary.getDataFields().forEach(dataField -> {
             String fieldName = dataField.getName().getValue();
             DataType retrieved = ModelUtils.getDataType(fields, fieldName);
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
             DataType expected = dataField.getDataType();
-            assertEquals(expected, retrieved);
+            assertThat(retrieved).isEqualTo(expected);
         });
         derivedFields.forEach(derivedField -> {
             String fieldName = derivedField.getName().getValue();
             DataType retrieved = ModelUtils.getDataType(fields, fieldName);
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
             DataType expected = derivedField.getDataType();
-            assertEquals(expected, retrieved);
+            assertThat(retrieved).isEqualTo(expected);
         });
     }
 
@@ -620,9 +615,9 @@ public class ModelUtilsTest {
         });
         dataDictionary.getDataFields().forEach(dataField -> {
             DATA_TYPE retrieved = ModelUtils.getDATA_TYPE(getFieldsFromDataDictionary(dataDictionary), dataField.getName().getValue());
-            assertNotNull(retrieved);
+            assertThat(retrieved).isNotNull();
             DATA_TYPE expected = DATA_TYPE.byName(dataField.getDataType().value());
-            assertEquals(expected, retrieved);
+            assertThat(retrieved).isEqualTo(expected);
         });
     }
 
@@ -643,31 +638,31 @@ public class ModelUtilsTest {
         List<String> values = Arrays.asList("32", "11", "43");
         Array array = getArray(Array.Type.INT, values);
         List<Object> retrieved = ModelUtils.getObjectsFromArray(array);
-        assertEquals(values.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(values);
         for (int i = 0; i < values.size(); i++) {
             Object obj = retrieved.get(i);
-            assertTrue(obj instanceof Integer);
+            assertThat(obj).isInstanceOf(Integer.class);
             Integer expected = Integer.valueOf(values.get(i));
-            assertEquals(expected, obj);
+            assertThat(obj).isEqualTo(expected);
         }
         values = Arrays.asList("just", "11", "fun");
         array = getArray(Array.Type.STRING, values);
         retrieved = ModelUtils.getObjectsFromArray(array);
-        assertEquals(values.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(values);
         for (int i = 0; i < values.size(); i++) {
             Object obj = retrieved.get(i);
-            assertTrue(obj instanceof String);
-            assertEquals(values.get(i), obj);
+            assertThat(obj).isInstanceOf(String.class);
+            assertThat(obj).isEqualTo(values.get(i));
         }
         values = Arrays.asList("23.11", "11", "123.123");
         array = getArray(Array.Type.REAL, values);
         retrieved = ModelUtils.getObjectsFromArray(array);
-        assertEquals(values.size(), retrieved.size());
+        assertThat(retrieved).hasSameSizeAs(values);
         for (int i = 0; i < values.size(); i++) {
             Object obj = retrieved.get(i);
-            assertTrue(obj instanceof Double);
+            assertThat(obj).isInstanceOf(Double.class);
             Double expected = Double.valueOf(values.get(i));
-            assertEquals(expected, obj);
+            assertThat(obj).isEqualTo(expected);
         }
     }
 
@@ -679,34 +674,34 @@ public class ModelUtilsTest {
         toConvert.setOpType(null);
         final DataField dataField = getDataField(fieldName, OpType.CATEGORICAL, DataType.STRING);
         org.kie.pmml.api.models.MiningField retrieved = ModelUtils.convertToKieMiningField(toConvert, dataField);
-        assertNotNull(retrieved);
-        assertEquals(fieldName, retrieved.getName());
-        assertEquals(FIELD_USAGE_TYPE.ACTIVE, retrieved.getUsageType());
-        assertEquals(DATA_TYPE.STRING, retrieved.getDataType());
-        assertNull(retrieved.getOpType());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getName()).isEqualTo(fieldName);
+        assertThat(retrieved.getUsageType()).isEqualTo(FIELD_USAGE_TYPE.ACTIVE);
+        assertThat(retrieved.getDataType()).isEqualTo(DATA_TYPE.STRING);
+        assertThat(retrieved.getOpType()).isNull();
         toConvert.setOpType(OpType.CATEGORICAL);
         retrieved = ModelUtils.convertToKieMiningField(toConvert, dataField);
-        assertEquals(OP_TYPE.CATEGORICAL, retrieved.getOpType());
+        assertThat(retrieved.getOpType()).isEqualTo(OP_TYPE.CATEGORICAL);
     }
 
     @Test
     public void convertToKieOutputField() {
         final OutputField toConvert = getRandomOutputField();
         org.kie.pmml.api.models.OutputField retrieved = ModelUtils.convertToKieOutputField(toConvert, null);
-        assertNotNull(retrieved);
-        assertEquals(toConvert.getName().getValue(), retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getName()).isEqualTo(toConvert.getName().getValue());
         OP_TYPE expectedOpType = OP_TYPE.byName(toConvert.getOpType().value());
-        assertEquals(expectedOpType, retrieved.getOpType());
+        assertThat(retrieved.getOpType()).isEqualTo(expectedOpType);
         DATA_TYPE expectedDataType = DATA_TYPE.byName(toConvert.getDataType().value());
-        assertEquals(expectedDataType, retrieved.getDataType());
-        assertEquals(toConvert.getTargetField().getValue(), retrieved.getTargetField());
+        assertThat(retrieved.getDataType()).isEqualTo(expectedDataType);
+        assertThat(retrieved.getTargetField()).isEqualTo(toConvert.getTargetField().getValue());
         RESULT_FEATURE expectedResultFeature = RESULT_FEATURE.byName(toConvert.getResultFeature().value());
-        assertEquals(expectedResultFeature, retrieved.getResultFeature());
+        assertThat(retrieved.getResultFeature()).isEqualTo(expectedResultFeature);
         toConvert.setOpType(null);
         toConvert.setTargetField(null);
         retrieved = ModelUtils.convertToKieOutputField(toConvert, null);
-        assertNull(retrieved.getOpType());
-        assertNull(retrieved.getTargetField());
+        assertThat(retrieved.getOpType()).isNull();
+        assertThat(retrieved.getTargetField()).isNull();
     }
 
     @Test
@@ -741,17 +736,17 @@ public class ModelUtilsTest {
                 .map(OutputCell.class::cast)
                 .findFirst()
                 .get();
-        assertEquals(2, retrieved.size());
+        assertThat(retrieved).hasSize(2);
         String expected = getPrefixedName(inputCell.getName());
-        assertTrue(retrieved.containsKey(expected));
-        assertEquals(inputCell.getValue(), retrieved.get(expected));
+        assertThat(retrieved).containsKey(expected);
+        assertThat(retrieved.get(expected)).isEqualTo(inputCell.getValue());
 
         expected = getPrefixedName(outputCell.getName());
-        assertTrue(retrieved.containsKey(expected));
-        assertEquals(outputCell.getValue(), retrieved.get(expected));
+        assertThat(retrieved).containsKey(expected);
+        assertThat(retrieved.get(expected)).isEqualTo(outputCell.getValue());
     }
 
     private void commonVerifyEventuallyBoxedClassName(String toVerify, DataType dataType) {
-        assertEquals(expectedBoxedClassName.get(dataType.value()), toVerify);
+        assertThat(toVerify).isEqualTo(expectedBoxedClassName.get(dataType.value()));
     }
 }

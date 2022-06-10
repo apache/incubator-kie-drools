@@ -18,17 +18,18 @@ package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.kie.dmn.feel.util.Generated;
-
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.util.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,8 +80,13 @@ public class Interval {
     private Interval(Bound<?> lowerBound, Bound<?> upperBound) {
         this.lowerBound = new Bound(lowerBound.getValue(), lowerBound.getBoundaryType(), this);
         this.upperBound = new Bound(upperBound.getValue(), upperBound.getBoundaryType(), this);
-        this.rule = 0;
-        this.col = 0;
+        if (lowerBound.getParent() != null && upperBound.getParent() != null && lowerBound.getParent().rule == upperBound.getParent().rule && lowerBound.getParent().col == upperBound.getParent().col) {
+            this.rule = lowerBound.getParent().rule;
+            this.col = lowerBound.getParent().col;
+        } else {
+            this.rule = 0;
+            this.col = 0;
+        }
         this.asRange = new RangeImpl(lowerBound.getBoundaryType(), nullIfInfinity(lowerBound.getValue()), nullIfInfinity(upperBound.getValue()), upperBound.getBoundaryType());
     }
 
@@ -254,6 +260,50 @@ public class Interval {
                                           domain.upperBound.getBoundaryType(),
                                           interval.rule,
                                           interval.col);
+            results.add(right);
+        }
+        LOG.debug("results {}", results);
+        return results;
+    }
+    
+    public static List<Interval> invertOverDomain(List<Interval> intervals, Interval domain) {
+        List<Interval> results = new ArrayList<>();
+        final List<Interval> is = flatten(intervals);
+        Iterator<Interval> iterator = is.iterator();
+        if (!iterator.hasNext()) {
+            return Arrays.asList(domain); // if none, inversion is the domain.
+        }
+        Interval i0 = iterator.next();
+        if (!domain.lowerBound.equals(i0.lowerBound)) {
+            Interval left = new Interval(domain.lowerBound.getBoundaryType(),
+                                         domain.lowerBound.getValue(),
+                                         i0.lowerBound.getValue(),
+                                         invertBoundary(i0.lowerBound.getBoundaryType()),
+                                         i0.rule,
+                                         i0.col);
+            results.add(left);
+        }
+        Interval iPrev = i0;
+        while (iterator.hasNext()) {
+            Interval iNext = iterator.next();
+            if ((!iPrev.upperBound.getValue().equals(iNext.lowerBound.getValue())) || (iPrev.upperBound.getBoundaryType() == RangeBoundary.OPEN && iNext.lowerBound.getBoundaryType() == RangeBoundary.OPEN)) {
+                Interval iNew = new Interval(invertBoundary(iPrev.upperBound.getBoundaryType()),
+                                              iPrev.upperBound.getValue(),
+                                              iNext.lowerBound.getValue(),
+                                              invertBoundary(iNext.lowerBound.getBoundaryType()),
+                                              iPrev.rule,
+                                              iPrev.col);
+                results.add(iNew);
+            }
+            iPrev = iNext;
+        }
+        if (!domain.upperBound.equals(iPrev.upperBound)) {
+            Interval right = new Interval(invertBoundary(iPrev.upperBound.getBoundaryType()),
+                                          iPrev.upperBound.getValue(),
+                                          domain.upperBound.getValue(),
+                                          domain.upperBound.getBoundaryType(),
+                                          iPrev.rule,
+                                          iPrev.col);
             results.add(right);
         }
         LOG.debug("results {}", results);

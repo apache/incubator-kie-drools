@@ -19,10 +19,8 @@ package org.kie.dmn.core;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
-import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
@@ -35,17 +33,7 @@ import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -61,25 +49,25 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
     public void testSimpleDecisionTableHitPolicyUnique() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "Medium", true);
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
-        assertThat(result.get("Approval Status"), is("Approved"));
+        assertThat(result.get("Approval Status")).isEqualTo("Approved");
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyUniqueSatisfies() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         // Risk Category is constrained to "High", "Low", "Medium" and "ASD" is not allowed
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
 
-        assertThat(result.get("Approval Status"), nullValue());
+        assertThat(result.get("Approval Status")).isNull();
         assertTrue(dmnResult.getMessages().size() > 0);
         DMNMessage message = dmnResult.getMessages().iterator().next();
         assertEquals(message.getText(), "DMN: RiskCategory='ASD' does not match any of the valid values \"High\", \"Low\", \"Medium\" for decision table '_0004-simpletable-U'. (DMN id: _0004-simpletable-U, FEEL expression evaluation error) ");
@@ -89,7 +77,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
     public void testSimpleDecisionTableHitPolicyUniqueNullWarn() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U-noinputvalues.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U-noinputvalues");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         check_testSimpleDecisionTableHitPolicyUniqueNullWarn(runtime, dmnModel);
     }
@@ -99,7 +87,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
 
-        assertThat(result.get("Approval Status"), nullValue());
+        assertThat(result.get("Approval Status")).isNull();
         assertTrue(dmnResult.getMessages().size() > 0);
         assertTrue(dmnResult.getMessages().stream().anyMatch(dm -> dm.getSeverity().equals(DMNMessage.Severity.WARN) && dm.getFeelEvent() instanceof HitPolicyViolationEvent && dm.getFeelEvent().getSeverity().equals(FEELEvent.Severity.WARN)));
     }
@@ -108,7 +96,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
     public void testSimpleDecisionTableHitPolicyUniqueNullWarn_ctxe() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U-noinputvalues-ctxe.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U-noinputvalues");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         check_testSimpleDecisionTableHitPolicyUniqueNullWarn(runtime, dmnModel);
     }
@@ -117,7 +105,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
     public void testSimpleDecisionTableHitPolicyUniqueNullWarn_ctxr() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U-noinputvalues-ctxr.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U-noinputvalues");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         check_testSimpleDecisionTableHitPolicyUniqueNullWarn(runtime, dmnModel);
     }
@@ -126,31 +114,31 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
     public void testDecisionTableHitPolicyUnique() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("BranchDistribution.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147", "Dessin 1");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("Branches dispersion", "Province");
         context.set("Number of Branches", BigDecimal.valueOf(10));
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        assertThat(dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Branches distribution"), is("Medium"));
+        assertThat(result.get("Branches distribution")).isEqualTo("Medium");
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyFirst() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-F.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-F");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "Medium", true);
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
         final Map<String, Object> decisionResult = (Map<String, Object>) result.get("Decision Result");
-        assertThat(decisionResult.values(), hasSize(2));
-        assertThat(decisionResult, hasEntry(is("Approval Status"), is("Approved")));
-        assertThat(decisionResult, hasEntry(is("Decision Review"), is("Decision final")));
+        assertThat(decisionResult).hasSize(2);
+        assertThat(decisionResult).containsEntry("Approval Status", "Approved");
+        assertThat(decisionResult).containsEntry("Decision Review", "Decision final");
     }
 
     @Test
@@ -166,16 +154,16 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
     private void testSimpleDecisionTableHitPolicyAny(final String resurceName, final String modelName, final boolean equalRules) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(resurceName, this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", modelName);
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "Medium", true);
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
         if (equalRules) {
-            assertThat(result.get("Approval Status"), is("Approved"));
+            assertThat(result.get("Approval Status")).isEqualTo("Approved");
         } else {
-            assertThat(dmnResult.hasErrors(), is(true));
-            assertThat((String) result.get("Approval Status"), isEmptyOrNullString());
+            assertThat(dmnResult.hasErrors()).isTrue();
+            assertThat((String) result.get("Approval Status")).isNullOrEmpty();
         }
     }
 
@@ -183,50 +171,50 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
     public void testSimpleDecisionTableHitPolicyPriority() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-P.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-P");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true);
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
-        assertThat(result.get("Approval Status"), is("Declined"));
+        assertThat(result.get("Approval Status")).isEqualTo("Declined");
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyPriorityMultipleOutputs() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-P-multiple-outputs.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-P-multiple-outputs");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "Medium", true);
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
         final Map<String, Object> decisionResult = (Map<String, Object>) result.get("Decision Result");
-        assertThat(decisionResult.values(), hasSize(2));
-        assertThat(decisionResult, hasEntry(is("Approval Status"), is("Declined")));
-        assertThat(decisionResult, hasEntry(is("Decision Review"), is("Needs verification")));
+        assertThat(decisionResult.values()).hasSize(2);
+        assertThat(decisionResult).containsEntry("Approval Status", "Declined");
+        assertThat(decisionResult).containsEntry("Decision Review", "Needs verification");
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyOutputOrder() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-O.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-O");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true);
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
         final List<String> decisionResults = (List<String>) result.get("Approval Status");
-        assertThat(decisionResults, hasSize(3));
-        assertThat(decisionResults, contains("Declined", "Declined", "Approved"));
+        assertThat(decisionResults).hasSize(3);
+        assertThat(decisionResults).contains("Declined", "Declined", "Approved");
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyOutputOrderMultipleOutputs() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-O-multiple-outputs.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-O-multiple-outputs");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "Medium", true);
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
         final List<Map<String, String>> decisionResult = (List<Map<String, String>>) result.get("Decision Result");
-        assertThat(decisionResult, hasSize(4));
+        assertThat(decisionResult).hasSize(4);
         // Must be ordered, so we can read from the list by index
         checkMultipleOutputResult(decisionResult.get(0), "Declined", "Needs verification");
         checkMultipleOutputResult(decisionResult.get(1), "Declined", "Decision final");
@@ -236,40 +224,40 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
 
     private void checkMultipleOutputResult(final Map<String, String> outputResult,
             final String expectedApprovalStatus, final String expectedDecisionReview) {
-        assertThat(outputResult, hasEntry(is("Approval Status"), is(expectedApprovalStatus)));
-        assertThat(outputResult, hasEntry(is("Decision Review"), is(expectedDecisionReview)));
+        assertThat(outputResult).containsEntry("Approval Status", expectedApprovalStatus);
+        assertThat(outputResult).containsEntry("Decision Review", expectedDecisionReview);
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyRuleOrder() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-R.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-R");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true);
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
         final List<String> decisionResults = (List<String>) result.get("Approval Status");
-        assertThat(decisionResults, hasSize(3));
-        assertThat(decisionResults, contains("Approved", "Needs review", "Declined"));
+        assertThat(decisionResults).hasSize(3);
+        assertThat(decisionResults).contains("Approved", "Needs review", "Declined");
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyCollect() {
         final List<BigDecimal> decisionResults = executeTestDecisionTableHitPolicyCollect(getSimpleTableContext(BigDecimal.valueOf(70 ), "Medium", true));
-        assertThat(decisionResults, hasSize(3));
-        assertThat(decisionResults, contains(BigDecimal.valueOf(10), BigDecimal.valueOf(25), BigDecimal.valueOf(13)));
+        assertThat(decisionResults).hasSize(3);
+        assertThat(decisionResults).contains(BigDecimal.valueOf(10), BigDecimal.valueOf(25), BigDecimal.valueOf(13));
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyCollectNoHits() {
         final List<BigDecimal> decisionResults = executeTestDecisionTableHitPolicyCollect(getSimpleTableContext(BigDecimal.valueOf(5 ), "Medium", true));
-        assertThat(decisionResults, hasSize(0));
+        assertThat(decisionResults).hasSize(0);
     }
 
     private List<BigDecimal> executeTestDecisionTableHitPolicyCollect(final DMNContext context) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0004-simpletable-C.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0004-simpletable-C");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
 
@@ -288,16 +276,16 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-C-sum-multiple-outputs.dmn", this.getClass());
         final DMNModel dmnModel =
                 runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-C-sum-multiple-outputs");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true);
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
 
         final DMNContext result = dmnResult.getContext();
         final Map<String, Object> decisionResult = (Map<String, Object>) result.get("Decision Result");
-        assertThat(decisionResult.values(), hasSize(2));
-        assertThat(decisionResult, hasEntry( "Value1", BigDecimal.valueOf( 25 ) ));
-        assertThat(decisionResult, hasEntry( "Value2", BigDecimal.valueOf( 32 ) ));
+        assertThat(decisionResult.values()).hasSize(2);
+        assertThat(decisionResult).containsEntry("Value1", BigDecimal.valueOf(25));
+        assertThat(decisionResult).containsEntry("Value2", BigDecimal.valueOf(32));
     }
 
     @Test
@@ -332,10 +320,10 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
             final String resourceName, final String modelName, final BigDecimal expectedResult, final DMNContext context) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(resourceName, this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", modelName);
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
-        assertThat(result.get("Status number"), is(expectedResult));
+        assertThat(result.get("Status number")).isEqualTo(expectedResult);
     }
 
     private DMNContext evaluateSimpleTableWithContext(final DMNModel model, final DMNRuntime runtime, final DMNContext context) {
@@ -355,38 +343,38 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
     public void testDecisionTableHitPolicyCollect() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Collect_Hit_Policy.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_da1a4dcb-01bf-4dee-9be8-f498bc68178c", "Collect Hit Policy");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("Input", 20);
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        assertThat(dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.hasErrors()).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Collect"), is(BigDecimal.valueOf(50)));
+        assertThat(result.get("Collect")).isEqualTo(BigDecimal.valueOf(50));
     }
 
     @Test
     public void testDecisionTableHitPolicyAnyWithOverlap_DoOverlap() {
         final DMNResult dmnResult = executeHitPolicyAnyWithOverlap(20);
-        assertThat(dmnResult.hasErrors(), is(true));
+        assertThat(dmnResult.hasErrors()).isTrue();
         assertTrue(dmnResult.getMessages().size() > 0);
         assertTrue(dmnResult.getMessages().stream().anyMatch(dm -> dm.getFeelEvent() instanceof HitPolicyViolationEvent && dm.getFeelEvent().getSeverity().equals(FEELEvent.Severity.ERROR)));
-        assertThat(dmnResult.getDecisionResultByName("a decision").getResult(), nullValue());
+        assertThat(dmnResult.getDecisionResultByName("a decision").getResult()).isNull();
     }
 
     @Test
     public void testDecisionTableHitPolicyAnyWithOverlap_NoOverlap() {
         final DMNResult dmnResult = executeHitPolicyAnyWithOverlap(-1);
-        assertThat(dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("a decision").getResult(), is("boh"));
+        assertThat(dmnResult.hasErrors()).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("a decision").getResult()).isEqualTo("boh");
     }
 
     private DMNResult executeHitPolicyAnyWithOverlap(long number) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("hitpolicyAnyWithOverlap.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_84872d6e-44c2-4c7c-a5b1-46be7b672fc8", "Drawing 1");
-        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel).isNotNull();
 
         final DMNContext context = DMNFactory.newContext();
         context.set("a number", number);
@@ -394,4 +382,5 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         return dmnResult;
     }
+
 }

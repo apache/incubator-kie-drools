@@ -37,8 +37,7 @@ import org.kie.dmn.typesafe.DMNTypeSafePackageName;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_STRICT;
@@ -318,7 +317,7 @@ public abstract class BaseVariantTest {
 
     protected FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, DMNTypeSafePackageName packageName, String className) throws Exception {
         Class<?> inputSetClass = compile.get(packageName.appendPackage(className));
-        assertThat(inputSetClass, notNullValue());
+        assertThat(inputSetClass).isNotNull();
         Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
         return (FEELPropertyAccessible) inputSetInstance;
     }

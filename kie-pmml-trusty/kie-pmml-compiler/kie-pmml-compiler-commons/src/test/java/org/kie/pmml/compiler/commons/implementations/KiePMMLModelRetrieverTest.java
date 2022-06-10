@@ -29,9 +29,7 @@ import org.kie.pmml.compiler.api.mocks.TestModel;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPMMLWithMiningRandomTestModel;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getPMMLWithRandomTestModel;
@@ -58,9 +56,9 @@ public class KiePMMLModelRetrieverTest {
                                                                        model,
                                                                        new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(compilationDTO);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
-        assertTrue(retrieved.get() instanceof KiePMMLTestingModel);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isInstanceOf(KiePMMLTestingModel.class);
     }
 
     @Test
@@ -72,8 +70,8 @@ public class KiePMMLModelRetrieverTest {
                                                                        pmml.getModels().get(0),
                                                                        new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(compilationDTO);
-        assertNotNull(retrieved);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
@@ -86,7 +84,7 @@ public class KiePMMLModelRetrieverTest {
                                                                        new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSources(compilationDTO);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
@@ -99,8 +97,8 @@ public class KiePMMLModelRetrieverTest {
                                                                        new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSources(compilationDTO);
-        assertNotNull(retrieved);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
@@ -115,8 +113,8 @@ public class KiePMMLModelRetrieverTest {
                                                                        new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(compilationDTO);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isPresent();
     }
 
     @Test
@@ -132,8 +130,8 @@ public class KiePMMLModelRetrieverTest {
                                                                        new HasClassLoaderMock());
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(compilationDTO);
-        assertNotNull(retrieved);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isNotPresent();
     }
 
 }

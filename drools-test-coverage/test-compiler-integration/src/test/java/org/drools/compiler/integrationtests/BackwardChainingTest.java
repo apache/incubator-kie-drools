@@ -74,8 +74,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.api.runtime.rule.Variable.v;
@@ -2231,7 +2231,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             }
         }
 
-        assertNotNull(node);
+        assertThat(node).isNotNull();
         final BetaNode stringBetaNode = (BetaNode) node.getObjectSinkPropagator().getSinks()[0];
         final QueryElementNode queryElementNode1 = (QueryElementNode) stringBetaNode.getSinkPropagator().getSinks()[0];
         final RightInputAdapterNode riaNode1 = (RightInputAdapterNode) queryElementNode1.getSinkPropagator().getSinks()[0];

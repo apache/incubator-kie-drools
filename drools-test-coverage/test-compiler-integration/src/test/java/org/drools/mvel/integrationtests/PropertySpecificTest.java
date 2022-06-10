@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -55,13 +54,12 @@ import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -102,7 +100,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "InitialFactImpl" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
 
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getObjectSinkPropagator().getSinks()[0];
         
@@ -128,7 +126,7 @@ public class PropertySpecificTest {
                                                                  rule);
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Person" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
 
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getObjectSinkPropagator().getSinks()[0];
         
@@ -154,7 +152,7 @@ public class PropertySpecificTest {
                                                                  rule);
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Person" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
 
         AlphaNode alphaNode = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[0];
         assertEquals( AllSetBitMask.get(), alphaNode.getDeclaredMask() );
@@ -187,7 +185,7 @@ public class PropertySpecificTest {
                                                                  rule);
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Cheese" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
 
         BetaNode betaNode = ( BetaNode ) otn.getObjectSinkPropagator().getSinks()[0];
         
@@ -214,7 +212,7 @@ public class PropertySpecificTest {
                                                                  rule);
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Cheese" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
 
         AlphaNode alphaNode = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[0];
         assertEquals( AllSetBitMask.get(), alphaNode.getDeclaredMask() );
@@ -240,7 +238,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "InitialFactImpl" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
         
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getObjectSinkPropagator().getSinks()[0];
         BetaNode betaNode = ( BetaNode ) liaNode.getSinkPropagator().getSinks()[1];
@@ -273,7 +271,7 @@ public class PropertySpecificTest {
         final KieSession ksession = kbase.newKieSession();
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Person" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
         
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getObjectSinkPropagator().getSinks()[0];
         BetaNode betaNode = ( BetaNode ) liaNode.getSinkPropagator().getSinks()[1];
@@ -309,7 +307,7 @@ public class PropertySpecificTest {
                                                                  rule);
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Cheese" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[0];
         assertEquals( AllSetBitMask.get(), alphaNode1.getDeclaredMask() );
@@ -389,7 +387,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
 
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getObjectSinkPropagator().getSinks()[0];
         
@@ -405,7 +403,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getObjectSinkPropagator().getSinks()[0];
@@ -424,7 +422,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);
@@ -447,7 +445,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);
@@ -471,7 +469,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);        
@@ -542,7 +540,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);        
@@ -615,7 +613,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
 
         BetaNode betaNode = ( BetaNode )  otn.getObjectSinkPropagator().getSinks()[0];
         assertEquals( EmptyBitMask.get(), betaNode.getRightDeclaredMask() );
@@ -632,8 +630,11 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
+
+
         List<String> sp = getSettableProperties(wm, otn);
         
         BetaNode betaNode = ( BetaNode )  otn.getObjectSinkPropagator().getSinks()[0];
@@ -651,7 +652,8 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);
@@ -680,7 +682,8 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);
@@ -711,8 +714,10 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
+
 
         List<String> sp = getSettableProperties(wm, otn);
 
@@ -743,7 +748,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+		assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);        
@@ -824,7 +829,7 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);        
@@ -912,7 +917,8 @@ public class PropertySpecificTest {
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);        
@@ -971,7 +977,8 @@ public class PropertySpecificTest {
         kbase.removeRule( "org.drools.mvel.integrationtests", "r0" );
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);        
@@ -1016,7 +1023,8 @@ public class PropertySpecificTest {
         kbase.removeRule( "org.drools.mvel.integrationtests", "r1" );
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);        
@@ -1067,7 +1075,8 @@ public class PropertySpecificTest {
         kbase.removeRule( "org.drools.mvel.integrationtests", "r2" );
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
-        assertNotNull( otn );
+
+        assertThat(otn).isNotNull();
         Class classType = ((ClassObjectType) otn.getObjectType()).getClassType();
 
         List<String> sp = getSettableProperties(wm, otn);        
@@ -1412,7 +1421,7 @@ public class PropertySpecificTest {
         c.setS("test");
         ksession.insert( c );
 
-        Assertions.assertThatThrownBy(() -> ksession.fireAllRules())
+        assertThatThrownBy(() -> ksession.fireAllRules())
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
@@ -1450,7 +1459,7 @@ public class PropertySpecificTest {
         factTypeB.set( factB, "on", false );
         ksession.insert( factB );
 
-        Assertions.assertThatThrownBy(() -> ksession.fireAllRules())
+        assertThatThrownBy(() -> ksession.fireAllRules())
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
@@ -2268,7 +2277,7 @@ public class PropertySpecificTest {
 
     @Test
     public void testBetaWith2RTNSinksExecInfiniteLoop() throws Exception {
-        Assertions.assertThatThrownBy(() -> testBetaWith2RTNSinksExec(true))
+        assertThatThrownBy(() -> testBetaWith2RTNSinksExec(true))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
@@ -2346,7 +2355,7 @@ public class PropertySpecificTest {
 
     @Test
     public void testBetaWith2BetaSinksExecInfiniteLoop() throws Exception {
-        Assertions.assertThatThrownBy(() -> testBetaWith2BetaSinksExec(true))
+        assertThatThrownBy(() -> testBetaWith2BetaSinksExec(true))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
@@ -2691,7 +2700,7 @@ public class PropertySpecificTest {
         }
 
         int cnt = kSession.fireAllRules();
-        assertThat(cnt, is(NUM-1));
+        assertThat(cnt).isEqualTo(NUM-1);
     }
 
     @Test
@@ -2731,6 +2740,6 @@ public class PropertySpecificTest {
         }
 
         int cnt = kSession.fireAllRules();
-        assertThat(cnt, is(NUM-1));
+        assertThat(cnt).isEqualTo(NUM-1);
     }
 }

@@ -23,11 +23,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractConcurrentInsertionsTest {
 
@@ -72,7 +73,7 @@ public abstract class AbstractConcurrentInsertionsTest {
                 }
             }
 
-            Assertions.assertThat(successCounter).isEqualTo(threadCount);
+            assertThat(successCounter).isEqualTo(threadCount);
             if (ksession != null) {
                 ksession.dispose();
             }

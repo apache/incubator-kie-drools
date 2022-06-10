@@ -22,9 +22,7 @@ import java.util.Optional;
 import org.junit.Test;
 import org.kie.pmml.api.enums.CLOSURE;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLDiscretizeBinTest {
     
@@ -35,136 +33,136 @@ public class KiePMMLDiscretizeBinTest {
     public void evaluateOpenOpen() {
         KiePMMLDiscretizeBin kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(null, 20, CLOSURE.OPEN_OPEN));
         Optional<String> retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(20, null, CLOSURE.OPEN_OPEN));
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(20, 40, CLOSURE.OPEN_OPEN));
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(40);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(50);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
     public void evaluateOpenClosed() {
         KiePMMLDiscretizeBin kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(null, 20, CLOSURE.OPEN_CLOSED));
         Optional<String> retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(20, null, CLOSURE.OPEN_CLOSED));
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(20, 40, CLOSURE.OPEN_CLOSED));
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(40);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(50);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
     public void evaluateClosedOpen() {
         KiePMMLDiscretizeBin kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(null, 20, CLOSURE.CLOSED_OPEN));
         Optional<String> retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(20, null, CLOSURE.CLOSED_OPEN));
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(20, 40, CLOSURE.CLOSED_OPEN));
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(40);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(50);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
 
     @Test
     public void evaluateClosedClosed() {
         KiePMMLDiscretizeBin kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(null, 20, CLOSURE.CLOSED_CLOSED));
         Optional<String> retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(20, null, CLOSURE.CLOSED_CLOSED));
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(20, 40, CLOSURE.CLOSED_CLOSED));
         retrieved = kiePMMLDiscretizeBin.evaluate(30);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(10);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
         retrieved = kiePMMLDiscretizeBin.evaluate(20);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(40);
-        assertTrue(retrieved.isPresent());
-        assertEquals(BINVALUE, retrieved.get());
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(BINVALUE);
         retrieved = kiePMMLDiscretizeBin.evaluate(50);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved).isNotPresent();
     }
     
     private KiePMMLDiscretizeBin getKiePMMLDiscretizeBin(KiePMMLInterval interval) {

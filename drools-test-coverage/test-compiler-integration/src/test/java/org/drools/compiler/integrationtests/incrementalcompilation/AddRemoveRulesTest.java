@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -52,9 +51,9 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -1092,11 +1091,11 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("globalInt", new AtomicInteger(0));
             TestUtil.insertFacts(kieSession, 1, 2, "1");
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -1149,22 +1148,22 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("globalInt", new AtomicInteger(0));
             TestUtil.insertFacts(kieSession, 1, 1, "1");
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
             resultsList.clear();
 
             TestUtil.addRules(kieSession, rule2);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
             resultsList.clear();
 
             TestUtil.addRules(kieSession, rule3);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE3_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE3_NAME);
             resultsList.clear();
 
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -1214,11 +1213,11 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1, 2, "1");
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE3_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE3_NAME);
             resultsList.clear();
             TestUtil.addRules(kieSession, rule2);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -1280,13 +1279,13 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
 
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            assertNotNull( fh1.getFirstLeftTuple() );
+            assertThat(fh1.getFirstLeftTuple()).isNotNull();
         } finally {
             kieSession.dispose();
         }
@@ -1302,13 +1301,13 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
 
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            assertNotNull( fh1.getFirstLeftTuple() );
+            assertThat(fh1.getFirstLeftTuple()).isNotNull();
         } finally {
             kieSession.dispose();
         }
@@ -1324,14 +1323,14 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
 
             final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            assertNotNull( fh1.getFirstRightTuple() );
+            assertThat(fh1.getFirstRightTuple()).isNotNull();
             assertEquals( 1, fh1.getFirstRightTuple().getTupleSink().getAssociatedRuleSize() );
             assertTrue( fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME)));
         } finally {
@@ -1349,14 +1348,14 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
 
             final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            assertNotNull( fh1.getFirstRightTuple() );
+            assertThat(fh1.getFirstRightTuple()).isNotNull();
             assertEquals( 1, fh1.getFirstRightTuple().getTupleSink().getAssociatedRuleSize() );
             assertTrue( fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME)));
         } finally {
@@ -1412,7 +1411,7 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
@@ -1439,7 +1438,7 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
@@ -1466,7 +1465,7 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, TestUtil.RULE3_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
@@ -1496,7 +1495,7 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3, 4, 5);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
@@ -1510,9 +1509,9 @@ public class AddRemoveRulesTest {
             final LeftTuple lt1_1 = lt1.getFirstChild();
             final LeftTuple lt1_2 = lt1_1.getHandleNext();
             final LeftTuple lt1_3= lt1_2.getHandleNext();
-            assertNotNull( lt1_1 );
-            assertNotNull( lt1_2 );
-            assertNotNull( lt1_3 );
+            assertThat(lt1_1).isNotNull();
+            assertThat(lt1_2).isNotNull();
+            assertThat(lt1_3).isNotNull();
             assertSame(lt1_3, lt1.getLastChild());
 
             assertSame(lt1_2, lt1_3.getHandlePrevious() );
@@ -1538,9 +1537,9 @@ public class AddRemoveRulesTest {
             final LeftTuple rt1_2 = rt1_1.getRightParentPrevious();
             final LeftTuple rt1_3 = rt1_2.getRightParentPrevious();
 
-            assertNotNull( rt1_1 );
-            assertNotNull( rt1_2 );
-            assertNotNull( rt1_3 );
+            assertThat(rt1_1).isNotNull();
+            assertThat(rt1_2).isNotNull();
+            assertThat(rt1_3).isNotNull();
 
             assertSame(rt1_2, rt1_3.getRightParentNext() );
             assertSame(rt1_1, rt1_2.getRightParentNext() );
@@ -1571,7 +1570,7 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 3, 4, 5);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
@@ -1585,9 +1584,9 @@ public class AddRemoveRulesTest {
             final LeftTuple lt1_1 = lt1.getFirstChild();
             final LeftTuple lt1_2 = lt1_1.getHandleNext();
             final LeftTuple lt1_3= lt1_2.getHandleNext();
-            assertNotNull( lt1_1 );
-            assertNotNull( lt1_2 );
-            assertNotNull( lt1_3 );
+            assertThat(lt1_1).isNotNull();
+            assertThat(lt1_2).isNotNull();
+            assertThat(lt1_3).isNotNull();
             assertSame(lt1_3, lt1.getLastChild());
 
             assertSame(lt1_2, lt1_3.getHandlePrevious() );
@@ -1613,9 +1612,9 @@ public class AddRemoveRulesTest {
             final LeftTuple rt1_2 = rt1_1.getRightParentPrevious();
             final LeftTuple rt1_3 = rt1_2.getRightParentPrevious();
 
-            assertNotNull( rt1_1 );
-            assertNotNull( rt1_2 );
-            assertNotNull( rt1_3 );
+            assertThat(rt1_1).isNotNull();
+            assertThat(rt1_2).isNotNull();
+            assertThat(rt1_3).isNotNull();
 
             assertSame(rt1_2, rt1_3.getRightParentNext() );
             assertSame(rt1_1, rt1_2.getRightParentNext() );
@@ -1676,11 +1675,11 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1, 2, 3);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -1717,11 +1716,11 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -1758,7 +1757,7 @@ public class AddRemoveRulesTest {
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             TestUtil.addRules(kieSession, rule1);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -1794,11 +1793,11 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -1835,7 +1834,7 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -1871,7 +1870,7 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -1908,7 +1907,7 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -1943,7 +1942,7 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -1982,7 +1981,7 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -2019,7 +2018,7 @@ public class AddRemoveRulesTest {
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -2055,7 +2054,7 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME,  TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -2091,7 +2090,7 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -2127,7 +2126,7 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.addRules(kieSession, rule2);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -2164,7 +2163,7 @@ public class AddRemoveRulesTest {
             kieSession.fireAllRules();
             TestUtil.addRules(kieSession, rule2);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -2200,11 +2199,11 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
             resultsList.clear();
             TestUtil.addRules(kieSession, rule2);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -2239,7 +2238,7 @@ public class AddRemoveRulesTest {
         this.addRuleToEngine(rule2);
 
         final SubnetworkTuple tuple = (SubnetworkTuple)fh.getFirstLeftTuple().getFirstChild().getFirstChild();
-        assertNotNull( tuple.getPeer() );
+        assertThat(tuple.getPeer()).isNotNull();
 
         this.deleteRule(rule2Name);
         assertNull( tuple.getPeer() );
@@ -2275,10 +2274,10 @@ public class AddRemoveRulesTest {
             final List<FactHandle> sessionFacts = TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
             TestUtil.removeFacts(kieSession, sessionFacts);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -2311,14 +2310,14 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
             TestUtil.addRules(kieSession, rule1, rule2);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -2352,14 +2351,14 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
             TestUtil.addRules(kieSession, rule1, rule2);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
         }
@@ -2393,21 +2392,21 @@ public class AddRemoveRulesTest {
             kieSession.setGlobal("list", resultsList);
             TestUtil.insertFacts(kieSession, 1);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME, TestUtil.RULE2_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
             TestUtil.addRules(kieSession, rule1);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -2443,11 +2442,11 @@ public class AddRemoveRulesTest {
             TestUtil.insertFacts(kieSession, 1);
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE2_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
+            assertThat(resultsList).containsOnly(TestUtil.RULE1_NAME);
             resultsList.clear();
             TestUtil.removeRules(kieSession, TestUtil.RULES_PACKAGE_NAME, TestUtil.RULE1_NAME);
             kieSession.fireAllRules();
-            Assertions.assertThat(resultsList).isEmpty();
+            assertThat(resultsList).isEmpty();
         } finally {
             kieSession.dispose();
         }
@@ -2492,13 +2491,13 @@ public class AddRemoveRulesTest {
         kieSession.getKieBase().removeRule("com.rules", "R2");
         kieSession.fireAllRules();
 
-        Assertions.assertThat(globalList).contains("R1");
+        assertThat(globalList).contains("R1");
         globalList.clear();
 
         kieSession.getKieBase().removeRule("com.rules", "R1");
         kieSession.fireAllRules();
 
-        Assertions.assertThat(globalList).isEmpty();
+        assertThat(globalList).isEmpty();
     }
 
     @Test
@@ -2537,7 +2536,7 @@ public class AddRemoveRulesTest {
         mapFact.put(new Object(), "1");
         kieSession.insert(mapFact);
         kieSession.fireAllRules();
-        Assertions.assertThat(globalList).contains("R1", "R2");
+        assertThat(globalList).contains("R1", "R2");
     }
 
     @Test
@@ -2569,7 +2568,7 @@ public class AddRemoveRulesTest {
         kieSession.setGlobal("list", globalList);
 
         kieSession.fireAllRules();
-        Assertions.assertThat(globalList).isEmpty();
+        assertThat(globalList).isEmpty();
 
         kieSession.insert(1);
         kieSession.insert(2);
@@ -2581,7 +2580,7 @@ public class AddRemoveRulesTest {
         kieSession.insert(mapFact);
 
         kieSession.fireAllRules();
-        Assertions.assertThat(globalList).contains("R1", "R2");
+        assertThat(globalList).contains("R1", "R2");
     }
 
     @Test
@@ -2610,7 +2609,7 @@ public class AddRemoveRulesTest {
         final KieSession kieSession = TestUtil.buildSessionInSteps(base, rule2, rule1);
         kieSession.setGlobal("list", globalList);
 
-        Assertions.assertThat(globalList).isEmpty();
+        assertThat(globalList).isEmpty();
 
         kieSession.insert(1);
         kieSession.insert("1");
@@ -2618,12 +2617,12 @@ public class AddRemoveRulesTest {
         kieSession.getKieBase().removeRule("com.rules", "R1");
         kieSession.fireAllRules();
 
-        Assertions.assertThat(globalList).contains("R2");
+        assertThat(globalList).contains("R2");
         globalList.clear();
 
         kieSession.getKieBase().removeRule("com.rules", "R2");
         kieSession.fireAllRules();
 
-        Assertions.assertThat(globalList).isEmpty();
+        assertThat(globalList).isEmpty();
     }
 }

@@ -15,9 +15,6 @@
 
 package org.drools.verifier.visitor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
@@ -44,6 +41,9 @@ import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class VerifierComponentTest {
 
@@ -111,8 +111,8 @@ public class VerifierComponentTest {
   }
 
   void assertVerifierComponent(VerifierComponent component, int line) {
-    assertNotNull(component);
-    assertNotNull(component.getDescr());
+    assertThat(component).isNotNull();
+    assertThat(component.getDescr()).isNotNull();
     if(component instanceof TextConsequence) {
       assertEquals(line, ((TextConsequence)component).getDescr().getConsequenceLine());
     } else {

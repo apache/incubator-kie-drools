@@ -38,7 +38,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLTextIndexNormalization;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
@@ -71,7 +71,7 @@ public class KiePMMLTextIndexNormalizationFactoryTest {
                                                                                                                 TEXTINDEXNORMALIZATION);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
-        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, Collectors.class,
                                                KiePMMLInlineTable.class, KiePMMLTextIndexNormalization.class,
                                                KiePMMLRow.class, Map.class, Stream.class);

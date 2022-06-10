@@ -19,7 +19,6 @@ package org.kie.dmn.core.internal.utils;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -31,9 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class DRGAnalysisUtilsTest {
 
@@ -51,8 +48,8 @@ public class DRGAnalysisUtilsTest {
     public void testCH11usingDMN13() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", DMN13specificTest.class, "Financial.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
         
         Collection<DRGDependency> reqMonthlyInstallment = DRGAnalysisUtils.dependencies(dmnModel, "Required monthly installment");
         assertThat(reqMonthlyInstallment).hasSize(3);
@@ -60,7 +57,7 @@ public class DRGAnalysisUtilsTest {
         assertThat(reqMonthlyInstallment.stream().filter(d -> d.getDependency().getName().equals("Requested product")).findFirst()).isPresent().get().hasFieldOrPropertyWithValue("degree", 0);
         assertThat(reqMonthlyInstallment.stream().filter(d -> d.getDependency().getName().equals("PMT")).findFirst()).isPresent().get().hasFieldOrPropertyWithValue("degree", 1);
         
-        Assertions.assertThatThrownBy(() -> DRGAnalysisUtils.inputDataOfDecision(dmnModel, "Routing rules")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> DRGAnalysisUtils.inputDataOfDecision(dmnModel, "Routing rules")).isInstanceOf(IllegalArgumentException.class);
         
         Collection<String> adjudicationIDs = DRGAnalysisUtils.inputDataOfDecision(dmnModel, "Adjudication");
         assertThat(adjudicationIDs).containsExactlyInAnyOrder("Supporting documents", "Bureau data", "Requested product", "Applicant data");

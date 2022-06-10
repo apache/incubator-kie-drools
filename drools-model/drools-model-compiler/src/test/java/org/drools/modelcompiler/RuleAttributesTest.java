@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -32,6 +31,7 @@ import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -344,7 +344,7 @@ public class RuleAttributesTest extends BaseModelTest {
         // disable, we won't succeed
         final FactHandle withoutAutoFocus = ksession.insert("withoutAutoFocus");
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(0);
+        assertThat(listener.size()).isEqualTo(0);
 
         // second test - we try to fire rule in agenda group with auto focus
         // enabled
@@ -353,10 +353,10 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.insert("autoFocus");
         ksession.delete(withoutAutoFocus);
         ksession.fireAllRules();
-        Assertions.assertThat(listener.size()).isEqualTo(2);
+        assertThat(listener.size()).isEqualTo(2);
         final String[] expected = {"b2", "b1"};
         for (int i = 0; i < listener.size(); i++) {
-            Assertions.assertThat(listener.get(i)).isEqualTo(expected[i]);
+            assertThat(listener.get(i)).isEqualTo(expected[i]);
         }
     }
 
@@ -396,8 +396,8 @@ public class RuleAttributesTest extends BaseModelTest {
 
         final Map<String, Object> metadata = ksession.getKieBase().getRule(PACKAGE_NAME, RULE_NAME).getMetaData();
 
-        Assertions.assertThat(metadata.containsKey(RULE_KEY)).isTrue();
-        Assertions.assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\"");
+        assertThat(metadata.containsKey(RULE_KEY)).isTrue();
+        assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\"");
     }
 
     @Test
@@ -417,10 +417,10 @@ public class RuleAttributesTest extends BaseModelTest {
 
         final Map<String, Object> metadata = ksession.getKieBase().getRule("org.test", "R1").getMetaData();
 
-        Assertions.assertThat(metadata.get("metaValueString")).isEqualTo("asd");
-        Assertions.assertThat(metadata.get("metaValueCheck1")).isSameAs(java.math.BigDecimal.ONE);
-        Assertions.assertThat(metadata.get("metaValueCheck2")).isSameAs(Boolean.TRUE);
-        Assertions.assertThat(metadata.get("metaValueCheck3")).isSameAs(System.out);
+        assertThat(metadata.get("metaValueString")).isEqualTo("asd");
+        assertThat(metadata.get("metaValueCheck1")).isSameAs(java.math.BigDecimal.ONE);
+        assertThat(metadata.get("metaValueCheck2")).isSameAs(Boolean.TRUE);
+        assertThat(metadata.get("metaValueCheck3")).isSameAs(System.out);
     }
 
     @Test

@@ -33,7 +33,11 @@ import org.drools.template.parser.DecisionTableParseException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -52,7 +56,7 @@ public class RuleWorksheetParseTest {
         final RuleSheetListener listener = getRuleSheetListener( stream );
 
         final CaseInsensitiveMap props = listener.getProperties();
-        assertNotNull( props );
+        assertThat(props).isNotNull();
         assertEquals( "data", props.getSingleProperty( "RuleSet" ) );
         assertEquals( "someMisc",  props.getSingleProperty( "misc" ) );
         /*
@@ -67,7 +71,7 @@ public class RuleWorksheetParseTest {
         final RuleSheetListener listener = getRuleSheetListener( stream );
 
         final CaseInsensitiveMap props = listener.getProperties();
-        assertNotNull( props );
+        assertThat(props).isNotNull();
         final String ruleSetName = props.getSingleProperty( "RuleSet" );
         assertEquals( "data", ruleSetName );
     }
@@ -78,10 +82,10 @@ public class RuleWorksheetParseTest {
         final RuleSheetListener listener = getRuleSheetListener( stream );
 
         final Package ruleset = listener.getRuleSet();
-        assertNotNull( ruleset );
+        assertThat(ruleset).isNotNull();
 
         final Rule firstRule = (Rule) ruleset.getRules().get( 0 );
-        assertNotNull( firstRule.getSalience() );
+        assertThat(firstRule.getSalience()).isNotNull();
         assertTrue( Integer.parseInt( firstRule.getSalience() ) > 0 );
 
         // System.out.println(ruleset.toXML());
@@ -105,7 +109,7 @@ public class RuleWorksheetParseTest {
                 cond.getSnippet() );
 
         Consequence cons = (Consequence) rule.getConsequences().get( 0 );
-        assertNotNull( cons );
+        assertThat(cons).isNotNull();
         assertEquals( "myObject.setIsValid(Y);", cons.getSnippet() );
 
         rule = (Rule) ruleset.getRules().get( 5 );
@@ -411,7 +415,7 @@ public class RuleWorksheetParseTest {
         final RuleSheetListener listener = getRuleSheetListener( stream );
 
         final Package ruleset = listener.getRuleSet();
-        assertNotNull( ruleset );
+        assertThat(ruleset).isNotNull();
         DRLOutput dout = new DRLOutput();
         ruleset.renderDRL(dout);
         String drl = dout.getDRL();
@@ -430,7 +434,7 @@ public class RuleWorksheetParseTest {
         final RuleSheetListener listener = getRuleSheetListener( stream );
 
         final Package ruleset = listener.getRuleSet();
-        assertNotNull( ruleset );
+        assertThat(ruleset).isNotNull();
         DRLOutput dout = new DRLOutput();
         ruleset.renderDRL(dout);
         String drl = dout.getDRL();
@@ -454,7 +458,7 @@ public class RuleWorksheetParseTest {
         final RuleSheetListener listener = getRuleSheetListener( stream );
 
         final Package ruleset = listener.getRuleSet();
-        assertNotNull( ruleset );
+        assertThat(ruleset).isNotNull();
         DRLOutput dout = new DRLOutput();
         ruleset.renderDRL(dout);
         String drl = dout.getDRL();
@@ -531,7 +535,7 @@ public class RuleWorksheetParseTest {
         final RuleSheetListener listener = getRuleSheetListener( stream );
 
         final Package ruleset = listener.getRuleSet();
-        assertNotNull( ruleset );
+        assertThat(ruleset).isNotNull();
         DRLOutput dout = new DRLOutput();
         ruleset.renderDRL( dout );
         String drl = dout.getDRL();

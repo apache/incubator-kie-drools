@@ -18,18 +18,19 @@ package org.drools.testcoverage.regression;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.api.event.kiebase.KieBaseEventListener;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MultipleKieBaseListenersTest {
@@ -56,11 +57,11 @@ public class MultipleKieBaseListenersTest {
         kieBase.addEventListener(listener);
         kieBase.addEventListener(listener);
 
-        Assertions.assertThat(kieBase.getKieBaseEventListeners().size()).isEqualTo(1);
+        assertThat(kieBase.getKieBaseEventListeners().size()).isEqualTo(1);
 
         kieBase.removeEventListener(listener);
 
-        Assertions.assertThat(kieBase.getKieBaseEventListeners()).isEmpty();
+        assertThat(kieBase.getKieBaseEventListeners()).isEmpty();
     }
 
 }
