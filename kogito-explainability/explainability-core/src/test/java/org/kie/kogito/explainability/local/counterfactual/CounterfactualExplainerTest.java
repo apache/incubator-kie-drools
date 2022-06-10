@@ -316,7 +316,7 @@ class CounterfactualExplainerTest {
         final CounterfactualResult result =
                 runCounterfactualSearch((long) seed, goal, features,
                         TestUtils.getSumThresholdModel(center, epsilon),
-                        DEFAULT_GOAL_THRESHOLD, 100_000);
+                        0.005, 200_000);
 
         final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
 
