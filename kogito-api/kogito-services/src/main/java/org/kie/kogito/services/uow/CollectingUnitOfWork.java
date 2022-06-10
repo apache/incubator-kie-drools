@@ -89,7 +89,6 @@ public class CollectingUnitOfWork implements UnitOfWork {
     protected Collection<WorkUnit<?>> sorted() {
         List<WorkUnit<?>> sortedCollectedWork = new ArrayList<>(collectedWork);
         sortedCollectedWork.sort(Comparator.comparing(WorkUnit::priority));
-
         return sortedCollectedWork;
     }
 

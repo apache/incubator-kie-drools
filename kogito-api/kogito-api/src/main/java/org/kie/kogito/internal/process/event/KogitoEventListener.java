@@ -24,7 +24,7 @@ public interface KogitoEventListener {
 
     /**
      * Returns unique set of event descriptions that this event listener is interested in.
-     * 
+     *
      * @return returns set of event definitions awaiting or empty set
      */
     default Set<EventDescription<?>> getEventDescriptions() {
@@ -39,8 +39,7 @@ public interface KogitoEventListener {
      * @param type the type of event
      * @param event the data associated with this event
      */
-    void signalEvent(String type,
-            Object event);
+    void signalEvent(String type, Object event);
 
     /**
      * Returns the event types this event listener is interested in.

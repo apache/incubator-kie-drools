@@ -94,19 +94,22 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     @Override
     public void update(String id, ProcessInstance instance) {
         LOGGER.debug("Updating process instance id: {}, processId: {}", id, instance.process().id());
-        if (isActive(instance)) {
-            if (lock) {
-                boolean isUpdated = repository.updateWithLock(process.id(), UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version());
-                if (!isUpdated) {
-                    throw new ProcessInstanceOptimisticLockingException(id);
+        try {
+            if (isActive(instance)) {
+                if (lock) {
+                    boolean isUpdated = repository.updateWithLock(process.id(), UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version());
+                    if (!isUpdated) {
+                        throw new ProcessInstanceOptimisticLockingException(id);
+                    }
+                } else {
+                    repository.updateInternal(process.id(), UUID.fromString(id), marshaller.marshallProcessInstance(instance));
                 }
             } else {
-                repository.updateInternal(process.id(), UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+                LOGGER.warn("Process instance id: {}, state: {} is not active, skipping update", id, instance.status());
             }
-        } else {
-            LOGGER.warn("Process instance id: {}, state: {} is not active, skipping update", id, instance.status());
+        } finally {
+            disconnect(instance);
         }
-        disconnect(instance);
     }
 
     @Override

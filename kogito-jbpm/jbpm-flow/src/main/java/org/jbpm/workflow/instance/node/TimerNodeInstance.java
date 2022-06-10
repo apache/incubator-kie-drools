@@ -25,7 +25,6 @@ import java.util.Set;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.TimerNode;
-import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.jobs.ExpirationTime;
@@ -113,7 +112,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
 
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener(TIMER_TRIGGERED_EVENT, this, false);
+        getProcessInstance().removeEventListener(TIMER_TRIGGERED_EVENT, this, false);
     }
 
     @Override

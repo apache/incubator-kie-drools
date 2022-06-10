@@ -163,8 +163,7 @@ class PostgresqlProcessInstancesIT {
 
         @Override
         public PostgresqlProcessInstances createProcessInstances(Process<?> process) {
-            PostgresqlProcessInstances instances = spy(super.createProcessInstances(process));
-            return instances;
+            return spy(super.createProcessInstances(process));
         }
 
     }

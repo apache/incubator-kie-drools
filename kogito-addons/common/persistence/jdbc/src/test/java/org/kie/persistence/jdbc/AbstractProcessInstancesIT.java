@@ -62,14 +62,17 @@ abstract class AbstractProcessInstancesIT {
         return process;
     }
 
+    boolean lock() {
+        return false;
+    }
+
     abstract DataSource getDataSource();
 
     @Test
     void testBasicTaskFlow() {
-        var factory = new TestProcessInstancesFactory(getDataSource(), false);
+        var factory = new TestProcessInstancesFactory(getDataSource(), lock());
         BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
-        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections
-                .singletonMap("test", "test")));
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
@@ -101,7 +104,7 @@ abstract class AbstractProcessInstancesIT {
 
     @Test
     void testMultipleProcesses() {
-        var factory = new TestProcessInstancesFactory(getDataSource(), false);
+        var factory = new TestProcessInstancesFactory(getDataSource(), lock());
         BpmnProcess utProcess = createProcess(factory, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> utProcessInstance = utProcess.createInstance(BpmnVariables.create());
         utProcessInstance.start();
@@ -139,7 +142,7 @@ abstract class AbstractProcessInstancesIT {
 
     @Test
     void testBasicFlow() {
-        var factory = new TestProcessInstancesFactory(getDataSource(), false);
+        var factory = new TestProcessInstancesFactory(getDataSource(), lock());
         BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections
                 .singletonMap("test",
@@ -164,7 +167,7 @@ abstract class AbstractProcessInstancesIT {
 
     @Test
     void testException() {
-        BpmnProcess process = configure(false);
+        BpmnProcess process = configure(lock());
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> processInstances.findById(TEST_ID));
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> processInstances.remove(TEST_ID));
@@ -172,7 +175,7 @@ abstract class AbstractProcessInstancesIT {
 
     @Test
     public void testUpdate() {
-        var factory = new TestProcessInstancesFactory(getDataSource(), true);
+        var factory = new TestProcessInstancesFactory(getDataSource(), lock());
         BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
@@ -183,19 +186,21 @@ abstract class AbstractProcessInstancesIT {
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
-        assertEquals(1L, instanceOne.version());
-        assertEquals(1L, instanceTwo.version());
+        assertEquals(lock() ? 1L : 0, instanceOne.version());
+        assertEquals(lock() ? 1L : 0, instanceTwo.version());
         instanceOne.updateVariables(BpmnVariables.create(Collections.singletonMap("s", "test")));
         try {
             BpmnVariables testvar = BpmnVariables.create(Collections.singletonMap("ss", "test"));
             instanceTwo.updateVariables(testvar);
-            fail("Updating process should have failed");
+            if (lock()) {
+                fail("Updating process should have failed");
+            }
         } catch (RuntimeException e) {
             assertThat(e.getMessage()).isEqualTo("Process instance with id '" + instanceOne.id() + "' updated or deleted by other request");
         }
         foundOne = processInstances.findById(processInstance.id());
         instanceOne = (BpmnProcessInstance) foundOne.get();
-        assertEquals(2L, instanceOne.version());
+        assertEquals(lock() ? 2L : 0, instanceOne.version());
 
         processInstances.remove(processInstance.id());
         assertThat(processInstances.size()).isZero();
@@ -204,7 +209,7 @@ abstract class AbstractProcessInstancesIT {
 
     @Test
     public void testRemove() {
-        var factory = new TestProcessInstancesFactory(getDataSource(), true);
+        var factory = new TestProcessInstancesFactory(getDataSource(), lock());
         BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
@@ -215,15 +220,11 @@ abstract class AbstractProcessInstancesIT {
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
-        assertEquals(1L, instanceOne.version());
-        assertEquals(1L, instanceTwo.version());
+        assertEquals(lock() ? 1L : 0, instanceOne.version());
+        assertEquals(lock() ? 1L : 0, instanceTwo.version());
 
         processInstances.remove(instanceOne.id());
-        try {
-            String id = instanceTwo.id();
-            processInstances.remove(id);
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage()).isEqualTo("Process instance with id: " + instanceOne.id() + " was deleted by other request.");
-        }
+        processInstances.remove(instanceTwo.id());
+        assertThat(processInstances.size()).isZero();
     }
 }

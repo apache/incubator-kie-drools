@@ -26,7 +26,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.postgresql.AbstractProcessInstancesFactory;
 import org.kie.kogito.persistence.postgresql.PostgresqlProcessInstances;
-import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
@@ -159,24 +158,14 @@ class PostgresqlProcessInstancesWithLockIT {
         assertEquals(1L, instanceTwo.version());
 
         processInstances.remove(instanceOne.id());
-        try {
-            String id = instanceTwo.id();
-            processInstances.remove(id);
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage()).isEqualTo("The document with ID: " + instanceOne.id() + " was updated or deleted by other request.");
-        }
+        processInstances.remove(instanceTwo.id());
+        assertThat(processInstances.size()).isZero();
     }
 
     private class PostgreProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
         public PostgreProcessInstancesFactory(PgPool client) {
             super(client, true, 10000l, true);
-        }
-
-        @Override
-        public PostgresqlProcessInstances createProcessInstances(Process<?> process) {
-            PostgresqlProcessInstances instances = super.createProcessInstances(process);
-            return instances;
         }
     }
 }

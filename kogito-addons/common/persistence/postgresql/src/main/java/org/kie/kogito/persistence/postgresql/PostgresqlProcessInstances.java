@@ -99,12 +99,15 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
             disconnect(instance);
             return;
         }
-        if (lock) {
-            updateWithLock(UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version());
-        } else {
-            updateInternal(UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+        try {
+            if (lock) {
+                updateWithLock(UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version());
+            } else {
+                updateInternal(UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+            }
+        } finally {
+            disconnect(instance);
         }
-        disconnect(instance);
     }
 
     @Override
