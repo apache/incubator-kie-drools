@@ -15,27 +15,32 @@
  */
 package org.drools.model.project.codegen;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
-import org.drools.drl.parser.DroolsError;
-import org.drools.codegen.common.DroolsModelBuildContext;
-import org.drools.modelcompiler.builder.ModelBuilderImpl;
+import org.drools.compiler.builder.impl.BuildResultCollector;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.ProcessorDecisionTable;
+import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
+import org.drools.compiler.lang.descr.CompositePackageDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.modelcompiler.tool.ExplicitCanonicalModelCompiler;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.internal.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static java.util.stream.Collectors.toList;
-import static org.drools.compiler.kie.builder.impl.AbstractKieModule.addDTableToCompiler;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourceConfiguration;
 
 /**
@@ -44,48 +49,78 @@ import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourc
 public class DroolsModelBuilder {
     public static final ReleaseIdImpl DUMMY_RELEASE_ID = new ReleaseIdImpl("dummy:dummy:0.0.0");
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsModelBuilder.class);
-    private final ModelBuilderImpl<KogitoPackageSources> modelBuilder;
+    private Collection<KogitoPackageSources> kogitoPackageSources;
 
-    private final DroolsModelBuildContext context;
     private final Collection<Resource> resources;
     private final boolean decisionTableSupported;
-    private final boolean hotReloadMode;
+    private final KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration;
 
-    public DroolsModelBuilder(DroolsModelBuildContext context, Collection<Resource> resources, boolean decisionTableSupported, boolean hotReloadMode) {
-        this.context = context;
+    public DroolsModelBuilder(Collection<Resource> resources, boolean decisionTableSupported) {
         this.resources = resources;
         this.decisionTableSupported = decisionTableSupported;
-        this.hotReloadMode = hotReloadMode;
-        this.modelBuilder = makeModelBuilder();
+        this.knowledgeBuilderConfiguration = new KnowledgeBuilderConfigurationImpl();
+        checkDependencyTableSupport();
     }
 
     void build() {
-        CompositeKnowledgeBuilder batch = modelBuilder.batch();
-        resources.forEach(f -> addResource(batch, f));
 
-        try {
-            batch.build();
-        } catch (RuntimeException e) {
-            for (DroolsError error : modelBuilder.getErrors().getErrors()) {
-                LOGGER.error(error.toString());
+        DrlResourceHandler drlResourceHandler =
+                new DrlResourceHandler(knowledgeBuilderConfiguration);
+        ProcessorDecisionTable decisionTableHandler =
+                new ProcessorDecisionTable(knowledgeBuilderConfiguration, DUMMY_RELEASE_ID);
+
+        Map<String, CompositePackageDescr> packages = new HashMap<>();
+
+        for (Resource resource : resources) {
+            try {
+                if (resource.getResourceType() == ResourceType.DRL) {
+                    handleDrl(drlResourceHandler, packages, resource);
+                } else if (resource.getResourceType() == ResourceType.DTABLE) {
+                    handleDtable(decisionTableHandler, packages, resource);
+                }
+            } catch (DroolsParserException | IOException e) {
+                throw new RuntimeException(e);
             }
-            LOGGER.error(e.getMessage());
-            throw new RuleCodegenError(e, modelBuilder.getErrors().getErrors());
         }
 
-        if (modelBuilder.hasErrors()) {
-            for (DroolsError error : modelBuilder.getErrors().getErrors()) {
+        ExplicitCanonicalModelCompiler<KogitoPackageSources> compiler =
+                ExplicitCanonicalModelCompiler.of(
+                packages.values(),
+                knowledgeBuilderConfiguration,
+                KogitoPackageSources::dumpSources);
+
+        compiler.process();
+        BuildResultCollector buildResults = compiler.getBuildResults();
+
+        if (buildResults.hasErrors()) {
+            for (KnowledgeBuilderResult error : buildResults.getResults()) {
                 LOGGER.error(error.toString());
             }
-            throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
+            throw new RuleCodegenError(buildResults.getAllResults());
         }
+
+        this.kogitoPackageSources = compiler.getPackageSources();
+    }
+
+    private void handleDtable(ProcessorDecisionTable decisionTableHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException {
+        PackageDescr packageDescr = decisionTableHandler.process(resource, loadDtableResourceConfiguration(resource));
+        CompositePackageDescr compositePackageDescr =
+                packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new);
+        compositePackageDescr.addPackageDescr(resource, packageDescr);
+    }
+
+    private void handleDrl(DrlResourceHandler drlResourceHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException, IOException {
+        PackageDescr packageDescr = drlResourceHandler.process(resource);
+        CompositePackageDescr compositePackageDescr =
+                packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new);
+        compositePackageDescr.addPackageDescr(resource, packageDescr);
     }
 
     public Collection<GeneratedFile> generateCanonicalModelSources() {
         List<GeneratedFile> modelFiles = new ArrayList<>();
         List<org.drools.modelcompiler.builder.GeneratedFile> legacyModelFiles = new ArrayList<>();
 
-        for (KogitoPackageSources pkgSources : modelBuilder.getPackageSources()) {
+        for (KogitoPackageSources pkgSources : this.kogitoPackageSources) {
             pkgSources.collectGeneratedFiles(legacyModelFiles);
             modelFiles.addAll(generateInternalResource(pkgSources));
         }
@@ -95,20 +130,14 @@ public class DroolsModelBuilder {
     }
 
     Collection<KogitoPackageSources> packageSources() {
-        return modelBuilder.getPackageSources();
+        return this.kogitoPackageSources;
     }
 
-    private ModelBuilderImpl<KogitoPackageSources> makeModelBuilder() {
+    private void checkDependencyTableSupport() {
         if (!decisionTableSupported &&
                 resources.stream().anyMatch(r -> r.getResourceType() == ResourceType.DTABLE)) {
             throw new MissingDecisionTableDependencyError();
         }
-
-        return new ModelBuilderImpl<>(
-                KogitoPackageSources::dumpSources,
-                KogitoKnowledgeBuilderConfigurationImpl.fromContext(context),
-                DUMMY_RELEASE_ID,
-                hotReloadMode);
     }
 
     private List<GeneratedFile> generateInternalResource(KogitoPackageSources pkgSources) {
@@ -122,27 +151,16 @@ public class DroolsModelBuilder {
         return modelFiles;
     }
 
-    private void addResource(CompositeKnowledgeBuilder batch, Resource resource) {
-        if (resource.getResourceType() == ResourceType.PROPERTIES) {
-            return;
-        }
-        if (resource.getResourceType() == ResourceType.DTABLE) {
-            Resource resourceProps = findPropertiesResource(resource);
-            if (resourceProps != null) {
-                ResourceConfiguration conf = loadResourceConfiguration(resource.getSourcePath(), x -> true, x -> {
-                    try {
-                        return resourceProps.getInputStream();
-                    } catch (IOException ioe) {
-                        throw new RuntimeException(ioe);
-                    }
-                });
-                if (conf instanceof DecisionTableConfiguration) {
-                    addDTableToCompiler(batch, resource, ((DecisionTableConfiguration) conf));
-                    return;
-                }
+    private ResourceConfiguration loadDtableResourceConfiguration(Resource resource) {
+        Resource resourceProps = findPropertiesResource(resource);
+        if (resourceProps == null) return null;
+        return loadResourceConfiguration(resource.getSourcePath(), x -> true, x -> {
+            try {
+                return resourceProps.getInputStream();
+            } catch (IOException ioe) {
+                throw new RuntimeException(ioe);
             }
-        }
-        batch.add(resource, resource.getResourceType());
+        });
     }
 
     private Resource findPropertiesResource(Resource resource) {

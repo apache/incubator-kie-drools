@@ -15,7 +15,7 @@
  */
 package org.drools.model.project.codegen;
 
-import org.drools.drl.parser.DroolsError;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,31 +23,31 @@ import java.util.stream.Collectors;
 
 public class RuleCodegenError extends Error {
 
-    private final DroolsError[] errors;
+    private final KnowledgeBuilderResult[] errors;
 
-    public RuleCodegenError(Collection<DroolsError> errors) {
-        this(errors.toArray(new DroolsError[errors.size()]));
+    public RuleCodegenError(Collection<? extends KnowledgeBuilderResult> errors) {
+        this(errors.toArray(new KnowledgeBuilderResult[errors.size()]));
     }
 
-    public RuleCodegenError(DroolsError... errors) {
+    public RuleCodegenError(KnowledgeBuilderResult... errors) {
         super("Errors were generated during the code-generation process:\n" +
                 Arrays.stream(errors)
-                        .map(DroolsError::toString)
+                        .map(KnowledgeBuilderResult::toString)
                         .collect(Collectors.joining("\n")));
         this.errors = errors;
     }
 
-    public RuleCodegenError(Exception ex, DroolsError... errors) {
+    public RuleCodegenError(Exception ex, KnowledgeBuilderResult... errors) {
         super("Errors were generated during the code-generation process:\n" +
                 ex.getMessage() + "\n" +
                 Arrays.stream(errors)
-                        .map(DroolsError::toString)
+                        .map(KnowledgeBuilderResult::toString)
                         .collect(Collectors.joining("\n")),
                 ex);
         this.errors = errors;
     }
 
-    public DroolsError[] getErrors() {
+    public KnowledgeBuilderResult[] getErrors() {
         return errors;
     }
 }
