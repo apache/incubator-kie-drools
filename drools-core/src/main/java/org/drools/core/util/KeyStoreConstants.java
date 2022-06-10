@@ -41,4 +41,7 @@ public class KeyStoreConstants {
     public static final String KEY_CERTIFICATE_TYPE = "JKS";
 
     public static final String KEY_PASSWORD_TYPE = "JCEKS";
+
+    // true if you allow verifying with old sign algorithm "MD5withRSA"
+    public static final String PROP_VERIFY_OLD_SIGN = "drools.serialization.verify.old.sign";
 }
