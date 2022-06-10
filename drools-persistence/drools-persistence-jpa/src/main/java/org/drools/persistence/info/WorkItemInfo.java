@@ -148,7 +148,7 @@ public class WorkItemInfo implements PersistentWorkItem {
 
                 context.close();
             } catch ( IOException e ) {
-                e.printStackTrace();
+                logger.error("Exception", e);
                 throw new IllegalArgumentException( "IOException while loading work item: " + e.getMessage() );
             }
         }

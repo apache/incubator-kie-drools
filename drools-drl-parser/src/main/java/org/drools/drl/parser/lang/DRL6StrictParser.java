@@ -74,6 +74,8 @@ import org.drools.drl.ast.descr.UnitDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.util.StringUtils;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -82,6 +84,8 @@ import java.util.ListIterator;
 import java.util.Map;
 
 public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DRL6StrictParser.class);
 
     private final DRL6Expressions exprParser;
 
@@ -1329,7 +1333,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
                     requiresType); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: " + re);
-            re.printStackTrace();
+            LOG.error("Exception", re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -3473,7 +3477,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
             positionalConstraints(null); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: " + re);
-            re.printStackTrace();
+            LOG.error("Exception", re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -4550,7 +4554,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
             exprParser.fullAnnotation(null);
         } catch (RecognitionException re) {
             System.err.println("impossible: " + re);
-            re.printStackTrace();
+            LOG.error("Exception", re);
         }
         boolean success = !state.failed;
         input.rewind(start);

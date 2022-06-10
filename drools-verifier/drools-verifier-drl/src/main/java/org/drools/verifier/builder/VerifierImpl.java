@@ -40,6 +40,8 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilderError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is the main user class for verifier. This will use rules to validate
@@ -48,6 +50,8 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 public class VerifierImpl
     implements
     Verifier {
+
+    private static final Logger LOG = LoggerFactory.getLogger(VerifierImpl.class);
 
     private KieBase verifierKnowledgeBase;
     private KieSession    ksession;
@@ -89,7 +93,7 @@ public class VerifierImpl
             ruleFlattener.visitPackageDescr( descr );
 
         } catch ( Throwable t ) {
-            t.printStackTrace();
+            LOG.error("Exception", t);
         }
     }
 

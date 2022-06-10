@@ -29,11 +29,15 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Please note this does not extend the DMNBaseConverter as it just need access to the node value itself.
  */
 public class QNameConverter implements Converter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(QNameConverter.class);
 
     @Override
     public boolean canConvert(Class clazz) {
@@ -49,7 +53,7 @@ public class QNameConverter implements Converter {
                 staxWriter.writeNamespace(qname.getPrefix(), qname.getNamespaceURI());
             } catch (XMLStreamException e) {
                 // TODO what to do?
-                e.printStackTrace();
+                LOG.error("Exception", e);
             }
         }
         writer.setValue(MarshallingUtils.formatQName(qname));

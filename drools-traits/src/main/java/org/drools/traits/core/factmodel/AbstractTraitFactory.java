@@ -47,8 +47,12 @@ import org.drools.mvel.asm.ClassFieldInspectorImpl;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractTraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes, Externalizable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractTraitFactory.class);
 
     protected VirtualPropertyMode mode = VirtualPropertyMode.MAP;
 
@@ -143,7 +147,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
 
             return proxy;
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         throw new LogicalTypeInconsistencyException("Could not apply trait " + trait + " to object " + core, trait, core.getClass());
     }
@@ -170,7 +174,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             factoryCache.put(key, konst);
             return konst;
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             return null;
         }
     }
@@ -235,7 +239,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             byte[] propWrapper = propWrapperBuilder.buildClass(cdef, getRootClassLoader());
             registerAndLoadTypeDefinition(wrapperName, propWrapper);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
 
         TraitProxyClassBuilder proxyBuilder = traitClassBuilderFactory.getTraitProxyBuilder();
@@ -245,7 +249,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             byte[] proxy = proxyBuilder.buildClass(cdef, getRootClassLoader());
             registerAndLoadTypeDefinition(proxyName, proxy);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
 
         try {
@@ -253,7 +257,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             getRootClassLoader().loadClass(wrapperName);
             return (Class<T>) getRootClassLoader().loadClass(proxyName);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             return null;
         }
     }
@@ -288,7 +292,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             try {
                 coreDef = buildClassDefinition(core.getClass(), core.getClass());
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error("Exception", e);
             }
         }
         if (coreDef == null) {
@@ -396,7 +400,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             byte[] wrapper = new TraitCoreWrapperClassBuilderImpl().buildClass(coreDef, getRootClassLoader());
             registerAndLoadTypeDefinition(wrapperName, wrapper);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
 
         return (Class<CoreWrapper<K>>) getRootClassLoader().loadClass(wrapperName);

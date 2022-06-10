@@ -60,7 +60,7 @@ public class KiePolicyHelper {
         } catch (Exception e) {
             ctx = null;
             log.error("Error loading and installing KIE security policy.", e);
-            e.printStackTrace();
+            log.error("Exception", e);
         }
         context = ctx;
         policyEnabled = ctx != null;

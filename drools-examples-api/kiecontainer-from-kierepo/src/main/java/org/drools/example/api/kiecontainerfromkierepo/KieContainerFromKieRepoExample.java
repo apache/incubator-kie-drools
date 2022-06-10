@@ -19,10 +19,14 @@ import org.drools.core.util.Drools;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintStream;
 
 public class KieContainerFromKieRepoExample {
+
+    private static final Logger LOG = LoggerFactory.getLogger(KieContainerFromKieRepoExample.class);
 
     public void go(PrintStream out) {
         KieServices ks = KieServices.Factory.get();
@@ -48,7 +52,7 @@ public class KieContainerFromKieRepoExample {
             Class cl = kContainer.getClassLoader().loadClass("org.drools.example.api.namedkiesession.Message");
             o = cl.getConstructor(new Class[]{String.class, String.class}).newInstance(name, text);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
         return o;
     }

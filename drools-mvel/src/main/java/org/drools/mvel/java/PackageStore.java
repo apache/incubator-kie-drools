@@ -20,10 +20,13 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PackageStore
     implements
     ResourceStore {
+    private static final Logger LOG = LoggerFactory.getLogger(PackageStore.class);
     private JavaDialectRuntimeData       javaDialectRuntimeData;
 
     private List<KnowledgeBuilderResult> errors;
@@ -47,7 +50,7 @@ public class PackageStore
             this.javaDialectRuntimeData.write( resourceName.asString(),
                                                clazzData );
         } catch ( final Exception e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             this.errors.add( new JavaDialectError( "PackageStore was unable to write resourceName='" + resourceName.asString() + "'" ) );
         }
     }

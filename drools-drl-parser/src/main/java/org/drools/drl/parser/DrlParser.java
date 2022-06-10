@@ -27,6 +27,8 @@ import org.drools.drl.parser.lang.Location;
 import org.drools.drl.parser.lang.dsl.DefaultExpanderResolver;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +42,8 @@ import java.util.List;
  * of the DRL source, including with DSL expanders if appropriate.
  */
 public class DrlParser {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DrlParser.class);
 
     // TODO: REMOVE THIS GENERIC MESSAGE ASAP
     private static final String     GENERIC_ERROR_MESSAGE = "Unexpected exception raised while parsing. This is a bug. Please contact the Development team :\n";
@@ -253,7 +257,7 @@ public class DrlParser {
                 return null;
             }
         } catch ( Exception e ) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
             final ParserError err = new ParserError( resource,
                                                      GENERIC_ERROR_MESSAGE + e.toString()+"\n"+ Arrays.toString( e.getStackTrace() ),
                                                      -1,

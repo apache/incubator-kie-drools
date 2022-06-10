@@ -59,10 +59,13 @@ import org.drools.util.ClassUtils;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.io.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;
 
 public class ClassDefinitionFactory {
+    private static final Logger LOG = LoggerFactory.getLogger(ClassDefinitionFactory.class);
 
     protected TypeDeclarationContext context;
 
@@ -374,7 +377,7 @@ public class ClassDefinitionFactory {
 
             def.setDefinedClass(concrete);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Exception", e);
         }
     }
 }
