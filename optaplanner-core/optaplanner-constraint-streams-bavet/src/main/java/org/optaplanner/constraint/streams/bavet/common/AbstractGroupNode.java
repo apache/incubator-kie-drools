@@ -47,41 +47,46 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
                     + ") was already added in the tupleStore.");
         }
         GroupKey_ groupKey = createGroupKey(tuple);
-        Group<OutTuple_, GroupKey_, ResultContainer_> group = groupMap.get(groupKey);
-        if (group == null) {
-            ResultContainer_ resultContainer = hasCollector ? supplier.get() : null;
-            OutTuple_ outTuple = createOutTuple(groupKey);
-            outTuple.setState(BavetTupleState.CREATING);
-            group = new Group<>(groupKey, resultContainer, outTuple);
-            groupMap.put(groupKey, group);
-            // Don't add it if (state == CREATING), but (group != null), which is a 2th insert of the same groupKey.
-            dirtyGroupQueue.add(group);
-        }
-        group.parentCount++;
-        Runnable undoAccumulator = hasCollector ? accumulate(group.resultContainer, tuple) : null;
-        GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> groupPart = new GroupPart<>(group, undoAccumulator);
-        tupleStore[groupStoreIndex] = groupPart;
+        createTuple(tuple, tupleStore, groupKey);
+    }
 
-        switch (group.outTuple.getState()) {
+    private void createTuple(InTuple_ tuple, Object[] tupleStore, GroupKey_ newGroupKey) {
+        Group<OutTuple_, GroupKey_, ResultContainer_> newGroup = groupMap.computeIfAbsent(newGroupKey, this::createGroup);
+        newGroup.parentCount++;
+        Runnable undoAccumulator = hasCollector ? accumulate(newGroup.resultContainer, tuple) : null;
+        GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> newGroupPart = new GroupPart<>(newGroup, undoAccumulator);
+        tupleStore[groupStoreIndex] = newGroupPart;
+
+        OutTuple_ outTuple = newGroup.outTuple;
+        switch (outTuple.getState()) {
             case CREATING:
-                break;
             case UPDATING:
                 break;
             case OK:
-                group.outTuple.setState(BavetTupleState.UPDATING);
-                dirtyGroupQueue.add(group);
+                outTuple.setState(BavetTupleState.UPDATING);
+                dirtyGroupQueue.add(newGroup);
                 break;
             case DYING:
-                group.outTuple.setState(BavetTupleState.UPDATING);
+                outTuple.setState(BavetTupleState.UPDATING);
                 break;
             case ABORTING:
-                group.outTuple.setState(BavetTupleState.CREATING);
+                outTuple.setState(BavetTupleState.CREATING);
                 break;
             case DEAD:
             default:
-                throw new IllegalStateException("Impossible state: The group (" + group + ") in node (" +
-                        this + ") is in an unexpected state (" + group.outTuple.getState() + ").");
+                throw new IllegalStateException("Impossible state: The group (" + newGroup + ") in node (" +
+                        this + ") is in an unexpected state (" + outTuple.getState() + ").");
         }
+    }
+
+    private Group<OutTuple_, GroupKey_, ResultContainer_> createGroup(GroupKey_ key) {
+        OutTuple_ outTuple = createOutTuple(key);
+        outTuple.setState(BavetTupleState.CREATING);
+        ResultContainer_ resultContainer = hasCollector ? supplier.get() : null;
+        Group<OutTuple_, GroupKey_, ResultContainer_> group = new Group<>(key, resultContainer, outTuple);
+        // Don't add it if (state == CREATING), but (newGroup != null), which is a 2nd insert of the same newGroupKey.
+        dirtyGroupQueue.add(group);
+        return group;
     }
 
     @Override
@@ -94,21 +99,18 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
             insert(tuple);
             return;
         }
-        Group<OutTuple_, GroupKey_, ResultContainer_> oldGroup = oldGroupPart.group;
 
+        oldGroupPart.undoAccumulate();
+        Group<OutTuple_, GroupKey_, ResultContainer_> oldGroup = oldGroupPart.group;
         GroupKey_ oldGroupKey = oldGroup.groupKey;
         GroupKey_ newGroupKey = createGroupKey(tuple);
-        if (hasCollector) {
-            oldGroupPart.undoAccumulator.run();
-        }
         if (newGroupKey.equals(oldGroupKey)) {
-            // No need to change parentCount because its the same group
+            // No need to change parentCount because it is the same group
             Runnable undoAccumulator = hasCollector ? accumulate(oldGroup.resultContainer, tuple) : null;
             GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> newGroupPart = new GroupPart<>(oldGroup, undoAccumulator);
             tupleStore[groupStoreIndex] = newGroupPart;
             switch (oldGroup.outTuple.getState()) {
                 case CREATING:
-                    break;
                 case UPDATING:
                     break;
                 case OK:
@@ -123,73 +125,44 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
                             this + ") is in an unexpected state (" + oldGroup.outTuple.getState() + ").");
             }
         } else {
-            oldGroup.parentCount--;
-            boolean killGroup = (oldGroup.parentCount == 0);
-            if (killGroup) {
-                Group<OutTuple_, GroupKey_, ResultContainer_> old = groupMap.remove(oldGroupKey);
-                if (old == null) {
-                    throw new IllegalStateException("Impossible state: the group for the groupKey ("
-                            + oldGroupKey + ") doesn't exist in the groupMap.");
+            killTuple(oldGroup);
+            createTuple(tuple, tupleStore, newGroupKey);
+        }
+    }
+
+    private void killTuple(Group<OutTuple_, GroupKey_, ResultContainer_> group) {
+        group.parentCount--;
+        boolean killGroup = (group.parentCount == 0);
+        if (killGroup) {
+            GroupKey_ groupKey = group.groupKey;
+            Group<OutTuple_, GroupKey_, ResultContainer_> old = groupMap.remove(groupKey);
+            if (old == null) {
+                throw new IllegalStateException("Impossible state: the group for the groupKey ("
+                        + groupKey + ") doesn't exist in the groupMap.");
+            }
+        }
+        OutTuple_ outTuple = group.outTuple;
+        switch (outTuple.getState()) {
+            case CREATING:
+                if (killGroup) {
+                    outTuple.setState(BavetTupleState.ABORTING);
                 }
-            }
-            switch (oldGroup.outTuple.getState()) {
-                case CREATING:
-                    if (killGroup) {
-                        oldGroup.outTuple.setState(BavetTupleState.ABORTING);
-                    }
-                    break;
-                case UPDATING:
-                    if (killGroup) {
-                        oldGroup.outTuple.setState(BavetTupleState.DYING);
-                    }
-                    break;
-                case OK:
-                    oldGroup.outTuple.setState(killGroup ? BavetTupleState.DYING : BavetTupleState.UPDATING);
-                    dirtyGroupQueue.add(oldGroup);
-                    break;
-                case DYING:
-                case ABORTING:
-                case DEAD:
-                default:
-                    throw new IllegalStateException("Impossible state: The group (" + oldGroup + ") in node (" +
-                            this + ") is in an unexpected state (" + oldGroup.outTuple.getState() + ").");
-            }
-
-            Group<OutTuple_, GroupKey_, ResultContainer_> newGroup = groupMap.get(newGroupKey);
-            if (newGroup == null) {
-                ResultContainer_ resultContainer = hasCollector ? supplier.get() : null;
-                OutTuple_ outTuple = createOutTuple(newGroupKey);
-                outTuple.setState(BavetTupleState.CREATING);
-                newGroup = new Group<>(newGroupKey, resultContainer, outTuple);
-                groupMap.put(newGroupKey, newGroup);
-                // Don't add it if (state == CREATING), but (newGroup != null), which is a 2th insert of the same newGroupKey.
-                dirtyGroupQueue.add(newGroup);
-            }
-            newGroup.parentCount++;
-            Runnable undoAccumulator = hasCollector ? accumulate(newGroup.resultContainer, tuple) : null;
-            GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> newGroupPart = new GroupPart<>(newGroup, undoAccumulator);
-            tupleStore[groupStoreIndex] = newGroupPart;
-
-            switch (newGroup.outTuple.getState()) {
-                case CREATING:
-                    break;
-                case UPDATING:
-                    break;
-                case OK:
-                    newGroup.outTuple.setState(BavetTupleState.UPDATING);
-                    dirtyGroupQueue.add(newGroup);
-                    break;
-                case DYING:
-                    newGroup.outTuple.setState(BavetTupleState.UPDATING);
-                    break;
-                case ABORTING:
-                    newGroup.outTuple.setState(BavetTupleState.CREATING);
-                    break;
-                case DEAD:
-                default:
-                    throw new IllegalStateException("Impossible state: The group (" + newGroup + ") in node (" +
-                            this + ") is in an unexpected state (" + newGroup.outTuple.getState() + ").");
-            }
+                break;
+            case UPDATING:
+                if (killGroup) {
+                    outTuple.setState(BavetTupleState.DYING);
+                }
+                break;
+            case OK:
+                outTuple.setState(killGroup ? BavetTupleState.DYING : BavetTupleState.UPDATING);
+                dirtyGroupQueue.add(group);
+                break;
+            case DYING:
+            case ABORTING:
+            case DEAD:
+            default:
+                throw new IllegalStateException("Impossible state: The group (" + group + ") in node (" +
+                        this + ") is in an unexpected state (" + outTuple.getState() + ").");
         }
     }
 
@@ -204,40 +177,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
         tupleStore[groupStoreIndex] = null;
         Group<OutTuple_, GroupKey_, ResultContainer_> group = groupPart.group;
-        group.parentCount--;
-        if (hasCollector) {
-            groupPart.undoAccumulator.run();
-        }
-        boolean killGroup = (group.parentCount == 0);
-        if (killGroup) {
-            Group<OutTuple_, GroupKey_, ResultContainer_> old = groupMap.remove(group.groupKey);
-            if (old == null) {
-                throw new IllegalStateException("Impossible state: the group for the groupKey ("
-                        + group.groupKey + ") doesn't exist in the groupMap.");
-            }
-        }
-        switch (group.outTuple.getState()) {
-            case CREATING:
-                if (killGroup) {
-                    group.outTuple.setState(BavetTupleState.ABORTING);
-                }
-                break;
-            case UPDATING:
-                if (killGroup) {
-                    group.outTuple.setState(BavetTupleState.DYING);
-                }
-                break;
-            case OK:
-                group.outTuple.setState(killGroup ? BavetTupleState.DYING : BavetTupleState.UPDATING);
-                dirtyGroupQueue.add(group);
-                break;
-            case DYING:
-            case ABORTING:
-            case DEAD:
-            default:
-                throw new IllegalStateException("Impossible state: The group (" + group + ") in node (" +
-                        this + ") is in an unexpected state (" + group.outTuple.getState() + ").");
-        }
+        groupPart.undoAccumulate();
+        killTuple(group);
     }
 
     protected abstract GroupKey_ createGroupKey(InTuple_ tuple);
@@ -256,7 +197,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
                     outTuple.setState(BavetTupleState.OK);
                     break;
                 case UPDATING:
-                    updateOutTupleToFinisher(group.outTuple, group.resultContainer);
+                    updateOutTupleToFinisher(outTuple, group.resultContainer);
                     nextNodesTupleLifecycle.update(outTuple);
                     outTuple.setState(BavetTupleState.OK);
                     break;
