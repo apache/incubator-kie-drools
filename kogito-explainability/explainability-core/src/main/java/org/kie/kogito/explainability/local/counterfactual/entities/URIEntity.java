@@ -64,7 +64,7 @@ public class URIEntity extends AbstractCategoricalEntity<URI> {
         return URIEntity.from(originalFeature, categories, false);
     }
 
-    @ValueRangeProvider(id = "categoricalRange")
+    @ValueRangeProvider(id = "uriRange")
     public Set<URI> getValueRange() {
         return allowedCategories;
     }
@@ -79,7 +79,7 @@ public class URIEntity extends AbstractCategoricalEntity<URI> {
         return FeatureFactory.newURIFeature(featureName, this.proposedValue);
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "categoricalRange" })
+    @PlanningVariable(valueRangeProviderRefs = { "uriRange" })
     public URI getProposedValue() {
         return proposedValue;
     }

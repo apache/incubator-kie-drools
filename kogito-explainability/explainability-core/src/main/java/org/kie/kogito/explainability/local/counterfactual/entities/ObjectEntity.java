@@ -63,7 +63,7 @@ public class ObjectEntity extends AbstractCategoricalEntity<Object> {
         return ObjectEntity.from(originalFeature, categories, false);
     }
 
-    @ValueRangeProvider(id = "categoricalRange")
+    @ValueRangeProvider(id = "objectRange")
     public Set<Object> getValueRange() {
         return allowedCategories;
     }
@@ -78,7 +78,7 @@ public class ObjectEntity extends AbstractCategoricalEntity<Object> {
         return FeatureFactory.newObjectFeature(featureName, this.proposedValue);
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "categoricalRange" })
+    @PlanningVariable(valueRangeProviderRefs = { "objectRange" })
     public Object getProposedValue() {
         return proposedValue;
     }

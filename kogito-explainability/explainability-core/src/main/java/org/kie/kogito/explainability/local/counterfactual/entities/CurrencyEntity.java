@@ -64,7 +64,7 @@ public class CurrencyEntity extends AbstractCategoricalEntity<Currency> {
         return CurrencyEntity.from(originalFeature, categories, false);
     }
 
-    @ValueRangeProvider(id = "categoricalRange")
+    @ValueRangeProvider(id = "currencyRange")
     public Set<Currency> getValueRange() {
         return allowedCategories;
     }
@@ -79,7 +79,7 @@ public class CurrencyEntity extends AbstractCategoricalEntity<Currency> {
         return FeatureFactory.newCurrencyFeature(featureName, this.proposedValue);
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "categoricalRange" })
+    @PlanningVariable(valueRangeProviderRefs = { "currencyRange" })
     public Currency getProposedValue() {
         return proposedValue;
     }

@@ -100,14 +100,14 @@ public class TimeEntity extends AbstractAlgebraicEntity<LocalTime> {
         return TimeEntity.from(originalFeature, minimum, maximum, featureDistribution, false);
     }
 
-    @ValueRangeProvider(id = "doubleRange")
+    @ValueRangeProvider(id = "timeRange")
     public ValueRange<Double> getValueRange() {
         final double minimum = LocalTime.MIN.until(rangeMinimum, ChronoUnit.SECONDS);
         final double maximum = LocalTime.MIN.until(rangeMaximum, ChronoUnit.SECONDS);
         return ValueRangeFactory.createDoubleValueRange(minimum, maximum);
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "doubleRange" })
+    @PlanningVariable(valueRangeProviderRefs = { "timeRange" })
     public LocalTime getProposedValue() {
         return proposedValue;
     }

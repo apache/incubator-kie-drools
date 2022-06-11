@@ -64,7 +64,7 @@ public class BinaryEntity extends AbstractCategoricalEntity<ByteBuffer> {
         return BinaryEntity.from(originalFeature, categories, false);
     }
 
-    @ValueRangeProvider(id = "categoricalRange")
+    @ValueRangeProvider(id = "binaryRange")
     public Set<ByteBuffer> getValueRange() {
         return allowedCategories;
     }
@@ -79,7 +79,7 @@ public class BinaryEntity extends AbstractCategoricalEntity<ByteBuffer> {
         return FeatureFactory.newBinaryFeature(featureName, this.proposedValue);
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "categoricalRange" })
+    @PlanningVariable(valueRangeProviderRefs = { "binaryRange" })
     public ByteBuffer getProposedValue() {
         return proposedValue;
     }

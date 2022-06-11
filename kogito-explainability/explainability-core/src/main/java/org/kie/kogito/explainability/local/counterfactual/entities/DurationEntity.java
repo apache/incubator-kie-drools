@@ -99,12 +99,12 @@ public class DurationEntity extends AbstractAlgebraicEntity<Duration> {
         return DurationEntity.from(originalFeature, minimum, maximum, featureDistribution, false);
     }
 
-    @ValueRangeProvider(id = "doubleRange")
+    @ValueRangeProvider(id = "durationRange")
     public ValueRange<Double> getValueRange() {
         return ValueRangeFactory.createDoubleValueRange(rangeMinimum.getSeconds(), rangeMaximum.getSeconds());
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "doubleRange" })
+    @PlanningVariable(valueRangeProviderRefs = { "durationRange" })
     public Duration getProposedValue() {
         return proposedValue;
     }

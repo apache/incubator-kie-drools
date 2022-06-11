@@ -18,11 +18,17 @@ package org.kie.kogito.explainability.local.counterfactual;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.kogito.explainability.local.counterfactual.entities.BinaryEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.BooleanEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.CategoricalEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.CurrencyEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.DoubleEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.DurationEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.IntegerEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.LongEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.ObjectEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.TimeEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.URIEntity;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
@@ -56,8 +62,18 @@ public class SolverConfigBuilder {
         public SolverConfig build() {
             SolverConfig solverConfig = new SolverConfig();
 
-            solverConfig.withEntityClasses(LongEntity.class, IntegerEntity.class, DoubleEntity.class, BooleanEntity.class,
-                    CategoricalEntity.class);
+            solverConfig.withEntityClasses(
+                    BinaryEntity.class,
+                    BooleanEntity.class,
+                    CategoricalEntity.class,
+                    CurrencyEntity.class,
+                    DoubleEntity.class,
+                    DurationEntity.class,
+                    IntegerEntity.class,
+                    LongEntity.class,
+                    ObjectEntity.class,
+                    TimeEntity.class,
+                    URIEntity.class);
             solverConfig.setSolutionClass(CounterfactualSolution.class);
 
             ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
