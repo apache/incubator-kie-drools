@@ -17,11 +17,6 @@ final class IndexerKey {
     private final int toExclusive;
 
     public IndexerKey(IndexProperties indexProperties, int fromInclusive, int toExclusive) {
-        if (fromInclusive < 0) {
-            throw new IllegalStateException("Impossible state: starting index (" + fromInclusive + ") is invalid.");
-        } else if (toExclusive <= fromInclusive) {
-            throw new IllegalStateException("Impossible state: final index (" + toExclusive + ") is invalid.");
-        }
         this.indexProperties = indexProperties;
         this.fromInclusive = fromInclusive;
         this.toExclusive = toExclusive;

@@ -13,8 +13,7 @@ final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_,
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        Objects.requireNonNull(value);
-        Value_ old = tupleMap.put(tuple, value);
+        Value_ old = tupleMap.put(tuple, Objects.requireNonNull(value));
         if (old != null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
@@ -46,9 +45,7 @@ final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_,
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
-        if (!isEmpty()) {
-            tupleMap.forEach(tupleValueVisitor);
-        }
+        tupleMap.forEach(tupleValueVisitor);
     }
 
     @Override

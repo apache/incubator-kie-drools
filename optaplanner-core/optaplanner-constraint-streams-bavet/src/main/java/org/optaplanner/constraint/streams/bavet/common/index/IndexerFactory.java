@@ -3,7 +3,6 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -48,10 +47,9 @@ public class IndexerFactory {
         } else if (joinerTypes.length == 1) { // Single joiner maps directly to EqualsIndexer or ComparisonIndexer.
             JoinerType joinerType = joinerTypes[0];
             if (joinerType == JoinerType.EQUAL) {
-                return new EqualsIndexer<>(s -> s.getProperty(0), NoneIndexer::new);
+                return new EqualsIndexer<>(NoneIndexer::new);
             } else {
-                return new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(), s -> s.getProperty(0),
-                        NoneIndexer::new);
+                return new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(), NoneIndexer::new);
             }
         }
         /*
@@ -90,10 +88,12 @@ public class IndexerFactory {
                  * Example 1: For an EQUAL+LESS_THAN joiner, indexer key is of length 1 and starts at position 0.
                  * Example 2: For an LESS_THAN+EQUAL+EQUAL joiner, indexer key is of length 2 and starts at position 1.
                  */
-                Function<IndexProperties, Object> indexerKeyFunction =
-                        indexProperties -> indexProperties.getIndexerKey(previousEndingPropertyExclusive,
-                                endingPropertyExclusive);
-                downstreamIndexerSupplier = () -> new EqualsIndexer<>(indexerKeyFunction, actualDownstreamIndexerSupplier);
+                if (endingPropertyExclusive <= previousEndingPropertyExclusive) {
+                    throw new IllegalStateException("Impossible state: index key ending position <= starting position ("
+                            + endingPropertyExclusive + " <= " + previousEndingPropertyExclusive + ")");
+                }
+                downstreamIndexerSupplier = () -> new EqualsIndexer<>(previousEndingPropertyExclusive, endingPropertyExclusive,
+                        actualDownstreamIndexerSupplier);
             } else {
                 JoinerType actualJoinerType = isLeftBridge ? joinerType : joinerType.flip();
                 /*
@@ -104,10 +104,8 @@ public class IndexerFactory {
                  * Example 1: For an EQUAL+LESS_THAN joiner, comparison key is on position 1.
                  * Example 2: For an EQUAL+EQUAL+LESS_THAN joiner: comparison key is on position 2.
                  */
-                Function<IndexProperties, Comparable> comparisonIndexPropertyFunction =
-                        indexProperties -> indexProperties.getProperty(previousEndingPropertyExclusive);
-                downstreamIndexerSupplier = () -> new ComparisonIndexer<>(actualJoinerType,
-                        comparisonIndexPropertyFunction, actualDownstreamIndexerSupplier);
+                downstreamIndexerSupplier = () -> new ComparisonIndexer<>(actualJoinerType, previousEndingPropertyExclusive,
+                        actualDownstreamIndexerSupplier);
             }
         }
         return downstreamIndexerSupplier.get();

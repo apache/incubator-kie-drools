@@ -31,12 +31,6 @@ public interface IndexProperties {
      */
     default <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
         int length = toExclusive - fromInclusive;
-        if (length < 1 || length > maxLength()) {
-            throw new IllegalArgumentException("Impossible state: key length (" + length + ").");
-        } else if (fromInclusive >= toExclusive) {
-            throw new IllegalArgumentException("Impossible state: key from (" + fromInclusive + ") >= key to (" +
-                    toExclusive + ").");
-        }
         switch (length) {
             case 1:
                 return getProperty(fromInclusive);
