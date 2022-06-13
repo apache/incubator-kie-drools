@@ -110,7 +110,7 @@ public class DroolsModelBuilder {
     }
 
     private void handleDrl(DrlResourceHandler drlResourceHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException, IOException {
-        PackageDescr packageDescr = drlResourceHandler.process(resource, null);
+        PackageDescr packageDescr = drlResourceHandler.process(resource);
         CompositePackageDescr compositePackageDescr =
                 packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new);
         compositePackageDescr.addPackageDescr(resource, packageDescr);

@@ -35,6 +35,7 @@ public class DecisionTableResourceHandler extends ResourceHandler {
         super(configuration, releaseId);
     }
 
+    @Override
     public boolean handles(ResourceType type) {
         return type == ResourceType.DTABLE;
     }

@@ -435,7 +435,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
             IOException {
-        addPackageWithResource(new DrlResourceHandler(configuration).process(resource, null), resource);
+        addPackageWithResource(new DrlResourceHandler(configuration).process(resource), resource);
     }
 
     public void addPackageFromDslr(final Resource resource) throws DroolsParserException,

@@ -58,6 +58,11 @@ public abstract class ResourceHandler {
 
     public abstract PackageDescr process(Resource resource, ResourceConfiguration configuration) throws DroolsParserException, IOException;
 
+    public final PackageDescr process(Resource resource) throws DroolsParserException, IOException {
+        return process(resource, null);
+    }
+
+
     public abstract boolean handles(ResourceType type);
 
     public Collection<KnowledgeBuilderResult> getResults(){

@@ -34,6 +34,7 @@ public class DslrResourceHandler extends ResourceHandler {
         this.expander = expander;
     }
 
+    @Override
     public boolean handles(ResourceType type) {
         return type == ResourceType.DSLR || type == ResourceType.RDSLR;
     }

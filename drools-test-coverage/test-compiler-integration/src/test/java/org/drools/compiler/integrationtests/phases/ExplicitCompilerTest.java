@@ -94,7 +94,7 @@ public class ExplicitCompilerTest {
 
 
         DrlResourceHandler handler = new DrlResourceHandler(configuration);
-        final PackageDescr packageDescr = handler.process(resource, null);
+        final PackageDescr packageDescr = handler.process(resource);
         handler.getResults().forEach(results::addBuilderResult);
 
 

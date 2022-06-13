@@ -85,7 +85,9 @@ public class PackageDescrBuilder {
 
     private ResourceHandler handlerForType(ResourceType type) {
         for (ResourceHandler mapper : mappers) {
-            if (mapper.handles(type)) return mapper;
+            if (mapper.handles(type)) {
+                return mapper;
+            }
         }
         throw new IllegalArgumentException("No registered mapper for type " + type);
     }

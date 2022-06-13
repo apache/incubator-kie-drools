@@ -45,7 +45,7 @@ public class ExplicitCanonicalModelCompilerTest {
         BuildResultCollectorImpl results = new BuildResultCollectorImpl();
 
         DrlResourceHandler handler = new DrlResourceHandler(configuration);
-        final PackageDescr packageDescr = handler.process(resource, null);
+        final PackageDescr packageDescr = handler.process(resource);
         handler.getResults().forEach(results::addBuilderResult);
 
         CompositePackageDescr compositePackageDescr = new CompositePackageDescr(resource, packageDescr);
