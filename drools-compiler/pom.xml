@@ -184,6 +184,7 @@
               org.osgi.*;resolution:=optional,
               org.drools.core.base.accumulators;resolution:=optional,
               org.drools.core.rule.builder.dialect.asm;resolution:=optional,
+              org.drools.core.util.bitmask;resolution:=optional,
               org.drools.ecj;resolution:=optional,
               org.drools.mvel.asm;resolution:=optional,
               org.drools.cdi;resolution:=optional,
