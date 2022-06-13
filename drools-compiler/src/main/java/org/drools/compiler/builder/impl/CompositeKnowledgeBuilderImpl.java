@@ -15,15 +15,7 @@
 
 package org.drools.compiler.builder.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.Resource;
@@ -36,6 +28,13 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 
     private final KnowledgeBuilderImpl kBuilder;
@@ -46,8 +45,14 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
     public ResourceType currentType = null;
 
+    PackageDescrBuilder packageDescrBuilder;
+
     public CompositeKnowledgeBuilderImpl(KnowledgeBuilderImpl kBuilder) {
         this.kBuilder = kBuilder;
+        this.packageDescrBuilder = new PackageDescrBuilder(
+                kBuilder.getBuilderConfiguration(),
+                kBuilder.getReleaseId(),
+                kBuilder::getDslExpander);
     }
 
     public CompositeKnowledgeBuilder type(ResourceType type) {
@@ -160,19 +165,11 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private Collection<CompositePackageDescr> buildPackageDescr() {
-        Map<String, CompositePackageDescr> packages = new HashMap<>();
-        buildResource(packages, ResourceType.DRL, ResourceToPkgDescrMapper.DRL_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.GDRL,ResourceToPkgDescrMapper. DRL_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.RDRL, ResourceToPkgDescrMapper.DRL_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.DESCR, ResourceToPkgDescrMapper.DRL_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.DSLR, ResourceToPkgDescrMapper.DSLR_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.RDSLR, ResourceToPkgDescrMapper.DSLR_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.DTABLE, ResourceToPkgDescrMapper.DTABLE_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.TDRL, ResourceToPkgDescrMapper.DRL_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.TEMPLATE, ResourceToPkgDescrMapper.TEMPLATE_TO_PKG_DESCR);
+        Collection<CompositePackageDescr> packages = packageDescrBuilder.build(resourcesByType);
+        this.buildException = packageDescrBuilder.getBuildException();
+        kBuilder.getBuildResultCollector().addAll(packageDescrBuilder.getResults());
         this.resourcesByType.remove(ResourceType.DRT); // drt is a template for dtables but doesn't have to be built on its own
-
-        return packages.values();
+        return packages;
     }
 
     private void buildAssemblerResourcesBeforeRules() {
@@ -210,48 +207,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void buildResource(Map<String, CompositePackageDescr> packages, ResourceType resourceType, ResourceToPkgDescrMapper mapper) {
-        List<ResourceDescr> resourcesByType = this.resourcesByType.remove(resourceType);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    PackageDescr packageDescr = mapper.map(kBuilder, resourceDescr);
-                    registerPackageDescr(resourceDescr, packages, resourceDescr.resource, packageDescr);
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-    }
-
-    private void registerPackageDescr(
-            ResourceDescr resourceDescr, Map<String, CompositePackageDescr> packages, Resource resource, PackageDescr packageDescr) {
-        if (packageDescr == null) { return; }
-        CompositePackageDescr compositePackageDescr = packages.get(packageDescr.getNamespace());
-        if (compositePackageDescr == null) {
-            compositePackageDescr = makeCompositePackageDescr(resource, packageDescr);
-            packages.put(packageDescr.getNamespace(), compositePackageDescr);
-        } else {
-            compositePackageDescr.addPackageDescr(resource, packageDescr);
-        }
-        compositePackageDescr.addFilter( resourceDescr.getFilter() );
-    }
-
-    private CompositePackageDescr makeCompositePackageDescr(Resource resource, PackageDescr packageDescr) {
-        CompositePackageDescr compositePackageDescr;
-        compositePackageDescr = packageDescr instanceof CompositePackageDescr ?
-                ( (CompositePackageDescr) packageDescr) :
-                new CompositePackageDescr(resource, packageDescr);
-        return compositePackageDescr;
-    }
-
-    private static class ResourceDescr {
+    static class ResourceDescr {
         final Resource resource;
         final ResourceConfiguration configuration;
         final ResourceChangeSet changes;
@@ -322,33 +278,4 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         ResourceBuilder DRF_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addKnowledgeResource( resourceDescr.resource, ResourceType.DRF, resourceDescr.configuration );
     }
 
-    @FunctionalInterface
-    private interface ResourceToPkgDescrMapper {
-        PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception;
-
-        ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
-            ProcessorDrl processor = new ProcessorDrl(kBuilder.getBuilderConfiguration());
-            PackageDescr pkg = processor.process(resourceDescr.resource);
-            processor.getResults().forEach(kBuilder::addBuilderResult);
-            return pkg;
-        };
-        ResourceToPkgDescrMapper TEMPLATE_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
-            ProcessorTemplate processor = new ProcessorTemplate(kBuilder.getBuilderConfiguration(), kBuilder.getReleaseId());
-            PackageDescr pkg = processor.process(resourceDescr.resource, kBuilder.getDslExpander());
-            processor.getResults().forEach(kBuilder::addBuilderResult);
-            return pkg;
-        };
-        ResourceToPkgDescrMapper DSLR_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
-            ProcessorDslr processor = new ProcessorDslr(kBuilder.getBuilderConfiguration());
-            PackageDescr pkg = processor.process(resourceDescr.resource, kBuilder.getDslExpander());
-            processor.getResults().forEach(kBuilder::addBuilderResult);
-            return pkg;
-        };
-        ResourceToPkgDescrMapper DTABLE_TO_PKG_DESCR = (kBuilder, resourceDescr) -> {
-            ProcessorDecisionTable processor = new ProcessorDecisionTable(kBuilder.getBuilderConfiguration(), kBuilder.getReleaseId());
-            PackageDescr pkg = processor.process(resourceDescr.resource, resourceDescr.configuration);
-            processor.getResults().forEach(kBuilder::addBuilderResult);
-            return pkg;
-        };
-    }
 }
