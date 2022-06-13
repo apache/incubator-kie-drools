@@ -15,49 +15,54 @@
  */
 package org.kie.kogito.addon.source.files;
 
-import java.util.Collection;
+import java.util.Optional;
 
-import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
-import io.quarkus.security.UnauthorizedException;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.security.TestSecurity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @QuarkusTest
 class SourceFilesResourceTest {
+    private static final String PROCESS_ID = "processId";
 
-    @Inject
-    SourceFilesResource sourceFilesResource;
+    private SourceFilesResource sourceFilesTestResource;
 
-    @Inject
-    SourceFilesProviderImpl sourceFilesProvider;
+    @Mock
+    private SourceFilesProvider mockSourceFileProvider;
 
     @BeforeEach
-    void clearSourceFilesProvider() {
-        sourceFilesProvider.clear();
+    void setup() {
+        sourceFilesTestResource = new SourceFilesResource();
+        mockSourceFileProvider = mock(SourceFilesProvider.class);
+        sourceFilesTestResource.setSourceFilesProvider(mockSourceFileProvider);
     }
 
     @Test
-    @TestSecurity(user = "scott", roles = "source-files-client")
-    void getSourceFilesByProcessId() {
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("petstore.json"));
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("petstore.sw.json"));
-
-        Collection<SourceFile> sourceFiles = sourceFilesResource.getSourceFiles("a_process");
-
-        assertThat(sourceFiles)
-                .containsExactlyInAnyOrder(new SourceFile("petstore.json"), new SourceFile("petstore.sw.json"));
+    void getSourceFilesByProcessIdTest() {
+        sourceFilesTestResource.getSourceFilesByProcessId(PROCESS_ID);
+        verify(mockSourceFileProvider).getProcessSourceFiles(PROCESS_ID);
     }
 
     @Test
-    void getSourceFilesByProcessIdNonAuthenticated() {
-        assertThatCode(() -> sourceFilesResource.getSourceFiles("a_process"))
-                .isInstanceOf(UnauthorizedException.class);
+    void getEmptySourceFileByProcessIdTest() {
+        when(mockSourceFileProvider.getProcessSourceFile(PROCESS_ID)).thenReturn(Optional.empty());
+        assertThat(sourceFilesTestResource.getSourceFileByProcessId(PROCESS_ID).getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+        verify(mockSourceFileProvider).getProcessSourceFile(PROCESS_ID);
+    }
+
+    @Test
+    void getValidSourceFileByProcessIdTest() {
+        when(mockSourceFileProvider.getProcessSourceFile(PROCESS_ID)).thenReturn(Optional.of("valid definition content"));
+        assertThat(sourceFilesTestResource.getSourceFileByProcessId(PROCESS_ID).getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
+        verify(mockSourceFileProvider).getProcessSourceFile(PROCESS_ID);
     }
 }

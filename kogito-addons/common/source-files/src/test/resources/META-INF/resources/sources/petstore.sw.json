@@ -1,0 +1,31 @@
+{
+  "id": "petstore",
+  "version": "1.0",
+  "name": "Send CloudEvent after creating Pluto",
+  "start": "AddPluto",
+  "functions": [
+    {
+      "name": "addPet",
+      "operation": "petstore.json#addPet"
+    }
+  ],
+  "states": [
+    {
+      "name": "AddPluto",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "addPet",
+            "parameters": {
+              "body": {
+                "name": "Pluto"
+              }
+            }
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}

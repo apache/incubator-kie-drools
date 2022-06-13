@@ -16,14 +16,23 @@
 package org.kie.kogito.addon.source.files;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface SourceFilesProvider {
 
     /**
-     * Returns the source files for the given ID.
+     * Returns the source files for the given processId.
      * 
-     * @param id the source file ID
+     * @param processId the process identifier
      * @return the source files collection. The collection may be empty but not null.
      */
-    Collection<SourceFile> getSourceFiles(String id);
+    Collection<SourceFile> getProcessSourceFiles(String processId);
+
+    /**
+     * Returns the source file for the given processId.
+     *
+     * @param processId the process identifier
+     * @return the source file content.
+     */
+    Optional<String> getProcessSourceFile(String processId);
 }

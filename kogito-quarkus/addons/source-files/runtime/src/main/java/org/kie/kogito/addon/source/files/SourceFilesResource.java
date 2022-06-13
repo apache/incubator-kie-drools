@@ -16,8 +16,8 @@
 package org.kie.kogito.addon.source.files;
 
 import java.util.Collection;
+import java.util.Optional;
 
-import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -25,19 +25,35 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @ApplicationScoped
-@Path("/management/process/")
-@RolesAllowed("source-files-client")
+@Path("/management/processes/")
 public final class SourceFilesResource {
 
-    @Inject
     SourceFilesProvider sourceFilesProvider;
 
     @GET
-    @Path("{id}/sources")
+    @Path("{processId}/sources")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<SourceFile> getSourceFiles(@PathParam("id") String processId) {
-        return sourceFilesProvider.getSourceFiles(processId);
+    public Collection<SourceFile> getSourceFilesByProcessId(@PathParam("processId") String processId) {
+        return sourceFilesProvider.getProcessSourceFiles(processId);
+    }
+
+    @GET
+    @Path("{processId}/source")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response getSourceFileByProcessId(@PathParam("processId") String processId) {
+        Optional<String> processSourceFileContent = sourceFilesProvider.getProcessSourceFile(processId);
+        if (processSourceFileContent.isPresent()) {
+            return Response.ok(processSourceFileContent.get()).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Inject
+    void setSourceFilesProvider(SourceFilesProvider sourceFilesProvider) {
+        this.sourceFilesProvider = sourceFilesProvider;
     }
 }

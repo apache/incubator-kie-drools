@@ -15,6 +15,12 @@
  */
 package org.kie.kogito.integrationtests.quarkus.source.files;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addon.source.files.SourceFile;
 
@@ -23,6 +29,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasEntry;
@@ -30,10 +37,16 @@ import static org.hamcrest.Matchers.hasEntry;
 @QuarkusIntegrationTest
 class SourceFilesAddOnIT {
 
-    private static final String PATH = "/management/process/";
+    private static final String GET_PROCESS_SOURCES_PATH = "/management/processes/%s/sources";
+    private static final String GET_PROCESS_SOURCE_PATH = "/management/processes/%s/source";
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
+
+    public static String readFileContent(String file) throws URISyntaxException, IOException {
+        Path path = Paths.get(Thread.currentThread().getContextClassLoader().getResource(file).toURI());
+        return Files.readString(path);
     }
 
     @Test
@@ -42,7 +55,7 @@ class SourceFilesAddOnIT {
                 .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
                 .contentType(ContentType.JSON)
                 .when()
-                .get(PATH + "ymlgreet/sources")
+                .get(String.format(GET_PROCESS_SOURCES_PATH, "ymlgreet"))
                 .then()
                 .statusCode(200)
                 .body("size()", is(1))
@@ -54,7 +67,27 @@ class SourceFilesAddOnIT {
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get(PATH + "ymlgreet/sources")
+                .get(String.format(GET_PROCESS_SOURCES_PATH, "ymlgreet"))
+                .then()
+                .statusCode(401);
+    }
+
+    @Test
+    void testGetSourceFileByProcessId() throws Exception {
+        given().header("Authorization", "Basic c2NvdHQ6amIwc3M=")
+                .when()
+                .get(String.format(GET_PROCESS_SOURCE_PATH, "ymlgreet"))
+                .then()
+                .statusCode(200)
+                .body(equalTo(readFileContent("ymlgreet-expected.sw.yml")));
+    }
+
+    @Test
+    void testGetSourceFileByProcessIdNonAuthenticated() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get(String.format(GET_PROCESS_SOURCES_PATH, "ymlgreet"))
                 .then()
                 .statusCode(401);
     }

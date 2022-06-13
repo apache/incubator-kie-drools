@@ -13,7 +13,10 @@
     <name>Kogito :: Add-Ons :: Source Files :: Common</name>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-codegen-processes</artifactId>
+        </dependency>
         <!-- Test -->
 
         <dependency>
