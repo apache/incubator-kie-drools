@@ -60,7 +60,7 @@ class VerifierPackageBuilder {
         }
 
         @Override
-        public void addPackage(PackageDescr pDescr) {
+        protected void addPackageWithResource(PackageDescr pDescr, Resource unused) {
             packageDescr = pDescr;
         }
     }

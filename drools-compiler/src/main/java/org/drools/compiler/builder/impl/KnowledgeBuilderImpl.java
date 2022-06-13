@@ -140,7 +140,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private final GlobalVariableContext globals = new GlobalVariableContextImpl();
 
-    private Resource resource;
+//    private Resource resource;
 
     private List<DSLTokenizedMappingFile> dslFiles;
 
@@ -290,7 +290,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public Resource getCurrentResource() {
-        return resource;
+//        return resource;
+        throw new UnsupportedOperationException("deprecated");
     }
 
     public InternalKnowledgeBase getKnowledgeBase() {
@@ -322,7 +323,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
      */
     public void addPackageFromDrl(final Reader reader,
                                   final Resource sourceResource) throws DroolsParserException, IOException {
-        this.resource = sourceResource;
         final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
         final PackageDescr pkg = parser.parse(sourceResource, reader);
         this.results.addAll(parser.getErrors());
@@ -331,17 +331,14 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
 
         if (!parser.hasErrors()) {
-            addPackage(pkg);
+            addPackageWithResource(pkg, sourceResource);
         }
-        this.resource = null;
     }
 
     public void addPackageFromDecisionTable(Resource resource,
                                             ResourceConfiguration configuration) throws DroolsParserException,
             IOException {
-        this.resource = resource;
-        addPackage(decisionTableToPackageDescr(resource, configuration));
-        this.resource = null;
+        addPackageWithResource(decisionTableToPackageDescr(resource, configuration), resource);
     }
 
     PackageDescr decisionTableToPackageDescr(Resource resource,
@@ -417,9 +414,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public void addPackageFromTemplate(Resource resource) throws DroolsParserException,
             IOException {
-        this.resource = resource;
-        addPackage(templateToPackageDescr(resource));
-        this.resource = null;
+        addPackageWithResource(templateToPackageDescr(resource), resource);
     }
 
     PackageDescr templateToPackageDescr(Resource resource) throws DroolsParserException, IOException {
@@ -445,16 +440,12 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
             IOException {
-        this.resource = resource;
-        addPackage(new DrlResourceHandler(configuration).process(resource));
-        this.resource = null;
+        addPackageWithResource(new DrlResourceHandler(configuration).process(resource), resource);
     }
 
     public void addPackageFromDslr(final Resource resource) throws DroolsParserException,
             IOException {
-        this.resource = resource;
-        addPackage(dslrToPackageDescr(resource));
-        this.resource = null;
+        addPackageWithResource(dslrToPackageDescr(resource), resource);
     }
 
     PackageDescr dslrToPackageDescr(Resource resource) throws DroolsParserException,
@@ -497,7 +488,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public void addDsl(Resource resource) throws IOException {
-        this.resource = resource;
+//        this.resource = resource;
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
 
         try (Reader reader = resource.getReader()) {
@@ -509,7 +500,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
             }
             this.dslFiles.add(file);
         } finally {
-            this.resource = null;
+//            this.resource = null;
         }
     }
 
@@ -607,8 +598,13 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
      * and the generation of the corresponding rete/phreak network
      */
     @Override
-    public void addPackage(final PackageDescr packageDescr) {
-        PackageRegistry pkgRegistry = getOrCreatePackageRegistry( packageDescr );
+    public final void addPackage(final PackageDescr packageDescr) {
+        addPackageWithResource(packageDescr, null);
+    }
+
+    // this is only overridden by org.drools.verifier.builder.VerifierPackageBuilder.InnerBuilder
+    protected void addPackageWithResource(PackageDescr packageDescr, Resource resource) {
+        PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
         if (pkgRegistry == null) {
             return;
         }
@@ -621,16 +617,17 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                         typeDeclarationManager.getTypeDeclarationBuilder(),
                         assetFilter,
                         pkgRegistry,
-                        packageDescr);
+                        packageDescr,
+                        resource);
         packageProcessor.process();
         this.results.addAll(packageProcessor.getResults());
 
-        compileKnowledgePackages( packageDescr, pkgRegistry);
+        compileKnowledgePackages(packageDescr, pkgRegistry, resource);
         wireAllRules();
         compileRete(pkgRegistry, packageDescr);
     }
 
-    private void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+    private void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry, Resource resource) {
         pkgRegistry.setDialect(getPackageDialect(packageDescr));
         PackageRegistry packageRegistry = this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace());
         Map<String, AttributeDescr> packageAttributes = this.pkgRegistryManager.getPackageAttributes().get(packageDescr.getNamespace());
@@ -660,7 +657,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
     }
 
-    protected void compileRete(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+    private void compileRete(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         if (!hasErrors() && this.kBase != null) {
             ReteCompiler reteCompiler = new ReteCompiler(pkgRegistry, packageDescr, kBase, assetFilter);
             reteCompiler.process();
@@ -762,7 +759,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                             typeDeclarationManager.getTypeDeclarationBuilder(),
                             assetFilter,
                             this.pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()),
-                            packageDescr);
+                            packageDescr,
+                            null);
             packageProcessor.process();
             this.results.addAll(packageProcessor.getResults());
             pkg = pkgRegistry.getPackage();
@@ -1208,7 +1206,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         for (CompositePackageDescr packageDescr : packages) {
             setAssetFilter(packageDescr.getFilter());
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
-            compileKnowledgePackages(packageDescr, pkgRegistry);
+            compileKnowledgePackages(packageDescr, pkgRegistry, null);
             setAssetFilter(null);
         }
 

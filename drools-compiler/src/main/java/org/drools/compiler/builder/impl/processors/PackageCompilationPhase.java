@@ -6,6 +6,7 @@ import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.kie.api.io.Resource;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public final class PackageCompilationPhase extends AbstractPackageCompilationPha
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final TypeDeclarationBuilder typeBuilder;
     private final KnowledgeBuilderImpl.AssetFilter filterCondition;
+    private final Resource currentResource;
 
     public PackageCompilationPhase(
             KnowledgeBuilderImpl knowledgeBuilder,
@@ -25,13 +27,15 @@ public final class PackageCompilationPhase extends AbstractPackageCompilationPha
             TypeDeclarationBuilder typeBuilder,
             KnowledgeBuilderImpl.AssetFilter filterCondition,
             PackageRegistry pkgRegistry,
-            PackageDescr packageDescr) {
+            PackageDescr packageDescr,
+            Resource currentResource) {
         super(pkgRegistry, packageDescr);
         this.knowledgeBuilder = knowledgeBuilder;
         this.kBase = kBase;
         this.configuration = configuration;
         this.typeBuilder = typeBuilder;
         this.filterCondition = filterCondition;
+        this.currentResource = currentResource;
     }
 
     public void process() {
@@ -45,7 +49,7 @@ public final class PackageCompilationPhase extends AbstractPackageCompilationPha
                 new TypeDeclarationAnnotationNormalizer(annotationNormalizer, packageDescr),
                 new EntryPointDeclarationCompilationPhase(pkgRegistry, packageDescr),
                 new AccumulateFunctionCompilationPhase(pkgRegistry, packageDescr),
-                new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, pkgRegistry),
+                new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, pkgRegistry, currentResource),
                 new WindowDeclarationCompilationPhase(pkgRegistry, packageDescr, knowledgeBuilder),
                 new FunctionCompilationPhase(pkgRegistry, packageDescr, configuration),
                 new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, knowledgeBuilder, filterCondition),

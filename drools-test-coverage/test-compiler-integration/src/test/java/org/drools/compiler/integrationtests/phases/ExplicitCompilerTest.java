@@ -116,7 +116,7 @@ public class ExplicitCompilerTest {
                 new TypeDeclarationAnnotationNormalizer(annotationNormalizer, packageDescr),
                 new EntryPointDeclarationCompilationPhase(packageRegistry, packageDescr),
                 new AccumulateFunctionCompilationPhase(packageRegistry, packageDescr),
-                new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, packageRegistry),
+                new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, packageRegistry, null),
                 new WindowDeclarationCompilationPhase(packageRegistry, packageDescr, typeDeclarationContext),
                 new FunctionCompilationPhase(packageRegistry, packageDescr, configuration),
                 new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, globalVariableContext, null),

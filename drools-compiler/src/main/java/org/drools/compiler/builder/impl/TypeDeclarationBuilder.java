@@ -101,7 +101,7 @@ public class TypeDeclarationBuilder {
                                          Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
 
         packageDescrs.forEach( context::getOrCreatePackageRegistry );
-        packageDescrs.forEach( this::setResourcesInDescriptors );
+        packageDescrs.forEach(packageDescr -> setResourcesInDescriptors(packageDescr, null));
 
         // ensure all names are fully qualified before continuing
         typeDeclarationNameResolver.resolveTypes( packageDescrs, unresolvedTypes );
@@ -114,11 +114,12 @@ public class TypeDeclarationBuilder {
 
     public void processTypeDeclarations( PackageDescr packageDescr,
                                          PackageRegistry pkgRegistry,
+                                         Resource currentResource,
                                          Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs,
                                          List<TypeDefinition> unresolvedTypes,
                                          Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
 
-        setResourcesInDescriptors( packageDescr );
+        setResourcesInDescriptors( packageDescr, currentResource );
 
         // ensure all names are fully qualified before continuing
         typeDeclarationNameResolver.resolveTypes( packageDescr, unresolvedTypes, pkgRegistry.getTypeResolver() );
@@ -219,10 +220,11 @@ public class TypeDeclarationBuilder {
         return ! prev.getFields().isEmpty();
     }
 
-    private void setResourcesInDescriptors( PackageDescr packageDescr ) {
+    private void setResourcesInDescriptors( PackageDescr packageDescr, Resource currentResource ) {
+        if (currentResource == null) return;
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
             if ( typeDescr.getResource() == null ) {
-                typeDescr.setResource( context.getCurrentResource() );
+                typeDescr.setResource( currentResource );
             }
         }
     }

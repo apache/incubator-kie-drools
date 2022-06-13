@@ -34,6 +34,7 @@ import org.drools.modelcompiler.builder.processors.ModelGeneratorPhase;
 import org.drools.modelcompiler.builder.processors.ModelMainCompilationPhase;
 import org.drools.modelcompiler.builder.processors.SourceCodeGenerationPhase;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import java.util.Collection;
@@ -67,7 +68,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     }
 
     @Override
-    public void addPackage(final PackageDescr packageDescr) {
+    protected void addPackageWithResource(final PackageDescr packageDescr, Resource resource) {
         compositePackagesManager.register(packageDescr);
         PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
