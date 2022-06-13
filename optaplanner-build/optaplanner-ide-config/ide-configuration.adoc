@@ -1,6 +1,6 @@
 = IDE Setup Instructions
 
-Before you start contributing, please follow the instructions below to setup a code style for an IDE of your choice.
+Before you start contributing, please follow the instructions below to set up a code style for an IDE of your choice.
 
 == Eclipse Setup
 
@@ -21,24 +21,28 @@ file in the `build/optaplanner-ide-config/src/main/resources/` directory.
 Make sure the _Optimize Imports_ box is ticked, and select the `eclipse.importorder` file as the import order config file.
 
 == VS Code setup
-. Open the _Extentions_ window (Ctrl+Shift+X) and search for _Language Support for Java(TM) by Red Hat_ and install it.
-. Create settings file for your workspace 
+. Open the _Extensions_ window (Ctrl+Shift+X) and search for _Language Support for Java(TM) by Red Hat_ and install it.
+. Create settings file for your workspace
 +
+[source,shell]
 ----
 cd optaplanner
 mkdir .vscode
 touch .vscode/settings.json
 ----
 . Put in settings.json the following content:
-
++
+[source,json]
 ----
+{
     "java.format.settings.url": "build/optaplanner-ide-config/src/main/resources/eclipse-format.xml",
     "java.completion.importOrder": [
         "java",
         "javax",
-        "com",
-        "org"
+        "org",
+        "com"
     ]
+}
 ----
 
 
