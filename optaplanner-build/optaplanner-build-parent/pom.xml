@@ -25,6 +25,7 @@
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.17.2</version.org.apache.logging.log4j>
+    <version.com.github.javaparser>3.23.1</version.com.github.javaparser>
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
     <version.io.javaoperatorsdk>3.0.2</version.io.javaoperatorsdk>
     <version.io.quarkiverse.operatorsdk>4.0.0.RC</version.io.quarkiverse.operatorsdk>
@@ -102,6 +103,12 @@
         <version>${version.org.drools}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <!-- TODO: remove when the Java parser version defined in the quarkus-bom is aligned with Drools. -->
+      <dependency>
+        <groupId>com.github.javaparser</groupId>
+        <artifactId>javaparser-core</artifactId>
+        <version>${version.com.github.javaparser}</version>
       </dependency>
       <!-- Normal dependencies versions-->
       <dependency>
