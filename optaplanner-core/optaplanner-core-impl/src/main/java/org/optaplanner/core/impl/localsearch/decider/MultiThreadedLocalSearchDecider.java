@@ -28,6 +28,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ThreadUtils;
 
@@ -104,8 +105,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         for (int i = 0; i < moveThreadCount; i++) {
             operationQueue.add(destroyOperation);
         }
-        // TODO This should probably be in a finally that spans at least the entire phase, maybe even the entire solve
-        ThreadUtils.shutdownAwaitOrKill(executor, logIndentation, "Multithreaded Local Search");
+        shutdownMoveThreads();
         long childThreadsScoreCalculationCount = 0;
         for (MoveThreadRunner<Solution_, ?> moveThreadRunner : moveThreadRunnerList) {
             childThreadsScoreCalculationCount += moveThreadRunner.getCalculationCount();
@@ -114,6 +114,12 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         operationQueue = null;
         resultQueue = null;
         moveThreadRunnerList = null;
+    }
+
+    @Override
+    public void solvingError(SolverScope<Solution_> solverScope, Exception exception) {
+        super.solvingError(solverScope, exception);
+        shutdownMoveThreads();
     }
 
     protected ExecutorService createThreadPoolExecutor() {
@@ -211,4 +217,9 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         return false;
     }
 
+    private void shutdownMoveThreads() {
+        if (executor != null && !executor.isShutdown()) {
+            ThreadUtils.shutdownAwaitOrKill(executor, logIndentation, "Multi-threaded Local Search");
+        }
+    }
 }

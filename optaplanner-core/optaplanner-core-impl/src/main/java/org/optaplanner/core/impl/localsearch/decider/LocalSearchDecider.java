@@ -160,4 +160,7 @@ public class LocalSearchDecider<Solution_> {
         forager.solvingEnded(solverScope);
     }
 
+    public void solvingError(SolverScope<Solution_> solverScope, Exception exception) {
+        // Overridable by a subclass.
+    }
 }

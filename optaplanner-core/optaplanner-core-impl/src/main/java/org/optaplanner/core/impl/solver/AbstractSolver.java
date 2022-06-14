@@ -98,6 +98,13 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
 
+    public void solvingError(SolverScope<Solution_> solverScope, Exception exception) {
+        phaseLifecycleSupport.fireSolvingError(solverScope, exception);
+        for (Phase<Solution_> phase : phaseList) {
+            phase.solvingError(solverScope, exception);
+        }
+    }
+
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         bestSolutionRecaller.phaseStarted(phaseScope);
         phaseLifecycleSupport.firePhaseStarted(phaseScope);

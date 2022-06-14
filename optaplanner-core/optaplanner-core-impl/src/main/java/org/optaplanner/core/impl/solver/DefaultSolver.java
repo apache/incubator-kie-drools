@@ -194,6 +194,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
                 solvingEnded(solverScope);
             } catch (Exception e) {
                 errorCounter.increment();
+                solvingError(solverScope, e);
                 throw e;
             } finally {
                 sample.stop();

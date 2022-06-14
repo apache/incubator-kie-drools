@@ -46,4 +46,9 @@ public class PhaseLifecycleSupport<Solution_> extends AbstractEventSupport<Phase
         }
     }
 
+    public void fireSolvingError(SolverScope<Solution_> solverScope, Exception exception) {
+        for (PhaseLifecycleListener<Solution_> phaseLifecycleListener : eventListenerSet) {
+            phaseLifecycleListener.solvingError(solverScope, exception);
+        }
+    }
 }

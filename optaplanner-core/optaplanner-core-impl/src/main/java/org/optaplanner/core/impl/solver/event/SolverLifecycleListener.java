@@ -15,4 +15,12 @@ public interface SolverLifecycleListener<Solution_> extends EventListener {
 
     void solvingEnded(SolverScope<Solution_> solverScope);
 
+    /**
+     * Invoked in case of an exception in the {@link org.optaplanner.core.api.solver.Solver} run. In that case,
+     * the {@link #solvingEnded(SolverScope)} is never called.
+     * For internal purposes only.
+     */
+    default void solvingError(SolverScope<Solution_> solverScope, Exception exception) {
+        // no-op
+    }
 }

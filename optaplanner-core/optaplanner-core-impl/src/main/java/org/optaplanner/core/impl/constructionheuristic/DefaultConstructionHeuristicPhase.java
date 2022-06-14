@@ -141,6 +141,12 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         decider.solvingEnded(solverScope);
     }
 
+    @Override
+    public void solvingError(SolverScope<Solution_> solverScope, Exception exception) {
+        super.solvingError(solverScope, exception);
+        decider.solvingError(solverScope, exception);
+    }
+
     public static class Builder<Solution_> extends AbstractPhase.Builder<Solution_> {
 
         private final EntityPlacer<Solution_> entityPlacer;

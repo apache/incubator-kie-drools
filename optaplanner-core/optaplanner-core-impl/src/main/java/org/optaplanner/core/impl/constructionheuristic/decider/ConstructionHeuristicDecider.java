@@ -75,6 +75,10 @@ public class ConstructionHeuristicDecider<Solution_> {
         forager.solvingEnded(solverScope);
     }
 
+    public void solvingError(SolverScope<Solution_> solverScope, Exception exception) {
+        // Overridable by a subclass.
+    }
+
     public void decideNextStep(ConstructionHeuristicStepScope<Solution_> stepScope, Placement<Solution_> placement) {
         int moveIndex = 0;
         for (Move<Solution_> move : placement) {

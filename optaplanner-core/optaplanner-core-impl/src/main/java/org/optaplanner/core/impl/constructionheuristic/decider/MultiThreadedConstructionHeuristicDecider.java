@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.heuristic.thread.MoveThreadRunner;
 import org.optaplanner.core.impl.heuristic.thread.OrderByMoveIndexBlockingQueue;
 import org.optaplanner.core.impl.heuristic.thread.SetupOperation;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ThreadUtils;
 
@@ -103,8 +104,7 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
         for (int i = 0; i < moveThreadCount; i++) {
             operationQueue.add(destroyOperation);
         }
-        // TODO This should probably be in a finally that spans at least the entire phase, maybe even the entire solve
-        ThreadUtils.shutdownAwaitOrKill(executor, logIndentation, "Multithreaded Local Search");
+        shutdownMoveThreads();
         long childThreadsScoreCalculationCount = 0;
         for (MoveThreadRunner<Solution_, ?> moveThreadRunner : moveThreadRunnerList) {
             childThreadsScoreCalculationCount += moveThreadRunner.getCalculationCount();
@@ -113,6 +113,12 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
         operationQueue = null;
         resultQueue = null;
         moveThreadRunnerList = null;
+    }
+
+    @Override
+    public void solvingError(SolverScope<Solution_> solverScope, Exception exception) {
+        super.solvingError(solverScope, exception);
+        shutdownMoveThreads();
     }
 
     protected ExecutorService createThreadPoolExecutor() {
@@ -205,4 +211,9 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
         return false;
     }
 
+    private void shutdownMoveThreads() {
+        if (executor != null && !executor.isShutdown()) {
+            ThreadUtils.shutdownAwaitOrKill(executor, logIndentation, "Multi-threaded Construction Heuristic");
+        }
+    }
 }
