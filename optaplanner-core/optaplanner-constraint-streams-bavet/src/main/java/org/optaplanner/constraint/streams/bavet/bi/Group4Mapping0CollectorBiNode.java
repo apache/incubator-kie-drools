@@ -9,25 +9,21 @@ import org.optaplanner.core.impl.util.Quadruple;
 final class Group4Mapping0CollectorBiNode<OldA, OldB, A, B, C, D>
         extends AbstractGroupBiNode<OldA, OldB, QuadTuple<A, B, C, D>, Quadruple<A, B, C, D>, Void, Void> {
 
-    private final BiFunction<OldA, OldB, A> groupKeyMappingA;
-    private final BiFunction<OldA, OldB, B> groupKeyMappingB;
-    private final BiFunction<OldA, OldB, C> groupKeyMappingC;
-    private final BiFunction<OldA, OldB, D> groupKeyMappingD;
     private final int outputStoreSize;
 
     public Group4Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA, BiFunction<OldA, OldB, B> groupKeyMappingB,
             BiFunction<OldA, OldB, C> groupKeyMappingC, BiFunction<OldA, OldB, D> groupKeyMappingD, int groupStoreIndex,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesTupleLifecycle);
-        this.groupKeyMappingA = groupKeyMappingA;
-        this.groupKeyMappingB = groupKeyMappingB;
-        this.groupKeyMappingC = groupKeyMappingC;
-        this.groupKeyMappingD = groupKeyMappingD;
+        super(groupStoreIndex,
+                tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, groupKeyMappingD, tuple),
+                null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
-    @Override
-    protected Quadruple<A, B, C, D> createGroupKey(BiTuple<OldA, OldB> tuple) {
+    private static <A, B, C, D, OldA, OldB> Quadruple<A, B, C, D> createGroupKey(
+            BiFunction<OldA, OldB, A> groupKeyMappingA, BiFunction<OldA, OldB, B> groupKeyMappingB,
+            BiFunction<OldA, OldB, C> groupKeyMappingC, BiFunction<OldA, OldB, D> groupKeyMappingD,
+            BiTuple<OldA, OldB> tuple) {
         OldA oldA = tuple.factA;
         OldB oldB = tuple.factB;
         A a = groupKeyMappingA.apply(oldA, oldB);

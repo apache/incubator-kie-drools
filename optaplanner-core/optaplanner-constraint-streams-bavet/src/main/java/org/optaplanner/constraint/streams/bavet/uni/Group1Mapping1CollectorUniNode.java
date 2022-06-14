@@ -1,5 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
+import static org.optaplanner.constraint.streams.bavet.uni.Group1Mapping0CollectorUniNode.createGroupKey;
+
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
@@ -9,20 +11,13 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 final class Group1Mapping1CollectorUniNode<OldA, A, B, ResultContainer_>
         extends AbstractGroupUniNode<OldA, BiTuple<A, B>, A, ResultContainer_, B> {
 
-    private final Function<OldA, A> groupKeyMapping;
     private final int outputStoreSize;
 
     public Group1Mapping1CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
             UniConstraintCollector<OldA, ResultContainer_, B> collector,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, collector, nextNodesTupleLifecycle);
-        this.groupKeyMapping = groupKeyMapping;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), collector, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
-    }
-
-    @Override
-    protected A createGroupKey(UniTuple<OldA> tuple) {
-        return groupKeyMapping.apply(tuple.factA);
     }
 
     @Override

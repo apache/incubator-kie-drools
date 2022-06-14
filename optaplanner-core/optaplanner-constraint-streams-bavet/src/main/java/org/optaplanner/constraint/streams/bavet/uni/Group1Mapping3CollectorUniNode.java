@@ -1,5 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
+import static org.optaplanner.constraint.streams.bavet.uni.Group1Mapping0CollectorUniNode.createGroupKey;
+
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
@@ -10,7 +12,6 @@ import org.optaplanner.core.impl.util.Triple;
 final class Group1Mapping3CollectorUniNode<OldA, A, B, C, D, ResultContainerB_, ResultContainerC_, ResultContainerD_>
         extends AbstractGroupUniNode<OldA, QuadTuple<A, B, C, D>, A, Object, Triple<B, C, D>> {
 
-    private final Function<OldA, A> groupKeyMapping;
     private final int outputStoreSize;
 
     public Group1Mapping3CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
@@ -18,15 +19,10 @@ final class Group1Mapping3CollectorUniNode<OldA, A, B, C, D, ResultContainerB_, 
             UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
             UniConstraintCollector<OldA, ResultContainerD_, D> collectorD,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, Group0Mapping3CollectorUniNode.mergeCollectors(collectorB, collectorC, collectorD),
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple),
+                Group0Mapping3CollectorUniNode.mergeCollectors(collectorB, collectorC, collectorD),
                 nextNodesTupleLifecycle);
-        this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
-    }
-
-    @Override
-    protected A createGroupKey(UniTuple<OldA> tuple) {
-        return groupKeyMapping.apply(tuple.factA);
     }
 
     @Override

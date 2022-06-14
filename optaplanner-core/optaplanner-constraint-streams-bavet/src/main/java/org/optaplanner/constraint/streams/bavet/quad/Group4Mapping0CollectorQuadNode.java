@@ -7,26 +7,24 @@ import org.optaplanner.core.impl.util.Quadruple;
 final class Group4Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D>
         extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, QuadTuple<A, B, C, D>, Quadruple<A, B, C, D>, Void, Void> {
 
-    private final QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA;
-    private final QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB;
-    private final QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC;
-    private final QuadFunction<OldA, OldB, OldC, OldD, D> groupKeyMappingD;
     private final int outputStoreSize;
 
     public Group4Mapping0CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA,
             QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB, QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC,
             QuadFunction<OldA, OldB, OldC, OldD, D> groupKeyMappingD, int groupStoreIndex,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesTupleLifecycle);
-        this.groupKeyMappingA = groupKeyMappingA;
-        this.groupKeyMappingB = groupKeyMappingB;
-        this.groupKeyMappingC = groupKeyMappingC;
-        this.groupKeyMappingD = groupKeyMappingD;
+        super(groupStoreIndex,
+                tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, groupKeyMappingD, tuple),
+                null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
-    @Override
-    protected Quadruple<A, B, C, D> createGroupKey(QuadTuple<OldA, OldB, OldC, OldD> tuple) {
+    private static <A, B, C, D, OldA, OldB, OldC, OldD> Quadruple<A, B, C, D> createGroupKey(
+            QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA,
+            QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB,
+            QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC,
+            QuadFunction<OldA, OldB, OldC, OldD, D> groupKeyMappingD,
+            QuadTuple<OldA, OldB, OldC, OldD> tuple) {
         OldA oldA = tuple.factA;
         OldB oldB = tuple.factB;
         OldC oldC = tuple.factC;

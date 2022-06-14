@@ -6,9 +6,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, ResultContainerB_>
-        extends AbstractGroupBiNode<OldA, OldB, BiTuple<A, B>, String, Object, Pair<A, B>> {
-
-    private static final String NO_GROUP_KEY = "NO_GROUP";
+        extends AbstractGroupBiNode<OldA, OldB, BiTuple<A, B>, Void, Object, Pair<A, B>> {
 
     private final int outputStoreSize;
 
@@ -16,7 +14,7 @@ final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, R
             BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
             BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB), nextNodesTupleLifecycle);
+        super(groupStoreIndex, null, mergeCollectors(collectorA, collectorB), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -29,12 +27,7 @@ final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, R
     }
 
     @Override
-    protected String createGroupKey(BiTuple<OldA, OldB> tuple) {
-        return NO_GROUP_KEY;
-    }
-
-    @Override
-    protected BiTuple<A, B> createOutTuple(String groupKey) {
+    protected BiTuple<A, B> createOutTuple(Void groupKey) {
         return new BiTuple<>(null, null, outputStoreSize);
     }
 

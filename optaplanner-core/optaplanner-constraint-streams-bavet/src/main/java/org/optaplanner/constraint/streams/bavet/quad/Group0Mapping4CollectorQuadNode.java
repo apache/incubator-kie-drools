@@ -6,9 +6,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.util.Quadruple;
 
 final class Group0Mapping4CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, ResultContainerA_, ResultContainerB_, ResultContainerC_, ResultContainerD_>
-        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, QuadTuple<A, B, C, D>, String, Object, Quadruple<A, B, C, D>> {
-
-    private static final String NO_GROUP_KEY = "NO_GROUP";
+        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, QuadTuple<A, B, C, D>, Void, Object, Quadruple<A, B, C, D>> {
 
     private final int outputStoreSize;
 
@@ -18,7 +16,7 @@ final class Group0Mapping4CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, 
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerC_, C> collectorC,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerD_, D> collectorD,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesTupleLifecycle);
+        super(groupStoreIndex, null, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -33,12 +31,7 @@ final class Group0Mapping4CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, 
     }
 
     @Override
-    protected String createGroupKey(QuadTuple<OldA, OldB, OldC, OldD> tuple) {
-        return NO_GROUP_KEY;
-    }
-
-    @Override
-    protected QuadTuple<A, B, C, D> createOutTuple(String groupKey) {
+    protected QuadTuple<A, B, C, D> createOutTuple(Void groupKey) {
         return new QuadTuple<>(null, null, null, null, outputStoreSize);
     }
 

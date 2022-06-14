@@ -9,23 +9,18 @@ import org.optaplanner.core.impl.util.Triple;
 final class Group3Mapping0CollectorUniNode<OldA, A, B, C>
         extends AbstractGroupUniNode<OldA, TriTuple<A, B, C>, Triple<A, B, C>, Void, Void> {
 
-    private final Function<OldA, A> groupKeyMappingA;
-    private final Function<OldA, B> groupKeyMappingB;
-    private final Function<OldA, C> groupKeyMappingC;
     private final int outputStoreSize;
 
     public Group3Mapping0CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
             Function<OldA, C> groupKeyMappingC, int groupStoreIndex,
             TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesTupleLifecycle);
-        this.groupKeyMappingA = groupKeyMappingA;
-        this.groupKeyMappingB = groupKeyMappingB;
-        this.groupKeyMappingC = groupKeyMappingC;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, tuple),
+                null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
-    @Override
-    protected Triple<A, B, C> createGroupKey(UniTuple<OldA> tuple) {
+    static <A, B, C, OldA> Triple<A, B, C> createGroupKey(Function<OldA, A> groupKeyMappingA,
+            Function<OldA, B> groupKeyMappingB, Function<OldA, C> groupKeyMappingC, UniTuple<OldA> tuple) {
         OldA oldA = tuple.factA;
         A a = groupKeyMappingA.apply(oldA);
         B b = groupKeyMappingB.apply(oldA);

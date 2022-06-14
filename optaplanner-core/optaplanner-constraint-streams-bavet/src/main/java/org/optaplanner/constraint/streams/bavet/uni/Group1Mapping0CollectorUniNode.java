@@ -7,18 +7,15 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 final class Group1Mapping0CollectorUniNode<OldA, A>
         extends AbstractGroupUniNode<OldA, UniTuple<A>, A, Void, Void> {
 
-    private final Function<OldA, A> groupKeyMapping;
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
             TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesTupleLifecycle);
-        this.groupKeyMapping = groupKeyMapping;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
-    @Override
-    protected A createGroupKey(UniTuple<OldA> tuple) {
+    static <A, OldA> A createGroupKey(Function<OldA, A> groupKeyMapping, UniTuple<OldA> tuple) {
         return groupKeyMapping.apply(tuple.factA);
     }
 

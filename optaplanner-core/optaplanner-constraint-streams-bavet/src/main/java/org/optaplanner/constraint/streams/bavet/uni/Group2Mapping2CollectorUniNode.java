@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import static org.optaplanner.constraint.streams.bavet.uni.Group0Mapping2CollectorUniNode.mergeCollectors;
+import static org.optaplanner.constraint.streams.bavet.uni.Group2Mapping0CollectorUniNode.createGroupKey;
 
 import java.util.function.Function;
 
@@ -12,8 +13,6 @@ import org.optaplanner.core.impl.util.Pair;
 final class Group2Mapping2CollectorUniNode<OldA, A, B, C, D, ResultContainerC_, ResultContainerD_>
         extends AbstractGroupUniNode<OldA, QuadTuple<A, B, C, D>, Pair<A, B>, Object, Pair<C, D>> {
 
-    private final Function<OldA, A> groupKeyMappingA;
-    private final Function<OldA, B> groupKeyMappingB;
     private final int outputStoreSize;
 
     public Group2Mapping2CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
@@ -21,18 +20,9 @@ final class Group2Mapping2CollectorUniNode<OldA, A, B, C, D, ResultContainerC_, 
             UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
             UniConstraintCollector<OldA, ResultContainerD_, D> collectorD,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorC, collectorD), nextNodesTupleLifecycle);
-        this.groupKeyMappingA = groupKeyMappingA;
-        this.groupKeyMappingB = groupKeyMappingB;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple),
+                mergeCollectors(collectorC, collectorD), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
-    }
-
-    @Override
-    protected Pair<A, B> createGroupKey(UniTuple<OldA> tuple) {
-        OldA oldA = tuple.factA;
-        A a = groupKeyMappingA.apply(oldA);
-        B b = groupKeyMappingB.apply(oldA);
-        return Pair.of(a, b);
     }
 
     @Override

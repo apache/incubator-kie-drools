@@ -7,9 +7,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.util.Quadruple;
 
 final class Group0Mapping4CollectorBiNode<OldA, OldB, A, B, C, D, ResultContainerA_, ResultContainerB_, ResultContainerC_, ResultContainerD_>
-        extends AbstractGroupBiNode<OldA, OldB, QuadTuple<A, B, C, D>, String, Object, Quadruple<A, B, C, D>> {
-
-    private static final String NO_GROUP_KEY = "NO_GROUP";
+        extends AbstractGroupBiNode<OldA, OldB, QuadTuple<A, B, C, D>, Void, Object, Quadruple<A, B, C, D>> {
 
     private final int outputStoreSize;
 
@@ -19,7 +17,7 @@ final class Group0Mapping4CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
             BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
             BiConstraintCollector<OldA, OldB, ResultContainerD_, D> collectorD,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesTupleLifecycle);
+        super(groupStoreIndex, null, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -34,12 +32,7 @@ final class Group0Mapping4CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
     }
 
     @Override
-    protected String createGroupKey(BiTuple<OldA, OldB> tuple) {
-        return NO_GROUP_KEY;
-    }
-
-    @Override
-    protected QuadTuple<A, B, C, D> createOutTuple(String groupKey) {
+    protected QuadTuple<A, B, C, D> createOutTuple(Void groupKey) {
         return new QuadTuple<>(null, null, null, null, outputStoreSize);
     }
 

@@ -9,25 +9,20 @@ import org.optaplanner.core.impl.util.Quadruple;
 final class Group4Mapping0CollectorUniNode<OldA, A, B, C, D>
         extends AbstractGroupUniNode<OldA, QuadTuple<A, B, C, D>, Quadruple<A, B, C, D>, Void, Void> {
 
-    private final Function<OldA, A> groupKeyMappingA;
-    private final Function<OldA, B> groupKeyMappingB;
-    private final Function<OldA, C> groupKeyMappingC;
-    private final Function<OldA, D> groupKeyMappingD;
     private final int outputStoreSize;
 
     public Group4Mapping0CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
             Function<OldA, C> groupKeyMappingC, Function<OldA, D> groupKeyMappingD, int groupStoreIndex,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesTupleLifecycle);
-        this.groupKeyMappingA = groupKeyMappingA;
-        this.groupKeyMappingB = groupKeyMappingB;
-        this.groupKeyMappingC = groupKeyMappingC;
-        this.groupKeyMappingD = groupKeyMappingD;
+        super(groupStoreIndex,
+                tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, groupKeyMappingD, tuple),
+                null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
-    @Override
-    protected Quadruple<A, B, C, D> createGroupKey(UniTuple<OldA> tuple) {
+    private static <A, B, C, D, OldA> Quadruple<A, B, C, D> createGroupKey(Function<OldA, A> groupKeyMappingA,
+            Function<OldA, B> groupKeyMappingB, Function<OldA, C> groupKeyMappingC, Function<OldA, D> groupKeyMappingD,
+            UniTuple<OldA> tuple) {
         OldA oldA = tuple.factA;
         A a = groupKeyMappingA.apply(oldA);
         B b = groupKeyMappingB.apply(oldA);

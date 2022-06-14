@@ -6,9 +6,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.util.Triple;
 
 final class Group0Mapping3CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
-        extends AbstractGroupTriNode<OldA, OldB, OldC, TriTuple<A, B, C>, String, Object, Triple<A, B, C>> {
-
-    private static final String NO_GROUP_KEY = "NO_GROUP";
+        extends AbstractGroupTriNode<OldA, OldB, OldC, TriTuple<A, B, C>, Void, Object, Triple<A, B, C>> {
 
     private final int outputStoreSize;
 
@@ -17,7 +15,7 @@ final class Group0Mapping3CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultCont
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
             TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC), nextNodesTupleLifecycle);
+        super(groupStoreIndex, null, mergeCollectors(collectorA, collectorB, collectorC), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -31,12 +29,7 @@ final class Group0Mapping3CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultCont
     }
 
     @Override
-    protected String createGroupKey(TriTuple<OldA, OldB, OldC> tuple) {
-        return NO_GROUP_KEY;
-    }
-
-    @Override
-    protected TriTuple<A, B, C> createOutTuple(String groupKey) {
+    protected TriTuple<A, B, C> createOutTuple(Void groupKey) {
         return new TriTuple<>(null, null, null, outputStoreSize);
     }
 

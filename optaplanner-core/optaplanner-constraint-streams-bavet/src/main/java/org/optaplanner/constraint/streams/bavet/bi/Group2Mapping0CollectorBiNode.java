@@ -8,21 +8,18 @@ import org.optaplanner.core.impl.util.Pair;
 final class Group2Mapping0CollectorBiNode<OldA, OldB, A, B>
         extends AbstractGroupBiNode<OldA, OldB, BiTuple<A, B>, Pair<A, B>, Void, Void> {
 
-    private final BiFunction<OldA, OldB, A> groupKeyMappingA;
-    private final BiFunction<OldA, OldB, B> groupKeyMappingB;
     private final int outputStoreSize;
 
     public Group2Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA,
             BiFunction<OldA, OldB, B> groupKeyMappingB, int groupStoreIndex,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesTupleLifecycle);
-        this.groupKeyMappingA = groupKeyMappingA;
-        this.groupKeyMappingB = groupKeyMappingB;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple),
+                null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
-    @Override
-    protected Pair<A, B> createGroupKey(BiTuple<OldA, OldB> tuple) {
+    static <A, B, OldA, OldB> Pair<A, B> createGroupKey(BiFunction<OldA, OldB, A> groupKeyMappingA,
+            BiFunction<OldA, OldB, B> groupKeyMappingB, BiTuple<OldA, OldB> tuple) {
         OldA oldA = tuple.factA;
         OldB oldB = tuple.factB;
         A a = groupKeyMappingA.apply(oldA, oldB);

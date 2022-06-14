@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
 import static org.optaplanner.constraint.streams.bavet.quad.Group0Mapping3CollectorQuadNode.mergeCollectors;
+import static org.optaplanner.constraint.streams.bavet.quad.Group1Mapping0CollectorQuadNode.createGroupKey;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.function.QuadFunction;
@@ -10,7 +11,6 @@ import org.optaplanner.core.impl.util.Triple;
 final class Group1Mapping3CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, ResultContainerB_, ResultContainerC_, ResultContainerD_>
         extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, QuadTuple<A, B, C, D>, A, Object, Triple<B, C, D>> {
 
-    private final QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping;
     private final int outputStoreSize;
 
     public Group1Mapping3CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
@@ -18,14 +18,9 @@ final class Group1Mapping3CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, 
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerC_, C> collectorC,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerD_, D> collectorD,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorB, collectorC, collectorD), nextNodesTupleLifecycle);
-        this.groupKeyMapping = groupKeyMapping;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple),
+                mergeCollectors(collectorB, collectorC, collectorD), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
-    }
-
-    @Override
-    protected A createGroupKey(QuadTuple<OldA, OldB, OldC, OldD> tuple) {
-        return groupKeyMapping.apply(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
     }
 
     @Override

@@ -7,18 +7,16 @@ import org.optaplanner.core.api.function.QuadFunction;
 final class Group1Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A>
         extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, UniTuple<A>, A, Void, Void> {
 
-    private final QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping;
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
             TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesTupleLifecycle);
-        this.groupKeyMapping = groupKeyMapping;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
-    @Override
-    protected A createGroupKey(QuadTuple<OldA, OldB, OldC, OldD> tuple) {
+    static <A, OldA, OldB, OldC, OldD> A createGroupKey(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping,
+            QuadTuple<OldA, OldB, OldC, OldD> tuple) {
         return groupKeyMapping.apply(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
     }
 

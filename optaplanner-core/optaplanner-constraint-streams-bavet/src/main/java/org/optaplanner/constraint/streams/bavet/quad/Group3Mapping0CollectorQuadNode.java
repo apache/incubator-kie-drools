@@ -8,24 +8,22 @@ import org.optaplanner.core.impl.util.Triple;
 final class Group3Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C>
         extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, TriTuple<A, B, C>, Triple<A, B, C>, Void, Void> {
 
-    private final QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA;
-    private final QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB;
-    private final QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC;
     private final int outputStoreSize;
 
     public Group3Mapping0CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA,
             QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB, QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC,
             int groupStoreIndex,
             TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesTupleLifecycle);
-        this.groupKeyMappingA = groupKeyMappingA;
-        this.groupKeyMappingB = groupKeyMappingB;
-        this.groupKeyMappingC = groupKeyMappingC;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, tuple), null,
+                nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
-    @Override
-    protected Triple<A, B, C> createGroupKey(QuadTuple<OldA, OldB, OldC, OldD> tuple) {
+    static <A, B, C, OldA, OldB, OldC, OldD> Triple<A, B, C> createGroupKey(
+            QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA,
+            QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB,
+            QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC,
+            QuadTuple<OldA, OldB, OldC, OldD> tuple) {
         OldA oldA = tuple.factA;
         OldB oldB = tuple.factB;
         OldC oldC = tuple.factC;

@@ -7,7 +7,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group0Mapping2CollectorUniNode<OldA, A, B, ResultContainerA_, ResultContainerB_>
-        extends AbstractGroupUniNode<OldA, BiTuple<A, B>, String, Object, Pair<A, B>> {
+        extends AbstractGroupUniNode<OldA, BiTuple<A, B>, Void, Object, Pair<A, B>> {
 
     private static final String NO_GROUP_KEY = "NO_GROUP";
 
@@ -17,7 +17,7 @@ final class Group0Mapping2CollectorUniNode<OldA, A, B, ResultContainerA_, Result
             UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
             UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB), nextNodesTupleLifecycle);
+        super(groupStoreIndex, null, mergeCollectors(collectorA, collectorB), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -30,12 +30,7 @@ final class Group0Mapping2CollectorUniNode<OldA, A, B, ResultContainerA_, Result
     }
 
     @Override
-    protected String createGroupKey(UniTuple<OldA> tuple) {
-        return NO_GROUP_KEY;
-    }
-
-    @Override
-    protected BiTuple<A, B> createOutTuple(String groupKey) {
+    protected BiTuple<A, B> createOutTuple(Void groupKey) {
         return new BiTuple<>(null, null, outputStoreSize);
     }
 

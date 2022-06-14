@@ -8,21 +8,18 @@ import org.optaplanner.core.impl.util.Pair;
 final class Group2Mapping0CollectorTriNode<OldA, OldB, OldC, A, B>
         extends AbstractGroupTriNode<OldA, OldB, OldC, BiTuple<A, B>, Pair<A, B>, Void, Void> {
 
-    private final TriFunction<OldA, OldB, OldC, A> groupKeyMappingA;
-    private final TriFunction<OldA, OldB, OldC, B> groupKeyMappingB;
     private final int outputStoreSize;
 
     public Group2Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
             TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, int groupStoreIndex,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesTupleLifecycle);
-        this.groupKeyMappingA = groupKeyMappingA;
-        this.groupKeyMappingB = groupKeyMappingB;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple),
+                null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
-    @Override
-    protected Pair<A, B> createGroupKey(TriTuple<OldA, OldB, OldC> tuple) {
+    static <A, B, OldA, OldB, OldC> Pair<A, B> createGroupKey(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
+            TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, TriTuple<OldA, OldB, OldC> tuple) {
         OldA oldA = tuple.factA;
         OldB oldB = tuple.factB;
         OldC oldC = tuple.factC;

@@ -1,5 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.bi;
 
+import static org.optaplanner.constraint.streams.bavet.bi.Group1Mapping0CollectorBiNode.createGroupKey;
+
 import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
@@ -10,23 +12,15 @@ import org.optaplanner.core.impl.util.Pair;
 final class Group1Mapping2CollectorBiNode<OldA, OldB, A, B, C, ResultContainerB_, ResultContainerC_>
         extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, A, Object, Pair<B, C>> {
 
-    private final BiFunction<OldA, OldB, A> groupKeyMapping;
     private final int outputStoreSize;
 
     public Group1Mapping2CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
             BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
             BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
             TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, Group0Mapping2CollectorBiNode.mergeCollectors(collectorB, collectorC), nextNodesTupleLifecycle);
-        this.groupKeyMapping = groupKeyMapping;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple),
+                Group0Mapping2CollectorBiNode.mergeCollectors(collectorB, collectorC), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
-    }
-
-    @Override
-    protected A createGroupKey(BiTuple<OldA, OldB> tuple) {
-        OldA oldA = tuple.factA;
-        OldB oldB = tuple.factB;
-        return groupKeyMapping.apply(oldA, oldB);
     }
 
     @Override

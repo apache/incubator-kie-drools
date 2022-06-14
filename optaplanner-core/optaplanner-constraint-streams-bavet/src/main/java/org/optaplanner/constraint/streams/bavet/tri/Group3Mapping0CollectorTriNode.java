@@ -7,24 +7,20 @@ import org.optaplanner.core.impl.util.Triple;
 final class Group3Mapping0CollectorTriNode<OldA, OldB, OldC, A, B, C>
         extends AbstractGroupTriNode<OldA, OldB, OldC, TriTuple<A, B, C>, Triple<A, B, C>, Void, Void> {
 
-    private final TriFunction<OldA, OldB, OldC, A> groupKeyMappingA;
-    private final TriFunction<OldA, OldB, OldC, B> groupKeyMappingB;
-    private final TriFunction<OldA, OldB, OldC, C> groupKeyMappingC;
     private final int outputStoreSize;
 
     public Group3Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
             TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, TriFunction<OldA, OldB, OldC, C> groupKeyMappingC,
             int groupStoreIndex,
             TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, nextNodesTupleLifecycle);
-        this.groupKeyMappingA = groupKeyMappingA;
-        this.groupKeyMappingB = groupKeyMappingB;
-        this.groupKeyMappingC = groupKeyMappingC;
+        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, tuple),
+                null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
-    @Override
-    protected Triple<A, B, C> createGroupKey(TriTuple<OldA, OldB, OldC> tuple) {
+    static <A, B, C, OldA, OldB, OldC> Triple<A, B, C> createGroupKey(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
+            TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, TriFunction<OldA, OldB, OldC, C> groupKeyMappingC,
+            TriTuple<OldA, OldB, OldC> tuple) {
         OldA oldA = tuple.factA;
         OldB oldB = tuple.factB;
         OldC oldC = tuple.factC;

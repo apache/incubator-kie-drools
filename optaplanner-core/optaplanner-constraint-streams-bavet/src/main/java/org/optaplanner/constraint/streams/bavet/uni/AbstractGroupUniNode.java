@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -13,9 +14,10 @@ abstract class AbstractGroupUniNode<OldA, OutTuple_ extends Tuple, GroupKey_, Re
     private final BiFunction<ResultContainer_, OldA, Runnable> accumulator;
 
     protected AbstractGroupUniNode(int groupStoreIndex,
+            Function<UniTuple<OldA>, GroupKey_> groupKeyFunction,
             UniConstraintCollector<OldA, ResultContainer_, Result_> collector,
             TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
-        super(groupStoreIndex,
+        super(groupStoreIndex, groupKeyFunction,
                 collector == null ? null : collector.supplier(),
                 collector == null ? null : collector.finisher(),
                 nextNodesTupleLifecycle);

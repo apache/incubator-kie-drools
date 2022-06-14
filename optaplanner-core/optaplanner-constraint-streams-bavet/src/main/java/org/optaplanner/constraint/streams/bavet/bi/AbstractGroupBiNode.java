@@ -1,5 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.bi;
 
+import java.util.function.Function;
+
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
@@ -12,9 +14,10 @@ abstract class AbstractGroupBiNode<OldA, OldB, OutTuple_ extends Tuple, GroupKey
     private final TriFunction<ResultContainer_, OldA, OldB, Runnable> accumulator;
 
     protected AbstractGroupBiNode(int groupStoreIndex,
+            Function<BiTuple<OldA, OldB>, GroupKey_> groupKeyFunction,
             BiConstraintCollector<OldA, OldB, ResultContainer_, Result_> collector,
             TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
-        super(groupStoreIndex,
+        super(groupStoreIndex, groupKeyFunction,
                 collector == null ? null : collector.supplier(),
                 collector == null ? null : collector.finisher(),
                 nextNodesTupleLifecycle);
