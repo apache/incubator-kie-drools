@@ -52,6 +52,7 @@ import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.CANCEL_JOB_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.CANCEL_NODE_INSTANCE_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.GET_PROCESS_INSTANCE_DIAGRAM_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.GET_PROCESS_INSTANCE_NODE_DEFINITIONS_PATH;
+import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.GET_PROCESS_INSTANCE_SOURCE_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.RESCHEDULE_JOB_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.RETRIGGER_NODE_INSTANCE_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.RETRY_PROCESS_INSTANCE_PATH;
@@ -303,6 +304,24 @@ public class KogitoRuntimeClientTest {
         verify(responseWithoutError, never()).statusMessage();
         verify(responseWithoutError, never()).body();
         verify(responseWithoutError).bodyAsJson(List.class);
+    }
+
+    @Test
+    public void testGetProcessInstanceSource() {
+        setupIdentityMock();
+        when(webClientMock.get(any())).thenReturn(httpRequestMock);
+
+        ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
+
+        client.getProcessInstanceSourceFileContent(SERVICE_URL, pI);
+        verify(client).sendGetClientRequest(webClientMock,
+                format(GET_PROCESS_INSTANCE_SOURCE_PATH, pI.getProcessId()),
+                "Get Process Instance source file with processId: " + pI.getProcessId(),
+                null);
+        ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
+        verify(httpRequestMock).send(handlerCaptor.capture());
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test

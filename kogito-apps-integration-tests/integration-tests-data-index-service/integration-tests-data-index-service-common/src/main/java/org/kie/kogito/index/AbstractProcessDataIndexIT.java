@@ -16,6 +16,10 @@
 package org.kie.kogito.index;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -59,6 +63,10 @@ public abstract class AbstractProcessDataIndexIT {
 
     public boolean validateDomainData() {
         return true;
+    }
+
+    public boolean validateGetProcessInstanceSource() {
+        return false;
     }
 
     public RequestSpecification dataIndexSpec() {
@@ -238,6 +246,17 @@ public abstract class AbstractProcessDataIndexIT {
         await()
                 .atMost(TIMEOUT)
                 .untilAsserted(() -> getProcessInstanceById(pId2, "ACTIVE"));
+
+        if (validateGetProcessInstanceSource()) {
+            await()
+                    .atMost(TIMEOUT)
+                    .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                            .body("{ \"query\" : \"{ ProcessInstances (where: { id: {equal: \\\"" + pId2 + "\\\"}}) { source } }\"}")
+                            .when().post("/graphql")
+                            .then()
+                            .statusCode(200)
+                            .body("data.ProcessInstances[0].source", is(getTestFileContentByFilename("approval.bpmn"))));
+        }
 
         await()
                 .atMost(TIMEOUT)
@@ -664,5 +683,14 @@ public abstract class AbstractProcessDataIndexIT {
         assertEquals("string",
                 schemaJsonNode.at("/$defs/Address/properties/zipCode/type").asText());
 
+    }
+
+    public static String readFileContent(String file) throws URISyntaxException, IOException {
+        Path path = Paths.get(Thread.currentThread().getContextClassLoader().getResource(file).toURI());
+        return new String(Files.readAllBytes(path));
+    }
+
+    public String getTestFileContentByFilename(String fileName) throws Exception {
+        return readFileContent(fileName);
     }
 }

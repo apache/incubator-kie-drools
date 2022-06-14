@@ -149,6 +149,18 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     }
 
     @Test
+    void testProcessInstanceSource() {
+        String processInstanceId = UUID.randomUUID().toString();
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        indexProcessCloudEvent(startEvent);
+
+        checkOkResponse("{ \"query\" : \"query { ProcessInstances (where: { id: {equal: \\\"" + processInstanceId + "\\\"}}) {source} }\" }");
+
+        verify(dataIndexApiClient).getProcessInstanceSourceFileContent(eq("http://localhost:8080"),
+                eq(getProcessInstance(processId, processInstanceId, 1, null, null)));
+    }
+
+    @Test
     void testNodeInstanceTrigger() {
         String nodeId = "nodeIdToTrigger";
         String processInstanceId = UUID.randomUUID().toString();

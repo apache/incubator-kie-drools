@@ -137,6 +137,7 @@ public class GraphQLSchemaManager {
                     builder.dataFetcher("childProcessInstances", this::getChildProcessInstancesValues);
                     builder.dataFetcher("serviceUrl", this::getProcessInstanceServiceUrl);
                     builder.dataFetcher("diagram", this::getProcessInstanceDiagram);
+                    builder.dataFetcher("source", this::getProcessInstanceSourceFileContent);
                     builder.dataFetcher("nodeDefinitions", this::getProcessNodes);
                     return builder;
                 })
@@ -222,6 +223,11 @@ public class GraphQLSchemaManager {
     public CompletableFuture getProcessInstanceDiagram(DataFetchingEnvironment env) {
         ProcessInstance processInstance = env.getSource();
         return dataIndexApiExecutor.getProcessInstanceDiagram(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
+    }
+
+    public CompletableFuture<String> getProcessInstanceSourceFileContent(DataFetchingEnvironment env) {
+        ProcessInstance processInstance = env.getSource();
+        return dataIndexApiExecutor.getProcessInstanceSourceFileContent(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
     }
 
     public CompletableFuture<List<Node>> getProcessNodes(DataFetchingEnvironment env) {

@@ -57,6 +57,7 @@ type ProcessInstance {
     addons: [String!]
     lastUpdate: DateTime!
     businessKey: String
+    source: String
 }
 
 type KogitoMetadata {

@@ -54,6 +54,7 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     public static final String RETRY_PROCESS_INSTANCE_PATH = "/management/processes/%s/instances/%s/retrigger";
     public static final String SKIP_PROCESS_INSTANCE_PATH = "/management/processes/%s/instances/%s/skip";
     public static final String GET_PROCESS_INSTANCE_DIAGRAM_PATH = "/svg/processes/%s/instances/%s";
+    public static final String GET_PROCESS_INSTANCE_SOURCE_PATH = "/management/processes/%s/source";
     public static final String GET_PROCESS_INSTANCE_NODE_DEFINITIONS_PATH = "/management/processes/%s/nodes";
     public static final String UPDATE_VARIABLES_PROCESS_INSTANCE_PATH = "/%s/%s";
     public static final String TRIGGER_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodes/%s"; //node def
@@ -134,6 +135,13 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     public CompletableFuture<String> getProcessInstanceDiagram(String serviceURL, ProcessInstance processInstance) {
         String requestURI = format(GET_PROCESS_INSTANCE_DIAGRAM_PATH, processInstance.getProcessId(), processInstance.getId());
         return sendGetClientRequest(getWebClient(serviceURL), requestURI, "Get Process Instance diagram with id: " + processInstance.getId(), null);
+    }
+
+    @Override
+    public CompletableFuture<String> getProcessInstanceSourceFileContent(String serviceURL, ProcessInstance processInstance) {
+        String requestURI = format(GET_PROCESS_INSTANCE_SOURCE_PATH, processInstance.getProcessId());
+        return sendGetClientRequest(getWebClient(serviceURL), requestURI, "Get Process Instance source file with processId: " +
+                processInstance.getProcessId(), null);
     }
 
     @Override

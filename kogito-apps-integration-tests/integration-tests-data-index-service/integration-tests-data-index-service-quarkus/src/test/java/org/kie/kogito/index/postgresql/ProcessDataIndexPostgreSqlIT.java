@@ -39,4 +39,9 @@ public class ProcessDataIndexPostgreSqlIT extends AbstractProcessDataIndexIT {
     public boolean validateDomainData() {
         return false;
     }
+
+    @Override
+    public boolean validateGetProcessInstanceSource() {
+        return true;
+    }
 }

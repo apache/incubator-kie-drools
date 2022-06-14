@@ -37,6 +37,8 @@ public interface KogitoRuntimeClient {
 
     CompletableFuture<String> getProcessInstanceDiagram(String serviceURL, ProcessInstance processInstance);
 
+    CompletableFuture<String> getProcessInstanceSourceFileContent(String serviceURL, ProcessInstance processInstance);
+
     CompletableFuture<List<Node>> getProcessInstanceNodeDefinitions(String serviceURL, ProcessInstance processInstance);
 
     CompletableFuture<String> triggerNodeInstance(String serviceURL, ProcessInstance processInstance, String nodeDefinitionId);

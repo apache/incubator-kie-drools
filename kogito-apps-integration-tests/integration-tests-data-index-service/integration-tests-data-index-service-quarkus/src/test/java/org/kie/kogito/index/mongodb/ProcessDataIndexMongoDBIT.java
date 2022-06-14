@@ -35,4 +35,8 @@ public class ProcessDataIndexMongoDBIT extends AbstractProcessDataIndexIT {
         return dataIndex;
     }
 
+    @Override
+    public boolean validateGetProcessInstanceSource() {
+        return true;
+    }
 }

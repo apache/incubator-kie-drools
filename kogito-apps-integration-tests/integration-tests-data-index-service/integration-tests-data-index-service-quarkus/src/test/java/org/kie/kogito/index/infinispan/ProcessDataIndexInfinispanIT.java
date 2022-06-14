@@ -35,4 +35,8 @@ public class ProcessDataIndexInfinispanIT extends AbstractProcessDataIndexIT {
         return dataIndex;
     }
 
+    @Override
+    public boolean validateGetProcessInstanceSource() {
+        return true;
+    }
 }
