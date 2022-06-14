@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.conf.StaticConfigBean;
 import org.kie.kogito.explainability.model.PredictOutput;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.explainability.Constants.MODEL_NAME;
 import static org.kie.kogito.explainability.Constants.MODEL_NAMESPACE;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 public class QuarkusExplainableResourceIT {
 
     @Singleton
@@ -147,6 +147,6 @@ public class QuarkusExplainableResourceIT {
                 .then()
                 .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
                 .body(Matchers.isA(String.class))
-                .body(Matchers.containsString("Model " + unknownResourceId + " not found."));
+                .body(Matchers.containsString("DMN model 'model' not found with namespace 'unknown'"));
     }
 }

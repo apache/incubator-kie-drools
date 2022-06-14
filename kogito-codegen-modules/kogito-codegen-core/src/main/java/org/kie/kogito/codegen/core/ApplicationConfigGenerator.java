@@ -25,6 +25,7 @@ import org.drools.codegen.common.GeneratedFile;
 import org.kie.kogito.Addons;
 import org.kie.kogito.codegen.api.ConfigGenerator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 
@@ -56,7 +57,9 @@ public class ApplicationConfigGenerator {
                 .build(context, CLASS_NAME);
         this.context = context;
 
-        this.configGenerators.add(new ConfigBeanGenerator(context));
+        if (!QuarkusKogitoBuildContext.CONTEXT_NAME.equals(context.name())) {
+            this.configGenerators.add(new ConfigBeanGenerator(context));
+        }
     }
 
     public ApplicationConfigGenerator addConfigGenerator(ConfigGenerator configGenerator) {

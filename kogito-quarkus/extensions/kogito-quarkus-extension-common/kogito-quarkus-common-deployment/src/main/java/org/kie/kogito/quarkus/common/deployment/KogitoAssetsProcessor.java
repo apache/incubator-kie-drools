@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
@@ -34,6 +35,7 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Indexer;
 import org.jboss.logging.Logger;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
@@ -41,12 +43,16 @@ import org.kie.kogito.incubation.common.EmptyDataContext;
 import org.kie.kogito.incubation.common.EmptyMetaDataContext;
 import org.kie.kogito.incubation.common.ExtendedDataContext;
 import org.kie.kogito.incubation.common.MapDataContext;
+import org.kie.kogito.quarkus.KogitoRecorder;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.annotations.ExecutionTime;
+import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
@@ -56,6 +62,7 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.index.IndexingUtil;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
+import io.quarkus.maven.dependency.Dependency;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.resteasy.reactive.spi.GeneratedJaxRsResourceBuildItem;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
@@ -95,6 +102,16 @@ public class KogitoAssetsProcessor {
                         combinedIndexBuildItem.getIndex(),
                         curateOutcomeBuildItem.getApplicationModel().getAppArtifact());
         return new KogitoBuildContextBuildItem(context);
+    }
+
+    @Record(ExecutionTime.STATIC_INIT)
+    @BuildStep
+    public SyntheticBeanBuildItem runtimeConfigBuildStep(KogitoRecorder recorder) {
+        Dependency appModel = curateOutcomeBuildItem.getApplicationModel().getAppArtifact();
+
+        return SyntheticBeanBuildItem.configure(KogitoGAV.class)
+                .scope(Singleton.class)
+                .supplier(recorder.kogitoGAVSupplier(appModel.getGroupId(), appModel.getArtifactId(), appModel.getVersion())).done();
     }
 
     @BuildStep

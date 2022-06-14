@@ -32,7 +32,7 @@ import io.quarkus.jackson.ObjectMapperCustomizer;
 public class GlobalObjectMapper implements ObjectMapperCustomizer {
     
     @Inject
-    ConfigBean configBean;
+    org.kie.kogito.conf.ConfigBean configBean;
 
     public void customize(ObjectMapper mapper) {
         if (!configBean.failOnEmptyBean()) {
