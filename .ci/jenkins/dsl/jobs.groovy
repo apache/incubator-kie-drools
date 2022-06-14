@@ -34,7 +34,7 @@ Map getMultijobPRConfig(Folder jobFolder) {
                 dependsOn: 'kogito-apps',
                 repository: 'kogito-examples',
                 env : [
-                    BUILD_MVN_OPTS_CURRENT: jobFolder.isNative() || jobFolder.isMandrel() ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream'
+                    BUILD_MVN_OPTS_CURRENT: jobFolder.isQuarkusLTS() ? '' : jobFolder.isNative() || jobFolder.isMandrel() ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream'
                 ]
             ]
         ]
