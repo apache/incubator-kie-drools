@@ -18,5 +18,6 @@ ifndef::backend-pdf[]
 image::shared/droolsExpertLogo.png[align="center"]
 endif::[]
 
+include::getting-started/index.adoc[leveloffset=+1]
 include::rule-engine/index.adoc[leveloffset=+1]
 include::language-reference/index.adoc[leveloffset=+1]
