@@ -213,7 +213,7 @@
     <version.org.jboss.jandex>2.4.2.Final</version.org.jboss.jandex>
     <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
 
-    <version.com.github.javaparser>3.23.1</version.com.github.javaparser>
+    <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
 
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
