@@ -19,7 +19,7 @@ import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.ProcessorDecisionTable;
+import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -66,8 +66,8 @@ public class DroolsModelBuilder {
 
         DrlResourceHandler drlResourceHandler =
                 new DrlResourceHandler(knowledgeBuilderConfiguration);
-        ProcessorDecisionTable decisionTableHandler =
-                new ProcessorDecisionTable(knowledgeBuilderConfiguration, DUMMY_RELEASE_ID);
+        DecisionTableResourceHandler decisionTableHandler =
+                new DecisionTableResourceHandler(knowledgeBuilderConfiguration, DUMMY_RELEASE_ID);
 
         Map<String, CompositePackageDescr> packages = new HashMap<>();
 
@@ -102,7 +102,7 @@ public class DroolsModelBuilder {
         this.kogitoPackageSources = compiler.getPackageSources();
     }
 
-    private void handleDtable(ProcessorDecisionTable decisionTableHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException {
+    private void handleDtable(DecisionTableResourceHandler decisionTableHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException {
         PackageDescr packageDescr = decisionTableHandler.process(resource, loadDtableResourceConfiguration(resource));
         CompositePackageDescr compositePackageDescr =
                 packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new);

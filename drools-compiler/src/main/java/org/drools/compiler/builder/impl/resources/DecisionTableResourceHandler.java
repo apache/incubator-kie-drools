@@ -13,24 +13,31 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.builder.impl;
+package org.drools.compiler.builder.impl.resources;
 
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
-import org.drools.drl.extensions.DecisionTableFactory;
-import org.drools.drl.parser.DroolsParserException;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.extensions.DecisionTableFactory;
+import org.drools.drl.parser.DroolsParserException;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.DecisionTableConfiguration;
+
 import java.util.List;
 
-public class ProcessorDecisionTable extends Processor{
+public class DecisionTableResourceHandler extends ResourceHandler {
 
-    public ProcessorDecisionTable(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId)
-    {
+    public DecisionTableResourceHandler(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId) {
         super(configuration, releaseId);
+    }
+
+    @Override
+    public boolean handles(ResourceType type) {
+        return type == ResourceType.DTABLE;
     }
 
     public PackageDescr process(Resource resource, ResourceConfiguration rConfiguration) throws DroolsParserException {
@@ -57,7 +64,7 @@ public class ProcessorDecisionTable extends Processor{
             return compositePackageDescr;
         }
 
-        dtableConfiguration.setTrimCell( this.configuration.isTrimCellsInDTable() );
+        dtableConfiguration.setTrimCell(this.configuration.isTrimCellsInDTable());
 
         String generatedDrl = DecisionTableFactory.loadFromResource(resource, dtableConfiguration);
         return generatedDrlToPackageDescr(resource, generatedDrl);

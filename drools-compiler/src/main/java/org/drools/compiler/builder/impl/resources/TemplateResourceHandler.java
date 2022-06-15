@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.builder.impl;
+package org.drools.compiler.builder.impl.resources;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.extensions.GuidedRuleTemplateFactory;
@@ -24,24 +25,35 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.function.Supplier;
 
-public class ProcessorTemplate extends Processor{
+public class TemplateResourceHandler extends ResourceHandler {
 
-    public ProcessorTemplate(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId) {
+    private Supplier<DefaultExpander> expander;
+
+    public TemplateResourceHandler(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, Supplier<DefaultExpander> expander) {
         super(configuration, releaseId);
+        this.expander = expander;
     }
 
-    public PackageDescr process(Resource resource, DefaultExpander expander) throws DroolsParserException, IOException {
+    @Override
+    public boolean handles(ResourceType type) {
+        return type == ResourceType.TEMPLATE;
+    }
+
+    @Override
+    public PackageDescr process(Resource resource, ResourceConfiguration configuration) throws DroolsParserException, IOException {
         GuidedRuleTemplateProvider guidedRuleTemplateProvider = GuidedRuleTemplateFactory.getGuidedRuleTemplateProvider();
         if (guidedRuleTemplateProvider == null) {
             throw new MissingImplementationException(resource, "drools-workbench-models-guided-template");
         }
         ResourceConversionResult conversionResult = guidedRuleTemplateProvider.loadFromInputStream(resource.getInputStream());
-        return conversionResultToPackageDescr(resource, conversionResult, expander);
+        return conversionResultToPackageDescr(resource, conversionResult, expander.get());
     }
 
     private PackageDescr conversionResultToPackageDescr(Resource resource, ResourceConversionResult resourceConversionResult, DefaultExpander expander)

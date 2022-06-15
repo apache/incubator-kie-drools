@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.builder.impl;
+package org.drools.compiler.builder.impl.resources;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.ParserError;
@@ -24,6 +25,8 @@ import org.drools.util.IoUtils;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,20 +41,29 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
-public abstract class Processor {
+public abstract class ResourceHandler {
     protected KnowledgeBuilderConfigurationImpl configuration;
     protected Collection<KnowledgeBuilderResult> results = new ArrayList<>();
     protected ReleaseId releaseId;
-    protected static final Logger logger = LoggerFactory.getLogger(Processor.class);
+    protected static final Logger logger = LoggerFactory.getLogger(ResourceHandler.class);
 
-    public Processor(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId) {
+    public ResourceHandler(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId) {
         this.configuration = configuration;
         this.releaseId = releaseId;
     }
 
-    public Processor(KnowledgeBuilderConfigurationImpl configuration) {
+    public ResourceHandler(KnowledgeBuilderConfigurationImpl configuration) {
         this.configuration = configuration;
     }
+
+    public abstract PackageDescr process(Resource resource, ResourceConfiguration configuration) throws DroolsParserException, IOException;
+
+    public final PackageDescr process(Resource resource) throws DroolsParserException, IOException {
+        return process(resource, null);
+    }
+
+
+    public abstract boolean handles(ResourceType type);
 
     public Collection<KnowledgeBuilderResult> getResults(){
         return this.results;
