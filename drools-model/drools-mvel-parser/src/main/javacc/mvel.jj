@@ -705,6 +705,13 @@ TOKEN :
       (
           (~["'","\\","\n","\r"])
        |
+          // starts off with unicode backslash
+          ("\\u005" ["c", "C"]
+              // regular escape sequences
+              (["n","t","b","r","f","\\","'","\""]
+                  // escapes another unicode backslash
+                  | ("\\u005" ["c", "C"])))
+       |
           ( // TODO: Could these escape sequences be extracted out?
               "\\"
               (
