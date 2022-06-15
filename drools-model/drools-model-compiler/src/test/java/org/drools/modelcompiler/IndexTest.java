@@ -471,4 +471,53 @@ public class IndexTest extends BaseModelTest {
         int fired = ksession.fireAllRules();
         assertEquals(1, fired);
     }
+
+    @Test
+    public void testAlphaIndexWithDeclarationInPattern() {
+        final String str =
+                "package org.drools.mvel.compiler\n" +
+                           "import " + Person.class.getCanonicalName() + ";" +
+                           "rule r1 when\n" +
+                           "    Person( $rate : 100, " +
+                           "            salary > age * $rate )\n" +
+                           "then\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ObjectTypeNode otn = getObjectTypeNodeForClass(ksession, Person.class);
+        ObjectSink sink = otn.getObjectSinkPropagator().getSinks()[0];
+        assertThat(sink).isInstanceOf(AlphaNode.class);
+
+        Person person = new Person("John", 20);
+        person.setSalary(5000);
+        ksession.insert(person);
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
+    }
+
+    @Test
+    public void testAlphaIndexWithDeclarationInPatternWithSameNameProp() {
+        final String str =
+                "package org.drools.mvel.compiler\n" +
+                           "import " + Person.class.getCanonicalName() + ";" +
+                           "rule r1 when\n" +
+                           "    Person( age : age, " +
+                           "            $rate : 100, " +
+                           "            salary > age * $rate )\n" +
+                           "then\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ObjectTypeNode otn = getObjectTypeNodeForClass(ksession, Person.class);
+        ObjectSink sink = otn.getObjectSinkPropagator().getSinks()[0];
+        assertThat(sink).isInstanceOf(AlphaNode.class);
+
+        Person person = new Person("John", 20);
+        person.setSalary(5000);
+        ksession.insert(person);
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
+    }
 }

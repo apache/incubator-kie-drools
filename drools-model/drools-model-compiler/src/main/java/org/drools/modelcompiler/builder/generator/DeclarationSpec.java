@@ -44,6 +44,7 @@ public class DeclarationSpec {
     private String boundVariable;
     private MethodCallExpr bindingExpr;
     private boolean boxed = false;
+    private Optional<PatternDescr> belongingPatternDescr;
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), false);
@@ -148,4 +149,13 @@ public class DeclarationSpec {
     public boolean isBoxed() {
         return boxed;
     }
+
+    public Optional<PatternDescr> getBelongingPatternDescr() {
+        return belongingPatternDescr;
+    }
+
+    public void setBelongingPatternDescr(Optional<PatternDescr> belongingPatternDescr) {
+        this.belongingPatternDescr = belongingPatternDescr;
+    }
+
 }
