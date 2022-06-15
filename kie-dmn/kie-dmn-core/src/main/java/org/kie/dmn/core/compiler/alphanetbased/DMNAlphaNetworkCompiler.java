@@ -27,7 +27,6 @@ import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.type.ArrayType;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.model.api.BuiltinAggregator;
 import org.kie.dmn.model.api.DecisionTable;
@@ -113,7 +112,7 @@ public class DMNAlphaNetworkCompiler {
                 .collect(Collectors.toCollection(NodeList::new));
 
         ArrayCreationExpr array = new ArrayCreationExpr()
-                .setElementType(new ArrayType(parseType(String.class.getCanonicalName())))
+                .setElementType(parseType(String.class.getCanonicalName()))
                 .setInitializer(new ArrayInitializerExpr(propertyNamesArray));
 
         template.findAll(StringLiteralExpr.class, n -> n.asString().equals("PROPERTY_NAMES"))
