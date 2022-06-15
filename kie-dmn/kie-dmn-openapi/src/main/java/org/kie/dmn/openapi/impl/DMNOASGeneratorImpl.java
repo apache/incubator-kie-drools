@@ -26,6 +26,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.smallrye.openapi.runtime.io.JsonUtil;
+import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
@@ -36,14 +39,11 @@ import org.kie.dmn.openapi.model.DMNModelIOSets;
 import org.kie.dmn.openapi.model.DMNModelIOSets.DSIOSets;
 import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.dmn.typesafe.DMNTypeUtils;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import io.smallrye.openapi.runtime.io.JsonUtil;
-import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DMNOASGeneratorImpl implements DMNOASGenerator {
-
+    private static final Logger LOG = LoggerFactory.getLogger(DMNOASGeneratorImpl.class);
     private final List<DMNModel> dmnModels;
     private final List<DMNModelIOSets> ioSets = new ArrayList<>();
     private final Set<DMNType> typesIndex = new HashSet<>();
@@ -117,25 +117,45 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     }
 
     private void assignNamesToIOSets() {
-        for (int i = 0; i < ioSets.size(); i++) {
-            DMNModelIOSets si = ioSets.get(i);
-            si.setInputSetName(findUniqueNameUsing("InputSet", i + 1));
-            si.setOutputSetName(findUniqueNameUsing("OutputSet", i + 1));
-            int j = 1;
-            for (DSIOSets ds : si.getDSIOSets()) {
-                ds.setDSInputSetName(findUniqueNameUsing("InputSetDS" + j, i + 1));
-                ds.setDSOutputSetName(findUniqueNameUsing("OutputSetDS" + j, i + 1));
-                j++;
+        long byNameCount = this.dmnModels.stream().map(DMNModel::getName).distinct().count();
+        if (this.dmnModels.size() == byNameCount) {
+            for (DMNModelIOSets si : ioSets) {
+                si.setInputSetName(ensureUniqueName(buildRadixNameForIOSet("InputSet", si.getModel().getName())));
+                si.setOutputSetName(ensureUniqueName(buildRadixNameForIOSet("OutputSet", si.getModel().getName())));
+                for (DSIOSets ds : si.getDSIOSets()) {
+                    ds.setDSInputSetName(ensureUniqueName(buildRadixNameForIOSet("InputSet", si.getModel().getName()) + "DS" + ds.getDS().getName()));
+                    ds.setDSOutputSetName(ensureUniqueName(buildRadixNameForIOSet("OutputSet", si.getModel().getName()) + "DS" + ds.getDS().getName()));
+                }
+            }
+        } else {
+            LOG.warn("DMN model names are not unique across all namespaces, using number-based naming for InputSet/OutputSet(s)");
+            for (int i = 0; i < ioSets.size(); i++) {
+                DMNModelIOSets si = ioSets.get(i);
+                si.setInputSetName(ensureUniqueName(buildRadixNameForIOSet("InputSet", i + 1)));
+                si.setOutputSetName(ensureUniqueName(buildRadixNameForIOSet("OutputSet", i + 1)));
+                int j = 1;
+                for (DSIOSets ds : si.getDSIOSets()) {
+                    ds.setDSInputSetName(ensureUniqueName(buildRadixNameForIOSet("InputSet", i + 1) + "DS" + j));
+                    ds.setDSOutputSetName(ensureUniqueName(buildRadixNameForIOSet("OutputSet", i + 1) + "DS" + j));
+                    j++;
+                }
             }
         }
     }
 
-    private String findUniqueNameUsing(String radix, int suffixH) {
-        String candidate = dmnModels.size() > 1 ? radix + suffixH : radix;
+    private String ensureUniqueName(String candidate) {
         while (indexContainsName(candidate)) {
             candidate = "_" + candidate;
         }
         return candidate;
+    }
+
+    private String buildRadixNameForIOSet(String radix, int suffixH) {
+        return buildRadixNameForIOSet(radix, Integer.valueOf(suffixH).toString());
+    }
+    
+    private String buildRadixNameForIOSet(String radix, String suffixH) {
+        return dmnModels.size() > 1 ? radix + suffixH : radix;
     }
 
     private boolean indexContainsName(String candidate) {
