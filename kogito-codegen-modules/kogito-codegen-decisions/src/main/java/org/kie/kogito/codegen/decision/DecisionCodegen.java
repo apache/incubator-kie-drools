@@ -18,6 +18,8 @@ package org.kie.kogito.codegen.decision;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -131,7 +133,10 @@ public class DecisionCodegen extends AbstractGenerator {
 
         DMNOASResult oasResult = null;
         try {
-            oasResult = DMNOASGeneratorFactory.generator(models).build();
+            Comparator<DMNModel> nsNameComparator = Comparator.comparing(DMNModel::getNamespace).thenComparing(DMNModel::getName);
+            List<DMNModel> orderedModels = new ArrayList<>(models);
+            Collections.sort(orderedModels, nsNameComparator);
+            oasResult = DMNOASGeneratorFactory.generator(orderedModels).build();
             String jsonContent = new ObjectMapper().writeValueAsString(oasResult.getJsonSchemaNode());
             storeFile(GeneratedFileType.STATIC_HTTP_RESOURCE, "dmnDefinitions.json", jsonContent);
         } catch (Exception e) {
