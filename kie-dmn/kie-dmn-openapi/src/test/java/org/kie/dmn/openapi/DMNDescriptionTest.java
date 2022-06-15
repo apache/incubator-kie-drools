@@ -18,12 +18,11 @@ package org.kie.dmn.openapi;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.openapi.model.DMNOASResult;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.openapi.impl.DMNOASConstants.X_DMN_DESCRIPTIONS;
@@ -43,8 +42,8 @@ public class DMNDescriptionTest extends BaseDMNOASTest {
                                                                                         .containsEntry("in1", "description of in1")
                                                                                         .containsEntry("out1", "description of out1")
                                                                                         .containsEntry("d1", "description of d1");
-        assertThat(convertToMap((definitions.get("InputSetDS1").get(X_DMN_DESCRIPTIONS)))).hasSize(2);
-        assertThat(convertToMap((definitions.get("OutputSetDS1").get(X_DMN_DESCRIPTIONS)))).hasSize(1);
+        assertThat(convertToMap((definitions.get("InputSetDSmyDS1").get(X_DMN_DESCRIPTIONS)))).hasSize(2);
+        assertThat(convertToMap((definitions.get("OutputSetDSmyDS1").get(X_DMN_DESCRIPTIONS)))).hasSize(1);
     }
 
     @SuppressWarnings("unchecked")

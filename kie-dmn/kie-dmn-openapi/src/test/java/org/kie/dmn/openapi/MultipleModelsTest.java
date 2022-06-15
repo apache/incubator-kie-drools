@@ -83,4 +83,28 @@ public class MultipleModelsTest extends BaseDMNOASTest {
         assertThat(validateUsing(validator, "{ \"Applicant data\": {}, \"Requested product\": {}, \"Bureau data\": {}, \"Supporting documents\": null, \"Loan default data\": \"data...\" }")).isEmpty();
         
     }
+    
+    @Test
+    public void testSameName() throws Exception {
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("sameNameNS1.dmn",
+                                                                        this.getClass(),
+                                                                        "sameNameNS2.dmn");
+        DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
+
+        DMNModel ns1_modelUnderTest = runtime.getModel("ns1", "sameName");
+        ObjectNode ns1_syntheticJSONSchema = synthesizeSchema(result, ns1_modelUnderTest);
+        JsonSchema ns1_validator = getJSONSchema(ns1_syntheticJSONSchema);
+
+        assertThat(validateUsing(ns1_validator, "{ \"asd\":123 }")).isNotEmpty();
+        assertThat(validateUsing(ns1_validator, "{ \"in1\":\"John Doe\" }")).isNotEmpty();
+        assertThat(validateUsing(ns1_validator, "{ \"in1\":123 }")).isEmpty();
+        
+        DMNModel ns2_modelUnderTest = runtime.getModel("ns2", "sameName");
+        ObjectNode ns2_syntheticJSONSchema = synthesizeSchema(result, ns2_modelUnderTest);
+        JsonSchema ns2_validator = getJSONSchema(ns2_syntheticJSONSchema);
+
+        assertThat(validateUsing(ns2_validator, "{ \"asd\":123 }")).isNotEmpty();
+        assertThat(validateUsing(ns2_validator, "{ \"in1\":123 }")).isNotEmpty();
+        assertThat(validateUsing(ns2_validator, "{ \"in1\":\"John Doe\" }")).isEmpty();
+    }
 }
