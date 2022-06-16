@@ -1,14 +1,15 @@
-package org.kie.dmn.ruleset2dmn;
+package org.kie.dmn.ruleset2dmn.cli;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.concurrent.Callable;
 
+import org.kie.dmn.ruleset2dmn.Converter;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "java -jar <ruleset2dmn .jar file>",
+@Command(name = "java -jar <ruleset2dmn-cli .jar file>",
         mixinStandardHelpOptions = true,
         versionProvider = RuleSet2DMNVersionProvider.class,
         description = "Experimental DMN generator for PMML RuleSet models to be converted to DMN decision tables.")

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.ruleset2dmn;
+package org.kie.dmn.ruleset2dmn.cli;
 
 import org.drools.core.util.Drools;
 

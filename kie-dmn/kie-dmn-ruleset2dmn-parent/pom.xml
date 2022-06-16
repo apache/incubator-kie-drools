@@ -11,5 +11,6 @@
   <name>KIE :: Decision Model Notation :: ruleset2dmn parent</name>
   <modules>
    <module>kie-dmn-ruleset2dmn</module>
+   <module>kie-dmn-ruleset2dmn-cli</module>
   </modules>
 </project>
