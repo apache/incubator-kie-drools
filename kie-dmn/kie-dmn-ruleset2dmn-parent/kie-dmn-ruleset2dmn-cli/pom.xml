@@ -7,6 +7,8 @@
   </parent>
   <artifactId>kie-dmn-ruleset2dmn-cli</artifactId>
   
+  <name>KIE :: Decision Model Notation :: ruleset2dmn CLI</name>
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
