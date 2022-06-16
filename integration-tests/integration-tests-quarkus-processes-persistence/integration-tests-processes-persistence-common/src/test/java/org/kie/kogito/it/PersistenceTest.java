@@ -16,6 +16,7 @@
 package org.kie.kogito.it;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -33,6 +34,7 @@ import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.given;
 import static java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME;
 import static java.util.Arrays.asList;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -40,10 +42,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class PersistenceTest {
 
+    public static final Duration TIMEOUT = Duration.ofSeconds(10);
     public static final String PROCESS_ID = "hello";
-    public static String PROCESS_EMBEDDED_ID = "embedded";
-    public static String PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID = "MultipleInstanceEmbeddedSubProcess";
-    public static String PROCESS_MULTIPLE_INSTANCES_ID = "MultipleInstanceSubProcess";
+    public static final String PROCESS_EMBEDDED_ID = "embedded";
+    public static final String PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID = "MultipleInstanceEmbeddedSubProcess";
+    public static final String PROCESS_MULTIPLE_INSTANCES_ID = "MultipleInstanceSubProcess";
+    public static final String PROCESS_ASYNC_WIH = "AsyncWIH";
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -224,5 +228,27 @@ public abstract class PersistenceTest {
                 .get("/{processId}/{pId}")
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    void testAsyncWIH() {
+        String pId = given().contentType(ContentType.JSON)
+                .pathParam("processId", PROCESS_ASYNC_WIH)
+                .when()
+                .post("/{processId}")
+                .then()
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .extract()
+                .path("id");
+
+        await().atMost(TIMEOUT)
+                .untilAsserted(() -> given().contentType(ContentType.JSON)
+                        .pathParam("processId", PROCESS_ASYNC_WIH)
+                        .pathParam("pId", pId)
+                        .when()
+                        .get("/{processId}/{pId}")
+                        .then()
+                        .statusCode(404));
     }
 }

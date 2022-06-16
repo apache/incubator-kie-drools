@@ -1,0 +1,14 @@
+[
+    [
+        "name" : "CustomTask",
+        "displayName" : "Custom Task",
+        "documentation" : "Basic minimal custom task.",
+
+        "parameters" : [
+            "Input" : new StringDataType()
+        ],
+        "results" : [
+            "Result" : new StringDataType()
+        ]
+    ]
+]

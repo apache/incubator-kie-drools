@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.it;
 
-import java.time.Duration;
-
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.TestProfile;
@@ -42,7 +40,7 @@ public abstract class OptimisticLockingTest extends PersistenceTest {
                 .extract()
                 .path("id");
 
-        await().atMost(Duration.ofSeconds(10))
+        await().atMost(TIMEOUT)
                 .untilAsserted(() -> given().contentType(ContentType.JSON)
                         .when()
                         .get("/parallel/{id}", pid)
