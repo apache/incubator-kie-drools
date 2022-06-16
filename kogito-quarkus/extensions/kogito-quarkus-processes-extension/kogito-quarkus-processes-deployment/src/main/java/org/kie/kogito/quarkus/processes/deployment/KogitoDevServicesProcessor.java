@@ -46,6 +46,7 @@ import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
 import io.quarkus.deployment.console.StartupLogCompressor;
 import io.quarkus.deployment.dev.devservices.GlobalDevServicesConfig;
 import io.quarkus.deployment.logging.LoggingSetupBuildItem;
+import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerAddress;
 import io.quarkus.devservices.common.ContainerLocator;
 import io.quarkus.runtime.LaunchMode;
@@ -60,8 +61,6 @@ public class KogitoDevServicesProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoDevServicesProcessor.class);
     private static final ContainerLocator LOCATOR = new ContainerLocator(DataIndexInMemoryContainer.DEV_SERVICE_LABEL, DataIndexInMemoryContainer.PORT);
-
-    private static final String IMAGE_NAME = "quay.io/kiegroup/kogito-data-index-ephemeral";
 
     static volatile Closeable closeable;
     static volatile DataIndexDevServiceConfig cfg;
@@ -261,7 +260,7 @@ public class KogitoDevServicesProcessor {
 
         public DataIndexDevServiceConfig(KogitoDevServicesBuildTimeConfig config) {
             this.devServicesEnabled = config.enabled.orElse(true);
-            this.imageName = config.imageName.orElse(IMAGE_NAME + ":" + getDataIndexImageVersion());
+            this.imageName = config.imageName.orElseGet(() -> ConfigureUtil.getDefaultImageNameFor("data-index") + ":" + getDataIndexImageVersion());
             this.fixedExposedPort = config.port.orElse(0);
             this.shared = config.shared;
             this.serviceName = config.serviceName;
