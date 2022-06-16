@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import org.dmg.pmml.SimplePredicate;
 
-public class MyComparablePredicateOnOperator implements Comparator<SimplePredicate> {
+public class OperatorComparator implements Comparator<SimplePredicate> {
 
     @Override
     public int compare(SimplePredicate o1, SimplePredicate o2) {

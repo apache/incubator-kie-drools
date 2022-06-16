@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.dmg.pmml.CompoundPredicate;
+import org.dmg.pmml.CompoundPredicate.BooleanOperator;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
-import org.dmg.pmml.CompoundPredicate.BooleanOperator;
 import org.dmg.pmml.rule_set.SimpleRule;
 
 public class SimpleRuleRow {
@@ -24,11 +24,11 @@ public class SimpleRuleRow {
             map.computeIfAbsent(sp.getField().getValue(), k -> new ArrayList<SimplePredicate>()).add(sp);
         } else {
             if (!(rootPredicate instanceof CompoundPredicate)) {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Was expecting a CompoundPredicate, found: "+rootPredicate.getClass());
             }
             CompoundPredicate cPredicate = (CompoundPredicate) rootPredicate;
             if (!(cPredicate.getBooleanOperator() == BooleanOperator.AND)){
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Only AND operator usage is supported in CompoundPredicate to convert to a Decision Table.");
             }
             for (Predicate c : cPredicate.getPredicates()) {
                 SimplePredicate sp = (SimplePredicate) c;

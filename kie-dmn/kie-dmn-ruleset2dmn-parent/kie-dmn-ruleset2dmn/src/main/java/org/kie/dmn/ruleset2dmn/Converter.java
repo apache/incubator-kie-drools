@@ -23,8 +23,8 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.SimplePredicate;
-import org.dmg.pmml.Value;
 import org.dmg.pmml.SimplePredicate.Operator;
+import org.dmg.pmml.Value;
 import org.dmg.pmml.rule_set.RuleSelectionMethod;
 import org.dmg.pmml.rule_set.RuleSelectionMethod.Criterion;
 import org.dmg.pmml.rule_set.RuleSet;
@@ -76,22 +76,22 @@ public class Converter {
     public static String parse(String dmnModelName, InputStream is) throws Exception {
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
         if (pmml.getModels().size() != 1) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Only single model supported for Decision Table conversion");
         }
         Model model0 = pmml.getModels().get(0);
         if (!(model0 instanceof RuleSetModel)) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Only single RuleSetModel supported for Decision Table conversion");
         } 
         RuleSetModel rsModel = (RuleSetModel) model0;
         RuleSet rs = rsModel.getRuleSet();
         if (rs.getRuleSelectionMethods().size() != 1) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Only single RuleSelectionMethods supported for Decision Table conversion");
         }
         RuleSelectionMethod rssMethod0 = rs.getRuleSelectionMethods().get(0);
         
         Stream<SimpleRule> s0 = rs.getRules().stream().map(SimpleRule.class::cast);
         if (rssMethod0.getCriterion() == Criterion.WEIGHTED_MAX) { // if WEIGHTED_MAX then sort by weight desc
-            s0 = s0.sorted(new WeightAsDoubleComparator().reversed());
+            s0 = s0.sorted(new WeightComparator().reversed());
         }
         List<SimpleRuleRow> rsRules = s0.map(SimpleRuleRow::new).collect(Collectors.toList());
         Set<String> usedPredictors = new LinkedHashSet<>();
@@ -277,7 +277,7 @@ public class Converter {
             String text = feelUTofOp(p0.getOperator()) + feelLiteralValue(p0.getValue(), df);
             ut.setText(text);
         } else if (predicatesForInput.size() == 2) {
-            List<SimplePredicate> sortedList = predicatesForInput.stream().sorted(new MyComparablePredicateOnOperator()).collect(Collectors.toList());
+            List<SimplePredicate> sortedList = predicatesForInput.stream().sorted(new OperatorComparator()).collect(Collectors.toList());
             SimplePredicate p0 = sortedList.get(0);
             SimplePredicate p1 = sortedList.get(1);
             StringBuilder sb = new StringBuilder();
@@ -286,7 +286,7 @@ public class Converter {
             } else if (p0.getOperator() == Operator.GREATER_THAN) {
                 sb.append("(");
             } else {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Unsupported operator in lowerbound: "+p0.getOperator());
             }
             sb.append(feelLiteralValue(p0.getValue(), df));
             sb.append(" .. ");
@@ -296,7 +296,7 @@ public class Converter {
             } else if (p1.getOperator() == Operator.LESS_OR_EQUAL) {
                 sb.append("]");
             } else {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Unsupported operator in upperbound: "+p1.getOperator());
             }
             ut.setText(sb.toString());
         } else {
@@ -314,9 +314,9 @@ public class Converter {
             case GREATER_THAN:
                 return ">";
             case IS_MISSING:
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Unsupported operator for FEEL conversion");
             case IS_NOT_MISSING:
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Unsupported operator for FEEL conversion");
             case LESS_OR_EQUAL:
                 return "<=";
             case LESS_THAN:
@@ -342,7 +342,7 @@ public class Converter {
                     switch (trimmed) {
                         case "true": return "true";
                         case "false": return "false";
-                        default: throw new UnsupportedOperationException("Was expecting a boolean but the pmml serialization was: "+input);
+                        default: throw new UnsupportedOperationException("Was expecting a FEEL:boolean but the pmml serialization was: "+input);
                     }
                 case DOUBLE:
                 case FLOAT:
@@ -351,12 +351,12 @@ public class Converter {
                     if (bdOrNull != null) {
                         return bdOrNull.toPlainString();
                     } else {
-                        throw new UnsupportedOperationException();
+                        throw new UnsupportedOperationException("Was expecting a FEEL:number but the pmml serialization was: "+input);
                     }
                 case STRING:
                     return "\"" + input + "\"";
                 default:
-                    throw new UnsupportedOperationException();
+                    throw new UnsupportedOperationException("Unhandled pmml serialization for FEEL conversion: "+input);
             }
         }
         LOG.debug("feelLiteralValue for {} and DD not available", input);

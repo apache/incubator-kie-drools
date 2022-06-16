@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import org.dmg.pmml.rule_set.SimpleRule;
 
-public class WeightAsDoubleComparator implements Comparator<SimpleRule> {
+public class WeightComparator implements Comparator<SimpleRule> {
 
     @Override
     public int compare(SimpleRule o1, SimpleRule o2) {
