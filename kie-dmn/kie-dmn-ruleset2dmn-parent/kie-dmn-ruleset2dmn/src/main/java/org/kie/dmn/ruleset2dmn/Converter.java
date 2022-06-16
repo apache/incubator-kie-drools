@@ -99,9 +99,9 @@ public class Converter {
             for (String key : rr.map.keySet()) {
                 usedPredictors.add(key);
             }
-            System.out.println(rr);
+            LOG.debug("{}", rr);
         }
-        System.out.println(usedPredictors);
+        LOG.debug("{}", usedPredictors);
 
         Map<String, Set<String>> predictorsLoVs = new HashMap<>();
 
@@ -218,7 +218,7 @@ public class Converter {
 
         DMNMarshaller dmnMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
         String xml = dmnMarshaller.marshal(definitions);
-        System.out.println(predictorsLoVs);
+        LOG.debug("{}", predictorsLoVs);
         return xml;
     }
 
