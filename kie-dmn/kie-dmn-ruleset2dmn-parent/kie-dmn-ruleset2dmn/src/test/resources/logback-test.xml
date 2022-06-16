@@ -24,7 +24,7 @@
   </appender>
 
   <logger name="org.kie" level="info"/>
-  <logger name="org.kie.dmn.ruleset2dmn" level="debug"/>
+  <logger name="org.kie.dmn.ruleset2dmn" level="info"/>
 
   <root level="info">
     <appender-ref ref="consoleAppender" />
