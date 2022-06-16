@@ -56,9 +56,10 @@ public class WifiTest {
                 ctxFromJson(modelUnderTest, "{\"X5\" : -57, \"X1\": -46, \"X3\": -53, \"X7\": -73}"))
         .getDecisionResults().get(0).getResult()).isEqualTo(new BigDecimal("3"));
 
+        // DECISION_TABLE_MASKED_RULE: Rule 12 is masked by rule: 11 (if it was a Priority with lov := 1,2,3 (DROOLS-7022)
         // // [X3 >= -51.0] ^ [X3 <= -51.0] ^ [X1 >= -43.0] ^ [X1 <= -43.0] -> 3
         // assertThat(dmnRuntime .evaluateAll(dmnRuntime.getModels().get(0),
-        //         ctxFromJson(dmnRuntime, "{\"X1\" : -43, \"X3\": -51}")) // TODO capture this cases [x..x] in the Converter?
+        //         ctxFromJson(dmnRuntime, "{\"X1\" : -43, \"X3\": -51}")) // DROOLS-7023 capture this cases [x..x] in the Converter?
         // .getDecisionResults().get(0).getResult()).isEqualTo(new BigDecimal("2"));
 
         // default -> 0
