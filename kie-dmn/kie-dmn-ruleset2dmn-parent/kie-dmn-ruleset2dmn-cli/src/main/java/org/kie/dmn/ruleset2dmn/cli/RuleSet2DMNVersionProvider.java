@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.kie.dmn.ruleset2dmn.cli;
 
 import org.drools.core.util.Drools;
-
 import picocli.CommandLine.IVersionProvider;
 
 public class RuleSet2DMNVersionProvider implements IVersionProvider {
