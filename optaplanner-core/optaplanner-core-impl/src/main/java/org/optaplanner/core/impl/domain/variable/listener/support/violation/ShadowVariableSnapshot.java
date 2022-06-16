@@ -40,4 +40,9 @@ final class ShadowVariableSnapshot {
     ShadowVariableDescriptor<?> getShadowVariableDescriptor() {
         return shadowVariableDescriptor;
     }
+
+    @Override
+    public String toString() {
+        return entity + "." + shadowVariableDescriptor.getVariableName() + " = " + originalValue;
+    }
 }
