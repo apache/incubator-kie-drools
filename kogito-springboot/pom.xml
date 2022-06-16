@@ -36,6 +36,7 @@
     <module>starters</module>
     <module>archetype</module>
     <module>test</module>
+    <module>integration-tests</module>
   </modules>
 
 </project>

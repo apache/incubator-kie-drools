@@ -4,16 +4,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>integration-tests</artifactId>
+    <artifactId>kogito-quarkus-integration-tests</artifactId>
     <version>2.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>integration-tests-quarkus-resteasy-reactive</artifactId>
-  <name>Kogito :: Integration Tests :: Quarkus :: RESTEasy Reactive</name>
-
-  <properties>
-    <!-- excluded because of https://issues.redhat.com/browse/KOGITO-6395 -->
-    <quarkus.test.list.include>false</quarkus.test.list.include>
-  </properties>
+  <artifactId>integration-tests-quarkus-source-files</artifactId>
+  <name>Kogito :: Integration Tests :: Quarkus :: Processes :: Source Files</name>
 
   <dependencyManagement>
     <dependencies>
@@ -27,15 +22,23 @@
     </dependencies>
   </dependencyManagement>
 
-
   <dependencies>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-decisions</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-serverless-workflow</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-source-files</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -46,6 +49,12 @@
       <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
     </dependency>
 
+    <!-- Test -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -57,27 +66,10 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.swagger.parser.v3</groupId>
-      <artifactId>swagger-parser</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion> <!-- Kogito-on-Quarkus uses Kogito-Codegen's CP instead of PCL, so we need to manually exclude. -->
-          <groupId>io.swagger.core.v3</groupId>
-          <artifactId>swagger-annotations</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
     <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-decisions-deployment</artifactId>
+      <artifactId>kogito-quarkus-deployment</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>test</scope>
@@ -118,17 +110,17 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
+        <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <systemPropertyVariables>
+          <systemPropertyVariables combine.children="append">
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
+            <container.image.kafka>${container.image.kafka}</container.image.kafka>
+            <kogito.version>${project.version}</kogito.version>
           </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>
   </build>
-
   <profiles>
     <profile>
       <id>native</id>

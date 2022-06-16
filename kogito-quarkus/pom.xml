@@ -22,6 +22,7 @@
     <module>extensions</module>
     <module>addons</module>
     <module>test</module>
+    <module>integration-tests</module>
   </modules>
 
   <build>
