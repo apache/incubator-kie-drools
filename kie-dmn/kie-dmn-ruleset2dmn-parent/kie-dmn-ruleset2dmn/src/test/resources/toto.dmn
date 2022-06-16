@@ -1,0 +1,147 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="ri2dmn_ccf136c1-c162-498f-9142-fec9e21e6b0e" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="dmnid_toto" name="toto" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="ri2dmn_ccf136c1-c162-498f-9142-fec9e21e6b0e" exporter="kie-dmn-ri">
+  <dmn:itemDefinition name="toto1" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues>
+      <dmn:text>"foo", "&lt;unknown&gt;"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:inputData id="id_toto0" name="toto0">
+    <dmn:variable id="idvar_toto0" name="toto0" typeRef="number"></dmn:variable>
+  </dmn:inputData>
+  <dmn:inputData id="id_toto2" name="toto2">
+    <dmn:variable id="idvar_toto2" name="toto2" typeRef="boolean"></dmn:variable>
+  </dmn:inputData>
+  <dmn:inputData id="id_toto1" name="toto1">
+    <dmn:variable id="idvar_toto1" name="toto1" typeRef="toto1"></dmn:variable>
+  </dmn:inputData>
+  <dmn:inputData id="id_toto3" name="toto3">
+    <dmn:variable id="idvar_toto3" name="toto3" typeRef="number"></dmn:variable>
+  </dmn:inputData>
+  <dmn:decision id="d_toto" name="toto">
+    <dmn:variable id="dvar_toto" name="toto" typeRef="Any"></dmn:variable>
+    <dmn:informationRequirement>
+      <dmn:requiredInput href="#id_toto0"></dmn:requiredInput>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement>
+      <dmn:requiredInput href="#id_toto2"></dmn:requiredInput>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement>
+      <dmn:requiredInput href="#id_toto1"></dmn:requiredInput>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement>
+      <dmn:requiredInput href="#id_toto3"></dmn:requiredInput>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="ddt_toto" hitPolicy="FIRST" preferredOrientation="Rule-as-Row" outputLabel="toto">
+      <dmn:input label="toto0">
+        <dmn:inputExpression typeRef="number">
+          <dmn:text>toto0</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input label="toto2">
+        <dmn:inputExpression typeRef="boolean">
+          <dmn:text>toto2</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input label="toto1">
+        <dmn:inputExpression typeRef="toto1">
+          <dmn:text>toto1</dmn:text>
+        </dmn:inputExpression>
+        <dmn:inputValues>
+          <dmn:text>"foo", "&lt;unknown&gt;"</dmn:text>
+        </dmn:inputValues>
+      </dmn:input>
+      <dmn:input label="toto3">
+        <dmn:inputExpression typeRef="number">
+          <dmn:text>toto3</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output>
+        <dmn:defaultOutputEntry>
+          <dmn:text>0</dmn:text>
+        </dmn:defaultOutputEntry>
+      </dmn:output>
+      <dmn:annotation name="comments"></dmn:annotation>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>&lt;0.1</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>1</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>recordCount=null nbCorrect=null confidence=1 weight1</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>"foo"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>&gt;=1</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>1</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>recordCount=null nbCorrect=null confidence=1 weight1</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>"foo"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>1</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>recordCount=null nbCorrect=null confidence=1 weight1</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>&lt;0.1</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>"foo"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>&gt;=1</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>1</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>recordCount=null nbCorrect=null confidence=1 weight1</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+</dmn:definitions>
