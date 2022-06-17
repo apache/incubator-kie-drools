@@ -21,13 +21,15 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 public class AgePerson extends Person {
 
     private int age;
+    private double income;
 
     public AgePerson() {
     }
 
-    public AgePerson(String name, int age) {
+    public AgePerson(String name, int age, double income) {
         super(name);
         this.age = age;
+        this.income = income;
     }
 
     public int getAge() {
@@ -36,5 +38,13 @@ public class AgePerson extends Person {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public double getIncome() {
+        return income;
+    }
+
+    public void setIncome(double income) {
+        this.income = income;
     }
 }

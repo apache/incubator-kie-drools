@@ -27,7 +27,8 @@
             "refName": "getPerson",
             "arguments": {
               "name": ".name",
-              "age": 27
+              "age": ".age",
+              "income": 20000.50
             }
           },
           "actionDataFilter": {

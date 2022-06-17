@@ -61,7 +61,7 @@ class PojoServiceIT {
                 .then()
                 .statusCode(201)
                 .body("id", notNullValue())
-                .body("workflowdata.name", is("javierito"))
+                .body("workflowdata.name", is("javieritoPerson"))
                 .body("workflowdata.age", nullValue());
     }
 }

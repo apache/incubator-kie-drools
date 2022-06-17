@@ -20,7 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class AgePersonService {
 
-    public AgePerson from(String name, int age) {
-        return new AgePerson(name, age);
+    public AgePerson from(String name, int age, double income) {
+        return new AgePerson(name, age, income);
     }
 }

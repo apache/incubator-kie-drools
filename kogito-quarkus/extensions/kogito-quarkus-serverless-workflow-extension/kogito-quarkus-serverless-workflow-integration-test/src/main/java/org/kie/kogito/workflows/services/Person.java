@@ -25,7 +25,7 @@ public class Person {
     }
 
     public Person(String name) {
-        this.name = name;
+        this.name = name + "Person";
     }
 
     public String getName() {

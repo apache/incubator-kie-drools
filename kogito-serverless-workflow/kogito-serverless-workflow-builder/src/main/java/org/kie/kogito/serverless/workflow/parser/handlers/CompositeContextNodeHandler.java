@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -325,7 +325,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     private Map<String, Object> functionsToMap(JsonNode jsonNode) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();
         if (jsonNode != null) {
             Iterator<Entry<String, JsonNode>> iter = jsonNode.fields();
             while (iter.hasNext()) {
