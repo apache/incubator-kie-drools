@@ -16,8 +16,8 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.9.2.Final</version.io.quarkus>
-    <version.io.quarkus.quarkus-test-maven>2.9.2.Final</version.io.quarkus.quarkus-test-maven>
+    <version.io.quarkus>2.10.0.Final</version.io.quarkus>
+    <version.io.quarkus.quarkus-test-maven>2.10.0.Final</version.io.quarkus.quarkus-test-maven>
     <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
 
     <!-- dependencies versions -->
@@ -51,20 +51,20 @@
 
     <version.io.cloudevents>2.3.0</version.io.cloudevents>
     <version.io.fabric8.kubernetes-client>5.8.0</version.io.fabric8.kubernetes-client>
-    <version.io.micrometer>1.8.6</version.io.micrometer>
+    <version.io.micrometer>1.9.0</version.io.micrometer>
     <version.io.serverlessworkflow>4.0.3.Final</version.io.serverlessworkflow>
     <version.io.smallrye-open-api-core>2.1.22</version.io.smallrye-open-api-core>
-    <version.io.smallrye.reactive.mutiny-vertx-web-client>2.21.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
+    <version.io.smallrye.reactive.mutiny-vertx-web-client>2.22.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
     <version.io.vertx>4.2.7</version.io.vertx>
-    <version.io.grpc>1.45.1</version.io.grpc>
+    <version.io.grpc>1.46.0</version.io.grpc>
 
     <version.io.swagger.parser.v3>2.0.26</version.io.swagger.parser.v3>
 
     <version.org.apache.commons>3.12.0</version.org.apache.commons>
     <version.org.apache.xmlgraphics.batik>1.14</version.org.apache.xmlgraphics.batik>
 
-    <version.org.graalvm.nativeimage>22.0.0.2</version.org.graalvm.nativeimage>
+    <version.org.graalvm.nativeimage>22.1.0</version.org.graalvm.nativeimage>
 
     <version.org.infinispan>13.0.2.Final</version.org.infinispan>
     <version.org.infinispan.protostream>4.4.3.Final</version.org.infinispan.protostream>
@@ -89,7 +89,7 @@
     <version.org.junit.vintage>5.8.2</version.org.junit.vintage>
     <version.org.junit.platform>1.8.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
     <version.org.junit.pioneer>1.5.0</version.org.junit.pioneer>
-    <version.org.mockito>4.5.1</version.org.mockito>
+    <version.org.mockito>4.6.0</version.org.mockito>
     <version.org.testcontainers>1.16.2</version.org.testcontainers>
 
     <version.net.byte-buddy>1.12.9</version.net.byte-buddy>
