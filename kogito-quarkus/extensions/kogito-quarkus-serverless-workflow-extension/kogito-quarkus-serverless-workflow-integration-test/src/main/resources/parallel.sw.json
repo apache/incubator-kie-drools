@@ -28,7 +28,9 @@
      "branches": [ {"actions": [{"functionRef":"concatA"}] }, {"actions": [{"functionRef":"concatB"}] },{"actions": [{"functionRef":"concatC"}] }],
      "numCompleted" : ".numCompleted",
      "completionType" : "atLeast",
-     "end": true
+     "end": {
+       "terminate": true
+     }
   }
 ]
 }

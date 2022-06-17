@@ -30,7 +30,7 @@ import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.defaultdef.DefaultConditionDefinition;
-import io.serverlessworkflow.api.produce.ProduceEvent;
+import io.serverlessworkflow.api.end.End;
 import io.serverlessworkflow.api.states.SwitchState;
 import io.serverlessworkflow.api.switchconditions.DataCondition;
 import io.serverlessworkflow.api.switchconditions.EventCondition;
@@ -95,7 +95,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
                 @Override
                 public void onEmptyTarget() {
                     // Connect the timer with a process finalization sequence that might produce events.
-                    endIt(eventTimeoutTimerNode.getNode().getId(), factory, defaultCondition.getEnd().getProduceEvents());
+                    endIt(eventTimeoutTimerNode.getNode().getId(), factory, defaultCondition.getEnd());
                 }
             }));
         }
@@ -128,7 +128,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
 
                 @Override
                 public void onEmptyTarget() {
-                    EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, defaultCondition.getEnd().getProduceEvents());
+                    EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, defaultCondition.getEnd());
                     startNode.metaData(XORSPLITDEFAULT, concatId(splitId, endNodeFactory.getNode().getId()));
                 }
             }));
@@ -149,15 +149,15 @@ public class SwitchHandler extends StateHandler<SwitchState> {
 
                 @Override
                 public void onEmptyTarget() {
-                    EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, condition.getEnd().getProduceEvents());
+                    EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, condition.getEnd());
                     addConstraint(startNode, endNodeFactory.getNode().getId(), condition);
                 }
             }));
         }
     }
 
-    private EndNodeFactory<?> endIt(long sourceNodeId, RuleFlowNodeContainerFactory<?, ?> factory, List<ProduceEvent> produceEvents) {
-        EndNodeFactory<?> endNodeFactory = endNodeFactory(factory, produceEvents);
+    private EndNodeFactory<?> endIt(long sourceNodeId, RuleFlowNodeContainerFactory<?, ?> factory, End end) {
+        EndNodeFactory<?> endNodeFactory = endNodeFactory(factory, end);
         endNodeFactory.done().connection(sourceNodeId, endNodeFactory.getNode().getId());
         return endNodeFactory;
     }

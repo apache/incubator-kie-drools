@@ -51,6 +51,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.datainputschema.DataInputSchema;
+import io.serverlessworkflow.api.end.End;
 import io.serverlessworkflow.api.error.Error;
 import io.serverlessworkflow.api.error.ErrorDefinition;
 import io.serverlessworkflow.api.events.EventDefinition;
@@ -109,8 +110,9 @@ public abstract class StateHandler<S extends State> {
     }
 
     public void handleEnd() {
-        if (state.getEnd() != null) {
-            endNodeFactory = endNodeFactory(parserContext.factory(), state.getEnd().getProduceEvents()).name(ServerlessWorkflowParser.NODE_END_NAME);
+        End endState = state.getEnd();
+        if (endState != null) {
+            endNodeFactory = endNodeFactory(parserContext.factory(), endState).name(ServerlessWorkflowParser.NODE_END_NAME);
             endNodeFactory.done();
         }
     }
@@ -258,7 +260,7 @@ public abstract class StateHandler<S extends State> {
                 boundaryNode.eventType(eventType).name("Error-" + node.getNode().getName() + "-" + errorDef.getCode());
                 factory.exceptionHandler(eventType, errorDef.getCode());
                 if (error.getEnd() != null) {
-                    connect(boundaryNode, endNodeFactory(factory, error.getEnd().getProduceEvents()));
+                    connect(boundaryNode, endNodeFactory(factory, error.getEnd()));
                 } else {
                     handleTransitions(factory, error.getTransition(), boundaryNode.getNode().getId());
                 }
@@ -453,12 +455,14 @@ public abstract class StateHandler<S extends State> {
                 .findFirst().orElseThrow(() -> new NoSuchElementException("No event for " + eventName));
     }
 
-    protected EndNodeFactory<?> endNodeFactory(RuleFlowNodeContainerFactory<?, ?> factory, List<ProduceEvent> produceEvents) {
+    protected EndNodeFactory<?> endNodeFactory(RuleFlowNodeContainerFactory<?, ?> factory, End end) {
         EndNodeFactory<?> nodeFactory = factory.endNode(parserContext.newId());
+        List<ProduceEvent> produceEvents = end.getProduceEvents();
         if (produceEvents != null && !produceEvents.isEmpty()) {
             // TODO deal with more than one produce events in end state 
             sendEventNode(nodeFactory, produceEvents.get(0));
         }
+        nodeFactory.terminate(end.isTerminate());
         return nodeFactory;
     }
 

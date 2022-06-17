@@ -130,6 +130,9 @@ public class ProcessVisitor extends AbstractVisitor {
         VariableDeclarationExpr factoryField = new VariableDeclarationExpr(processFactoryType, FACTORY_FIELD_NAME);
         MethodCallExpr assignFactoryMethod = new MethodCallExpr(new NameExpr(processFactoryType.getName().asString()), "createProcess");
         assignFactoryMethod.addArgument(new StringLiteralExpr(process.getId()));
+        if (process instanceof org.jbpm.workflow.core.WorkflowProcess) {
+            assignFactoryMethod.addArgument(new BooleanLiteralExpr(((org.jbpm.workflow.core.WorkflowProcess) process).isAutoComplete()));
+        }
 
         body.addStatement(new AssignExpr(factoryField, assignFactoryMethod, AssignExpr.Operator.ASSIGN));
 

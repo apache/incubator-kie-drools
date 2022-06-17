@@ -83,12 +83,16 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
     public static final String TIMER_TYPE_PREFIX = "Timer-";
 
     public static RuleFlowProcessFactory createProcess(String id) {
-        return new RuleFlowProcessFactory(id);
+        return createProcess(id, true);
     }
 
-    protected RuleFlowProcessFactory(String id) {
+    public static RuleFlowProcessFactory createProcess(String id, boolean autoComplete) {
+        return new RuleFlowProcessFactory(id, autoComplete);
+    }
+
+    protected RuleFlowProcessFactory(String id, boolean autoComplete) {
         super(null, null, new RuleFlowProcess(), id);
-        getRuleFlowProcess().setAutoComplete(true);
+        getRuleFlowProcess().setAutoComplete(autoComplete);
     }
 
     @Override

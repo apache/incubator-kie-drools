@@ -83,7 +83,7 @@ public class ServerlessWorkflowParser {
 
     private GeneratedInfo<KogitoWorkflowProcess> parseProcess() {
         WorkflowValidator.validateStart(workflow);
-        RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess(workflow.getId())
+        RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess(workflow.getId(), !workflow.isKeepActive())
                 .name(workflow.getName() == null ? DEFAULT_NAME : workflow.getName())
                 .version(workflow.getVersion() == null ? DEFAULT_VERSION : workflow.getVersion())
                 .packageName(workflow.getMetadata() != null ? workflow.getMetadata().getOrDefault("package",
