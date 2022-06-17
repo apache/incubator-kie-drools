@@ -17,9 +17,15 @@
 package org.kie.kogito.quarkus.processes.deployment;
 
 import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -46,7 +52,6 @@ import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
 import io.quarkus.deployment.console.StartupLogCompressor;
 import io.quarkus.deployment.dev.devservices.GlobalDevServicesConfig;
 import io.quarkus.deployment.logging.LoggingSetupBuildItem;
-import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerAddress;
 import io.quarkus.devservices.common.ContainerLocator;
 import io.quarkus.runtime.LaunchMode;
@@ -61,6 +66,7 @@ public class KogitoDevServicesProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoDevServicesProcessor.class);
     private static final ContainerLocator LOCATOR = new ContainerLocator(DataIndexInMemoryContainer.DEV_SERVICE_LABEL, DataIndexInMemoryContainer.PORT);
+    private static final Map<String, Properties> DEVSERVICES_PROPS = new ConcurrentHashMap<>();
 
     static volatile Closeable closeable;
     static volatile DataIndexDevServiceConfig cfg;
@@ -260,7 +266,8 @@ public class KogitoDevServicesProcessor {
 
         public DataIndexDevServiceConfig(KogitoDevServicesBuildTimeConfig config) {
             this.devServicesEnabled = config.enabled.orElse(true);
-            this.imageName = config.imageName.orElseGet(() -> ConfigureUtil.getDefaultImageNameFor("data-index") + ":" + getDataIndexImageVersion());
+            //TODO Revert to ConfigureUtil.getDefaultImageNameFor
+            this.imageName = config.imageName.orElseGet(() -> getDefaultImageNameFor("data-index") + ":" + getDataIndexImageVersion());
             this.fixedExposedPort = config.port.orElse(0);
             this.shared = config.shared;
             this.serviceName = config.serviceName;
@@ -282,6 +289,31 @@ public class KogitoDevServicesProcessor {
         @Override
         public int hashCode() {
             return Objects.hash(devServicesEnabled, imageName, fixedExposedPort);
+        }
+    }
+
+    //TODO Temporary copying over contents of Quarkus ConfigureUtil.getDefaultImageNameFor
+    //This should be replaced once Quarkus LTS moves to 2.8+ where this API is available
+    private static String getDefaultImageNameFor(String devserviceName) {
+        var imageName = DEVSERVICES_PROPS.computeIfAbsent(devserviceName, KogitoDevServicesProcessor::loadProperties)
+                .getProperty("default.image");
+        if (imageName == null) {
+            throw new IllegalArgumentException("No default.image configured for " + devserviceName);
+        }
+        return imageName;
+    }
+
+    private static Properties loadProperties(String devserviceName) {
+        var fileName = devserviceName + "-devservice.properties";
+        try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName)) {
+            if (in == null) {
+                throw new IllegalArgumentException(fileName + " not found on classpath");
+            }
+            var properties = new Properties();
+            properties.load(in);
+            return properties;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
