@@ -39,7 +39,7 @@ public class DeclarationSpec {
     private final Optional<PatternDescr> optPattern;
     private final Optional<Expression> declarationSource;
     private final Optional<String> variableName;
-    private final Boolean isGlobal;
+    private final boolean isGlobal;
 
     private String boundVariable;
     private MethodCallExpr bindingExpr;
@@ -50,7 +50,7 @@ public class DeclarationSpec {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), false);
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, Boolean isGlobal) {
+    public DeclarationSpec(String bindingId, Class<?> declarationClass, boolean isGlobal) {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), isGlobal);
     }
 
@@ -62,7 +62,7 @@ public class DeclarationSpec {
         this(bindingId, declarationClass, Optional.empty(), Optional.of(declarationSource), Optional.empty(), false);
     }
 
-    DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName, Boolean isGlobal) {
+    DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName, boolean isGlobal) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
         this.optPattern = pattern;
@@ -106,7 +106,7 @@ public class DeclarationSpec {
         return toClassOrInterfaceType(getDeclarationClass());
     }
 
-    public Boolean isGlobal() {
+    public boolean isGlobal() {
         return isGlobal;
     }
 

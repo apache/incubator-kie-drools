@@ -696,7 +696,7 @@ public class ConstraintParser {
                                      .anyMatch(optDecl -> {
                                          if (optDecl.isPresent()) {
                                              DeclarationSpec decl = optDecl.get();
-                                             if (Boolean.FALSE.equals(decl.isGlobal()) && decl.getBelongingPatternDescr() != context.getCurrentPatternDescr()) {
+                                             if (!decl.isGlobal() && decl.getBelongingPatternDescr() != context.getCurrentPatternDescr()) {
                                                  return true;
                                              }
                                          }
