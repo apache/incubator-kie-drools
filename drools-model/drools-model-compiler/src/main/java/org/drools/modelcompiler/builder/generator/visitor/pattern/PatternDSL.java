@@ -299,23 +299,28 @@ public abstract class PatternDSL implements DSLNode {
 
     @Override
     public void buildPattern() {
-        DeclarationSpec declarationSpec = initPattern();
+        try {
+            context.setCurrentPatternDescr(Optional.of(pattern));
+            DeclarationSpec declarationSpec = initPattern();
 
-        if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
-            context.addExpression(input(declarationSpec));
-        } else {
-            final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
-            final List<String> allBindings = patternConstraintParseResults
-                    .stream()
-                    .map(p -> p.getDrlxParseResult().acceptWithReturnValue( DrlxParseSuccess::getExprBinding ))
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+            if (constraintDescrs.isEmpty() && !(pattern.getSource() instanceof AccumulateDescr)) {
+                context.addExpression(input(declarationSpec));
+            } else {
+                final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
+                final List<String> allBindings = patternConstraintParseResults
+                        .stream()
+                        .map(p -> p.getDrlxParseResult().acceptWithReturnValue( DrlxParseSuccess::getExprBinding ))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
 
-            validateDuplicateBindings(context.getRuleName(), allBindings).ifPresent(context::addCompilationError);
+                validateDuplicateBindings(context.getRuleName(), allBindings).ifPresent(context::addCompilationError);
 
-            if (!context.hasErrors()) {
-                buildPattern(declarationSpec, patternConstraintParseResults);
+                if (!context.hasErrors()) {
+                    buildPattern(declarationSpec, patternConstraintParseResults);
+                }
             }
+        } finally {
+            context.resetCurrentPatternDescr();
         }
     }
 
