@@ -13,24 +13,12 @@
   <name>Kogito :: Quarkus Rules Extension</name>
 
   <packaging>pom</packaging>
+
   <modules>
     <module>kogito-quarkus-rules-deployment</module>
     <module>kogito-quarkus-rules</module>
+    <module>kogito-quarkus-rules-integration-test</module>
+    <module>kogito-quarkus-rules-integration-test-hot-reload</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>integration-test-modules</id>
-      <activation>
-        <property>
-          <name>!excludeITModules</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-quarkus-rules-integration-test</module>
-        <module>kogito-quarkus-rules-integration-test-hot-reload</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

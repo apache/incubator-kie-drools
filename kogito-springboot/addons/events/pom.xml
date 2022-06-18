@@ -18,21 +18,8 @@
     <module>decisions</module>
     <module>predictions</module>
     <module>rules</module>
+    <module>kafka</module>
+    <module>mongodb</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kafka</module>
-        <module>mongodb</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

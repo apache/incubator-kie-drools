@@ -41,9 +41,7 @@ import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.ApplicationGenerator;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
-import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
-import org.kie.kogito.codegen.rules.RuleCodegen;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
@@ -53,13 +51,13 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AbstractCodegenIT {
+public abstract class AbstractCodegenIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCodegenIT.class);
 
     /**
      * Order matters here because inside {@link AbstractCodegenIT#generateCode(Map)} it is the order used to invoke
-     *
+     * <p>
      * {@link ApplicationGenerator#registerGeneratorIfEnabled(Generator) }
      */
     protected enum TYPE {
@@ -74,10 +72,10 @@ public class AbstractCodegenIT {
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
     private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler(JavaConfiguration.CompilerType.NATIVE, "11");
-    private static final String TEST_JAVA = "src/test/java/";
-    private static final String TEST_RESOURCES = "src/test/resources";
+    public static final String TEST_JAVA = "src/test/java/";
+    public static final String TEST_RESOURCES = "src/test/resources";
 
-    private static final Map<TYPE, BiFunction<KogitoBuildContext, List<String>, Generator>> generatorTypeMap = new HashMap<>();
+    public static final Map<TYPE, BiFunction<KogitoBuildContext, List<String>, Generator>> generatorTypeMap = new HashMap<>();
 
     private static final String DUMMY_PROCESS_RUNTIME =
             "package org.drools.project.model;\n" +
@@ -115,12 +113,9 @@ public class AbstractCodegenIT {
 
     static {
         generatorTypeMap.put(TYPE.PROCESS, (context, strings) -> ProcessCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
-        generatorTypeMap.put(TYPE.RULES, (context, strings) -> RuleCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
-        generatorTypeMap.put(TYPE.DECISION, (context, strings) -> DecisionCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
-        generatorTypeMap.put(TYPE.JAVA, (context, strings) -> RuleCodegen.ofJavaResources(context, toCollectedResources(TEST_JAVA, strings)));
     }
 
-    private static Collection<CollectedResource> toCollectedResources(String basePath, List<String> strings) {
+    public static Collection<CollectedResource> toCollectedResources(String basePath, List<String> strings) {
         File[] files = strings
                 .stream()
                 .map(resource -> new File(basePath, resource))

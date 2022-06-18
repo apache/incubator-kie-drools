@@ -18,17 +18,4 @@
     <module>deployment</module>
   </modules>
 
-  <profiles>
-    <profile>
-      <id>integration-test-modules</id>
-      <activation>
-        <property>
-          <name>!excludeITModules</name>
-        </property>
-      </activation>
-      <modules>
-        <module>integration-tests</module>
-      </modules>
-    </profile>
-  </profiles>
 </project>

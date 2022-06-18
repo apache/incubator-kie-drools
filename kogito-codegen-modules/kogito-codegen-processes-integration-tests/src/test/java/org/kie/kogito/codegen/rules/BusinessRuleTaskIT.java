@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.codegen.tests;
+package org.kie.kogito.codegen.rules;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import org.kie.kogito.uow.UnitOfWork;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BusinessRuleTaskIT extends AbstractCodegenIT {
+public class BusinessRuleTaskIT extends AbstractRulesCodegenIT {
 
     @Test
     public void testBasicBusinessRuleTask() throws Exception {

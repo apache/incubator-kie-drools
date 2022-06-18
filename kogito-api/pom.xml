@@ -19,17 +19,13 @@
   <modules>
     <module>kogito-events-api</module>
     <module>kogito-api</module>
+    <module>kogito-services</module>
+    <module>kogito-timer</module>
     <module>kogito-api-incubation-common</module>
     <module>kogito-api-incubation-common-objectmapper</module>
     <module>kogito-api-incubation-application</module>
-    <module>kogito-api-incubation-predictions</module>
-    <module>kogito-api-incubation-predictions-services</module>
-    <module>kogito-api-incubation-decisions</module>
-    <module>kogito-api-incubation-decisions-services</module>
-    <module>kogito-api-incubation-rules</module>
-    <module>kogito-api-incubation-rules-services</module>
-    <module>kogito-services</module>
-    <module>kogito-timer</module>
+    <module>kogito-api-incubation-processes</module>
+    <module>kogito-api-incubation-processes-services</module>
   </modules>
 
   <profiles>
@@ -41,8 +37,12 @@
         </property>
       </activation>
       <modules>
-        <module>kogito-api-incubation-processes</module>
-        <module>kogito-api-incubation-processes-services</module>
+        <module>kogito-api-incubation-predictions</module>
+        <module>kogito-api-incubation-predictions-services</module>
+        <module>kogito-api-incubation-decisions</module>
+        <module>kogito-api-incubation-decisions-services</module>
+        <module>kogito-api-incubation-rules</module>
+        <module>kogito-api-incubation-rules-services</module>
       </modules>
     </profile>
   </profiles>

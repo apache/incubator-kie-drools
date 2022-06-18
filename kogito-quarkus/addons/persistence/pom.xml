@@ -15,12 +15,25 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>infinispan</module>
-    <module>kafka</module>
-    <module>filesystem</module>
     <module>jdbc</module>
-    <module>mongodb</module>
-    <module>postgresql</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>infinispan</module>
+        <module>kafka</module>
+        <module>filesystem</module>
+        <module>mongodb</module>
+        <module>postgresql</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

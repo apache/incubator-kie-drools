@@ -13,23 +13,11 @@
   <name>Kogito :: Quarkus Predictions Extension</name>
 
   <packaging>pom</packaging>
+
   <modules>
     <module>kogito-quarkus-predictions-deployment</module>
     <module>kogito-quarkus-predictions</module>
+    <module>kogito-quarkus-predictions-integration-test</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>integration-test-modules</id>
-      <activation>
-        <property>
-          <name>!excludeITModules</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-quarkus-predictions-integration-test</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

@@ -59,10 +59,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-processes-spring-boot-starter</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-decisions-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
@@ -80,6 +76,47 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-springboot-monitoring-prometheus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-processes-spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-springboot-process-management</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-springboot-task-management</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-springboot-process-svg</artifactId>
+    </dependency>
+    <!-- Persistence -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-springboot-persistence-infinispan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-springboot-persistence-postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-springboot-persistence-mongodb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-springboot-persistence-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-springboot-persistence-filesystem</artifactId>
     </dependency>
 
     <dependency>
@@ -105,66 +142,6 @@
 
   </dependencies>
 
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-springboot-process-management</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-springboot-task-management</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-springboot-process-svg</artifactId>
-        </dependency>
-        <!-- Persistence -->
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-springboot-persistence-infinispan</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-springboot-persistence-postgresql</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-springboot-persistence-mongodb</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-springboot-persistence-jdbc</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-addons-springboot-persistence-filesystem</artifactId>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-invoker-plugin</artifactId>
-            <configuration>
-              <pomIncludes>*</pomIncludes>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
   <build>
     <pluginManagement>
       <plugins>
@@ -173,7 +150,6 @@
           <configuration>
             <streamLogs>true</streamLogs>
             <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
-            <pomIncludes>integration-tests-springboot-decisions-it/pom.xml</pomIncludes>
           </configuration>
         </plugin>
       </plugins>

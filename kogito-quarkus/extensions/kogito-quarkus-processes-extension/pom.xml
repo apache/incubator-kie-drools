@@ -16,20 +16,8 @@
   <modules>
     <module>kogito-quarkus-processes</module>
     <module>kogito-quarkus-processes-deployment</module>
+    <module>kogito-quarkus-processes-integration-test</module>
+    <module>kogito-quarkus-processes-integration-test-hot-reload</module>
   </modules>
 
-  <profiles>
-    <profile>
-      <id>integration-test-modules</id>
-      <activation>
-        <property>
-          <name>!excludeITModules</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-quarkus-processes-integration-test</module>
-        <module>kogito-quarkus-processes-integration-test-hot-reload</module>
-      </modules>
-    </profile>
-  </profiles>
 </project>

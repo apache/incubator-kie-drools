@@ -16,9 +16,13 @@
 
   <!-- Please keep in alphabetical order -->
   <modules>
-    <module>events</module>
     <module>messaging</module>
-    <module>monitoring</module>
+    <module>persistence</module>
+    <module>rest-exception-handler</module>
+    <module>process-svg</module>
+    <module>process-management</module>
+    <module>source-files</module>
+    <module>knative</module>
   </modules>
 
   <profiles>
@@ -30,19 +34,15 @@
         </property>
       </activation>
       <modules>
+        <module>events</module>
+        <module>monitoring</module>
         <module>explainability</module>
         <module>human-task-prediction</module>
         <module>jobs</module>
         <module>mail</module>
-        <module>persistence</module>
         <module>tracing</module>
-        <module>knative</module>
         <module>kubernetes</module>
         <module>task-management</module>
-        <module>process-svg</module>
-        <module>rest-exception-handler</module>
-        <module>process-management</module>
-        <module>source-files</module>
       </modules>
     </profile>
   </profiles>

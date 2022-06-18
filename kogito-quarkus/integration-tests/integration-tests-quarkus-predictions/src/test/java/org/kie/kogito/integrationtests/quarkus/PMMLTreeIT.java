@@ -20,13 +20,13 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 
 import static org.kie.kogito.integrationtests.quarkus.CommonTestUtils.testDescriptive;
 import static org.kie.kogito.integrationtests.quarkus.CommonTestUtils.testResult;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 class PMMLTreeIT {
 
     private static final String BASE_PATH = "/SampleMine";

@@ -16,21 +16,8 @@
   <modules>
     <module>kogito-quarkus-decisions-deployment</module>
     <module>kogito-quarkus-decisions</module>
+    <module>kogito-quarkus-decisions-integration-test</module>
+    <module>kogito-quarkus-decisions-integration-test-hot-reload</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>integration-test-modules</id>
-      <activation>
-        <property>
-          <name>!excludeITModules</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-quarkus-decisions-integration-test</module>
-        <module>kogito-quarkus-decisions-integration-test-hot-reload</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

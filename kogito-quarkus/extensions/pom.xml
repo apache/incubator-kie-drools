@@ -30,9 +30,8 @@
   <modules>
     <module>kogito-quarkus-extension-spi</module>
     <module>kogito-quarkus-extension-common</module>
-    <module>kogito-quarkus-rules-extension</module>
-    <module>kogito-quarkus-decisions-extension</module>
-    <module>kogito-quarkus-predictions-extension</module>
+    <module>kogito-quarkus-processes-extension</module>
+    <module>kogito-quarkus-serverless-workflow-extension</module>
   </modules>
 
   <profiles>
@@ -44,9 +43,10 @@
         </property>
       </activation>
       <modules>
+        <module>kogito-quarkus-rules-extension</module>
+        <module>kogito-quarkus-decisions-extension</module>
+        <module>kogito-quarkus-predictions-extension</module>
         <module>kogito-quarkus-extension</module>
-        <module>kogito-quarkus-processes-extension</module>
-        <module>kogito-quarkus-serverless-workflow-extension</module>
       </modules>
     </profile>
     <profile>

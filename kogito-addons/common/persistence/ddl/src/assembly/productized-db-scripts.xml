@@ -6,15 +6,6 @@
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
-  <fileSets>
-    <fileSet>
-      <directory>${path.to.persistence.modules}/postgresql/src/main/resources/sql</directory>
-      <outputDirectory>postgresql</outputDirectory>
-      <includes>
-        <include>*_create.sql</include>
-      </includes>
-    </fileSet>
-  </fileSets>
   <files>
     <file>
       <source>${path.to.persistence.modules}/jdbc/src/main/resources/sql/create_tables_PostgreSQL.sql</source>

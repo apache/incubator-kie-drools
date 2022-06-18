@@ -15,32 +15,17 @@
  */
 package org.kie.kogito.integrationtests.quarkus;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.kie.kogito.queries.Applicant;
-import org.kie.kogito.queries.LoanApplication;
-import org.kie.kogito.queries.LoanUnit;
 
-import io.quarkus.test.QuarkusUnitTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 
+@QuarkusIntegrationTest
 public class DecisionTableIT {
-
-    private static final String PACKAGE = "org.kie.kogito.queries";
-    private static final String RESOURCE_FILE = "src/main/resources/" + PACKAGE.replace('.', '/') + "/LoanUnit.drl.xls";
-
-    @RegisterExtension
-    static final QuarkusUnitTest config = new QuarkusUnitTest()
-            .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addAsResource("LoanUnit.xls.test", RESOURCE_FILE)
-                    .addAsResource("LoanUnit.xls.properties.test", RESOURCE_FILE + ".properties")
-                    .addClasses(Applicant.class, LoanApplication.class, LoanUnit.class));
 
     private static final String JSON_PAYLOAD =
             "{\n" +
