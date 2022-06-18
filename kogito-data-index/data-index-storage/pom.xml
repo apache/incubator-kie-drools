@@ -16,11 +16,23 @@
   <modules>
     <module>data-index-storage-api</module>
     <module>data-index-storage-protobuf</module>
-    <module>data-index-storage-infinispan</module>
-    <module>data-index-storage-mongodb</module>
     <module>data-index-storage-postgresql</module>
-    <module>data-index-storage-postgresql-reporting</module>
-    <module>data-index-storage-oracle</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>data-index-storage-infinispan</module>
+        <module>data-index-storage-mongodb</module>
+        <module>data-index-storage-postgresql-reporting</module>
+        <module>data-index-storage-oracle</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>
