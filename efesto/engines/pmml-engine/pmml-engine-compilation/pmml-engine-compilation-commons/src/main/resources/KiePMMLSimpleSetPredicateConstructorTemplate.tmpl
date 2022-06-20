@@ -1,0 +1,14 @@
+package org.kie.pmml.commons.model.predicates;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
+
+public class KiePMMLSimpleSetPredicateConstructorTemplate extends KiePMMLSimpleSetPredicate {
+
+    public KiePMMLSimpleSetPredicateConstructorTemplate() {
+        super(name, Collections.emptyList(),  arrayType, inNotIn);
+        values = null;
+    }
+
+}

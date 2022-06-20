@@ -1,0 +1,1 @@
+(org.kie.pmml.api.iinterfaces.SerializableFunction<Double, Double>) KiePMMLRegressionTable::update%sResult

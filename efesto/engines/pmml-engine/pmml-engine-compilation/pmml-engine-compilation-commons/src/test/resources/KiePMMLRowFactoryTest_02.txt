@@ -1,0 +1,6 @@
+{
+    Map<String, Object> %1$s_columnValues = Stream
+            .of(new Object[][] { { "data:output", "0.0" }, { "data:input", "0" } })
+            .collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+    KiePMMLRow %1$s = new KiePMMLRow(%1$s_columnValues);
+}

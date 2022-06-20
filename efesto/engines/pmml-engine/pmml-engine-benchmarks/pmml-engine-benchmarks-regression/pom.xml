@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>pmml-engine-benchmarks</artifactId>
+        <groupId>org.kie</groupId>
+        <version>8.24.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>pmml-engine-benchmarks-regression</artifactId>
+
+    <name>PMML :: ENGINE :: Benchmarks :: Regression</name>
+    <description>Benchmarks for Regression module</description>
+
+
+    <dependencies>
+        <!-- PMML -->
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-runtime-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-runtime-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-models-regression-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-models-regression-compiler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-models-regression-runtime</artifactId>
+        </dependency>
+        <!-- KIE -->
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-api</artifactId>
+        </dependency>
+        <!-- EXTERNAL -->
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+        </dependency>
+        <!-- TEST -->
+    </dependencies>
+
+
+</project>

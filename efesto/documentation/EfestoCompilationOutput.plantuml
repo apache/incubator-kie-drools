@@ -1,0 +1,25 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class AbstractEfestoCompilationOutput
+class AbstractEfestoFinalCompilationOutput
+interface EfestoClassesContainer << interface >>
+interface EfestoCompilationOutput << interface >>
+interface EfestoFinalOutput << interface >>
+class EfestoFinalOutputClassesContainer
+class EfestoIntermediateOutput
+class EfestoIntermediateOutputClassesContainer
+
+AbstractEfestoCompilationOutput           -[#008200,dashed]-^  EfestoCompilationOutput
+AbstractEfestoFinalCompilationOutput      -[#000082,plain]-^  AbstractEfestoCompilationOutput
+AbstractEfestoFinalCompilationOutput      -[#008200,dashed]-^  EfestoFinalOutput
+EfestoFinalOutput                         -[#008200,plain]-^  EfestoCompilationOutput
+EfestoFinalOutputClassesContainer         -[#000082,plain]-^  AbstractEfestoFinalCompilationOutput
+EfestoFinalOutputClassesContainer         -[#008200,dashed]-^  EfestoClassesContainer
+EfestoIntermediateOutput                  -[#000082,plain]-^  AbstractEfestoCompilationOutput
+EfestoIntermediateOutputClassesContainer  -[#008200,dashed]-^  EfestoClassesContainer
+EfestoIntermediateOutputClassesContainer  -[#000082,plain]-^  EfestoIntermediateOutput
+@enduml

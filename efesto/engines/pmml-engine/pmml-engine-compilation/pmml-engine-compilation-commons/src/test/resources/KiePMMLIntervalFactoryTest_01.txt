@@ -1,0 +1,3 @@
+{
+    KiePMMLInterval %s = new KiePMMLInterval(%s, null, %s);
+}

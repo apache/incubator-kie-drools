@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.kie</groupId>
+        <artifactId>pmml-engine-models-drools</artifactId>
+        <version>8.24.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>pmml-engine-models-drools-common</artifactId>
+
+    <name>PMML :: ENGINE :: Models :: Drools :: Common</name>
+    <description>Common code for PMML Models with Drools Implementations</description>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>drl-engine-map-input-runtime</artifactId>
+        <groupId>org.kie</groupId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+    <dependencies>
+        <!-- PMML -->
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-compilation-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-runtime-core</artifactId>
+        </dependency>
+        <!-- EXTERNAL -->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-drl-ast</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <artifactId>drl-engine-map-input-runtime</artifactId>
+            <groupId>org.kie</groupId>
+        </dependency>
+        <dependency>
+            <groupId>org.jpmml</groupId>
+            <artifactId>pmml-model</artifactId>
+        </dependency>
+        <!-- TEST -->
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-commons</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-compilation-api</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>pmml-engine-compilation-commons</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+</project>

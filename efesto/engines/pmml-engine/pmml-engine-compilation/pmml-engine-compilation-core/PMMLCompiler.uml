@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>org.kie.pmml.compiler.executor.PMMLCompilerExecutorImpl</OriginalElement>
+  <nodes>
+    <node x="239.5" y="82.0">org.kie.pmml.api.implementations.AlgorithmImplementationProviderFinder</node>
+    <node x="965.5" y="82.0">org.kie.pmml.compiler.executor.PMMLCompilerExecutor</node>
+    <node x="92.49166666666673" y="0.0">org.kie.pmml.api.implementations.AlgorithmImplementationProvider</node>
+    <node x="0.0" y="164.0">org.kie.pmml.compiler.implementations.AlgorithmImplementationProviderFinderImpl</node>
+    <node x="600.5" y="164.0">org.kie.pmml.compiler.executor.PMMLCompilerExecutorImpl</node>
+    <node x="677.5" y="82.0">org.kie.pmml.marshaller.executor.PMMLMarshallerExecutor</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="org.kie.pmml.compiler.implementations.AlgorithmImplementationProviderFinderImpl" target="org.kie.pmml.api.implementations.AlgorithmImplementationProviderFinder">
+      <point x="152.66666666666674" y="-16.0" />
+      <point x="381.66666666666674" y="144.0" />
+      <point x="309.16666666666663" y="144.0" />
+      <point x="-139.33333333333337" y="16.0" />
+    </edge>
+    <edge source="org.kie.pmml.api.implementations.AlgorithmImplementationProviderFinder" target="org.kie.pmml.api.implementations.AlgorithmImplementationProvider">
+      <point x="0.0" y="-16.0" />
+      <point x="448.5" y="57.0" />
+      <point x="390.825" y="57.0" />
+      <point x="119.33333333333326" y="16.0" />
+    </edge>
+    <edge source="org.kie.pmml.compiler.executor.PMMLCompilerExecutorImpl" target="org.kie.pmml.compiler.executor.PMMLCompilerExecutor">
+      <point x="115.19999999999999" y="-16.0" />
+      <point x="859.7" y="144.0" />
+      <point x="1089.5" y="144.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+    <edge source="org.kie.pmml.compiler.executor.PMMLCompilerExecutorImpl" target="org.kie.pmml.api.implementations.AlgorithmImplementationProviderFinder">
+      <point x="-115.20000000000005" y="-16.0" />
+      <point x="629.3" y="144.0" />
+      <point x="448.5" y="144.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+    <edge source="org.kie.pmml.compiler.executor.PMMLCompilerExecutorImpl" target="org.kie.pmml.marshaller.executor.PMMLMarshallerExecutor">
+      <point x="-5.6843418860808015E-14" y="-16.0" />
+      <point x="-67.0" y="16.0" />
+    </edge>
+    <edge source="org.kie.pmml.compiler.implementations.AlgorithmImplementationProviderFinderImpl" target="org.kie.pmml.api.implementations.AlgorithmImplementationProvider">
+      <point x="0.0" y="-16.0" />
+      <point x="229.0" y="144.0" />
+      <point x="220.89791666666667" y="144.0" />
+      <point x="220.89791666666667" y="57.0" />
+      <point x="271.49166666666673" y="57.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="614.5" y="148.5" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
