@@ -10,7 +10,7 @@
 
   <artifactId>pmml-engine-models-drools-scorecard-tests</artifactId>
 
-  <name>PMML :: ENGINE :: Models :: Drools :: Scorecard :: Tests</name>
+  <name>Efesto :: PMML :: ENGINE :: Models :: Drools :: Scorecard :: Tests</name>
   <description>PMML Scorecard Tests</description>
 
   <dependencyManagement>

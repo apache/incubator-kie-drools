@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
   <build>
     <plugins>
       <plugin>
@@ -17,22 +17,23 @@
   </build>
 
   <parent>
-        <groupId>org.kie</groupId>
-        <artifactId>compilation-manager</artifactId>
-        <version>8.24.0-SNAPSHOT</version>
-    </parent>
+    <groupId>org.kie</groupId>
+    <artifactId>compilation-manager</artifactId>
+    <version>8.24.0-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>compilation-manager-core</artifactId>
+  <artifactId>compilation-manager-core</artifactId>
+  <name>Efesto :: Compilation :: Manager :: Api</name>
 
-    <properties>
-        <skip.jdepend>false</skip.jdepend>
-    </properties>
+  <properties>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>compilation-manager-api</artifactId>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>compilation-manager-api</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

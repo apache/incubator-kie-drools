@@ -2,50 +2,50 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>org.kie</groupId>
-        <artifactId>pmml-engine-compilation</artifactId>
-        <version>8.24.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>pmml-engine-compilation</artifactId>
+    <version>8.24.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>pmml-engine-compilation-core</artifactId>
+  <artifactId>pmml-engine-compilation-core</artifactId>
 
-    <name>PMML :: ENGINE :: Compilation :: Core</name>
-    <description>PMML Compiler Core</description>
+  <name>Efesto :: PMML :: ENGINE :: Compilation :: Core</name>
+  <description>PMML Compiler Core</description>
 
-    <properties>
-        <skip.jdepend>false</skip.jdepend>
-    </properties>
+  <properties>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
 
-    <dependencies>
-        <!-- PMML -->
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-compilation-commons</artifactId>
-        </dependency>
-        <!-- EXTERNAL -->
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>compilation-manager-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>compilation-manager-core</artifactId>
-        </dependency>
-        <!-- TEST -->
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-commons</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-compilation-api</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <!-- PMML -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-compilation-commons</artifactId>
+    </dependency>
+    <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>compilation-manager-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>compilation-manager-core</artifactId>
+    </dependency>
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-commons</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-compilation-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>
