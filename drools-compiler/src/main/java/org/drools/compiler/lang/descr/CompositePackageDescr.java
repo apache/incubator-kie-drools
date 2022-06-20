@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.drl.ast.descr.AccumulateImportDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
@@ -134,7 +134,7 @@ public class CompositePackageDescr extends PackageDescr {
         return filter;
     }
     
-    public void addFilter( KnowledgeBuilderImpl.AssetFilter f ) {
+    public void addFilter( AssetFilter f ) {
         if( f != null ) {
             if( filter == null ) {
                 this.filter = new CompositeAssetFilter();
@@ -143,12 +143,12 @@ public class CompositePackageDescr extends PackageDescr {
         }
     }
     
-    public static class CompositeAssetFilter implements KnowledgeBuilderImpl.AssetFilter {
-        public List<KnowledgeBuilderImpl.AssetFilter> filters = new ArrayList<KnowledgeBuilderImpl.AssetFilter>();
+    public static class CompositeAssetFilter implements AssetFilter {
+        public List<AssetFilter> filters = new ArrayList<AssetFilter>();
 
         @Override
         public Action accept(ResourceChange.Type type, String pkgName, String assetName) {
-            for( KnowledgeBuilderImpl.AssetFilter filter : filters ) {
+            for( AssetFilter filter : filters ) {
                 Action result = filter.accept(type, pkgName, assetName);
                 if( !Action.DO_NOTHING.equals( result ) ) {
                     return result;

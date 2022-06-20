@@ -1,5 +1,6 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
@@ -17,7 +18,7 @@ public final class PackageCompilationPhase extends AbstractPackageCompilationPha
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final TypeDeclarationBuilder typeBuilder;
-    private final KnowledgeBuilderImpl.AssetFilter filterCondition;
+    private final AssetFilter filterCondition;
     private final Resource currentResource;
 
     public PackageCompilationPhase(
@@ -25,7 +26,7 @@ public final class PackageCompilationPhase extends AbstractPackageCompilationPha
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration,
             TypeDeclarationBuilder typeBuilder,
-            KnowledgeBuilderImpl.AssetFilter filterCondition,
+            AssetFilter filterCondition,
             PackageRegistry pkgRegistry,
             PackageDescr packageDescr,
             Resource currentResource) {
