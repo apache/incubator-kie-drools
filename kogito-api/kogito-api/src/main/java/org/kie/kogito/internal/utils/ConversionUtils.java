@@ -68,6 +68,9 @@ public class ConversionUtils {
      * @return
      */
     public static String toCamelCase(String text) {
+        if (text == null) {
+            return null;
+        }
         StringBuilder builder = new StringBuilder();
         boolean convertNextCharToUpper = false;
 
