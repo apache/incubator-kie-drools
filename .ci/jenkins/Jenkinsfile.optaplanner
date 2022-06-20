@@ -79,7 +79,7 @@ pipeline {
         stage('Build Apps') {
             steps {
                 script {
-                    getNativeMavenCommand(kogitoAppsRepo)
+                    getMavenCommand(kogitoAppsRepo)
                         .withProperty('skipUI')
                         .withProperty('maven.test.failure.ignore', true)
                         .withProperty('version.org.optaplanner', env.OPTAPLANNER_VERSION)
@@ -173,20 +173,6 @@ MavenCommand getMavenCommand(String directory) {
                 .withSettingsXmlId('kogito_release_settings')
                 .withProperty('java.net.preferIPv4Stack', true)
                 .inDirectory(directory)
-}
-
-MavenCommand getNativeMavenCommand(String directory, String builderImage = getNativeBuilderImage()) {
-    def mvnCmd = getMavenCommand(directory)
-                .withProfiles(['native'])
-                .withProperty('quarkus.native.container-build', true)
-                .withProperty('quarkus.native.container-runtime', 'docker')
-                .withProperty('quarkus.profile', 'native') // Added due to https://github.com/quarkusio/quarkus/issues/13341
-    
-    if (builderImage) {
-        mvnCmd.withProperty('quarkus.native.builder-image', builderImage)
-    }
-
-    return mvnCmd
 }
 
 void cleanContainers() {
