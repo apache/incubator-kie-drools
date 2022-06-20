@@ -20,6 +20,7 @@ import java.util.Map;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.tree.compiler.dto.TreeCompilationDTO;
@@ -39,6 +40,11 @@ public class TreeModelImplementationProvider implements ModelImplementationProvi
     public PMML_MODEL getPMMLModelType() {
         logger.trace("getPMMLModelType");
         return PMML_MODEL.TREE_MODEL;
+    }
+
+    @Override
+    public Class<KiePMMLTreeModel> getKiePMMLModelClass() {
+        return KiePMMLTreeModel.class;
     }
 
     @Override

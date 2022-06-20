@@ -43,6 +43,11 @@ private static final Logger logger = LoggerFactory.getLogger(ClusteringModelImpl
     }
 
     @Override
+    public Class<KiePMMLClusteringModel> getKiePMMLModelClass() {
+        return KiePMMLClusteringModel.class;
+    }
+
+    @Override
     public KiePMMLClusteringModel getKiePMMLModel(final CompilationDTO<ClusteringModel> compilationDTO) {
         logger.trace("getKiePMMLModel {}", compilationDTO);
         return KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
@@ -56,10 +61,5 @@ private static final Logger logger = LoggerFactory.getLogger(ClusteringModelImpl
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }
-    }
-
-    @Override
-    public boolean isInterpreted() {
-        return true;
     }
 }
