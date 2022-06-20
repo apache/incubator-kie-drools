@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -76,6 +75,9 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P26M\" )", ComparablePeriod.parse( "P2Y2M" ) , null},
                 { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") )", ComparablePeriod.parse( "P1Y8M" ) , null},
                 { "@\"xyz\"", null , FEELEvent.Severity.ERROR },
+                { "(@\"13:20:00@Europe/Rome\").timezone", "Europe/Rome" , null},
+                { "(@\"13:20:00@Etc/UTC\").timezone", "Etc/UTC" , null},
+                { "(@\"13:20:00@Etc/GMT\").timezone", "Etc/GMT" , null},
 
                 // comparison operators
                 { "duration( \"P1Y6M\" ) = duration( \"P1Y6M\" )", Boolean.TRUE , null},
@@ -208,6 +210,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "time(\"13:20:00-05:00\").time offset", Duration.parse( "PT-5H" ), null},
                 { "time(\"13:20:00@Europe/Rome\").timezone", "Europe/Rome" , null},
                 { "time(\"13:20:00@Etc/UTC\").timezone", "Etc/UTC" , null},
+                { "time(\"13:20:00@Etc/GMT\").timezone", "Etc/GMT" , null},
                 { "duration( \"P2DT20H14M\" ).days", BigDecimal.valueOf(2) , null},
                 { "duration( \"P2DT20H14M\" ).hours", BigDecimal.valueOf(20) , null},
                 { "duration( \"P2DT20H14M\" ).minutes", BigDecimal.valueOf(14) , null},

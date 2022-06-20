@@ -78,13 +78,15 @@ public class AtLiteralNode
     private static final TypeAndFn AT_DURATION = new TypeAndFn(BuiltInType.DURATION, "duration");
 
     public static TypeAndFn fromAtValue(String value) {
-        if (value.startsWith("P") || value.startsWith("-P")) {
+        int indexOfAt = value.indexOf("@");
+        final String literalBeforeAt = indexOfAt >= 0 ? value.substring(0, indexOfAt) : value ;
+        if (literalBeforeAt.startsWith("P") || literalBeforeAt.startsWith("-P")) {
             return AT_DURATION;
-        } else if (value.contains("T")) {
+        } else if (literalBeforeAt.contains("T")) {
             return AT_DATEANDTIME;
-        } else if (value.contains(":")) {
+        } else if (literalBeforeAt.contains(":")) {
             return AT_TIME;
-        } else if (value.contains("-")) {
+        } else if (literalBeforeAt.contains("-")) {
             return AT_DATE;
         }
         return AT_UNKNOWN;
