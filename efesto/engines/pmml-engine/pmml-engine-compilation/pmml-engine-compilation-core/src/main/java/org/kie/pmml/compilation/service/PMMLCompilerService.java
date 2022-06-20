@@ -76,18 +76,6 @@ public class PMMLCompilerService {
         String fileName = removeSuffix((resource.getContent()).getName());
         Map<String, String> allSourcesMap = new HashMap<>();
         iterateOverKiePmmlModelsWithSources(kiePmmlModelsWithSources, toReturn, allSourcesMap, memoryClassLoader);
-
-
-//        kiePmmlModelsWithSources.forEach(kiePMMLModelWithSources -> {
-//            Map<String, String> sourcesMap = kiePMMLModelWithSources.getSourcesMap();
-//            allSourcesMap.putAll(sourcesMap);
-//            if (kiePMMLModelWithSources instanceof HasRedirectOutput) {
-//                EfestoSetResource redirectResource = ((HasRedirectOutput) kiePMMLModelWithSources).getRedirectOutput();
-//                getRedirectCompilation(redirectResource, memoryClassLoader);
-//                FRI fri = new FRI(redirectResource.getBasePath(), "pmml");
-//                toReturn.add(new EfestoRedirectOutputPMML(fri, kiePMMLModelWithSources.getName()));
-//            }
-//        });
         List<KiePMMLFactoryModel> kiePMMLFactoryModels = kiePmmlModels
                 .stream()
                 .filter(KiePMMLFactoryModel.class::isInstance)
