@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -300,8 +301,17 @@ public class DecisionTableImpl implements DecisionTable {
 
     private List<Object> evaluateResults(EvaluationContext ctx, FEEL feel, Object[] params, List<DTDecisionRule> matchingDecisionRules) {
     	Stream<Object> s = matchingDecisionRules.stream().map( dr -> hitToOutput( ctx, feel, dr ) );
-        List<Object> results = hitPolicy == HitPolicy.FIRST ? s.findFirst().map(Arrays::asList).orElse(Collections.emptyList()) : s.collect( Collectors.toList());
-        return results;
+
+        if (hitPolicy == HitPolicy.FIRST) {
+            Optional<Optional<Object>> first = s.map(Optional::ofNullable).findFirst();
+            if (first.isPresent()) {
+                return Arrays.asList(first.get().orElse(null));
+            } else {
+                return Collections.emptyList();
+            }
+        }
+
+        return s.collect(Collectors.toList());
     }
 
     /**

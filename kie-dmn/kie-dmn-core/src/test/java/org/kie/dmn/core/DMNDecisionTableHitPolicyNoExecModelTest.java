@@ -62,4 +62,22 @@ public class DMNDecisionTableHitPolicyNoExecModelTest extends BaseVariantNonType
         final DMNContext result = dmnResult.getContext();
         assertThat(result.getAll()).extracting("First Decision Table.nn abs").isEqualTo(BigDecimal.ZERO);
     }
+
+    @Test
+    public void testShortCircuitFIRST_withNullResults() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("First DT not stopping - null result.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_e56151c4-d522-4974-88e8-f6c88ffaaba4", "Drawing 1");
+        assertThat(dmnModel).isNotNull();
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors()).isFalse();
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat((result.getAll())).containsKeys("First Decision Table");
+        final Map<String, Object> decisionTable = (Map<String, Object>) result.get("First Decision Table");
+
+        assertThat(decisionTable).containsEntry("nn abs", null);
+    }
 }
