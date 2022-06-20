@@ -44,6 +44,9 @@ import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
+import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.NullNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
@@ -69,6 +72,7 @@ import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.DMNValidator.Validation;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalyserValueFromNodeVisitor.DMNDTAnalyserOutputClauseVisitor;
+import org.kie.dmn.validation.dtanalysis.DMNDTAnalyserValueFromNodeVisitor.SupportedConstantValueVisitor;
 import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser;
 import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser.PosNegBlock;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
@@ -222,6 +226,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                     throw new DMNDTAnalysisException("Gaps/Overlaps analysis cannot be performed for InputEntry with unary test containing: " + ie.getText(), dt);
                 }
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
+                verifyUtln(utln, dt);
 
                 DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(jColIdx);
 
@@ -248,6 +253,48 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         }
     }
     
+    /**
+     * Internal method to check for common mistakes when writing FEEL unary test in decision tables.
+     * @param dt 
+     */
+    private void verifyUtln(UnaryTestListNode utln, DecisionTable dt) {
+        for (BaseNode ut : utln.getElements()) {
+            if (ut instanceof UnaryTestNode) {
+                UnaryTestNode utn = (UnaryTestNode) ut;
+                if (utn.getValue() instanceof RangeNode && ( utn.getOperator() == UnaryOperator.IN || utn.getOperator() == UnaryOperator.EQ )) {
+                    RangeNode rangeNode = (RangeNode) utn.getValue();
+                    Optional<BaseNode> diamond = checkForDiamondRange(rangeNode);
+                    if (diamond.isPresent()) { // unrecognized '<> value' FEEL unary test
+                        throw new DMNDTAnalysisException("Unrecognized unary test: '" + ut.getText() + "'; did you meant to write 'not("+ diamond.get().getText() +")' instead?", dt);                        
+                    }
+                } else if (utn.getOperator() == UnaryOperator.NE) { // unrecognized '!= value' FEEL unary test
+                    throw new DMNDTAnalysisException("Unrecognized unary test: '" + ut.getText() + "'; did you meant to write 'not("+ utn.getValue().getText() +")' instead?", dt);    
+                } else if (utn.getOperator() == UnaryOperator.TEST && utn.getValue() instanceof InfixOpNode) {
+                    InfixOpNode infixOpNode = (InfixOpNode) utn.getValue();
+                    if (infixOpNode.getOperator() != InfixOperator.NE) {
+                        continue;
+                    }
+                    boolean leftIsQmark = infixOpNode.getLeft() instanceof NameRefNode && infixOpNode.getLeft().getText().equals("?");
+                    SupportedConstantValueVisitor constantVisitor = new DMNDTAnalyserValueFromNodeVisitor.SupportedConstantValueVisitor();
+                    boolean rightIsConstant = infixOpNode.getRight().accept(constantVisitor);
+                    if (leftIsQmark && rightIsConstant) { // unmanaged '? != value' FEEL extended unary test
+                        throw new DMNDTAnalysisException("Unmanaged unary test: '" + ut.getText() + "'; you could write 'not("+ infixOpNode.getRight().getText() +")' instead.", dt);   
+                    }
+                }
+            }
+        }
+    }
+    
+    private Optional<BaseNode> checkForDiamondRange(RangeNode rangeNode) {
+        if ((rangeNode.getStart() instanceof NullNode || rangeNode.getStart() == null) && rangeNode.getUpperBound() == IntervalBoundary.OPEN && rangeNode.getEnd() instanceof RangeNode) {
+            return Optional.ofNullable(((RangeNode) rangeNode.getEnd()).getStart()); // <> value
+        } else if ((rangeNode.getEnd() instanceof NullNode || rangeNode.getEnd() == null) && rangeNode.getLowerBound() == IntervalBoundary.OPEN && rangeNode.getStart() instanceof RangeNode) {
+            return Optional.ofNullable(((RangeNode) rangeNode.getStart()).getEnd()); // >< value
+        } else {
+            return Optional.empty();
+        }
+    }
+
     /**
      * Builds a feel context containing the named keys for the DRG node dependencies.
      * This helps to detect when a Unary test contains symbols (named reference) and therefore static analysis is not supported (ref DROOLS-4607)
