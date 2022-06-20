@@ -26,13 +26,12 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 
 import io.cloudevents.jackson.JsonFormat;
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 
 import static io.restassured.RestAssured.given;
@@ -41,11 +40,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Testing our use cases on a controlled environment instead of using generated code.
  */
-@QuarkusTest
-class QuarkusCloudEventResourceTest {
-
-    @ConfigProperty(name = "quarkus.http.test-port")
-    public int port;
+@QuarkusIntegrationTest
+class QuarkusCloudEventResourceIT {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -54,7 +50,7 @@ class QuarkusCloudEventResourceTest {
     // We are not using RestAssured to send a plain HTTP request mocking an arbitrary client sending a request without the properly headers.
     @Test
     void verifyHttpRequestNoMediaType() throws IOException {
-        final URL url = new URL("http://localhost:" + port);
+        final URL url = new URL("http://localhost:" + RestAssured.port);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         try {
             con.setRequestProperty("ce-type", "myevent");
@@ -76,7 +72,7 @@ class QuarkusCloudEventResourceTest {
 
     @Test
     void verifyHttpRequestNoMediaTypeCrazyContent() throws IOException {
-        final URL url = new URL("http://localhost:" + port);
+        final URL url = new URL("http://localhost:" + RestAssured.port);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         try {
             con.setRequestProperty("ce-type", "myevent");

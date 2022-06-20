@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
-public class QuarkusKogitoExtensionInitializerIT {
+public class QuarkusKogitoExtensionInitializerTest {
 
     @Test
     public void test() {

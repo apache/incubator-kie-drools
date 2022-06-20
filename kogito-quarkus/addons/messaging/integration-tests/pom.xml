@@ -9,7 +9,7 @@
   </parent>
   <artifactId>kogito-addons-quarkus-messaging-it</artifactId>
   <name>Kogito Add-On Messaging - Integration Tests</name>
-  <description>Integration tests for for Messaging Add-On (Quarkus)</description>
+  <description>Integration tests for Messaging Add-On (Quarkus)</description>
 
   <properties>
     <quarkus.test.list.include>true</quarkus.test.list.include>
@@ -77,4 +77,19 @@
 
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

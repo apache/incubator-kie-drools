@@ -22,13 +22,13 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.ChannelType;
 import org.kie.kogito.event.Topic;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 public class QuarkusTopicsInformationResourceIT {
 
     @Test
