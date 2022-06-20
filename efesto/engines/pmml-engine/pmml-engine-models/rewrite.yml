@@ -1,0 +1,9 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.kie.pmml.engine.models.ChangePackage
+displayName: Rename package name example
+recipeList:
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: com.yourorg.foo
+      newPackageName: com.yourorg.bar
+      recursive: true

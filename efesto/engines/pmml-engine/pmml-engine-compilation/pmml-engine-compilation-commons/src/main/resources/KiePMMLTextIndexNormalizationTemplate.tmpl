@@ -1,0 +1,23 @@
+package org.kie.pmml.compilation.commons;
+
+import java.util.Collections;
+
+
+public class KiePMMLTextIndexNormalizationTemplate {
+
+
+    private KiePMMLTextIndexNormalization getKiePMMLTextIndexNormalization() {
+        KiePMMLTextIndexNormalization textIndexNormalization = KiePMMLTextIndexNormalization.builder("name", Collections.emptyList())
+                                                     .withInField("inField")
+                                                     .withOutField("outField")
+                                                     .withKiePMMLInlineTable(inlineTable)
+                                                     .withRegexField("regexField")
+                                                     .withRecursive(recursive)
+                                                     .withIsCaseSensitive(isCaseSensitive)
+                                                     .withMaxLevenshteinDistance(maxLevenshteinDistance)
+                                                     .withWordSeparatorCharacterRE("wordSeparatorCharacterRE")
+                                                     .withTokenize(tokenize)
+                                                     .build();
+    }
+
+}

@@ -1,0 +1,13 @@
+{
+    KiePMMLMiningField %s = KiePMMLMiningField.builder("%s", Collections.emptyList())
+        .withFieldUsageType(org.kie.pmml.api.enums.FIELD_USAGE_TYPE.TARGET)
+        .withOpType(null)
+        .withDataType(%s)
+        .withMissingValueTreatmentMethod(null)
+        .withInvalidValueTreatmentMethod(org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID)
+        .withMissingValueReplacement(null)
+        .withInvalidValueReplacement(null)
+        .withAllowedValues(Arrays.asList())
+        .withIntervals(Arrays.asList())
+        .build();
+}

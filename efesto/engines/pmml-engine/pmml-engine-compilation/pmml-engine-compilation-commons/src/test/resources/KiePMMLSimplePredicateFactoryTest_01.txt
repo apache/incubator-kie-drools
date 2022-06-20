@@ -1,0 +1,5 @@
+{
+    KiePMMLSimplePredicate %1$s = KiePMMLSimplePredicate.builder("%2$s", Collections.emptyList(), %3$s)
+            .withValue(%4$s)
+            .build();
+}

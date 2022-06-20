@@ -1,0 +1,66 @@
+@startuml
+'default
+top to bottom direction
+
+package "PMML Module" {
+
+component api [
+        PMML API
+        This component defines API common to all PMML submodules
+        ]
+
+package "PMML Trusty" {
+    component trusty_api [
+            PMML Trusty API
+            Defines common objects shared by both Compiler and
+            model Model implementations, to decouple them
+            ]
+    component trusty_compiler [
+        PMML Trusty Compiler
+        Translate original PMML model to the objects
+        that will be stored inside kie knowledge base
+        ]
+}
+
+package "PMML Models" {
+    component implementations [
+        PMML Model implementations
+        For every "model" there will be a specific module, to have them
+        easily replaceable/pluggable.
+        Compiler will invoke them, if they are available in the classpath.
+        ]
+}
+
+package "PMML Runtime" {
+
+    component runtime_api [
+        PMML Runtime API
+        This component defines API specific fo Kie runtime environment
+        ]
+
+    component runtime_assembler [
+        PMML Runtime Assembler
+        Store objects created by compiler
+        inside kie knowledge base
+        ]
+
+     component runtime_core [
+             PMML Runtime Core
+             Read objects from kie knowledge base
+             and use them to calculate PMML result
+             based on input data
+         ]
+}
+
+
+trusty_api .> api : depends
+runtime_api .> api : depends
+trusty_compiler ..> trusty_api : depends
+implementations .> trusty_api : depends
+trusty_compiler -> implementations : use
+runtime_core .> runtime_api : depends
+runtime_assembler -> trusty_compiler : use
+runtime_assembler .> runtime_api : depends
+}
+
+@enduml

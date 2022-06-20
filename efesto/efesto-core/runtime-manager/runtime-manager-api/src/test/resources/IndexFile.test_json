@@ -1,0 +1,20 @@
+[
+  {
+    "step-type": "executable",
+    "fri": {
+      "basePath": "/testmod",
+      "model": "test",
+      "fri": "/test/testmod"
+    },
+    "fullClassNames": [""]
+  },
+  {
+    "step-type": "redirect",
+    "fri": {
+      "basePath": "/redirecttestmod",
+      "model": "test",
+      "fri": "/test/redirecttestmod"
+    },
+    "target": "other"
+  }
+]
