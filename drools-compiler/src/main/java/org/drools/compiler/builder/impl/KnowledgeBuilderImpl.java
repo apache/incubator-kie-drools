@@ -123,8 +123,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private final GlobalVariableContext globals = new GlobalVariableContextImpl();
 
-//    private Resource resource;
-
     private List<DSLTokenizedMappingFile> dslFiles;
 
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
@@ -272,11 +270,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.buildContext = buildContext;
     }
 
-    public Resource getCurrentResource() {
-//        return resource;
-        throw new UnsupportedOperationException("deprecated");
-    }
-
     public InternalKnowledgeBase getKnowledgeBase() {
         return kBase;
     }
@@ -323,7 +316,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public void addDsl(Resource resource) throws IOException {
-//        this.resource = resource;
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
 
         try (Reader reader = resource.getReader()) {
@@ -334,8 +326,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 this.dslFiles = new ArrayList<>();
             }
             this.dslFiles.add(file);
-        } finally {
-//            this.resource = null;
         }
     }
 
