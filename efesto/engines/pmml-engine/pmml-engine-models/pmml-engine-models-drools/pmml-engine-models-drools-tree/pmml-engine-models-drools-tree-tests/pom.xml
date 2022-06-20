@@ -10,7 +10,7 @@
 
   <artifactId>pmml-engine-models-drools-tree-tests</artifactId>
 
-  <name>PMML :: ENGINE :: Models :: Drools :: Tree :: Tests</name>
+  <name>Efesto :: PMML :: ENGINE :: Models :: Drools :: Tree :: Tests</name>
   <description>PMML Tree Tests</description>
 
   <dependencyManagement>

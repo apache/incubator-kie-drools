@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>org.kie</groupId>
-        <artifactId>pmml-engine-models</artifactId>
-        <version>8.24.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <packaging>pom</packaging>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>pmml-engine-models</artifactId>
+    <version>8.24.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
 
-    <artifactId>pmml-engine-models-mining</artifactId>
+  <artifactId>pmml-engine-models-mining</artifactId>
 
-    <name>PMML :: ENGINE :: Models :: Mining</name>
-    <description>PMML Mining implementation</description>
+  <name>Efesto :: PMML :: ENGINE :: Models :: Mining</name>
+  <description>PMML Mining implementation</description>
 
-    <modules>
-        <module>pmml-engine-models-mining-model</module>
-        <module>pmml-engine-models-mining-compilation</module>
-        <module>pmml-engine-models-mining-runtime</module>
-        <module>pmml-engine-models-mining-tests</module>
-    </modules>
+  <modules>
+    <module>pmml-engine-models-mining-model</module>
+    <module>pmml-engine-models-mining-compilation</module>
+    <module>pmml-engine-models-mining-runtime</module>
+    <module>pmml-engine-models-mining-tests</module>
+  </modules>
 
 
 </project>

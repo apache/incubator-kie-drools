@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>org.kie</groupId>
-        <artifactId>pmml-engine-models</artifactId>
-        <version>8.24.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>pmml-engine-models</artifactId>
+    <version>8.24.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>pmml-engine-models-drools</artifactId>
-    <packaging>pom</packaging>
+  <artifactId>pmml-engine-models-drools</artifactId>
+  <packaging>pom</packaging>
 
-    <name>PMML :: ENGINE :: Models :: Drools</name>
-    <description>PMML Models with Drools Implementations</description>
+  <name>Efesto :: PMML :: ENGINE :: Models :: Drools</name>
+  <description>PMML Models with Drools Implementations</description>
 
-    <modules>
-        <module>pmml-engine-models-drools-common</module>
-        <module>pmml-engine-models-drools-tree</module>
-        <module>pmml-engine-models-drools-scorecard</module>
-    </modules>
+  <modules>
+    <module>pmml-engine-models-drools-common</module>
+    <module>pmml-engine-models-drools-tree</module>
+    <module>pmml-engine-models-drools-scorecard</module>
+  </modules>
 
 
 </project>

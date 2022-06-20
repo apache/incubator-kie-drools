@@ -1,67 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>engines</artifactId>
+  <parent>
+    <artifactId>engines</artifactId>
+    <groupId>org.kie</groupId>
+    <version>8.24.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>drl-engine</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Efesto :: DRL :: ENGINE</name>
+  <description>Support for Rules</description>
+
+  <modules>
+    <module>drl-engine-api</module>
+    <module>drl-engine-compilation-common</module>
+    <module>drl-engine-runtime-common</module>
+    <module>drl-engine-implementations</module>
+    <module>drl-engine-tests</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>drl-engine-api</artifactId>
         <groupId>org.kie</groupId>
-        <version>8.24.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>drl-engine</artifactId>
-    <packaging>pom</packaging>
-
-    <name>DRL :: ENGINE</name>
-    <description>Support for Rules</description>
-
-    <modules>
-        <module>drl-engine-api</module>
-        <module>drl-engine-compilation-common</module>
-        <module>drl-engine-runtime-common</module>
-        <module>drl-engine-implementations</module>
-        <module>drl-engine-tests</module>
-    </modules>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <artifactId>drl-engine-api</artifactId>
-                <groupId>org.kie</groupId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>drl-engine-compilation-common</artifactId>
-                <groupId>org.kie</groupId>
-                <version>${project.version}</version>
-            </dependency>
-<!--            <dependency>-->
-<!--                <artifactId>drl-engine-compilation-common</artifactId>-->
-<!--                <groupId>org.kie</groupId>-->
-<!--                <version>${project.version}</version>-->
-<!--                <scope>test</scope>-->
-<!--            </dependency>-->
-            <dependency>
-                <artifactId>drl-engine-runtime-common</artifactId>
-                <groupId>org.kie</groupId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>drl-engine-kiesession-local-runtime</artifactId>
-                <groupId>org.kie</groupId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>drl-engine-map-input-runtime</artifactId>
-                <groupId>org.kie</groupId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>drl-engine-tests</artifactId>
-                <groupId>org.kie</groupId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>drl-engine-compilation-common</artifactId>
+        <groupId>org.kie</groupId>
+        <version>${project.version}</version>
+      </dependency>
+      <!--            <dependency>-->
+      <!--                <artifactId>drl-engine-compilation-common</artifactId>-->
+      <!--                <groupId>org.kie</groupId>-->
+      <!--                <version>${project.version}</version>-->
+      <!--                <scope>test</scope>-->
+      <!--            </dependency>-->
+      <dependency>
+        <artifactId>drl-engine-runtime-common</artifactId>
+        <groupId>org.kie</groupId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>drl-engine-kiesession-local-runtime</artifactId>
+        <groupId>org.kie</groupId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>drl-engine-map-input-runtime</artifactId>
+        <groupId>org.kie</groupId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>drl-engine-tests</artifactId>
+        <groupId>org.kie</groupId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>org.kie</groupId>
-        <artifactId>pmml-engine-models-mining</artifactId>
-        <version>8.24.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>pmml-engine-models-mining</artifactId>
+    <version>8.24.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>pmml-engine-models-mining-tests</artifactId>
-    <name>PMML :: ENGINE :: Models :: Mining :: Tests</name>
-    <description>PMML Mining Tests</description>
+  <artifactId>pmml-engine-models-mining-tests</artifactId>
+  <name>Efesto :: PMML :: ENGINE :: Models :: Mining :: Tests</name>
+  <description>PMML Mining Tests</description>
 
-    <properties>
-        <skip.jdepend>false</skip.jdepend>
-    </properties>
+  <properties>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -33,110 +33,110 @@
     </dependencies>
   </dependencyManagement>
 
-    <dependencies>
-        <!-- TEST -->
-        <!-- PMML -->
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-mining-model</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-mining-compilation</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-mining-runtime</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-tests</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-regression-compilation</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-regression-runtime</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-drools-scorecard-compilation</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-drools-scorecard-runtime</artifactId>
-            <scope>test</scope>
-        </dependency>
+  <dependencies>
+    <!-- TEST -->
+    <!-- PMML -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-mining-model</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-mining-compilation</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-mining-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-tests</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-regression-compilation</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-regression-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-drools-scorecard-compilation</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-drools-scorecard-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-drools-tree-compilation</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-drools-tree-runtime</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-drools-tree-compilation</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-drools-tree-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-clustering-compilation</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-models-clustering-runtime</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-clustering-compilation</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-models-clustering-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
 
 
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-compilation-api</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-compilation-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>pmml-engine-runtime-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>drl-engine-compilation-common</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>drl-engine-map-input-runtime</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- KIE -->
-        <!-- EXTERNAL -->
-        <dependency>
-            <groupId>org.jpmml</groupId>
-            <artifactId>pmml-model</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-compilation-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-compilation-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>pmml-engine-runtime-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>drl-engine-compilation-common</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>drl-engine-map-input-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- KIE -->
+    <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

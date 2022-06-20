@@ -11,7 +11,7 @@
 
   <artifactId>pmml-engine-runtime-core</artifactId>
 
-  <name>PMML :: ENGINE :: Runtime :: Core</name>
+  <name>Efesto :: PMML :: ENGINE :: Runtime :: Core</name>
   <description>PMML Runtime Core</description>
 
   <dependencyManagement>
