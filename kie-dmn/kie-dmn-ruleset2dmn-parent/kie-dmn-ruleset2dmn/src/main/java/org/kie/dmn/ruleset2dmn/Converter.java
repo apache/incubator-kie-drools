@@ -18,6 +18,7 @@ package org.kie.dmn.ruleset2dmn;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -293,7 +294,7 @@ public class Converter {
             String text = feelUTofOp(p0.getOperator()) + feelLiteralValue(p0.getValue(), df);
             ut.setText(text);
         } else if (predicatesForInput.size() == 2) {
-            List<SimplePredicate> sortedList = predicatesForInput.stream().sorted(new OperatorComparator()).collect(Collectors.toList());
+            List<SimplePredicate> sortedList = predicatesForInput.stream().sorted(Comparator.comparing(o -> o.getOperator().name())).collect(Collectors.toList());
             SimplePredicate p0 = sortedList.get(0);
             SimplePredicate p1 = sortedList.get(1);
             StringBuilder sb = new StringBuilder();
