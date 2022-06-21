@@ -23,9 +23,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.accessor.ReadAccessor;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FactTemplateFieldExtractorTest {
     @Test
@@ -44,31 +42,31 @@ public class FactTemplateFieldExtractorTest {
         stilton.set( "name", "stilton" );
         stilton.set( "price", 200 );
 
-        assertEquals( "stilton", extractName.getValue( null, stilton ) );
+        assertThat(extractName.getValue(null, stilton)).isEqualTo("stilton");
 
-        assertEquals( 200, extractPrice.getValue( null, stilton ) );
+        assertThat(extractPrice.getValue(null, stilton)).isEqualTo(200);
 
-        assertFalse( extractName.isNullValue( null, stilton ) );
+        assertThat(extractName.isNullValue(null, stilton)).isFalse();
         
         stilton.set( "name", null );
-        
-        assertTrue( extractName.isNullValue( null, stilton ) );
-        assertFalse( extractPrice.isNullValue( null, stilton ) );
+
+        assertThat(extractName.isNullValue(null, stilton)).isTrue();
+        assertThat(extractPrice.isNullValue(null, stilton)).isFalse();
         
         final Fact brie = cheese.createFact();
         brie.set( "name", "brie" );
         brie.set( "price", 55 );
 
-        assertEquals( "brie", extractName.getValue( null, brie ) );
+        assertThat(extractName.getValue(null, brie)).isEqualTo("brie");
 
-        assertEquals( 55, extractPrice.getValue( null, brie ) );
-        
-        assertFalse( extractName.isNullValue( null, brie ) );
+        assertThat(extractPrice.getValue(null, brie)).isEqualTo(55);
+
+        assertThat(extractName.isNullValue(null, brie)).isFalse();
         
         brie.set( "name", null );
-        
-        assertTrue( extractName.isNullValue( null, brie ) );
-        assertFalse( extractPrice.isNullValue( null, stilton ) );
+
+        assertThat(extractName.isNullValue(null, brie)).isTrue();
+        assertThat(extractPrice.isNullValue(null, stilton)).isFalse();
     }
 
     @Test
@@ -96,7 +94,6 @@ public class FactTemplateFieldExtractorTest {
         brie.set( "price", 55 );
 
         // Check we can extract Declarations correctly 
-        assertEquals( "brie",
-                      declaration.getValue( null, brie ) );
+        assertThat(declaration.getValue(null, brie)).isEqualTo("brie");
     }
 }
