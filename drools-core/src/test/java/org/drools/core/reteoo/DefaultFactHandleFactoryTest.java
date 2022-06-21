@@ -17,8 +17,8 @@
 package org.drools.core.reteoo;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.core.common.DefaultFactHandle;
 
 public class DefaultFactHandleFactoryTest {
@@ -30,36 +30,27 @@ public class DefaultFactHandleFactoryTest {
     public void testNewFactHandle() {
         final ReteooFactHandleFactory factory = new ReteooFactHandleFactory();
         DefaultFactHandle handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
-        assertEquals( 1,
-                      handle.getId() );
-        assertEquals( 1,
-                      handle.getRecency() );
+        assertThat(handle.getId()).isEqualTo(1);
+        assertThat(handle.getRecency()).isEqualTo(1);
 
         // issue  new handle
         handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
-        assertEquals( 2,
-                      handle.getId() );
-        assertEquals( 2,
-                      handle.getRecency() );
+        assertThat(handle.getId()).isEqualTo(2);
+        assertThat(handle.getRecency()).isEqualTo(2);
 
         // issue  new handle, under a different reference so we  can destroy later        
         final DefaultFactHandle handle2 = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
-        assertEquals( 3,
-                      handle2.getId() );
-        assertEquals( 3,
-                      handle2.getRecency() );
+        assertThat(handle2.getId()).isEqualTo(3);
+        assertThat(handle2.getRecency()).isEqualTo(3);
 
         // Check recency increasion works
         factory.increaseFactHandleRecency( handle );
-        assertEquals( 4,
-                      handle.getRecency() );
+        assertThat(handle.getRecency()).isEqualTo(4);
 
         // issue new handle and make sure  recency is still inline
         handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
-        assertEquals( 4,
-                      handle.getId() );
-        assertEquals( 5,
-                      handle.getRecency() );
+        assertThat(handle.getId()).isEqualTo(4);
+        assertThat(handle.getRecency()).isEqualTo(5);
 
         // destroy handle
         factory.destroyFactHandle( handle2 );

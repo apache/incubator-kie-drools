@@ -25,8 +25,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IndexedHashtableIteratorTest {
 
@@ -64,7 +63,7 @@ public class IndexedHashtableIteratorTest {
         TupleIndexHashTable.FullFastIterator iter = new TupleIndexHashTable.FullFastIterator( table );
         List<RightTuple> list = new ArrayList<RightTuple>();
         for ( RightTuple rightTuple = (RightTuple) iter.next( null ); rightTuple != null; rightTuple = (RightTuple) iter.next( rightTuple ) ) {
-            assertFalse( contains( list, rightTuple ) ); // ensure no duplicate
+            assertThat(contains(list, rightTuple)).isFalse(); // ensure no duplicate
             list.add( rightTuple );
         }
         
@@ -74,11 +73,11 @@ public class IndexedHashtableIteratorTest {
         TupleIndexHashTable.FieldIndexHashTableFullIterator iter2 = new TupleIndexHashTable.FieldIndexHashTableFullIterator( rthTable );
         list = new ArrayList<RightTuple>();
         for ( RightTuple rightTuple = (RightTuple) iter2.next( ); rightTuple != null; rightTuple = (RightTuple) iter2.next( ) ) {
-            assertFalse( contains( list, rightTuple ) ); // ensure no duplicate
+            assertThat(contains(list, rightTuple)).isFalse(); // ensure no duplicate
             list.add( rightTuple );
         }
-        
-        assertEquals( numEntries * 3, list.size() );
+
+        assertThat(list).hasSize(numEntries * 3);
     }
 
     @Test
@@ -115,11 +114,11 @@ public class IndexedHashtableIteratorTest {
         TupleIndexHashTable.FullFastIterator iter = new TupleIndexHashTable.FullFastIterator( table );
         List<LeftTupleImpl> list = new ArrayList<LeftTupleImpl>();
         for ( LeftTupleImpl leftTuple = (LeftTupleImpl) iter.next( null ); leftTuple != null; leftTuple = (LeftTupleImpl) iter.next( leftTuple ) ) {
-            assertFalse( contains( list, leftTuple ) ); // ensure no duplicate
+            assertThat(contains(list, leftTuple)).isFalse(); // ensure no duplicate
             list.add( leftTuple );
         }
 
-        assertEquals( numEntries * 3, list.size() );
+        assertThat(list).hasSize(numEntries * 3);
         
         // test normal
         TupleIndexHashTable lthTable = new TupleIndexHashTable();
@@ -127,11 +126,11 @@ public class IndexedHashtableIteratorTest {
         TupleIndexHashTable.FieldIndexHashTableFullIterator iter2 = new TupleIndexHashTable.FieldIndexHashTableFullIterator( lthTable );
         list = new ArrayList<LeftTupleImpl>();
         for ( LeftTupleImpl leftTuple = (LeftTupleImpl) iter2.next( ); leftTuple != null; leftTuple = (LeftTupleImpl) iter2.next( ) ) {
-            assertFalse( contains( list, leftTuple ) ); // ensure no duplicate
+            assertThat(contains(list, leftTuple)).isFalse(); // ensure no duplicate
             list.add( leftTuple );
         }
-        
-        assertEquals( numEntries * 3, list.size() );        
+
+        assertThat(list).hasSize(numEntries * 3);        
     }
     
     public static boolean contains(List list,

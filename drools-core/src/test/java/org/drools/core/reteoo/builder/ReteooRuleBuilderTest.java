@@ -35,7 +35,7 @@ import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReteooRuleBuilderTest {
     private ReteooRuleBuilder builder;
@@ -90,9 +90,7 @@ public class ReteooRuleBuilderTest {
 
         final List terminals = this.builder.addRule( rule, this.rulebase, Collections.emptyList() );
 
-        assertEquals( "Rule must have a single terminal node",
-                             1,
-                             terminals.size() );
+        assertThat(terminals.size()).as("Rule must have a single terminal node").isEqualTo(1);
 
         final RuleTerminalNode terminal = (RuleTerminalNode) terminals.get( 0 );
 

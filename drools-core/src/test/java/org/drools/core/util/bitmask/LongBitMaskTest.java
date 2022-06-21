@@ -15,12 +15,13 @@
 
 package org.drools.core.util.bitmask;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.lang.Long;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LongBitMaskTest {
 
@@ -28,48 +29,36 @@ public class LongBitMaskTest {
 
   @Test
   public void testSet() {
-    Assert.assertEquals("1", new LongBitMask().set(0).toString());
-    Assert.assertEquals("2", new LongBitMask().set(1).toString());
-    Assert.assertEquals("0, 2", new LongBitMask().set(65).toString());
+      assertThat(new LongBitMask().set(0).toString()).isEqualTo("1");
+      assertThat(new LongBitMask().set(1).toString()).isEqualTo("2");
+      assertThat(new LongBitMask().set(65).toString()).isEqualTo("0, 2");
   }
 
   @Test
   public void testSetAll() {
-      Assert.assertEquals("0",
-          new LongBitMask().setAll(new LongBitMask()).toString());
-      Assert.assertEquals("-1",
-          new LongBitMask().setAll(AllSetBitMask.get()).toString());
-      Assert.assertEquals("9223372036854775807",
-          new LongBitMask().setAll(AllSetButLastBitMask.get()).toString());
-      Assert.assertEquals("-1",
-          new LongBitMask(1).setAll(AllSetButLastBitMask.get()).toString());
-      Assert.assertEquals("0",
-          new LongBitMask().setAll(new OpenBitSet()).toString());
-      Assert.assertEquals("1",
-          new LongBitMask().setAll(EmptyButLastBitMask.get()).toString());
-      Assert.assertEquals("0",
-          new LongBitMask().setAll(EmptyBitMask.get()).toString());
+      assertThat(new LongBitMask().setAll(new LongBitMask()).toString()).isEqualTo("0");
+      assertThat(new LongBitMask().setAll(AllSetBitMask.get()).toString()).isEqualTo("-1");
+      assertThat(new LongBitMask().setAll(AllSetButLastBitMask.get()).toString()).isEqualTo("9223372036854775807");
+      assertThat(new LongBitMask(1).setAll(AllSetButLastBitMask.get()).toString()).isEqualTo("-1");
+      assertThat(new LongBitMask().setAll(new OpenBitSet()).toString()).isEqualTo("0");
+      assertThat(new LongBitMask().setAll(EmptyButLastBitMask.get()).toString()).isEqualTo("1");
+      assertThat(new LongBitMask().setAll(EmptyBitMask.get()).toString()).isEqualTo("0");
   }
 
   @Test
   public void testReset() {
-    Assert.assertEquals("0", new LongBitMask().reset(0).toString());
-    Assert.assertEquals("0", new LongBitMask().reset(1).toString());
-    Assert.assertEquals("0", new LongBitMask().reset(65).toString());
+      assertThat(new LongBitMask().reset(0).toString()).isEqualTo("0");
+      assertThat(new LongBitMask().reset(1).toString()).isEqualTo("0");
+      assertThat(new LongBitMask().reset(65).toString()).isEqualTo("0");
   }
 
   @Test
   public void testResetAll() {
-      Assert.assertEquals("0",
-          new LongBitMask().resetAll(new LongBitMask()).toString());
-      Assert.assertEquals("0",
-          new LongBitMask().resetAll(AllSetBitMask.get()).toString());
-      Assert.assertEquals("0",
-          new LongBitMask().resetAll(AllSetButLastBitMask.get()).toString());
-      Assert.assertEquals("0",
-          new LongBitMask().resetAll(EmptyButLastBitMask.get()).toString());
-      Assert.assertEquals("0",
-          new LongBitMask().resetAll(EmptyBitMask.get()).toString());
+      assertThat(new LongBitMask().resetAll(new LongBitMask()).toString()).isEqualTo("0");
+      assertThat(new LongBitMask().resetAll(AllSetBitMask.get()).toString()).isEqualTo("0");
+      assertThat(new LongBitMask().resetAll(AllSetButLastBitMask.get()).toString()).isEqualTo("0");
+      assertThat(new LongBitMask().resetAll(EmptyButLastBitMask.get()).toString()).isEqualTo("0");
+      assertThat(new LongBitMask().resetAll(EmptyBitMask.get()).toString()).isEqualTo("0");
       
       thrown.expect(RuntimeException.class);
       new LongBitMask().resetAll(new OpenBitSet()).toString();
@@ -77,50 +66,40 @@ public class LongBitMaskTest {
 
   @Test
   public void testIsSet() {
-    Assert.assertFalse(new LongBitMask().set(1).isSet(0));
-    Assert.assertTrue(new LongBitMask().set(1).isSet(1));
+      assertThat(new LongBitMask().set(1).isSet(0)).isFalse();
+      assertThat(new LongBitMask().set(1).isSet(1)).isTrue();
   }
 
   @Test
   public void testIsAllSet() {
-    Assert.assertFalse(new LongBitMask().isAllSet());
-    Assert.assertTrue(new LongBitMask(-1L).isAllSet());
+      assertThat(new LongBitMask().isAllSet()).isFalse();
+      assertThat(new LongBitMask(-1L).isAllSet()).isTrue();
   }
 
   @Test
   public void testIsEmpty() {
-    Assert.assertFalse(new LongBitMask(1L).isEmpty());
-    Assert.assertTrue(new LongBitMask(0L).isEmpty());
+      assertThat(new LongBitMask(1L).isEmpty()).isFalse();
+      assertThat(new LongBitMask(0L).isEmpty()).isTrue();
   }
 
   @Test
   public void testIntersects() {
-    Assert.assertFalse(new LongBitMask(0L).intersects(EmptyBitMask.get()));
-    Assert.assertFalse(new LongBitMask(0L).intersects(new LongBitMask(0L)));
-    Assert.assertTrue(new LongBitMask(2L).intersects(new LongBitMask(2L)));
+      assertThat(new LongBitMask(0L).intersects(EmptyBitMask.get())).isFalse();
+      assertThat(new LongBitMask(0L).intersects(new LongBitMask(0L))).isFalse();
+      assertThat(new LongBitMask(2L).intersects(new LongBitMask(2L))).isTrue();
   }
 
   @Test
   public void testClone() {
-    Assert.assertEquals(1L, new LongBitMask(1L).clone().asLong());
+      assertThat(new LongBitMask(1L).clone().asLong()).isEqualTo(1L);
   }
 
   @Test
   public void testGetInstancingStatement() {
-    Assert.assertEquals(
-        "org.drools.core.util.bitmask.EmptyBitMask.get()",
-        new LongBitMask(0L).getInstancingStatement());
-    Assert.assertEquals(
-        "org.drools.core.util.bitmask.EmptyButLastBitMask.get()",
-        new LongBitMask(1L).getInstancingStatement());
-      Assert.assertEquals(
-        "org.drools.core.util.bitmask.AllSetButLastBitMask.get()",
-        new LongBitMask(Long.MAX_VALUE).getInstancingStatement());
-    Assert.assertEquals(
-        "org.drools.core.util.bitmask.AllSetBitMask.get()",
-        new LongBitMask(-1L).getInstancingStatement());
-    Assert.assertEquals(
-        "new org.drools.core.util.bitmask.LongBitMask(2L)",
-        new LongBitMask(2L).getInstancingStatement());
+      assertThat(new LongBitMask(0L).getInstancingStatement()).isEqualTo("org.drools.core.util.bitmask.EmptyBitMask.get()");
+      assertThat(new LongBitMask(1L).getInstancingStatement()).isEqualTo("org.drools.core.util.bitmask.EmptyButLastBitMask.get()");
+      assertThat(new LongBitMask(Long.MAX_VALUE).getInstancingStatement()).isEqualTo("org.drools.core.util.bitmask.AllSetButLastBitMask.get()");
+      assertThat(new LongBitMask(-1L).getInstancingStatement()).isEqualTo("org.drools.core.util.bitmask.AllSetBitMask.get()");
+      assertThat(new LongBitMask(2L).getInstancingStatement()).isEqualTo("new org.drools.core.util.bitmask.LongBitMask(2L)");
   }
 }

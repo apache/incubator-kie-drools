@@ -27,17 +27,14 @@ import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
-
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class KeyStoreHelperTest {
 
@@ -86,14 +83,14 @@ public class KeyStoreHelperTest {
         final KeyStoreHelper clientHelper = new KeyStoreHelper( );
 
         // check the signature against the data
-        assertTrue( clientHelper.checkDataWithPublicKey( KEY_ALIAS,
-                                                         data,
-                                                         signature ) );
+        assertThat(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
+                data,
+                signature)).isTrue();
 
         // check some fake data
-        assertFalse( clientHelper.checkDataWithPublicKey( KEY_ALIAS,
-                                                          "fake".getBytes( "UTF8" ), 
-                                                          signature ) );
+        assertThat(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
+                "fake".getBytes("UTF8"),
+                signature)).isFalse();
     }
 
     @Test
@@ -101,9 +98,9 @@ public class KeyStoreHelperTest {
         final KeyStoreHelper serverHelper = new KeyStoreHelper();
         try {
             serverHelper.getPasswordKey(null, null);
-            fail();
+            fail("Should have failed before");
         } catch (final RuntimeException re) {
-            assertTrue(true);
+            assertThat(true).isTrue();
         }
     }
 
@@ -120,7 +117,7 @@ public class KeyStoreHelperTest {
             final KeyStoreHelper serverHelper = new KeyStoreHelper();
 
             final String passwordKey = serverHelper.getPasswordKey(KEY_ALIAS, KEY_PASSWORD.toCharArray());
-            assertEquals(new String(storedSecretKey.getEncoded()), passwordKey);
+            assertThat(passwordKey).isEqualTo(new String(storedSecretKey.getEncoded()));
         } catch (final RuntimeException re) {
             re.printStackTrace();
             fail(re.getMessage());
@@ -176,14 +173,14 @@ public class KeyStoreHelperTest {
             final KeyStoreHelper clientHelper = new KeyStoreHelper();
 
             // check the signature against the data
-            assertTrue(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
+            assertThat(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
                                                            data,
-                                                           signature));
+                                                           signature)).isTrue();
 
             // check some fake data
-            assertFalse(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
+            assertThat(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
                                                             "fake".getBytes("UTF8"),
-                                                            signature));
+                                                            signature)).isFalse();
         } finally {
             System.clearProperty(KeyStoreConstants.PROP_VERIFY_OLD_SIGN);
         }

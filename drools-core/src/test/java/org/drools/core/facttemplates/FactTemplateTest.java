@@ -20,11 +20,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FactTemplateTest {
     @Test
@@ -37,23 +33,16 @@ public class FactTemplateTest {
                                                           "Cheese",
                                                           fields );
 
-        assertEquals( "org.store",
-                      cheese.getPackage().getName() );
-        assertEquals( "Cheese",
-                      cheese.getName() );
+        assertThat(cheese.getPackage().getName()).isEqualTo("org.store");
+        assertThat(cheese.getName()).isEqualTo("Cheese");
 
-        assertEquals( 2,
-                      cheese.getNumberOfFields() );
+        assertThat(cheese.getNumberOfFields()).isEqualTo(2);
 
-        assertSame( cheeseName,
-                    cheese.getFieldTemplate( "name" ) );
-        assertSame( cheesePrice,
-                    cheese.getFieldTemplate( "price" ) );
+        assertThat(cheese.getFieldTemplate("name")).isSameAs(cheeseName);
+        assertThat(cheese.getFieldTemplate("price")).isSameAs(cheesePrice);
 
-        assertEquals( 0,
-                      cheese.getFieldTemplateIndex( "name" ) );
-        assertEquals( 1,
-                      cheese.getFieldTemplateIndex( "price" ) );
+        assertThat(cheese.getFieldTemplateIndex("name")).isEqualTo(0);
+        assertThat(cheese.getFieldTemplateIndex("price")).isEqualTo(1);
     }
 
     @Test
@@ -75,12 +64,9 @@ public class FactTemplateTest {
                                                            "Cheese",
                                                            fields2 );
 
-        assertNotSame( cheese1,
-                       cheese2 );
-
-        assertFalse( cheese1.equals( cheese2 ) );
-
-        assertFalse( cheese1.hashCode() == cheese2.hashCode() );
+        assertThat(cheese1).isNotSameAs(cheese2);
+        assertThat(cheese1).isNotEqualTo(cheese2);
+        assertThat(cheese1).doesNotHaveSameHashCodeAs(cheese2);
 
         // create cheese3 with name and price fields, using new instances
         final FieldTemplate cheeseName2 = new FieldTemplateImpl( "name", String.class );
@@ -90,12 +76,9 @@ public class FactTemplateTest {
                                                            "Cheese",
                                                            fields3 );
 
-        assertNotSame( cheese1,
-                       cheese3 );
-        assertEquals( cheese1,
-                      cheese3 );
-        assertEquals( cheese1.hashCode(),
-                      cheese3.hashCode() );
+        assertThat(cheese1).isNotSameAs(cheese3);
+        assertThat(cheese3).isEqualTo(cheese1);
+        assertThat(cheese3).hasSameHashCodeAs(cheese1);
     }
 
     @Test
@@ -116,17 +99,15 @@ public class FactTemplateTest {
         stilton2.set( "name", "stilton" );
         stilton2.set( "price",  200 );
 
-        assertEquals( stilton1,
-                      stilton2 );
-        assertEquals( stilton1.hashCode(),
-                      stilton2.hashCode() );
+        assertThat(stilton2).isEqualTo(stilton1);
+        assertThat(stilton2.hashCode()).isEqualTo(stilton1.hashCode());
 
         final Fact brie = cheese1.createFact();
         brie.set( "name", "brie" );
         brie.set( "price", 55 );
 
-        assertFalse( stilton1.equals( brie ) );
-        assertFalse( stilton1.hashCode() == brie.hashCode() );
+        assertThat(stilton1).isNotEqualTo(brie);
+        assertThat(stilton1).doesNotHaveSameHashCodeAs(brie);
 
     }
 }
