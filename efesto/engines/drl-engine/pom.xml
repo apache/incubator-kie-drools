@@ -35,12 +35,6 @@
         <groupId>org.kie</groupId>
         <version>${project.version}</version>
       </dependency>
-      <!--            <dependency>-->
-      <!--                <artifactId>drl-engine-compilation-common</artifactId>-->
-      <!--                <groupId>org.kie</groupId>-->
-      <!--                <version>${project.version}</version>-->
-      <!--                <scope>test</scope>-->
-      <!--            </dependency>-->
       <dependency>
         <artifactId>drl-engine-runtime-common</artifactId>
         <groupId>org.kie</groupId>
