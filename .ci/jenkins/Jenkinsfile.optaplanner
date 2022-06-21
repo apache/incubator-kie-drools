@@ -84,6 +84,9 @@ pipeline {
                         .withProperty('maven.test.failure.ignore', true)
                         .withProperty('version.org.optaplanner', env.OPTAPLANNER_VERSION)
                         .withProperty('optaplanner') // Use specific profile https://github.com/kiegroup/kogito-apps/blob/48a5c8f9a905a2c17b9d0e01cee744902a4824f0/pom.xml#L63
+                        // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
+                        // https://github.com/quarkusio/quarkus/issues/23205
+                        .withProperty('quarkus.bootstrap.effective-model-builder', true)
                         .run('clean install')
                 }
             }
