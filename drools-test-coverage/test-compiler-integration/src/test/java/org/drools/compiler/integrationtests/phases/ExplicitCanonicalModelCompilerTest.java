@@ -15,23 +15,23 @@
 
 package org.drools.compiler.integrationtests.phases;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
-import org.drools.modelcompiler.builder.GeneratedFile;
-import org.drools.modelcompiler.builder.PackageSources;
-import org.drools.modelcompiler.tool.ExplicitCanonicalModelCompiler;
+import org.drools.model.codegen.execmodel.GeneratedFile;
+import org.drools.model.codegen.execmodel.PackageSources;
+import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
 import org.drools.util.io.ClassPathResource;
 import org.junit.Test;
 import org.kie.api.io.Resource;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;

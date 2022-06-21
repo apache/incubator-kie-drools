@@ -42,7 +42,7 @@ import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.dumpFilesToDisk;
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.getHotReloadSupportSource;
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.registerResources;
-import static org.drools.model.project.codegen.RuleCodegen.ofResources;
+import static org.drools.model.codegen.project.RuleCodegen.ofResources;
 
 public class DroolsAssetsProcessor {
 

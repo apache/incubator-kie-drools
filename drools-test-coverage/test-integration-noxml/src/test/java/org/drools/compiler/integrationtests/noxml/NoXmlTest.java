@@ -1,6 +1,6 @@
 package org.drools.compiler.integrationtests.noxml;
 
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;

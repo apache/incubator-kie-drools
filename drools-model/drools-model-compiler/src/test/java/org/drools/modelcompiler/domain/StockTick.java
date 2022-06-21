@@ -29,11 +29,11 @@ public class StockTick extends StockFact {
     private long timeField;
     private Calendar dueDate;
 
-    public StockTick( String company ) {
+    public StockTick(String company ) {
         super( company );
     }
 
-    public StockTick( String company, long duration ) {
+    public StockTick(String company, long duration ) {
         super( company, duration );
     }
 

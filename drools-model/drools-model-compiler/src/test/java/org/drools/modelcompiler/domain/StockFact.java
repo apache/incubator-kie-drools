@@ -20,11 +20,11 @@ public class StockFact {
     private final String company;
     private final long duration;
 
-    public StockFact( String company ) {
+    public StockFact(String company ) {
         this( company, 0 );
     }
 
-    public StockFact( String company, long duration ) {
+    public StockFact(String company, long duration ) {
         this.company = company;
         this.duration = duration;
     }

@@ -23,15 +23,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-import org.apache.commons.math3.util.Pair;
 import org.drools.core.ClockType;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Pattern;
-import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.model.DSL;
 import org.drools.model.Global;
@@ -42,14 +42,14 @@ import org.drools.model.Query;
 import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
+import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.impl.ModelImpl;
 import org.drools.model.view.ViewItem;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
+import org.drools.modelcompiler.domain.Pair;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Relationship;
 import org.drools.modelcompiler.domain.Result;
@@ -57,6 +57,7 @@ import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.drools.modelcompiler.dsl.pattern.D;
+import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -90,7 +91,6 @@ import static org.drools.model.PatternDSL.query;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.model.PatternDSL.when;
-import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -430,14 +430,14 @@ public class PatternDSLTest {
                 queryDef_isRelatedTo.getArg1(),
                 queryDef_isRelatedTo.getArg2()));
 
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Relationship> var_$pattern_Relationship$4$ = declarationOf(org.drools.modelcompiler.domain.Relationship.class,
+        final org.drools.model.Variable<Relationship> var_$pattern_Relationship$4$ = declarationOf(Relationship.class,
                 "$pattern_Relationship$4$");
 
         org.drools.model.Query isRelatedTo2_build = queryDef_isRelatedTo2.build(
                 pattern(var_$pattern_Relationship$4$)
                 .expr("$expr$63$",
                         queryDef_isRelatedTo2.getArg1(),
-                        (_this, x) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getStart(),
+                        (_this, x) -> EvaluationUtil.areNullSafeEquals(_this.getStart(),
                                 x),
                         betaIndexedBy(java.lang.String.class,
                                 org.drools.model.Index.ConstraintType.EQUAL,
@@ -447,7 +447,7 @@ public class PatternDSLTest {
                         reactOn("start"))
                 .expr("$expr$64$",
                         queryDef_isRelatedTo2.getArg2(),
-                        (_this, y) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getEnd(),
+                        (_this, y) -> EvaluationUtil.areNullSafeEquals(_this.getEnd(),
                                 y),
                         betaIndexedBy(java.lang.String.class,
                                 org.drools.model.Index.ConstraintType.EQUAL,
@@ -479,11 +479,11 @@ public class PatternDSLTest {
         Rule rule = rule("R").build(
                 pattern(var_$a)
                         .expr("$expr$1$",
-                                (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "DROO"),
+                                (_this) -> EvaluationUtil.areNullSafeEquals(_this.getCompany(), "DROO"),
                                 alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "DROO"),
                                 reactOn("company")),
                 pattern(var_$b)
-                        .expr("$expr$2$", (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
+                        .expr("$expr$2$", (_this) -> EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
                                 alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "ACME"),
                                 reactOn("company"))
                         .expr("$expr$3$",
@@ -639,7 +639,7 @@ public class PatternDSLTest {
 
     @Test
     public void testAccumulateConstrainingValue() {
-        Variable<org.drools.modelcompiler.domain.Person> var_$p = declarationOf(org.drools.modelcompiler.domain.Person.class, "$p");
+        Variable<Person> var_$p = declarationOf(Person.class, "$p");
         Variable<Integer> var_$expr$5$ = declarationOf(Integer.class, "$expr$5$");
         Variable<java.lang.Integer> var_$sum = declarationOf(java.lang.Integer.class, "$sum");
 
@@ -678,9 +678,9 @@ public class PatternDSLTest {
                 "org.drools.compiler.test",
                 "list");
 
-        org.drools.model.Query3Def<org.drools.modelcompiler.domain.Person, java.lang.String, Integer> queryDef_peeps = query("org.drools.compiler.test",
+        org.drools.model.Query3Def<Person, java.lang.String, Integer> queryDef_peeps = query("org.drools.compiler.test",
                 "peeps",
-                org.drools.modelcompiler.domain.Person.class,
+                Person.class,
                 "$p",
                 java.lang.String.class,
                 "$name",
@@ -691,14 +691,14 @@ public class PatternDSLTest {
 
         final org.drools.model.Variable<java.lang.String> var_$n1 = D.declarationOf(java.lang.String.class,
                 "$n1");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$pattern_Person$2$ = D.declarationOf(org.drools.modelcompiler.domain.Person.class,
+        final org.drools.model.Variable<Person> var_$pattern_Person$2$ = D.declarationOf(Person.class,
                 "$pattern_Person$2$");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = D.declarationOf(org.drools.modelcompiler.domain.Person.class,
+        final org.drools.model.Variable<Person> var_$p = D.declarationOf(Person.class,
                 "$p");
         org.drools.model.Rule rule = D.rule("org.drools.compiler.test",
                 "x1").build(D.pattern(var_$n1),
                 D.not(D.pattern(var_$pattern_Person$2$).expr("$expr$2$",
-                        (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(),
+                        (_this) -> EvaluationUtil.areNullSafeEquals(_this.getName(),
                                 "darth"),
                         D.alphaIndexedBy(java.lang.String.class,
                                 org.drools.model.Index.ConstraintType.EQUAL,
@@ -827,11 +827,11 @@ public class PatternDSLTest {
         Rule rule = rule("R").build(
                 pattern(var_$a)
                         .expr("$expr$1$",
-                                (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "DROO"),
+                                (_this) -> EvaluationUtil.areNullSafeEquals(_this.getCompany(), "DROO"),
                                 alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "DROO"),
                                 reactOn("company")),
                 pattern(var_$b)
-                        .expr("$expr$2$", (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
+                        .expr("$expr$2$", (_this) -> EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
                                 alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "ACME"),
                                 reactOn("company"))
                         .expr("$expr$3$",
@@ -871,7 +871,7 @@ public class PatternDSLTest {
 
         Rule rule = rule("R").build(
                 pattern(var_$a).expr("$expr$3$",
-                (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "DROO"),
+                (_this) -> EvaluationUtil.areNullSafeEquals(_this.getCompany(), "DROO"),
                 alphaIndexedBy(java.lang.String.class,
                         org.drools.model.Index.ConstraintType.EQUAL,
                         0,
@@ -879,7 +879,7 @@ public class PatternDSLTest {
                         "DROO"),
                 reactOn("company")),
                 pattern(var_$b).and().expr("$expr$5$",
-                        (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
+                        (_this) -> EvaluationUtil.areNullSafeEquals(_this.getCompany(), "ACME"),
                         alphaIndexedBy(java.lang.String.class,
                                 org.drools.model.Index.ConstraintType.EQUAL,
                                 0,
@@ -967,7 +967,7 @@ public class PatternDSLTest {
                 D.pattern(var_$p).expr("8EF302358D7EE770A4D874DF4B3327D2",
                         var_$l,
                         var_$i,
-                        (_this, $l, $i) -> org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals(_this.getAge(), $l + $i),
+                        (_this, $l, $i) -> EvaluationUtil.areNumbersNullSafeEquals(_this.getAge(), $l + $i),
                         D.betaIndexedBy(int.class, Index.ConstraintType.EQUAL, 3, Person::getAge, ($l, $i) -> $l + $i, int.class),
                         D.reactOn("age")),
                 D.execute(() -> { })
@@ -1131,5 +1131,9 @@ public class PatternDSLTest {
         ksession.insert( new Person( "Mark", 42 ) );
 
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    public static <T> List<T> getObjectsIntoList(KieSession ksession, Class<T> clazz) {
+        return (List<T>) ksession.getObjects(new ClassObjectFilter(clazz)).stream().collect(Collectors.toList());
     }
 }

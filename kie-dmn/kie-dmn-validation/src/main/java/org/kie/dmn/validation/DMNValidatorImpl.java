@@ -16,12 +16,6 @@
 
 package org.kie.dmn.validation;
 
-import static java.util.stream.Collectors.toList;
-import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +33,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
@@ -48,11 +41,11 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.modelcompiler.KieBaseBuilder;
 import org.drools.util.io.BaseResource;
 import org.drools.util.io.FileSystemResource;
 import org.drools.util.io.ReaderResource;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.StatelessKieSession;
@@ -87,6 +80,12 @@ import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import static java.util.stream.Collectors.toList;
+import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
 public class DMNValidatorImpl implements DMNValidator {
     public static final Logger LOG = LoggerFactory.getLogger(DMNValidatorImpl.class);

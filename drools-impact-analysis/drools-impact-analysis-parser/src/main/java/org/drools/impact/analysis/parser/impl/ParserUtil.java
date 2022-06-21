@@ -32,11 +32,11 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
+import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.getClassFromType;
 
 public class ParserUtil {
 
