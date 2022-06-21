@@ -17,28 +17,20 @@
 package org.kie.dmn.core;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
-import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.core.BaseVariantTest.VariantTestConf;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class DMNDecisionTableHitPolicyNoExecModelTest extends BaseVariantNonTypeSafeTest {
 
@@ -73,11 +65,7 @@ public class DMNDecisionTableHitPolicyNoExecModelTest extends BaseVariantNonType
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.hasErrors()).isFalse();
-
-        final DMNContext result = dmnResult.getContext();
-        assertThat((result.getAll())).containsKeys("First Decision Table");
-        final Map<String, Object> decisionTable = (Map<String, Object>) result.get("First Decision Table");
-
-        assertThat(decisionTable).containsEntry("nn abs", null);
+        assertThat(dmnResult.getDecisionResultByName("First Decision Table").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
+        assertThat(dmnResult.getDecisionResultByName("First Decision Table").getResult()).asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class)).containsEntry("nn abs", null);
     }
 }

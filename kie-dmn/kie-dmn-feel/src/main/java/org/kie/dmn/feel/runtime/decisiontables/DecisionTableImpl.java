@@ -17,13 +17,11 @@
 package org.kie.dmn.feel.runtime.decisiontables;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -301,17 +299,8 @@ public class DecisionTableImpl implements DecisionTable {
 
     private List<Object> evaluateResults(EvaluationContext ctx, FEEL feel, Object[] params, List<DTDecisionRule> matchingDecisionRules) {
     	Stream<Object> s = matchingDecisionRules.stream().map( dr -> hitToOutput( ctx, feel, dr ) );
-
-        if (hitPolicy == HitPolicy.FIRST) {
-            Optional<Optional<Object>> first = s.map(Optional::ofNullable).findFirst();
-            if (first.isPresent()) {
-                return Arrays.asList(first.get().orElse(null));
-            } else {
-                return Collections.emptyList();
-            }
-        }
-
-        return s.collect(Collectors.toList());
+        List<Object> results = hitPolicy == HitPolicy.FIRST ? s.limit(1).collect(Collectors.toList()) : s.collect(Collectors.toList()); // as hitToOutput might return nulls, use .limit(1) instead of .findFirst()
+        return results;
     }
 
     /**
