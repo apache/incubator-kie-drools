@@ -19,8 +19,12 @@ package org.drools.core.facttemplates;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 
 public class FactTemplateTest {
     @Test
@@ -37,31 +41,16 @@ public class FactTemplateTest {
                                                           "Cheese",
                                                           fields );
 
-        assertEquals( "org.store",
-                      cheese.getPackage().getName() );
-        assertEquals( "Cheese",
-                      cheese.getName() );
+        assertThat(cheese.getPackage().getName()).isEqualTo("org.store");
+        assertThat(cheese.getName()).isEqualTo("Cheese");
 
-        assertEquals( 2,
-                      cheese.getNumberOfFields() );
+        assertThat(cheese.getNumberOfFields()).isEqualTo(2);
 
-        assertSame( fields,
-                    cheese.getAllFieldTemplates() );
+        assertThat(cheese.getFieldTemplate("name")).isSameAs(cheeseName);
+        assertThat(cheese.getFieldTemplate("price")).isSameAs(cheesePrice);
 
-        assertSame( cheeseName,
-                    cheese.getFieldTemplate( 0 ) );
-        assertSame( cheesePrice,
-                    cheese.getFieldTemplate( 1 ) );
-
-        assertSame( cheeseName,
-                    cheese.getFieldTemplate( "name" ) );
-        assertSame( cheesePrice,
-                    cheese.getFieldTemplate( "price" ) );
-
-        assertEquals( 0,
-                      cheese.getFieldTemplateIndex( "name" ) );
-        assertEquals( 1,
-                      cheese.getFieldTemplateIndex( "price" ) );
+        assertThat(cheese.getFieldTemplateIndex("name")).isEqualTo(0);
+        assertThat(cheese.getFieldTemplateIndex("price")).isEqualTo(1);
     }
 
     @Test
@@ -89,12 +78,9 @@ public class FactTemplateTest {
                                                            "Cheese",
                                                            fields2 );
 
-        assertNotSame( cheese1,
-                       cheese2 );
-
-        assertFalse( cheese1.equals( cheese2 ) );
-
-        assertFalse( cheese1.hashCode() == cheese2.hashCode() );
+        assertThat(cheese1).isNotSameAs(cheese2);
+        assertThat(cheese1).isNotEqualTo(cheese2);
+        assertThat(cheese1).doesNotHaveSameHashCodeAs(cheese2);
 
         // create cheese3 with name and price fields, using new instances
         final FieldTemplate cheeseName2 = new FieldTemplateImpl( "name",
@@ -108,14 +94,10 @@ public class FactTemplateTest {
                                                            "Cheese",
                                                            fields3 );
 
-        assertNotSame( cheese1,
-                       cheese3 );
-        assertNotSame( cheese1.getAllFieldTemplates(),
-                       cheese3.getAllFieldTemplates() );
-        assertEquals( cheese1,
-                      cheese3 );
-        assertEquals( cheese1.hashCode(),
-                      cheese3.hashCode() );
+
+        assertThat(cheese1).isNotSameAs(cheese3);
+        assertThat(cheese3).isEqualTo(cheese1);
+        assertThat(cheese3).hasSameHashCodeAs(cheese1);
     }
 
     @Test
@@ -144,10 +126,8 @@ public class FactTemplateTest {
         stilton2.setFieldValue( 1,
                                 new Integer( 200 ) );
 
-        assertEquals( stilton1,
-                      stilton2 );
-        assertEquals( stilton1.hashCode(),
-                      stilton2.hashCode() );
+        assertThat(stilton2).isEqualTo(stilton1);
+        assertThat(stilton2.hashCode()).isEqualTo(stilton1.hashCode());
 
         final Fact brie = cheese1.createFact( 12 );
         brie.setFieldValue( "name",
@@ -155,8 +135,8 @@ public class FactTemplateTest {
         brie.setFieldValue( "price",
                             new Integer( 55 ) );
 
-        assertFalse( stilton1.equals( brie ) );
-        assertFalse( stilton1.hashCode() == brie.hashCode() );
+        assertThat(stilton1).isNotEqualTo(brie);
+        assertThat(stilton1).doesNotHaveSameHashCodeAs(brie);
 
     }
 }

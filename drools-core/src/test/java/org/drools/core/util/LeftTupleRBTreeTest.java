@@ -20,9 +20,8 @@ import org.junit.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class LeftTupleRBTreeTest {
 
@@ -48,7 +47,7 @@ public class LeftTupleRBTreeTest {
             i++;
         }
 
-        assertEquals(ITEMS, i);
+        assertThat(i).isEqualTo(ITEMS);
     }
 
     @Test
@@ -63,35 +62,35 @@ public class LeftTupleRBTreeTest {
 
         FastIterator fastIterator = tree.range(2, true, 15, false);
         Node<Integer> node = (Node<Integer>) fastIterator.next(null);
-        assertEquals(5, (int) node.key);
+        assertThat((int) node.key).isEqualTo(5);
         node = (Node<Integer>) fastIterator.next(node);
-        assertEquals(10, (int) node.key);
+        assertThat((int) node.key).isEqualTo(10);
         node = (Node<Integer>) fastIterator.next(node);
-        assertNull(node);
+        assertThat(node).isNull();
 
         fastIterator = tree.range(2, true, 5, false);
         node = (Node<Integer>) fastIterator.next(null);
-        assertNull(node);
+        assertThat(node).isNull();
 
         fastIterator = tree.range(25, false, 35, true);
         node = (Node<Integer>) fastIterator.next(null);
-        assertNull(node);
+        assertThat(node).isNull();
 
         fastIterator = tree.range(6, false, 9, false);
         node = (Node<Integer>) fastIterator.next(null);
-        assertNull(node);
+        assertThat(node).isNull();
 
         fastIterator = tree.range(5, false, 35, false);
         node = (Node<Integer>) fastIterator.next(null);
-        assertEquals(10, (int) node.key);
+        assertThat((int) node.key).isEqualTo(10);
         node = (Node<Integer>) fastIterator.next(node);
-        assertEquals(15, (int) node.key);
+        assertThat((int) node.key).isEqualTo(15);
         node = (Node<Integer>) fastIterator.next(node);
-        assertEquals(20, (int) node.key);
+        assertThat((int) node.key).isEqualTo(20);
         node = (Node<Integer>) fastIterator.next(node);
-        assertEquals(25, (int) node.key);
+        assertThat((int) node.key).isEqualTo(25);
         node = (Node<Integer>) fastIterator.next(node);
-        assertNull(node);
+        assertThat(node).isNull();
 
     }
 }

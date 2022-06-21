@@ -21,21 +21,20 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
+import org.drools.core.WorkingMemory;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.Pattern;
-import org.drools.core.WorkingMemory;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReteooRuleBuilderTest {
     private ReteooRuleBuilder builder;
@@ -91,9 +90,7 @@ public class ReteooRuleBuilderTest {
         final List terminals = this.builder.addRule( rule,
                                                this.rulebase );
 
-        assertEquals( "Rule must have a single terminal node",
-                             1,
-                             terminals.size() );
+        assertThat(terminals.size()).as("Rule must have a single terminal node").isEqualTo(1);
 
         final RuleTerminalNode terminal = (RuleTerminalNode) terminals.get( 0 );
 

@@ -16,11 +16,12 @@
 
 package org.drools.core.reteoo;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class FactHandleTest {
     /*
@@ -30,10 +31,8 @@ public class FactHandleTest {
     public void testFactHandleImpllong() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 134,
                                                             "cheese" );
-        assertEquals( 134,
-                      f0.getId() );
-        assertEquals( 134,
-                      f0.getRecency() );
+        assertThat(f0.getId()).isEqualTo(134);
+        assertThat(f0.getRecency()).isEqualTo(134);
     }
 
     /*
@@ -63,36 +62,29 @@ public class FactHandleTest {
         final DefaultFactHandle f3 = new DefaultFactHandle( 96,
                                                             "cheese" );
 
-        assertFalse( "f0 should not equal f1",
-                     f0.equals( f1 ) );
-        assertEquals( f1,
-                      f3 );
-        assertNotSame( f1,
-                       f3 );
+        assertThat(f0).as("f0 should not equal f1").isNotEqualTo(f1);
+        assertThat(f3).isEqualTo(f1);
+        assertThat(f3).isNotSameAs(f1);
     }
 
     @Test
     public void testHashCode() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 234,
                                                             "cheese" );
-        assertEquals( "cheese".hashCode(),
-                      f0.getObjectHashCode() );
+        assertThat(f0.getObjectHashCode()).isEqualTo("cheese".hashCode());
 
-        assertEquals( 234,
-                      f0.hashCode() );
+        assertThat(f0).hasSameHashCodeAs(234);
     }
 
     @Test 
     public void testInvalidate() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 134,
                                                             "cheese" );
-        assertEquals( 134,
-                      f0.getId() );
+        assertThat(f0.getId()).isEqualTo(134);
 
         f0.invalidate();
         // invalidate no longer sets the id to -1
-        assertEquals( 134,
-                      f0.getId() );
+        assertThat(f0.getId()).isEqualTo(134);
     }
 
 }
