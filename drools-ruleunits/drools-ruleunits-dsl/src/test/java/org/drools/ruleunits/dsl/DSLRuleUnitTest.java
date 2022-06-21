@@ -89,4 +89,17 @@ public class DSLRuleUnitTest {
         assertEquals(1, unitInstance.fire());
         assertEquals("Found 'abc' and 'bcd'", unit.getResults().get(0));
     }
+
+    @Test
+    public void testAccumulate() {
+        AccumulateUnit unit = new AccumulateUnit();
+        unit.getStrings().add("A1");
+        unit.getStrings().add("A123");
+        unit.getStrings().add("B12");
+        unit.getStrings().add("ABCDEF");
+
+        RuleUnitInstance<AccumulateUnit> unitInstance = DSLRuleUnit.instance(unit);
+        assertEquals(1, unitInstance.fire());
+        assertEquals("Sum of length of Strings starting with A is 12", unit.getResults().get(0));
+    }
 }

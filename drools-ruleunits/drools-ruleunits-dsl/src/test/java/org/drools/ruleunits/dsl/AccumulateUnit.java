@@ -1,48 +1,42 @@
 package org.drools.ruleunits.dsl;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 
 import static org.drools.model.Index.ConstraintType.EQUAL;
+import static org.drools.ruleunits.dsl.Accumulators.sum;
 
 public class AccumulateUnit implements RuleUnitDefinition {
 
     private final DataStore<String> strings;
-    private final DataStore<Integer> ints;
+    private final List<String> results = new ArrayList<>();
 
     public AccumulateUnit() {
-        this(DataSource.createStore(), DataSource.createStore());
+        this(DataSource.createStore());
     }
 
-    public AccumulateUnit(DataStore<String> strings, DataStore<Integer> ints) {
+    public AccumulateUnit(DataStore<String> strings) {
         this.strings = strings;
-        this.ints = ints;
     }
 
     public DataStore<String> getStrings() {
         return strings;
     }
 
-    public DataStore<Integer> getInts() {
-        return ints;
+    public List<String> getResults() {
+        return results;
     }
 
     @Override
     public void defineRules(RulesFactory rulesFactory) {
-        rulesFactory.addRule()
-                .from(strings)
-                .filter(s -> s.substring(0, 1), EQUAL, "A")
-
-                ;
-    }
-
-    public static void main(String[] args) {
-        List<String> strings = Arrays.asList("A1", "A123", "B12", "ABCDEF");
-
-        int result = strings.stream().filter(s -> s.substring(0,1).equals("A")).reduce(0, (a,s) -> a+s.length(), (a,b) -> a+b);
-        System.out.println(result);
+        RuleFactory accRuleFactory = rulesFactory.addRule();
+        accRuleFactory.accumulate(
+                accRuleFactory.from(strings).filter(s -> s.substring(0, 1), EQUAL, "A"),
+                sum(String::length)
+            )
+            .execute(results, (r, sum) -> r.add("Sum of length of Strings starting with A is " + sum)); ;
     }
 }

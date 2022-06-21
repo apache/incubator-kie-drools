@@ -55,6 +55,13 @@ public class RuleFactory {
         return pattern1;
     }
 
+    public <A, B> Pattern1<B> accumulate(Pattern1<A> pattern, Accumulators.Accumulator1<A, B> acc) {
+        patterns.remove(pattern);
+        Pattern1<B> accPattern = new Accumulators.AccumulatePattern1<>(this, pattern, acc);
+        patterns.add(accPattern);
+        return accPattern;
+    }
+
     private <A> Class<A> findDataSourceClass(DataSource<A> dataSource) {
         assert(dataSource != null);
         for (Field field : unit.getClass().getDeclaredFields()) {
@@ -83,11 +90,7 @@ public class RuleFactory {
         List<RuleItemBuilder> items = new ArrayList<>();
 
         for (PatternDefinition<?> pattern : patterns) {
-            PatternDSL.PatternDef patternDef = pattern(pattern.getVariable());
-            for (Constraint constraint : pattern.getConstraints()) {
-                constraint.addConstraintToPattern(patternDef);
-            }
-            items.add(patternDef);
+            items.add(pattern.toExecModelItem());
         }
 
         if (consequence != null) {
@@ -121,6 +124,14 @@ public class RuleFactory {
     
         public <G> void execute(G globalObject, Block1<G> block) {
             ruleFactory.execute(globalObject, block);
+        }
+
+        public RuleItemBuilder toExecModelItem() {
+            PatternDSL.PatternDef patternDef = pattern(getVariable());
+            for (Constraint constraint : getConstraints()) {
+                constraint.addConstraintToPattern(patternDef);
+            }
+            return patternDef;
         }
     }
     
