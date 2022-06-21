@@ -16,7 +16,7 @@
   <description>DRL plugin for local-only usage of KieSession</description>
 
   <modules>
-    <module>drl-engine-kie-session-local-runtime</module>
+    <module>drl-engine-kiesession-local-runtime</module>
   </modules>
 
 
