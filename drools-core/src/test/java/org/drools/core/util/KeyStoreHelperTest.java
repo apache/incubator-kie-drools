@@ -27,7 +27,6 @@ import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
-
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
@@ -174,14 +173,14 @@ public class KeyStoreHelperTest {
             final KeyStoreHelper clientHelper = new KeyStoreHelper();
 
             // check the signature against the data
-            assertTrue(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
+            assertThat(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
                                                            data,
-                                                           signature));
+                                                           signature)).isTrue();
 
             // check some fake data
-            assertFalse(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
+            assertThat(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
                                                             "fake".getBytes("UTF8"),
-                                                            signature));
+                                                            signature)).isFalse();
         } finally {
             System.clearProperty(KeyStoreConstants.PROP_VERIFY_OLD_SIGN);
         }
