@@ -17,20 +17,6 @@
   <description>New model container framework</description>
 
   <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <commons.io.version>2.11.0</commons.io.version>
-    <commons.math3.version>3.4.1</commons.math3.version>
-    <commons.text.version>1.9</commons.text.version>
-    <javaparser.version>3.24.2</javaparser.version>
-    <jackson.version>2.13.3</jackson.version>
-    <slf4j.version>1.7.30</slf4j.version>
-    <jupiter.version>5.8.2</jupiter.version>
-    <mockito.version>4.4.0</mockito.version>
-    <assertj.version>3.22.0</assertj.version>
-    <logback.version>1.2.9</logback.version>
-    <maven.surefire.plugin.version>2.22.1</maven.surefire.plugin.version>
     <rewrite.maven.plugin.version>4.23.0</rewrite.maven.plugin.version>
     <rewrite.testing.frameworks.version>1.22.0</rewrite.testing.frameworks.version>
     <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
@@ -90,42 +76,6 @@
         <version>${project.version}</version>
       </dependency>
       <!-- Logging -->
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <!-- Others -->
-      <dependency>
-        <groupId>com.github.javaparser</groupId>
-        <artifactId>javaparser-core</artifactId>
-        <version>${javaparser.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${commons.io.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-math3</artifactId>
-        <version>${commons.math3.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-text</artifactId>
-        <version>${commons.text.version}</version>
-      </dependency>
       <!-- Test -->
       <dependency>
         <groupId>org.kie</groupId>
@@ -163,18 +113,6 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-
   </dependencies>
 
   <build>
