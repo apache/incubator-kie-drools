@@ -9,7 +9,6 @@
   <packaging>pom</packaging>
 
   <properties>
-    <project.version>@project.version@</project.version>
     <version.org.infinispan>@version.org.infinispan@</version.org.infinispan>
     <maven.compiler.release>@maven.compiler.release@</maven.compiler.release>
     <maven.compiler.source>@maven.compiler.release@</maven.compiler.source>
@@ -151,23 +150,19 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <version>@version.failsafe.plugin@</version>
         <configuration>
           <classesDirectory>${project.build.outputDirectory}</classesDirectory>
-          <systemPropertyVariables combine.children="append">
-            <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
-            <container.image.kafka>${container.image.kafka}</container.image.kafka>
+          <systemPropertyVariables>
+            <container.image.infinispan>@container.image.infinispan@</container.image.infinispan>
+            <container.image.kafka>@container.image.kafka@</container.image.kafka>
+            <container.image.mongodb>@container.image.mongodb@</container.image.mongodb>
           </systemPropertyVariables>
         </configuration>
         <executions>
           <execution>
-            <id>default</id>
             <goals>
               <goal>integration-test</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <goals>
               <goal>verify</goal>
             </goals>
           </execution>

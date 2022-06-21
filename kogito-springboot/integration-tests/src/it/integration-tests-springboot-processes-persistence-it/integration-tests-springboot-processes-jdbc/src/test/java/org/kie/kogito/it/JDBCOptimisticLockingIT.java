@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.it;
 
-import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
+import org.kie.kogito.testcontainers.springboot.PostgreSqlSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-@ContextConfiguration(initializers = InfinispanSpringBootTestResource.class)
-public class InfinispanPersistenceIT extends PersistenceTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class, properties = { "kogito.persistence.optimistic.lock=true" })
+@ContextConfiguration(initializers = PostgreSqlSpringBootTestResource.class)
+public class JDBCOptimisticLockingIT extends OptimisticLockingTest {
 
 }

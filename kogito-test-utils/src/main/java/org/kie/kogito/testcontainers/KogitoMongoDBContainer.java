@@ -38,7 +38,6 @@ public class KogitoMongoDBContainer extends MongoDBContainer implements TestReso
         super(DockerImageName.parse(getImageName(NAME)).asCompatibleSubstituteFor("mongo"));
         withLogConsumer(f -> System.out.print(f.getUtf8String()));
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
-        addFixedExposedPort(MONGODB_INTERNAL_PORT, MONGODB_INTERNAL_PORT);
         withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
     }
 

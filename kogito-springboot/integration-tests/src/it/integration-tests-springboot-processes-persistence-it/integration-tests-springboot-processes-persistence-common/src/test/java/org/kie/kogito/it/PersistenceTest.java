@@ -39,7 +39,8 @@ import static java.util.Arrays.asList;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class PersistenceTest {
@@ -51,6 +52,9 @@ public abstract class PersistenceTest {
     public static final Duration TIMEOUT = Duration.ofSeconds(10);
     public static final String PROCESS_ID = "hello";
     public static final String PROCESS_ASYNC_WIH = "AsyncWIH";
+    public static final String PROCESS_EMBEDDED_ID = "embedded";
+    public static final String PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID = "MultipleInstanceEmbeddedSubProcess";
+    public static final String PROCESS_MULTIPLE_INSTANCES_ID = "MultipleInstanceSubProcess";
 
     @LocalServerPort
     private int httpPort;
@@ -72,8 +76,8 @@ public abstract class PersistenceTest {
                 .post("/{processId}", PROCESS_ID)
                 .then()
                 .statusCode(201)
-                .header("Location", not(isEmptyOrNullString()))
-                .body("id", not(isEmptyOrNullString()))
+                .header("Location", not(emptyOrNullString()))
+                .body("id", not(emptyOrNullString()))
                 .body("var1", equalTo("Tiago"))
                 .body("var2", equalTo("Hello Tiago! Script"))
                 .body("person.name", equalTo(person.getName()))
@@ -97,13 +101,13 @@ public abstract class PersistenceTest {
                 .get("/{processId}/{id}", PROCESS_ID, pid)
                 .then()
                 .statusCode(200)
-                .body("id", not(isEmptyOrNullString()))
+                .body("id", not(emptyOrNullString()))
                 .body("var1", equalTo("Tiago"))
                 .body("var2", equalTo("Hello Tiago! Script"))
                 .body("person.name", equalTo(person.getName()))
                 .body("person.age", equalTo(person.getAge()))
                 .body("person.score", equalTo(person.getScore().floatValue()))
-                .body("person.created", equalTo(DateTimeFormatter.ISO_INSTANT.format(person.getCreated().truncatedTo(ChronoUnit.MILLIS))))
+                .body("person.created", equalTo(DateTimeFormatter.ISO_INSTANT.format(person.getCreated())))
                 .body("person.updated", equalTo(person.getUpdated().format(ISO_ZONED_DATE_TIME)))
                 .body("person.relatives.size()", equalTo(1))
                 .body("person.relatives[0].name", equalTo(relative.getName()))
@@ -132,6 +136,115 @@ public abstract class PersistenceTest {
     }
 
     @Test
+    void testEmbeddedProcess() {
+        final String pId = given().contentType(ContentType.JSON)
+                .pathParam("processId", PROCESS_EMBEDDED_ID)
+                .when()
+                .post("/{processId}")
+                .then()
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .extract()
+                .path("id");
+
+        String taskId = given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("pId", pId)
+                .pathParam("processId", PROCESS_EMBEDDED_ID)
+                .when()
+                .get("/{processId}/{pId}/tasks")
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(1))
+                .body("[0].id", not(emptyOrNullString()))
+                .extract()
+                .path("[0].id");
+
+        given().contentType(ContentType.JSON)
+                .pathParam("pId", pId)
+                .pathParam("taskId", taskId)
+                .pathParam("processId", PROCESS_EMBEDDED_ID)
+                .queryParam("user", "test")
+                .queryParam("group", "test")
+                .body("{}")
+                .when()
+                .post("/{processId}/{pId}/Task/{taskId}/phases/complete")
+                .then()
+                .statusCode(200);
+
+    }
+
+    @Test
+    void testMultipleEmbeddedInstance() {
+        String pId = given().contentType(ContentType.JSON)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID)
+                .when()
+                .post("/{processId}")
+                .then()
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .extract()
+                .path("id");
+
+        String taskId = given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .pathParam("pId", pId)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID)
+                .when()
+                .get("/{processId}/{pId}/tasks")
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(1))
+                .body("[0].id", not(emptyOrNullString()))
+                .extract()
+                .path("[0].id");
+
+        given().contentType(ContentType.JSON)
+                .pathParam("pId", pId)
+                .pathParam("taskId", taskId)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID)
+                .queryParam("user", "admin")
+                .queryParam("group", "admin")
+                .body("{}")
+                .when()
+                .post("/{processId}/{pId}/Task/{taskId}/phases/complete")
+                .then()
+                .statusCode(200);
+
+        given().contentType(ContentType.JSON)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_EMBEDDED_ID)
+                .pathParam("pId", pId)
+                .when()
+                .get("/{processId}/{pId}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    void testMultipleInstance() {
+        String pId = given().contentType(ContentType.JSON)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_ID)
+                .when()
+                .post("/{processId}")
+                .then()
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .extract()
+                .path("id");
+
+        given().contentType(ContentType.JSON)
+                .pathParam("processId", PROCESS_MULTIPLE_INSTANCES_ID)
+                .pathParam("pId", pId)
+                .when()
+                .get("/{processId}/{pId}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
     void testAsyncWIH() {
         String pId = given().contentType(ContentType.JSON)
                 .pathParam("processId", PROCESS_ASYNC_WIH)
@@ -139,7 +252,7 @@ public abstract class PersistenceTest {
                 .post("/{processId}")
                 .then()
                 .statusCode(201)
-                .body("id", not(isEmptyOrNullString()))
+                .body("id", not(emptyOrNullString()))
                 .extract()
                 .path("id");
 

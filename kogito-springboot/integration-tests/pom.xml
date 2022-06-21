@@ -149,7 +149,7 @@
           <artifactId>maven-invoker-plugin</artifactId>
           <configuration>
             <streamLogs>true</streamLogs>
-            <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
+            <postBuildHookScript>verify</postBuildHookScript>
           </configuration>
         </plugin>
       </plugins>
