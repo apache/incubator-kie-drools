@@ -15,13 +15,11 @@
  */
 package org.kie.kogito.quarkus.conf;
 
-import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
 
-@ConfigRoot(name = "kogito", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED, prefix = "")
-@ConfigGroup
+@ConfigRoot(name = "", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED, prefix = "kogito")
 public class KogitoBuildTimeConfig {
 
     /**

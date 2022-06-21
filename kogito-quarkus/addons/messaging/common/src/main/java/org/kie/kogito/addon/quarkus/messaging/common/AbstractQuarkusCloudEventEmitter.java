@@ -29,8 +29,6 @@ import org.kie.kogito.event.EventMarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public abstract class AbstractQuarkusCloudEventEmitter<M> implements EventEmitter {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractQuarkusCloudEventEmitter.class);
@@ -40,9 +38,6 @@ public abstract class AbstractQuarkusCloudEventEmitter<M> implements EventEmitte
 
     @Inject
     EventMarshaller<M> marshaller;
-
-    @Inject
-    ObjectMapper mapper;
 
     @Inject
     MessageDecoratorProvider messageDecorator;

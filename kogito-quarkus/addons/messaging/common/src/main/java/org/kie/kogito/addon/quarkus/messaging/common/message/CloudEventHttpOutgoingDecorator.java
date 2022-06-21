@@ -15,19 +15,15 @@
  */
 package org.kie.kogito.addon.quarkus.messaging.common.message;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 
-import io.quarkus.arc.properties.UnlessBuildProperty;
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 
 /**
  * Decorators for Http CloudEvents outgoing messages
  */
-@UnlessBuildProperty(name = "kogito.messaging.as-cloudevents", stringValue = "false")
-@ApplicationScoped
 public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
 
     // Note: this constant is also declared in cloudevents-json-jackson.

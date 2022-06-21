@@ -29,7 +29,7 @@ public interface EventEmitter {
     /**
      * @param e object to emit
      * @param type type of object to emit
-     * @param optional process decorator
+     * @param processDecorator process decorator
      */
     <T> CompletionStage<Void> emit(T e,
             String type,

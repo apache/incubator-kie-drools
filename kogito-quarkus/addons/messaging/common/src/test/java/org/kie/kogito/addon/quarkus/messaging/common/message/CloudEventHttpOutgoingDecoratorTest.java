@@ -18,6 +18,7 @@ package org.kie.kogito.addon.quarkus.messaging.common.message;
 import java.util.Collections;
 import java.util.Optional;
 
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
@@ -33,6 +34,9 @@ class CloudEventHttpOutgoingDecoratorTest {
 
     @Inject
     MessageDecoratorProvider provider;
+
+    @Produces
+    CloudEventHttpOutgoingDecorator decorator = new CloudEventHttpOutgoingDecorator();
 
     @Test
     void verifyOutgoingHttpMetadataIsSet() {

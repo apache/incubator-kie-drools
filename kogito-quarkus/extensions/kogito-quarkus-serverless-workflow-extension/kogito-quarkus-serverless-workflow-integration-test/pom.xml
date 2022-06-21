@@ -137,7 +137,7 @@
       </plugins>
     </pluginManagement>
     <plugins>
-     <plugin>
+      <plugin>
         <groupId>org.xolstice.maven.plugins</groupId>
         <artifactId>protobuf-maven-plugin</artifactId>
         <configuration>
@@ -145,14 +145,14 @@
           <pluginArtifact>io.grpc:protoc-gen-grpc-java:${version.io.grpc}:exe:${os.detected.classifier}</pluginArtifact>
           <outputDirectory>${project.build.directory}/generated-sources/grpc</outputDirectory>
           <protocPlugins>
-                    <protocPlugin>
-                        <id>quarkus-grpc-protoc-plugin</id>
-                        <groupId>io.quarkus</groupId>
-                        <artifactId>quarkus-grpc-protoc-plugin</artifactId>
-                        <version>${version.io.quarkus}</version>
-                        <mainClass>io.quarkus.grpc.protoc.plugin.MutinyGrpcGenerator</mainClass>
-                    </protocPlugin>
-                </protocPlugins>
+            <protocPlugin>
+              <id>quarkus-grpc-protoc-plugin</id>
+              <groupId>io.quarkus</groupId>
+              <artifactId>quarkus-grpc-protoc-plugin</artifactId>
+              <version>${version.io.quarkus}</version>
+              <mainClass>io.quarkus.grpc.protoc.plugin.MutinyGrpcGenerator</mainClass>
+            </protocPlugin>
+          </protocPlugins>
         </configuration>
         <executions>
           <execution>
