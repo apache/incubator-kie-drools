@@ -69,7 +69,7 @@
                   <mainClass>org.kie.dmn.ruleset2dmn.cli.App</mainClass>
                 </transformer>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                  <resource>META-INF/kie.conf</resource>
+                  <resource>META-INF/kie.conf</resource> <!-- shouldn't be necessary for 8.x, but needed for 7.x -->
                 </transformer>
               </transformers>
             </configuration>
