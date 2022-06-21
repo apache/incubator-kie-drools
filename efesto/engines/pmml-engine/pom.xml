@@ -491,12 +491,48 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-antrun-plugin</artifactId>
+      <configuration>
+        <skip>true</skip>
+      </configuration>
+      <executions>
+        <execution>
+          <id>generate-aggregated-jacoco-report</id>
+          <configuration>
+            <!--
+              Jacoco ant "report" task provides control over scope of the generated report. The report task
+              requires access to sources, classes and .exec file containing coverage data. The configuration
+              below uses sources and classes of the entire project (each of its modules) and a single jacoco.exec
+              file placed in project root directory.
+              Jacoco maven plugin does not provide such a level of control and requires an artificial module that
+              depends on all modules in the project to generate an aggregated report for all the modules.
+              This necessity of creating a reporting module in every project is rather intrusive.
+              See:
+              https://www.jacoco.org/jacoco/trunk/doc/report-aggregate-mojo.html and
+              https://groups.google.com/forum/#!topic/jacoco/oMxNZs_DNII
+            -->
+            <target>
+              <report>
+                <structure name="Coverage Report">
+                  <group name="${project.artifactId}">
+                    <classfiles>
+                      <fileset dir="${project.root.dir}">
+                        <!--
+                          Exclude class files from every pmml-engine submodule.
+                        -->
+                        <exclude name="**/target/classes/**/*.class"/>
+                      </fileset>
+                    </classfiles>
+                  </group>
+                </structure>
+              </report>
+            </target>
+          </configuration>
+        </execution>
+      </executions>
+
       </plugin>
     </plugins>
   </build>
