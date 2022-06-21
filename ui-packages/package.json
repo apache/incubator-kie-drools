@@ -16,7 +16,9 @@
     "test:it": "lerna run test:it --stream --concurrency=1 --no-bail --",
     "locktt": "locktt",
     "test:e2e:trusty": "lerna run --scope @kogito-apps/trusty test:e2e:trusty --",
-    "format:all": "lerna run format --stream --"
+    "format:all": "lerna run format --stream --",
+    "build:prod:swf":"lerna run --scope='@kogito-apps/runtime-tools-dev-ui-webapp' build:prod --include-dependencies --stream --",
+    "test:swf":"lerna run --scope='@kogito-apps/runtime-tools-dev-ui-webapp' test --include-dependencies --stream --"
   },
   "husky": {
     "hooks": {

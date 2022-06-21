@@ -12,7 +12,6 @@
     "url": "https://github.com/kiegroup/kogito-apps.git"
   },
   "dependencies": {
-    "@kogito-apps/common": "1.0.0",
     "@kogito-apps/patternfly-base": "^1.0.0",
     "@kogito-tooling/kie-editors-standalone": "^0.10.0",
     "@testing-library/react": "^10.4.7",
