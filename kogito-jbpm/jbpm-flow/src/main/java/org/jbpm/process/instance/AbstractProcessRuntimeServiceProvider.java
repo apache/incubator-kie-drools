@@ -30,6 +30,7 @@ import org.kie.kogito.services.signal.LightSignalManager;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
+import org.kie.kogito.uow.events.UnitOfWorkProcessEventListener;
 
 public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServiceProvider {
 
@@ -37,7 +38,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     private final ProcessInstanceManager processInstanceManager;
     private final SignalManager signalManager;
     private final KogitoWorkItemManager workItemManager;
-    private final KogitoProcessEventSupportImpl eventSupport;
+    private final KogitoProcessEventSupport eventSupport;
     private final UnitOfWorkManager unitOfWorkManager;
 
     public AbstractProcessRuntimeServiceProvider(JobsService jobsService,
@@ -51,7 +52,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
                 id -> Optional.ofNullable(
                         processInstanceManager.getProcessInstance(id)),
                 compositeSignalManager);
-        this.eventSupport = new KogitoProcessEventSupportImpl(this.unitOfWorkManager);
+        this.eventSupport = new KogitoProcessEventSupportImpl();
         this.jobsService = jobsService;
         this.workItemManager = new LightWorkItemManager(processInstanceManager, signalManager, eventSupport);
 
@@ -60,6 +61,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
                     workItem, workItemHandlerProvider.forName(workItem));
         }
 
+        this.eventSupport.addEventListener(new UnitOfWorkProcessEventListener(unitOfWorkManager));
         for (ProcessEventListener listener : processEventListenerProvider.listeners()) {
             this.eventSupport.addEventListener((KogitoProcessEventListener) listener);
         }

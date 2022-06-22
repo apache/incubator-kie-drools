@@ -76,4 +76,8 @@ public interface KogitoProcessEventSupport {
             KieRuntime kruntime);
 
     void reset();
+
+    void addEventListener(KogitoProcessEventListener listener);
+
+    void removeEventListener(KogitoProcessEventListener listener);
 }

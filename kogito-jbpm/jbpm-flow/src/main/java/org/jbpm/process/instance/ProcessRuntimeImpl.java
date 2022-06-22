@@ -90,27 +90,6 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     private JobsService jobService;
     private UnitOfWorkManager unitOfWorkManager;
 
-    public ProcessRuntimeImpl(Application application, InternalKnowledgeRuntime kruntime) {
-        super(application);
-        this.kruntime = kruntime;
-        TimerService timerService = kruntime.getTimerService();
-        if (!(timerService.getTimerJobFactoryManager() instanceof CommandServiceTimerJobFactoryManager)) {
-            timerService.setTimerJobFactoryManager(new ThreadSafeTrackableTimeJobFactoryManager());
-        }
-
-        ((CompositeClassLoader) getRootClassLoader()).addClassLoader(getClass().getClassLoader());
-        initProcessInstanceManager();
-        initSignalManager();
-        unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
-        jobService = new LegacyInMemoryJobService(kogitoProcessRuntime, unitOfWorkManager);
-        this.processEventSupport = new KogitoProcessEventSupportImpl(unitOfWorkManager);
-        if (isActive()) {
-            initProcessEventListeners();
-            initStartTimers();
-        }
-        initProcessActivationListener();
-    }
-
     public ProcessRuntimeImpl(Application application, InternalWorkingMemory workingMemory) {
         super(application);
         TimerService timerService = workingMemory.getTimerService();
@@ -123,7 +102,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         initSignalManager();
         unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
         jobService = new LegacyInMemoryJobService(kogitoProcessRuntime, unitOfWorkManager);
-        this.processEventSupport = new KogitoProcessEventSupportImpl(unitOfWorkManager);
+        this.processEventSupport = new KogitoProcessEventSupportImpl();
         if (isActive()) {
             initProcessEventListeners();
             initStartTimers();

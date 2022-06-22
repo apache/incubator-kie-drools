@@ -150,7 +150,7 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         uow.end();
 
         List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(3);
+        assertThat(events).isNotNull().hasSize(2);
 
         DataEvent<?> event = events.get(0);
         assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
@@ -190,31 +190,7 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         assertThat(variableEventBody.getRootProcessInstanceId()).isNull();
         assertThat(variableEventBody.getVariableName()).isEqualTo("person");
         assertThat(variableEventBody.getVariableValue()).isNotNull();
-        assertThat(variableEventBody.getVariablePreviousValue()).isNull();
-        assertThat(variableEventBody.getChangedByNodeId()).isNull();
-        assertThat(variableEventBody.getChangedByNodeName()).isNull();
-        assertThat(variableEventBody.getChangedByNodeType()).isNull();
-        assertThat(variableEventBody.getChangedByUser()).isNull();
-
-        event = events.get(2);
-        assertThat(event).isInstanceOf(VariableInstanceDataEvent.class);
-
-        variableDataEvent = (VariableInstanceDataEvent) event;
-        assertThat(variableDataEvent.getKogitoProcessinstanceId()).isNotNull();
-        assertThat(variableDataEvent.getKogitoRootProcessId()).isNull();
-        assertThat(variableDataEvent.getKogitoRootProcessinstanceId()).isNull();
-        assertThat(variableDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
-        // next is event created based on business rule task so node associated
-        variableEventBody = variableDataEvent.getData();
-        assertThat(variableEventBody).isNotNull();
-        assertThat(variableEventBody.getChangeDate()).isNotNull();
-        assertThat(variableEventBody.getProcessInstanceId()).isEqualTo(variableDataEvent.getKogitoProcessinstanceId());
-        assertThat(variableEventBody.getProcessId()).isEqualTo("BusinessRuleTask");
-        assertThat(variableEventBody.getRootProcessId()).isNull();
-        assertThat(variableEventBody.getRootProcessInstanceId()).isNull();
-        assertThat(variableEventBody.getVariableName()).isEqualTo("person");
-        assertThat(variableEventBody.getVariableValue()).isNotNull();
-        assertThat(variableEventBody.getVariablePreviousValue()).isNotNull();
+        assertThat(variableEventBody.getVariablePreviousValue()).isNotNull().hasFieldOrPropertyWithValue("adult", true);
         assertThat(variableEventBody.getChangedByNodeId()).isEqualTo("BusinessRuleTask_2");
         assertThat(variableEventBody.getChangedByNodeName()).isEqualTo("Business Rule Task");
         assertThat(variableEventBody.getChangedByNodeType()).isEqualTo("RuleSetNode");

@@ -33,6 +33,18 @@ public class DevModeWorkflowLogger extends DefaultKogitoProcessEventListener {
 
     public void beforeProcessStarted(ProcessStartedEvent event) {
         LOGGER.info("Starting workflow '{}' ({})", event.getProcessInstance().getProcessId(), ((KogitoProcessInstance) event.getProcessInstance()).getStringId());
+        ((KogitoProcessInstance) event.getProcessInstance()).getVariables().forEach((name, value) -> {
+            if ("workflowdata".equals(name)) {
+                if (value instanceof JsonNode) {
+                    JsonNode node = (JsonNode) value;
+                    if (!node.isEmpty()) {
+                        LOGGER.info("Workflow data \n{}", node.toPrettyString());
+                    }
+                }
+            } else {
+                LOGGER.info("Variable '{}' value: '{}'", name, value);
+            }
+        });
     }
 
     public void afterProcessStarted(ProcessStartedEvent event) {
@@ -47,6 +59,7 @@ public class DevModeWorkflowLogger extends DefaultKogitoProcessEventListener {
         LOGGER.info("Workflow '{}' ({}) completed", event.getProcessInstance().getProcessId(), ((KogitoProcessInstance) event.getProcessInstance()).getStringId());
     }
 
+    @Override
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         String nodeName = event.getNodeInstance().getNodeName();
         if (!"EmbeddedStart".equals(nodeName) && !"EmbeddedEnd".equals(nodeName) && !"Script".equals(nodeName)) {

@@ -132,10 +132,7 @@ public class BusinessRuleTaskIT extends AbstractRulesCodegenIT {
         assertThat(result.toMap()).hasSize(1).containsKey("person");
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
 
-        // since the unit of work has not been finished yet not listeners where invoked
-        assertThat(startedProcesses).hasSize(0);
         uow.end();
-        // after unit of work has been ended listeners are invoked
         assertThat(startedProcesses).hasSize(1);
     }
 
