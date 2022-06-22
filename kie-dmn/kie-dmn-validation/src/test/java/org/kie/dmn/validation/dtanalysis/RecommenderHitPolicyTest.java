@@ -29,7 +29,6 @@ import org.kie.dmn.model.api.HitPolicy;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
@@ -43,7 +42,7 @@ public class RecommenderHitPolicyTest extends AbstractDTAnalysisTest {
 
         debugValidatorMsg(validate);
         assertThat(analysis.getGaps()).hasSize(1);
-        assertTrue(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER));
+        assertThat(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER)).isTrue();
     }
 
     @Test
@@ -51,11 +50,11 @@ public class RecommenderHitPolicyTest extends AbstractDTAnalysisTest {
         List<HitPolicy> wrongHPs = Arrays.asList(HitPolicy.ANY, HitPolicy.PRIORITY, HitPolicy.FIRST);
         for (HitPolicy hp : wrongHPs) {
             List<DMNMessage> validate = getRecommenderHitPolicy2(hp);
-            assertTrue(validate.stream().anyMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER));
+            assertThat(validate.stream().anyMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER)).isTrue();
         }
 
         List<DMNMessage> validate = getRecommenderHitPolicy2(HitPolicy.UNIQUE);
-        assertTrue(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER));
+        assertThat(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER)).isTrue();
     }
 
     private List<DMNMessage> getRecommenderHitPolicy2(HitPolicy hp) {
@@ -76,11 +75,11 @@ public class RecommenderHitPolicyTest extends AbstractDTAnalysisTest {
         List<HitPolicy> wrongHPs = Arrays.asList(HitPolicy.UNIQUE, HitPolicy.PRIORITY, HitPolicy.FIRST);
         for (HitPolicy hp : wrongHPs) {
             List<DMNMessage> validate = getRecommenderHitPolicy3(hp);
-            assertTrue(validate.stream().anyMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER));
+            assertThat(validate.stream().anyMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER)).isTrue();
         }
 
         List<DMNMessage> validate = getRecommenderHitPolicy3(HitPolicy.ANY);
-        assertTrue(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER));
+        assertThat(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER)).isTrue();
     }
 
     private List<DMNMessage> getRecommenderHitPolicy3(HitPolicy hp) {
@@ -101,11 +100,11 @@ public class RecommenderHitPolicyTest extends AbstractDTAnalysisTest {
         List<HitPolicy> wrongHPs = Arrays.asList(HitPolicy.UNIQUE, HitPolicy.ANY, HitPolicy.FIRST);
         for (HitPolicy hp : wrongHPs) {
             List<DMNMessage> validate = getRecommenderHitPolicy4(hp);
-            assertTrue(validate.stream().anyMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER));
+            assertThat(validate.stream().anyMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER)).isTrue();
         }
 
         List<DMNMessage> validate = getRecommenderHitPolicy4(HitPolicy.PRIORITY);
-        assertTrue(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER));
+        assertThat(validate.stream().noneMatch(m -> m.getMessageType() == DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER)).isTrue();
     }
 
     private List<DMNMessage> getRecommenderHitPolicy4(HitPolicy hp) {

@@ -26,7 +26,6 @@ import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_1.TItemDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 
 public class ItemDefinitionDependenciesTest {
@@ -83,7 +82,7 @@ public class ItemDefinitionDependenciesTest {
         
         final List<ItemDefinition> orderedList = orderingStrategy(originalList);
 
-        assertTrue("Index of z < a", orderedList.indexOf(z) < orderedList.indexOf(a));
+        assertThat(orderedList.indexOf(z) < orderedList.indexOf(a)).as("Index of z < a").isTrue();
     }
     
     @Test
@@ -115,9 +114,9 @@ public class ItemDefinitionDependenciesTest {
                                                                 tPrequalification);
         
         final List<ItemDefinition> orderedList = orderingStrategy(originalList);
-        
-        assertTrue("Index of tAge < tBorrowe", orderedList.indexOf(tAge) < orderedList.indexOf(tBorrowe));
-        assertTrue("Index of temploementStatus < tBorrowe", orderedList.indexOf(temploementStatus) < orderedList.indexOf(tBorrowe));
+
+        assertThat(orderedList.indexOf(tAge) < orderedList.indexOf(tBorrowe)).as("Index of tAge < tBorrowe").isTrue();
+        assertThat(orderedList.indexOf(temploementStatus) < orderedList.indexOf(tBorrowe)).as("Index of temploementStatus < tBorrowe").isTrue();
     }
     
     @Test
@@ -139,14 +138,14 @@ public class ItemDefinitionDependenciesTest {
                                                                 tLoanTypes);
         
         final List<ItemDefinition> orderedList = orderingStrategy(originalList);
-        
-        assertTrue("Index of tMortgageType < tRequested", orderedList.indexOf(tMortgageType) < orderedList.indexOf(tRequested));
-        assertTrue("Index of tObjective < tRequested", orderedList.indexOf(tObjective) < orderedList.indexOf(tRequested));
 
-        assertTrue("Index of tProduct < tProductCollection", orderedList.indexOf(tProduct) < orderedList.indexOf(tProductCollection));
-        
-        assertTrue("Index of tMortgageType < tLoanTypes", orderedList.indexOf(tMortgageType) < orderedList.indexOf(tLoanTypes));
-        assertTrue("Index of tConformanceType < tLoanTypes", orderedList.indexOf(tConformanceType) < orderedList.indexOf(tLoanTypes));
+        assertThat(orderedList.indexOf(tMortgageType) < orderedList.indexOf(tRequested)).as("Index of tMortgageType < tRequested").isTrue();
+        assertThat(orderedList.indexOf(tObjective) < orderedList.indexOf(tRequested)).as("Index of tObjective < tRequested").isTrue();
+
+        assertThat(orderedList.indexOf(tProduct) < orderedList.indexOf(tProductCollection)).as("Index of tProduct < tProductCollection").isTrue();
+
+        assertThat(orderedList.indexOf(tMortgageType) < orderedList.indexOf(tLoanTypes)).as("Index of tMortgageType < tLoanTypes").isTrue();
+        assertThat(orderedList.indexOf(tConformanceType) < orderedList.indexOf(tLoanTypes)).as("Index of tConformanceType < tLoanTypes").isTrue();
     }
     
     @Test
@@ -170,12 +169,12 @@ public class ItemDefinitionDependenciesTest {
                                                                 tTaxList);
         
         final List<ItemDefinition> orderedList = orderingStrategy(originalList);
-        
-        assertTrue("Index of tCategory < tItem", orderedList.indexOf(tCategory) < orderedList.indexOf(tItem));
-        assertTrue("Index of tItem < tItemList", orderedList.indexOf(tItem) < orderedList.indexOf(tItemList));
-        assertTrue("Index of tItemList < tOrder", orderedList.indexOf(tItemList) < orderedList.indexOf(tOrder));
-        
-        assertTrue("Index of tTax < tTaxList", orderedList.indexOf(tTax) < orderedList.indexOf(tTaxList));
+
+        assertThat(orderedList.indexOf(tCategory) < orderedList.indexOf(tItem)).as("Index of tCategory < tItem").isTrue();
+        assertThat(orderedList.indexOf(tItem) < orderedList.indexOf(tItemList)).as("Index of tItem < tItemList").isTrue();
+        assertThat(orderedList.indexOf(tItemList) < orderedList.indexOf(tOrder)).as("Index of tItemList < tOrder").isTrue();
+
+        assertThat(orderedList.indexOf(tTax) < orderedList.indexOf(tTaxList)).as("Index of tTax < tTaxList").isTrue();
     }
 
     @Test
@@ -200,14 +199,14 @@ public class ItemDefinitionDependenciesTest {
 
         final List<ItemDefinition> orderedList = orderingStrategy(originalList);
 
-        assertTrue("Index of _TypeDecisionA1 < _TypeDecisionA2_x", orderedList.indexOf(_TypeDecisionA1) < orderedList.indexOf(_TypeDecisionA2_x));
-        assertTrue("Index of _TypeDecisionA2_x < _TypeDecisionA3", orderedList.indexOf(_TypeDecisionA2_x) < orderedList.indexOf(_TypeDecisionA3));
-        assertTrue("Index of _TypeDecisionA3 < _TypeDecisionB3", orderedList.indexOf(_TypeDecisionA3) < orderedList.indexOf(_TypeDecisionB3));
-        assertTrue("Index of _TypeDecisionA3 < _TypeDecisionC1", orderedList.indexOf(_TypeDecisionA3) < orderedList.indexOf(_TypeDecisionC1));
+        assertThat(orderedList.indexOf(_TypeDecisionA1) < orderedList.indexOf(_TypeDecisionA2_x)).as("Index of _TypeDecisionA1 < _TypeDecisionA2_x").isTrue();
+        assertThat(orderedList.indexOf(_TypeDecisionA2_x) < orderedList.indexOf(_TypeDecisionA3)).as("Index of _TypeDecisionA2_x < _TypeDecisionA3").isTrue();
+        assertThat(orderedList.indexOf(_TypeDecisionA3) < orderedList.indexOf(_TypeDecisionB3)).as("Index of _TypeDecisionA3 < _TypeDecisionB3").isTrue();
+        assertThat(orderedList.indexOf(_TypeDecisionA3) < orderedList.indexOf(_TypeDecisionC1)).as("Index of _TypeDecisionA3 < _TypeDecisionC1").isTrue();
 
-        assertTrue("Index of _TypeDecisionB1 < _TypeDecisionB2_x", orderedList.indexOf(_TypeDecisionB1) < orderedList.indexOf(_TypeDecisionB2_x));
-        assertTrue("Index of _TypeDecisionB2_x < _TypeDecisionB3", orderedList.indexOf(_TypeDecisionB2_x) < orderedList.indexOf(_TypeDecisionB3));
-        assertTrue("Index of _TypeDecisionB3 < _TypeDecisionC1", orderedList.indexOf(_TypeDecisionB3) < orderedList.indexOf(_TypeDecisionC1));
+        assertThat(orderedList.indexOf(_TypeDecisionB1) < orderedList.indexOf(_TypeDecisionB2_x)).as("Index of _TypeDecisionB1 < _TypeDecisionB2_x").isTrue();
+        assertThat(orderedList.indexOf(_TypeDecisionB2_x) < orderedList.indexOf(_TypeDecisionB3)).as("Index of _TypeDecisionB2_x < _TypeDecisionB3").isTrue();
+        assertThat(orderedList.indexOf(_TypeDecisionB3) < orderedList.indexOf(_TypeDecisionC1)).as("Index of _TypeDecisionB3 < _TypeDecisionC1").isTrue();
     }
 
     @Test

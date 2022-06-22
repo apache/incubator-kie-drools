@@ -24,7 +24,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.functions.AbsFunction;
 import org.kie.dmn.feel.runtime.functions.EvenFunction;
@@ -44,7 +43,6 @@ import org.kie.dmn.feel.runtime.functions.extended.TimeFunction;
 
 import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class ExtendedDMNProfileTest {
     private final DateFunction dateFunction = DateFunction.INSTANCE;
@@ -163,16 +161,16 @@ public class ExtendedDMNProfileTest {
     }
 
     private static <T> void assertResult(final FEELFnResult<T> result, final T val) {
-        assertTrue(result.isRight());
+        assertThat(result.isRight()).isTrue();
         assertThat(result.getOrElse(null)).isEqualTo(val);
     }
 
     private static void assertResultDoublePrecision(final FEELFnResult<BigDecimal> result, final BigDecimal val) {
-        assertTrue(result.isRight());
+        assertThat(result.isRight()).isTrue();
         assertThat(Double.compare(result.getOrElse(null).doubleValue(), val.doubleValue())).isEqualTo(0);
     }
 
     private static void assertNull(final FEELFnResult<?> result) {
-        Assert.assertNull(result.getOrElse(null));
+        assertThat(result.getOrElse(null)).isNull();
     }
 }

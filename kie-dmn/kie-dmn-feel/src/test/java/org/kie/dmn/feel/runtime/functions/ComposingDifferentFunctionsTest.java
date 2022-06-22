@@ -29,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class ComposingDifferentFunctionsTest {
 
@@ -83,8 +82,8 @@ public class ComposingDifferentFunctionsTest {
 
         final TemporalAccessor p2TA = p2.getOrElse(null);
         assertThat(p2TA).isNotNull();
-        assertEquals(LocalTime.of(23, 59, 1), p2TA.query(TemporalQueries.localTime()));
-        assertEquals(ZoneId.of("Europe/Paris"), p2TA.query(TemporalQueries.zone()));
+        assertThat(p2TA.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(23, 59, 1));
+        assertThat(p2TA.query(TemporalQueries.zone())).isEqualTo(ZoneId.of("Europe/Paris"));
 
         final FEELFnResult<TemporalAccessor> result = dateTimeFunction.invoke(p1.getOrElse(null), p2.getOrElse(null));
         FunctionTestUtil.assertResult(result, ZonedDateTime.of(2017, 1, 1, 23, 59, 1, 0, ZoneId.of("Europe/Paris")));
@@ -97,8 +96,8 @@ public class ComposingDifferentFunctionsTest {
 
         final TemporalAccessor timeOnDateTime = timeFunction.invoke(p1.getOrElse(null)).getOrElse(null);
         assertThat(timeOnDateTime).isNotNull();
-        assertEquals(LocalTime.of(10, 20, 0), timeOnDateTime.query(TemporalQueries.localTime()));
-        assertEquals(ZoneId.of("Europe/Paris"), timeOnDateTime.query(TemporalQueries.zone()));
+        assertThat(timeOnDateTime.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(10, 20, 0));
+        assertThat(timeOnDateTime.query(TemporalQueries.zone())).isEqualTo(ZoneId.of("Europe/Paris"));
 
         FunctionTestUtil.assertResult(stringFunction.invoke(timeOnDateTime), "10:20:00@Europe/Paris");
     }

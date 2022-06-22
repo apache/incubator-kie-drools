@@ -74,9 +74,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
@@ -1096,9 +1093,9 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
     @Test
     public void testUnknownVariable1() {
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("unknown_variable1.dmn", this.getClass());
-        assertEquals(1, messages.stream().filter(m -> m.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL))
-                                .filter(m -> m.getMessage().contains("Unknown variable 'NonSalaryPct'"))
-                                .count());
+        assertThat(messages.stream().filter(m -> m.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL))
+                .filter(m -> m.getMessage().contains("Unknown variable 'NonSalaryPct'"))
+                .count()).isEqualTo(1);
     }
 
     @Test
@@ -1216,7 +1213,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
 
         final List<String> sourceIDs = messages.stream().map(DMNMessage::getSourceId).collect(Collectors.toList());
         // FEEL FuncDefNode not checked at compile time: assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34320") );
-        assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34321" ) );
+        assertThat(sourceIDs).contains("_a72a7aff-48c3-4806-83ca-fc1f1fe34321");
     }
     
     @Test
@@ -1488,7 +1485,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         model.addDecision(b);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
         final DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
-        assertTrue(result.hasErrors());
+        assertThat(result.hasErrors()).isTrue();
     }
 
     @Test
@@ -1501,7 +1498,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         model.addDecision(decision);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
         final DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
-        assertTrue(result.hasErrors());
+        assertThat(result.hasErrors()).isTrue();
     }
 
     @Test
@@ -1519,7 +1516,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         model.addDecision(c);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
         final DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
-        assertFalse(result.hasErrors());
+        assertThat(result.hasErrors()).isFalse();
     }
 
     @Test
@@ -1541,7 +1538,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         model.addDecision(d);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
         final DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
-        assertFalse(result.hasErrors());
+        assertThat(result.hasErrors()).isFalse();
     }
 
     @Test
@@ -1624,12 +1621,12 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         final List people = (List) resultContext.get("People");
         final List peopleGroups = (List) resultContext.get("People groups");
 
-        assertEquals(6, people.size());
+        assertThat(people).hasSize(6);
 
-        assertEquals(3, peopleGroups.size());
-        assertEquals(2, ((List) peopleGroups.get(0)).size());
-        assertEquals(2, ((List) peopleGroups.get(1)).size());
-        assertEquals(2, ((List) peopleGroups.get(2)).size());
+        assertThat(peopleGroups).hasSize(3);
+        assertThat(((List) peopleGroups.get(0))).hasSize(2);
+        assertThat(((List) peopleGroups.get(1))).hasSize(2);
+        assertThat(((List) peopleGroups.get(2))).hasSize(2);
     }
 
     @Test
@@ -1796,7 +1793,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         final DMNResult result = runtime.evaluateAll(model, context);
         final List<?> resultObject = (ArrayList<?>) result.getDecisionResultByName("PickAllJohns").getResult();
 
-        assertEquals(2, resultObject.size());
+        assertThat(resultObject).hasSize(2);
     }
 
     @Test
@@ -1987,8 +1984,8 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
             put("type", 1);
         }});
         final DMNDecisionResult result = runtime.evaluateAll(model, context).getDecisionResultByName("TestDecision");
-        assertFalse(result.hasErrors());
-        assertEquals("This is product 1", result.getResult());
+        assertThat(result.hasErrors()).isFalse();
+        assertThat(result.getResult()).isEqualTo("This is product 1");
     }
 
     @Test
@@ -2036,29 +2033,29 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat(result.get("Bruce")).isInstanceOf(Map.class);
         final Map<String, Object> bruce = (Map<String, Object>) result.get("Bruce");
 
-        assertEquals(2, ((List) bruce.get("one")).size());
-        assertTrue(((List) bruce.get("one")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("55")));
-        assertTrue(((List) bruce.get("one")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("510")));
+        assertThat(((List) bruce.get("one"))).hasSize(2);
+        assertThat(((List) bruce.get("one")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("55"))).isTrue();
+        assertThat(((List) bruce.get("one")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("510"))).isTrue();
 
-        assertEquals(3, ((List) bruce.get("two")).size());
-        assertTrue(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("810")));
-        assertTrue(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85")));
-        assertTrue(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66")));
+        assertThat(((List) bruce.get("two"))).hasSize(3);
+        assertThat(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("810"))).isTrue();
+        assertThat(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85"))).isTrue();
+        assertThat(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66"))).isTrue();
 
-        assertEquals(1, ((List) bruce.get("three")).size());
-        assertTrue(((List) bruce.get("three")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("510")));
+        assertThat(((List) bruce.get("three"))).hasSize(1);
+        assertThat(((List) bruce.get("three")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("510"))).isTrue();
 
-        assertEquals(2, ((List) bruce.get("Four")).size());
-        assertTrue(((List) bruce.get("Four")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85")));
-        assertTrue(((List) bruce.get("Four")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66")));
+        assertThat(((List) bruce.get("Four"))).hasSize(2);
+        assertThat(((List) bruce.get("Four")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85"))).isTrue();
+        assertThat(((List) bruce.get("Four")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66"))).isTrue();
 
-        assertEquals(2, ((List) bruce.get("Five")).size());
-        assertTrue(((List) bruce.get("Five")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85")));
-        assertTrue(((List) bruce.get("Five")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66")));
+        assertThat(((List) bruce.get("Five"))).hasSize(2);
+        assertThat(((List) bruce.get("Five")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85"))).isTrue();
+        assertThat(((List) bruce.get("Five")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66"))).isTrue();
 
-        assertEquals(2, ((List) bruce.get("six")).size());
-        assertTrue(((List) bruce.get("six")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85")));
-        assertTrue(((List) bruce.get("six")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66")));
+        assertThat(((List) bruce.get("six"))).hasSize(2);
+        assertThat(((List) bruce.get("six")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85"))).isTrue();
+        assertThat(((List) bruce.get("six")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66"))).isTrue();
     }
     
     @Test
@@ -2139,7 +2136,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         // DROOLS-2813 DMN boxed invocation missing expression NPE and Validator issue
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("DROOLS-2813-NPE-BoxedInvocationMissingExpression.dmn", this.getClass());
 
-        assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) && p.getSourceId().equals("_a111c4df-c5b5-4d84-81e7-3ec735b50d06")));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) && p.getSourceId().equals("_a111c4df-c5b5-4d84-81e7-3ec735b50d06"))).isTrue();
     }
 
     @Test

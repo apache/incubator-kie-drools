@@ -44,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
@@ -338,7 +337,7 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.hasErrors()).isFalse();
-        assertNull( dmnResult.getContext().get("Logique de décision 1") );
+        assertThat(dmnResult.getContext().get("Logique de décision 1")).isNull();
     }
 
     @Test

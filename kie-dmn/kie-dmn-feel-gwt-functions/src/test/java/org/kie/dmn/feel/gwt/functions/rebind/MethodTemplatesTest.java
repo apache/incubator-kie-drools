@@ -28,8 +28,7 @@ import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
 import org.kie.dmn.feel.runtime.functions.extended.KieExtendedDMNFunctions;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MethodTemplatesTest {
 
@@ -45,11 +44,11 @@ public class MethodTemplatesTest {
         final String template = MethodTemplates.getTemplate();
         final String[] templateLines = template.split("\n");
 
-        assertEquals("public List<FunctionOverrideVariation> getDefinitions() {", templateLines[0]);
-        assertEquals("    ArrayList definitions = new ArrayList();", templateLines[1]);
+        assertThat(templateLines[0]).isEqualTo("public List<FunctionOverrideVariation> getDefinitions() {");
+        assertThat(templateLines[1]).isEqualTo("    ArrayList definitions = new ArrayList();");
         assertTemplateBody(templateLines);
-        assertEquals("    return definitions;", templateLines[templateLines.length - 2]);
-        assertEquals("}", templateLines[templateLines.length - 1]);
+        assertThat(templateLines[templateLines.length - 2]).isEqualTo("    return definitions;");
+        assertThat(templateLines[templateLines.length - 1]).isEqualTo("}");
     }
 
     @Test
@@ -57,15 +56,15 @@ public class MethodTemplatesTest {
         final FEEL feel = FEEL.newInstance(profiles);
 
         final List<FEELFunction> templatedFunctions = MethodTemplates.getFeelFunctions();
-        assertTrue(templatedFunctions.stream().allMatch(fn -> feel.evaluate(fn.getName()) instanceof FEELFunction));
+        assertThat(templatedFunctions.stream().allMatch(fn -> feel.evaluate(fn.getName()) instanceof FEELFunction)).isTrue();
     }
 
     @Test
     public void testTemplatedFunctionsIncludeBuiltInAndKieExtendedFunctions() {
         final List<FEELFunction> templatedFunctions = MethodTemplates.getFeelFunctions();
 
-        assertTrue(templatedFunctions.containsAll(asList(BuiltInFunctions.getFunctions())));
-        assertTrue(templatedFunctions.containsAll(asList(KieExtendedDMNFunctions.getFunctions())));
+        assertThat(templatedFunctions).containsAll(asList(BuiltInFunctions.getFunctions()));
+        assertThat(templatedFunctions).containsAll(asList(KieExtendedDMNFunctions.getFunctions()));
     }
 
     private void assertTemplateBody(final String[] templateLines) {
@@ -240,6 +239,6 @@ public class MethodTemplatesTest {
 
     private void assertLine(final List<String> lines,
                             final String line) {
-        assertTrue(lines.contains(String.format("definitions.add( new FunctionOverrideVariation( %s );", line)));
+        assertThat(lines).contains(String.format("definitions.add( new FunctionOverrideVariation( %s );", line));
     }
 }

@@ -52,9 +52,8 @@ import org.xmlunit.validation.ValidationProblem;
 import org.xmlunit.validation.ValidationResult;
 import org.xmlunit.validation.Validator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 public class UnmarshalMarshalTest {
 
@@ -110,8 +109,8 @@ public class UnmarshalMarshalTest {
         Definitions definitions = MARSHALLER.unmarshal(new InputStreamReader(this.getClass().getResourceAsStream("test-FontSize-sharedStyle.dmn")));
         DMNShape shape0 = (DMNShape) definitions.getDMNDI().getDMNDiagram().get(0).getDMNDiagramElement().get(0);
         DMNStyle shape0sharedStyle = (DMNStyle) shape0.getDMNLabel().getSharedStyle();
-        assertEquals("LS_4d396200-362f-4939-830d-32d2b4c87042_0", shape0sharedStyle.getId());
-        assertEquals(21d, shape0sharedStyle.getFontSize(), 0.0d);
+        assertThat(shape0sharedStyle.getId()).isEqualTo("LS_4d396200-362f-4939-830d-32d2b4c87042_0");
+        assertThat(shape0sharedStyle.getFontSize()).isCloseTo(21d, within(0.0d));
     }
 
     @Test
@@ -147,7 +146,7 @@ public class UnmarshalMarshalTest {
                 LOG.error("{}", p);
             }
         }
-        assertTrue(validateInputResult.isValid());
+        assertThat(validateInputResult.isValid()).isTrue();
 
         final File subdirFile = new File(baseOutputDir, subdir);
         if (!subdirFile.mkdirs()) {
@@ -174,7 +173,7 @@ public class UnmarshalMarshalTest {
                 LOG.error("{}", p);
             }
         }
-        assertTrue(validateOutputResult.isValid());
+        assertThat(validateOutputResult.isValid()).isTrue();
 
         LOG.debug("\n---\nDefault XMLUnit comparison:");
         Source control = Input.fromFile(inputXMLFile).build();
@@ -265,7 +264,7 @@ DMNDIv1.2:
         if (!checkSimilar.getDifferences().iterator().hasNext()) {
             LOG.info("[ EMPTY - no diffs using customized similarity ]");
         }
-        assertFalse("XML are NOT similar: " + checkSimilar.toString(), checkSimilar.hasDifferences());
+        assertThat(checkSimilar.hasDifferences()).as("XML are NOT similar: " + checkSimilar.toString()).isFalse();
     }
 
     private String safeStripDMNPRefix(Node target) {

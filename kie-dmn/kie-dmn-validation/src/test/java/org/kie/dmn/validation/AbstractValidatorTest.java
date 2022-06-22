@@ -109,7 +109,7 @@ public abstract class AbstractValidatorTest {
                                                       .map(this::getReader)
                                                       .map(marshaller::unmarshal)
                                                       .collect(Collectors.toList());
-        assertThat(definitionss.isEmpty()).isFalse();
+        assertThat(definitionss).isNotEmpty();
 
         final Optional<Definitions> definitions = definitionss.stream()
                                                               .filter(d -> {

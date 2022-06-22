@@ -33,7 +33,6 @@ import org.kie.dmn.validation.dtanalysis.model.MisleadingRule;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
@@ -96,8 +95,7 @@ public class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
                                                      new MaskedRule(2, 3));
         assertThat(maskedRules).hasSize(2);
         assertThat(analysis.getMaskedRules()).containsAll(maskedRules);
-        assertTrue("It should contain DMNMessage for the MaskedRule",
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE))).as("It should contain DMNMessage for the MaskedRule").isTrue();
 
         // MisleadingRules are duplicate of Masked, so are no longer displayed.
         assertThat(analysis.getMisleadingRules()).hasSize(2);
@@ -105,7 +103,6 @@ public class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
                                                              new MisleadingRule(3, 2));
         assertThat(misleadingRules).hasSize(2);
         assertThat(analysis.getMisleadingRules()).containsAll(misleadingRules);
-        assertTrue("It should NOT contain DMNMessage for the MisleadingRule",
-                   validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
+        assertThat(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE))).as("It should NOT contain DMNMessage for the MisleadingRule").isTrue();
     }
 }

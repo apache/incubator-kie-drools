@@ -25,7 +25,6 @@ import org.kie.dmn.validation.dtanalysis.model.Contraction;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class Check2ndNFViolationTest extends AbstractDTAnalysisTest {
@@ -41,8 +40,7 @@ public class Check2ndNFViolationTest extends AbstractDTAnalysisTest {
         assertThat(c2NFViolation.rule).isEqualTo(1);
         assertThat(c2NFViolation.pairedRules).contains(2);
         assertThat(c2NFViolation.adjacentDimension).isEqualTo(3);
-        assertTrue("It should contain at DMNMessage for the 2nd NF Violation",
-                   validate.stream().anyMatch(p -> p.getSourceId().equals("_4e358bae-7012-42dd-acea-e88b3aa3c8b2") && p.getMessageType().equals(DMNMessageType.DECISION_TABLE_2NDNFVIOLATION)));
+        assertThat(validate.stream().anyMatch(p -> p.getSourceId().equals("_4e358bae-7012-42dd-acea-e88b3aa3c8b2") && p.getMessageType().equals(DMNMessageType.DECISION_TABLE_2NDNFVIOLATION))).as("It should contain at DMNMessage for the 2nd NF Violation").isTrue();
 
     }
 

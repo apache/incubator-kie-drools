@@ -27,7 +27,6 @@ import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class DMNRuntimeBuilderTest {
 
@@ -50,6 +49,6 @@ public class DMNRuntimeBuilderTest {
                 .fromResources(Collections.emptyList()).getOrElseThrow(RuntimeException::new);
         assertThat(retrieved).isNotNull();
         KieRuntimeFactory kieRuntimeFactory = retrieved.getKieRuntimeFactory("TEST");
-        assertEquals(toReturn, kieRuntimeFactory);
+        assertThat(kieRuntimeFactory).isEqualTo(toReturn);
     }
 }

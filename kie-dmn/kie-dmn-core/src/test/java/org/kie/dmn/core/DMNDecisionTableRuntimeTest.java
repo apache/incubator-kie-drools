@@ -65,10 +65,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
@@ -362,7 +358,7 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.hasErrors()).isFalse();
-        assertNull( dmnResult.getContext().get("Logique de décision 1") );
+        assertThat(dmnResult.getContext().get("Logique de décision 1")).isNull();
     }
 
     @Test
@@ -584,9 +580,9 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         final DMNDecisionResult result = runtime.evaluateByName(model, context, "Result").getDecisionResultByName("Result");
 
-        assertEquals(expectedStatus, result.getEvaluationStatus());
-        assertFalse(result.hasErrors());
-        assertEquals(expectedResult, result.getResult());
+        assertThat(result.getEvaluationStatus()).isEqualTo(expectedStatus);
+        assertThat(result.hasErrors()).isFalse();
+        assertThat(result.getResult()).isEqualTo(expectedResult);
     }
 
     @Test
@@ -682,7 +678,7 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         kfs.write("src/main/resources/multipleOutputsCollectDT.dmn", dmnXml);
         kfs.generateAndWritePomXML(kjarReleaseId);
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
         final KieContainer container = ks.newKieContainer(kjarReleaseId);
         final DMNRuntime runtime = KieRuntimeFactory.of(container.getKieBase()).get(DMNRuntime.class);

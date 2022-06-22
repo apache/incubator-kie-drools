@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
@@ -113,10 +112,10 @@ public class ValidatorImportTest extends AbstractValidatorTest {
             final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL)
                                                        .theseModels(reader0, reader1);
             assertThat(messages).as(ValidatorUtil.formatMessages(messages)).hasSize(1);
-            assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND) &&
-                                                       p.getSourceReference() instanceof DMNElementReference &&
-                                                       ((DMNElementReference) p.getSourceReference()).getHref()
-                                                                                                     .equals("http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_1d52934e-aa4e-47c9-a011-fc989d795664")));
+            assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND) &&
+                    p.getSourceReference() instanceof DMNElementReference &&
+                    ((DMNElementReference) p.getSourceReference()).getHref()
+                            .equals("http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_1d52934e-aa4e-47c9-a011-fc989d795664"))).isTrue();
         }
     }
     
@@ -126,10 +125,10 @@ public class ValidatorImportTest extends AbstractValidatorTest {
                                                    .theseModels(getFile("import/Base-model.dmn"),
                                                                 getFile("import/Wrong-Import-base-model.dmn"));
         assertThat(messages).as(ValidatorUtil.formatMessages(messages)).hasSize(1);
-        assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND) &&
-                                                   p.getSourceReference() instanceof DMNElementReference &&
-                                                   ((DMNElementReference) p.getSourceReference()).getHref()
-                                                                                                 .equals("http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_1d52934e-aa4e-47c9-a011-fc989d795664")));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND) &&
+                p.getSourceReference() instanceof DMNElementReference &&
+                ((DMNElementReference) p.getSourceReference()).getHref()
+                        .equals("http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_1d52934e-aa4e-47c9-a011-fc989d795664"))).isTrue();
     }
 
     @Test
@@ -141,24 +140,24 @@ public class ValidatorImportTest extends AbstractValidatorTest {
                                                                 getDefinitions(Arrays.asList("import/Base-model.dmn", "import/Wrong-Import-base-model.dmn"),
                                                                                "http://www.trisotech.com/dmn/definitions/_719a2325-5cac-47ea-8a99-665c01d570a5",
                                                                                "Wrong Import base model"));
-        assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND) &&
-                                                   p.getSourceReference() instanceof DMNElementReference &&
-                                                   ((DMNElementReference) p.getSourceReference()).getHref()
-                                                                                                 .equals("http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_1d52934e-aa4e-47c9-a011-fc989d795664")));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND) &&
+                p.getSourceReference() instanceof DMNElementReference &&
+                ((DMNElementReference) p.getSourceReference()).getHref()
+                        .equals("http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_1d52934e-aa4e-47c9-a011-fc989d795664"))).isTrue();
     }
 
     @Test
     public void testOnlyImportBaseModelFromReaderInput() throws IOException {
         try (final Reader reader1 = getReader("import/Only-Import-base-model.dmn");) {
             final List<DMNMessage> messages = validator.validate(reader1, Validation.VALIDATE_MODEL);
-            assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.IMPORT_NOT_FOUND)));
+            assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.IMPORT_NOT_FOUND))).isTrue();
         }
     }
 
     @Test
     public void testOnlyImportBaseModelFromFileInput() throws IOException {
         final List<DMNMessage> messages = validator.validate(getFile("import/Only-Import-base-model.dmn"), Validation.VALIDATE_MODEL);
-        assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.IMPORT_NOT_FOUND)));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.IMPORT_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -167,7 +166,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
                                                                             "http://www.trisotech.com/dmn/definitions/_a9bfa4de-cf5c-4b2f-9011-ab576e00b162",
                                                                             "Only Import base model"),
                                                              Validation.VALIDATE_MODEL);
-        assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.IMPORT_NOT_FOUND)));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.IMPORT_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -204,7 +203,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
         final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL, Validation.VALIDATE_COMPILATION)
                                                    .theseModels(getReader("myHelloDS.dmn", DMNDecisionServicesTest.class),
                                                                 getReader("import/importingMyHelloDSbkmBoxedInvocation_wrongBKMname.dmn"));
-        assertTrue(messages.stream().anyMatch(p -> p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
+        assertThat(messages.stream().anyMatch(p -> p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME))).isTrue();
     }
     
     @Test
@@ -212,7 +211,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
         final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL, Validation.VALIDATE_COMPILATION)
                                                    .theseModels(getReader("myHelloDS.dmn", DMNDecisionServicesTest.class),
                                                                 getReader("import/importingMyHelloDSbkmBoxedInvocation_wrongItemDefName.dmn"));
-        assertTrue(messages.stream().anyMatch(p -> p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
+        assertThat(messages.stream().anyMatch(p -> p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME))).isTrue();
     }
     
     @Test
@@ -228,6 +227,6 @@ public class ValidatorImportTest extends AbstractValidatorTest {
         final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL, Validation.VALIDATE_COMPILATION)
                                                    .theseModels(getReader("myHelloDS.dmn", DMNDecisionServicesTest.class),
                                                                 getReader("import/importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn"));
-        assertTrue(messages.stream().anyMatch(p -> p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
+        assertThat(messages.stream().anyMatch(p -> p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME))).isTrue();
     }
 }
