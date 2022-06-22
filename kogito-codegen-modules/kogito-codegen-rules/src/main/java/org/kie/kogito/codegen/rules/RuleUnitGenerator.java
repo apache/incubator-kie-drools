@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.codegen.common.GeneratedFile;
-import org.drools.modelcompiler.builder.QueryModel;
+import org.drools.model.codegen.execmodel.QueryModel;
 import org.drools.ruleunits.api.RuleUnitConfig;
 import org.drools.ruleunits.api.conf.ClockType;
 import org.drools.ruleunits.api.conf.EventProcessingType;

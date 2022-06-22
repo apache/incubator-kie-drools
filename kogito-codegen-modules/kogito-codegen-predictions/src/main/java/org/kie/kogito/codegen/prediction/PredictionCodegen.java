@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static java.util.stream.Collectors.toList;
-import static org.drools.model.project.codegen.KogitoPackageSources.getReflectConfigFile;
+import static org.drools.model.codegen.project.KogitoPackageSources.getReflectConfigFile;
 import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
@@ -164,7 +164,7 @@ public class PredictionCodegen extends AbstractGenerator {
             }
 
             if (!pojoClasses.isEmpty()) {
-                org.drools.modelcompiler.builder.GeneratedFile reflectConfigFile =
+                org.drools.model.codegen.execmodel.GeneratedFile reflectConfigFile =
                         getReflectConfigFile(model.getKModulePackageName(), pojoClasses);
                 files.add(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE, reflectConfigFile.getPath(), new String(reflectConfigFile.getData())));
             }

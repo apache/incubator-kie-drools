@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
-            <artifactId>drools-model-project-codegen</artifactId>
+            <artifactId>drools-model-codegen</artifactId>
         </dependency>
 
 <!--    Required because of GrafanaConfigurationWriter    -->

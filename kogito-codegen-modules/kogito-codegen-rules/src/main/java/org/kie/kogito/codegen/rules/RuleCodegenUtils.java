@@ -23,7 +23,7 @@ import org.kie.internal.ruleunit.RuleUnitDescription;
 import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class RuleCodegenUtils {
 

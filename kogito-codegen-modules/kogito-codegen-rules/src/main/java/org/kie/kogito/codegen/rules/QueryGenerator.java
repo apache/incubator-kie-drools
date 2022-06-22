@@ -22,7 +22,7 @@ import java.util.Objects;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.drl.parser.DroolsError;
-import org.drools.modelcompiler.builder.QueryModel;
+import org.drools.model.codegen.execmodel.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
@@ -46,7 +46,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
+import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.util.StringUtils.ucFirst;
 import static org.kie.kogito.codegen.rules.RuleCodegen.TEMPLATE_RULE_FOLDER;
 import static org.kie.kogito.codegen.rules.RuleCodegenUtils.setGeneric;

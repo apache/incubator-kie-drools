@@ -83,7 +83,7 @@ public abstract class AbstractCodegenIT {
                     "import org.kie.api.KieBase;\n" +
                     "import org.kie.api.builder.model.KieBaseModel;\n" +
                     "import org.kie.api.runtime.KieSession;\n" +
-                    "import org.drools.modelcompiler.builder.KieBaseBuilder;\n" +
+                    "import org.drools.modelcompiler.KieBaseBuilder;\n" +
                     "\n" +
                     "\n" +
                     "public class ProjectRuntime implements org.kie.api.runtime.KieRuntimeBuilder {\n" +

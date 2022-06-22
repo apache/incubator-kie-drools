@@ -64,7 +64,7 @@ public class $Name$ extends AbstractRuleUnit<$ModelName$> {
         ruleBaseConfig.setEventProcessingMode($EventProcessingMode$);
         ruleBaseConfig.setSessionPoolSize($SessionPoolSize$);
         InternalKnowledgeBase kb =
-                org.drools.modelcompiler.builder.KieBaseBuilder.createKieBaseFromModel(new $RuleModelName$(), ruleBaseConfig);
+                org.drools.modelcompiler.KieBaseBuilder.createKieBaseFromModel(new $RuleModelName$(), ruleBaseConfig);
         return kb;
     }
 }

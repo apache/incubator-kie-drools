@@ -26,7 +26,7 @@ import java.util.Optional;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.drl.extensions.DecisionTableFactory;
-import org.drools.model.project.codegen.KieSessionModelBuilder;
+import org.drools.model.codegen.project.KieSessionModelBuilder;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.api.ApplicationSection;

@@ -25,8 +25,8 @@ import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.drl.parser.DroolsError;
-import org.drools.model.project.codegen.KogitoPackageSources;
-import org.drools.modelcompiler.builder.ModelBuilderImpl;
+import org.drools.model.codegen.execmodel.ModelBuilderImpl;
+import org.drools.model.codegen.project.KogitoPackageSources;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -89,7 +89,7 @@ public class DroolsModelBuilder {
 
     public Collection<GeneratedFile> generateCanonicalModelSources() {
         List<GeneratedFile> modelFiles = new ArrayList<>();
-        List<org.drools.modelcompiler.builder.GeneratedFile> legacyModelFiles = new ArrayList<>();
+        List<org.drools.model.codegen.execmodel.GeneratedFile> legacyModelFiles = new ArrayList<>();
 
         for (KogitoPackageSources pkgSources : modelBuilder.getPackageSources()) {
             pkgSources.collectGeneratedFiles(legacyModelFiles);
@@ -147,7 +147,7 @@ public class DroolsModelBuilder {
 
     private List<GeneratedFile> generateInternalResource(KogitoPackageSources pkgSources) {
         List<GeneratedFile> modelFiles = new ArrayList<>();
-        org.drools.modelcompiler.builder.GeneratedFile reflectConfigSource = pkgSources.getReflectConfigSource();
+        org.drools.model.codegen.execmodel.GeneratedFile reflectConfigSource = pkgSources.getReflectConfigSource();
         if (reflectConfigSource != null) {
             modelFiles.add(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE,
                     reflectConfigSource.getPath(),
@@ -183,7 +183,7 @@ public class DroolsModelBuilder {
         return resources.stream().filter(r -> r.getSourcePath().equals(resource.getSourcePath() + ".properties")).findFirst().orElse(null);
     }
 
-    private Collection<GeneratedFile> convertGeneratedRuleFile(Collection<org.drools.modelcompiler.builder.GeneratedFile> legacyModelFiles) {
+    private Collection<GeneratedFile> convertGeneratedRuleFile(Collection<org.drools.model.codegen.execmodel.GeneratedFile> legacyModelFiles) {
         return legacyModelFiles.stream().map(f -> new GeneratedFile(
                 RuleCodegen.RULE_TYPE,
                 f.getPath(), f.getData()))

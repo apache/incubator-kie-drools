@@ -17,7 +17,7 @@ package org.kie.kogito.codegen.rules;
 
 import java.util.Map;
 
-import org.drools.modelcompiler.builder.ModelSourceClass;
+import org.drools.model.codegen.execmodel.ModelSourceClass;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;

@@ -18,7 +18,7 @@ package org.kie.kogito.codegen.rules;
 import java.util.Collections;
 
 import org.drools.codegen.common.GeneratedFile;
-import org.drools.modelcompiler.builder.JavaParserCompiler;
+import org.drools.model.codegen.execmodel.JavaParserCompiler;
 import org.drools.ruleunits.impl.GeneratedRuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.rules.DataStore;
