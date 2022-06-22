@@ -1,6 +1,6 @@
 package org.drools.compiler.builder.impl.processors;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.rule.JavaDialectRuntimeData;
@@ -16,10 +16,10 @@ import static org.drools.util.StringUtils.isEmpty;
 
 public class FunctionCompiler extends AbstractPackageCompilationPhase {
 
-    private final KnowledgeBuilderImpl.AssetFilter assetFilter;
+    private final AssetFilter assetFilter;
     private ClassLoader rootClassLoader;
 
-    public FunctionCompiler(PackageDescr packageDescr, PackageRegistry pkgRegistry, KnowledgeBuilderImpl.AssetFilter assetFilter, ClassLoader rootClassLoader) {
+    public FunctionCompiler(PackageDescr packageDescr, PackageRegistry pkgRegistry, AssetFilter assetFilter, ClassLoader rootClassLoader) {
         super(pkgRegistry, packageDescr);
         this.assetFilter = assetFilter;
         this.rootClassLoader = rootClassLoader;
@@ -63,7 +63,7 @@ public class FunctionCompiler extends AbstractPackageCompilationPhase {
 
     private boolean filterAccepts(FunctionDescr functionDescr) {
         return assetFilter == null ||
-                !KnowledgeBuilderImpl.AssetFilter.Action.DO_NOTHING.equals(
+                !AssetFilter.Action.DO_NOTHING.equals(
                         assetFilter.accept(
                                 ResourceChange.Type.FUNCTION,
                                 functionDescr.getNamespace(),

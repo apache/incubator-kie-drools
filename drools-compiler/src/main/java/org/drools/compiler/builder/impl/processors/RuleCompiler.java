@@ -1,6 +1,6 @@
 package org.drools.compiler.builder.impl.processors;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -40,7 +40,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
 
     private InternalKnowledgeBase kBase;
     private int parallelRulesBuildThreshold;
-    private final KnowledgeBuilderImpl.AssetFilter assetFilter;
+    private final AssetFilter assetFilter;
 
     //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.
     //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
@@ -55,7 +55,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
             PackageDescr packageDescr,
             InternalKnowledgeBase kBase,
             int parallelRulesBuildThreshold,
-            KnowledgeBuilderImpl.AssetFilter assetFilter,
+            AssetFilter assetFilter,
             Map<String, AttributeDescr> packageAttributes,
             Resource resource,
             TypeDeclarationContext kBuilder) {
@@ -140,11 +140,11 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
     }
 
     private boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
-        return assetFilter == null || !KnowledgeBuilderImpl.AssetFilter.Action.DO_NOTHING.equals(assetFilter.accept(type, namespace, name));
+        return assetFilter == null || !AssetFilter.Action.DO_NOTHING.equals(assetFilter.accept(type, namespace, name));
     }
 
     private boolean filterAcceptsRemoval(ResourceChange.Type type, String namespace, String name) {
-        return assetFilter != null && KnowledgeBuilderImpl.AssetFilter.Action.REMOVE.equals(assetFilter.accept(type, namespace, name));
+        return assetFilter != null && AssetFilter.Action.REMOVE.equals(assetFilter.accept(type, namespace, name));
     }
 
 
@@ -384,7 +384,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
         }
         // ... add a filter to the PackageDescr to also consider the readded children rules as updated together with the parent one
         if (!childrenRuleNamesToBeRemoved.isEmpty()) {
-            ((CompositePackageDescr) packageDescr).addFilter((type, pkgName, assetName) -> childrenRuleNamesToBeRemoved.contains(assetName) ? KnowledgeBuilderImpl.AssetFilter.Action.UPDATE : KnowledgeBuilderImpl.AssetFilter.Action.DO_NOTHING);
+            ((CompositePackageDescr) packageDescr).addFilter((type, pkgName, assetName) -> childrenRuleNamesToBeRemoved.contains(assetName) ? AssetFilter.Action.UPDATE : AssetFilter.Action.DO_NOTHING);
         }
         return childrenRulesToBeRemoved;
     }
