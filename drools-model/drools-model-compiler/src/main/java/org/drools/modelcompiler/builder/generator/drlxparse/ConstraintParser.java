@@ -173,6 +173,7 @@ public class ConstraintParser {
         if (drlx.getExpr() instanceof NameExpr) {
             decl.setBoundVariable( PrintUtil.printNode(drlx.getExpr()) );
         }
+        decl.setBelongingPatternDescr(context.getCurrentPatternDescr());
         singleResult.setExprBinding( bindId );
         Type exprType = singleResult.getExprType();
         if (isBooleanBoxedUnboxed(exprType)) {
@@ -614,7 +615,7 @@ public class ConstraintParser {
         Expression combo;
 
         boolean arithmeticExpr = asList(PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER).contains(operator);
-        boolean isBetaConstraint = right.getExpression() != null && hasNonGlobalDeclaration( expressionTyperContext );
+        boolean isBetaConstraint = right.getExpression() != null && hasDeclarationFromOtherPattern( expressionTyperContext );
         boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaConstraint;
 
         if (equalityExpr) {
@@ -688,10 +689,19 @@ public class ConstraintParser {
         return coerced.getCoercedRight();
     }
 
-    private boolean hasNonGlobalDeclaration( ExpressionTyperContext expressionTyperContext ) {
-        return expressionTyperContext.getUsedDeclarations().stream()
-                .map( context::getDeclarationById )
-                .anyMatch( optDecl -> optDecl.isPresent() && !optDecl.get().isGlobal() );
+    private boolean hasDeclarationFromOtherPattern(ExpressionTyperContext expressionTyperContext) {
+        return expressionTyperContext.getUsedDeclarations()
+                                     .stream()
+                                     .map(context::getDeclarationById)
+                                     .anyMatch(optDecl -> {
+                                         if (optDecl.isPresent()) {
+                                             DeclarationSpec decl = optDecl.get();
+                                             if (!decl.isGlobal() && decl.getBelongingPatternDescr() != context.getCurrentPatternDescr()) {
+                                                 return true;
+                                             }
+                                         }
+                                         return false;
+                                     });
     }
 
     private boolean isForallSelfJoinConstraint( TypedExpression left, TypedExpression right, Index.ConstraintType constraintType ) {
