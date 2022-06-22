@@ -120,6 +120,7 @@ public class RuleContext {
 
     private int legacyAccumulateCounter = 0;
 
+    private Optional<PatternDescr> currentPatternDescr = empty();
     private Optional<BaseDescr> currentConstraintDescr = empty();
 
     private boolean hasCompilationError;
@@ -708,6 +709,18 @@ public class RuleContext {
 
     public void resetCurrentConstraintDescr() {
         this.currentConstraintDescr = empty();
+    }
+
+    public Optional<PatternDescr> getCurrentPatternDescr() {
+        return currentPatternDescr;
+    }
+
+    public void setCurrentPatternDescr(Optional<PatternDescr> currentPatternDescr) {
+        this.currentPatternDescr = currentPatternDescr;
+    }
+
+    public void resetCurrentPatternDescr() {
+        this.currentPatternDescr = empty();
     }
 
     public void setParentDescr( AndDescr parentDescr ) {
