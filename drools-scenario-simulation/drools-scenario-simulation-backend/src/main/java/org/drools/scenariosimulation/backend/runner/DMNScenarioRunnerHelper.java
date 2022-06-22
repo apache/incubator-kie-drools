@@ -105,7 +105,10 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
             String factName = input.getFactIdentifier().getName();
             String importPrefix = input.getFactIdentifier().getImportPrefix();
             if (importPrefix != null && !importPrefix.isEmpty()) {
-                String importedFactName = factName.replaceFirst(importPrefix + ".", "");
+                if (!factName.startsWith(importPrefix)) {
+                    throw new IllegalArgumentException("Fact name: " + factName + " has defined an invalid import prefix: " + importPrefix);
+                }
+                String importedFactName = factName.replaceFirst("^" + importPrefix + "\\.", "");
                 Map<String, Object> groupedFacts = importedInputValues.computeIfAbsent(importPrefix, k -> new HashMap<>());
                 Object value = groupedFacts.containsKey(importedFactName) ?
                         mergeValues(groupedFacts.get(importedFactName), input.getValue()) :
