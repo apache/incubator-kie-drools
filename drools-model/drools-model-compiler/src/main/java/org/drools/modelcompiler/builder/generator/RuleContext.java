@@ -75,7 +75,7 @@ public class RuleContext {
 
     private static final String SCOPE_SUFFIX = "_sCoPe";
 
-    private final TypeDeclarationContext kbuilder;
+    private final TypeDeclarationContext typeDeclarationContext;
     private final PackageModel packageModel;
     private final TypeResolver typeResolver;
     private final RuleDescr ruleDescr;
@@ -131,12 +131,12 @@ public class RuleContext {
 
     private AndDescr parentDescr;
 
-    public RuleContext(TypeDeclarationContext kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
-        this(kbuilder, packageModel, typeResolver, ruleDescr, -1);
+    public RuleContext(TypeDeclarationContext typeDeclarationContext, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
+        this(typeDeclarationContext, packageModel, typeResolver, ruleDescr, -1);
     }
 
-    public RuleContext(TypeDeclarationContext kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
-        this.kbuilder = kbuilder;
+    public RuleContext(TypeDeclarationContext typeDeclarationContext, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
+        this.typeDeclarationContext = typeDeclarationContext;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
         exprPointer.push( this.expressions::add );
@@ -152,7 +152,7 @@ public class RuleContext {
         }
 
         String unitName = ruleDescr.getUnit().getTarget();
-        RuleUnitDescriptionLoader ruleUnitDescriptionLoader = kbuilder.getPackageRegistry(packageModel.getName() ).getPackage().getRuleUnitDescriptionLoader();
+        RuleUnitDescriptionLoader ruleUnitDescriptionLoader = typeDeclarationContext.getPackageRegistry(packageModel.getName() ).getPackage().getRuleUnitDescriptionLoader();
         Optional<RuleUnitDescription> ruDescr = ruleUnitDescriptionLoader.getDescription(unitName );
         return ruDescr.map(this::processRuleUnit).orElseThrow( () -> new UnknownRuleUnitException( unitName ) );
     }
@@ -175,8 +175,8 @@ public class RuleContext {
         return ruleUnitDescr;
     }
 
-    public TypeDeclarationContext getKbuilder() {
-        return kbuilder;
+    public TypeDeclarationContext getTypeDeclarationContext() {
+        return typeDeclarationContext;
     }
 
     public int getRuleIndex() {
@@ -184,7 +184,7 @@ public class RuleContext {
     }
 
     public EvaluatorDefinition getEvaluatorDefinition(String opName) {
-        return kbuilder.getBuilderConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( opName );
+        return typeDeclarationContext.getBuilderConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( opName );
     }
 
     public void addCompilationError( KnowledgeBuilderResult error ) {
@@ -192,8 +192,8 @@ public class RuleContext {
         if ( error instanceof BaseKnowledgeBuilderResultImpl ) {
             (( BaseKnowledgeBuilderResultImpl ) error).setResource( ruleDescr.getResource() );
         }
-        synchronized (kbuilder) {
-            kbuilder.addBuilderResult(error);
+        synchronized (typeDeclarationContext) {
+            typeDeclarationContext.addBuilderResult(error);
         }
     }
 
@@ -201,8 +201,8 @@ public class RuleContext {
         if ( warn instanceof BaseKnowledgeBuilderResultImpl ) {
             (( BaseKnowledgeBuilderResultImpl ) warn).setResource( ruleDescr.getResource() );
         }
-        synchronized (kbuilder) {
-            kbuilder.addBuilderResult(warn);
+        synchronized (typeDeclarationContext) {
+            typeDeclarationContext.addBuilderResult(warn);
         }
     }
 
@@ -211,7 +211,7 @@ public class RuleContext {
     }
 
     public boolean hasErrors() {
-        return kbuilder.hasResults( ResultSeverity.ERROR );
+        return typeDeclarationContext.hasResults( ResultSeverity.ERROR );
     }
 
     public void addInlineCastType(String field, Type type) {
@@ -279,7 +279,7 @@ public class RuleContext {
         packageModel.getImports().stream()
                 .filter( imp -> imp.endsWith(".*") )
                 .map( imp -> imp.substring(0, imp.length()-2) )
-                .map( imp -> kbuilder.getPackageRegistry(imp) )
+                .map( imp -> typeDeclarationContext.getPackageRegistry(imp) )
                 .filter( Objects::nonNull )
                 .map( pkgRegistry -> pkgRegistry.getPackage().getGlobals() )
                 .forEach( globals::putAll );
@@ -511,7 +511,7 @@ public class RuleContext {
     }
 
     public boolean isPropertyReactive( Class<?> patternClass) {
-        PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getPropertySpecificOption();
+        PropertySpecificOption propertySpecificOption = typeDeclarationContext.getBuilderConfiguration().getPropertySpecificOption();
         return propertySpecificOption.isPropSpecific( patternClass.getAnnotation( PropertyReactive.class ) != null,
                                                       patternClass.getAnnotation( ClassReactive.class ) != null );
     }

@@ -79,7 +79,7 @@ public class LegacyAccumulate {
         final InternalKnowledgePackage pkg = packageModel.getPkg();
         final RuleDescr ruleDescr = context.getRuleDescr();
 
-        ruleBuildContext = new RuleBuildContext(context.getKbuilder(), ruleDescr, dialectCompiletimeRegistry, pkg, defaultDialect);
+        ruleBuildContext = new RuleBuildContext(context.getTypeDeclarationContext(), ruleDescr, dialectCompiletimeRegistry, pkg, defaultDialect);
         ruleBuildContext.setDeclarationResolver( new DelegateDeclarationScopeResolver(ruleBuildContext.getDeclarationResolver(), context, externalDeclrs ) );
         ruleBuildContext.setDialect( defaultDialect ); // enforce java dialect even if the rule declares the mvel one
         for (int i = 0; i < context.getLegacyAccumulateCounter(); i++) {
