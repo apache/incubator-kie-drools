@@ -16,6 +16,7 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -110,7 +111,7 @@ public class ClassLoaderLeakTest {
 
         KieBuilder kb = ks.newKieBuilder(kfs);
         if (withExecModel) {
-            kb.buildAll(org.drools.modelcompiler.ExecutableModelProject.class);
+            kb.buildAll(ExecutableModelProject.class);
         } else {
             kb.buildAll();
         }

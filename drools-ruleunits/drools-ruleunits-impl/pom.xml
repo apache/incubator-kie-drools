@@ -54,9 +54,9 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-model-compiler</artifactId>
-          <scope>test</scope>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-model-codegen</artifactId>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>

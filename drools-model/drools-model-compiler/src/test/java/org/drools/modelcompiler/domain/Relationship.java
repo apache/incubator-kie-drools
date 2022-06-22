@@ -26,7 +26,7 @@ public class Relationship {
     @Position(1)
     private final String end;
 
-    public Relationship( String start, String end ) {
+    public Relationship(String start, String end ) {
         this.start = start;
         this.end = end;
     }

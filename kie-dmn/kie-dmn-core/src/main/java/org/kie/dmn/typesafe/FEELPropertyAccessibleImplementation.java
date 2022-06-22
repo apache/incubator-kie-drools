@@ -37,10 +37,10 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodWithStringBody;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
+import org.drools.model.codegen.execmodel.generator.declaredtype.api.FieldDefinition;
+import org.drools.model.codegen.execmodel.generator.declaredtype.api.MethodDefinition;
+import org.drools.model.codegen.execmodel.generator.declaredtype.api.MethodWithStringBody;
+import org.drools.model.codegen.execmodel.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.feel.util.EvalHelper;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
