@@ -25,7 +25,6 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -39,7 +38,7 @@ public class ValidatorArtifactTest extends AbstractValidatorTest {
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-            assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
 
@@ -49,7 +48,7 @@ public class ValidatorArtifactTest extends AbstractValidatorTest {
                 getFile( "artifact/ASSOC_REFERENCES_NOT_EMPTY.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -60,6 +59,6 @@ public class ValidatorArtifactTest extends AbstractValidatorTest {
                                 "ASSOC_REFERENCES_NOT_EMPTY"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 }

@@ -19,7 +19,7 @@ package org.kie.dmn.feel.gwt.functions.api;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.lang.types.BuiltInType.STRING;
 
 public class FunctionOverrideVariationTest {
@@ -39,13 +39,13 @@ public class FunctionOverrideVariationTest {
 
     @Test
     public void testToHumanReadableString() {
-        assertEquals("string, string, string, string", functionOverrideVariation.toHumanReadableString());
+        assertThat(functionOverrideVariation.toHumanReadableString()).isEqualTo("string, string, string, string");
     }
 
     @Test
     public void testToHumanReadableStrings() {
         final FunctionDefinitionStrings functionDefinitionStrings = functionOverrideVariation.toHumanReadableStrings();
-        assertEquals("replace(string, string, string, string)", functionDefinitionStrings.getHumanReadable());
-        assertEquals("replace($1, $2, $3, $4)", functionDefinitionStrings.getTemplate());
+        assertThat(functionDefinitionStrings.getHumanReadable()).isEqualTo("replace(string, string, string, string)");
+        assertThat(functionDefinitionStrings.getTemplate()).isEqualTo("replace($1, $2, $3, $4)");
     }
 }

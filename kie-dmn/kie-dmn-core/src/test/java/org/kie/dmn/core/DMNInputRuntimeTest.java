@@ -39,7 +39,6 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
@@ -298,7 +297,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(idnMembershipLevels.getType().getBaseType().getName()).isEqualTo("tMembershipLevel");
         assertThat(idnMembershipLevels.getType().isCollection()).isTrue();
         assertThat(idnMembershipLevels.getType().isComposite()).isFalse();
-        assertThat(idnMembershipLevels.getType().getAllowedValues().isEmpty()).isTrue();
+        assertThat(idnMembershipLevels.getType().getAllowedValues()).isEmpty();
 
         final InputDataNode idnPercent = dmnModel.getInputs().stream().filter(idn -> idn.getName().equals("Percent")).findFirst().get();
         assertThat(idnPercent.getType().getBaseType().getNamespace()).isEqualTo(FEEL_NAMESPACE);
@@ -361,27 +360,27 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         int index = 1;
         for (InputDataNode node : dmnModel.getInputs()) {
-            assertTrue(node.getName().endsWith("" + index++));
+            assertThat(node.getName().endsWith("" + index++)).isTrue();
         }
 
         index = 1;
         for (DecisionNode node : dmnModel.getDecisions()) {
-            assertTrue(node.getName().endsWith("" + index++));
+            assertThat(node.getName().endsWith("" + index++)).isTrue();
         }
 
         index = 1;
         for (BusinessKnowledgeModelNode node : dmnModel.getBusinessKnowledgeModels()) {
-            assertTrue(node.getName().endsWith("" + index++));
+            assertThat(node.getName().endsWith("" + index++)).isTrue();
         }
 
         index = 1;
         for (ItemDefNode node : dmnModel.getItemDefinitions()) {
-            assertTrue(node.getName().endsWith("" + index++));
+            assertThat(node.getName().endsWith("" + index++)).isTrue();
         }
 
         index = 1;
         for (DecisionServiceNode node : dmnModel.getDecisionServices()) {
-            assertTrue(node.getName().endsWith("" + index++));
+            assertThat(node.getName().endsWith("" + index++)).isTrue();
         }
     }
 }

@@ -44,8 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
 
@@ -205,7 +204,7 @@ public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
 
             fail("");
         } catch (final Exception e) {
-            assertTrue(e.getMessage().contains("'model'"));
+            assertThat(e.getMessage()).contains("'model'");
             /* java.lang.NullPointerException: Kie DMN API parameter 'model' cannot be null.
                 at java.util.Objects.requireNonNull(Objects.java:290)
                 at org.kie.dmn.core.impl.DMNRuntimeImpl.evaluateAll(DMNRuntimeImpl.java:123)

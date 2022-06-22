@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -68,7 +67,7 @@ public class DMN14GenericSynthTest extends BaseVariantTest {
         DMNContext context = runtime.newContext();
         context.set("Input", Arrays.asList(tc1, tc2, tc3));
         DMNResult results = runtime.evaluateAll(model, context);
-        assertEquals(Arrays.asList(tc1, tc3), results.getDecisionResultByName("Decision").getResult());
+        assertThat(results.getDecisionResultByName("Decision").getResult()).isEqualTo(Arrays.asList(tc1, tc3));
     }
 
     @Test
@@ -98,7 +97,7 @@ public class DMN14GenericSynthTest extends BaseVariantTest {
         DMNContext context = runtime.newContext();
         context.set("Input", Arrays.asList(tc1, tc2, tc3));
         DMNResult results = runtime.evaluateAll(model, context);
-        assertEquals(Arrays.asList("x", "y", "z"), results.getDecisionResultByName("Decision").getResult());
+        assertThat(results.getDecisionResultByName("Decision").getResult()).isEqualTo(Arrays.asList("x", "y", "z"));
     }
 
     @Test

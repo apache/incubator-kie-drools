@@ -44,8 +44,6 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK;
@@ -90,7 +88,7 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         assertThat(idnMembershipLevels.getType().getBaseType().getName()).isEqualTo("tMembershipLevel");
         assertThat(idnMembershipLevels.getType().isCollection()).isTrue();
         assertThat(idnMembershipLevels.getType().isComposite()).isFalse();
-        assertThat(idnMembershipLevels.getType().getAllowedValues().isEmpty()).isTrue();
+        assertThat(idnMembershipLevels.getType().getAllowedValues()).isEmpty();
 
         final InputDataNode idnPercent = dmnModel.getInputs().stream().filter(idn -> idn.getName().equals("Percent")).findFirst().get();
         assertThat(idnPercent.getType().getBaseType().getNamespace()).isEqualTo(FEEL_NAMESPACE);
@@ -310,28 +308,28 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         assertThat(result.get("Bruce")).isInstanceOf(Map.class);
         final Map<String, Object> bruce = (Map<String, Object>) result.get("Bruce");
 
-        assertEquals(2, ((List) bruce.get("one")).size());
-        assertTrue(((List) bruce.get("one")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("55")));
-        assertTrue(((List) bruce.get("one")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("510")));
+        assertThat(((List) bruce.get("one"))).hasSize(2);
+        assertThat(((List) bruce.get("one")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("55"))).isTrue();
+        assertThat(((List) bruce.get("one")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("510"))).isTrue();
 
-        assertEquals(3, ((List) bruce.get("two")).size());
-        assertTrue(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("810")));
-        assertTrue(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85")));
-        assertTrue(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66")));
+        assertThat(((List) bruce.get("two"))).hasSize(3);
+        assertThat(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("810"))).isTrue();
+        assertThat(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85"))).isTrue();
+        assertThat(((List) bruce.get("two")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66"))).isTrue();
 
-        assertEquals(1, ((List) bruce.get("three")).size());
-        assertTrue(((List) bruce.get("three")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("510")));
+        assertThat(((List) bruce.get("three"))).hasSize(1);
+        assertThat(((List) bruce.get("three")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("510"))).isTrue();
 
-        assertEquals(2, ((List) bruce.get("Four")).size());
-        assertTrue(((List) bruce.get("Four")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85")));
-        assertTrue(((List) bruce.get("Four")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66")));
+        assertThat(((List) bruce.get("Four"))).hasSize(2);
+        assertThat(((List) bruce.get("Four")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85"))).isTrue();
+        assertThat(((List) bruce.get("Four")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66"))).isTrue();
 
-        assertEquals(2, ((List) bruce.get("Five")).size());
-        assertTrue(((List) bruce.get("Five")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85")));
-        assertTrue(((List) bruce.get("Five")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66")));
+        assertThat(((List) bruce.get("Five"))).hasSize(2);
+        assertThat(((List) bruce.get("Five")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85"))).isTrue();
+        assertThat(((List) bruce.get("Five")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66"))).isTrue();
 
-        assertEquals(2, ((List) bruce.get("six")).size());
-        assertTrue(((List) bruce.get("six")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85")));
-        assertTrue(((List) bruce.get("six")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66")));
+        assertThat(((List) bruce.get("six"))).hasSize(2);
+        assertThat(((List) bruce.get("six")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("85"))).isTrue();
+        assertThat(((List) bruce.get("six")).stream().anyMatch(e -> ((Map<String, Object>) e).get("Title").equals("66"))).isTrue();
     }
 }

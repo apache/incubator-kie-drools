@@ -32,7 +32,8 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class FEELShowcaseIT {
 
@@ -91,7 +92,7 @@ public class FEELShowcaseIT {
         feelExpressionTextBox.clear();
         feelExpressionTextBox.sendKeys(feelExpression);
 
-        assertEquals(expectedEvaluation, feelEvaluation.getAttribute("value"));
+        assertThat(feelEvaluation.getAttribute("value")).isEqualTo(expectedEvaluation);
     }
 
     private FirefoxOptions getFirefoxOptions() {

@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class DMNRuntimeListenerPropertyTest {
 
@@ -67,7 +66,7 @@ public class DMNRuntimeListenerPropertyTest {
         kfs.generateAndWritePomXML(releaseId);
 
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
         final KieContainer kieContainer = ks.newKieContainer(releaseId);
 

@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -56,7 +55,7 @@ public class UsingResourceValidatorTest extends AbstractValidatorTest {
     public void testFailingModelValidation_single() {
         final List<DMNMessage> messages = validator.validate( getResource("import/importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL );
         LOG.debug("{}", messages);
-        assertTrue(messages.stream().anyMatch(p -> p.getPath().endsWith("importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn") && p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
+        assertThat(messages.stream().anyMatch(p -> p.getPath().endsWith("importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn") && p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME))).isTrue();
     }
     
     @Test
@@ -65,14 +64,14 @@ public class UsingResourceValidatorTest extends AbstractValidatorTest {
                                                    .theseModels(getResource("myHelloDS.dmn", DMNDecisionServicesTest.class),
                                                                 getResource("import/importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn"));
         LOG.debug("{}", messages);
-        assertTrue(messages.stream().anyMatch(p -> p.getPath().endsWith("importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn") && p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME)));
+        assertThat(messages.stream().anyMatch(p -> p.getPath().endsWith("importingMyHelloDSbkmBoxedInvocation_wrongDoubleImportName.dmn") && p.getText().contains("myHelloDS") && p.getMessageType().equals(DMNMessageType.DUPLICATE_NAME))).isTrue();
     }
     
     @Test
     public void testFailingCompilation_single() {
         final List<DMNMessage> messages = validator.validate( getResource("invalidFEEL.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION );
         LOG.debug("{}", messages);
-        assertTrue(messages.stream().anyMatch(p -> p.getPath().endsWith("invalidFEEL.dmn") && p.getText().contains("Error compiling FEEL expression") && p.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL)));
+        assertThat(messages.stream().anyMatch(p -> p.getPath().endsWith("invalidFEEL.dmn") && p.getText().contains("Error compiling FEEL expression") && p.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL))).isTrue();
     }
     
     @Test
@@ -80,7 +79,7 @@ public class UsingResourceValidatorTest extends AbstractValidatorTest {
         final List<DMNMessage> messages = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                 .theseModels(getResource("invalidFEEL.dmn"));
         LOG.debug("{}", messages);
-        assertTrue(messages.stream().anyMatch(p -> p.getPath().endsWith("invalidFEEL.dmn") && p.getText().contains("Error compiling FEEL expression") && p.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL)));
+        assertThat(messages.stream().anyMatch(p -> p.getPath().endsWith("invalidFEEL.dmn") && p.getText().contains("Error compiling FEEL expression") && p.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL))).isTrue();
     }
 
 }

@@ -36,8 +36,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.gwt.functions.rebind.FileCreator.GENERATED_CLASS_FQCN;
 import static org.kie.dmn.feel.gwt.functions.rebind.FileCreator.PACKAGE_NAME;
 import static org.mockito.Mockito.doReturn;
@@ -100,13 +99,13 @@ public class FileCreatorTest {
         verify(composerFactory).addImport(Type.class.getCanonicalName());
         verify(composerFactory).addImplementedInterface(FEELFunctionProvider.class.getName());
 
-        assertSame(composerFactory, actualFactory);
+        assertThat(actualFactory).isSameAs(composerFactory);
     }
 
     @Test
     public void testMakeComposerFactory() {
         final ClassSourceFileComposerFactory factory = fileCreator.makeComposerFactory();
-        assertEquals(PACKAGE_NAME, factory.getCreatedPackage());
-        assertEquals(GENERATED_CLASS_FQCN, factory.getCreatedClassShortName());
+        assertThat(factory.getCreatedPackage()).isEqualTo(PACKAGE_NAME);
+        assertThat(factory.getCreatedClassShortName()).isEqualTo(GENERATED_CLASS_FQCN);
     }
 }

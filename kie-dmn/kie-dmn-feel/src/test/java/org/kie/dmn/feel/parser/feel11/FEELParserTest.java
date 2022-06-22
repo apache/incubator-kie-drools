@@ -692,7 +692,7 @@ public class FEELParserTest {
         assertThat( list.getText()).isEqualTo( "10, foo * bar, true");
 
         ListNode ln = (ListNode) list;
-        assertThat( ln.getElements().size()).isEqualTo(3);
+        assertThat( ln.getElements()).hasSize(3);
         assertThat( ln.getElements().get( 0 )).isInstanceOf(NumberNode.class);
         assertThat( ln.getElements().get( 1 )).isInstanceOf(InfixOpNode.class);
         assertThat( ln.getElements().get( 2 )).isInstanceOf(BooleanNode.class);
@@ -721,7 +721,7 @@ public class FEELParserTest {
         assertThat( ctxbase.getText()).isEqualTo(inputExpression);
 
         ContextNode ctx = (ContextNode) ctxbase;
-        assertThat( ctx.getEntries().size()).isEqualTo(3);
+        assertThat( ctx.getEntries()).hasSize(3);
 
         ContextEntryNode entry = ctx.getEntries().get( 0 );
         assertThat(entry.getName()).isInstanceOf(StringNode.class);
@@ -736,7 +736,7 @@ public class FEELParserTest {
         assertThat( entry.getName()).isInstanceOf(NameDefNode.class);
         NameDefNode name = (NameDefNode) entry.getName();
         assertThat( name.getParts()).isNotNull();
-        assertThat( name.getParts().size()).isEqualTo(5);
+        assertThat( name.getParts()).hasSize(5);
         assertThat( entry.getName().getText()).isEqualTo("a non-string key");
         assertThat( entry.getValue()).isInstanceOf(InfixOpNode.class);
         assertThat( entry.getResultType()).isEqualTo(BuiltInType.NUMBER);
@@ -746,7 +746,7 @@ public class FEELParserTest {
         assertThat( entry.getName()).isInstanceOf(NameDefNode.class);
         name = (NameDefNode) entry.getName();
         assertThat( name.getParts()).isNotNull();
-        assertThat( name.getParts().size()).isEqualTo(9);
+        assertThat( name.getParts()).hasSize(9);
         assertThat( entry.getName().getText()).isEqualTo("a key.with + /' odd chars");
         assertThat( entry.getValue()).isInstanceOf(RangeNode.class);
         assertThat( entry.getResultType()).isEqualTo(BuiltInType.RANGE);
@@ -764,13 +764,13 @@ public class FEELParserTest {
         assertThat( ctxbase.getText()).isEqualTo(inputExpression);
 
         ContextNode ctx = (ContextNode) ctxbase;
-        assertThat( ctx.getEntries().size()).isEqualTo(3);
+        assertThat( ctx.getEntries()).hasSize(3);
 
         ContextEntryNode entry = ctx.getEntries().get( 0 );
         assertThat( entry.getName()).isInstanceOf(NameDefNode.class);
         NameDefNode name = (NameDefNode) entry.getName();
         assertThat( name.getParts()).isNotNull();
-        assertThat( name.getParts().size()).isEqualTo(5);
+        assertThat( name.getParts()).hasSize(5);
         assertThat( entry.getName().getText()).isEqualTo("a variable with in keyword");
         assertThat( entry.getValue()).isInstanceOf(NumberNode.class);
         assertThat( entry.getResultType()).isEqualTo(BuiltInType.NUMBER);
@@ -780,7 +780,7 @@ public class FEELParserTest {
         assertThat( entry.getName()).isInstanceOf(NameDefNode.class);
         name = (NameDefNode) entry.getName();
         assertThat( name.getParts()).isNotNull();
-        assertThat( name.getParts().size()).isEqualTo(2);
+        assertThat( name.getParts()).hasSize(2);
         assertThat( entry.getName().getText()).isEqualTo("another variable");
         assertThat( entry.getValue()).isInstanceOf(InfixOpNode.class);
         assertThat( entry.getResultType()).isEqualTo(BuiltInType.NUMBER);
@@ -790,7 +790,7 @@ public class FEELParserTest {
         assertThat( entry.getName()).isInstanceOf(NameDefNode.class);
         name = (NameDefNode) entry.getName();
         assertThat( name.getParts()).isNotNull();
-        assertThat( name.getParts().size()).isEqualTo(3);
+        assertThat( name.getParts()).hasSize(3);
         assertThat( entry.getName().getText()).isEqualTo("another in variable");
         assertThat( entry.getValue()).isInstanceOf(InfixOpNode.class);
         assertThat( entry.getResultType()).isEqualTo(BuiltInType.NUMBER);
@@ -817,7 +817,7 @@ public class FEELParserTest {
         assertThat( ctxbase.getText()).isEqualTo(inputExpression);
 
         ContextNode ctx = (ContextNode) ctxbase;
-        assertThat( ctx.getEntries().size()).isEqualTo(2);
+        assertThat( ctx.getEntries()).hasSize(2);
 
         ContextEntryNode entry = ctx.getEntries().get( 0 );
         assertThat( entry.getName()).isInstanceOf(NameDefNode.class);
@@ -834,7 +834,7 @@ public class FEELParserTest {
         assertThat( entry.getValue()).isInstanceOf(ContextNode.class);
 
         ContextNode applicant = (ContextNode) entry.getValue();
-        assertThat( applicant.getEntries().size()).isEqualTo(5);
+        assertThat( applicant.getEntries()).hasSize(5);
         assertThat( applicant.getEntries().get( 0 ).getName().getText()).isEqualTo("first name");
         assertThat( applicant.getEntries().get( 0 ).getResultType()).isEqualTo(BuiltInType.STRING);
         assertThat( applicant.getEntries().get( 1 ).getName().getText()).isEqualTo("last + name");
@@ -845,7 +845,7 @@ public class FEELParserTest {
         assertThat( applicant.getEntries().get( 3 ).getValue()).isInstanceOf(ContextNode.class);
 
         ContextNode address = (ContextNode) applicant.getEntries().get( 3 ).getValue();
-        assertThat( address.getEntries().size()).isEqualTo(2);
+        assertThat( address.getEntries()).hasSize(2);
         assertThat( address.getEntries().get( 0 ).getName().getText()).isEqualTo("street");
         assertThat( address.getEntries().get( 0 ).getResultType()).isEqualTo(BuiltInType.STRING);
         assertThat( address.getEntries().get( 1 ).getName().getText()).isEqualTo("city");
@@ -868,7 +868,7 @@ public class FEELParserTest {
         assertThat( ctxbase.getText()).isEqualTo(inputExpression);
 
         ContextNode ctx = (ContextNode) ctxbase;
-        assertThat( ctx.getEntries().size()).isEqualTo(2);
+        assertThat( ctx.getEntries()).hasSize(2);
 
         ContextEntryNode entry = ctx.getEntries().get( 1 );
         assertThat( entry.getName()).isInstanceOf(NameDefNode.class);
@@ -891,7 +891,7 @@ public class FEELParserTest {
         assertThat( ctxbase.getText()).isEqualTo(inputExpression);
 
         ContextNode ctx = (ContextNode) ctxbase;
-        assertThat( ctx.getEntries().size()).isEqualTo(1);
+        assertThat( ctx.getEntries()).hasSize(1);
 
         ContextEntryNode entry = ctx.getEntries().get( 0 );
         assertThat( entry.getName()).isInstanceOf(NameDefNode.class);
@@ -901,7 +901,7 @@ public class FEELParserTest {
         assertThat( entry.getValue().getText()).isEqualTo("function( person's age ) person's age < 21");
 
         FunctionDefNode isMinorFunc = (FunctionDefNode) entry.getValue();
-        assertThat( isMinorFunc.getFormalParameters().size()).isEqualTo(1);
+        assertThat( isMinorFunc.getFormalParameters()).hasSize(1);
         assertThat( isMinorFunc.getFormalParameters().get( 0 ).getText()).isEqualTo( "person's age");
         assertThat( isMinorFunc.isExternal()).isEqualTo(false);
         assertThat( isMinorFunc.getBody()).isInstanceOf(InfixOpNode.class);
@@ -921,7 +921,7 @@ public class FEELParserTest {
         assertThat( ctxbase.getText()).isEqualTo(inputExpression);
 
         ContextNode ctx = (ContextNode) ctxbase;
-        assertThat( ctx.getEntries().size()).isEqualTo(1);
+        assertThat( ctx.getEntries()).hasSize(1);
 
         ContextEntryNode entry = ctx.getEntries().get( 0 );
         assertThat( entry.getName()).isInstanceOf(NameDefNode.class);
@@ -936,19 +936,19 @@ public class FEELParserTest {
                                                  + "}");
 
         FunctionDefNode cos = (FunctionDefNode) entry.getValue();
-        assertThat( cos.getFormalParameters().size()).isEqualTo(1);
+        assertThat( cos.getFormalParameters()).hasSize(1);
         assertThat( cos.getFormalParameters().get( 0 ).getText()).isEqualTo("angle");
         assertThat( cos.isExternal()).isEqualTo(true);
         assertThat( cos.getBody()).isInstanceOf(ContextNode.class);
 
         ContextNode body = (ContextNode) cos.getBody();
-        assertThat( body.getEntries().size()).isEqualTo(1);
+        assertThat( body.getEntries()).hasSize(1);
         ContextEntryNode java = body.getEntries().get( 0 );
         assertThat( java.getName().getText()).isEqualTo("java");
         assertThat( java.getValue()).isInstanceOf(ContextNode.class);
 
         ContextNode def = (ContextNode) java.getValue();
-        assertThat( def.getEntries().size()).isEqualTo(2);
+        assertThat( def.getEntries()).hasSize(2);
         assertThat( def.getEntries().get( 0 ).getName().getText()).isEqualTo("class");
         assertThat( def.getEntries().get( 0 ).getValue()).isInstanceOf(StringNode.class);
         assertThat( def.getEntries().get( 0 ).getValue().getText()).isEqualTo( "\"java.lang.Math\"");
@@ -967,7 +967,7 @@ public class FEELParserTest {
         assertThat( forbase.getResultType()).isEqualTo(BuiltInType.LIST);
 
         ForExpressionNode forExpr = (ForExpressionNode) forbase;
-        assertThat( forExpr.getIterationContexts().size()).isEqualTo(1);
+        assertThat( forExpr.getIterationContexts()).hasSize(1);
         assertThat( forExpr.getExpression()).isInstanceOf(InfixOpNode.class);
         assertThat( forExpr.getExpression().getText()).isEqualTo( "item.price * item.quantity");
 
@@ -1003,7 +1003,7 @@ public class FEELParserTest {
 
         QuantifiedExpressionNode someExpr = (QuantifiedExpressionNode) someBase;
         assertThat( someExpr.getQuantifier()).isEqualTo(QuantifiedExpressionNode.Quantifier.SOME);
-        assertThat( someExpr.getIterationContexts().size()).isEqualTo(1);
+        assertThat( someExpr.getIterationContexts()).hasSize(1);
         assertThat( someExpr.getIterationContexts().get( 0 ).getText()).isEqualTo( "item in order.items");
         assertThat( someExpr.getExpression().getText()).isEqualTo( "item.price > 100");
     }
@@ -1019,7 +1019,7 @@ public class FEELParserTest {
 
         QuantifiedExpressionNode everyExpr = (QuantifiedExpressionNode) everyBase;
         assertThat( everyExpr.getQuantifier()).isEqualTo(QuantifiedExpressionNode.Quantifier.EVERY);
-        assertThat( everyExpr.getIterationContexts().size()).isEqualTo(1);
+        assertThat( everyExpr.getIterationContexts()).hasSize(1);
         assertThat( everyExpr.getIterationContexts().get( 0 ).getText()).isEqualTo( "item in order.items");
         assertThat( everyExpr.getExpression().getText()).isEqualTo( "item.price > 100");
     }
@@ -1129,7 +1129,7 @@ public class FEELParserTest {
         assertThat( function.getName()).isInstanceOf(QualifiedNameNode.class);
         assertThat( function.getName().getText()).isEqualTo("my.test.Function");
         assertThat( function.getParams()).isInstanceOf(ListNode.class);
-        assertThat( function.getParams().getElements().size()).isEqualTo(2);
+        assertThat( function.getParams().getElements()).hasSize(2);
         assertThat( function.getParams().getElements().get( 0 )).isInstanceOf(NamedParameterNode.class);
         assertThat( function.getParams().getElements().get( 1 )).isInstanceOf(NamedParameterNode.class);
 
@@ -1158,7 +1158,7 @@ public class FEELParserTest {
         assertThat( function.getName()).isInstanceOf(QualifiedNameNode.class);
         assertThat( function.getName().getText()).isEqualTo("my.test.Function");
         assertThat( function.getParams()).isInstanceOf(ListNode.class);
-        assertThat( function.getParams().getElements().size()).isEqualTo(2);
+        assertThat( function.getParams().getElements()).hasSize(2);
         assertThat( function.getParams().getElements().get( 0 )).isInstanceOf(InfixOpNode.class);
         assertThat( function.getParams().getElements().get( 1 )).isInstanceOf(StringNode.class);
     }
@@ -1175,7 +1175,7 @@ public class FEELParserTest {
         assertThat( function.getName()).isInstanceOf(NameRefNode.class);
         assertThat( function.getName().getText()).isEqualTo( "date and time");
         assertThat( function.getParams()).isInstanceOf(ListNode.class);
-        assertThat( function.getParams().getElements().size()).isEqualTo(1);
+        assertThat( function.getParams().getElements()).hasSize(1);
         assertThat( function.getParams().getElements().get( 0 )).isInstanceOf(StringNode.class);
     }
 
@@ -1191,7 +1191,7 @@ public class FEELParserTest {
         assertThat( function.getName()).isInstanceOf(NameRefNode.class);
         assertThat( function.getName().getText()).isEqualTo( "date and time");
         assertThat( function.getParams()).isInstanceOf(ListNode.class);
-        assertThat( function.getParams().getElements().size()).isEqualTo(2);
+        assertThat( function.getParams().getElements()).hasSize(2);
         assertThat( function.getParams().getElements().get( 0 )).isInstanceOf(FunctionInvocationNode.class);
         assertThat( function.getParams().getElements().get( 1 )).isInstanceOf(FunctionInvocationNode.class);
     }
@@ -1234,7 +1234,7 @@ public class FEELParserTest {
         assertThat( function.getName()).isInstanceOf(NameRefNode.class);
         assertThat( function.getName().getText()).isEqualTo( "decision table");
         assertThat( function.getParams()).isInstanceOf(ListNode.class);
-        assertThat( function.getParams().getElements().size()).isEqualTo(4);
+        assertThat( function.getParams().getElements()).hasSize(4);
         assertThat( function.getParams().getElements().get( 0 )).isInstanceOf(NamedParameterNode.class);
         assertThat( function.getParams().getElements().get( 1 )).isInstanceOf(NamedParameterNode.class);
         assertThat( function.getParams().getElements().get( 2 )).isInstanceOf(NamedParameterNode.class);
@@ -1251,7 +1251,7 @@ public class FEELParserTest {
         assertThat( named.getExpression()).isInstanceOf(ListNode.class);
 
         ListNode list = (ListNode) named.getExpression();
-        assertThat( list.getElements().size()).isEqualTo(2);
+        assertThat( list.getElements()).hasSize(2);
         assertThat( list.getElements().get( 0 )).isInstanceOf(StringNode.class);
         assertThat( list.getElements().get( 0 ).getText()).isEqualTo( "\"Applicant Age\"");
         assertThat( list.getElements().get( 1 )).isInstanceOf(StringNode.class);
@@ -1262,11 +1262,11 @@ public class FEELParserTest {
         assertThat( named.getExpression()).isInstanceOf(ListNode.class);
 
         list = (ListNode) named.getExpression();
-        assertThat(list.getElements().size()).isEqualTo(5); // this assert on the 5 rows but third row contains the - operation which is not allowed in expression.
+        assertThat(list.getElements()).hasSize(5); // this assert on the 5 rows but third row contains the - operation which is not allowed in expression.
         assertThat( list.getElements().get( 0 )).isInstanceOf(ListNode.class);
 
         ListNode rule = (ListNode) list.getElements().get( 0 );
-        assertThat( rule.getElements().size()).isEqualTo(3);
+        assertThat( rule.getElements()).hasSize(3);
         assertThat( rule.getElements().get( 0 )).isInstanceOf(RangeNode.class);
         assertThat( rule.getElements().get( 0 ).getText()).isEqualTo( ">60");
         assertThat( rule.getElements().get( 1 )).isInstanceOf(StringNode.class);

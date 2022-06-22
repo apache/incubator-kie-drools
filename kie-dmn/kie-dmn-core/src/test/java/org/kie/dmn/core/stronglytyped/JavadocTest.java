@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 
@@ -134,9 +133,9 @@ public class JavadocTest extends BaseVariantTest {
     private void assertJavadoc(CompilationUnit cu, String field, String expectedJavadocComment) {
         String lcField = StringUtils.lcFirst(field);
         Optional<FieldDeclaration> opt = cu.findFirst(FieldDeclaration.class, fd -> fd.asFieldDeclaration().getVariable(0).getNameAsString().equals(lcField));
-        assertTrue(opt.isPresent());
+        assertThat(opt).isPresent();
         Optional<JavadocComment> actual = opt.get().getJavadocComment();
-        assertTrue(actual.isPresent());
+        assertThat(actual).isPresent();
         assertThat(actual.get().getContent()).contains(expectedJavadocComment);
     }
 }

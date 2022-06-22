@@ -32,7 +32,6 @@ import org.kie.dmn.validation.dtanalysis.model.MaskedRule;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
@@ -117,7 +116,6 @@ public class SameMsgInAllAPITest extends AbstractDTAnalysisTest {
                                                      new MaskedRule(4, 3));
         assertThat(maskedRules).hasSize(2);
         assertThat(analysis.getMaskedRules()).containsAll(maskedRules);
-        assertTrue("It should contain DMNMessage for the MaskedRule",
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE))).as("It should contain DMNMessage for the MaskedRule").isTrue();
     }
 }

@@ -31,7 +31,6 @@ import org.kie.dmn.validation.dtanalysis.model.MisleadingRule;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
@@ -69,10 +68,8 @@ public class MisleadingRulesTest extends AbstractDTAnalysisTest {
         List<MisleadingRule> misleadingRules = Arrays.asList(new MisleadingRule(4, 2));
         assertThat(misleadingRules).hasSize(1);
         assertThat(analysis.getMisleadingRules()).containsAll(misleadingRules);
-        assertTrue("It should contain at least 1 DMNMessage for the MisleadingRule",
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
-        assertTrue("This test case is not a Masked rule example",
-                   validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE))).as("It should contain at least 1 DMNMessage for the MisleadingRule").isTrue();
+        assertThat(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE))).as("This test case is not a Masked rule example").isTrue();
     }
 
     @Test
