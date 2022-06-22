@@ -27,7 +27,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.util.io.DescrResource;
 import org.junit.Test;
 import org.kie.api.KieBase;

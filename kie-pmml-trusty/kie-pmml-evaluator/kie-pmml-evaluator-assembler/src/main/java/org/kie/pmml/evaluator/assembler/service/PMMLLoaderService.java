@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.model.Model;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.KieBaseBuilder;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceWithConfiguration;

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.model.KieBaseModel;

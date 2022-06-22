@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>test-integration-notms</artifactId>
-    <name>Drools :: Test Coverage :: Integration tests without mvel</name>
+    <name>Drools :: Test Coverage :: Integration tests without TMS</name>
 
     <properties>
         <java.module.name>org.drools.compiler.integrationtests</java.module.name>
@@ -48,7 +48,7 @@
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
-            <artifactId>drools-model-compiler</artifactId>
+            <artifactId>drools-model-codegen</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

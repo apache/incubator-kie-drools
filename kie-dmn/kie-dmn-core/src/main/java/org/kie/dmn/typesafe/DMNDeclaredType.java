@@ -23,10 +23,10 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.drools.util.StringUtils;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
+import org.drools.model.codegen.execmodel.generator.declaredtype.api.AnnotationDefinition;
+import org.drools.model.codegen.execmodel.generator.declaredtype.api.FieldDefinition;
+import org.drools.model.codegen.execmodel.generator.declaredtype.api.MethodDefinition;
+import org.drools.model.codegen.execmodel.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;

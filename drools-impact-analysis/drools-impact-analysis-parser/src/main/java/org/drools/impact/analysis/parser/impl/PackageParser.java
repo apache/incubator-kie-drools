@@ -23,8 +23,8 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.impact.analysis.model.Package;
 import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.parser.internal.ImpactModelBuilderImpl;
-import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.model.codegen.execmodel.PackageModel;
+import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

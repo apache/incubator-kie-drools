@@ -22,7 +22,7 @@ import java.util.UUID;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.mvel.compiler.Person;
 import org.junit.Test;
 import org.kie.api.KieServices;
