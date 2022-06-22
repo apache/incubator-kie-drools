@@ -177,7 +177,7 @@ public class ComplexRulesTest extends BaseModelTest {
     @Test
     public void test2() {
         final String drl =
-                " import org.drools.modelcompiler.domain.*;\n" +
+                " import org.drools.model.codegen.execmodel.domain.*;\n" +
                         " rule \"R1\"\n" +
                         " dialect \"java\"\n" +
                         " when\n" +

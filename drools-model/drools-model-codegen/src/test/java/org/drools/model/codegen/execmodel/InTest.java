@@ -36,7 +36,7 @@ public class InTest extends BaseModelTest {
 
     @Test
     public void testInWithNullFire() {
-        String str = "import org.drools.modelcompiler.domain.Child; \n" +
+        String str = "import " + Child.class.getCanonicalName() + "; \n" +
                 "rule R when                        \n" +
                 "  $c : Child(parent in (\"Gustav\", \"Alice\", null))\n" +
                 "then                               \n" +
@@ -49,7 +49,7 @@ public class InTest extends BaseModelTest {
 
     @Test
     public void testInWithNullNoFire() {
-        String str = "import org.drools.modelcompiler.domain.Child; \n" +
+        String str = "import " + Child.class.getCanonicalName() + "; \n" +
                 "rule R when                        \n" +
                 "  $c : Child(parent in (\"Gustav\", \"Alice\"))\n" +
                 "then                               \n" +
@@ -62,7 +62,8 @@ public class InTest extends BaseModelTest {
 
     @Test
     public void testInWithNullComments() {
-        String str = "import org.drools.modelcompiler.domain.Child; \n" +                        "global java.util.List results; \n" +
+        String str = "import " + Child.class.getCanonicalName() + "; \n" +
+                "global java.util.List results; \n" +
                 "global java.util.List results; \n" +
                 "rule R when                        \n" +
                 "  $c : Child(parent in (" +
@@ -88,7 +89,7 @@ public class InTest extends BaseModelTest {
 
     @Test
     public void testInWithJoin() {
-        String str = "import org.drools.modelcompiler.domain.Address; \n" +
+        String str = "import " + Address.class.getCanonicalName() + "; \n" +
                 "rule R when \n" +
                 "    $a1: Address($street: street, city in (\"Brno\", \"Milan\", \"Bratislava\")) \n" +
                 "    $a2: Address(city in (\"Krakow\", \"Paris\", $a1.city)) \n" +

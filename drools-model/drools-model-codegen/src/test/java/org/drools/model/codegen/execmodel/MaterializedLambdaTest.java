@@ -24,7 +24,7 @@ public class MaterializedLambdaTest extends BaseModelTest {
                 "import " + Result.class.getCanonicalName() + ";\n" +
                 "global Result result;\n" +
                 "rule \"rule1\"\n" +
-                "when org.drools.modelcompiler.DataType (\n" +
+                "when " + DataType.class.getCanonicalName() + " (\n" +
                 "        field1 == \"FF\"\n" +
                 "        , field2 == \"BBB\"\n" +
                 ")\n" +
@@ -32,7 +32,7 @@ public class MaterializedLambdaTest extends BaseModelTest {
                 "    result.setValue(0);\n" +
                 "end\n" +
                 "rule \"rule2\"\n" +
-                "when org.drools.modelcompiler.DataType (\n" +
+                "when " + DataType.class.getCanonicalName() + " (\n" +
                 "        field2 == \"BBB\"\n" +
                 "        , fieldDate >= \"27-Oct-2019\"\n" +
                 ")\n" +

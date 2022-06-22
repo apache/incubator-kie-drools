@@ -213,15 +213,16 @@ public class ExternalisedLambdaTest extends BaseModelTest {
     @Test
     public void testFromExpression() {
         final String str =
-                "import org.drools.modelcompiler.domain.*;\n" +
-                           "global java.util.List list\n" +
-                           "\n" +
-                           "rule R when\n" +
-                           " Man( $wife : wife )\n" +
-                           " $child: Child( age > 10 ) from $wife.children\n" +
-                           "then\n" +
-                           "  list.add( $child.getName() );\n" +
-                           "end\n";
+               "import org.drools.model.codegen.execmodel.domain.*;\n" +
+               "global java.util.List list\n" +
+               "\n" +
+               "rule R when\n" +
+               " Man( $wife : wife )\n" +
+               " $child: Child( age > 10 ) from $wife.children\n" +
+               "then\n" +
+               "  list.add( $child.getName() );\n" +
+               "end\n";
+
         KieSession ksession = null;
         try {
             ksession = getKieSession(str);
@@ -283,7 +284,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
     @Test
     public void testOOPath() {
         final String str =
-                "import org.drools.modelcompiler.domain.*;\n" +
+                "import org.drools.model.codegen.execmodel.domain.*;\n" +
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +

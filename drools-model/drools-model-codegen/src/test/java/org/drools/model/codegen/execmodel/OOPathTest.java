@@ -40,7 +40,7 @@ public class OOPathTest extends BaseModelTest {
     @Test
     public void testOOPath() {
         final String str =
-                "import org.drools.modelcompiler.domain.*;\n" +
+                "import org.drools.model.codegen.execmodel.domain.*;\n" +
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
@@ -74,7 +74,7 @@ public class OOPathTest extends BaseModelTest {
     @Test
     public void testOOPathBinding() {
         final String str =
-                "import org.drools.modelcompiler.domain.*;\n" +
+                "import org.drools.model.codegen.execmodel.domain.*;\n" +
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
@@ -103,7 +103,7 @@ public class OOPathTest extends BaseModelTest {
     @Test
     public void testReactiveOOPath() {
         final String str =
-                "import org.drools.modelcompiler.domain.*;\n" +
+                "import org.drools.model.codegen.execmodel.domain.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -146,7 +146,7 @@ public class OOPathTest extends BaseModelTest {
     @Test
     public void testBackReferenceConstraint() {
         final String str =
-                "import org.drools.modelcompiler.domain.*;\n" +
+                "import org.drools.model.codegen.execmodel.domain.*;\n" +
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
@@ -182,7 +182,7 @@ public class OOPathTest extends BaseModelTest {
 
     @Test
     public void testSimpleOOPathCast1() {
-        final String str = "import org.drools.modelcompiler.domain.*;\n" +
+        final String str = "import org.drools.model.codegen.execmodel.domain.*;\n" +
                            "global java.util.List list\n" +
                            "\n" +
                            "rule R when\n" +
@@ -206,7 +206,7 @@ public class OOPathTest extends BaseModelTest {
 
     @Test
     public void testSimpleOOPathCast2() {
-        final String str = "import org.drools.modelcompiler.domain.*;\n" +
+        final String str = "import org.drools.model.codegen.execmodel.domain.*;\n" +
                            "global java.util.List list\n" +
                            "\n" +
                            "rule R when\n" +
@@ -230,7 +230,7 @@ public class OOPathTest extends BaseModelTest {
 
     @Test
     public void testSimpleOOPathCast3() {
-        final String str = "import org.drools.modelcompiler.domain.*;\n" +
+        final String str = "import org.drools.model.codegen.execmodel.domain.*;\n" +
                            "global java.util.List list\n" +
                            "\n" +
                            "rule R when\n" +

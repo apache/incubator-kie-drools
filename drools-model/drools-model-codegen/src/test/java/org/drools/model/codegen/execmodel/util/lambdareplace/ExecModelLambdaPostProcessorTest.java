@@ -39,7 +39,7 @@ public class ExecModelLambdaPostProcessorTest {
     @Test
     public void convertPatternLambda() throws Exception {
 
-        CompilationUnit inputCU = parseResource("org/drools/modelcompiler/util/lambdareplace/PatternTestHarness.java");
+        CompilationUnit inputCU = parseResource("org/drools/model/codegen/execmodel/util/lambdareplace/PatternTestHarness.java");
         CompilationUnit clone = inputCU.clone();
 
         new ExecModelLambdaPostProcessor("mypackage", "rulename", new ArrayList<>(), new ArrayList<>(), new HashMap<>(), new HashMap<>(), clone, true).convertLambdas();

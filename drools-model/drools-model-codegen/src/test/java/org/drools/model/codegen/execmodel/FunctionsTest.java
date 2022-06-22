@@ -262,7 +262,7 @@ public class FunctionsTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
                 "\n" +
-                "import function org.drools.modelcompiler.FunctionsTest.constantValue;\n" +
+                "import function " + FunctionsTest.class.getCanonicalName() + ".constantValue;\n" +
                 "\n" +
                 "rule rule1\n" +
                 "when\n" +

@@ -29,7 +29,7 @@ public class MaterializedLambdaConsequenceTest {
     @Test
     public void createConsequence() {
         CreatedClass aClass = new MaterializedLambdaConsequence("org.drools.modelcompiler.util.lambdareplace", "rulename", new ArrayList<>())
-                .create("(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) -> result.setValue( p1.getName() + \" is older than \" + p2.getName())", new ArrayList<>(), new ArrayList<>());
+                .create("(org.drools.model.codegen.execmodel.domain.Person p1, org.drools.model.codegen.execmodel.domain.Person p2) -> result.setValue( p1.getName() + \" is older than \" + p2.getName())", new ArrayList<>(), new ArrayList<>());
 
         String classNameWithPackage = aClass.getClassNameWithPackage();
         // There is no easy way to retrieve the originally created "hashcode" because it is calculated over a CompilationUnit that soon after is modified;
@@ -40,12 +40,13 @@ public class MaterializedLambdaConsequenceTest {
         String expectedResult = "" +
                 "package PACKAGE_TOREPLACE;\n" +
                 "import static rulename.*; " +
+                "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 " \n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
                 "public enum CLASS_TOREPLACE implements org.drools.model.functions.Block2<org.drools.model.codegen.execmodel.domain.Person, org.drools.model.codegen.execmodel.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
                 "INSTANCE;\n" +
-                "public static final String EXPRESSION_HASH = \"8305FF24AC76CB49E7AAE2C10356A105\";" +
+                "public static final String EXPRESSION_HASH = \"92816350431E6B9D2AF473C2A98D8B37\";" +
                 "    public java.lang.String getExpressionHash() {\n" +
                 "        return EXPRESSION_HASH;\n" +
                 "    } " +
@@ -69,7 +70,7 @@ public class MaterializedLambdaConsequenceTest {
         MaterializedLambda.BitMaskVariable bitMaskVariable = new MaterializedLambda.BitMaskVariableWithFields("DomainClassesMetadataA3B8DE4BEBF13D94572A10FD20BBE729.org_drools_modelcompiler_domain_Person_Metadata_INSTANCE", fields, "mask_$p");
 
         CreatedClass aClass = new MaterializedLambdaConsequence("defaultpkg", "defaultpkg.RulesA3B8DE4BEBF13D94572A10FD20BBE729", Collections.singletonList(bitMaskVariable))
-                .create("(org.drools.model.Drools drools, org.drools.modelcompiler.domain.Person $p) -> {{($p).setAge($p.getAge() + 1); drools.update($p, mask_$p);}}", new ArrayList<>(), new ArrayList<>());
+                .create("(org.drools.model.Drools drools, org.drools.model.codegen.execmodel.domain.Person $p) -> {{($p).setAge($p.getAge() + 1); drools.update($p, mask_$p);}}", new ArrayList<>(), new ArrayList<>());
         String classNameWithPackage = aClass.getClassNameWithPackage();
         String expectedPackageName = classNameWithPackage.substring(0, classNameWithPackage.lastIndexOf('.'));
         // There is no easy way to retrieve the originally created "hashcode" because it is calculated over a CompilationUnit that soon after is modified;
@@ -79,12 +80,13 @@ public class MaterializedLambdaConsequenceTest {
         String expectedResult = "" +
                 "package PACKAGE_TOREPLACE;\n" +
                 "import static defaultpkg.RulesA3B8DE4BEBF13D94572A10FD20BBE729.*; " +
+                "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 " \n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
                 "public enum CLASS_TOREPLACE implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.model.codegen.execmodel.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
                 "        INSTANCE;\n" +
-                "        public static final String EXPRESSION_HASH = \"1FE08C27A04F37AADD1A62E562519E8D\";\n" +
+                "        public static final String EXPRESSION_HASH = \"4E462D4D2BC735A2D4EFF484EFB6C50D\";\n" +
                 "    public java.lang.String getExpressionHash() {\n" +
                 "        return EXPRESSION_HASH;\n" +
                 "    } " +
@@ -114,7 +116,7 @@ public class MaterializedLambdaConsequenceTest {
         petFields.add("\"age\"");
         MaterializedLambda.BitMaskVariable bitMaskPet = new MaterializedLambda.BitMaskVariableWithFields("DomainClassesMetadataB45236F6195B110E0FA3A5447BC53274.org_drools_modelcompiler_domain_Pet_Metadata_INSTANCE", petFields, "mask_$pet");
 
-        String consequenceBlock = "(org.drools.model.Drools drools, org.drools.modelcompiler.domain.Pet $pet, org.drools.modelcompiler.domain.Person $person) -> {{ ($person).setName(\"George\");drools.update($person, mask_$person); ($pet).setAge($pet.getAge() + 1); drools.update($pet, mask_$pet); }}";
+        String consequenceBlock = "(org.drools.model.Drools drools, org.drools.model.codegen.execmodel.domain.Pet $pet, org.drools.model.codegen.execmodel.domain.Person $person) -> {{ ($person).setName(\"George\");drools.update($person, mask_$person); ($pet).setAge($pet.getAge() + 1); drools.update($pet, mask_$pet); }}";
         CreatedClass aClass = new MaterializedLambdaConsequence("defaultpkg",
                 "defaultpkg.RulesB45236F6195B110E0FA3A5447BC53274",
                 Arrays.asList(bitMaskPerson, bitMaskPet))
@@ -129,13 +131,14 @@ public class MaterializedLambdaConsequenceTest {
         String expectedResult = "" +
                 "package PACKAGE_TOREPLACE;\n" +
                 "import static defaultpkg.RulesB45236F6195B110E0FA3A5447BC53274.*; " +
+                "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 " \n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
                 "public enum CLASS_TOREPLACE implements org.drools.model.functions.Block3<org.drools.model.Drools, org.drools.model.codegen.execmodel.domain.Pet, org.drools.model.codegen.execmodel.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 "\n" +
                 "    INSTANCE;\n" +
-                "    public static final String EXPRESSION_HASH = \"2ABFB3D359AC0D0C1F6C1BAF91E05544\";\n" +
+                "    public static final String EXPRESSION_HASH = \"2070FC5A885B4BE208D2534D37796F3F\";\n" +
                 "    public java.lang.String getExpressionHash() {\n" +
                 "        return EXPRESSION_HASH;\n" +
                 "    }" +
@@ -168,7 +171,7 @@ public class MaterializedLambdaConsequenceTest {
         fields.add("\"likes\"");
         MaterializedLambda.BitMaskVariable bitMaskVariable = new MaterializedLambda.BitMaskVariableWithFields("DomainClassesMetadata53448E6B9A07CB05B976425EF329E308.org_drools_modelcompiler_domain_Person_Metadata_INSTANCE", fields, "mask_$p");
 
-        String consequenceBlock = "(org.drools.model.Drools drools, org.drools.modelcompiler.domain.Person $p) -> {{ ($p).setAge($p.getAge() + 1); ($p).setLikes(\"Cheese\"); drools.update($p,mask_$p); }}";
+        String consequenceBlock = "(org.drools.model.Drools drools, org.drools.model.codegen.execmodel.domain.Person $p) -> {{ ($p).setAge($p.getAge() + 1); ($p).setLikes(\"Cheese\"); drools.update($p,mask_$p); }}";
         CreatedClass aClass = new MaterializedLambdaConsequence("defaultpkg",
                 "defaultpkg.Rules53448E6B9A07CB05B976425EF329E308",
                 Arrays.asList(bitMaskVariable))
@@ -184,13 +187,14 @@ public class MaterializedLambdaConsequenceTest {
                 "package PACKAGE_TOREPLACE;\n" +
                 "\n" +
                 "import static defaultpkg.Rules53448E6B9A07CB05B976425EF329E308.*; \n" +
+                "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n" +
                 "" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda()\n" +
                 "public enum CLASS_TOREPLACE implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.model.codegen.execmodel.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 "\n" +
                 "    INSTANCE;\n" +
-                "    public static final String EXPRESSION_HASH = \"15102979E2E45F1A4617C12D3517D6B5\";\n" +
+                "    public static final String EXPRESSION_HASH = \"97D5F245AD110FEF0DE1D043C9DBB3B1\";\n" +
                 "     public java.lang.String getExpressionHash() {\n" +
                 "        return EXPRESSION_HASH;\n" +
                 "    }" +

@@ -91,7 +91,7 @@ public class ConstraintParserTest {
         assertEquals("_this instanceof Person", implicitCastExpression.get().toString()); // will be added as the first predicate
 
         // instanceof check is done after the first constraint
-        assertEquals("\"Mark\" == _this.toString() || _this instanceof " + Person.class.getCanonicalName() + " && \"Mark\" == ((org.drools.modelcompiler.domain.Person) _this).getAddress().getCity()",
+        assertEquals("\"Mark\" == _this.toString() || _this instanceof " + Person.class.getCanonicalName() + " && \"Mark\" == ((" + Person.class.getCanonicalName() + ") _this).getAddress().getCity()",
                      result.getExpr().toString());
     }
 
@@ -99,7 +99,7 @@ public class ConstraintParserTest {
     public void testMultiplyStringIntWithBindVariableCompareToBigDecimal() {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "money == likes * 10"); // assuming likes contains number String
 
-        assertEquals(EvaluationUtil.class.getCanonicalName() + ".equals(" + EvaluationUtil.class.getCanonicalName() + ".toBigDecimal(_this.getMoney()), org.drools.modelcompiler.util.EvaluationUtil.toBigDecimal(Double.valueOf(_this.getLikes()) * 10))",
+        assertEquals(EvaluationUtil.class.getCanonicalName() + ".equals(" + EvaluationUtil.class.getCanonicalName() + ".toBigDecimal(_this.getMoney()), " + EvaluationUtil.class.getCanonicalName() + ".toBigDecimal(Double.valueOf(_this.getLikes()) * 10))",
                      result.getExpr().toString());
     }
 
