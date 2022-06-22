@@ -890,18 +890,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
     }
 
-    public interface AssetFilter {
-
-        enum Action {
-            DO_NOTHING,
-            ADD,
-            REMOVE,
-            UPDATE
-        }
-
-        Action accept(ResourceChange.Type type, String pkgName, String assetName);
-    }
-
     public void setAssetFilter(AssetFilter assetFilter) {
         this.assetFilter = assetFilter;
     }

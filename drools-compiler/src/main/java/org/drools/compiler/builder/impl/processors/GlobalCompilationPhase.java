@@ -1,7 +1,7 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.GlobalError;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -20,9 +20,9 @@ public class GlobalCompilationPhase extends AbstractPackageCompilationPhase {
 
     private final InternalKnowledgeBase kBase;
     private final GlobalVariableContext globalVariableContext;
-    private final KnowledgeBuilderImpl.AssetFilter assetFilter;
+    private final AssetFilter assetFilter;
 
-    public GlobalCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, GlobalVariableContext globalVariableContext, KnowledgeBuilderImpl.AssetFilter filterAcceptsRemoval) {
+    public GlobalCompilationPhase(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalKnowledgeBase kBase, GlobalVariableContext globalVariableContext, AssetFilter filterAcceptsRemoval) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.globalVariableContext = globalVariableContext;
@@ -62,7 +62,7 @@ public class GlobalCompilationPhase extends AbstractPackageCompilationPhase {
         }
 
         for (String toBeRemoved : existingGlobals) {
-            if (assetFilter != null && KnowledgeBuilderImpl.AssetFilter.Action.REMOVE.equals(assetFilter.accept(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved))) {
+            if (assetFilter != null && AssetFilter.Action.REMOVE.equals(assetFilter.accept(ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved))) {
                 pkg.removeGlobal(toBeRemoved);
                 if (kBase != null) {
                     kBase.removeGlobal(toBeRemoved);
