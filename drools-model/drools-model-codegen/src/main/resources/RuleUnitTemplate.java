@@ -1,6 +1,6 @@
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.KieBaseBuilder;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
