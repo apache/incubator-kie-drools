@@ -60,6 +60,7 @@ public class PostProcess {
      * Method used to populate a <code>ProcessingDTO</code> with values accumulated inside the given
      * <code>KiePMMLModel</code>
      * during evaluation
+     *
      * @param pmml4Result
      * @param pmmlContext
      * @param toPopulate
@@ -86,6 +87,7 @@ public class PostProcess {
 
     /**
      * Execute <b>modifications</b> on target result.
+     *
      * @param toModify
      * @param processingDTO
      * @see <a href="http://dmg.org/pmml/v4-4-1/Targets.html>Targets</a>
@@ -112,6 +114,7 @@ public class PostProcess {
 
     /**
      * Verify that the returned value has the required type as defined inside <code>DataDictionary/MiningSchema</code>
+     *
      * @param model
      * @param toUpdate
      */
@@ -130,6 +133,7 @@ public class PostProcess {
 
     /**
      * Populated the <code>PMML4Result</code> with <code>OutputField</code> results
+     *
      * @param toUpdate
      * @param processingDTO
      */

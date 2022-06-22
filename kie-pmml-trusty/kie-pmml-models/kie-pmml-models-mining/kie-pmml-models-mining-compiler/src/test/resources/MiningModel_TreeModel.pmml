@@ -4,12 +4,12 @@
     <Application name="KNIME" version="2.8.0"/>
   </Header>
   <DataDictionary>
-    <DataField name="temperature" dataType="double" optype="continuous" />
-    <DataField name="humidity" dataType="double" optype="continuous" />
+    <DataField name="temperature" dataType="double" optype="continuous"/>
+    <DataField name="humidity" dataType="double" optype="continuous"/>
     <DataField name="decision" dataType="string" optype="categorical">
-      <Value value="sunglasses" />
-      <Value value="umbrella" />
-      <Value value="nothing" />
+      <Value value="sunglasses"/>
+      <Value value="umbrella"/>
+      <Value value="nothing"/>
     </DataField>
     <DataField name="Species" optype="categorical" dataType="string">
       <Value value="setosa"/>
@@ -20,12 +20,12 @@
     <DataField name="Sepal.Width" optype="continuous" dataType="double"/>
     <DataField name="Petal.Length" optype="continuous" dataType="double"/>
     <DataField name="Petal.Width" optype="continuous" dataType="double"/>
-    <DataField name="FinalResult" dataType="string" optype="categorical" />
+    <DataField name="FinalResult" dataType="string" optype="categorical"/>
   </DataDictionary>
   <MiningModel functionName="classification">
     <MiningSchema>
-      <MiningField name="temperature"  usageType="active" />
-      <MiningField name="humidity"  usageType="active" />
+      <MiningField name="temperature" usageType="active"/>
+      <MiningField name="humidity" usageType="active"/>
       <MiningField name="Sepal.Length" usageType="active" invalidValueTreatment="returnInvalid"/>
       <MiningField name="Sepal.Width" usageType="active" invalidValueTreatment="returnInvalid"/>
       <MiningField name="Petal.Length" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -37,30 +37,32 @@
         <True/>
         <TreeModel modelName="SampleMineTreeModel" functionName="classification">
           <MiningSchema>
-            <MiningField name="temperature"  usageType="active" />
-            <MiningField name="humidity"  usageType="active" />
-            <MiningField name="decision" usageType="predicted" />
+            <MiningField name="temperature" usageType="active"/>
+            <MiningField name="humidity" usageType="active"/>
+            <MiningField name="decision" usageType="predicted"/>
           </MiningSchema>
           <Node score="nothing" id="1">
-            <True />
+            <True/>
             <Node score="sunglasses" id="2">
               <CompoundPredicate booleanOperator="and">
-                <SimplePredicate field="temperature" operator="greaterThan" value="25" />
-                <SimplePredicate field="humidity" operator="lessOrEqual" value="20" />
+                <SimplePredicate field="temperature" operator="greaterThan" value="25"/>
+                <SimplePredicate field="humidity" operator="lessOrEqual" value="20"/>
               </CompoundPredicate>
             </Node>
             <Node score="umbrella" id="3">
-              <SimplePredicate field="humidity" operator="greaterThan" value="50" />
+              <SimplePredicate field="humidity" operator="greaterThan" value="50"/>
             </Node>
             <Node score="nothing" id="4">
-              <True />
+              <True/>
             </Node>
           </Node>
         </TreeModel>
       </Segment>
       <Segment>
         <True/>
-        <TreeModel modelName="IrisTreeModel" functionName="classification" algorithmName="rpart" splitCharacteristic="binarySplit" missingValueStrategy="defaultChild" noTrueChildStrategy="returnLastPrediction">
+        <TreeModel modelName="IrisTreeModel" functionName="classification" algorithmName="rpart"
+                   splitCharacteristic="binarySplit" missingValueStrategy="defaultChild"
+                   noTrueChildStrategy="returnLastPrediction">
           <MiningSchema>
             <MiningField name="Species" usageType="predicted" invalidValueTreatment="returnInvalid"/>
             <MiningField name="Sepal.Length" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -69,10 +71,14 @@
             <MiningField name="Petal.Width" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
           <Output>
-            <OutputField name="Predicted_Species" optype="categorical" dataType="string" feature="predictedValue"/>
-            <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability" value="setosa"/>
-            <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability" value="versicolor"/>
-            <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability" value="virginica"/>
+            <OutputField name="Predicted_Species" optype="categorical" dataType="string"
+                         feature="predictedValue"/>
+            <OutputField name="Probability_setosa" optype="continuous" dataType="double"
+                         feature="probability" value="setosa"/>
+            <OutputField name="Probability_versicolor" optype="continuous" dataType="double"
+                         feature="probability" value="versicolor"/>
+            <OutputField name="Probability_virginica" optype="continuous" dataType="double"
+                         feature="probability" value="virginica"/>
           </Output>
           <Node id="1" score="setosa" recordCount="150" defaultChild="3">
             <True/>

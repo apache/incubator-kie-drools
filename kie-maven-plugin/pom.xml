@@ -207,13 +207,7 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-core</artifactId>
-      <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-evaluator-assembler</artifactId>
-    </dependency>
-
     <!-- required to fetch before maven-invoker-plugin -->
     <dependency>
       <groupId>org.kie</groupId>

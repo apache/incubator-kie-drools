@@ -9,7 +9,8 @@
     </DataField>
     <DataField name="number_of_claims" optype="continuous" dataType="integer"/>
   </DataDictionary>
-  <RegressionModel modelName="Sample for linear regression" functionName="regression" algorithmName="linearRegression" targetFieldName="number_of_claims">
+  <RegressionModel modelName="Sample for linear regression" functionName="regression" algorithmName="linearRegression"
+                   targetFieldName="number_of_claims">
     <MiningSchema>
       <MiningField name="age"/>
       <MiningField name="salary"/>

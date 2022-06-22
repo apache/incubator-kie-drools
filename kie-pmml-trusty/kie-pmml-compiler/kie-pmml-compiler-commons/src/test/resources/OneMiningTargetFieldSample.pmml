@@ -7,7 +7,8 @@
       <Value value="true"/>
       <Value value="false"/>
     </DataField>
-    <DataField name="outlook" optype="continuous" dataType="string"> <!-- <- optype wrong - used for test - should be overrided by MiningField -->
+    <DataField name="outlook" optype="continuous"
+               dataType="string"> <!-- <- optype wrong - used for test - should be overrided by MiningField -->
       <Value value="sunny"/>
       <Value value="overcast"/>
       <Value value="rain"/>

@@ -25,12 +25,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class DateFunctionsTest {
 
@@ -48,7 +49,7 @@ public class DateFunctionsTest {
     }
 
     @Test
-    public void getDateDaysSinceYearCorrectInput() {
+    void getDateDaysSinceYearCorrectInput() {
         LocalDateTime inputDateLocalDateTime = LocalDateTime.of(1960, 1, 1, 0, 0, 0);
         logger.debug("inputDateLocalDateTime {}", inputDateLocalDateTime);
         Date inputDate = java.util.Date.from(inputDateLocalDateTime.atZone(ZoneId.systemDefault())
@@ -70,20 +71,18 @@ public class DateFunctionsTest {
         Object[] input2 = {inputDate, 1960};
         retrieved = DateFunctions.DATE_DAYS_SINCE_YEAR.getValue(input2);
         assertThat(retrieved).isEqualTo(15796);
-
-
-
-
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getDateDaysSinceYearWrongSizeInput() {
-        final Object[] input = {34};
-        DateFunctions.DATE_DAYS_SINCE_YEAR.getValue(input);
     }
 
     @Test
-    public void getDateDaysSinceYearWrongTypeInput() {
+    void getDateDaysSinceYearWrongSizeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34};
+            DateFunctions.DATE_DAYS_SINCE_YEAR.getValue(input);
+        });
+    }
+
+    @Test
+    void getDateDaysSinceYearWrongTypeInput() {
         final Object[] input1 = {34, 1970};
         Date inputDate = new GregorianCalendar(2003, Calendar.APRIL, 1).getTime();
         final Object[] input2 = {inputDate, "1970"};
@@ -99,21 +98,23 @@ public class DateFunctionsTest {
     }
 
     @Test
-    public void getDateSecondsSinceYearCorrectInput() {
+    void getDateSecondsSinceYearCorrectInput() {
         Date inputDate = new GregorianCalendar(1960, Calendar.JANUARY, 3, 3, 30, 3).getTime();
         Object[] input1 = {inputDate, 1960};
         Object retrieved = DateFunctions.DATE_SECONDS_SINCE_YEAR.getValue(input1);
         assertThat(retrieved).isEqualTo(185403);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getDateSecondsSinceYearWrongSizeInput() {
-        final Object[] input = {34};
-        DateFunctions.DATE_SECONDS_SINCE_YEAR.getValue(input);
+    @Test
+    void getDateSecondsSinceYearWrongSizeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34};
+            DateFunctions.DATE_SECONDS_SINCE_YEAR.getValue(input);
+        });
     }
 
     @Test
-    public void getDateSecondsSinceYearWrongTypeInput() {
+    void getDateSecondsSinceYearWrongTypeInput() {
         final Object[] input1 = {34, 1970};
         Date inputDate = new GregorianCalendar(2003, Calendar.APRIL, 1).getTime();
         final Object[] input2 = {inputDate, "1970"};
@@ -129,7 +130,7 @@ public class DateFunctionsTest {
     }
 
     @Test
-    public void getDateSecondsSinceMidnightCorrectInput() {
+    void getDateSecondsSinceMidnightCorrectInput() {
         Date inputDate = new GregorianCalendar(1960, Calendar.JANUARY, 2, 0, 0, 1).getTime();
         Object[] input1 = {inputDate};
         Object retrieved = DateFunctions.DATE_SECONDS_SINCE_MIDNIGHT.getValue(input1);
@@ -144,16 +145,18 @@ public class DateFunctionsTest {
         assertThat(retrieved).isEqualTo(19410);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getDateSecondsSinceMidnightWrongSizeInput() {
-        Date inputDate1 = new GregorianCalendar(2003, Calendar.APRIL, 1).getTime();
-        Date inputDate2 = new GregorianCalendar(2003, Calendar.APRIL, 1).getTime();
-        final Object[] input = {inputDate1, inputDate2};
-        DateFunctions.DATE_SECONDS_SINCE_MIDNIGHT.getValue(input);
+    @Test
+    void getDateSecondsSinceMidnightWrongSizeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            Date inputDate1 = new GregorianCalendar(2003, Calendar.APRIL, 1).getTime();
+            Date inputDate2 = new GregorianCalendar(2003, Calendar.APRIL, 1).getTime();
+            final Object[] input = {inputDate1, inputDate2};
+            DateFunctions.DATE_SECONDS_SINCE_MIDNIGHT.getValue(input);
+        });
     }
 
     @Test
-    public void getDateSecondsSinceMidnightWrongTypeInput() {
+    void getDateSecondsSinceMidnightWrongTypeInput() {
         final Object[] input1 = {34};
         final Object[] input2 = {"1970"};
         List<Object[]> inputs = Arrays.asList(input1, input2);

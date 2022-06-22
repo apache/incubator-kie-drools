@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.dmg.pmml.Array;
 import org.dmg.pmml.SimpleSetPredicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
@@ -40,7 +40,7 @@ import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getPredicateA
 public class KiePMMLSimpleSetPredicateASTFactoryTest {
 
     @Test
-    public void declareRuleFromSimpleSetPredicateIsInFinalLeaf() {
+    void declareRuleFromSimpleSetPredicateIsInFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("-5", "0.5", "1", "10");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input1",
@@ -72,7 +72,8 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         assertThat(inConstraints).hasSize(1);
         assertThat(inConstraints).containsKey(declaredType);
         final List<Object> retrievedValues = inConstraints.get(declaredType);
-        List<String> originalPredicateValues = Arrays.asList(((String) simpleSetPredicate.getArray().getValue()).split(" "));
+        List<String> originalPredicateValues =
+                Arrays.asList(((String) simpleSetPredicate.getArray().getValue()).split(" "));
         assertThat(retrievedValues).hasSameSizeAs(originalPredicateValues);
         retrievedValues.forEach(retrievedValue -> {
             assertThat(originalPredicateValues).contains((String) retrievedValue);
@@ -80,7 +81,7 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromSimpleSetPredicateIsInNotFinalLeaf() {
+    void declareRuleFromSimpleSetPredicateIsInNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("-5", "0.5", "1", "10");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input1",
@@ -112,7 +113,8 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         assertThat(inConstraints).hasSize(1);
         assertThat(inConstraints).containsKey(declaredType);
         final List<Object> retrievedValues = inConstraints.get(declaredType);
-        List<String> originalPredicateValues = Arrays.asList(((String) simpleSetPredicate.getArray().getValue()).split(" "));
+        List<String> originalPredicateValues =
+                Arrays.asList(((String) simpleSetPredicate.getArray().getValue()).split(" "));
         assertThat(retrievedValues).hasSameSizeAs(originalPredicateValues);
         retrievedValues.forEach(retrievedValue -> {
             assertThat(originalPredicateValues).contains((String) retrievedValue);
@@ -120,7 +122,7 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromSimpleSetPredicateIsNotInFinalLeaf() {
+    void declareRuleFromSimpleSetPredicateIsNotInFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("3", "8.5");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input2",
@@ -139,7 +141,8 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
                                                                                      parentPath,
                                                                                      currentRule,
                                                                                      fieldTypeMap);
-        KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, true);
+        KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result
+                , true);
         assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertThat(retrieved).isNotNull();
@@ -161,7 +164,7 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromSimpleSetPredicateIsNotInNotFinalLeaf() {
+    void declareRuleFromSimpleSetPredicateIsNotInNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("3", "8.5");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input2",

@@ -25,11 +25,11 @@ public interface HasClassLoader {
     ClassLoader getClassLoader();
 
     /**
-     * Compile the given sources and add them to given <code>Classloader</code> of the current instance.
-     * Returns the <code>Class</code> with the given <b>fullClassName</b>
+     * Compile the given sources
+     * Returns the <code>Classes</code> with the given <b>fullClassName</b>
      * @param sourcesMap
      * @param fullClassName
      * @return
      */
-    Class<?> compileAndLoadClass(Map<String, String> sourcesMap, String fullClassName);
+    Map<String, byte[]> compileClasses(Map<String, String> sourcesMap, String fullClassName);
 }

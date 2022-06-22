@@ -21,7 +21,8 @@
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
       <ParameterField name="eval_sepal_length"/>
-      <Discretize field="eval_sepal_length" dataType="string" mapMissingTo="mapMissing" defaultValue="defaultValue">
+      <Discretize field="eval_sepal_length" dataType="string" mapMissingTo="mapMissing"
+                  defaultValue="defaultValue">
         <DiscretizeBin binValue="abc">
           <Interval closure="openOpen" leftMargin="4.7" rightMargin="5.2"/>
         </DiscretizeBin>
@@ -32,7 +33,7 @@
     </DefineFunction>
     <DefineFunction name="norm_discrete_function" optype="categorical" dataType="string">
       <ParameterField name="eval_class"/>
-      <NormDiscrete field="eval_class" value="1" />
+      <NormDiscrete field="eval_class" value="1"/>
     </DefineFunction>
     <DerivedField name="normcontinuous_field" optype="continuous" dataType="double">
       <NormContinuous field="sepal_length">
@@ -43,7 +44,8 @@
       </NormContinuous>
     </DerivedField>
   </TransformationDictionary>
-  <ClusteringModel modelName="SingleIrisKMeansClustering" functionName="clustering" modelClass="centerBased" numberOfClusters="4">
+  <ClusteringModel modelName="SingleIrisKMeansClustering" functionName="clustering" modelClass="centerBased"
+                   numberOfClusters="4">
     <MiningSchema>
       <MiningField name="sepal_length" invalidValueTreatment="asIs"/>
       <MiningField name="sepal_width" invalidValueTreatment="asIs"/>
@@ -55,41 +57,42 @@
       <OutputField name="out_class" feature="predictedValue" dataType="string" optype="categorical">
         <FieldRef field="class"/>
       </OutputField>
-      <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double" optype="continuous">
+      <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double"
+                   optype="continuous">
         <FieldRef field="normcontinuous_field"/>
       </OutputField>
       <OutputField name="out_normdiscrete_field" feature="transformedValue" dataType="double" optype="continuous">
-        <Apply function="norm_discrete_function" >
+        <Apply function="norm_discrete_function">
           <FieldRef field="out_class"/>
         </Apply>
       </OutputField>
       <OutputField name="out_discretize_field" feature="transformedValue" dataType="string" optype="categorical">
-        <Apply function="discretize_function" >
+        <Apply function="discretize_function">
           <FieldRef field="sepal_length"/>
         </Apply>
       </OutputField>
       <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
-          <MapValues outputColumn="out" dataType="integer">
-            <FieldColumnPair field="class" column="class"/>
-            <InlineTable>
-              <row>
-                <class>1</class>
-                <out>virginica</out>
-              </row>
-              <row>
-                <class>2</class>
-                <out>versicolor</out>
-              </row>
-              <row>
-                <class>3</class>
-                <out>setosa</out>
-              </row>
-              <row>
-                <class>4</class>
-                <out>unknown</out>
-              </row>
-            </InlineTable>
-          </MapValues>
+        <MapValues outputColumn="out" dataType="integer">
+          <FieldColumnPair field="class" column="class"/>
+          <InlineTable>
+            <row>
+              <class>1</class>
+              <out>virginica</out>
+            </row>
+            <row>
+              <class>2</class>
+              <out>versicolor</out>
+            </row>
+            <row>
+              <class>3</class>
+              <out>setosa</out>
+            </row>
+            <row>
+              <class>4</class>
+              <out>unknown</out>
+            </row>
+          </InlineTable>
+        </MapValues>
       </OutputField>
       <OutputField name="predicted_cluster_name" feature="predictedDisplayValue" dataType="string"/>
       <OutputField name="predicted_cluster_index" feature="entityId" dataType="integer"/>

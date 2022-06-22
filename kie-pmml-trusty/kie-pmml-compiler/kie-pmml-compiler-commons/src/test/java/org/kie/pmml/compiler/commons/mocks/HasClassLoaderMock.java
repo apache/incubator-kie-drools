@@ -25,7 +25,8 @@ public class HasClassLoaderMock implements HasClassLoader {
     private final ClassLoader classLoader;
 
     public HasClassLoaderMock() {
-        this.classLoader = Thread.currentThread().getContextClassLoader();
+        this.classLoader =
+                new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
     @Override
@@ -34,8 +35,7 @@ public class HasClassLoaderMock implements HasClassLoader {
     }
 
     @Override
-    public Class<?> compileAndLoadClass(Map<String, String> sourcesMap, String fullClassName) {
-        Map<String, Class<?>> compiled = KieMemoryCompiler.compile(sourcesMap, classLoader);
-        return compiled.get(fullClassName);
+    public Map<String, byte[]> compileClasses(Map<String, String> sourcesMap, String fullClassName) {
+        return KieMemoryCompiler.compileNoLoad(sourcesMap, classLoader);
     }
 }

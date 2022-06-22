@@ -14,6 +14,10 @@
   <name>KIE :: PMML :: API</name>
   <description>Public APIs from Trusty PMML</description>
 
+  <properties>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
+
   <dependencies>
     <!-- KIE -->
     <dependency>
@@ -25,23 +29,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math3</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>runtime-manager-api</artifactId>
+    </dependency>
     <!-- TEST -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
-
 
 </project>

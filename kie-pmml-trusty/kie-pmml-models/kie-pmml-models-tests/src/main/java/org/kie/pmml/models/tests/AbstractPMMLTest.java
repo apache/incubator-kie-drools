@@ -23,24 +23,35 @@ import java.util.Set;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.api.PMMLRuntimeFactory;
+import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
+import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.kie.efesto.compilationmanager.api.service.CompilationManager;
+import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
+import org.kie.pmml.evaluator.core.service.PMMLRuntimeInternalImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.test.util.filesystem.FileUtils.getFile;
+import static org.kie.efesto.common.api.utils.FileUtils.getFile;
 
 public class AbstractPMMLTest {
 
-    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = new PMMLRuntimeFactoryImpl();
+    private static final CompilationManager compilationManager = SPIUtils.getCompilationManager(true).get();
+    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 
     protected static PMMLRuntime getPMMLRuntime(String fileName) {
+        fileName += ".pmml";
+        memoryCompilerClassLoader =
+                new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
         File pmmlFile = getFile(fileName);
-        return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);
+        EfestoResource darResource = new EfestoFileResource(pmmlFile);
+        List<IndexFile> indexFiles = compilationManager.processResource(darResource, memoryCompilerClassLoader);
+        return new PMMLRuntimeInternalImpl(memoryCompilerClassLoader);
     }
 
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
@@ -56,17 +67,20 @@ public class AbstractPMMLTest {
 
     protected PMML4Result evaluate(final PMMLRuntime pmmlRuntime,
                                    final Map<String, Object> inputData,
+                                   final String fileName,
                                    final String modelName) {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
-        return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData));
+        return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData, fileName, memoryCompilerClassLoader));
     }
 
     protected PMML4Result evaluate(final PMMLRuntime pmmlRuntime,
                                    final Map<String, Object> inputData,
+                                   final String fileName,
                                    final String modelName,
                                    final Set<PMMLListener> pmmlListeners) {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
-        return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData, pmmlListeners));
+        return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData, fileName, pmmlListeners,
+                                                                   memoryCompilerClassLoader));
     }
 
     protected PMMLListenerTest getPMMLListener() {

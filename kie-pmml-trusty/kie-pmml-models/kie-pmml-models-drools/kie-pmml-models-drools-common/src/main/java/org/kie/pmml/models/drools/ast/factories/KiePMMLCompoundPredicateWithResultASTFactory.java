@@ -36,6 +36,7 @@ public class KiePMMLCompoundPredicateWithResultASTFactory {
     /**
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>SURROGATE</code>.
      * Throws exception otherwise
+     *
      * @param predicateASTFactoryData
      * @param agendaActivationGroup
      * @param result
@@ -59,6 +60,7 @@ public class KiePMMLCompoundPredicateWithResultASTFactory {
     /**
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
      * <XOR>XOR</XOR>. Throws exception otherwise
+     *
      * @param builder
      * @param rules
      * @param result

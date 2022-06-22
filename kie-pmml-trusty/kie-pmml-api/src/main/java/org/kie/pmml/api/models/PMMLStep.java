@@ -15,16 +15,12 @@
  */
 package org.kie.pmml.api.models;
 
-import java.io.Serializable;
-import java.util.Map;
+import org.kie.efesto.runtimemanager.api.listener.EfestoStep;
 
 /**
  * Interface representing a meaningful <b>step</b> of PMML execution.
  * The actual meaning will be implemented on a per-model basis
  */
-public interface PMMLStep extends Serializable {
+public interface PMMLStep extends EfestoStep {
 
-    void addInfo(String infoName, Object infoValue);
-
-    Map<String, Object> getInfo();
 }

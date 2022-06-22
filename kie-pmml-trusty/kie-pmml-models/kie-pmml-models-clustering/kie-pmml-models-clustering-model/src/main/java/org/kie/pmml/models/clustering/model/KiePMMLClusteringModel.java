@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  org.kie.pmml.models.clustering.model;
+package org.kie.pmml.models.clustering.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.Named;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -93,7 +92,7 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+    public Object evaluate(final Map<String, Object> requestData,
                            final PMMLContext context) {
         double adjustmentFactor = computeAdjustmentFactor(requestData);
 

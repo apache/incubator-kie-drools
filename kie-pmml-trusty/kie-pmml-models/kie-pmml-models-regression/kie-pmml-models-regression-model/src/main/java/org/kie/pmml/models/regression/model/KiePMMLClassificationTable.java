@@ -60,6 +60,7 @@ public final class KiePMMLClassificationTable extends AbstractKiePMMLTable {
     /**
      * A <b>Classification</b> is considered <b>binary</b> if it is of <b>CATEGORICAL</b> type and contains
      * <b>exactly</b> two Regression tables
+     *
      * @return
      */
     public boolean isBinary() {
@@ -207,7 +208,7 @@ public final class KiePMMLClassificationTable extends AbstractKiePMMLTable {
 
         /**
          * @param probabilityMapFunction Keep in mind that insertion order matters, so provide an ordered map
-         * inside the <code>SerializableFunction</code>
+         *                               inside the <code>SerializableFunction</code>
          * @return
          */
         public Builder withProbabilityMapFunction(SerializableFunction<LinkedHashMap<String, Double>,

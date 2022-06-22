@@ -22,20 +22,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.data.Percentage;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class OrderApprovalRegressionTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "OrderApproval.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "OrderApproval";
 
     private static final String MODEL_NAME = "OrderApprovalRegression";
     private static final String TARGET_FIELD = "approval";
@@ -53,10 +51,15 @@ public class OrderApprovalRegressionTest extends AbstractPMMLTest {
     private double expectedProbTrue;
     private double expectedProbFalse;
 
-    public OrderApprovalRegressionTest(double category, double urgency, double targetPrice,
-                                       double price, String expectedResult,
-                                       double expectedProbTrue,
-                                       double expectedProbFalse) {
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+    }
+
+    public void initOrderApprovalRegressionTest(double category, double urgency, double targetPrice,
+                                                double price, String expectedResult,
+                                                double expectedProbTrue,
+                                                double expectedProbFalse) {
         this.category = category;
         this.urgency = urgency;
         this.targetPrice = targetPrice;
@@ -66,12 +69,6 @@ public class OrderApprovalRegressionTest extends AbstractPMMLTest {
         this.expectedProbFalse = expectedProbFalse;
     }
 
-  @BeforeClass
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {6.9, 3.1, 5.1, 2.3, "true", 0.9999999999997606, 2.3936408410918375E-13},
@@ -83,14 +80,18 @@ public class OrderApprovalRegressionTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testOrderApprovalRegression() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testOrderApprovalRegression(double category, double urgency, double targetPrice, double price,
+                                     String expectedResult, double expectedProbTrue, double expectedProbFalse) {
+        initOrderApprovalRegressionTest(category, urgency, targetPrice, price, expectedResult, expectedProbTrue,
+                                        expectedProbFalse);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("category", category);
         inputData.put("urgency", urgency);
         inputData.put("targetPrice", targetPrice);
         inputData.put("price", price);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

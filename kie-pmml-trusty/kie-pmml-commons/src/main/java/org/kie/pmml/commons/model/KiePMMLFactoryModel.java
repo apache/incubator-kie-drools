@@ -39,7 +39,7 @@ public class KiePMMLFactoryModel extends KiePMMLModel implements HasSourcesMap {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+    public Object evaluate(final Map<String, Object> requestData,
                            final PMMLContext pmmlContext) {
         throw new KiePMMLException("KiePMMLFactoryModel is not meant to be used for actual evaluation");
     }

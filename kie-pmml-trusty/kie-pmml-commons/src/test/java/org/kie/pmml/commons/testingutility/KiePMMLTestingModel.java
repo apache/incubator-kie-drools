@@ -41,9 +41,9 @@ public class KiePMMLTestingModel extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+    public Object evaluate(final Map<String, Object> requestData,
                            final PMMLContext context) {
-        return null;
+        return context;
     }
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLTestingModel> {

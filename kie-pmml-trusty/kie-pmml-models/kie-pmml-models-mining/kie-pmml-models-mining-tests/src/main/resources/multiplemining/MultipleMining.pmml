@@ -19,20 +19,20 @@
     </DataField>
     <DataField name="age" optype="continuous" dataType="double"/>
     <DataField name="occupation" optype="categorical" dataType="string">
-      <Value value="SKYDIVER" />
-      <Value value="ASTRONAUT" />
-      <Value value="PROGRAMMER" />
-      <Value value="TEACHER" />
-      <Value value="INSTRUCTOR" />
+      <Value value="SKYDIVER"/>
+      <Value value="ASTRONAUT"/>
+      <Value value="PROGRAMMER"/>
+      <Value value="TEACHER"/>
+      <Value value="INSTRUCTOR"/>
     </DataField>
     <DataField name="residenceState" optype="categorical" dataType="string">
-      <Value value="AP" />
-      <Value value="KN" />
-      <Value value="TN" />
+      <Value value="AP"/>
+      <Value value="KN"/>
+      <Value value="TN"/>
     </DataField>
     <DataField name="validLicense" optype="categorical" dataType="boolean"/>
-    <DataField name="overallScore" optype="continuous" dataType="double" />
-    <DataField name="variable" optype="continuous" dataType="double" />
+    <DataField name="overallScore" optype="continuous" dataType="double"/>
+    <DataField name="variable" optype="continuous" dataType="double"/>
   </DataDictionary>
   <MiningModel functionName="regression" modelName="MixedMining">
     <MiningSchema>
@@ -49,12 +49,14 @@
         <True/>
         <RegressionModel modelName="CategoricalVariablesRegression" functionName="regression">
           <MiningSchema>
-            <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="categoricalResult" usageType="predicted"
+                         invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
           <Output>
-            <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
+            <OutputField name="Predicted_result" optype="continuous" dataType="double"
+                         feature="predictedValue"/>
           </Output>
           <RegressionTable intercept="-22.1">
             <CategoricalPredictor name="categoricalX" value="red" coefficient="5.5"/>
@@ -70,7 +72,8 @@
       </Segment>
       <Segment>
         <True/>
-        <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression" baselineScore="0.0" initialScore="0.345">
+        <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression"
+                   baselineScore="0.0" initialScore="0.345">
           <MiningSchema>
             <MiningField name="age" usageType="active" invalidValueTreatment="asMissing"/>
             <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
@@ -79,7 +82,8 @@
             <MiningField name="overallScore" usageType="predicted"/>
           </MiningSchema>
           <Output>
-            <OutputField name="calculatedScore" displayName="Final Score" dataType="double" feature="predictedValue" targetField="overallScore"/>
+            <OutputField name="calculatedScore" displayName="Final Score" dataType="double"
+                         feature="predictedValue" targetField="overallScore"/>
           </Output>
           <Characteristics>
             <Characteristic name="AgeScore" baselineScore="0.0" reasonCode="ABZ">
@@ -176,12 +180,14 @@
         <SimplePredicate field="variable" operator="lessThan" value="20"/>
         <RegressionModel modelName="CategoricalVariablesRegression" functionName="regression">
           <MiningSchema>
-            <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="categoricalResult" usageType="predicted"
+                         invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
           <Output>
-            <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
+            <OutputField name="Predicted_result" optype="continuous" dataType="double"
+                         feature="predictedValue"/>
           </Output>
           <RegressionTable intercept="-22.1">
             <CategoricalPredictor name="categoricalX" value="red" coefficient="5.5"/>
@@ -199,7 +205,8 @@
         <SimpleSetPredicate field="occupation" booleanOperator="isIn">
           <Array n="2" type="string">SKYDIVER ASTRONAUT</Array>
         </SimpleSetPredicate>
-        <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression" baselineScore="0.0" initialScore="0.345">
+        <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression"
+                   baselineScore="0.0" initialScore="0.345">
           <MiningSchema>
             <MiningField name="age" usageType="active" invalidValueTreatment="asMissing"/>
             <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
@@ -208,7 +215,8 @@
             <MiningField name="overallScore" usageType="predicted"/>
           </MiningSchema>
           <Output>
-            <OutputField name="calculatedScore" displayName="Final Score" dataType="double" feature="predictedValue" targetField="overallScore"/>
+            <OutputField name="calculatedScore" displayName="Final Score" dataType="double"
+                         feature="predictedValue" targetField="overallScore"/>
           </Output>
           <Characteristics>
             <Characteristic name="AgeScore" baselineScore="0.0" reasonCode="ABZ">
@@ -294,12 +302,14 @@
         </CompoundPredicate>
         <RegressionModel modelName="OtherCategoricalVariablesRegression" functionName="regression">
           <MiningSchema>
-            <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="categoricalResult" usageType="predicted"
+                         invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
           <Output>
-            <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
+            <OutputField name="Predicted_result" optype="continuous" dataType="double"
+                         feature="predictedValue"/>
           </Output>
           <RegressionTable intercept="-15.1">
             <CategoricalPredictor name="categoricalX" value="red" coefficient="3.5"/>

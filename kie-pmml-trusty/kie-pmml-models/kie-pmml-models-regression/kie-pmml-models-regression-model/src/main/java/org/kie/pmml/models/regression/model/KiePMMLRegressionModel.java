@@ -41,7 +41,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel implements IsInterprete
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+    public Object evaluate(final Map<String, Object> requestData,
                            final PMMLContext context) {
         return regressionTable.evaluateRegression(requestData, context);
     }

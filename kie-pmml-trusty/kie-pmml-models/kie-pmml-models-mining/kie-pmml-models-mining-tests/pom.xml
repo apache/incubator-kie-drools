@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models-mining</artifactId>
@@ -11,14 +12,30 @@
   <name>KIE :: PMML :: Models :: Mining :: Tests</name>
   <description>PMML Mining Tests</description>
 
+  <properties>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>drl-engine-compilation-common</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>drl-engine-map-input-runtime</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- TEST -->
     <!-- PMML -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-dynamic</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-mining-model</artifactId>
@@ -41,27 +58,32 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-evaluator-assembler</artifactId>
+      <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-tree-compiler</artifactId>
+      <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-tree-evaluator</artifactId>
+      <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-scorecard-compiler</artifactId>
+      <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-scorecard-evaluator</artifactId>
+      <artifactId>kie-pmml-models-clustering-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-clustering-evaluator</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -80,26 +102,27 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
-    <!-- KIE -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ecj</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-classic</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-core</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>drl-engine-compilation-common</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>drl-engine-map-input-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- KIE -->
     <!-- EXTERNAL -->
     <dependency>
       <groupId>org.jpmml</groupId>
@@ -109,16 +132,6 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

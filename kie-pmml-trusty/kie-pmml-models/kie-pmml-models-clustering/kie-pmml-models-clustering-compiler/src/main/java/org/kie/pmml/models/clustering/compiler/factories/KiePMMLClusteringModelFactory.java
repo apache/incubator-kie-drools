@@ -170,7 +170,8 @@ public class KiePMMLClusteringModelFactory {
         boolean isCenterField =
                 clusteringField.getCenterField() == null || clusteringField.getCenterField() == ClusteringField.CenterField.TRUE;
         KiePMMLCompareFunction kiePMMLCompareFunction = clusteringField.getCompareFunction() != null ? compareFunctionFrom(clusteringField.getCompareFunction()) : null;
-        return new KiePMMLClusteringField(clusteringField.getField().getValue(), fieldWeight, isCenterField, kiePMMLCompareFunction, null);
+        return new KiePMMLClusteringField(clusteringField.getField().getValue(), fieldWeight, isCenterField,
+                                          kiePMMLCompareFunction, null);
     }
 
     static KiePMMLComparisonMeasure getKiePMMLComparisonMeasure(ComparisonMeasure comparisonMeasure) {

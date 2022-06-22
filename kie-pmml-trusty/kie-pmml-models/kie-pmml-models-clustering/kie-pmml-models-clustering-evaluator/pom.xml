@@ -11,6 +11,10 @@
   <name>KIE :: PMML :: Models :: Clustering :: Evaluator</name>
   <description>PMML Clustering Evaluator</description>
 
+  <properties>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>
@@ -23,11 +27,6 @@
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
 </project>

@@ -12,7 +12,8 @@
       <Value value="versicolor"/>
     </DataField>
   </DataDictionary>
-  <RegressionModel functionName="classification" modelName="LogisticRegressionSoftmaxNormalization" targetFieldName="Species" normalizationMethod="softmax">
+  <RegressionModel functionName="classification" modelName="LogisticRegressionSoftmaxNormalization"
+                   targetFieldName="Species" normalizationMethod="softmax">
     <MiningSchema>
       <MiningField name="Sepal.Length"/>
       <MiningField name="Sepal.Width"/>
@@ -22,9 +23,12 @@
       <MiningField name="Species" usageType="target"/>
     </MiningSchema>
     <Output>
-      <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability" value="setosa"/>
-      <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability" value="versicolor"/>
-      <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability" value="virginica"/>
+      <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability"
+                   value="setosa"/>
+      <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability"
+                   value="versicolor"/>
+      <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability"
+                   value="virginica"/>
     </Output>
 
     <RegressionTable targetCategory="setosa" intercept="0.11822288946815">

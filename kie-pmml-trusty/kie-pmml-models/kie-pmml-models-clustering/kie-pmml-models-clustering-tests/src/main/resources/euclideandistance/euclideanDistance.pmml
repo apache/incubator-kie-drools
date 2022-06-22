@@ -5,17 +5,17 @@
         <DataField name="Dimension2" optype="continuous" dataType="double"/>
     </DataDictionary>
     <ClusteringModel modelName="euclidianDistance" functionName="clustering"
-        modelClass="centerBased" numberOfClusters="2">
-        <MiningSchema>
-            <MiningField name="Dimension1" invalidValueTreatment="returnInvalid"/>
-            <MiningField name="Dimension2" invalidValueTreatment="returnInvalid"/>
-        </MiningSchema>
-        <Output>
-            <OutputField name="predictedValue" feature="predictedValue" dataType="string" optype="categorical"/>
-            <OutputField name="predictedAffinity" feature="affinity" dataType="double"/>
-        </Output>
-        <ComparisonMeasure kind="distance">
-            <euclidean/>
+                     modelClass="centerBased" numberOfClusters="2">
+      <MiningSchema>
+        <MiningField name="Dimension1" invalidValueTreatment="returnInvalid"/>
+        <MiningField name="Dimension2" invalidValueTreatment="returnInvalid"/>
+      </MiningSchema>
+      <Output>
+        <OutputField name="predictedValue" feature="predictedValue" dataType="string" optype="categorical"/>
+        <OutputField name="predictedAffinity" feature="affinity" dataType="double"/>
+      </Output>
+      <ComparisonMeasure kind="distance">
+        <euclidean/>
         </ComparisonMeasure>
         <ClusteringField field="Dimension1" compareFunction="absDiff"/>
         <ClusteringField field="Dimension2" compareFunction="absDiff"/>

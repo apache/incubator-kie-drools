@@ -13,7 +13,7 @@
   </DataDictionary>
   <RegressionModel modelName="MissingDataRegression" functionName="regression" algorithmName="least squares">
     <MiningSchema>
-      <MiningField name="result" usageType="predicted" />
+      <MiningField name="result" usageType="predicted"/>
       <MiningField name="x" missingValueReplacement="5" missingValueTreatment="asMean"/>
       <MiningField name="y" missingValueReplacement="classB" missingValueTreatment="asMean"/>
     </MiningSchema>

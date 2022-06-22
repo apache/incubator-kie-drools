@@ -14,6 +14,10 @@
   <name>KIE :: PMML :: Models :: Regression :: Compiler</name>
   <description>PMML Regression Compiler</description>
 
+  <properties>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>
@@ -37,21 +41,6 @@
       <artifactId>kie-pmml-compiler-commons</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-classic</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-core</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

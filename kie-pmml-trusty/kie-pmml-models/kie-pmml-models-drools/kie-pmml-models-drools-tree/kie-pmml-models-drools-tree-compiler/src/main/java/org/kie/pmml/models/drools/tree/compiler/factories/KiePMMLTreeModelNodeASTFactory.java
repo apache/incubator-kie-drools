@@ -82,6 +82,7 @@ public class KiePMMLTreeModelNodeASTFactory {
 
     /**
      * This method is meant to be executed when <code>node</code> <b>is</b> a <i>final leaf</i>
+     *
      * @param node
      * @param parentPath
      * @param rules
@@ -104,6 +105,7 @@ public class KiePMMLTreeModelNodeASTFactory {
 
     /**
      * This method is meant to be executed when <code>node</code> <b>is not</b> a <i>final leaf</i>
+     *
      * @param node
      * @param parentPath
      * @param rules
@@ -128,6 +130,7 @@ public class KiePMMLTreeModelNodeASTFactory {
     /**
      * This method is meant to be executed when <b>noTrueChildStrategy</b> is <code>TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION</code>, <b>node</b>
      * is not a <i>final leaf</i>, and <b>node</b>'s score is not null
+     *
      * @param node
      * @param parentPath
      * @param rules

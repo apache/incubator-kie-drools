@@ -15,18 +15,15 @@
  */
 package org.kie.pmml.compiler.commons.mocks;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.mocks.TestModel;
@@ -57,14 +54,6 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     @Override
     public Class<KiePMMLTestingModel> getKiePMMLModelClass() {
         return KiePMMLTestingModel.class;
-    }
-
-    @Override
-    public KiePMMLTestingModel getKiePMMLModel(final CompilationDTO<TestModel> compilationDTO) {
-        return KiePMMLTestingModel.builder("TEST_MODEL",
-                                           Collections.emptyList(),
-                                           MINING_FUNCTION.REGRESSION)
-                .build();
     }
 
     @Override

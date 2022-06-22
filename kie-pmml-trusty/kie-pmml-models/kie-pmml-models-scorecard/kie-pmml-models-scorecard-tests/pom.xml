@@ -16,11 +16,6 @@
     <!-- TEST -->
     <!-- PMML -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-dynamic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-scorecard-model</artifactId>
       <scope>test</scope>
@@ -38,11 +33,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-tests</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-evaluator-assembler</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

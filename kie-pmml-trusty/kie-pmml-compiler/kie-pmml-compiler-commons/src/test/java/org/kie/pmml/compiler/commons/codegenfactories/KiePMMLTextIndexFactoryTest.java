@@ -29,8 +29,8 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TextIndex;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.expressions.KiePMMLInlineTable;
 import org.kie.pmml.commons.model.expressions.KiePMMLRow;
@@ -40,9 +40,9 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileInputStream;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
-import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLTextIndexFactoryTest {
 
@@ -51,7 +51,7 @@ public class KiePMMLTextIndexFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLTextIndexFactoryTest_01.txt";
     private static TextIndex TEXTINDEX;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         PMML pmmlModel = KiePMMLUtil.load(getFileInputStream(TRANSFORMATIONS_SAMPLE), TRANSFORMATIONS_SAMPLE);
         DefineFunction definedFunction = pmmlModel.getTransformationDictionary()
@@ -64,7 +64,7 @@ public class KiePMMLTextIndexFactoryTest {
     }
 
     @Test
-    public void getTextIndexVariableDeclaration() throws IOException {
+    void getTextIndexVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLTextIndexFactory.getTextIndexVariableDeclaration(variableName,
                                                                                       TEXTINDEX);

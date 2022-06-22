@@ -110,14 +110,12 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     }
 
     /**
-     * @param knowledgeBase the knowledgeBase we are working on. Add as <code>Object</code> to avoid direct
-     * dependency. It is needed only by <b>Drools-dependent</b>
      * models, so it may be <b>ignored</b> by others
      * @param requestData
      * @param context used to accumulate additional evaluated values
      * @return
      */
-    public abstract Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+    public abstract Object evaluate(final Map<String, Object> requestData,
                                     final PMMLContext context);
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLComponent.Builder<T> {

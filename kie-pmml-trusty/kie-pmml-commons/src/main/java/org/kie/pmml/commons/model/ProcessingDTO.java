@@ -71,7 +71,6 @@ public class ProcessingDTO {
     }
 
     /**
-     *
      * @param defineFunctions
      * @param derivedFields
      * @param outputFields
@@ -89,9 +88,9 @@ public class ProcessingDTO {
                          final List<String> orderedReasonCodes) {
         this.defineFunctions = defineFunctions;
         this.derivedFields = derivedFields;
-        this.outputFields =  outputFields;
+        this.outputFields = outputFields;
         this.kiePMMLTargets = kiePMMLTargets;
-        this.miningFields =  miningFields;
+        this.miningFields = miningFields;
         this.kiePMMLNameValues = kiePMMLNameValues;
         this.orderedReasonCodes = orderedReasonCodes;
         this.predictedDisplayValue = null;
@@ -123,6 +122,7 @@ public class ProcessingDTO {
     /**
      * Add the given <code>KiePMMLNameValue</code> to <b>kiePMMLNameValues</b>
      * if there is not another with the same name; otherwise replace it.
+     *
      * @param toAdd
      * @return
      */

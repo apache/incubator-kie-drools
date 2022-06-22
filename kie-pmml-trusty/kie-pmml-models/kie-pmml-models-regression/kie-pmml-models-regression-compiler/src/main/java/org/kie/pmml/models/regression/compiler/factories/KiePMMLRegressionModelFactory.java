@@ -68,7 +68,8 @@ public class KiePMMLRegressionModelFactory {
         logger.trace("getKiePMMLRegressionModelClasses {} {}", compilationDTO.getFields(), compilationDTO.getModel());
         Map<String, AbstractKiePMMLTable> regressionTablesMap = getRegressionTables(compilationDTO);
         try {
-            AbstractKiePMMLTable nestedTable = regressionTablesMap.size() == 1 ? regressionTablesMap.values().iterator().next() :
+            AbstractKiePMMLTable nestedTable = regressionTablesMap.size() == 1 ?
+                    regressionTablesMap.values().iterator().next() :
                     regressionTablesMap.values().stream().filter(KiePMMLClassificationTable.class::isInstance)
                             .findFirst()
                             .orElseThrow(() -> new KiePMMLException("Failed to find expected " +
@@ -125,7 +126,7 @@ public class KiePMMLRegressionModelFactory {
     //  not-public KiePMMLRegressionModel instantiation
 
     static Map<String, AbstractKiePMMLTable> getRegressionTables(final RegressionCompilationDTO compilationDTO) {
-        Map<String, AbstractKiePMMLTable>  toReturn = new HashMap<>();
+        Map<String, AbstractKiePMMLTable> toReturn = new HashMap<>();
         if (compilationDTO.isRegression()) {
             final List<RegressionTable> regressionTables =
                     Collections.singletonList(compilationDTO.getModel().getRegressionTables().get(0));
@@ -140,7 +141,8 @@ public class KiePMMLRegressionModelFactory {
                     RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(compilationDTO,
                                                                                                       regressionTables,
                                                                                                       RegressionModel.NormalizationMethod.NONE);
-            KiePMMLClassificationTable kiePMMLClassificationTable = KiePMMLClassificationTableFactory.getClassificationTable(regressionCompilationDTO);
+            KiePMMLClassificationTable kiePMMLClassificationTable =
+                    KiePMMLClassificationTableFactory.getClassificationTable(regressionCompilationDTO);
             toReturn.put(kiePMMLClassificationTable.getName(), kiePMMLClassificationTable);
         }
         return toReturn;

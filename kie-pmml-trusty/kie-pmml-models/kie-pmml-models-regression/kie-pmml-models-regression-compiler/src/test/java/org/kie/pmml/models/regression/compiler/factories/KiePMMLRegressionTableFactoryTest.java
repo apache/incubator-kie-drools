@@ -51,8 +51,8 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -67,6 +67,7 @@ import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import static java.util.stream.Collectors.groupingBy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getGeneratedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedVariableName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
@@ -77,7 +78,6 @@ import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressio
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.KIE_PMML_REGRESSION_TABLE_TEMPLATE_JAVA;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.SUPPORTED_NORMALIZATION_METHODS;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.UNSUPPORTED_NORMALIZATION_METHODS;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegressionTableRegressionFactoryTest {
 
@@ -94,7 +94,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
     private static MethodDeclaration STATIC_GETTER_METHOD;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         COMPILATION_UNIT = getFromFileName(KIE_PMML_REGRESSION_TABLE_TEMPLATE_JAVA);
         MODEL_TEMPLATE = COMPILATION_UNIT.getClassByName(KIE_PMML_REGRESSION_TABLE_TEMPLATE).get();
@@ -102,7 +102,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getRegressionTables() {
+    void getRegressionTables() {
         regressionTable = getRegressionTable(3.5, "professional");
         RegressionTable regressionTable2 = getRegressionTable(3.9, "hobby");
         RegressionModel regressionModel = new RegressionModel();
@@ -128,7 +128,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   regressionModel.getRegressionTables(),
@@ -145,7 +145,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getRegressionTable() {
+    void getRegressionTable() {
         regressionTable = getRegressionTable(3.5, "professional");
         RegressionModel regressionModel = new RegressionModel();
         regressionModel.setNormalizationMethod(RegressionModel.NormalizationMethod.CAUCHIT);
@@ -170,7 +170,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   new ArrayList<>(),
@@ -182,7 +182,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getRegressionTableBuilders() {
+    void getRegressionTableBuilders() {
         regressionTable = getRegressionTable(3.5, "professional");
         RegressionModel regressionModel = new RegressionModel();
         regressionModel.setNormalizationMethod(RegressionModel.NormalizationMethod.CAUCHIT);
@@ -207,7 +207,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   new ArrayList<>(),
@@ -220,7 +220,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getRegressionTableBuilder() {
+    void getRegressionTableBuilder() {
         regressionTable = getRegressionTable(3.5, "professional");
         RegressionModel regressionModel = new RegressionModel();
         regressionModel.setNormalizationMethod(RegressionModel.NormalizationMethod.CAUCHIT);
@@ -245,7 +245,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   new ArrayList<>(),
@@ -259,7 +259,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getNumericPredictorsMap() {
+    void getNumericPredictorsMap() {
         final List<NumericPredictor> numericPredictors = IntStream.range(0, 3).mapToObj(index -> {
             String predictorName = "predictorName-" + index;
             double coefficient = 1.23 * index;
@@ -271,7 +271,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getNumericPredictorEntryWithExponent() {
+    void getNumericPredictorEntryWithExponent() {
         String predictorName = "predictorName";
         int exponent = 2;
         double coefficient = 1.23;
@@ -283,7 +283,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getNumericPredictorEntryWithoutExponent() {
+    void getNumericPredictorEntryWithoutExponent() {
         String predictorName = "predictorName";
         int exponent = 1;
         double coefficient = 1.23;
@@ -295,7 +295,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getCategoricalPredictorsMap() {
+    void getCategoricalPredictorsMap() {
         final List<CategoricalPredictor> categoricalPredictors = IntStream.range(0, 3).mapToObj(index ->
                                                                                                         IntStream.range(0,
                                                                                                                         3).mapToObj(i -> {
@@ -318,7 +318,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getGroupedCategoricalPredictorMap() {
+    void getGroupedCategoricalPredictorMap() {
         final List<CategoricalPredictor> categoricalPredictors = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             String predictorName = "predictorName-" + i;
@@ -338,7 +338,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getPredictorTermsMap() {
+    void getPredictorTermsMap() {
         final List<PredictorTerm> predictorTerms = IntStream.range(0, 3).mapToObj(index -> {
             String predictorName = "predictorName-" + index;
             double coefficient = 1.23 * index;
@@ -356,7 +356,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getPredictorTermSerializableFunction() {
+    void getPredictorTermSerializableFunction() {
         String predictorName = "predictorName";
         double coefficient = 23.12;
         String fieldRef = "fieldRef";
@@ -368,19 +368,19 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getResultUpdaterUnsupportedFunction() {
+    void getResultUpdaterUnsupportedFunction() {
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
                                                           assertThat(KiePMMLRegressionTableFactory.getResultUpdaterFunction(normalizationMethod)).isNull());
     }
 
     @Test
-    public void getResultUpdaterSupportedFunction() {
+    void getResultUpdaterSupportedFunction() {
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
                                                         assertThat(KiePMMLRegressionTableFactory.getResultUpdaterFunction(normalizationMethod)).isNotNull());
     }
 
     @Test
-    public void setStaticGetter() throws IOException {
+    void setStaticGetter() throws IOException {
         regressionTable = getRegressionTable(3.5, "professional");
         RegressionModel regressionModel = new RegressionModel();
         regressionModel.setNormalizationMethod(RegressionModel.NormalizationMethod.CAUCHIT);
@@ -406,7 +406,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   new ArrayList<>(),
@@ -432,7 +432,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getResultUpdaterExpressionWithSupportedMethods() {
+    void getResultUpdaterExpressionWithSupportedMethods() {
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             Expression retrieved =
                     KiePMMLRegressionTableFactory.getResultUpdaterExpression(normalizationMethod);
@@ -448,7 +448,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getResultUpdaterExpression() {
+    void getResultUpdaterExpression() {
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             Expression retrieved =
                     KiePMMLRegressionTableFactory.getResultUpdaterExpression(normalizationMethod);
@@ -457,7 +457,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getResultUpdaterSupportedExpression() throws IOException {
+    void getResultUpdaterSupportedExpression() throws IOException {
         MethodReferenceExpr retrieved =
                 KiePMMLRegressionTableFactory.getResultUpdaterSupportedExpression(RegressionModel.NormalizationMethod.CAUCHIT);
         String text = getFileContent(TEST_03_SOURCE);
@@ -467,7 +467,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getNumericPredictorsExpressions() {
+    void getNumericPredictorsExpressions() {
         final List<NumericPredictor> numericPredictors = IntStream.range(0, 3).mapToObj(index -> {
             String predictorName = "predictorName-" + index;
             double coefficient = 1.23 * index;
@@ -479,7 +479,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getNumericPredictorExpressionWithExponent() throws IOException {
+    void getNumericPredictorExpressionWithExponent() throws IOException {
         String predictorName = "predictorName";
         int exponent = 2;
         double coefficient = 1.23;
@@ -492,7 +492,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getNumericPredictorExpressionWithoutExponent() throws IOException {
+    void getNumericPredictorExpressionWithoutExponent() throws IOException {
         String predictorName = "predictorName";
         int exponent = 1;
         double coefficient = 1.23;
@@ -505,7 +505,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getCategoricalPredictorsExpressions() {
+    void getCategoricalPredictorsExpressions() {
         final List<CategoricalPredictor> categoricalPredictors = IntStream.range(0, 3).mapToObj(index ->
                                                                                                         IntStream.range(0,
                                                                                                                         3).mapToObj(i -> {
@@ -533,7 +533,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void populateWithGroupedCategoricalPredictorMap() throws IOException {
+    void populateWithGroupedCategoricalPredictorMap() throws IOException {
         final List<CategoricalPredictor> categoricalPredictors = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             String predictorName = "predictorName-" + i;
@@ -558,7 +558,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getCategoricalPredictorExpression() throws IOException {
+    void getCategoricalPredictorExpression() throws IOException {
         final String categoricalPredictorMapName = "categoricalPredictorMapName";
         CastExpr retrieved =
                 KiePMMLRegressionTableFactory.getCategoricalPredictorExpression(categoricalPredictorMapName);
@@ -568,7 +568,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getPredictorTermFunctions() {
+    void getPredictorTermFunctions() {
         final List<PredictorTerm> predictorTerms = IntStream.range(0, 3).mapToObj(index -> {
             String predictorName = "predictorName-" + index;
             double coefficient = 1.23 * index;
@@ -586,7 +586,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getPredictorTermFunction() throws IOException {
+    void getPredictorTermFunction() throws IOException {
         String predictorName = "predictorName";
         double coefficient = 23.12;
         String fieldRef = "fieldRef";
@@ -600,7 +600,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void populateOutputFieldsMap() {
+    void populateOutputFieldsMap() {
         final List<KiePMMLOutputField> outputFields = new ArrayList<>();
         KiePMMLOutputField predictedOutputField = getOutputField("KOF-TARGET", RESULT_FEATURE.PREDICTED_VALUE,
                                                                  "TARGET");
@@ -610,6 +610,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
                 .collect(Collectors.toList());
         outputFields.addAll(probabilityOutputFields);
     }
+
     private void commonEvaluateRegressionTable(KiePMMLRegressionTable retrieved, RegressionTable source) {
         Map<String, SerializableFunction<Double, Double>> numericFunctionMap = retrieved.getNumericFunctionMap();
         assertThat(numericFunctionMap).hasSameSizeAs(source.getNumericPredictors());

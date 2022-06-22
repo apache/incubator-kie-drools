@@ -27,22 +27,22 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.ParameterField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getDATA_TYPEString;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getOP_TYPEString;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLParameterFieldFactoryTest {
 
     private static final String TEST_01_SOURCE = "KiePMMLParameterFieldFactoryTest_01.txt";
 
     @Test
-    public void getParameterFieldVariableDeclaration() throws IOException {
+    void getParameterFieldVariableDeclaration() throws IOException {
         String variableName = "variableName";
         ParameterField parameterField = new ParameterField(FieldName.create(variableName));
         parameterField.setDataType(DataType.DOUBLE);

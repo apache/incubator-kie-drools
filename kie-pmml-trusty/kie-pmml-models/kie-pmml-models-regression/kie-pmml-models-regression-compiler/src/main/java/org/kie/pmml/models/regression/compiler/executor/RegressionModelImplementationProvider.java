@@ -29,7 +29,6 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
@@ -60,20 +59,6 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     @Override
     public Class<KiePMMLRegressionModel> getKiePMMLModelClass() {
         return KiePMMLRegressionModel.class;
-    }
-
-    @Override
-    public KiePMMLRegressionModel getKiePMMLModel(final CompilationDTO<RegressionModel> compilationDTO) {
-        logger.trace("getKiePMMLModel {} {} {} {}", compilationDTO.getPackageName(),
-                     compilationDTO.getFields(),
-                     compilationDTO.getModel(),
-                     compilationDTO.getHasClassloader());
-        validate(compilationDTO.getFields(), compilationDTO.getModel());
-        try {
-            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
-        } catch (IOException | IllegalAccessException | InstantiationException e) {
-            throw new KiePMMLException(e.getMessage(), e);
-        }
     }
 
     @Override

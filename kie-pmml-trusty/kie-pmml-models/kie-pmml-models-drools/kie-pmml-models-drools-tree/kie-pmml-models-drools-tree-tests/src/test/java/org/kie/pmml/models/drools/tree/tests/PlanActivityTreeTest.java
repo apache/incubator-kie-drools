@@ -21,20 +21,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class PlanActivityTreeTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "PlanActivityTree.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "PlanActivityTree";
+
     private static final String MODEL_NAME = "PlanActivityTreeModel";
     private static final String TARGET_FIELD = "Predicted_activity";
     private static PMMLRuntime pmmlRuntime;
@@ -44,19 +43,18 @@ public class PlanActivityTreeTest extends AbstractPMMLTest {
     private boolean friendsAvailable;
     private String activity;
 
-    public PlanActivityTreeTest(String workToDo, String weather, boolean friendsAvailable, String activity) {
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+    }
+
+    public void initPlanActivityTreeTest(String workToDo, String weather, boolean friendsAvailable, String activity) {
         this.workToDo = workToDo;
         this.weather = weather;
         this.friendsAvailable = friendsAvailable;
         this.activity = activity;
     }
 
-    @BeforeClass
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"YES", "sunny", false, "stay in"},
@@ -68,15 +66,17 @@ public class PlanActivityTreeTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testPlanActivity() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testPlanActivity(String workToDo, String weather, boolean friendsAvailable, String activity) {
+        initPlanActivityTreeTest(workToDo, weather, friendsAvailable, activity);
         final Map<String, Object> inputData = new HashMap<>();
 
         inputData.put("workToDo", this.workToDo);
         inputData.put("weather", this.weather);
         inputData.put("friendsAvailable", this.friendsAvailable);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         Object result = pmml4Result.getResultVariables().get(TARGET_FIELD);
 

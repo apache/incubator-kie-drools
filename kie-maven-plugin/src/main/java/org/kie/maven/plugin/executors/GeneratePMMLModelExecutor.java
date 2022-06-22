@@ -55,7 +55,7 @@ import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteCla
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.toClassName;
-import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
+//import static org.kie.pmml.compiler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
 
 public class GeneratePMMLModelExecutor {
 
@@ -146,21 +146,23 @@ public class GeneratePMMLModelExecutor {
 
     private static List<GeneratedFile> getGeneratedFiles(File resourceDirectory) throws MojoExecutionException {
         final List<GeneratedFile> toReturn = new ArrayList<>();
-        try (Stream<Path> stream = Files
-                .walk(resourceDirectory.toPath(), Integer.MAX_VALUE)
-                .filter(path -> path.toFile().isFile() && path.toString().endsWith(PMML))) {
-            return stream
-                    .map(Path::toFile)
-                    .map(FileSystemResource::new)
-                    .map(GeneratePMMLModelExecutor::parseResource)
-                    .map(GeneratePMMLModelExecutor::getGenerateFiles)
-                    .reduce(toReturn, (previous, toAdd) -> {
-                        previous.addAll(toAdd);
-                        return previous;
-                    });
-        } catch (Exception e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        }
+        return toReturn;
+        // TODO @gcardosi
+//        try (Stream<Path> stream = Files
+//                .walk(resourceDirectory.toPath(), Integer.MAX_VALUE)
+//                .filter(path -> path.toFile().isFile() && path.toString().endsWith(PMML))) {
+//            return stream
+//                    .map(Path::toFile)
+//                    .map(FileSystemResource::new)
+//                    .map(GeneratePMMLModelExecutor::parseResource)
+//                    .map(GeneratePMMLModelExecutor::getGenerateFiles)
+//                    .reduce(toReturn, (previous, toAdd) -> {
+//                        previous.addAll(toAdd);
+//                        return previous;
+//                    });
+//        } catch (Exception e) {
+//            throw new MojoExecutionException(e.getMessage(), e);
+//        }
     }
 
     private static List<GeneratedFile> getGenerateFiles(final PMMLResource pmmlResources) {
@@ -173,43 +175,45 @@ public class GeneratePMMLModelExecutor {
     private static void addModels(final List<KiePMMLModel> kiepmmlModels,
                            final PMMLResource resource,
                            final List<GeneratedFile> generatedFiles) {
-        for (KiePMMLModel model : kiepmmlModels) {
-            if (model.getName() == null || model.getName().isEmpty()) {
-                String errorMessage = String.format("Model name should not be empty inside %s",
-                                                    resource.getModelPath());
-                throw new RuntimeException(errorMessage);
-            }
-            if (!(model instanceof HasSourcesMap)) {
-                String errorMessage = String.format("Expecting HasSourcesMap instance, retrieved %s inside %s",
-                                                    model.getClass().getName(),
-                                                    resource.getModelPath());
-                throw new RuntimeException(errorMessage);
-            }
-            Map<String, String> sourceMap = ((HasSourcesMap) model).getSourcesMap();
-            for (Map.Entry<String, String> sourceMapEntry : sourceMap.entrySet()) {
-                String path = sourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
-                generatedFiles.add(new GeneratedFile(GeneratedFile.Type.PMML, path, sourceMapEntry.getValue()));
-            }
-            Map<String, String> rulesSourceMap = ((HasSourcesMap) model).getRulesSourcesMap();
-            if (rulesSourceMap != null) {
-                for (Map.Entry<String, String> rulesSourceMapEntry : rulesSourceMap.entrySet()) {
-                    String path = rulesSourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
-                    generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, path,
-                                                         rulesSourceMapEntry.getValue()));
-                }
-            }
-            if (model instanceof HasNestedModels) {
-                addModels(((HasNestedModels) model).getNestedModels(), resource, generatedFiles);
-            }
-        }
+        // TODO @gcardosi
+//        for (KiePMMLModel model : kiepmmlModels) {
+//            if (model.getName() == null || model.getName().isEmpty()) {
+//                String errorMessage = String.format("Model name should not be empty inside %s",
+//                                                    resource.getModelPath());
+//                throw new RuntimeException(errorMessage);
+//            }
+//            if (!(model instanceof HasSourcesMap)) {
+//                String errorMessage = String.format("Expecting HasSourcesMap instance, retrieved %s inside %s",
+//                                                    model.getClass().getName(),
+//                                                    resource.getModelPath());
+//                throw new RuntimeException(errorMessage);
+//            }
+//            Map<String, String> sourceMap = ((HasSourcesMap) model).getSourcesMap();
+//            for (Map.Entry<String, String> sourceMapEntry : sourceMap.entrySet()) {
+//                String path = sourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
+//                generatedFiles.add(new GeneratedFile(GeneratedFile.Type.PMML, path, sourceMapEntry.getValue()));
+//            }
+//            Map<String, String> rulesSourceMap = ((HasSourcesMap) model).getRulesSourcesMap();
+//            if (rulesSourceMap != null) {
+//                for (Map.Entry<String, String> rulesSourceMapEntry : rulesSourceMap.entrySet()) {
+//                    String path = rulesSourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
+//                    generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, path,
+//                                                         rulesSourceMapEntry.getValue()));
+//                }
+//            }
+//            if (model instanceof HasNestedModels) {
+//                addModels(((HasNestedModels) model).getNestedModels(), resource, generatedFiles);
+//            }
+//        }
     }
 
-    private static PMMLResource parseResource(Resource resource) {
-        final RuleBase ruleBase = new KnowledgeBaseImpl("PMML", null);
-        final InternalKnowledgeBase knowledgeBase = new SessionsAwareKnowledgeBase(ruleBase);
-        KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl(knowledgeBase);
-        List<KiePMMLModel> kiePMMLModels = getKiePMMLModelsFromResourceWithSources(kbuilderImpl, resource);
-        String modelPath = resource.getSourcePath();
-        return new PMMLResource(kiePMMLModels, new File(resource.getSourcePath()).toPath(), modelPath);
-    }
+//    TODO @gcardosi
+//    private static PMMLResource parseResource(Resource resource) {
+//        final RuleBase ruleBase = new KnowledgeBaseImpl("PMML", null);
+//        final InternalKnowledgeBase knowledgeBase = new SessionsAwareKnowledgeBase(ruleBase);
+//        KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl(knowledgeBase);
+//        List<KiePMMLModel> kiePMMLModels = getKiePMMLModelsFromResourceWithSources(kbuilderImpl, resource);
+//        String modelPath = resource.getSourcePath();
+//        return new PMMLResource(kiePMMLModels, new File(resource.getSourcePath()).toPath(), modelPath);
+//    }
 }

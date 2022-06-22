@@ -50,8 +50,8 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -69,6 +69,7 @@ import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHO
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getCategoricalPredictor;
@@ -84,7 +85,6 @@ import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileNam
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.GETKIEPMML_TABLE;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLRegressionModelFactoryTest {
 
@@ -105,7 +105,7 @@ public class KiePMMLRegressionModelFactoryTest {
     private static RegressionModel regressionModel;
     private static PMML pmml;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         Random random = new Random();
         Set<String> fieldNames = new HashSet<>();
@@ -152,12 +152,12 @@ public class KiePMMLRegressionModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLRegressionModelClasses() throws IOException, IllegalAccessException, InstantiationException {
+    void getKiePMMLRegressionModelClasses() throws IOException, IllegalAccessException, InstantiationException {
         final CompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         KiePMMLRegressionModel retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -171,12 +171,12 @@ public class KiePMMLRegressionModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLRegressionModelSourcesMap() throws IOException {
+    void getKiePMMLRegressionModelSourcesMap() throws IOException {
         final CommonCompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         Map<String, String> retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -186,12 +186,12 @@ public class KiePMMLRegressionModelFactoryTest {
     }
 
     @Test
-    public void getRegressionTablesMap() {
+    void getRegressionTablesMap() {
         final CompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionModelFactory
                 .getRegressionTablesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         int expectedSize = regressionTables.size() + 1; // One for classification
@@ -202,7 +202,7 @@ public class KiePMMLRegressionModelFactoryTest {
     }
 
     @Test
-    public void setStaticGetter() throws IOException {
+    void setStaticGetter() throws IOException {
         String nestedTable = "NestedTable";
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
@@ -210,7 +210,7 @@ public class KiePMMLRegressionModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   new ArrayList<>(),
@@ -258,12 +258,12 @@ public class KiePMMLRegressionModelFactoryTest {
         final Map<String, SerializableFunction<String, Double>> categoricalFunctionMap =
                 regressionTable.getCategoricalFunctionMap();
         for (CategoricalPredictor categoricalPredictor : originalRegressionTable.getCategoricalPredictors()) {
-        	assertThat(categoricalFunctionMap).containsKey(categoricalPredictor.getName().getValue());
+            assertThat(categoricalFunctionMap).containsKey(categoricalPredictor.getName().getValue());
         }
         final Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermsFunctionMap =
                 regressionTable.getPredictorTermsFunctionMap();
         for (PredictorTerm predictorTerm : originalRegressionTable.getPredictorTerms()) {
-        	assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName().getValue());
+            assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName().getValue());
         }
     }
 }

@@ -24,20 +24,20 @@ import java.util.List;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.True;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLTruePredicateFactoryTest {
 
     private static final String TEST_01_SOURCE = "KiePMMLTruePredicateFactoryTest_01.txt";
 
     @Test
-    public void getTruePredicateVariableDeclaration() throws IOException {
+    void getTruePredicateVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLTruePredicateFactory.getTruePredicateVariableDeclaration(variableName, new True());
         String text = getFileContent(TEST_01_SOURCE);

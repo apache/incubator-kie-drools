@@ -22,23 +22,23 @@ import java.util.List;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.models.TargetValue;
 import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTargetValue;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.convertToKieTargetValue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class TargetValueFactoryTest {
 
     private static final String TEST_01_SOURCE = "TargetValueFactoryTest_01.txt";
 
     @Test
-    public void getTargetValueVariableInitializer() throws IOException {
+    void getTargetValueVariableInitializer() throws IOException {
         TargetValue targetValue = convertToKieTargetValue(getRandomTargetValue());
         ObjectCreationExpr retrieved = TargetValueFactory.getTargetValueVariableInitializer(targetValue);
         String text = getFileContent(TEST_01_SOURCE);

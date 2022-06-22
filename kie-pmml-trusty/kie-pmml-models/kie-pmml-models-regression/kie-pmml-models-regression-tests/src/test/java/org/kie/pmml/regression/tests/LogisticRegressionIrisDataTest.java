@@ -22,20 +22,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.data.Percentage;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class LogisticRegressionIrisDataTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "LogisticRegressionIrisData.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "LogisticRegressionIrisData";
 
     private static final String MODEL_NAME = "LogisticRegressionIrisData";
     private static final String TARGET_FIELD = "Species";
@@ -52,8 +50,13 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLTest {
     private double petalWidth;
     private String expectedResult;
 
-    public LogisticRegressionIrisDataTest(double sepalLength, double sepalWidth, double petalLength,
-                                          double petalWidth, String expectedResult) {
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+    }
+
+    public void initLogisticRegressionIrisDataTest(double sepalLength, double sepalWidth, double petalLength,
+                                                   double petalWidth, String expectedResult) {
         this.sepalLength = sepalLength;
         this.sepalWidth = sepalWidth;
         this.petalLength = petalLength;
@@ -61,12 +64,6 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
     }
 
-  @BeforeClass
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {6.9, 3.1, 5.1, 2.3, "virginica"},
@@ -77,14 +74,17 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testLogisticRegressionIrisData() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testLogisticRegressionIrisData(double sepalLength, double sepalWidth, double petalLength, double petalWidth,
+                                        String expectedResult) {
+        initLogisticRegressionIrisDataTest(sepalLength, sepalWidth, petalLength, petalWidth, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("Sepal.Length", sepalLength);
         inputData.put("Sepal.Width", sepalWidth);
         inputData.put("Petal.Length", petalLength);
         inputData.put("Petal.Width", petalWidth);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

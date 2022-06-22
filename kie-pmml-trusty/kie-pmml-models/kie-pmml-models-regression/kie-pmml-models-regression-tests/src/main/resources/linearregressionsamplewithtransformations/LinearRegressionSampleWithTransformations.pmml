@@ -10,8 +10,8 @@
     <DataField name="number_of_claims" optype="continuous" dataType="double"/>
     <DataField name="text_input" optype="categorical" dataType="string"/>
     <DataField name="input3" optype="continuous" dataType="double">
-      <Interval closure="closedClosed" leftMargin="12.1" rightMargin="14.6" />
-      <Interval closure="closedClosed" leftMargin="29.1" rightMargin="44.6" />
+      <Interval closure="closedClosed" leftMargin="12.1" rightMargin="14.6"/>
+      <Interval closure="closedClosed" leftMargin="29.1" rightMargin="44.6"/>
     </DataField>
   </DataDictionary>
   <TransformationDictionary>
@@ -28,7 +28,7 @@
     </DefineFunction>
     <DefineFunction name="norm_discrete_function" optype="categorical" dataType="string">
       <ParameterField name="eval_car_location"/>
-      <NormDiscrete field="eval_car_location" value="carpark" />
+      <NormDiscrete field="eval_car_location" value="carpark"/>
     </DefineFunction>
     <DefineFunction name="fun_salary_fieldref" optype="continuous" dataType="double">
       <ParameterField name="salary_foo"/>
@@ -139,7 +139,8 @@
       </MapValues>
     </DerivedField>
   </TransformationDictionary>
-  <RegressionModel modelName="LinearRegressionSampleWithTransformations" functionName="regression" algorithmName="linearRegression" targetFieldName="number_of_claims">
+  <RegressionModel modelName="LinearRegressionSampleWithTransformations" functionName="regression"
+                   algorithmName="linearRegression" targetFieldName="number_of_claims">
     <MiningSchema>
       <MiningField name="age"/>
       <MiningField name="salary"/>
@@ -180,29 +181,33 @@
       <OutputField name="out_der_fun_salary_apply" dataType="string" feature="transformedValue">
         <FieldRef field="der_fun_salary_apply"/>
       </OutputField>
-      <OutputField name="out_der_fun_salary_apply_fun_salary_fieldref" dataType="string" feature="transformedValue">
+      <OutputField name="out_der_fun_salary_apply_fun_salary_fieldref" dataType="string"
+                   feature="transformedValue">
         <Apply function="fun_salary_fieldref">
           <Constant>987654321</Constant>
         </Apply>
       </OutputField>
-      <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double" optype="continuous">
+      <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double"
+                   optype="continuous">
         <FieldRef field="normcontinuous_field"/>
       </OutputField>
-      <OutputField name="out_normdiscrete_field" feature="transformedValue" dataType="double" optype="categorical">
-        <Apply function="norm_discrete_function" >
+      <OutputField name="out_normdiscrete_field" feature="transformedValue" dataType="double"
+                   optype="categorical">
+        <Apply function="norm_discrete_function">
           <FieldRef field="out_der_car_location"/>
         </Apply>
       </OutputField>
       <OutputField name="out_discretize_field" feature="transformedValue" dataType="string" optype="categorical">
-        <Apply function="discretize_function" >
+        <Apply function="discretize_function">
           <FieldRef field="age"/>
         </Apply>
       </OutputField>
       <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
         <FieldRef field="mapvalued_field"/>
       </OutputField>
-      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double" optype="continuous" >
-        <Apply function="TEXT_INDEX_NORMALIZATION_FUNCTION" >
+      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double"
+                   optype="continuous">
+        <Apply function="TEXT_INDEX_NORMALIZATION_FUNCTION">
           <FieldRef field="text_input"/>
           <Constant>ui_good</Constant>
         </Apply>

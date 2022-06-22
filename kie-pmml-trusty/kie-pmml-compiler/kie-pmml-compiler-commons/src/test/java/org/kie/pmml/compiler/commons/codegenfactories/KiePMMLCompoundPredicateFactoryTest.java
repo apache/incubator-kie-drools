@@ -32,7 +32,7 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
@@ -40,12 +40,12 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getSimplePredicate;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getStringObjects;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimpleSetPredicateFactoryTest.getSimpleSetPredicate;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLCompoundPredicateFactoryTest {
 
@@ -58,7 +58,7 @@ public class KiePMMLCompoundPredicateFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLCompoundPredicateFactoryTest_01.txt";
 
     @Test
-    public void getCompoundPredicateVariableDeclaration() throws IOException {
+    void getCompoundPredicateVariableDeclaration() throws IOException {
         String variableName = "variableName";
         SimplePredicate simplePredicate1 = getSimplePredicate(PARAM_1, value1, operator1);
         SimplePredicate simplePredicate2 = getSimplePredicate(PARAM_2, value2, operator2);

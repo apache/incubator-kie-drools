@@ -1,4 +1,5 @@
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:data="http://jpmml.org/jpmml-model/InlineTable" version="4.2"
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:data="http://jpmml.org/jpmml-model/InlineTable"
+      version="4.2"
       xsi:schemaLocation="http://www.dmg.org/PMML-4_2
       http://www.dmg.org/v4-2-1/pmml-4-2.xsd"
       xmlns="http://www.dmg.org/PMML-4_2">
@@ -32,7 +33,7 @@
     <DefineFunction name="APPLY_FUNCTION" optype="continuous" dataType="double">
       <ParameterField name="fieldRed"/>
       <Apply function="FIELDREF_FUNCTION">
-        <FieldRef field="Petal.Length" />
+        <FieldRef field="Petal.Length"/>
       </Apply>
     </DefineFunction>
     <DefineFunction name="TEXT_INDEX_NORMALIZATION_FUNCTION" optype="continuous">
@@ -75,7 +76,7 @@
     </DerivedField>
     <DerivedField name="APPLY_DERIVEDFIELD" optype="continuous" dataType="double">
       <Apply function="APPLY_FUNCTION">
-        <FieldRef field="Petal.Length" />
+        <FieldRef field="Petal.Length"/>
       </Apply>
     </DerivedField>
     <DerivedField name="BackRef" optype="continuous" dataType="double">
@@ -90,7 +91,7 @@
     <DerivedField name="StageThree" optype="continuous" dataType="double">
       <FieldRef field="StageTwo"/>
     </DerivedField>
-    <DerivedField name="mapvalued" dataType="double" optype="continuous" >
+    <DerivedField name="mapvalued" dataType="double" optype="continuous">
       <MapValues outputColumn="out" dataType="integer">
         <FieldColumnPair field="BAND" column="band"/>
         <FieldColumnPair field="STATE" column="state"/>
@@ -144,7 +145,9 @@
       </MapValues>
     </DerivedField>
   </TransformationDictionary>
-  <TreeModel modelName="IrisTreeModel" functionName="classification" algorithmName="rpart" splitCharacteristic="binarySplit" missingValueStrategy="defaultChild" noTrueChildStrategy="returnLastPrediction">
+  <TreeModel modelName="IrisTreeModel" functionName="classification" algorithmName="rpart"
+             splitCharacteristic="binarySplit" missingValueStrategy="defaultChild"
+             noTrueChildStrategy="returnLastPrediction">
     <MiningSchema>
       <MiningField name="Species" usageType="predicted" invalidValueTreatment="returnInvalid"/>
       <MiningField name="Sepal.Length" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -216,9 +219,12 @@
       </OutputField>
       <!-- EVALUATED -->
       <OutputField name="Predicted_Species" optype="categorical" dataType="string" feature="predictedValue"/>
-      <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability" value="setosa"/>
-      <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability" value="versicolor"/>
-      <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability" value="virginica"/>
+      <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability"
+                   value="setosa"/>
+      <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability"
+                   value="versicolor"/>
+      <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability"
+                   value="virginica"/>
     </Output>
     <LocalTransformations>
       <DerivedField name="LOCAL_CONSTANT_DERIVEDFIELD" optype="categorical" dataType="string">

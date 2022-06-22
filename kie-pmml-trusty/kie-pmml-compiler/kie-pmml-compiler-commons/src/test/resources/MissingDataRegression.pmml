@@ -1,4 +1,6 @@
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.4" xsi:schemaLocation="http://www.dmg.org/PMML-4_4 http://www.dmg.org/v4-4-1/pmml-4-4.xsd" xmlns="http://www.dmg.org/PMML-4_4">
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.4"
+      xsi:schemaLocation="http://www.dmg.org/PMML-4_4 http://www.dmg.org/v4-4-1/pmml-4-4.xsd"
+      xmlns="http://www.dmg.org/PMML-4_4">
   <Header/>
   <DataDictionary numberOfFields="3">
     <DataField name="result" optype="continuous" dataType="double"/>
@@ -11,7 +13,7 @@
   </DataDictionary>
   <RegressionModel modelName="MissingDataRegression" functionName="regression" algorithmName="least squares">
     <MiningSchema>
-      <MiningField name="result" usageType="predicted" />
+      <MiningField name="result" usageType="predicted"/>
       <MiningField name="x" missingValueReplacement="5"/>
       <MiningField name="y" missingValueReplacement="classB"/>
       <MiningField name="z" missingValueTreatment="returnInvalid"/>

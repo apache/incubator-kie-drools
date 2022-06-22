@@ -14,7 +14,6 @@
 
   <modules>
     <module>kie-pmml-evaluator-api</module>
-    <module>kie-pmml-evaluator-assembler</module>
     <module>kie-pmml-evaluator-core</module>
   </modules>
 

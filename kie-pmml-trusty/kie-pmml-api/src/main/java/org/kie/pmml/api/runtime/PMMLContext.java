@@ -16,16 +16,19 @@
 package org.kie.pmml.api.runtime;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
+import org.kie.efesto.runtimemanager.api.model.EfestoContext;
+import org.kie.pmml.api.models.PMMLStep;
 
-public interface PMMLContext extends Context {
+public interface PMMLContext extends EfestoContext<PMMLStep, PMMLListener> {
 
     PMMLRequestData getRequestData();
+
+    String getFileName();
 
     void addMissingValueReplaced(final String fieldName, final Object missingValueReplaced);
 
@@ -55,6 +58,7 @@ public interface PMMLContext extends Context {
 
     /**
      * Returns the <b>probability map</b> evaluated by the model
+     *
      * @return
      */
     LinkedHashMap<String, Double> getProbabilityResultMap();
@@ -64,12 +68,7 @@ public interface PMMLContext extends Context {
     Map<String, Object> getOutputFieldsMap();
 
     /**
-     * Add the given <code>PMMLListener</code> to the current <code>PMMLContext</code>
-     * That listener, in turn, will be available only for evaluation of that specific <code>PMMLContext</code>
-     * @param toAdd
+     * @return
      */
-    void addPMMLListener(final PMMLListener toAdd);
-
-    Set<PMMLListener> getPMMLListeners();
-
+    Object getMemoryClassLoader(); // Using Object to avoid depending on kiememorycompiler
 }

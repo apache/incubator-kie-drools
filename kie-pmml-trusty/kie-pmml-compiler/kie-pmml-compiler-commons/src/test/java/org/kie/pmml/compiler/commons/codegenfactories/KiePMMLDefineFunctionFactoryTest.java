@@ -31,7 +31,7 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.ParameterField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
@@ -40,10 +40,10 @@ import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getDATA_TYPEString;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getOP_TYPEString;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLDefineFunctionFactoryTest {
 
@@ -54,7 +54,7 @@ public class KiePMMLDefineFunctionFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLDefineFunctionFactoryTest_01.txt";
 
     @Test
-    public void getDefineFunctionVariableDeclaration() throws IOException {
+    void getDefineFunctionVariableDeclaration() throws IOException {
         ParameterField parameterField1 = new ParameterField(FieldName.create(PARAM_1));
         parameterField1.setDataType(DataType.DOUBLE);
         parameterField1.setOpType(OpType.CONTINUOUS);

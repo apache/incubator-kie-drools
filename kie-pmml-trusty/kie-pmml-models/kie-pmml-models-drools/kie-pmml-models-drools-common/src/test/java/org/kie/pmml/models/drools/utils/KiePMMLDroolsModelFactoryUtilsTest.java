@@ -50,8 +50,8 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
@@ -74,14 +74,14 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
     private static CompilationUnit COMPILATION_UNIT;
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         COMPILATION_UNIT = getFromFileName(TEMPLATE_SOURCE);
         MODEL_TEMPLATE = COMPILATION_UNIT.getClassByName(TEMPLATE_CLASS_NAME).get();
     }
 
     @Test
-    public void getKiePMMLModelCompilationUnit() {
+    void getKiePMMLModelCompilationUnit() {
         DataDictionary dataDictionary = new DataDictionary();
         String targetFieldString = "target.field";
         FieldName targetFieldName = FieldName.create(targetFieldString);
@@ -106,7 +106,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(packageName,
                                                                        pmml,
                                                                        model,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
                 DroolsCompilationDTO.fromCompilationDTO(source, fieldTypeMap);
         CompilationUnit retrieved =
@@ -131,7 +131,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
     }
 
     @Test
-    public void setConstructor() {
+    void setConstructor() {
         Model model = new TreeModel();
         PMML_MODEL pmmlModel = PMML_MODEL.byName(model.getClass().getSimpleName());
         ConstructorDeclaration constructorDeclaration = MODEL_TEMPLATE.getDefaultConstructor().get();
@@ -155,7 +155,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
     }
 
     @Test
-    public void addFieldTypeMapPopulation() {
+    void addFieldTypeMapPopulation() {
         BlockStmt blockStmt = new BlockStmt();
         Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         IntStream.range(0, 3).forEach(index -> {
@@ -197,6 +197,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
     /**
      * Return a <code>List&lt;MethodCallExpr&gt;</code> where every element <b>scope' name</b> is <code>scope</code>
      * and every element <b>name</b> is <code>method</code>
+     *
      * @param blockStmt
      * @param expectedSize
      * @param scope
@@ -218,6 +219,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
     /**
      * Verify the <b>scope' name</b> scope of the given <code>MethodCallExpr</code> is <code>scope</code>
      * and the <b>name</b> of the given <code>MethodCallExpr</code> is <code>method</code>
+     *
      * @param methodCallExpr
      * @param scope
      * @param method

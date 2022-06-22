@@ -13,7 +13,8 @@
     <MiningSchema>
       <MiningField name="age"/>
       <MiningField name="salary"/>
-      <MiningField name="car_location" usageType="target"/> <!-- <- wrong - used for test - should be overrided by Target -->
+      <MiningField name="car_location"
+                   usageType="target"/> <!-- <- wrong - used for test - should be overrided by Target -->
       <MiningField name="number_of_claims"/>
     </MiningSchema>
     <RegressionTable intercept="132.37">
@@ -23,7 +24,8 @@
     <MiningSchema>
       <MiningField name="age"/>
       <MiningField name="salary"/>
-      <MiningField name="car_location" usageType="target"/> <!-- <- wrong - used for test - should be overrided by Target -->
+      <MiningField name="car_location"
+                   usageType="target"/> <!-- <- wrong - used for test - should be overrided by Target -->
       <MiningField name="number_of_claims"/>
     </MiningSchema>
     <Node score="will play">
@@ -34,7 +36,8 @@
     <MiningSchema>
       <MiningField name="age"/>
       <MiningField name="salary"/>
-      <MiningField name="car_location" usageType="target"/> <!-- <- wrong - used for test - should be overrided by Target -->
+      <MiningField name="car_location"
+                   usageType="target"/> <!-- <- wrong - used for test - should be overrided by Target -->
       <MiningField name="number_of_claims"/>
     </MiningSchema>
     <RegressionTable intercept="766.37">

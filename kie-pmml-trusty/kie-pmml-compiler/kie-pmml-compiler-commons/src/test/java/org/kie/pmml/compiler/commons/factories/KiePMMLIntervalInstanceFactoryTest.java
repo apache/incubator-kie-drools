@@ -16,7 +16,7 @@
 package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.Interval;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomInterval;
@@ -25,7 +25,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLIntervalInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLInterval() {
+    void getKiePMMLInterval() {
         Interval toConvert = getRandomInterval();
         KiePMMLInterval retrieved = KiePMMLIntervalInstanceFactory.getKiePMMLInterval(toConvert);
         commonVerifyKiePMMLInterval(retrieved, toConvert);

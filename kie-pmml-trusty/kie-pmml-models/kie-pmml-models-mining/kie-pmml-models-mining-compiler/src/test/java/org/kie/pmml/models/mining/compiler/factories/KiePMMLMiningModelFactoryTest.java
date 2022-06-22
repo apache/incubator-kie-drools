@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
 
@@ -34,25 +33,20 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.mining.MiningModel;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.models.mining.compiler.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
-import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.xml.sax.SAXException;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
@@ -64,7 +58,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     private static CompilationUnit COMPILATION_UNIT;
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws IOException, JAXBException, SAXException {
         innerSetup();
         COMPILATION_UNIT = getFromFileName(TEMPLATE_SOURCE);
@@ -72,29 +66,13 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     }
 
     @Test
-    public void getKiePMMLMiningModel() {
-        final CommonCompilationDTO<MiningModel> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       MINING_MODEL,
-                                                                       new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
-        final MiningModelCompilationDTO compilationDTO =
-                MiningModelCompilationDTO.fromCompilationDTO(source);
-        final KiePMMLMiningModel retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModel(compilationDTO);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.getAlgorithmName()).isEqualTo(MINING_MODEL.getAlgorithmName());
-        assertThat(retrieved.isScorable()).isEqualTo(MINING_MODEL.isScorable());
-        assertThat(retrieved.getTargetField()).isEqualTo(targetFieldName);
-    }
-
-    @Test
-    public void getKiePMMLMiningModelSourcesMap() {
+    void getKiePMMLMiningModelSourcesMap() {
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        MINING_MODEL,
-                                                                       new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
+                                                                       new HasClassLoaderMock(), "fileName");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved =
@@ -105,51 +83,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     }
 
     @Test
-    public void getKiePMMLMiningModelSourcesMapCompiled() {
-        final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        final HasKnowledgeBuilderMock hasKnowledgeBuilderMock = new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER);
-        final CommonCompilationDTO<MiningModel> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       MINING_MODEL,
-                                                                       hasKnowledgeBuilderMock);
-        final MiningModelCompilationDTO compilationDTO =
-                MiningModelCompilationDTO.fromCompilationDTO(source);
-        final List<String> expectedGeneratedClasses =
-                MINING_MODEL.getSegmentation().getSegments().stream().map(segment -> {
-
-                    String modelName = segment.getModel().getModelName();
-                    String sanitizedPackageName =
-                            getSanitizedPackageName(compilationDTO.getSegmentationPackageName() + "."
-                                                            + segment.getId());
-                    String sanitizedClassName = getSanitizedClassName(modelName);
-                    return String.format(PACKAGE_CLASS_TEMPLATE, sanitizedPackageName, sanitizedClassName);
-                }).collect(Collectors.toList());
-        expectedGeneratedClasses.forEach(expectedGeneratedClass -> {
-            try {
-                hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
-                fail("Expecting class not found: " + expectedGeneratedClass);
-            } catch (Exception e) {
-                assertThat(e).isInstanceOf(ClassNotFoundException.class);
-            }
-        });
-        final Map<String, String> retrieved =
-                KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMapCompiled(compilationDTO, nestedModels);
-        assertThat(retrieved).isNotNull();
-        int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
-        assertThat(nestedModels).hasSize(expectedNestedModels);
-        expectedGeneratedClasses.forEach(expectedGeneratedClass -> {
-            try {
-                hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
-            } catch (Exception e) {
-                fail("Expecting class to be loaded, but got: " + e.getClass().getName() + " -> " + e.getMessage());
-                e.printStackTrace();
-            }
-        });
-    }
-
-    @Test
-    public void setConstructor() {
+    void setConstructor() {
         PMML_MODEL pmmlModel = PMML_MODEL.byName(MINING_MODEL.getClass().getSimpleName());
 
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
@@ -158,7 +92,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        MINING_MODEL,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         KiePMMLMiningModelFactory.setConstructor(compilationDTO, modelTemplate);

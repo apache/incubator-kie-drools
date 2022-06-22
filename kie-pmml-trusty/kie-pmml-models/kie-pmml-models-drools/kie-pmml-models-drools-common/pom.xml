@@ -14,6 +14,16 @@
   <name>KIE :: PMML :: Models :: Drools :: Common</name>
   <description>Common code for PMML Models with Drools Implementations</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>drl-engine-map-input-runtime</artifactId>
+        <groupId>org.kie</groupId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- PMML -->
     <dependency>
@@ -32,23 +42,15 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-kie-internal</artifactId>
-    </dependency>
     <!-- DROOLS/KIE -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
+      <artifactId>drools-drl-ast</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-mvel</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>drl-engine-map-input-runtime</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <dependency>
@@ -73,21 +75,6 @@
       <artifactId>kie-pmml-compiler-commons</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-classic</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-core</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 

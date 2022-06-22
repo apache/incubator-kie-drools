@@ -25,16 +25,16 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataField;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLMiningFieldFactoryTest {
 
@@ -44,15 +44,16 @@ public class KiePMMLMiningFieldFactoryTest {
     private static final String VARIABLE_NAME = "variableName";
 
     @Test
-    public void getMiningFieldVariableDeclarationNoAllowedValuesNoIntervals() throws IOException {
+    void getMiningFieldVariableDeclarationNoAllowedValuesNoIntervals() throws IOException {
         DataField dataField = getRandomDataField();
         dataField.getValues().clear();
         dataField.getIntervals().clear();
         MiningField miningField = new MiningField();
         miningField.setName(dataField.getName());
         miningField.setUsageType(MiningField.UsageType.TARGET);
-        BlockStmt retrieved = KiePMMLMiningFieldFactory.getMiningFieldVariableDeclaration(VARIABLE_NAME, miningField,
-                                                                                          Collections.singletonList(dataField));
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLMiningFieldFactory.getMiningFieldVariableDeclaration(VARIABLE_NAME, miningField,
+                                                                                                                                         Collections.singletonList(dataField));
         String dataTypeString =
                 DATA_TYPE.class.getName() + "." + DATA_TYPE.byName(dataField.getDataType().value()).name();
         String text = getFileContent(TEST_01_SOURCE);
@@ -66,14 +67,15 @@ public class KiePMMLMiningFieldFactoryTest {
     }
 
     @Test
-    public void getMiningFieldVariableDeclarationWithAllowedValuesNoIntervals() throws IOException {
+    void getMiningFieldVariableDeclarationWithAllowedValuesNoIntervals() throws IOException {
         DataField dataField = getRandomDataField();
         dataField.getIntervals().clear();
         MiningField miningField = new MiningField();
         miningField.setName(dataField.getName());
         miningField.setUsageType(MiningField.UsageType.TARGET);
-        BlockStmt retrieved = KiePMMLMiningFieldFactory.getMiningFieldVariableDeclaration(VARIABLE_NAME, miningField,
-                                                                                          Collections.singletonList(dataField));
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLMiningFieldFactory.getMiningFieldVariableDeclaration(VARIABLE_NAME, miningField,
+                                                                                                                                         Collections.singletonList(dataField));
         String dataTypeString =
                 DATA_TYPE.class.getName() + "." + DATA_TYPE.byName(dataField.getDataType().value()).name();
         String text = getFileContent(TEST_02_SOURCE);
@@ -90,7 +92,7 @@ public class KiePMMLMiningFieldFactoryTest {
     }
 
     @Test
-    public void getMiningFieldVariableDeclarationWithAllowedValuesAndIntervals() throws IOException {
+    void getMiningFieldVariableDeclarationWithAllowedValuesAndIntervals() throws IOException {
         DataField dataField = getRandomDataField();
         MiningField miningField = new MiningField();
         miningField.setName(dataField.getName());

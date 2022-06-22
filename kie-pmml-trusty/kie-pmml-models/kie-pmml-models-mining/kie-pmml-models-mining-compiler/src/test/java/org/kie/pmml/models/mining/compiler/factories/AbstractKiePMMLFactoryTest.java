@@ -29,10 +29,8 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.junit.Before;
+import org.kie.efesto.common.api.utils.FileUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
-import org.kie.test.util.filesystem.FileUtils;
 import org.xml.sax.SAXException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,13 +46,14 @@ import static org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO.
 
 public abstract class AbstractKiePMMLFactoryTest {
 
-    protected static final String SOURCE_MIXED = "MiningModel_Mixed.pmml";
+    // TODO RESTORE when all models are implemented
+//    protected static final String SOURCE_MIXED = "MiningModel_Mixed.pmml";
+    protected static final String SOURCE_MIXED = "MiningModel_Regression.pmml";
     protected static DataDictionary DATA_DICTIONARY;
     protected static TransformationDictionary TRANSFORMATION_DICTIONARY;
     protected static PMML pmml;
     protected static MiningModel MINING_MODEL;
     protected static List<DerivedField> DERIVED_FIELDS;
-    protected static KnowledgeBuilderImpl KNOWLEDGE_BUILDER;
     protected static String targetFieldName;
 
     protected static void innerSetup() throws JAXBException, SAXException, IOException {
@@ -73,11 +72,6 @@ public abstract class AbstractKiePMMLFactoryTest {
         List<Field<?>> fields =
                 getFieldsFromDataDictionaryAndTransformationDictionary(DATA_DICTIONARY, TRANSFORMATION_DICTIONARY);
         targetFieldName = getTargetFieldName(fields, MINING_MODEL).get();
-    }
-
-    @Before
-    public void init() {
-        KNOWLEDGE_BUILDER = new KnowledgeBuilderImpl();
     }
 
     protected String getExpectedNestedModelClass(final Segment segment) {

@@ -21,20 +21,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class RandomForestClassifierMiningTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "RandomForestClassifier.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "RandomForestClassifier";
+
     private static final String MODEL_NAME = "RandomForestClassifier";
     private static final String TARGET_FIELD = "Approved";
     private static PMMLRuntime pmmlRuntime;
@@ -45,11 +44,16 @@ public class RandomForestClassifierMiningTest extends AbstractPMMLTest {
     private double income;
     private int expectedResult;
 
-    public RandomForestClassifierMiningTest(double age,
-                                            double debt,
-                                            double yearsEmployed,
-                                            double income,
-                                            int expectedResult) {
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+    }
+
+    public void initRandomForestClassifierMiningTest(double age,
+                                                     double debt,
+                                                     double yearsEmployed,
+                                                     double income,
+                                                     int expectedResult) {
         this.age = age;
         this.debt = debt;
         this.yearsEmployed = yearsEmployed;
@@ -57,12 +61,6 @@ public class RandomForestClassifierMiningTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
     }
 
-    @BeforeClass
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {40.83, 3.5, 0.5, 0, 0},
@@ -72,14 +70,16 @@ public class RandomForestClassifierMiningTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testMixedMining() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testMixedMining(double age, double debt, double yearsEmployed, double income, int expectedResult) {
+        initRandomForestClassifierMiningTest(age, debt, yearsEmployed, income, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("Age", age);
         inputData.put("Debt", debt);
         inputData.put("YearsEmployed", yearsEmployed);
         inputData.put("Income", income);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

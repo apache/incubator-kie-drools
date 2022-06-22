@@ -25,10 +25,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntime;
@@ -37,10 +36,10 @@ import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MiningListenerTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "MultipleMining.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "MultipleMining";
+
     private static final String MODEL_NAME = "MixedMining";
     private static PMMLRuntime pmmlRuntime;
 
@@ -51,12 +50,17 @@ public class MiningListenerTest extends AbstractPMMLTest {
     private String residenceState;
     private boolean validLicense;
 
-    public MiningListenerTest(String categoricalX,
-                              String categoricalY,
-                              double age,
-                              String occupation,
-                              String residenceState,
-                              boolean validLicense) {
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+    }
+
+    public void initMiningListenerTest(String categoricalX,
+                                       String categoricalY,
+                                       double age,
+                                       String occupation,
+                                       String residenceState,
+                                       boolean validLicense) {
         this.categoricalX = categoricalX;
         this.categoricalY = categoricalY;
         this.age = age;
@@ -65,12 +69,6 @@ public class MiningListenerTest extends AbstractPMMLTest {
         this.validLicense = validLicense;
     }
 
-    @BeforeClass
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"red", "classA", 25.0, "ASTRONAUT", "AP", true},
@@ -83,8 +81,11 @@ public class MiningListenerTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testMixedMining() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testMixedMining(String categoricalX, String categoricalY, double age, String occupation,
+                         String residenceState, boolean validLicense) {
+        initMiningListenerTest(categoricalX, categoricalY, age, occupation, residenceState, validLicense);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("categoricalX", categoricalX);
         inputData.put("categoricalY", categoricalY);
@@ -94,8 +95,8 @@ public class MiningListenerTest extends AbstractPMMLTest {
         inputData.put("validLicense", validLicense);
         Set<PMMLListener> pmmlListeners = IntStream.range(0, 3)
                 .mapToObj(i -> getPMMLListener()).collect(Collectors.toSet());
-        evaluate(pmmlRuntime, inputData, MODEL_NAME, pmmlListeners);
-        final List<PMMLStep> retrieved = ((PMMLListenerTest)pmmlListeners.iterator().next()).getSteps();
+        evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME, pmmlListeners);
+        final List<PMMLStep> retrieved = ((PMMLListenerTest) pmmlListeners.iterator().next()).getSteps();
         retrieved
                 .stream()
                 .filter(pmmlStep -> !(pmmlStep instanceof PMMLRuntimeStep))
@@ -106,9 +107,9 @@ public class MiningListenerTest extends AbstractPMMLTest {
 
     private void commonValidateStep(final PMMLStep toValidate) {
         Map<String, Object> retrieved = toValidate.getInfo();
-        assertThat(retrieved.containsKey("SEGMENT")).isTrue();
-        assertThat(retrieved.containsKey("RESULT CODE")).isTrue();
-        assertThat(retrieved.containsKey("MODEL")).isTrue();
-        assertThat(retrieved.containsKey("RESULT")).isTrue();
+        assertThat(retrieved).containsKey("SEGMENT");
+        assertThat(retrieved).containsKey("RESULT CODE");
+        assertThat(retrieved).containsKey("MODEL");
+        assertThat(retrieved).containsKey("RESULT");
     }
 }

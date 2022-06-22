@@ -228,8 +228,8 @@ public class CommonCodegenUtils {
      * @param mapTypes
      */
     public static void createLinkedHashMap(final BlockStmt body,
-                                 final String mapName,
-                                 final List<String> mapTypes) {
+                                           final String mapName,
+                                           final List<String> mapTypes) {
         createMap(body, mapName, mapTypes, LinkedHashMap.class);
     }
 
@@ -254,9 +254,9 @@ public class CommonCodegenUtils {
      * @param mapTypes
      */
     public static void createPopulatedLinkedHashMap(final BlockStmt body,
-                                              final String mapName,
-                                              final List<String> mapTypes,
-                                              final Map<String, Expression> toAdd) {
+                                                    final String mapName,
+                                                    final List<String> mapTypes,
+                                                    final Map<String, Expression> toAdd) {
         createLinkedHashMap(body, mapName, mapTypes);
         addMapPopulationExpressions(toAdd, body, mapName);
     }
@@ -307,7 +307,8 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * Method to be used to populate a <code>List</code> inside a getter method meant to return only that <code>List</code>
+     * Method to be used to populate a <code>List</code> inside a getter method meant to return only that
+     * <code>List</code>
      * @param toAdd
      * @param methodDeclaration
      * @param listName
@@ -315,8 +316,9 @@ public class CommonCodegenUtils {
     public static void populateListInListGetter(final List<? extends Expression> toAdd,
                                                 final MethodDeclaration methodDeclaration,
                                                 final String listName) {
-        final BlockStmt body = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_IN_METHOD, methodDeclaration)));
-        Optional<ReturnStmt> oldReturn =  body.getStatements().parallelStream().filter(ReturnStmt.class::isInstance)
+        final BlockStmt body =
+                methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_IN_METHOD, methodDeclaration)));
+        Optional<ReturnStmt> oldReturn = body.getStatements().parallelStream().filter(ReturnStmt.class::isInstance)
                 .map(ReturnStmt.class::cast)
                 .findFirst();
         oldReturn.ifPresent(Node::remove);
@@ -591,7 +593,7 @@ public class CommonCodegenUtils {
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
                         .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         final MethodReferenceExpr methodReferenceExpr = getExplicitConstructorInvocationMethodReference(superStatement,
-                                                                                                  referenceName)
+                                                                                                        referenceName)
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION,
                                                                       referenceName, constructorDeclaration)));
         if (value != null) {
@@ -619,9 +621,7 @@ public class CommonCodegenUtils {
 
     /**
      * Return an <code>BlockStmt</code>  from the given <code>ClassOrInterfaceDeclaration</code>
-     *
      * @param classOrInterfaceDeclaration
-     *
      * @throws KiePMMLException if none is found
      */
     public static BlockStmt getInitializerBlockStmt(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
@@ -630,9 +630,7 @@ public class CommonCodegenUtils {
 
     /**
      * Return an <code>InitializerDeclaration</code>  from the given <code>ClassOrInterfaceDeclaration</code>
-     *
      * @param classOrInterfaceDeclaration
-     *
      * @throws KiePMMLException if none is found
      */
     public static InitializerDeclaration getInitializerDeclaration(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
@@ -641,7 +639,8 @@ public class CommonCodegenUtils {
                 .filter(InitializerDeclaration.class::isInstance)
                 .map(InitializerDeclaration.class::cast)
                 .findFirst()
-                .orElseThrow(() ->  new KiePMMLException(String.format(MISSING_STATIC_INITIALIZER, classOrInterfaceDeclaration)));
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_STATIC_INITIALIZER,
+                                                                      classOrInterfaceDeclaration)));
     }
 
     /**
@@ -676,11 +675,10 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * Return an <code>BlockStmt</code> for the method <b>methodName</b> from the given <code>ClassOrInterfaceDeclaration</code>
-     *
+     * Return an <code>BlockStmt</code> for the method <b>methodName</b> from the given
+     * <code>ClassOrInterfaceDeclaration</code>
      * @param classOrInterfaceDeclaration
      * @param methodName
-     *
      * @throws KiePMMLException if none is found
      */
     public static BlockStmt getMethodDeclarationBlockStmt(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration, final String methodName) {
@@ -689,7 +687,6 @@ public class CommonCodegenUtils {
                 .map(Optional::get)
                 .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_IN_METHOD, methodName)));
     }
-
 
     /**
      * Return an <code>Optional&lt;MethodDeclaration&gt;</code> with the <b>first</b> method <b>methodName</b> from
@@ -730,11 +727,12 @@ public class CommonCodegenUtils {
      * @param body
      * @param variableDeclaratorName
      * @param value
-     * @throws <code>KiePMMLException</code> if <code>VariableDeclarator</code> with given <b>variableDeclaratorName</b> is not
+     * @throws <code>KiePMMLException</code> if <code>VariableDeclarator</code> with given
+     * <b>variableDeclaratorName</b> is not
      * found
      */
     public static void setVariableDeclaratorValue(final BlockStmt body, final String variableDeclaratorName,
-                                                final Expression value) {
+                                                  final Expression value) {
         VariableDeclarator variableDeclarator = getVariableDeclarator(body, variableDeclaratorName)
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, variableDeclaratorName,
                                                                       body)));
@@ -750,8 +748,9 @@ public class CommonCodegenUtils {
      * or <code>Optional.empty()</code> if no match
      * has been found
      */
-    public static Optional<VariableDeclarator> getVariableDeclarator(final MethodDeclaration methodDeclaration, final String variableName) {
-        final BlockStmt body =  methodDeclaration.getBody()
+    public static Optional<VariableDeclarator> getVariableDeclarator(final MethodDeclaration methodDeclaration,
+                                                                     final String variableName) {
+        final BlockStmt body = methodDeclaration.getBody()
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
         return getVariableDeclarator(body, variableName);
     }
@@ -869,7 +868,8 @@ public class CommonCodegenUtils {
      * @return the new {@link Expression}
      */
     public static Expression literalExprFrom(Enum<?> input) {
-        return input == null ? new NullLiteralExpr() : new NameExpr(input.getClass().getCanonicalName() + "." + input.name());
+        return input == null ? new NullLiteralExpr() :
+                new NameExpr(input.getClass().getCanonicalName() + "." + input.name());
     }
 
     /**
@@ -906,11 +906,14 @@ public class CommonCodegenUtils {
             case BOOLEAN:
                 return new BooleanLiteralExpr(Boolean.parseBoolean(value));
             case DATE:
-                return new MethodCallExpr(new NameExpr(LocalDate.class.getName()), "parse", NodeList.nodeList(new StringLiteralExpr(value)));
+                return new MethodCallExpr(new NameExpr(LocalDate.class.getName()), "parse",
+                                          NodeList.nodeList(new StringLiteralExpr(value)));
             case TIME:
-                return new MethodCallExpr(new NameExpr(LocalTime.class.getName()), "parse", NodeList.nodeList(new StringLiteralExpr(value)));
+                return new MethodCallExpr(new NameExpr(LocalTime.class.getName()), "parse",
+                                          NodeList.nodeList(new StringLiteralExpr(value)));
             case DATE_TIME:
-                return new MethodCallExpr(new NameExpr(LocalDateTime.class.getName()), "parse", NodeList.nodeList(new StringLiteralExpr(value)));
+                return new MethodCallExpr(new NameExpr(LocalDateTime.class.getName()), "parse",
+                                          NodeList.nodeList(new StringLiteralExpr(value)));
             case DATE_DAYS_SINCE_0:
             case DATE_DAYS_SINCE_1960:
             case DATE_DAYS_SINCE_1970:
@@ -949,8 +952,8 @@ public class CommonCodegenUtils {
                         ((MethodCallExpr) expr).getName().toString().equals(name))
                 .map(MethodCallExpr.class::cast)
                 .findFirst()
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CHAINED_METHOD_DECLARATION_TEMPLATE, name, parent)));
-
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CHAINED_METHOD_DECLARATION_TEMPLATE,
+                                                                      name, parent)));
     }
 
     /**
@@ -990,32 +993,31 @@ public class CommonCodegenUtils {
     public static void replaceNodeInStatement(final Statement container,
                                               final ReplacementTupla replacementTupla) {
         container.walk(node -> {
-                if (node.equals(replacementTupla.toReplace)) {
-                    node.getParentNode()
-                            .ifPresent(parentNode -> parentNode.replace(replacementTupla.toReplace, replacementTupla.replacement));
-                }
+            if (node.equals(replacementTupla.toReplace)) {
+                node.getParentNode()
+                        .ifPresent(parentNode -> parentNode.replace(replacementTupla.toReplace,
+                                                                    replacementTupla.replacement));
+            }
         });
     }
 
     /**
      * Add a <code>MethodDeclaration</code>s to the given <code>ClassOrInterfaceDeclaration</code>
-     *
      * @param classOrInterfaceDeclaration
      * @param toAdd
      */
     public static void addMethodDeclarationsToClass(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration,
-                                                   final List<MethodDeclaration> toAdd) {
+                                                    final List<MethodDeclaration> toAdd) {
         toAdd.forEach(methodDeclaration -> addMethodDeclarationToClass(classOrInterfaceDeclaration, methodDeclaration));
     }
 
     /**
      * Add a <code>MethodDeclaration</code> to the given <code>ClassOrInterfaceDeclaration</code>
-     *
      * @param classOrInterfaceDeclaration
      * @param toAdd
      */
     public static void addMethodDeclarationToClass(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration,
-            final MethodDeclaration toAdd) {
+                                                   final MethodDeclaration toAdd) {
         classOrInterfaceDeclaration.addMethod(toAdd.getName().asString())
                 .setModifiers(toAdd.getModifiers())
                 .setType(toAdd.getType())
@@ -1027,16 +1029,19 @@ public class CommonCodegenUtils {
      * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
      * @return
      */
-    public static Expression getVariableInitializer(final MethodDeclaration methodDeclaration, final String variableName) {
+    public static Expression getVariableInitializer(final MethodDeclaration methodDeclaration,
+                                                    final String variableName) {
         return getOptionalVariableInitializer(methodDeclaration, variableName)
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, variableName, methodDeclaration)));
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE,
+                                                                      variableName, methodDeclaration)));
     }
 
     /**
      * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
      * @return
      */
-    public static Optional<Expression> getOptionalVariableInitializer(final MethodDeclaration methodDeclaration, final String variableName) {
+    public static Optional<Expression> getOptionalVariableInitializer(final MethodDeclaration methodDeclaration,
+                                                                      final String variableName) {
         final BlockStmt blockStmt = methodDeclaration.getBody()
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
         return getVariableInitializer(blockStmt, variableName);
@@ -1048,12 +1053,14 @@ public class CommonCodegenUtils {
      */
     public static Optional<Expression> getVariableInitializer(final BlockStmt blockStmt, final String variableName) {
         final VariableDeclarator variableDeclarator = getVariableDeclarator(blockStmt, variableName)
-                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, variableName, blockStmt)));
-         return variableDeclarator.getInitializer();
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, variableName,
+                                                                      blockStmt)));
+        return variableDeclarator.getInitializer();
     }
 
     /**
-     * Replace the <code>List&lt;NameExpr&gt;</code>s in the given <code>Statement</code> with <code>NullLiteralExpr</code>
+     * Replace the <code>List&lt;NameExpr&gt;</code>s in the given <code>Statement</code> with
+     * <code>NullLiteralExpr</code>
      * @param container
      * @param toReplace
      */
@@ -1097,7 +1104,7 @@ public class CommonCodegenUtils {
                                   final List<String> mapTypes,
                                   final Class<? extends Map> mapClass) {
         final VariableDeclarator mapDeclarator =
-                new VariableDeclarator(getTypedClassOrInterfaceTypeByTypeNames(Map.class.getName(),mapTypes),
+                new VariableDeclarator(getTypedClassOrInterfaceTypeByTypeNames(Map.class.getName(), mapTypes),
                                        mapName);
         final ObjectCreationExpr mapInitializer = new ObjectCreationExpr();
         mapInitializer.setType(getTypedClassOrInterfaceTypeByTypeNames(mapClass.getName(), mapTypes));
@@ -1106,5 +1113,4 @@ public class CommonCodegenUtils {
                 new VariableDeclarationExpr(mapDeclarator);
         body.addStatement(mapDeclarationExpr);
     }
-
 }

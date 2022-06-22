@@ -21,35 +21,91 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.drools.commands.impl.ContextImpl;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
 
-public class PMMLContextImpl extends ContextImpl implements PMMLContext {
+public class PMMLContextImpl implements PMMLContext {
 
     private static final String PMML_REQUEST_DATA = "PMML_REQUEST_DATA";
+
+    public static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
+
+    private final String name;
+
+    private final String fileName;
+
+    private final Map<String, Object> map = new ConcurrentHashMap<>();
     private final Map<String, Object> missingValueReplacedMap = new HashMap<>();
     private final Map<String, Object> commonTransformationMap = new HashMap<>();
     private final Map<String, Object> localTransformationMap = new HashMap<>();
     private final Map<String, Object> outputFieldsMap = new HashMap<>();
     private final Set<PMMLListener> pmmlListeners = new HashSet<>();
 
+    private final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+
     private Object predictedDisplayValue;
     private Object entityId;
     private Object affinity;
     private LinkedHashMap<String, Double> probabilityResultMap;
 
-    public PMMLContextImpl(final PMMLRequestData pmmlRequestData) {
-        super();
+    public PMMLContextImpl(final PMMLRequestData pmmlRequestData,
+                           final String fileName,
+                           final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        name = "Context_" + ID_GENERATOR.incrementAndGet();
         set(PMML_REQUEST_DATA, pmmlRequestData);
+        this.fileName = fileName;
+        this.memoryCompilerClassLoader = memoryCompilerClassLoader;
     }
 
-    public PMMLContextImpl(final PMMLRequestData pmmlRequestData, final Set<PMMLListener> pmmlListeners) {
-        this(pmmlRequestData);
+    public PMMLContextImpl(final PMMLRequestData pmmlRequestData,
+                           final String fileName,
+                           final Set<PMMLListener> pmmlListeners,
+                           final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        this(pmmlRequestData, fileName, memoryCompilerClassLoader);
         this.pmmlListeners.addAll(pmmlListeners);
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
+
+    @Override
+    public Object get(String identifier) {
+        if (identifier == null || identifier.equals("")) {
+            return null;
+        }
+
+        Object object = null;
+        if (map.containsKey(identifier)) {
+            object = map.get(identifier);
+        }
+        return object;
+    }
+
+    @Override
+    public void set(String identifier, Object value) {
+        map.put(identifier, value);
+    }
+
+    @Override
+    public void remove(String identifier) {
+        map.remove(identifier);
+    }
+
+    public boolean has(String identifier) {
+        return map.containsKey(identifier);
     }
 
     @Override
@@ -74,6 +130,7 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
     /**
      * Returns an <b>unmodifiable map</b> of <code>missingValueReplacedMap</code>
+     *
      * @return
      */
     @Override
@@ -83,6 +140,7 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
     /**
      * Returns an <b>unmodifiable map</b> of <code>commonTransformationMap</code>
+     *
      * @return
      */
     @Override
@@ -92,6 +150,7 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
     /**
      * Returns an <b>unmodifiable map</b> of <code>localTransformationMap</code>
+     *
      * @return
      */
     @Override
@@ -149,6 +208,7 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
     /**
      * Returns an <b>unmodifiable map</b> of probabilities, or an empty one
+     *
      * @return
      */
     @Override
@@ -174,16 +234,22 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     }
 
     @Override
-    public void addPMMLListener(final PMMLListener toAdd) {
+    public void addEfestoListener(PMMLListener toAdd) {
         pmmlListeners.add(toAdd);
     }
 
-    /**
-     * Returns an <b>unmodifiable set</b> of <code>pmmlListeners</code>
-     * @return
-     */
     @Override
-    public Set<PMMLListener> getPMMLListeners() {
+    public void removeEfestoListener(PMMLListener toRemove) {
+        pmmlListeners.remove(toRemove);
+    }
+
+    @Override
+    public Set<PMMLListener> getEfestoListeners() {
         return Collections.unmodifiableSet(pmmlListeners);
+    }
+
+    @Override
+    public Object getMemoryClassLoader() {
+        return memoryCompilerClassLoader;
     }
 }

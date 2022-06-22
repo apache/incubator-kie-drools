@@ -29,8 +29,8 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.MapValues;
 import org.dmg.pmml.PMML;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldColumnPair;
 import org.kie.pmml.commons.model.expressions.KiePMMLInlineTable;
 import org.kie.pmml.commons.model.expressions.KiePMMLMapValues;
@@ -39,9 +39,9 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileInputStream;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
-import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLMapValuesFactoryTest {
 
@@ -50,7 +50,7 @@ public class KiePMMLMapValuesFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLMapValuesFactoryTest_01.txt";
     private static MapValues MAPVALUES;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         PMML pmmlModel = KiePMMLUtil.load(getFileInputStream(TRANSFORMATIONS_SAMPLE), TRANSFORMATIONS_SAMPLE);
         DerivedField mapValued = pmmlModel.getTransformationDictionary()
@@ -63,7 +63,7 @@ public class KiePMMLMapValuesFactoryTest {
     }
 
     @Test
-    public void getMapValuesVariableDeclaration() throws IOException {
+    void getMapValuesVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLMapValuesFactory.getMapValuesVariableDeclaration(variableName,
                                                                                       MAPVALUES);

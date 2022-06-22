@@ -19,8 +19,8 @@ package org.kie.pmml.commons.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +29,7 @@ public class KiePMMLModelUtilsTest {
     private static Map<String, String> packageNameMap;
     private static Map<String, String> classNameMap;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         packageNameMap = new HashMap<>();
         packageNameMap.put("a-dashed-name", "adashedname");
@@ -51,12 +51,12 @@ public class KiePMMLModelUtilsTest {
     }
 
     @Test
-    public void getSanitizedPackageName() {
+    void getSanitizedPackageName() {
         packageNameMap.forEach((originalName, expectedName) -> assertThat(KiePMMLModelUtils.getSanitizedPackageName(originalName)).isEqualTo(expectedName));
     }
 
     @Test
-    public void getSanitizedClassName() {
+    void getSanitizedClassName() {
         classNameMap.forEach((originalName, expectedName) -> assertThat(KiePMMLModelUtils.getSanitizedClassName(originalName)).isEqualTo(expectedName));
     }
 }

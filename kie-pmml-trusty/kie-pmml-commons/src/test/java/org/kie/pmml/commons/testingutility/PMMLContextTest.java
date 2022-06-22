@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.efesto.runtimemanager.api.listener.EfestoListener;
+import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
 
@@ -28,6 +30,11 @@ public class PMMLContextTest implements PMMLContext {
 
     private final Map<String, Object> outputFieldsMap = new HashMap<>();
     private LinkedHashMap<String, Double> probabilityResultMap;
+
+    @Override
+    public String getFileName() {
+        return null;
+    }
 
     @Override
     public PMMLRequestData getRequestData() {
@@ -140,12 +147,22 @@ public class PMMLContextTest implements PMMLContext {
     }
 
     @Override
-    public void addPMMLListener(PMMLListener toAdd) {
+    public void addEfestoListener(PMMLListener toAdd) {
 
     }
 
     @Override
-    public Set<PMMLListener> getPMMLListeners() {
+    public void removeEfestoListener(PMMLListener toRemove) {
+
+    }
+
+    @Override
+    public Set<PMMLListener> getEfestoListeners() {
+        return null;
+    }
+
+    @Override
+    public Object getMemoryClassLoader() {
         return null;
     }
 }

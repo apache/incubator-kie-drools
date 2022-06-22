@@ -16,7 +16,7 @@
 
 package org.kie.pmml.commons.model.expressions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.CLOSURE;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class KiePMMLIntervalTest {
 
     @Test
-    public void isIn() {
+    void isIn() {
         KiePMMLInterval kiePMMLInterval = new KiePMMLInterval(20, 40, CLOSURE.OPEN_OPEN);
         assertThat(kiePMMLInterval.isIn(30)).isTrue();
         assertThat(kiePMMLInterval.isIn(10)).isFalse();
@@ -52,7 +52,7 @@ public class KiePMMLIntervalTest {
     }
 
     @Test
-    public void isInsideOpenOpen() {
+    void isInsideOpenOpen() {
         KiePMMLInterval kiePMMLInterval = new KiePMMLInterval(null, 20, CLOSURE.OPEN_OPEN);
         assertThat(kiePMMLInterval.isInsideOpenOpen(10)).isTrue();
         assertThat(kiePMMLInterval.isInsideOpenOpen(20)).isFalse();
@@ -70,7 +70,7 @@ public class KiePMMLIntervalTest {
     }
 
     @Test
-    public void isInsideOpenClosed() {
+    void isInsideOpenClosed() {
         KiePMMLInterval kiePMMLInterval = new KiePMMLInterval(null, 20, CLOSURE.OPEN_CLOSED);
         assertThat(kiePMMLInterval.isInsideOpenClosed(10)).isTrue();
         assertThat(kiePMMLInterval.isInsideOpenClosed(20)).isTrue();
@@ -88,7 +88,7 @@ public class KiePMMLIntervalTest {
     }
 
     @Test
-    public void isInsideClosedOpen() {
+    void isInsideClosedOpen() {
         KiePMMLInterval kiePMMLInterval = new KiePMMLInterval(null, 20, CLOSURE.CLOSED_OPEN);
         assertThat(kiePMMLInterval.isInsideClosedOpen(10)).isTrue();
         assertThat(kiePMMLInterval.isInsideClosedOpen(20)).isFalse();
@@ -106,7 +106,7 @@ public class KiePMMLIntervalTest {
     }
 
     @Test
-    public void isInsideClosedClosed() {
+    void isInsideClosedClosed() {
         KiePMMLInterval kiePMMLInterval = new KiePMMLInterval(null, 20, CLOSURE.CLOSED_CLOSED);
         assertThat(kiePMMLInterval.isInsideClosedClosed(10)).isTrue();
         assertThat(kiePMMLInterval.isInsideClosedClosed(20)).isTrue();

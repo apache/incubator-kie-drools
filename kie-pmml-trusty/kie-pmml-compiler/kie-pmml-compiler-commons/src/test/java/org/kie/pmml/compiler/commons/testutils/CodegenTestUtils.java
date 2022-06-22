@@ -132,12 +132,14 @@ public class CodegenTestUtils {
         }
     }
 
-    public static void commonValidateCompilationWithImports(ClassOrInterfaceDeclaration classOrInterfaceType, List<Class<?>> imports) {
+    public static void commonValidateCompilationWithImports(ClassOrInterfaceDeclaration classOrInterfaceType,
+                                                            List<Class<?>> imports) {
         CompilationUnit compilationUnit = StaticJavaParser.parse("");
         imports.forEach(compilationUnit::addImport);
         compilationUnit.setPackageDeclaration("org.kie.pmml.compiler.commons.utils");
         compilationUnit.addType(classOrInterfaceType);
-        Map<String, String> sourcesMap = Collections.singletonMap("org.kie.pmml.compiler.commons.utils."+classOrInterfaceType.getName().asString(),
+        Map<String, String> sourcesMap =
+                Collections.singletonMap("org.kie.pmml.compiler.commons.utils." + classOrInterfaceType.getName().asString(),
                                                                   compilationUnit.toString());
         try {
             KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
@@ -155,17 +157,17 @@ public class CodegenTestUtils {
     }
 
     public static boolean commonEvaluateConstructor(ConstructorDeclaration constructorDeclaration,
-                                                 String generatedClassName,
-                                                 Map<Integer, Expression> superInvocationExpressionsMap,
-                                                 Map<String, Expression> assignExpressionsMap) {
+                                                    String generatedClassName,
+                                                    Map<Integer, Expression> superInvocationExpressionsMap,
+                                                    Map<String, Expression> assignExpressionsMap) {
         assertThat(constructorDeclaration.getName()).isEqualTo(new SimpleName(generatedClassName));
         final BlockStmt body = constructorDeclaration.getBody();
         return commonEvaluateSuperInvocationExpr(body, superInvocationExpressionsMap) &&
-        commonEvaluateAssignExpr(body, assignExpressionsMap);
+                commonEvaluateAssignExpr(body, assignExpressionsMap);
     }
 
     public static boolean commonEvaluateSuperInvocationExpr(BlockStmt body,
-                                                         Map<Integer, Expression> superInvocationExpressionsMap) {
+                                                            Map<Integer, Expression> superInvocationExpressionsMap) {
         Optional<ExplicitConstructorInvocationStmt> retrieved =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
         final List<AssertionError> errors = new ArrayList<>();

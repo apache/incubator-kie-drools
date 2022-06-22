@@ -51,8 +51,7 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
-                           final PMMLContext pmmlContext) {
+    public Object evaluate(final Map<String, Object> requestData, final PMMLContext pmmlContext) {
         throw new KiePMMLException("KiePMMLMiningModel is not meant to be used for actual evaluation");
     }
 
@@ -75,16 +74,7 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
 
     @Override
     public String toString() {
-        return "KiePMMLMiningModel{" +
-                "miningFunction=" + miningFunction +
-                ", algorithmName='" + algorithmName + '\'' +
-                ", scorable=" + scorable +
-                ", segmentation=" + segmentation +
-                ", pmmlMODEL=" + pmmlMODEL +
-                ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                ", parentId='" + parentId + '\'' +
-                '}';
+        return "KiePMMLMiningModel{" + "miningFunction=" + miningFunction + ", algorithmName='" + algorithmName + '\'' + ", scorable=" + scorable + ", segmentation=" + segmentation + ", pmmlMODEL=" + pmmlMODEL + ", name='" + name + '\'' + ", id='" + id + '\'' + ", parentId='" + parentId + '\'' + '}';
     }
 
     @Override

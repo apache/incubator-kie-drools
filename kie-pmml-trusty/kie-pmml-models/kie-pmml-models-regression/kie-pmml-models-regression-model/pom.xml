@@ -14,6 +14,10 @@
   <name>KIE :: PMML :: Models :: Regression :: Model</name>
   <description>KiePMML Model for Regression implementation</description>
 
+  <properties>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>
@@ -30,11 +34,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-commons</artifactId>
       <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

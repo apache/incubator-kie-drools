@@ -23,7 +23,7 @@ import java.util.List;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.models.TargetField;
@@ -34,16 +34,16 @@ import org.kie.pmml.compiler.api.utils.ModelUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTarget;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLTargetFactoryTest {
 
     private static final String TEST_01_SOURCE = "KiePMMLTargetFactoryTest_01.txt";
 
     @Test
-    public void getKiePMMLTargetValueVariableInitializer() throws IOException {
+    void getKiePMMLTargetValueVariableInitializer() throws IOException {
         TargetField kieTargetField = ModelUtils.convertToKieTargetField(getRandomTarget());
         MethodCallExpr retrieved = KiePMMLTargetFactory.getKiePMMLTargetVariableInitializer(kieTargetField);
         String text = getFileContent(TEST_01_SOURCE);

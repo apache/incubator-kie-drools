@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.dmg.pmml.True;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 
@@ -33,13 +33,17 @@ import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getPredicateA
 public class KiePMMLTruePredicateASTFactoryTest {
 
     @Test
-    public void declareRuleFromTruePredicateNotFinalLeaf() {
+    void declareRuleFromTruePredicateNotFinalLeaf() {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         True truePredicate = new True();
-        PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(truePredicate, Collections.emptyList(), rules, parentPath, currentRule, Collections.emptyMap());
-        KiePMMLTruePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromTruePredicateWithResult(DONE, false);
+        PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(truePredicate,
+                                                                                     Collections.emptyList(), rules,
+                                                                                     parentPath, currentRule,
+                                                                                     Collections.emptyMap());
+        KiePMMLTruePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromTruePredicateWithResult(DONE,
+                                                                                                               false);
         assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertThat(retrieved).isNotNull();
@@ -51,7 +55,7 @@ public class KiePMMLTruePredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromTruePredicateFinalLeaf() {
+    void declareRuleFromTruePredicateFinalLeaf() {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();

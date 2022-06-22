@@ -25,7 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.IN_NOTIN;
 
@@ -36,7 +36,7 @@ public class KiePMMLSimpleSetPredicateTest {
     private final String SIMPLE_SET_PREDICATE_NAME = "SIMPLESETPREDICATENAME";
 
     @Test
-    public void evaluateStringIn() {
+    void evaluateStringIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -51,7 +51,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluateStringNotIn() {
+    void evaluateStringNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -66,7 +66,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluateIntIn() {
+    void evaluateIntIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -81,7 +81,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluateIntNotIn() {
+    void evaluateIntNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -96,7 +96,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluateRealIn() {
+    void evaluateRealIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -111,7 +111,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluateRealNotIn() {
+    void evaluateRealNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -126,7 +126,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluationStringIn() {
+    void evaluationStringIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -136,7 +136,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluationStringNotIn() {
+    void evaluationStringNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -146,7 +146,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluationIntIn() {
+    void evaluationIntIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -156,7 +156,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluationIntNotIn() {
+    void evaluationIntNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -166,7 +166,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluationRealIn() {
+    void evaluationRealIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -176,7 +176,7 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluationRealNotIn() {
+    void evaluationRealNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
@@ -197,17 +197,17 @@ public class KiePMMLSimpleSetPredicateTest {
 
     private List<Object> getObjects(ARRAY_TYPE arrayType, int size) {
         return IntStream.range(0, size).mapToObj(index -> {
-            switch (arrayType) {
-                case INT:
-                    return new Random().nextInt(40);
-                case REAL:
-                    return new Random().nextDouble();
-                case STRING:
-                    return UUID.randomUUID().toString();
-                default:
-                    return null;
-            }
-        })
+                    switch (arrayType) {
+                        case INT:
+                            return new Random().nextInt(40);
+                        case REAL:
+                            return new Random().nextDouble();
+                        case STRING:
+                            return UUID.randomUUID().toString();
+                        default:
+                            return null;
+                    }
+                })
                 .collect(Collectors.toList());
     }
 }

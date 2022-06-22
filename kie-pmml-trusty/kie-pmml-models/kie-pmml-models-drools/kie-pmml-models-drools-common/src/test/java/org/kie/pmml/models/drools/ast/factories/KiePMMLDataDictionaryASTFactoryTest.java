@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -38,18 +38,22 @@ import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getTypeDataFi
 public class KiePMMLDataDictionaryASTFactoryTest {
 
     @Test
-    public void declareTypes() {
-        List<DataField> dataFields = Arrays.asList(getTypeDataField(), getDottedTypeDataField(), getTypeDataField(), getDottedTypeDataField());
+    void declareTypes() {
+        List<DataField> dataFields = Arrays.asList(getTypeDataField(), getDottedTypeDataField(), getTypeDataField(),
+                                                   getDottedTypeDataField());
         DataDictionary dataDictionary = new DataDictionary(dataFields);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<KiePMMLDroolsType> retrieved = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(getFieldsFromDataDictionary(dataDictionary));
+        List<KiePMMLDroolsType> retrieved =
+                KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(getFieldsFromDataDictionary(dataDictionary));
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSameSizeAs(dataFields);
-        IntStream.range(0, dataFields.size()).forEach(i -> commonVerifyTypeDeclarationDescr(dataFields.get(i), fieldTypeMap, retrieved.get(i)));
+        IntStream.range(0, dataFields.size()).forEach(i -> commonVerifyTypeDeclarationDescr(dataFields.get(i),
+                                                                                            fieldTypeMap,
+                                                                                            retrieved.get(i)));
     }
 
     @Test
-    public void declareType() {
+    void declareType() {
         DataField dataField = getTypeDataField();
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         KiePMMLDroolsType retrieved = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareType(dataField);

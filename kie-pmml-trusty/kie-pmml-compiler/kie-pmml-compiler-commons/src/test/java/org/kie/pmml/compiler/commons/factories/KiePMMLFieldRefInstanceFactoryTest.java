@@ -16,7 +16,7 @@
 package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.FieldRef;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomFieldRef;
@@ -25,7 +25,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLFieldRefInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLFieldRef() {
+    void getKiePMMLFieldRef() {
         FieldRef toConvert = getRandomFieldRef();
         KiePMMLFieldRef retrieved = KiePMMLFieldRefInstanceFactory.getKiePMMLFieldRef(toConvert);
         commonVerifyKiePMMLFieldRef(retrieved, toConvert);

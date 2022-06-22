@@ -1,3 +1,0 @@
-{
-    KiePMMLConstant %1$s = new  KiePMMLConstant("%1$s", Collections.emptyList(), %2$s, null);
-}

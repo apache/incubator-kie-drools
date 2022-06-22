@@ -21,20 +21,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class NumericVariablesLinearRegressionTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "NumericVariablesLinearRegression.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "NumericVariablesLinearRegression";
+
     private static final String MODEL_NAME = "NumericVariablesLinearRegression";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -42,17 +41,16 @@ public class NumericVariablesLinearRegressionTest extends AbstractPMMLTest {
     private double x;
     private double y;
 
-    public NumericVariablesLinearRegressionTest(double x, double y) {
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+    }
+
+    public void initNumericVariablesLinearRegressionTest(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-  @BeforeClass
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {0, 0}, {-1, 2}, {0.5, -2.5}, {3, 1}, {25, 50},
@@ -64,12 +62,14 @@ public class NumericVariablesLinearRegressionTest extends AbstractPMMLTest {
         return 2 * x + y + 5;
     }
 
-    @Test
-    public void testNumericVariableLinearRegression() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testNumericVariableLinearRegression(double x, double y) throws Exception {
+        initNumericVariablesLinearRegressionTest(x, y);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result).isNotNull();
         assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);

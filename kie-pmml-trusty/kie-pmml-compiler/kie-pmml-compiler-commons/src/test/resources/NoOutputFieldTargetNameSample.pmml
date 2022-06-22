@@ -27,7 +27,7 @@
       <MiningField name="whatIdo" usageType="target"/>
     </MiningSchema>
     <Output>
-      <OutputField name="outputField" dataType="string" optype="categorical" feature="predictedValue" />
+      <OutputField name="outputField" dataType="string" optype="categorical" feature="predictedValue"/>
     </Output>
     <Node score="will play">
       <True/>

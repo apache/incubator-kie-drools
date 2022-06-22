@@ -68,6 +68,7 @@ public class KiePMMLSimplePredicateWithAccumulationASTFactory {
      * end
      * <p>
      * end
+     *
      * @param builder
      * @param rules
      * @param isLastCharacteristic

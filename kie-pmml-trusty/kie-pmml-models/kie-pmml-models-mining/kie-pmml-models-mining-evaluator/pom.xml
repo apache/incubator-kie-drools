@@ -11,6 +11,10 @@
   <name>KIE :: PMML :: Models :: Mining :: Evaluator</name>
   <description>PMML Mining Evaluator</description>
 
+  <properties>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>
@@ -21,10 +25,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-kiesession</artifactId>
-    </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
     <dependency>
@@ -32,22 +32,6 @@
       <artifactId>kie-pmml-commons</artifactId>
       <scope>test</scope>
       <classifier>tests</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-xml-support</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

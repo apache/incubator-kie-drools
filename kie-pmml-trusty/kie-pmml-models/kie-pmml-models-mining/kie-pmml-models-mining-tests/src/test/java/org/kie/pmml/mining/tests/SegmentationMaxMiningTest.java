@@ -21,20 +21,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SegmentationMaxMiningTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "segmentationMaxMining.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "segmentationMaxMining";
+
     private static final String MODEL_NAME = "SegmentationMaxMining";
     private static final String TARGET_FIELD = "result";
     private PMMLRuntime pmmlRuntime;
@@ -43,18 +42,17 @@ public class SegmentationMaxMiningTest extends AbstractPMMLTest {
     private double y;
     private double result;
 
-    public SegmentationMaxMiningTest(double x, double y, double result) {
+    public void initSegmentationMaxMiningTest(double x, double y, double result) {
         this.x = x;
         this.y = y;
         this.result = result;
     }
 
-    @Before
+    @BeforeEach
     public void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {0, 0, 50},
@@ -65,12 +63,14 @@ public class SegmentationMaxMiningTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testSegmentationMedianMiningTest() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSegmentationMedianMiningTest(double x, double y, double result) {
+        initSegmentationMaxMiningTest(x, y, result);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(result);

@@ -15,7 +15,7 @@
   <name>Efesto :: Engines</name>
 
   <modules>
-    <module>pmml-engine</module>
+<!--    <module>pmml-engine</module>-->
     <module>drl-engine</module>
   </modules>
 

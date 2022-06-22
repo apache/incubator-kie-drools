@@ -55,7 +55,7 @@ public class KiePMMLModelWithSources extends KiePMMLModel implements HasSourcesM
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+    public Object evaluate(final Map<String, Object> requestData,
                            final PMMLContext context) {
         throw new KiePMMLException("KiePMMLModelWithSources is not meant to be used for actual evaluation");
     }

@@ -1,4 +1,6 @@
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2"
+      xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd"
+      xmlns="http://www.dmg.org/PMML-4_2">
   <Header/>
   <DataDictionary numberOfFields="4">
     <DataField name="result" optype="categorical" dataType="string">
@@ -40,8 +42,8 @@
       </Segment>
       <Segment id="2">
         <CompoundPredicate booleanOperator="and">
-          <SimplePredicate field="input1" operator="greaterThan" value="10" />
-          <SimplePredicate field="input1" operator="lessThan" value="25" />
+          <SimplePredicate field="input1" operator="greaterThan" value="10"/>
+          <SimplePredicate field="input1" operator="lessThan" value="25"/>
         </CompoundPredicate>
         <TreeModel functionName="classification" noTrueChildStrategy="returnLastPrediction">
           <MiningSchema>

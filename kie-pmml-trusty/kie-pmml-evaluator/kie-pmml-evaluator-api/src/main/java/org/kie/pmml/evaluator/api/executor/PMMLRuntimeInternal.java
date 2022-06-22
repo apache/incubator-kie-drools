@@ -16,35 +16,25 @@
 
 package org.kie.pmml.evaluator.api.executor;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.kie.api.KieBase;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-import org.kie.pmml.commons.model.KiePMMLModel;
 
 public interface PMMLRuntimeInternal extends PMMLRuntime {
 
-    /**
-     * Returns the <code>KieBase</code> used by the current <code>PMMLRuntime</code>
-     * @return
-     */
-    KieBase getKnowledgeBase();
-
-    /**
-     * Returns a list of all models available to this runtime
-     * @return the list of available models. An empty list in
-     * case no model is available.
-     */
-    List<KiePMMLModel> getKiePMMLModels();
-
-    /**
-     * Returns the model registered with the given model name.
-     * @param modelName the name of the model
-     * @return the corresponding an <code>Optional</code> with
-     * the <code>KiePMMLModel</code> retrieved, or an <b>empty</b> one if none
-     * is registered with the given name.
-     */
-    Optional<KiePMMLModel> getKiePMMLModel(final String modelName);
-
+//    /**
+//     * Returns a list of all models available to this runtime
+//     *
+//     * @return the list of available models. An empty list in
+//     * case no model is available.
+//     */
+//    List<KiePMMLModel> getKiePMMLModels();
+//
+//    /**
+//     * Returns the model registered with the given model name.
+//     *
+//     * @param modelName the name of the model
+//     * @return the corresponding an <code>Optional</code> with
+//     * the <code>KiePMMLModel</code> retrieved, or an <b>empty</b> one if none
+//     * is registered with the given name.
+//     */
+//    Optional<KiePMMLModel> getKiePMMLModel(final String modelName);
 }

@@ -3,22 +3,22 @@
   <Header copyright="KNIME">
     <Application name="KNIME" version="2.8.0"/>
   </Header>
-  <DataDictionary >
+  <DataDictionary>
     <DataField name="age" optype="continuous" dataType="double"/>
     <DataField name="occupation" optype="categorical" dataType="string">
-      <Value value="SKYDIVER" />
-      <Value value="ASTRONAUT" />
-      <Value value="PROGRAMMER" />
-      <Value value="TEACHER" />
-      <Value value="INSTRUCTOR" />
+      <Value value="SKYDIVER"/>
+      <Value value="ASTRONAUT"/>
+      <Value value="PROGRAMMER"/>
+      <Value value="TEACHER"/>
+      <Value value="INSTRUCTOR"/>
     </DataField>
     <DataField name="residenceState" optype="categorical" dataType="string">
-      <Value value="AP" />
-      <Value value="KN" />
-      <Value value="TN" />
+      <Value value="AP"/>
+      <Value value="KN"/>
+      <Value value="TN"/>
     </DataField>
     <DataField name="validLicense" optype="categorical" dataType="boolean"/>
-    <DataField name="overallScore" optype="continuous" dataType="double" />
+    <DataField name="overallScore" optype="continuous" dataType="double"/>
     <DataField name="input1" optype="continuous" dataType="double"/>
     <DataField name="input2" optype="continuous" dataType="double"/>
     <DataField name="score" optype="continuous" dataType="double"/>
@@ -37,7 +37,8 @@
     <Segmentation multipleModelMethod="weightedAverage">
       <Segment>
         <True/>
-        <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression" baselineScore="0.0" initialScore="0.345">
+        <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression"
+                   baselineScore="0.0" initialScore="0.345">
           <MiningSchema>
             <MiningField name="age" usageType="active" invalidValueTreatment="asMissing"/>
             <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
@@ -46,7 +47,8 @@
             <MiningField name="overallScore" usageType="predicted"/>
           </MiningSchema>
           <Output>
-            <OutputField name="calculatedScore" displayName="Final Score" dataType="double" feature="predictedValue" targetField="overallScore"/>
+            <OutputField name="calculatedScore" displayName="Final Score" dataType="double"
+                         feature="predictedValue" targetField="overallScore"/>
           </Output>
           <Characteristics>
             <Characteristic name="AgeScore" baselineScore="0.0" reasonCode="ABZ">
@@ -127,7 +129,8 @@
       </Segment>
       <Segment>
         <True/>
-        <Scorecard modelName="SimpleScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
+        <Scorecard modelName="SimpleScorecard" functionName="regression" useReasonCodes="true"
+                   reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
           <MiningSchema>
             <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
             <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
@@ -135,8 +138,10 @@
           </MiningSchema>
           <Output>
             <OutputField name="Score" feature="predictedValue" dataType="double" optype="continuous"/>
-            <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string" optype="categorical"/>
-            <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string" optype="categorical"/>
+            <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string"
+                         optype="categorical"/>
+            <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string"
+                         optype="categorical"/>
           </Output>
           <Characteristics>
             <Characteristic name="input1Score" baselineScore="4" reasonCode="Input1ReasonCode">

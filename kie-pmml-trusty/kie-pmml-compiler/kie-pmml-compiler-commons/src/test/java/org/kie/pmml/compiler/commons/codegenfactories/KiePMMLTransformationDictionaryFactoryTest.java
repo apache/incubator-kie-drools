@@ -34,7 +34,7 @@ import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.TransformationDictionary;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
@@ -45,8 +45,8 @@ import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLTransformationDictionaryFactoryTest {
 
@@ -57,7 +57,7 @@ public class KiePMMLTransformationDictionaryFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLTransformationDictionaryFactoryTest_01.txt";
 
     @Test
-    public void getKiePMMLTransformationDictionaryVariableDeclaration() throws IOException {
+    void getKiePMMLTransformationDictionaryVariableDeclaration() throws IOException {
         TransformationDictionary transformationDictionary = new TransformationDictionary();
         transformationDictionary.addDefineFunctions(getDefineFunctions());
         transformationDictionary.addDerivedFields(getDerivedFields());

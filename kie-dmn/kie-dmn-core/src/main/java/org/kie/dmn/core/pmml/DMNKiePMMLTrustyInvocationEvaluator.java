@@ -42,7 +42,8 @@ import org.kie.dmn.model.api.DMNElement;
 import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
+// TODO gcardosi
+//import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLTrustyInvocationEvaluator.class);
 
-    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = new PMMLRuntimeFactoryImpl();
+    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = null;//new PMMLRuntimeFactoryImpl();
 
     public DMNKiePMMLTrustyInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model,
                                                PMMLInfo<?> pmmlInfo) {
@@ -146,7 +147,8 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
             Class class1 = pValue.getClass();
             pmmlRequestDataBuilder.addParameter(p.name, pValue, class1);
         }
-        return new PMMLContextImpl(pmmlRequestDataBuilder.build());
+        // TODO gcardosi
+        return new PMMLContextImpl(pmmlRequestDataBuilder.build(), null , null);
     }
 
     private File getPMMLFile() {

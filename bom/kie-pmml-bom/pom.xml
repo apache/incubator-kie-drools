@@ -102,17 +102,6 @@
         <artifactId>kie-pmml-evaluator-core</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-evaluator-assembler</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Kie dep -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-kie-internal</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <!-- Drools -->
       <dependency>
         <groupId>org.kie</groupId>
@@ -274,19 +263,6 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-core</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-evaluator-assembler</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <!-- Kie dep -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-kie-internal</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

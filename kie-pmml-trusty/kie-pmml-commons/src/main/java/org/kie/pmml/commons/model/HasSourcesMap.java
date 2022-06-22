@@ -26,12 +26,7 @@ public interface HasSourcesMap {
 
     void addSourceMap(String key, String value);
 
-    default Map<String, String> getRulesSourcesMap() {
-        return null;
-    }
-
     default boolean isInterpreted() {
         return false;
     }
-
 }

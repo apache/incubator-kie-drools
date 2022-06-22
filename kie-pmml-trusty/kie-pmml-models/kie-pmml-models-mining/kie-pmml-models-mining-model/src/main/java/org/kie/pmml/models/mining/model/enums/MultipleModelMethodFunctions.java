@@ -71,15 +71,15 @@ public class MultipleModelMethodFunctions {
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> WEIGHTED_AVERAGE_RESULT =
             inputData -> {
-        AtomicReference<Double> weightedSum = new AtomicReference<>(0.0);
-        AtomicReference<Double> weights = new AtomicReference<>(0.0);
+                AtomicReference<Double> weightedSum = new AtomicReference<>(0.0);
+                AtomicReference<Double> weights = new AtomicReference<>(0.0);
                 valueWeightList(inputData.values(), "WEIGHTED_AVERAGE")
-                .forEach(elem -> {
-                    weightedSum.accumulateAndGet(elem.weightedValue(), Double::sum);
-                    weights.accumulateAndGet(elem.getWeight(), Double::sum);
-                });
-        return weightedSum.get() / weights.get();
-    };
+                        .forEach(elem -> {
+                            weightedSum.accumulateAndGet(elem.weightedValue(), Double::sum);
+                            weights.accumulateAndGet(elem.getWeight(), Double::sum);
+                        });
+                return weightedSum.get() / weights.get();
+            };
 
     public static final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> MEDIAN_RESULT = inputData -> {
         DoubleStream sortedValues = doubleStream(inputData.values(), "MEDIAN").sorted();
@@ -196,6 +196,7 @@ public class MultipleModelMethodFunctions {
      * KiePMMLNameValue&gt;</code>
      * <p>
      * {@link KiePMMLNameValue#getValue()}
+     *
      * @param toUnwrap
      * @return
      */
@@ -209,6 +210,7 @@ public class MultipleModelMethodFunctions {
      * Returns a <code>List&lt;KiePMMLValueWeight&gt;</code> representing the values inside the original
      * <code>List&lt;KiePMMLNameValue&gt;</code>
      * {@link KiePMMLNameValue#getValue()}
+     *
      * @param toUnwrap
      * @param enumName
      * @return
@@ -231,6 +233,7 @@ public class MultipleModelMethodFunctions {
      * KiePMMLNameValue&gt;</code>
      * <p>
      * {@link KiePMMLValueWeight#getValue()}
+     *
      * @param toUnwrap
      * @param enumName
      * @return

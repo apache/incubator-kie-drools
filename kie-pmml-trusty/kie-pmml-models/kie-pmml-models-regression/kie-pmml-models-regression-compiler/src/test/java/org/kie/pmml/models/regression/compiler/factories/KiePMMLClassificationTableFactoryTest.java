@@ -38,8 +38,8 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.ResultFeature;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
@@ -51,6 +51,7 @@ import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getGeneratedClassName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
@@ -60,7 +61,6 @@ import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassific
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassificationTableFactory.KIE_PMML_CLASSIFICATION_TABLE_TEMPLATE_JAVA;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassificationTableFactory.SUPPORTED_NORMALIZATION_METHODS;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassificationTableFactory.UNSUPPORTED_NORMALIZATION_METHODS;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegressionTableRegressionFactoryTest {
 
@@ -71,7 +71,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
     private static MethodDeclaration STATIC_GETTER_METHOD;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         COMPILATION_UNIT = getFromFileName(KIE_PMML_CLASSIFICATION_TABLE_TEMPLATE_JAVA);
         MODEL_TEMPLATE = COMPILATION_UNIT.getClassByName(KIE_PMML_CLASSIFICATION_TABLE_TEMPLATE).get();
@@ -79,7 +79,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     }
 
     @Test
-    public void getClassificationTable() {
+    void getClassificationTable() {
         RegressionTable regressionTableProf = getRegressionTable(3.5, "professional");
         RegressionTable regressionTableCler = getRegressionTable(27.4, "clerical");
         OutputField outputFieldCat = getOutputField("CAT-1", ResultFeature.PROBABILITY, "CatPred-1");
@@ -112,7 +112,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   regressionModel.getRegressionTables(),
@@ -132,7 +132,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     }
 
     @Test
-    public void getClassificationTableBuilders() {
+    void getClassificationTableBuilders() {
         RegressionTable regressionTableProf = getRegressionTable(3.5, "professional");
         RegressionTable regressionTableCler = getRegressionTable(27.4, "clerical");
         OutputField outputFieldCat = getOutputField("CAT-1", ResultFeature.PROBABILITY, "CatPred-1");
@@ -165,7 +165,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   regressionModel.getRegressionTables(),
@@ -182,7 +182,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     }
 
     @Test
-    public void getClassificationTableBuilder() {
+    void getClassificationTableBuilder() {
         RegressionTable regressionTableProf = getRegressionTable(3.5, "professional");
         RegressionTable regressionTableCler = getRegressionTable(27.4, "clerical");
         OutputField outputFieldCat = getOutputField("CAT-1", ResultFeature.PROBABILITY, "CatPred-1");
@@ -215,7 +215,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   regressionModel.getRegressionTables(),
@@ -236,7 +236,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     }
 
     @Test
-    public void getProbabilityMapUnsupportedFunction() {
+    void getProbabilityMapUnsupportedFunction() {
         KiePMMLClassificationTableFactory.UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             try {
                 KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, false);
@@ -258,7 +258,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     }
 
     @Test
-    public void getProbabilityMapSupportedFunction() {
+    void getProbabilityMapSupportedFunction() {
         KiePMMLClassificationTableFactory.SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
                                                                                           assertThat(KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, false)).isNotNull());
         KiePMMLClassificationTableFactory.SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
@@ -266,7 +266,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     }
 
     @Test
-    public void setStaticGetter() throws IOException {
+    void setStaticGetter() throws IOException {
         String variableName = "variableName";
         RegressionTable regressionTableProf = getRegressionTable(3.5, "professional");
         RegressionTable regressionTableCler = getRegressionTable(27.4, "clerical");
@@ -300,7 +300,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(), "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
                                                                                                   regressionModel.getRegressionTables(),
@@ -326,7 +326,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     }
 
     @Test
-    public void getProbabilityMapFunctionExpressionWithSupportedMethods() {
+    void getProbabilityMapFunctionExpressionWithSupportedMethods() {
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             Expression retrieved =
                     KiePMMLClassificationTableFactory.getProbabilityMapFunctionExpression(normalizationMethod,
@@ -343,7 +343,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     }
 
     @Test
-    public void getProbabilityMapFunctionExpressionWithUnSupportedMethods() {
+    void getProbabilityMapFunctionExpressionWithUnSupportedMethods() {
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             try {
                 KiePMMLClassificationTableFactory.getProbabilityMapFunctionExpression(normalizationMethod,
@@ -356,7 +356,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     }
 
     @Test
-    public void getProbabilityMapFunctionSupportedExpression() throws IOException {
+    void getProbabilityMapFunctionSupportedExpression() throws IOException {
         MethodReferenceExpr retrieved =
                 KiePMMLClassificationTableFactory.getProbabilityMapFunctionSupportedExpression(RegressionModel.NormalizationMethod.CAUCHIT, true);
         String text = getFileContent(TEST_01_SOURCE);

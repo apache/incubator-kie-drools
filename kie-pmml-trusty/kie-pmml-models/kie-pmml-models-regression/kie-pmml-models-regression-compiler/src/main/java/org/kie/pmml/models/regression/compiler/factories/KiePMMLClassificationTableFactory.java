@@ -153,7 +153,7 @@ public class KiePMMLClassificationTableFactory {
 
     static SerializableFunction<LinkedHashMap<String, Double>,
             LinkedHashMap<String, Double>> getProbabilityMapFunction(final RegressionModel.NormalizationMethod normalizationMethod,
-                                                          final boolean isBinary) {
+                                                                     final boolean isBinary) {
         if (UNSUPPORTED_NORMALIZATION_METHODS.contains(normalizationMethod)) {
             throw new KiePMMLInternalException(String.format("Unsupported NormalizationMethod %s",
                                                              normalizationMethod));
@@ -170,14 +170,14 @@ public class KiePMMLClassificationTableFactory {
      */
     static SerializableFunction<LinkedHashMap<String, Double>,
             LinkedHashMap<String, Double>> getProbabilityMapFunctionSupported(final RegressionModel.NormalizationMethod normalizationMethod,
-                                                                            final boolean isBinary) {
+                                                                              final boolean isBinary) {
         switch (normalizationMethod) {
             case SOFTMAX:
                 return KiePMMLClassificationTable::getSOFTMAXProbabilityMap;
             case SIMPLEMAX:
                 return KiePMMLClassificationTable::getSIMPLEMAXProbabilityMap;
             case NONE:
-                return isBinary ? KiePMMLClassificationTable::getNONEBinaryProbabilityMap :  KiePMMLClassificationTable::getNONEProbabilityMap;
+                return isBinary ? KiePMMLClassificationTable::getNONEBinaryProbabilityMap : KiePMMLClassificationTable::getNONEProbabilityMap;
             case LOGIT:
                 return KiePMMLClassificationTable::getLOGITProbabilityMap;
             case PROBIT:
@@ -260,6 +260,7 @@ public class KiePMMLClassificationTableFactory {
 
     /**
      * Create <b>probabilityMapFunction</b> <code>MethodReferenceExpr</code>
+     *
      * @param normalizationMethod
      * @param isBinary
      * @return

@@ -1,4 +1,6 @@
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2"
+      xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd"
+      xmlns="http://www.dmg.org/PMML-4_2">
   <Header/>
   <DataDictionary numberOfFields="4">
     <DataField name="result" optype="categorical" dataType="string">
@@ -12,7 +14,8 @@
     <DataField name="input2" optype="continuous" dataType="double"/>
     <DataField name="input3" optype="continuous" dataType="double"/>
   </DataDictionary>
-  <TreeModel modelName="CompoundPredicatesTreeModel" functionName="classification" noTrueChildStrategy="returnLastPrediction">
+  <TreeModel modelName="CompoundPredicatesTreeModel" functionName="classification"
+             noTrueChildStrategy="returnLastPrediction">
     <MiningSchema>
       <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
       <MiningField name="input1" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -48,10 +51,10 @@
       <Node id="5" score="classXorNode">
         <CompoundPredicate booleanOperator="xor">
           <SimplePredicate field="input1" operator="equal" value="6"/>
-<!--          <SimplePredicate field="input1" operator="equal" value="7"/>-->
+          <!--          <SimplePredicate field="input1" operator="equal" value="7"/>-->
           <SimplePredicate field="input2" operator="equal" value="6.5"/>
-<!--          <SimplePredicate field="input2" operator="equal" value="7.5"/>-->
-<!--          <SimplePredicate field="input3" operator="equal" value="7.7"/>-->
+          <!--          <SimplePredicate field="input2" operator="equal" value="7.5"/>-->
+          <!--          <SimplePredicate field="input3" operator="equal" value="7.7"/>-->
         </CompoundPredicate>
       </Node>
     </Node>

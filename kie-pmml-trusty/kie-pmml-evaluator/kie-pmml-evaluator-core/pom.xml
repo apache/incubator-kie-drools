@@ -14,34 +14,41 @@
   <name>KIE :: PMML :: Evaluator :: Core</name>
   <description>PMML Evaluator Core</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>drl-engine-map-input-runtime</artifactId>
+        <groupId>org.kie</groupId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-api</artifactId>
     </dependency>
-    <!-- DROOLS -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-commands</artifactId>
-    </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-commons</artifactId>
       <scope>test</scope>
       <classifier>tests</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>runtime-manager-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>runtime-manager-core</artifactId>
+    </dependency>
+    <dependency>
+      <artifactId>drl-engine-map-input-runtime</artifactId>
+      <groupId>org.kie</groupId>
     </dependency>
   </dependencies>
 

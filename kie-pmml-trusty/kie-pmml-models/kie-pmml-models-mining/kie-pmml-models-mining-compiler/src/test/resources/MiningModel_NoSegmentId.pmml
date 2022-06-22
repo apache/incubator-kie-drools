@@ -19,19 +19,19 @@
     </DataField>
     <DataField name="age" optype="continuous" dataType="double"/>
     <DataField name="occupation" optype="categorical" dataType="string">
-      <Value value="SKYDIVER" />
-      <Value value="ASTRONAUT" />
-      <Value value="PROGRAMMER" />
-      <Value value="TEACHER" />
-      <Value value="INSTRUCTOR" />
+      <Value value="SKYDIVER"/>
+      <Value value="ASTRONAUT"/>
+      <Value value="PROGRAMMER"/>
+      <Value value="TEACHER"/>
+      <Value value="INSTRUCTOR"/>
     </DataField>
     <DataField name="residenceState" optype="categorical" dataType="string">
-      <Value value="AP" />
-      <Value value="KN" />
-      <Value value="TN" />
+      <Value value="AP"/>
+      <Value value="KN"/>
+      <Value value="TN"/>
     </DataField>
     <DataField name="validLicense" optype="categorical" dataType="boolean"/>
-    <DataField name="overallScore" optype="continuous" dataType="double" />
+    <DataField name="overallScore" optype="continuous" dataType="double"/>
   </DataDictionary>
   <MiningModel functionName="regression">
     <MiningSchema>
@@ -48,8 +48,8 @@
         <True></True>
         <MiningModel functionName="classification">
           <MiningSchema>
-            <MiningField name="temperature"  usageType="active" />
-            <MiningField name="humidity"  usageType="active" />
+            <MiningField name="temperature" usageType="active"/>
+            <MiningField name="humidity" usageType="active"/>
             <MiningField name="Sepal.Length" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="Sepal.Width" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="Petal.Length" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -61,54 +61,68 @@
               <True/>
               <TreeModel modelName="SampleMineTreeModel" functionName="classification">
                 <MiningSchema>
-                  <MiningField name="temperature"  usageType="active" />
-                  <MiningField name="humidity"  usageType="active" />
-                  <MiningField name="decision" usageType="predicted" />
+                  <MiningField name="temperature" usageType="active"/>
+                  <MiningField name="humidity" usageType="active"/>
+                  <MiningField name="decision" usageType="predicted"/>
                 </MiningSchema>
                 <Node score="nothing" id="1">
-                  <True />
+                  <True/>
                   <Node score="sunglasses" id="2">
                     <CompoundPredicate booleanOperator="and">
-                      <SimplePredicate field="temperature" operator="greaterThan" value="25" />
-                      <SimplePredicate field="humidity" operator="lessOrEqual" value="20" />
+                      <SimplePredicate field="temperature" operator="greaterThan" value="25"/>
+                      <SimplePredicate field="humidity" operator="lessOrEqual" value="20"/>
                     </CompoundPredicate>
                   </Node>
                   <Node score="umbrella" id="3">
-                    <SimplePredicate field="humidity" operator="greaterThan" value="50" />
+                    <SimplePredicate field="humidity" operator="greaterThan" value="50"/>
                   </Node>
                   <Node score="nothing" id="4">
-                    <True />
+                    <True/>
                   </Node>
                 </Node>
               </TreeModel>
             </Segment>
             <Segment>
               <True/>
-              <TreeModel modelName="IrisTreeModel" functionName="classification" algorithmName="rpart" splitCharacteristic="binarySplit" missingValueStrategy="defaultChild" noTrueChildStrategy="returnLastPrediction">
+              <TreeModel modelName="IrisTreeModel" functionName="classification" algorithmName="rpart"
+                         splitCharacteristic="binarySplit" missingValueStrategy="defaultChild"
+                         noTrueChildStrategy="returnLastPrediction">
                 <MiningSchema>
-                  <MiningField name="Species" usageType="predicted" invalidValueTreatment="returnInvalid"/>
-                  <MiningField name="Sepal.Length" usageType="active" invalidValueTreatment="returnInvalid"/>
-                  <MiningField name="Sepal.Width" usageType="active" invalidValueTreatment="returnInvalid"/>
-                  <MiningField name="Petal.Length" usageType="active" invalidValueTreatment="returnInvalid"/>
-                  <MiningField name="Petal.Width" usageType="active" invalidValueTreatment="returnInvalid"/>
+                  <MiningField name="Species" usageType="predicted"
+                               invalidValueTreatment="returnInvalid"/>
+                  <MiningField name="Sepal.Length" usageType="active"
+                               invalidValueTreatment="returnInvalid"/>
+                  <MiningField name="Sepal.Width" usageType="active"
+                               invalidValueTreatment="returnInvalid"/>
+                  <MiningField name="Petal.Length" usageType="active"
+                               invalidValueTreatment="returnInvalid"/>
+                  <MiningField name="Petal.Width" usageType="active"
+                               invalidValueTreatment="returnInvalid"/>
                 </MiningSchema>
                 <Output>
-                  <OutputField name="Predicted_Species" optype="categorical" dataType="string" feature="predictedValue"/>
-                  <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability" value="setosa"/>
-                  <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability" value="versicolor"/>
-                  <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability" value="virginica"/>
+                  <OutputField name="Predicted_Species" optype="categorical" dataType="string"
+                               feature="predictedValue"/>
+                  <OutputField name="Probability_setosa" optype="continuous" dataType="double"
+                               feature="probability" value="setosa"/>
+                  <OutputField name="Probability_versicolor" optype="continuous" dataType="double"
+                               feature="probability" value="versicolor"/>
+                  <OutputField name="Probability_virginica" optype="continuous" dataType="double"
+                               feature="probability" value="virginica"/>
                 </Output>
                 <Node id="1" score="setosa" recordCount="150" defaultChild="3">
                   <True/>
                   <ScoreDistribution value="setosa" recordCount="50" confidence="0.333333333333333"/>
-                  <ScoreDistribution value="versicolor" recordCount="50" confidence="0.333333333333333"/>
-                  <ScoreDistribution value="virginica" recordCount="50" confidence="0.333333333333333"/>
+                  <ScoreDistribution value="versicolor" recordCount="50"
+                                     confidence="0.333333333333333"/>
+                  <ScoreDistribution value="virginica" recordCount="50"
+                                     confidence="0.333333333333333"/>
                   <Node id="2" score="setosa" recordCount="50">
                     <CompoundPredicate booleanOperator="surrogate">
                       <SimplePredicate field="Petal.Length" operator="lessThan" value="2.45"/>
                       <SimplePredicate field="Petal.Width" operator="lessThan" value="0.8"/>
                       <SimplePredicate field="Sepal.Length" operator="lessThan" value="5.45"/>
-                      <SimplePredicate field="Sepal.Width" operator="greaterOrEqual" value="3.35"/>
+                      <SimplePredicate field="Sepal.Width" operator="greaterOrEqual"
+                                       value="3.35"/>
                     </CompoundPredicate>
                     <ScoreDistribution value="setosa" recordCount="50" confidence="1"/>
                     <ScoreDistribution value="versicolor" recordCount="0" confidence="0"/>
@@ -116,9 +130,11 @@
                   </Node>
                   <Node id="3" score="versicolor" recordCount="100" defaultChild="7">
                     <CompoundPredicate booleanOperator="surrogate">
-                      <SimplePredicate field="Petal.Length" operator="greaterOrEqual" value="2.45"/>
+                      <SimplePredicate field="Petal.Length" operator="greaterOrEqual"
+                                       value="2.45"/>
                       <SimplePredicate field="Petal.Width" operator="greaterOrEqual" value="0.8"/>
-                      <SimplePredicate field="Sepal.Length" operator="greaterOrEqual" value="5.45"/>
+                      <SimplePredicate field="Sepal.Length" operator="greaterOrEqual"
+                                       value="5.45"/>
                       <SimplePredicate field="Sepal.Width" operator="lessThan" value="3.35"/>
                     </CompoundPredicate>
                     <ScoreDistribution value="setosa" recordCount="0" confidence="0"/>
@@ -132,19 +148,27 @@
                         <SimplePredicate field="Sepal.Width" operator="lessThan" value="2.95"/>
                       </CompoundPredicate>
                       <ScoreDistribution value="setosa" recordCount="0" confidence="0"/>
-                      <ScoreDistribution value="versicolor" recordCount="49" confidence="0.907407407407407"/>
-                      <ScoreDistribution value="virginica" recordCount="5" confidence="0.0925925925925926"/>
+                      <ScoreDistribution value="versicolor" recordCount="49"
+                                         confidence="0.907407407407407"/>
+                      <ScoreDistribution value="virginica" recordCount="5"
+                                         confidence="0.0925925925925926"/>
                     </Node>
                     <Node id="7" score="virginica" recordCount="46">
                       <CompoundPredicate booleanOperator="surrogate">
-                        <SimplePredicate field="Petal.Width" operator="greaterOrEqual" value="1.75"/>
-                        <SimplePredicate field="Petal.Length" operator="greaterOrEqual" value="4.75"/>
-                        <SimplePredicate field="Sepal.Length" operator="greaterOrEqual" value="6.15"/>
-                        <SimplePredicate field="Sepal.Width" operator="greaterOrEqual" value="2.95"/>
+                        <SimplePredicate field="Petal.Width" operator="greaterOrEqual"
+                                         value="1.75"/>
+                        <SimplePredicate field="Petal.Length" operator="greaterOrEqual"
+                                         value="4.75"/>
+                        <SimplePredicate field="Sepal.Length" operator="greaterOrEqual"
+                                         value="6.15"/>
+                        <SimplePredicate field="Sepal.Width" operator="greaterOrEqual"
+                                         value="2.95"/>
                       </CompoundPredicate>
                       <ScoreDistribution value="setosa" recordCount="0" confidence="0"/>
-                      <ScoreDistribution value="versicolor" recordCount="1" confidence="0.0217391304347826"/>
-                      <ScoreDistribution value="virginica" recordCount="45" confidence="0.978260869565217"/>
+                      <ScoreDistribution value="versicolor" recordCount="1"
+                                         confidence="0.0217391304347826"/>
+                      <ScoreDistribution value="virginica" recordCount="45"
+                                         confidence="0.978260869565217"/>
                     </Node>
                   </Node>
                 </Node>
@@ -157,12 +181,14 @@
         <True/>
         <RegressionModel modelName="CategoricalVariablesRegression" functionName="regression">
           <MiningSchema>
-            <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="categoricalResult" usageType="predicted"
+                         invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
           <Output>
-            <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
+            <OutputField name="Predicted_result" optype="continuous" dataType="double"
+                         feature="predictedValue"/>
           </Output>
           <RegressionTable intercept="-22.1">
             <CategoricalPredictor name="categoricalX" value="red" coefficient="5.5"/>
@@ -178,7 +204,8 @@
       </Segment>
       <Segment>
         <True/>
-        <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression" baselineScore="0.0" initialScore="0.345">
+        <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression"
+                   baselineScore="0.0" initialScore="0.345">
           <MiningSchema>
             <MiningField name="age" usageType="active" invalidValueTreatment="asMissing"/>
             <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
@@ -187,7 +214,8 @@
             <MiningField name="overallScore" usageType="predicted"/>
           </MiningSchema>
           <Output>
-            <OutputField name="calculatedScore" displayName="Final Score" dataType="double" feature="predictedValue" targetField="overallScore"/>
+            <OutputField name="calculatedScore" displayName="Final Score" dataType="double"
+                         feature="predictedValue" targetField="overallScore"/>
           </Output>
           <Characteristics>
             <Characteristic name="AgeScore" baselineScore="0.0" reasonCode="ABZ">

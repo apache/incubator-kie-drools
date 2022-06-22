@@ -26,7 +26,7 @@ import org.dmg.pmml.Field;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomCompoundPredicate;
@@ -38,22 +38,26 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLPredicateInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLPredicate() {
+    void getKiePMMLPredicate() {
         List<Field<?>> fields = IntStream.range(0, 3).mapToObj(i -> getRandomDataField()).collect(Collectors.toList());
         SimplePredicate simplePredicate1 = getRandomSimplePredicate((DataField) fields.get(0));
-        KiePMMLPredicate retrieved = KiePMMLPredicateInstanceFactory.getKiePMMLPredicate(simplePredicate1, fields);
+        KiePMMLPredicate retrieved =
+                org.kie.pmml.compiler.commons.factories.KiePMMLPredicateInstanceFactory.getKiePMMLPredicate(simplePredicate1, fields);
         commonVerifyKiePMMLPredicate(retrieved, simplePredicate1);
 
         SimpleSetPredicate simpleSetPredicate = getRandomSimpleSetPredicate((DataField) fields.get(2));
-        retrieved = KiePMMLPredicateInstanceFactory.getKiePMMLPredicate(simpleSetPredicate, fields);
+        retrieved =
+                org.kie.pmml.compiler.commons.factories.KiePMMLPredicateInstanceFactory.getKiePMMLPredicate(simpleSetPredicate, fields);
         commonVerifyKiePMMLPredicate(retrieved, simpleSetPredicate);
 
         final CompoundPredicate compoundPredicate = getRandomCompoundPredicate(fields);
-        retrieved = KiePMMLPredicateInstanceFactory.getKiePMMLPredicate(compoundPredicate, fields);
+        retrieved =
+                org.kie.pmml.compiler.commons.factories.KiePMMLPredicateInstanceFactory.getKiePMMLPredicate(compoundPredicate, fields);
         commonVerifyKiePMMLPredicate(retrieved, compoundPredicate);
 
         False falsePredicate = new False();
-        retrieved = KiePMMLPredicateInstanceFactory.getKiePMMLPredicate(falsePredicate, fields);
+        retrieved =
+                org.kie.pmml.compiler.commons.factories.KiePMMLPredicateInstanceFactory.getKiePMMLPredicate(falsePredicate, fields);
         commonVerifyKiePMMLPredicate(retrieved, falsePredicate);
 
         True truePredicate = new True();

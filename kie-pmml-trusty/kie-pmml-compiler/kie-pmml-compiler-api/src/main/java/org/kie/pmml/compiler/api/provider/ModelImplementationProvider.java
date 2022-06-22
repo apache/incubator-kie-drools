@@ -37,14 +37,6 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
     Class<E> getKiePMMLModelClass();
 
     /**
-     * Method to be called for a <b>runtime</b> compilation
-     * @param compilationDTO
-     * @return
-     * @throws KiePMMLInternalException
-     */
-    E getKiePMMLModel(final CompilationDTO<T> compilationDTO);
-
-    /**
      * Method to be called following a <b>kie-maven-plugin</b> invocation
      * @param compilationDTO
      * @return
@@ -67,6 +59,7 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
     /**
      * Method provided only to have <b>drools</b> models working when invoked by a <code>MiningModel</code>
      * Default implementation provided for <b>not-drools</b> models.
+     *
      * @param compilationDTO
      * @return
      * @throws KiePMMLInternalException
@@ -75,7 +68,7 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
         KiePMMLModelWithSources toReturn = getKiePMMLModelWithSources(compilationDTO);
         final Map<String, String> sourcesMap = ((HasSourcesMap) toReturn).getSourcesMap();
         try {
-            compilationDTO.compileAndLoadClass(sourcesMap);
+            compilationDTO.compileClasses(sourcesMap);
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }

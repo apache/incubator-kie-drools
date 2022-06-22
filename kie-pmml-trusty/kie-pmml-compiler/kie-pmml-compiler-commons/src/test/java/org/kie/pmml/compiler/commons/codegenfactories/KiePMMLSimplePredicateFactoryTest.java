@@ -28,22 +28,22 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.SimplePredicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLSimplePredicateFactoryTest {
 
     private static final String TEST_01_SOURCE = "KiePMMLSimplePredicateFactoryTest_01.txt";
 
     @Test
-    public void getSimplePredicateVariableDeclaration() throws IOException {
+    void getSimplePredicateVariableDeclaration() throws IOException {
         String variableName = "variableName";
         final SimplePredicate simplePredicate = new SimplePredicate();
         simplePredicate.setField(FieldName.create("CUSTOM_FIELD"));
