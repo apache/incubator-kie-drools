@@ -31,7 +31,6 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.model.api.Definitions;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -76,7 +75,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
         }
     }
 
@@ -86,7 +85,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                 getFile("decision/DECISION_MISSING_VAR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
     }
 
     @Test
@@ -97,7 +96,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "DECISION_MISSING_VAR"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
     }
 
     @Test
@@ -105,7 +104,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decision/DECISION_MISSING_VARbis.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
         }
     }
 
@@ -114,7 +113,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("decision/DECISION_MISSING_VARbis.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
     }
 
     @Test
@@ -125,7 +124,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "DECISION_MISSING_VARbis"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
     }
 
     @Test
@@ -133,7 +132,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decision/DECISION_MISMATCH_VAR.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH))).isTrue();
         }
     }
 
@@ -142,7 +141,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("decision/DECISION_MISMATCH_VAR.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH))).isTrue();
     }
 
     @Test
@@ -153,7 +152,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "DECISION_MISSING_VAR"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH))).isTrue();
     }
 
     @Test
@@ -161,7 +160,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decision/DECISION_MULTIPLE_EXPRESSIONS.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.FAILED_XML_VALIDATION)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.FAILED_XML_VALIDATION))).isTrue();
         }
     }
 
@@ -170,7 +169,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("decision/DECISION_MULTIPLE_EXPRESSIONS.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.FAILED_XML_VALIDATION)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.FAILED_XML_VALIDATION))).isTrue();
     }
 
     @Test
@@ -188,7 +187,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decision/DECISION_PERF_INDICATOR_WRONG_TYPE.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
 
@@ -197,7 +196,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("decision/DECISION_PERF_INDICATOR_WRONG_TYPE.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -208,7 +207,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "DECISION_PERF_INDICATOR_WRONG_TYPE"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -216,7 +215,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decision/DECISION_DECISION_MAKER_WRONG_TYPE.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
 
@@ -225,7 +224,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("decision/DECISION_DECISION_MAKER_WRONG_TYPE.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -236,7 +235,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "DECISION_DECISION_MAKER_WRONG_TYPE"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -244,7 +243,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decision/DECISION_DECISION_OWNER_WRONG_TYPE.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
 
@@ -253,7 +252,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("decision/DECISION_DECISION_OWNER_WRONG_TYPE.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -264,7 +263,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "DECISION_DECISION_MAKER_WRONG_TYPE"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -272,7 +271,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decision/DECISION_CYCLIC_DEPENDENCY.dmn")) {
             final List<DMNMessage> validate = validator.validate( reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION );
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
 
@@ -280,7 +279,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
     public void testDECISION_CYCLIC_DEPENDENCY_FileInput() {
         final List<DMNMessage> validate = validator.validate( getFile("decision/DECISION_CYCLIC_DEPENDENCY.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION );
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -291,7 +290,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "DECISION_CYCLIC_DEPENDENCY"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION );
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -299,7 +298,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decision/DECISION_CYCLIC_DEPENDENCY_SELF_REFERENCE.dmn")) {
             final List<DMNMessage> validate = validator.validate( reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION );
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
 
@@ -307,7 +306,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
     public void testDECISION_CYCLIC_DEPENDENCY_SELF_REFERENCE_FileInput() {
         final List<DMNMessage> validate = validator.validate( getFile("decision/DECISION_CYCLIC_DEPENDENCY_SELF_REFERENCE.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION );
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -318,7 +317,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "DECISION_CYCLIC_DEPENDENCY_SELF_REFERENCE"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION );
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -374,7 +373,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         try (final Reader reader = getReader("decision/DECISION_MISSING_REQ.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL);
             assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
     
@@ -382,7 +381,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
     public void testDECISION_MISSING_REQ_FileInput() {
         final List<DMNMessage> validate = validator.validate( getFile("decision/DECISION_MISSING_REQ.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL );
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
     @Test
@@ -393,7 +392,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "DECISION_MISSING_REQ"),
                 VALIDATE_MODEL );
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
     
     @Test
@@ -408,8 +407,8 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
 
         List<DMNMessage> validate = DMNValidatorFactory.newValidator().validate(definitions, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertTrue(ValidatorUtil.formatMessages(validate), validate.stream()
-                   .allMatch(p -> p.getLevel() == Level.WARNING && 
-                       p.getText().contains("Collect with Operator for compound outputs")));
+        assertThat(validate.stream()
+                .allMatch(p -> p.getLevel() == Level.WARNING &&
+                        p.getText().contains("Collect with Operator for compound outputs"))).as(ValidatorUtil.formatMessages(validate)).isTrue();
     }
 }

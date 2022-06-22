@@ -39,7 +39,6 @@ import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
@@ -66,16 +65,14 @@ public class OverlapHitPolicyTest extends AbstractDTAnalysisTest {
         checkAnalysis(validate);
 
         if (hp == HitPolicy.UNIQUE) {
-            assertTrue("It should contain at least 1 DMNMessage for the type",
-                       validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE))).as("It should contain at least 1 DMNMessage for the type").isTrue();
         } else if (hp == HitPolicy.ANY) {
-            assertTrue("It should contain at least 1 DMNMessage for the type",
-                       validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY)));
+            assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY))).as("It should contain at least 1 DMNMessage for the type").isTrue();
         } else {
             LOG.debug("Testing for {} I am expecting there is NOT DMNMessage pertaining to Overlaps", hp);
-            assertTrue(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)) &&
-                       validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY)) &&
-                       validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP)));
+            assertThat(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)) &&
+                    validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY)) &&
+                    validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP))).isTrue();
         }
     }
 

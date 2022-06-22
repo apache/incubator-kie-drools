@@ -52,8 +52,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
 
@@ -111,7 +109,7 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
                                                   )
                         );
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
         final KieContainer kieContainer = ks.newKieContainer(releaseId);
 
@@ -264,14 +262,14 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         runtime.evaluateAll(dmnModel, emptyContext);
 
         assertThat(listener.beforeEvent).isNotNull();
-        assertEquals(listener.beforeEvent.getModelNamespace(), modelNamespace);
-        assertEquals(listener.beforeEvent.getModelName(), modelName);
+        assertThat(modelNamespace).isEqualTo(listener.beforeEvent.getModelNamespace());
+        assertThat(modelName).isEqualTo(listener.beforeEvent.getModelName());
         assertThat(listener.beforeEvent.getResult()).isNotNull();
         assertThat(listener.beforeEvent.getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
 
         assertThat(listener.afterEvent).isNotNull();
-        assertEquals(listener.afterEvent.getModelNamespace(), modelNamespace);
-        assertEquals(listener.afterEvent.getModelName(), modelName);
+        assertThat(modelNamespace).isEqualTo(listener.afterEvent.getModelNamespace());
+        assertThat(modelName).isEqualTo(listener.afterEvent.getModelName());
         assertThat(listener.afterEvent.getResult()).isNotNull();
         assertThat(listener.afterEvent.getResult().getContext().getMetadata().asMap()).isEqualTo(TEST_METADATA);
     }

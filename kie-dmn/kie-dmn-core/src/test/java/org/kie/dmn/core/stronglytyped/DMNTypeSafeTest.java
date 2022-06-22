@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
@@ -186,8 +185,8 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         DMNContext context = new DMNContextFPAImpl(feelPropertyAccessibleContext);
         context.getMetadata().set(metadataKey, metadataValue);
 
-        assertEquals(metadataValue, context.getMetadata().get(metadataKey));
-        assertEquals(metadataValue, context.clone().getMetadata().get(metadataKey));
+        assertThat(context.getMetadata().get(metadataKey)).isEqualTo(metadataValue);
+        assertThat(context.clone().getMetadata().get(metadataKey)).isEqualTo(metadataValue);
     }
 
     private void assertValidDmnModel(DMNModel dmnModel){

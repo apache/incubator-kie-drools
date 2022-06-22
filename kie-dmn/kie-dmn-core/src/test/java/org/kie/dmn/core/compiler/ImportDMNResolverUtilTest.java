@@ -13,8 +13,7 @@ import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.v1_1.TImport;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ImportDMNResolverUtilTest {
 
@@ -25,8 +24,8 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("ns2", "m2"),
                                                     new QName("ns3", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isRight());
-        assertEquals(new QName("ns1", "m1"), result.getOrElse(null));
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getOrElse(null)).isEqualTo(new QName("ns1", "m1"));
     }
 
     @Test
@@ -36,8 +35,8 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("ns2", "m2"),
                                                     new QName("ns3", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isRight());
-        assertEquals(new QName("ns1", "m1"), result.getOrElse(null));
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getOrElse(null)).isEqualTo(new QName("ns1", "m1"));
     }
 
     @Test
@@ -47,8 +46,8 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("ns2", "m2"),
                                                     new QName("ns3", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isRight());
-        assertEquals(new QName("ns1", "m1"), result.getOrElse(null));
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getOrElse(null)).isEqualTo(new QName("ns1", "m1"));
     }
 
     @Test
@@ -58,8 +57,8 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("ns2", "m2"),
                                                     new QName("ns3", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isRight());
-        assertEquals(new QName("ns1", "m1"), result.getOrElse(null));
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getOrElse(null)).isEqualTo(new QName("ns1", "m1"));
     }
 
     @Test
@@ -69,7 +68,7 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("ns2", "m2"),
                                                     new QName("ns3", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isLeft());
+        assertThat(result.isLeft()).isTrue();
     }
 
     @Test
@@ -79,8 +78,8 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("ns2", "m2"),
                                                     new QName("ns3", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isRight());
-        assertEquals(new QName("ns1", "m1"), result.getOrElse(null));
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getOrElse(null)).isEqualTo(new QName("ns1", "m1"));
     }
 
     @Test
@@ -90,8 +89,8 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("nsA", "m2"),
                                                     new QName("nsB", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isRight());
-        assertEquals(new QName("nsA", "m1"), result.getOrElse(null));
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getOrElse(null)).isEqualTo(new QName("nsA", "m1"));
     }
 
     @Test
@@ -101,7 +100,7 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("nsA", "m2"),
                                                     new QName("nsB", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isLeft());
+        assertThat(result.isLeft()).isTrue();
     }
 
     @Test
@@ -111,8 +110,8 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("nsA", "m2"),
                                                     new QName("nsB", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isRight());
-        assertEquals(new QName("nsA", "m1"), result.getOrElse(null));
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getOrElse(null)).isEqualTo(new QName("nsA", "m1"));
     }
 
     @Test
@@ -122,7 +121,7 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("nsA", "m2"),
                                                     new QName("nsB", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isLeft());
+        assertThat(result.isLeft()).isTrue();
     }
 
     @Test
@@ -132,7 +131,7 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("nsA", "m2"),
                                                     new QName("nsB", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isLeft());
+        assertThat(result.isLeft()).isTrue();
     }
 
     @Test
@@ -143,7 +142,7 @@ public class ImportDMNResolverUtilTest {
                                                     new QName("nsA", "mA"),
                                                     new QName("nsB", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
-        assertTrue(result.isLeft());
+        assertThat(result.isLeft()).isTrue();
     }
 
     private Import makeImport(final String namespace, final String name, final String modelName) {

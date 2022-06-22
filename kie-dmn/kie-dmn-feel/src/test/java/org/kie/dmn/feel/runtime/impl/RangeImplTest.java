@@ -16,9 +16,10 @@
 
 package org.kie.dmn.feel.runtime.impl;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RangeImplTest {
 
@@ -26,96 +27,96 @@ public class RangeImplTest {
     public void getLowBoundary() {
         final Range.RangeBoundary lowBoundary = Range.RangeBoundary.CLOSED;
         final RangeImpl rangeImpl = new RangeImpl(lowBoundary, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertEquals(lowBoundary, rangeImpl.getLowBoundary());
+        assertThat(rangeImpl.getLowBoundary()).isEqualTo(lowBoundary);
     }
 
     @Test
     public void getLowEndPoint() {
         final Integer lowEndPoint = 1;
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, lowEndPoint, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertEquals(lowEndPoint, rangeImpl.getLowEndPoint());
+        assertThat(rangeImpl.getLowEndPoint()).isEqualTo(lowEndPoint);
     }
 
     @Test
     public void getHighEndPoint() {
         final Integer highEndPoint = 15;
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 1, highEndPoint, Range.RangeBoundary.CLOSED);
-        Assert.assertEquals(highEndPoint, rangeImpl.getHighEndPoint());
+        assertThat(rangeImpl.getHighEndPoint()).isEqualTo(highEndPoint);
     }
 
     @Test
     public void getHighBoundary() {
         final Range.RangeBoundary highBoundary = Range.RangeBoundary.CLOSED;
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, highBoundary);
-        Assert.assertEquals(highBoundary, rangeImpl.getHighBoundary());
+        assertThat(rangeImpl.getHighBoundary()).isEqualTo(highBoundary);
     }
 
     @Test
     public void includes() {
         RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertFalse(rangeImpl.includes(-15));
-        Assert.assertFalse(rangeImpl.includes(5));
-        Assert.assertFalse(rangeImpl.includes(10));
-        Assert.assertTrue(rangeImpl.includes(12));
-        Assert.assertFalse(rangeImpl.includes(15));
-        Assert.assertFalse(rangeImpl.includes(156));
+        assertThat(rangeImpl.includes(-15)).isFalse();
+        assertThat(rangeImpl.includes(5)).isFalse();
+        assertThat(rangeImpl.includes(10)).isFalse();
+        assertThat(rangeImpl.includes(12)).isTrue();
+        assertThat(rangeImpl.includes(15)).isFalse();
+        assertThat(rangeImpl.includes(156)).isFalse();
 
         rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertTrue(rangeImpl.includes(10));
-        Assert.assertTrue(rangeImpl.includes(12));
-        Assert.assertFalse(rangeImpl.includes(15));
+        assertThat(rangeImpl.includes(10)).isTrue();
+        assertThat(rangeImpl.includes(12)).isTrue();
+        assertThat(rangeImpl.includes(15)).isFalse();
 
         rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertFalse(rangeImpl.includes(10));
-        Assert.assertTrue(rangeImpl.includes(12));
-        Assert.assertTrue(rangeImpl.includes(15));
+        assertThat(rangeImpl.includes(10)).isFalse();
+        assertThat(rangeImpl.includes(12)).isTrue();
+        assertThat(rangeImpl.includes(15)).isTrue();
 
         rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertTrue(rangeImpl.includes(10));
-        Assert.assertTrue(rangeImpl.includes(12));
-        Assert.assertTrue(rangeImpl.includes(15));
+        assertThat(rangeImpl.includes(10)).isTrue();
+        assertThat(rangeImpl.includes(12)).isTrue();
+        assertThat(rangeImpl.includes(15)).isTrue();
     }
 
     @Test
     public void equals() {
         RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertEquals(rangeImpl, rangeImpl);
+        assertThat(rangeImpl).isEqualTo(rangeImpl);
 
         RangeImpl rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertEquals(rangeImpl, rangeImpl2);
+        assertThat(rangeImpl2).isEqualTo(rangeImpl);
 
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertNotEquals(rangeImpl, rangeImpl2);
+        assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertNotEquals(rangeImpl, rangeImpl2);
+        assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertNotEquals(rangeImpl, rangeImpl2);
+        assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertNotEquals(rangeImpl, rangeImpl2);
+        assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
-        Assert.assertNotEquals(rangeImpl, rangeImpl2);
+        assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
 
         rangeImpl = new RangeImpl();
-        Assert.assertEquals(rangeImpl, rangeImpl);
+        assertThat(rangeImpl).isEqualTo(rangeImpl);
     }
 
     @Test
     public void hashCodeTest() {
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertEquals(rangeImpl.hashCode(), rangeImpl.hashCode());
+        assertThat(rangeImpl.hashCode()).isEqualTo(rangeImpl.hashCode());
 
         RangeImpl rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertEquals(rangeImpl.hashCode(), rangeImpl2.hashCode());
+        assertThat(rangeImpl2.hashCode()).isEqualTo(rangeImpl.hashCode());
 
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertNotEquals(rangeImpl.hashCode(), rangeImpl2.hashCode());
+        assertThat(rangeImpl2.hashCode()).isNotEqualTo(rangeImpl.hashCode());
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN);
-        Assert.assertNotEquals(rangeImpl.hashCode(), rangeImpl2.hashCode());
+        assertThat(rangeImpl2.hashCode()).isNotEqualTo(rangeImpl.hashCode());
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertNotEquals(rangeImpl.hashCode(), rangeImpl2.hashCode());
+        assertThat(rangeImpl2.hashCode()).isNotEqualTo(rangeImpl.hashCode());
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED);
-        Assert.assertNotEquals(rangeImpl.hashCode(), rangeImpl2.hashCode());
+        assertThat(rangeImpl2.hashCode()).isNotEqualTo(rangeImpl.hashCode());
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
-        Assert.assertNotEquals(rangeImpl.hashCode(), rangeImpl2.hashCode());
+        assertThat(rangeImpl2.hashCode()).isNotEqualTo(rangeImpl.hashCode());
     }
 }
