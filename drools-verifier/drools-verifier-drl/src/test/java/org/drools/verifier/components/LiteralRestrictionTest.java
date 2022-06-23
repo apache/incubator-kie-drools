@@ -19,8 +19,7 @@ package org.drools.verifier.components;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LiteralRestrictionTest {
 
@@ -32,63 +31,52 @@ public class LiteralRestrictionTest {
         LiteralRestriction literalBooleanRestriction = LiteralRestriction.createRestriction(pattern1,
                                                                                             "true");
 
-        assertTrue(literalBooleanRestriction instanceof BooleanRestriction);
+        assertThat(literalBooleanRestriction instanceof BooleanRestriction).isTrue();
 
         BooleanRestriction booleanRestriction = (BooleanRestriction) literalBooleanRestriction;
 
-        assertEquals(Field.BOOLEAN,
-                     booleanRestriction.getValueType());
-        assertEquals(true,
-                     booleanRestriction.getValue());
+        assertThat(booleanRestriction.getValueType()).isEqualTo(Field.BOOLEAN);
+        assertThat(booleanRestriction.getValue()).isEqualTo(true);
 
         LiteralRestriction intLiteralRestriction = LiteralRestriction.createRestriction(pattern1,
                                                                                         "1");
-        assertTrue(intLiteralRestriction instanceof NumberRestriction);
+        assertThat(intLiteralRestriction instanceof NumberRestriction).isTrue();
         NumberRestriction intRestriction = (NumberRestriction) intLiteralRestriction;
 
-        assertTrue(intRestriction.isInt());
-        assertEquals(Field.INT,
-                     intRestriction.getValueType());
-        assertEquals(1,
-                     intRestriction.getValue());
+        assertThat(intRestriction.isInt()).isTrue();
+        assertThat(intRestriction.getValueType()).isEqualTo(Field.INT);
+        assertThat(intRestriction.getValue()).isEqualTo(1);
 
         LiteralRestriction doubleLiteralRestriction = LiteralRestriction.createRestriction(pattern1,
                                                                                            "1.0");
-        assertTrue(doubleLiteralRestriction instanceof NumberRestriction);
+        assertThat(doubleLiteralRestriction instanceof NumberRestriction).isTrue();
 
         NumberRestriction doubleRestriction = (NumberRestriction) doubleLiteralRestriction;
 
-        assertEquals(Field.DOUBLE,
-                     doubleRestriction.getValueType());
-        assertEquals(1.0,
-                     doubleRestriction.getValue());
+        assertThat(doubleRestriction.getValueType()).isEqualTo(Field.DOUBLE);
+        assertThat(doubleRestriction.getValue()).isEqualTo(1.0);
 
         LiteralRestriction dateLiteralRestriction = LiteralRestriction.createRestriction(pattern1,
                                                                                          "11-jan-2008");
 
-        assertTrue(dateLiteralRestriction instanceof DateRestriction);
+        assertThat(dateLiteralRestriction instanceof DateRestriction).isTrue();
 
         DateRestriction dateRestriction = (DateRestriction) dateLiteralRestriction;
 
-        assertEquals(Field.DATE,
-                     dateRestriction.getValueType());
+        assertThat(dateRestriction.getValueType()).isEqualTo(Field.DATE);
 
         LiteralRestriction stringRestriction = LiteralRestriction.createRestriction(pattern1,
                                                                                     "test test");
 
-        assertEquals(Field.STRING,
-                     stringRestriction.getValueType());
-        assertEquals("test test",
-                     stringRestriction.getValueAsString());
+        assertThat(stringRestriction.getValueType()).isEqualTo(Field.STRING);
+        assertThat(stringRestriction.getValueAsString()).isEqualTo("test test");
 
         LiteralRestriction nullRestriction = LiteralRestriction.createRestriction(pattern1,
                                                                                   null);
 
-        assertTrue(nullRestriction instanceof StringRestriction);
+        assertThat(nullRestriction instanceof StringRestriction).isTrue();
 
-        assertEquals(Field.UNKNOWN,
-                     nullRestriction.getValueType());
-        assertEquals("",
-                     nullRestriction.getValueAsString());
+        assertThat(nullRestriction.getValueType()).isEqualTo(Field.UNKNOWN);
+        assertThat(nullRestriction.getValueAsString()).isEqualTo("");
     }
 }

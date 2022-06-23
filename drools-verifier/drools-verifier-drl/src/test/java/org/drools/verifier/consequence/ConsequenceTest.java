@@ -16,10 +16,6 @@
 
 package org.drools.verifier.consequence;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,9 +29,11 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ConsequenceTest extends TestBaseOld {
 
@@ -70,9 +68,9 @@ public class ConsequenceTest extends TestBaseOld {
             }
         }
 
-        assertFalse( rulesThatHadErrors.contains( "Has a consequence 1" ) );
-        assertTrue( rulesThatHadErrors.remove( "Missing consequence 1" ) );
-        assertTrue( rulesThatHadErrors.remove( "Missing consequence 2" ) );
+        assertThat(rulesThatHadErrors.contains("Has a consequence 1")).isFalse();
+        assertThat(rulesThatHadErrors.remove("Missing consequence 1")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Missing consequence 2")).isTrue();
 
         if ( !rulesThatHadErrors.isEmpty() ) {
             for ( String string : rulesThatHadErrors ) {

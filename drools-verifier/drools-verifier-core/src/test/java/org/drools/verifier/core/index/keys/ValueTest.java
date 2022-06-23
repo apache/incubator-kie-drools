@@ -17,7 +17,7 @@ package org.drools.verifier.core.index.keys;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValueTest {
 
@@ -27,8 +27,8 @@ public class ValueTest {
         final Value nroZero = new Value( 0 );
         final Value nroOne = new Value( 1 );
 
-        assertTrue( nroZero.compareTo( nroOne ) < 0 );
-        assertTrue( nroOne.compareTo( nroZero ) > 0 );
+        assertThat(nroZero.compareTo(nroOne) < 0).isTrue();
+        assertThat(nroOne.compareTo(nroZero) > 0).isTrue();
     }
 
     @Test
@@ -36,8 +36,8 @@ public class ValueTest {
         final Value hello = new Value( "hello" );
         final Value nroOne = new Value( 1 );
 
-        assertTrue( hello.compareTo( nroOne ) > 0 );
-        assertTrue( nroOne.compareTo( hello ) < 0 );
+        assertThat(hello.compareTo(nroOne) > 0).isTrue();
+        assertThat(nroOne.compareTo(hello) < 0).isTrue();
     }
 
     @Test
@@ -45,8 +45,8 @@ public class ValueTest {
         final Value hello = new Value( "hello" );
         final Value nroOne = new Value( "1" );
 
-        assertTrue( hello.compareTo( nroOne ) > 0 );
-        assertTrue( nroOne.compareTo( hello ) < 0 );
+        assertThat(hello.compareTo(nroOne) > 0).isTrue();
+        assertThat(nroOne.compareTo(hello) < 0).isTrue();
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ValueTest {
         final Value a = new Value( "a" );
         final Value b = new Value( "b" );
 
-        assertTrue( a.compareTo( b ) < 0 );
-        assertTrue( b.compareTo( a ) > 0 );
+        assertThat(a.compareTo(b) < 0).isTrue();
+        assertThat(b.compareTo(a) > 0).isTrue();
     }
 }

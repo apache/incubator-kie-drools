@@ -25,8 +25,7 @@ import java.util.List;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class DrlPackageDataTest {
     @Test
@@ -48,12 +47,9 @@ public class DrlPackageDataTest {
 
         DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl( drl );
 
-        assertEquals( "org.drools.test",
-                      s.getName() );
-        assertEquals( 2,
-                      s.getRules().size() );
-        assertEquals( "",
-                      s.getDescription() );
+        assertThat(s.getName()).isEqualTo("org.drools.test");
+        assertThat(s.getRules().size()).isEqualTo(2);
+        assertThat(s.getDescription()).isEqualTo("");
 
     }
 
@@ -73,12 +69,9 @@ public class DrlPackageDataTest {
 
         assertThat(s).isNotNull();
 
-        assertEquals( "org.drools.test",
-                      s.getName() );
-        assertEquals( 5,
-                      s.getRules().size() );
-        assertEquals( "",
-                      s.getDescription() );
+        assertThat(s.getName()).isEqualTo("org.drools.test");
+        assertThat(s.getRules().size()).isEqualTo(5);
+        assertThat(s.getDescription()).isEqualTo("");
 
     }
 
@@ -127,28 +120,19 @@ public class DrlPackageDataTest {
 
         DrlPackageParser data = DrlPackageParser.findPackageDataFromDrl( drl );
 
-        assertEquals( "org.drools.test",
-                      data.getName() );
-        assertEquals( 2,
-                      data.getRules().size() );
-        assertEquals( 1,
-                      data.getGlobals().size() );
-        assertEquals( "java.util.List list",
-                      data.getGlobals().get( 0 ) );
-        assertEquals( "important information\nabout this package\nit contains some rules\n",
-                      data.getDescription() );
+        assertThat(data.getName()).isEqualTo("org.drools.test");
+        assertThat(data.getRules().size()).isEqualTo(2);
+        assertThat(data.getGlobals().size()).isEqualTo(1);
+        assertThat(data.getGlobals().get(0)).isEqualTo("java.util.List list");
+        assertThat(data.getDescription()).isEqualTo("important information\nabout this package\nit contains some rules\n");
 
         DrlRuleParser rd1 = data.getRules().get( 0 );
-        assertEquals( "rule1",
-                      rd1.getName() );
-        assertEquals( "",
-                      rd1.getDescription() );
+        assertThat(rd1.getName()).isEqualTo("rule1");
+        assertThat(rd1.getDescription()).isEqualTo("");
 
         DrlRuleParser rd2 = data.getRules().get( 1 );
-        assertEquals( "rule2",
-                      rd2.getName() );
-        assertEquals( "",
-                      rd2.getDescription() );
+        assertThat(rd2.getName()).isEqualTo("rule2");
+        assertThat(rd2.getDescription()).isEqualTo("");
     }
 
     @Test
@@ -158,10 +142,8 @@ public class DrlPackageDataTest {
 
         List<String> globals = DrlPackageParser.findGlobals( header );
 
-        assertEquals( 1,
-                      globals.size() );
-        assertEquals( "LoanApplication gg",
-                      globals.get( 0 ) );
+        assertThat(globals.size()).isEqualTo(1);
+        assertThat(globals.get(0)).isEqualTo("LoanApplication gg");
     }
 
 }
