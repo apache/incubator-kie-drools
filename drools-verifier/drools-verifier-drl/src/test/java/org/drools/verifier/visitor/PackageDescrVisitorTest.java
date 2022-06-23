@@ -39,9 +39,7 @@ import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class PackageDescrVisitorTest {
 
@@ -84,8 +82,7 @@ public class PackageDescrVisitorTest {
         }
 
         assertThat(all).isNotNull();
-        assertEquals(45,
-                     all.size());
+        assertThat(all.size()).isEqualTo(45);
 
     }
 
@@ -119,37 +116,33 @@ public class PackageDescrVisitorTest {
             if (verifierComponent.getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 SubPattern subPattern = (SubPattern) verifierComponent;
                 if ("Test 1".equals(subPattern.getRuleName())) {
-                    assertNull(test1SubPattern);
+                    assertThat(test1SubPattern).isNull();
                     test1SubPattern = subPattern;
                 } else if ("Test 2".equals(subPattern.getRuleName())) {
-                    assertNull(test2SubPattern);
+                    assertThat(test2SubPattern).isNull();
                     test2SubPattern = subPattern;
                 }
             }
             if (verifierComponent.getVerifierComponentType().equals(VerifierComponentType.SUB_RULE)) {
                 SubRule subRule = (SubRule) verifierComponent;
                 if ("Test 1".equals(subRule.getRuleName())) {
-                    assertNull(test1SubRule);
+                    assertThat(test1SubRule).isNull();
                     test1SubRule = subRule;
                 } else if ("Test 2".equals(subRule.getRuleName())) {
-                    assertNull(test2SubRule);
+                    assertThat(test2SubRule).isNull();
                     test2SubRule = subRule;
                 }
             }
         }
 
         assertThat(test1SubPattern).isNotNull();
-        assertEquals(3,
-                     test1SubPattern.getItems().size());
+        assertThat(test1SubPattern.getItems().size()).isEqualTo(3);
         assertThat(test2SubPattern).isNotNull();
-        assertEquals(3,
-                     test2SubPattern.getItems().size());
+        assertThat(test2SubPattern.getItems().size()).isEqualTo(3);
         assertThat(test1SubRule).isNotNull();
-        assertEquals(1,
-                     test1SubRule.getItems().size());
+        assertThat(test1SubRule.getItems().size()).isEqualTo(1);
         assertThat(test2SubRule).isNotNull();
-        assertEquals(1,
-                     test2SubRule.getItems().size());
+        assertThat(test2SubRule.getItems().size()).isEqualTo(1);
 
     }
 

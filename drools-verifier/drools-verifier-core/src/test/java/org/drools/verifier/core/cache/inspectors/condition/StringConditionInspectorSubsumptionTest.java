@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
@@ -209,11 +209,9 @@ public class StringConditionInspectorSubsumptionTest {
         StringConditionInspector b = getCondition(value2,
                                                   operator2);
 
-        assertEquals(getAssertDescription(a,
-                                          b,
-                                          aSubsumesB),
-                     aSubsumesB,
-                     a.subsumes(b));
+        assertThat(a.subsumes(b)).as(getAssertDescription(a,
+                b,
+                aSubsumesB)).isEqualTo(aSubsumesB);
     }
 
     @Test
@@ -223,11 +221,9 @@ public class StringConditionInspectorSubsumptionTest {
         StringConditionInspector b = getCondition(value2,
                                                   operator2);
 
-        assertEquals(getAssertDescription(b,
-                                          a,
-                                          bSubsumesA),
-                     bSubsumesA,
-                     b.subsumes(a));
+        assertThat(b.subsumes(a)).as(getAssertDescription(b,
+                a,
+                bSubsumesA)).isEqualTo(bSubsumesA);
     }
 
     private String getAssertDescription(StringConditionInspector a,

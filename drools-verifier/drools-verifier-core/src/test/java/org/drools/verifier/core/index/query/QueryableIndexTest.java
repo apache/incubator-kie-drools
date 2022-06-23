@@ -35,7 +35,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
@@ -108,9 +108,8 @@ public class QueryableIndexTest {
 
         verify(rulesQueryCallback).callback(rulesArgumentCaptor.capture());
 
-        assertEquals(3,
-                     rulesArgumentCaptor.getValue()
-                             .size());
+        assertThat(rulesArgumentCaptor.getValue()
+                .size()).isEqualTo(3);
     }
 
     @Test
@@ -125,8 +124,7 @@ public class QueryableIndexTest {
 
         verify(firstColumnQueryCallback).callback(firstColumnArgumentCaptor.capture());
 
-        assertEquals(firstColumn,
-                     firstColumnArgumentCaptor.getValue());
+        assertThat(firstColumnArgumentCaptor.getValue()).isEqualTo(firstColumn);
     }
 
     @Test
@@ -155,9 +153,7 @@ public class QueryableIndexTest {
 
         final ObjectType last = objectTypeArgumentCaptor.getValue();
 
-        assertEquals("Person",
-                     first.getType());
-        assertEquals(first,
-                     last);
+        assertThat(first.getType()).isEqualTo("Person");
+        assertThat(last).isEqualTo(first);
     }
 }
