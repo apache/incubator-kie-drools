@@ -42,10 +42,6 @@
       <artifactId>jaxb-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-    </dependency>
 
     <!--
     This dependency is marked as optional because it is only needed if events are used.
