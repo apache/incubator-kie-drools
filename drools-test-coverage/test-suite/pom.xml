@@ -56,7 +56,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
+      <artifactId>drools-model-codegen</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -234,11 +234,11 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             }
         }
 
-        public KnowledgeBuilderImpl.AssetFilter getFilter() {
+        public AssetFilter getFilter() {
             return changeMap == null ? null : this.new ChangeSetAssetFilter();
         }
 
-        private class ChangeSetAssetFilter implements KnowledgeBuilderImpl.AssetFilter {
+        private class ChangeSetAssetFilter implements AssetFilter {
             @Override
             public Action accept(ResourceChange.Type type, String pkgName, String assetName) {
                 if (globalChangeType != null) {

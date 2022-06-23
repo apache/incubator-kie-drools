@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.impl.InternalKieContainer;
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;

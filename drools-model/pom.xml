@@ -19,7 +19,7 @@
     <module>drools-codegen-common</module>
     <module>drools-canonical-model</module>
     <module>drools-model-compiler</module>
-    <module>drools-model-project-codegen</module>
+    <module>drools-model-codegen</module>
     <module>drools-mvel-parser</module>
     <module>drools-mvel-compiler</module>
   </modules>

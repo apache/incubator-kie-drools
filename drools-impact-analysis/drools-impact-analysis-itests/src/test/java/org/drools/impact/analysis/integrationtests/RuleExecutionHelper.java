@@ -19,7 +19,7 @@ package org.drools.impact.analysis.integrationtests;
 import java.util.List;
 import java.util.UUID;
 
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;

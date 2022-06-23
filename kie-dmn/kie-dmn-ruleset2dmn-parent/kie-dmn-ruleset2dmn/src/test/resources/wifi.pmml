@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4.1">
+    <Header copyright="Copyright IBM Corp, exported to PMML by Nyoka (c) 2022 Software AG" description="Default description">
+        <Application name="SimpleRuleSetExport" version="0.0.1"/>
+        <Timestamp>1970-01-01 00:00:00+00:00</Timestamp>
+    </Header>
+    <DataDictionary numberOfFields="7">
+        <DataField name="X1" optype="continuous" dataType="double"/>
+        <DataField name="X2" optype="continuous" dataType="double"/>
+        <DataField name="X3" optype="continuous" dataType="double"/>
+        <DataField name="X4" optype="continuous" dataType="double"/>
+        <DataField name="X5" optype="continuous" dataType="double"/>
+        <DataField name="X6" optype="continuous" dataType="double"/>
+        <DataField name="X7" optype="continuous" dataType="double"/>
+    </DataDictionary>
+    <RuleSetModel functionName="classification" algorithmName="RuleSet">
+        <MiningSchema>
+            <MiningField name="X4" usageType="active"/>
+            <MiningField name="X5" usageType="active"/>
+            <MiningField name="X1" usageType="active"/>
+            <MiningField name="X7" usageType="active"/>
+            <MiningField name="X3" usageType="active"/>
+            <MiningField name="X2" usageType="active"/>
+            <MiningField name="X6" usageType="active"/>
+        </MiningSchema>
+        <RuleSet defaultScore="4">
+            <RuleSelectionMethod criterion="weightedMax"/>
+            <SimpleRule id="[X4 &lt;= -61.0] ^ [X5 &lt;= -63.0]" score="1" recordCount="500" nbCorrect="477" confidence="0.990990990990991" weight="0.990990990990991">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X4" operator="lessOrEqual" value="-61.0"/>
+                    <SimplePredicate field="X5" operator="lessOrEqual" value="-63.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X1 &lt;= -56.0] ^ [X5 &lt;= -60.0] ^ [X7 &gt;= -85.0] ^ [X3 &lt;= -52.0]" score="1" recordCount="500" nbCorrect="450" confidence="0.9880952380952381" weight="0.9880952380952381">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X1" operator="lessOrEqual" value="-56.0"/>
+                    <SimplePredicate field="X5" operator="lessOrEqual" value="-60.0"/>
+                    <SimplePredicate field="X7" operator="greaterOrEqual" value="-85.0"/>
+                    <SimplePredicate field="X3" operator="lessOrEqual" value="-52.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X1 &lt;= -60.0] ^ [X5 &lt;= -65.0]" score="1" recordCount="500" nbCorrect="472" confidence="0.9814814814814815" weight="0.9814814814814815">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X1" operator="lessOrEqual" value="-60.0"/>
+                    <SimplePredicate field="X5" operator="lessOrEqual" value="-65.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X7 &lt;= -87.0] ^ [X5 &lt;= -61.0] ^ [X1 &lt;= -58.0] ^ [X1 &gt;= -59.0] ^ [X2 &gt;= -55.0]" score="1" recordCount="500" nbCorrect="369" confidence="0.6666666666666666" weight="0.6666666666666666">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X7" operator="lessOrEqual" value="-87.0"/>
+                    <SimplePredicate field="X5" operator="lessOrEqual" value="-61.0"/>
+                    <SimplePredicate field="X1" operator="lessOrEqual" value="-58.0"/>
+                    <SimplePredicate field="X1" operator="greaterOrEqual" value="-59.0"/>
+                    <SimplePredicate field="X2" operator="greaterOrEqual" value="-55.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X5 &lt;= -57.0] ^ [X1 &lt;= -46.0] ^ [X3 &gt;= -53.0] ^ [X1 &gt;= -55.0] ^ [X7 &lt;= -73.0]" score="3" recordCount="500" nbCorrect="447" confidence="0.9746835443037974" weight="0.9746835443037974">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X5" operator="lessOrEqual" value="-57.0"/>
+                    <SimplePredicate field="X1" operator="lessOrEqual" value="-46.0"/>
+                    <SimplePredicate field="X3" operator="greaterOrEqual" value="-53.0"/>
+                    <SimplePredicate field="X1" operator="greaterOrEqual" value="-55.0"/>
+                    <SimplePredicate field="X7" operator="lessOrEqual" value="-73.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X5 &lt;= -56.0] ^ [X1 &lt;= -45.0] ^ [X4 &lt;= -49.0] ^ [X1 &gt;= -55.0] ^ [X6 &lt;= -79.0]" score="3" recordCount="500" nbCorrect="442" confidence="0.972972972972973" weight="0.972972972972973">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X5" operator="lessOrEqual" value="-56.0"/>
+                    <SimplePredicate field="X1" operator="lessOrEqual" value="-45.0"/>
+                    <SimplePredicate field="X4" operator="lessOrEqual" value="-49.0"/>
+                    <SimplePredicate field="X1" operator="greaterOrEqual" value="-55.0"/>
+                    <SimplePredicate field="X6" operator="lessOrEqual" value="-79.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X5 &lt;= -54.0] ^ [X1 &lt;= -45.0] ^ [X4 &gt;= -57.0] ^ [X5 &gt;= -67.0] ^ [X2 &gt;= -54.0] ^ [X6 &lt;= -74.0]" score="3" recordCount="500" nbCorrect="424" confidence="0.90625" weight="0.90625">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X5" operator="lessOrEqual" value="-54.0"/>
+                    <SimplePredicate field="X1" operator="lessOrEqual" value="-45.0"/>
+                    <SimplePredicate field="X4" operator="greaterOrEqual" value="-57.0"/>
+                    <SimplePredicate field="X5" operator="greaterOrEqual" value="-67.0"/>
+                    <SimplePredicate field="X2" operator="greaterOrEqual" value="-54.0"/>
+                    <SimplePredicate field="X6" operator="lessOrEqual" value="-74.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X5 &lt;= -59.0] ^ [X6 &lt;= -78.0] ^ [X7 &lt;= -79.0] ^ [X1 &gt;= -55.0] ^ [X4 &lt;= -46.0] ^ [X3 &gt;= -59.0]" score="3" recordCount="500" nbCorrect="441" confidence="0.9367088607594937" weight="0.9367088607594937">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X5" operator="lessOrEqual" value="-59.0"/>
+                    <SimplePredicate field="X6" operator="lessOrEqual" value="-78.0"/>
+                    <SimplePredicate field="X7" operator="lessOrEqual" value="-79.0"/>
+                    <SimplePredicate field="X1" operator="greaterOrEqual" value="-55.0"/>
+                    <SimplePredicate field="X4" operator="lessOrEqual" value="-46.0"/>
+                    <SimplePredicate field="X3" operator="greaterOrEqual" value="-59.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X5 &lt;= -60.0] ^ [X1 &lt;= -45.0] ^ [X5 &gt;= -68.0] ^ [X4 &gt;= -47.0] ^ [X7 &lt;= -78.0] ^ [X2 &gt;= -57.0]" score="3" recordCount="500" nbCorrect="382" confidence="0.8125" weight="0.8125">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X5" operator="lessOrEqual" value="-60.0"/>
+                    <SimplePredicate field="X1" operator="lessOrEqual" value="-45.0"/>
+                    <SimplePredicate field="X5" operator="greaterOrEqual" value="-68.0"/>
+                    <SimplePredicate field="X4" operator="greaterOrEqual" value="-47.0"/>
+                    <SimplePredicate field="X7" operator="lessOrEqual" value="-78.0"/>
+                    <SimplePredicate field="X2" operator="greaterOrEqual" value="-57.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X5 &lt;= -60.0] ^ [X1 &lt;= -52.0] ^ [X4 &gt;= -55.0] ^ [X3 &gt;= -64.0]" score="3" recordCount="500" nbCorrect="399" confidence="0.9655172413793104" weight="0.9655172413793104">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X5" operator="lessOrEqual" value="-60.0"/>
+                    <SimplePredicate field="X1" operator="lessOrEqual" value="-52.0"/>
+                    <SimplePredicate field="X4" operator="greaterOrEqual" value="-55.0"/>
+                    <SimplePredicate field="X3" operator="greaterOrEqual" value="-64.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X3 &gt;= -51.0] ^ [X3 &lt;= -51.0] ^ [X1 &gt;= -43.0] ^ [X1 &lt;= -43.0]" score="3" recordCount="500" nbCorrect="371" confidence="0.3333333333333333" weight="0.3333333333333333">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X3" operator="greaterOrEqual" value="-51.0"/>
+                    <SimplePredicate field="X3" operator="lessOrEqual" value="-51.0"/>
+                    <SimplePredicate field="X1" operator="greaterOrEqual" value="-43.0"/>
+                    <SimplePredicate field="X1" operator="lessOrEqual" value="-43.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[X1 &gt;= -54.0]" score="2" recordCount="500" nbCorrect="373" confidence="0.4900398406374502" weight="0.4900398406374502">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="X1" operator="greaterOrEqual" value="-54.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+        </RuleSet>
+    </RuleSetModel>
+</PMML>

@@ -15,25 +15,7 @@
 
   <properties>
     <java.module.name>org.drools.modelcompiler</java.module.name>
-    <version.jmh>1.19</version.jmh>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.openjdk.jmh</groupId>
-        <artifactId>jmh-core</artifactId>
-        <version>${version.jmh}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openjdk.jmh</groupId>
-        <artifactId>jmh-generator-annprocess</artifactId>
-        <version>${version.jmh}</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -63,47 +45,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-xml-support</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.github.javaparser</groupId>
-      <artifactId>javaparser-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-mvel-parser</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-mvel-compiler</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openjdk.jmh</groupId>
-      <artifactId>jmh-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openjdk.jmh</groupId>
-      <artifactId>jmh-generator-annprocess</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-mvel</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-tms</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>

@@ -61,16 +61,15 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.GeneratedFact;
-import org.drools.util.io.InternalResource;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.util.Drools;
-import org.drools.util.IoUtils;
-import org.drools.util.StringUtils;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.Model;
 import org.drools.model.NamedModelItem;
-import org.drools.modelcompiler.builder.CanonicalKieBaseUpdater;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.util.IoUtils;
+import org.drools.util.PortablePath;
+import org.drools.util.StringUtils;
+import org.drools.util.io.InternalResource;
 import org.drools.wiring.api.ResourceProvider;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
@@ -94,7 +93,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
-import org.drools.util.PortablePath;
 import org.kie.util.maven.support.DependencyFilter;
 import org.kie.util.maven.support.PomModel;
 
@@ -103,7 +101,6 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
-import static org.drools.modelcompiler.builder.ModelSourceClass.getProjectModelClassNameNameWithReleaseId;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
 import static org.kie.api.io.ResourceType.determineResourceType;
 
@@ -159,6 +156,14 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private String getProjectModelClassName() {
         return getModuleClassLoader().isDynamic() ? getProjectModelClassNameNameWithReleaseId(internalKieModule.getReleaseId()) : PROJECT_MODEL_CLASS;
+    }
+
+    public static String getProjectModelClassNameNameWithReleaseId(ReleaseId releaseId) {
+        return CanonicalKieModule.PROJECT_MODEL_CLASS + releaseId2JavaName(releaseId);
+    }
+
+    public static String releaseId2JavaName(ReleaseId releaseId) {
+        return "_" + (releaseId.getGroupId() + "_" + releaseId.getArtifactId() + "_" + releaseId.getVersion()).replaceAll( "\\W", "_" );
     }
 
     private String getProjectModelResourceName() {
