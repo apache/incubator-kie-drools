@@ -14,21 +14,30 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class IgnoreNumericFormatTest {
 
     @Test
     public void testPercentAndCurrencyFormat() throws IOException {
+        ignoreNumericFormat("ignore-numeric-format.drl.xls");
+    }
+
+    @Test
+    public void testPercentAndCurrencyFormatWithReferenceCells() throws IOException {
+        ignoreNumericFormat("ignore-numeric-format-ref-cell.drl.xls");
+    }
+
+    private void ignoreNumericFormat(String fileName) throws IOException {
         SpreadsheetCompiler compiler = new SpreadsheetCompiler();
-        String drl = compiler.compile(ResourceFactory.newClassPathResource("ignore-numeric-format.drl.xls", getClass()).getInputStream(), InputType.XLS);
-        System.out.println(drl);
+        String drl = compiler.compile(ResourceFactory.newClassPathResource(fileName, getClass()).getInputStream(), InputType.XLS);
+        // print drl if you want to debug
 
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType(DecisionTableInputType.XLSX);
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("ignore-numeric-format.drl.xls", getClass()), ResourceType.DTABLE, dtconf);
+        kbuilder.add(ResourceFactory.newClassPathResource(fileName, getClass()), ResourceType.DTABLE, dtconf);
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }
@@ -48,31 +57,34 @@ public class IgnoreNumericFormatTest {
         ksession.insert(d);
         ksession.fireAllRules();
 
-        assertEquals(new BigDecimal("0.0"), a.getPercentValue());
-        assertEquals(new BigDecimal("0.0"), a.getCurrencyValue1());
-        assertEquals(new BigDecimal("0.0"), a.getCurrencyValue2());
-        assertEquals(0, a.getIntValue());
-        assertEquals(0, a.getDoubleValue(), 0);
+        assertThat(a.getPercentValue()).isEqualTo(new BigDecimal("0.0"));
+        assertThat(a.getCurrencyValue1()).isEqualTo(new BigDecimal("0.0"));
+        assertThat(a.getCurrencyValue2()).isEqualTo(new BigDecimal("0.0"));
+        assertThat(a.getCurrencyValue3()).isEqualTo(new BigDecimal("0.0"));
+        assertThat(a.getIntValue()).isZero();
+        assertThat(a.getDoubleValue()).isZero();
 
-        assertEquals(new BigDecimal("0.01"), b.getPercentValue());
-        assertEquals(new BigDecimal("0.5"), b.getCurrencyValue1());
-        assertEquals(new BigDecimal("0.5"), b.getCurrencyValue2());
-        assertEquals(-1, b.getIntValue());
-        assertEquals(0.5, b.getDoubleValue(), 0);
+        assertThat(b.getPercentValue()).isEqualTo(new BigDecimal("0.01"));
+        assertThat(b.getCurrencyValue1()).isEqualTo(new BigDecimal("0.5"));
+        assertThat(b.getCurrencyValue2()).isEqualTo(new BigDecimal("0.5"));
+        assertThat(b.getCurrencyValue3()).isEqualTo(new BigDecimal("0.5"));
+        assertThat(b.getIntValue()).isEqualTo(-1);
+        assertThat(b.getDoubleValue()).isEqualTo(0.5);
 
-        assertEquals(new BigDecimal("0.5"), c.getPercentValue());
-        assertEquals(new BigDecimal("1.0"), c.getCurrencyValue1());
-        assertEquals(new BigDecimal("1.0"), c.getCurrencyValue2());
-        assertEquals(1, c.getIntValue());
-        assertEquals(-1, c.getDoubleValue(), 0);
+        assertThat(c.getPercentValue()).isEqualTo(new BigDecimal("0.5"));
+        assertThat(c.getCurrencyValue1()).isEqualTo(new BigDecimal("1.0"));
+        assertThat(c.getCurrencyValue2()).isEqualTo(new BigDecimal("1.0"));
+        assertThat(c.getCurrencyValue3()).isEqualTo(new BigDecimal("1.0"));
+        assertThat(c.getIntValue()).isEqualTo(1);
+        assertThat(c.getDoubleValue()).isEqualTo(-1);
 
-        assertEquals(new BigDecimal("1.0"), d.getPercentValue());
-        assertEquals(new BigDecimal("100.0"), d.getCurrencyValue1());
-        assertEquals(new BigDecimal("100.0"), d.getCurrencyValue2());
-        assertEquals(100, d.getIntValue());
-        assertEquals(100, d.getDoubleValue(), 0);
+        assertThat(d.getPercentValue()).isEqualTo(new BigDecimal("1.0"));
+        assertThat(d.getCurrencyValue1()).isEqualTo(new BigDecimal("100.0"));
+        assertThat(d.getCurrencyValue2()).isEqualTo(new BigDecimal("100.0"));
+        assertThat(d.getCurrencyValue3()).isEqualTo(new BigDecimal("100.0"));
+        assertThat(d.getIntValue()).isEqualTo(100);
+        assertThat(d.getDoubleValue()).isEqualTo(100);
 
         ksession.dispose();
     }
-
 }
