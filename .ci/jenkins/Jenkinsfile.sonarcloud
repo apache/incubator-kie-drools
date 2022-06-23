@@ -38,6 +38,9 @@ pipeline {
                 script {
                     getMavenCommand()
                         .withProfiles(['run-code-coverage'])
+                        // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
+                        // https://github.com/quarkusio/quarkus/issues/23205
+                        .withProperty('quarkus.bootstrap.effective-model-builder', true)
                         .run('clean install')
                 }
             }
