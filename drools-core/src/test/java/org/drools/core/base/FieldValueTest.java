@@ -18,8 +18,8 @@ package org.drools.core.base;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.core.spi.FieldValue;
 
 public class FieldValueTest {
@@ -43,17 +43,13 @@ public class FieldValueTest {
      */
     @Test
     public void testHashCode() {
-        assertEquals( this.field1.hashCode(),
-                             this.field1.hashCode() );
-        assertEquals( this.field1.hashCode(),
-                             this.field2.hashCode() );
-        assertEquals( this.field3.hashCode(),
-                             this.field3.hashCode() );
-        assertEquals( this.field3.hashCode(),
-                             this.field4.hashCode() );
-        assertFalse( this.field1.hashCode() == this.field3.hashCode() );
-        assertFalse( this.field3.hashCode() == this.field1.hashCode() );
-        assertFalse( this.field3.hashCode() == this.field5.hashCode() );
+        assertThat(this.field1.hashCode()).isEqualTo(this.field1.hashCode());
+        assertThat(this.field2.hashCode()).isEqualTo(this.field1.hashCode());
+        assertThat(this.field3.hashCode()).isEqualTo(this.field3.hashCode());
+        assertThat(this.field4.hashCode()).isEqualTo(this.field3.hashCode());
+        assertThat(this.field1.hashCode() == this.field3.hashCode()).isFalse();
+        assertThat(this.field3.hashCode() == this.field1.hashCode()).isFalse();
+        assertThat(this.field3.hashCode() == this.field5.hashCode()).isFalse();
     }
 
     /*
@@ -61,17 +57,13 @@ public class FieldValueTest {
      */
     @Test
     public void testEqualsObject() {
-        assertEquals( this.field1,
-                             this.field1 );
-        assertEquals( this.field1,
-                             this.field2 );
-        assertEquals( this.field3,
-                             this.field3 );
-        assertEquals( this.field3,
-                             this.field4 );
-        assertFalse( this.field1.equals( this.field3 ) );
-        assertFalse( this.field3.equals( this.field1 ) );
-        assertFalse( this.field3.equals( this.field5 ) );
+        assertThat(this.field1).isEqualTo(this.field1);
+        assertThat(this.field2).isEqualTo(this.field1);
+        assertThat(this.field3).isEqualTo(this.field3);
+        assertThat(this.field4).isEqualTo(this.field3);
+        assertThat(this.field1.equals(this.field3)).isFalse();
+        assertThat(this.field3.equals(this.field1)).isFalse();
+        assertThat(this.field3.equals(this.field5)).isFalse();
     }
 
 }

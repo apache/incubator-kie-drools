@@ -21,10 +21,6 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
 
 public class FactTemplateTest {
     @Test
@@ -80,7 +76,7 @@ public class FactTemplateTest {
 
         assertThat(cheese1).isNotSameAs(cheese2);
         assertThat(cheese1).isNotEqualTo(cheese2);
-        assertThat(cheese1).doesNotHaveSameHashCodeAs(cheese2);
+        assertThat(cheese1.hashCode()).isNotEqualTo(cheese2.hashCode());
 
         // create cheese3 with name and price fields, using new instances
         final FieldTemplate cheeseName2 = new FieldTemplateImpl( "name",
@@ -97,7 +93,7 @@ public class FactTemplateTest {
 
         assertThat(cheese1).isNotSameAs(cheese3);
         assertThat(cheese3).isEqualTo(cheese1);
-        assertThat(cheese3).hasSameHashCodeAs(cheese1);
+        assertThat(cheese3.hashCode()).isEqualTo(cheese1.hashCode());
     }
 
     @Test
@@ -136,7 +132,7 @@ public class FactTemplateTest {
                             new Integer( 55 ) );
 
         assertThat(stilton1).isNotEqualTo(brie);
-        assertThat(stilton1).doesNotHaveSameHashCodeAs(brie);
+        assertThat(stilton1.hashCode()).isNotEqualTo(brie.hashCode());
 
     }
 }

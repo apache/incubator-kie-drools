@@ -24,21 +24,19 @@ import org.junit.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleBaseConfigurationTest {
 
     @Test
     public void testSystemProperties() {
         RuleBaseConfiguration cfg = new RuleBaseConfiguration();
-        assertEquals( AssertBehaviour.IDENTITY,
-                      cfg.getAssertBehaviour() );
+        assertThat(cfg.getAssertBehaviour()).isEqualTo(AssertBehaviour.IDENTITY);
 
         System.setProperty( "drools.equalityBehavior",
                             "EQUALITY" );
         cfg = new RuleBaseConfiguration();
-        assertEquals( AssertBehaviour.EQUALITY,
-                      cfg.getAssertBehaviour() );
+        assertThat(cfg.getAssertBehaviour()).isEqualTo(AssertBehaviour.EQUALITY);
         
         System.getProperties().remove( "drools.equalityBehavior" );
     }
@@ -46,16 +44,14 @@ public class RuleBaseConfigurationTest {
     @Test
     public void testProgrammaticPropertiesFile() {
         RuleBaseConfiguration cfg = new RuleBaseConfiguration();
-        assertEquals( true,
-                      cfg.isIndexLeftBetaMemory() );
+        assertThat(cfg.isIndexLeftBetaMemory()).isEqualTo(true);
 
         Properties properties = new Properties();
         properties.setProperty( "drools.indexLeftBetaMemory",
                                 "false" );
         cfg = new RuleBaseConfiguration( properties );
 
-        assertEquals( false,
-                      cfg.isIndexLeftBetaMemory() );
+        assertThat(cfg.isIndexLeftBetaMemory()).isEqualTo(false);
         
         System.getProperties().remove( "drools.indexLeftBetaMemory" );
     }
@@ -65,14 +61,14 @@ public class RuleBaseConfigurationTest {
         Properties properties = new Properties();
         properties.setProperty( "drools.equalityBehavior", "identity" );
         RuleBaseConfiguration cfg = new RuleBaseConfiguration(properties);
-        
-        assertEquals( AssertBehaviour.IDENTITY, cfg.getAssertBehaviour() );
+
+        assertThat(cfg.getAssertBehaviour()).isEqualTo(AssertBehaviour.IDENTITY);
         
         properties = new Properties();
         properties.setProperty( "drools.equalityBehavior", "equality" );
         cfg = new RuleBaseConfiguration(properties);
-        
-        assertEquals( AssertBehaviour.EQUALITY, cfg.getAssertBehaviour() );
+
+        assertThat(cfg.getAssertBehaviour()).isEqualTo(AssertBehaviour.EQUALITY);
     }
     
     
@@ -81,25 +77,25 @@ public class RuleBaseConfigurationTest {
         Properties properties = new Properties();
         properties.setProperty( "drools.sequential", "false" );
         RuleBaseConfiguration cfg = new RuleBaseConfiguration(properties);
-        
-        assertFalse( cfg.isSequential() );
-        assertTrue( cfg.getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory );
+
+        assertThat(cfg.isSequential()).isFalse();
+        assertThat(cfg.getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory).isTrue();
         
         properties = new Properties();
         properties.setProperty( "drools.sequential.agenda", "sequential" );
         properties.setProperty( "drools.sequential", "true" );
         cfg = new RuleBaseConfiguration(properties);
-        
-        assertTrue( cfg.isSequential() );
-        assertEquals( SequentialAgenda.SEQUENTIAL, cfg.getSequentialAgenda() );
+
+        assertThat(cfg.isSequential()).isTrue();
+        assertThat(cfg.getSequentialAgenda()).isEqualTo(SequentialAgenda.SEQUENTIAL);
         
         properties = new Properties();
         properties.setProperty( "drools.sequential.agenda", "dynamic" );
         properties.setProperty( "drools.sequential", "true" );
         cfg = new RuleBaseConfiguration(properties);
-        
-        assertTrue( cfg.isSequential() );
-        assertEquals( SequentialAgenda.DYNAMIC, cfg.getSequentialAgenda() );
-        assertTrue( cfg.getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory );
+
+        assertThat(cfg.isSequential()).isTrue();
+        assertThat(cfg.getSequentialAgenda()).isEqualTo(SequentialAgenda.DYNAMIC);
+        assertThat(cfg.getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory).isTrue();
     }
 }

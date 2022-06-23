@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.drools.core.impl.KnowledgeBaseFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class QueryElementNodeTest extends DroolsTestCase {
     private PropagationContext  context;
@@ -61,16 +61,13 @@ public class QueryElementNodeTest extends DroolsTestCase {
                                                             false,
                                                             buildContext );
 
-        assertEquals( 18,
-                      node.getId() );
+        assertThat(node.getId()).isEqualTo(18);
 
-        assertEquals( 0,
-                      source.getAttached() );
+        assertThat(source.getAttached()).isEqualTo(0);
 
         node.attach(buildContext);
 
-        assertEquals( 1,
-                      source.getAttached() );
+        assertThat(source.getAttached()).isEqualTo(1);
 
     }
 

@@ -43,11 +43,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ReteooWorkingMemoryTest {
     /*
@@ -66,40 +63,32 @@ public class ReteooWorkingMemoryTest {
 
         FactHandle fz = ksession.getTruthMaintenanceSystem().insert( string, null, null, new MockActivation() );
 
-        assertEquals( 1,
-                      tms.getEqualityKeyMap().size() );
+        assertThat(tms.getEqualityKeyMap().size()).isEqualTo(1);
 
         EqualityKey key = tms.get( string );
-        assertSame( fz,
-                    key.getFactHandle() );
-        assertEquals( 2, key.size() );
+        assertThat(key.getFactHandle()).isSameAs(fz);
+        assertThat(key.size()).isEqualTo(2);
 
         ksession.update( fd, string );
 
-        assertEquals( 1,
-                      tms.getEqualityKeyMap().size() );
+        assertThat(tms.getEqualityKeyMap().size()).isEqualTo(1);
         key = tms.get( string );
-        assertSame( fz,
-                    key.getFactHandle() );
-        assertEquals( 2, key.size() );
+        assertThat(key.getFactHandle()).isSameAs(fz);
+        assertThat(key.size()).isEqualTo(2);
 
         ksession.retract( fd );
 
-        assertEquals( 1,
-                      tms.getEqualityKeyMap().size() );
+        assertThat(tms.getEqualityKeyMap().size()).isEqualTo(1);
         key = tms.get( string );
 
         fd = ksession.insert( string );
 
-        assertEquals( 1,
-                      tms.getEqualityKeyMap().size() );
+        assertThat(tms.getEqualityKeyMap().size()).isEqualTo(1);
 
-        assertEquals( 1,
-                      tms.getEqualityKeyMap().size() );
+        assertThat(tms.getEqualityKeyMap().size()).isEqualTo(1);
         key = tms.get( string );
-        assertSame( fd,
-                    key.getFactHandle() );
-        assertEquals( 1, key.size() );
+        assertThat(key.getFactHandle()).isSameAs(fd);
+        assertThat(key.size()).isEqualTo(1);
     }
 
     @Test
@@ -107,11 +96,9 @@ public class ReteooWorkingMemoryTest {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        assertEquals( 0,
-                      ksession.getIdentifier() );
+        assertThat(ksession.getIdentifier()).isEqualTo(0);
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
-        assertEquals( 1,
-                      ksession.getIdentifier() );
+        assertThat(ksession.getIdentifier()).isEqualTo(1);
     }
 
     @Test
@@ -127,10 +114,8 @@ public class ReteooWorkingMemoryTest {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         ksession.setGlobalResolver( resolver );
-        assertEquals( "value1",
-                      ksession.getGlobal( "global1" ) );
-        assertEquals( "value2",
-                      ksession.getGlobal( "global2" ) );
+        assertThat(ksession.getGlobal("global1")).isEqualTo("value1");
+        assertThat(ksession.getGlobal("global2")).isEqualTo("value2");
     }
 
     @Test
@@ -166,7 +151,7 @@ public class ReteooWorkingMemoryTest {
         final ReentrantAction action = new ReentrantAction();
         ksession.queueWorkingMemoryAction( action );
         ksession.flushPropagations();
-        assertEquals( 2, action.counter.get() );
+        assertThat(action.counter.get()).isEqualTo(2);
     }
     
     @Test
@@ -204,11 +189,11 @@ public class ReteooWorkingMemoryTest {
         }   
         
         ksession.update( f1, "s1" );
-        assertNotNull( ksession.getObject( f1 ) );
+        assertThat(ksession.getObject(f1)).isNotNull();
         ksession.retract( f1 );
         
         ksession.retract( f1 );
-        assertNull( ksession.getObject( f1 ) );
+        assertThat(ksession.getObject(f1)).isNull();
     }
 
     private static class ReentrantAction
@@ -219,15 +204,15 @@ public class ReteooWorkingMemoryTest {
         public void execute(InternalWorkingMemory workingMemory) {
             // the reentrant action must be executed completely
             // before any of the final actions is executed
-            assertEquals( 0, counter.get() );
+            assertThat(counter.get()).isEqualTo(0);
             workingMemory.queueWorkingMemoryAction( new FinalAction( counter ) );
-            assertEquals( 0, counter.get() );
+            assertThat(counter.get()).isEqualTo(0);
             workingMemory.queueWorkingMemoryAction( new FinalAction( counter ) );
-            assertEquals( 0, counter.get() );
+            assertThat(counter.get()).isEqualTo(0);
             workingMemory.flushPropagations();
-            assertEquals( 0, counter.get() );
+            assertThat(counter.get()).isEqualTo(0);
             workingMemory.flushPropagations();
-            assertEquals( 0, counter.get() );
+            assertThat(counter.get()).isEqualTo(0);
         }
     }
     

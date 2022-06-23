@@ -174,14 +174,10 @@ public class KeyStoreHelperTest {
             final KeyStoreHelper clientHelper = new KeyStoreHelper();
 
             // check the signature against the data
-            assertTrue(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
-                                                           data,
-                                                           signature));
+            assertThat(clientHelper.checkDataWithPublicKey(KEY_ALIAS, data, signature)).isTrue();
 
             // check some fake data
-            assertFalse(clientHelper.checkDataWithPublicKey(KEY_ALIAS,
-                                                            "fake".getBytes("UTF8"),
-                                                            signature));
+            assertThat(clientHelper.checkDataWithPublicKey(KEY_ALIAS, "fake".getBytes("UTF8"), signature)).isFalse();
         } finally {
             System.clearProperty(KeyStoreConstants.PROP_VERIFY_OLD_SIGN);
         }

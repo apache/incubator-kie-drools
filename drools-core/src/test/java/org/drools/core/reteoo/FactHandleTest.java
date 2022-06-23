@@ -21,7 +21,6 @@ import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class FactHandleTest {
     /*
@@ -44,10 +43,8 @@ public class FactHandleTest {
                                                             "cheese",
                                                             678,
                                                             new DisconnectedWorkingMemoryEntryPoint( "DEFAULT" ));
-        assertEquals( 134,
-                      f0.getId() );
-        assertEquals( 678,
-                      f0.getRecency() );
+        assertThat(f0.getId()).isEqualTo(134);
+        assertThat(f0.getRecency()).isEqualTo(678);
     }
 
     /*
