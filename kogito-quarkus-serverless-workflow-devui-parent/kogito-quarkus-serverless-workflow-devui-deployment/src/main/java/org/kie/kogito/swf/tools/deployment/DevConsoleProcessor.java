@@ -63,7 +63,7 @@ public class DevConsoleProcessor {
             final BuildProducer<RouteBuildItem> routeBuildItemBuildProducer) throws IOException {
         ResolvedDependency devConsoleResourcesArtifact = WebJarUtil.getAppArtifact(curateOutcomeBuildItem,
                 "org.kie.kogito",
-                "swf-quarkus-extension-deployment");
+                "kogito-quarkus-serverless-workflow-devui-deployment");
 
         Path devConsoleStaticResourcesDeploymentPath = WebJarUtil.copyResourcesForDevOrTest(
                 liveReloadBuildItem,
@@ -74,7 +74,7 @@ public class DevConsoleProcessor {
                 true);
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
-                .route("/q/dev/org.kie.kogito.swf-quarkus-extension/resources/*")
+                .route("/q/dev/org.kie.kogito.kogito-quarkus-serverless-workflow-devui/resources/*")
                 .handler(recorder.devConsoleHandler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());

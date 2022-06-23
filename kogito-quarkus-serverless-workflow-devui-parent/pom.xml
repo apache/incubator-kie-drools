@@ -9,13 +9,13 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Serverless Workflow Quarkus Extension - Parent</name>
-  <artifactId>swf-quarkus-extension-parent</artifactId>
+  <name>Kogito Apps :: Serverless Workflow Quarkus Dev UI Extension</name>
+  <artifactId>kogito-quarkus-serverless-workflow-devui-parent</artifactId>
   <packaging>pom</packaging>
 
   <modules>
-    <module>swf-quarkus-extension-deployment</module>
-    <module>swf-quarkus-extension</module>
+    <module>kogito-quarkus-serverless-workflow-devui-deployment</module>
+    <module>kogito-quarkus-serverless-workflow-devui</module>
   </modules>
 
   <build>

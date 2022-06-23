@@ -57,7 +57,7 @@
         <module>jitexecutor</module>
         <module>apps-integration-tests</module>
         <module>runtime-tools-quarkus-extension-parent</module>
-        <module>swf-quarkus-extension-parent</module>
+        <module>kogito-quarkus-serverless-workflow-devui-parent</module>
       </modules>
     </profile>
     <profile>
@@ -73,7 +73,7 @@
         <module>persistence-commons</module>
         <module>data-index</module>
         <module>ui-packages</module>
-        <module>swf-quarkus-extension-parent</module>
+        <module>kogito-quarkus-serverless-workflow-devui-parent</module>
       </modules>
     </profile>
     <profile>

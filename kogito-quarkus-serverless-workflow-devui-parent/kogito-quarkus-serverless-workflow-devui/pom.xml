@@ -4,11 +4,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>swf-quarkus-extension-parent</artifactId>
+    <artifactId>kogito-quarkus-serverless-workflow-devui-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>swf-quarkus-extension</artifactId>
-  <name>Serverless Workflow Quarkus Extension - Runtime</name>
+  <artifactId>kogito-quarkus-serverless-workflow-devui</artifactId>
+  <name>Kogito Apps :: Serverless Workflow Quarkus Dev UI Extension :: Extension</name>
   <description>Runtime development tools for Serverless Workflows</description>
   <dependencies>
 

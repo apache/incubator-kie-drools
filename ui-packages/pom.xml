@@ -52,8 +52,8 @@
       <activeByDefault>true</activeByDefault>
     </activation>
     <properties>
-     <yarn.build.script>yarn run build:prod</yarn.build.script>
-     <yarn.test.script>yarn run test</yarn.test.script>
+     <yarn.build.script>run build:prod</yarn.build.script>
+     <yarn.test.script>run test</yarn.test.script>
     </properties>
    </profile>
    <profile>
@@ -64,8 +64,8 @@
      </property>
     </activation>
     <properties>
-     <yarn.build.script>yarn run build:prod:swf</yarn.build.script>
-     <yarn.test.script>yarn run test:swf</yarn.test.script>
+     <yarn.build.script>run build:prod:swf</yarn.build.script>
+     <yarn.test.script>run test:swf</yarn.test.script>
      <skip.ui.it>true</skip.ui.it>
     </properties>
    </profile>
