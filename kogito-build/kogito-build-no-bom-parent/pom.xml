@@ -91,7 +91,7 @@
     <version.exec.plugin>1.6.0</version.exec.plugin>
     <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
     <version.install.plugin>2.5.2</version.install.plugin>
-    <version.invoker.plugin>3.2.1</version.invoker.plugin>
+    <version.invoker.plugin>3.2.2</version.invoker.plugin>
     <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
     <version.jandex.plugin>1.1.0</version.jandex.plugin>
     <version.jar.plugin>3.1.0</version.jar.plugin>
