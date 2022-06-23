@@ -2020,23 +2020,23 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>swf-quarkus-extension</artifactId>
+        <artifactId>kogito-quarkus-serverless-workflow-devui</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>swf-quarkus-extension</artifactId>
+        <artifactId>kogito-quarkus-serverless-workflow-devui</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>swf-quarkus-extension-deployment</artifactId>
+        <artifactId>kogito-quarkus-serverless-workflow-devui-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>swf-quarkus-extension-deployment</artifactId>
+        <artifactId>kogito-quarkus-serverless-workflow-devui-deployment</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
