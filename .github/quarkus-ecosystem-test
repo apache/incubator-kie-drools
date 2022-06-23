@@ -14,4 +14,4 @@ mvn versions:set-property -pl :kogito-dependencies-bom -Dproperty=version.io.qua
 mvn versions:set-property -pl :kogito-dependencies-bom -Dproperty=version.io.quarkus-test-maven -DnewVersion=${QUARKUS_VERSION} -DgenerateBackupPoms=false
 
 # run the tests
-mvn --settings .github/quarkus-ecosystem-maven-settings.xml -B --fail-at-end clean install -Dnative -Dquarkus.native.container-build=true -Dquarkus.bootstrap.effective-model-builder=true
+mvn --settings .github/quarkus-ecosystem-maven-settings.xml -B --fail-at-end clean install -Dnative -Dquarkus.native.container-build=true -Dquarkus.bootstrap.effective-model-builder=true ${MAVEN_EXTRA_OPTS}
