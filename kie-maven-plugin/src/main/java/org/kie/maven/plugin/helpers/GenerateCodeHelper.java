@@ -78,6 +78,11 @@ public class GenerateCodeHelper {
         }
 
         Map<String, byte[]> compiledClassesMap = KieMemoryCompiler.compileNoLoad(classNameSourceMap, projectClassLoader, javaCompilerSettings, compilerType);
+        writeClasses(targetDirectory, compiledClassesMap);
+    }
+
+    public static void writeClasses(File targetDirectory, Map<String, byte[]> compiledClassesMap) {
+
 
         for (Map.Entry<String, byte[]> entry : compiledClassesMap.entrySet()) {
             Path packagesDestinationPath = Paths.get(targetDirectory.getPath(), "classes", entry.getKey().replace('.', '/') + ".class");

@@ -58,6 +58,7 @@ import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.maven.plugin.mojos.BuildMojo;
@@ -153,6 +154,7 @@ class GeneratePMMLModelExecutorTest extends AbstractMojoTestCase {
         super.tearDown();
     }
 
+    @Disabled
     @Test
     public void generatePMMLModel() throws Exception {
         File pom = getTestFile("src/test/resources/unit/pmml/pom.xml");
@@ -213,6 +215,7 @@ class GeneratePMMLModelExecutorTest extends AbstractMojoTestCase {
         System.out.println("done");
     }
 
+    @Disabled
     @Test
     public void generatePMMLModelB() throws Exception {
         File pom = getTestFile("src/test/resources/unit/pmml/pom.xml");

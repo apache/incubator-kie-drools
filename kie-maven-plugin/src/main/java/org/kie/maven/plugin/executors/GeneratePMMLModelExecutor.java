@@ -27,25 +27,28 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.common.api.model.GeneratedClassResource;
+import org.kie.efesto.common.api.model.GeneratedRedirectResource;
+import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
 import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.memorycompiler.JavaCompilerSettings;
-import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
+import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
+import static org.kie.maven.plugin.helpers.GenerateCodeHelper.writeClasses;
 
 public class GeneratePMMLModelExecutor {
 
@@ -58,14 +61,10 @@ public class GeneratePMMLModelExecutor {
 
     public static void generatePMMLModel(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException {
         final MavenProject project = kieMavenPluginContext.getProject();
-        final MavenSession mavenSession = kieMavenPluginContext.getMavenSession();
         final File outputDirectory = kieMavenPluginContext.getOutputDirectory();
-        final File projectDir = kieMavenPluginContext.getProjectDir();
         final File targetDirectory = kieMavenPluginContext.getTargetDirectory();
-        final String dumpKieSourcesFolder = kieMavenPluginContext.getDumpKieSourcesFolder();
         final List<org.apache.maven.model.Resource> resourcesDirectories =
                 kieMavenPluginContext.getResourcesDirectories();
-        final JavaConfiguration.CompilerType compilerType = kieMavenPluginContext.getCompilerType();
         final Log log = kieMavenPluginContext.getLog();
 
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
@@ -75,9 +74,8 @@ public class GeneratePMMLModelExecutor {
         Thread.currentThread().setContextClassLoader(projectClassLoader);
 
         try {
-            Map<String, String> generatedFilesMap = generateFiles(mavenSession, projectDir, resourcesDirectories, log);
-            compileAndWriteClasses(targetDirectory, projectClassLoader, javaCompilerSettings, compilerType,
-                                   generatedFilesMap, dumpKieSourcesFolder);
+            Map<String, byte[]> compiledClassesMap = compileFiles(resourcesDirectories, projectClassLoader, log);
+            writeClasses(targetDirectory, compiledClassesMap);
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
             if (projectClassLoader != null) {
@@ -92,32 +90,86 @@ public class GeneratePMMLModelExecutor {
         log.info("PMML model successfully generated");
     }
 
-    private static Map<String, String> generateFiles(final MavenSession mavenSession,
-                                                     final File projectDir,
-                                                     final List<org.apache.maven.model.Resource> resourcesDirectories,
-                                                     final Log log) throws MojoExecutionException {
-        CompilationManager compilationManager = SPIUtils.getCompilationManager(true).orElseThrow(() -> new MojoExecutionException("Failed to load CompilationManager"));
+    private static Map<String, byte[]> compileFiles(final List<org.apache.maven.model.Resource> resourcesDirectories,
+                                                    final ClassLoader projectClassloader,
+                                                    final Log log) throws MojoExecutionException {
+        CompilationManager compilationManager =
+                SPIUtils.getCompilationManager(true).orElseThrow(() -> new MojoExecutionException("Failed to load " +
+                                                                                                          "CompilationManager"));
 
-        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(CompilationManager.class.getClassLoader());
-
+        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
+                new KieMemoryCompiler.MemoryCompilerClassLoader(projectClassloader);
 
         final List<EfestoResource> efestoResources = getEfestoResources(resourcesDirectories, log);
 
         List<IndexFile> indexFiles = compilationManager.processResources(efestoResources, memoryCompilerClassLoader);
 
-        System.out.println(indexFiles);
-//
-//        KieServices ks = KieServices.Factory.get();
-//        final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(projectDir);
-//        kieBuilder.setPomModel(new ProjectPomModel(mavenSession));
+        List<IndexFile> allIndexFiles = getAllIndexFiles(indexFiles);
+        logger.debug("IndexFiles generated  " + allIndexFiles);
 
-        Map<String, String> classNameSourceMap = new HashMap<>();
-//        for (GeneratedFile generatedFile : generatedFiles) {
-//            String className = toClassName(generatedFile.getPath());
-//            classNameSourceMap.put(className, new String(generatedFile.getData()));
-//            log.info("Generating " + className);
-//        }
-        return classNameSourceMap;
+        Map<String, byte[]> toReturn = new HashMap<>();
+        for (IndexFile indexFile : allIndexFiles) {
+            toReturn.putAll(getCodeFromIndexFile(indexFile, memoryCompilerClassLoader));
+        }
+        return toReturn;
+    }
+
+    private static List<IndexFile> getAllIndexFiles(List<IndexFile> indexFiles) {
+        List<IndexFile> toReturn = new ArrayList<>();
+        indexFiles.forEach(indexFile -> {
+            if (!toReturn.contains(indexFile)) {
+                toReturn.add(indexFile);
+            }
+            List<IndexFile> partial = getRedirectFromIndexFile(indexFile);
+            partial.forEach(partialIndexFile -> {
+                if (!toReturn.contains(partialIndexFile)) {
+                    toReturn.add(partialIndexFile);
+                }
+            });
+        });
+        return toReturn;
+    }
+
+    private static List<IndexFile> getRedirectFromIndexFile(IndexFile indexFile) {
+        GeneratedResources generatedResources = getGeneratedResources(indexFile);
+        return generatedResources.stream()
+                .filter(GeneratedRedirectResource.class::isInstance)
+                .map(GeneratedRedirectResource.class::cast)
+                .map(GeneratedRedirectResource::getTarget)
+                .map(target -> getTargetIndexFile(indexFile, target))
+                .collect(Collectors.toList());
+    }
+
+    private static IndexFile getTargetIndexFile(IndexFile indexFile, String target) {
+        try {
+            return new IndexFile(indexFile.getParentFile().getCanonicalPath(), target);
+        } catch (IOException e) {
+            throw new KiePMMLException(String.format("Failed to create target file %s for %s", target, indexFile), e);
+        }
+    }
+
+    private static Map<String, byte[]> getCodeFromIndexFile(IndexFile indexFile,
+                                                            KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        List<String> generatedClasses = getGeneratedClassesFromIndexFile(indexFile);
+        return generatedClasses.stream().collect(Collectors.toMap(fullClassName -> fullClassName,
+                                                                  memoryCompilerClassLoader::getCode));
+    }
+
+    private static List<String> getGeneratedClassesFromIndexFile(IndexFile indexFile) {
+        GeneratedResources generatedResources = getGeneratedResources(indexFile);
+        return generatedResources.stream()
+                .filter(GeneratedClassResource.class::isInstance)
+                .map(GeneratedClassResource.class::cast)
+                .map(GeneratedClassResource::getFullClassName)
+                .collect(Collectors.toList());
+    }
+
+    private static GeneratedResources getGeneratedResources(IndexFile indexFile) {
+        try {
+            return getGeneratedResourcesObject(indexFile);
+        } catch (IOException e) {
+            throw new KiePMMLException("Failed to get GeneratedResources from index file " + indexFile);
+        }
     }
 
     private static List<EfestoResource> getEfestoResources(final List<org.apache.maven.model.Resource> resourcesDirectories,
@@ -161,93 +213,4 @@ public class GeneratePMMLModelExecutor {
         }
     }
 
-//    private static List<GeneratedFile> getGeneratedFiles(final List<org.apache.maven.model.Resource> resourcesDirectories,
-//                                                         final Log log) throws MojoExecutionException {
-//        List<GeneratedFile> toReturn = new ArrayList<>();
-//        for (org.apache.maven.model.Resource resourceDirectory : resourcesDirectories) {
-//            File directoryFile = new File(resourceDirectory.getDirectory());
-//            log.info("Looking for PMML models in " + directoryFile.getPath());
-//            String errorMessageTemplate = null;
-//            if (!directoryFile.exists()) {
-//                errorMessageTemplate = "Resource path %s does not exists";
-//            } else if (!directoryFile.canRead()) {
-//                errorMessageTemplate = "Resource path %s is not readable";
-//            } else if (!directoryFile.isDirectory()) {
-//                errorMessageTemplate = "Resource path %s is not a directory";
-//            }
-//            if (errorMessageTemplate != null) {
-//                throw new MojoExecutionException(String.format(errorMessageTemplate, resourceDirectory));
-//            }
-//            toReturn.addAll(getGeneratedFiles(directoryFile));
-//        }
-//        if (toReturn.isEmpty()) {
-//            log.info("No PMML Models found.");
-//        } else {
-//            log.info(String.format("Found %s PMML models", toReturn.size()));
-//        }
-//        return toReturn;
-//    }
-
-//    private static List<GeneratedFile> getGeneratedFiles(File resourceDirectory) throws MojoExecutionException {
-//        final List<GeneratedFile> toReturn = new ArrayList<>();
-//        return toReturn;
-//        // TODO @gcardosi
-//        try (Stream<Path> stream = Files
-//                .walk(resourceDirectory.toPath(), Integer.MAX_VALUE)
-//                .filter(path -> path.toFile().isFile() && path.toString().endsWith(PMML))) {
-//            return stream
-//                    .map(Path::toFile)
-//                    .map(FileSystemResource::new)
-//                    .map(GeneratePMMLModelExecutor::parseResource)
-//                    .map(GeneratePMMLModelExecutor::getGenerateFiles)
-//                    .reduce(toReturn, (previous, toAdd) -> {
-//                        previous.addAll(toAdd);
-//                        return previous;
-//                    });
-//        } catch (Exception e) {
-//            throw new MojoExecutionException(e.getMessage(), e);
-//        }
-//    }
-
-//    private static List<GeneratedFile> getGenerateFiles(final PMMLResource pmmlResources) {
-//        final List<GeneratedFile> toReturn = new ArrayList<>();
-//        List<KiePMMLModel> kiepmmlModels = pmmlResources.getKiePmmlModels();
-//        addModels(kiepmmlModels, pmmlResources, toReturn);
-//        return toReturn;
-//    }
-
-//    private static void addModels(final List<KiePMMLModel> kiepmmlModels,
-//                           final PMMLResource resource,
-//                           final List<GeneratedFile> generatedFiles) {
-//        for (KiePMMLModel model : kiepmmlModels) {
-//            if (model.getName() == null || model.getName().isEmpty()) {
-//                String errorMessage = String.format("Model name should not be empty inside %s",
-//                                                    resource.getModelPath());
-//                throw new RuntimeException(errorMessage);
-//            }
-//            if (!(model instanceof HasSourcesMap)) {
-//                String errorMessage = String.format("Expecting HasSourcesMap instance, retrieved %s inside %s",
-//                                                    model.getClass().getName(),
-//                                                    resource.getModelPath());
-//                throw new RuntimeException(errorMessage);
-//            }
-//            Map<String, String> sourceMap = ((HasSourcesMap) model).getSourcesMap();
-//            for (Map.Entry<String, String> sourceMapEntry : sourceMap.entrySet()) {
-//                String path = sourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
-//                generatedFiles.add(new GeneratedFile(GeneratedFile.Type.PMML, path, sourceMapEntry.getValue()));
-//            }
-//            if (model instanceof HasNestedModels) {
-//                addModels(((HasNestedModels) model).getNestedModels(), resource, generatedFiles);
-//            }
-//        }
-//    }
-
-//    private static PMMLResource parseResource(Resource resource) {
-//        final RuleBase ruleBase = new KnowledgeBaseImpl("PMML", null);
-//        final InternalKnowledgeBase knowledgeBase = new SessionsAwareKnowledgeBase(ruleBase);
-//        KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl(knowledgeBase);
-//        List<KiePMMLModel> kiePMMLModels = getKiePMMLModelsFromResourceWithSources(kbuilderImpl, resource);
-//        String modelPath = resource.getSourcePath();
-//        return new PMMLResource(kiePMMLModels, new File(resource.getSourcePath()).toPath(), modelPath);
-//    }
 }

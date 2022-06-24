@@ -57,17 +57,17 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {-21.5, -7, "classA", "classB", -93, null, null, null},
-//                {-7, -7, "classA", "classB", -93, null, null, null},
-//                {2, 3.5, "classA", "classB", -68, "characteristic1ReasonCode", null, null},
-//                {-8, 3, "classA", "classB", -58, "characteristic1ReasonCode", null, null},
-//                {-8, -12.5, "classB", "classB", 135, "characteristic3ReasonCode", null, null},
-//                {-8, 3, "classB", "classB", 170, "characteristic3ReasonCode", "characteristic1ReasonCode", null},
-//                {5, 3, "classB", "classB", 160, "characteristic3ReasonCode", "characteristic1ReasonCode", null},
-//                {-8, -50, "classC", "classC", 230.5, "characteristic3ReasonCode", "characteristic2ReasonCode", null},
-//                {-8, 3, "classC", "classC", 265.5, "characteristic3ReasonCode", "characteristic2ReasonCode",
-//                "characteristic1ReasonCode"},
-//                {5, 3, "classC", "classC", 255.5, "characteristic3ReasonCode", "characteristic2ReasonCode",
-//                "characteristic1ReasonCode"},
+                {-7, -7, "classA", "classB", -93, null, null, null},
+                {2, 3.5, "classA", "classB", -68, "characteristic1ReasonCode", null, null},
+                {-8, 3, "classA", "classB", -58, "characteristic1ReasonCode", null, null},
+                {-8, -12.5, "classB", "classB", 135, "characteristic3ReasonCode", null, null},
+                {-8, 3, "classB", "classB", 170, "characteristic3ReasonCode", "characteristic1ReasonCode", null},
+                {5, 3, "classB", "classB", 160, "characteristic3ReasonCode", "characteristic1ReasonCode", null},
+                {-8, -50, "classC", "classC", 230.5, "characteristic3ReasonCode", "characteristic2ReasonCode", null},
+                {-8, 3, "classC", "classC", 265.5, "characteristic3ReasonCode", "characteristic2ReasonCode",
+                "characteristic1ReasonCode"},
+                {5, 3, "classC", "classC", 255.5, "characteristic3ReasonCode", "characteristic2ReasonCode",
+                "characteristic1ReasonCode"},
         });
     }
 
