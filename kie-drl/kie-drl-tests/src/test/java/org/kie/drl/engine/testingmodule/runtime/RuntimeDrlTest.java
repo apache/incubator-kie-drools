@@ -15,9 +15,21 @@
  */
 package org.kie.drl.engine.testingmodule.runtime;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.drl.engine.compilation.model.DrlFileSetResource;
+import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
+import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
@@ -25,18 +37,7 @@ import org.kie.efesto.compilationmanager.core.service.CompilationManagerImpl;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.core.service.RuntimeManagerImpl;
-import org.kie.drl.engine.compilation.model.DrlFileSetResource;
-import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
-import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.memorycompiler.KieMemoryCompiler;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -73,7 +74,7 @@ class RuntimeDrlTest {
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(onTheFlyPath, "drl"), "");
         Optional<EfestoOutput> darOutput = runtimeManager.evaluateInput(toEvaluate, memoryCompilerClassLoader);
         assertThat(darOutput).isNotNull().isNotPresent();
-        Set<File> files = Files.walk(Path.of("src/test/resources"))
+        Set<File> files = Files.walk(Paths.get("src/test/resources"))
                 .map(Path::toFile)
                 .filter(File::isFile)
                 .collect(Collectors.toSet());

@@ -15,35 +15,38 @@
  */
 package org.kie.drl.engine.compilation.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.drools.model.codegen.execmodel.GeneratedFile;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
-import org.drools.model.project.codegen.KogitoPackageSources;
+import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
+import org.drools.model.codegen.project.KogitoPackageSources;
 import org.drools.model.project.codegen.RuleCodegenError;
-import org.drools.modelcompiler.builder.GeneratedFile;
-import org.drools.modelcompiler.tool.ExplicitCanonicalModelCompiler;
 import org.kie.api.io.Resource;
-import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
-import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.drl.engine.compilation.model.DecisionTableFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlCallableClassesContainer;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
-import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
+import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
+import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class DrlCompilerHelper {
 

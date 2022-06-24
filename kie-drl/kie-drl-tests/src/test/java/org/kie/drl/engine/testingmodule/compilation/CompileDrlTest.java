@@ -15,6 +15,17 @@
  */
 package org.kie.drl.engine.testingmodule.compilation;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -22,22 +33,12 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.util.io.FileSystemResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.drl.engine.compilation.model.DrlFileSetResource;
+import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.core.service.CompilationManagerImpl;
-import org.kie.drl.engine.compilation.model.DrlFileSetResource;
-import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.memorycompiler.KieMemoryCompiler;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,7 +55,7 @@ class CompileDrlTest {
     static void setUp() throws IOException, DroolsParserException {
         compilationManager = new CompilationManagerImpl();
         memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(CompilationManager.class.getClassLoader());
-        drlFiles = Files.walk(Path.of("src/test/resources"))
+        drlFiles = Files.walk(Paths.get("src/test/resources"))
                 .map(Path::toFile)
                 .filter(File::isFile)
                 .collect(Collectors.toSet());
