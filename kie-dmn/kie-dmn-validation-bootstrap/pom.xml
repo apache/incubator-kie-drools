@@ -36,7 +36,7 @@ This is not an user dependency, hence is not added to the boms</description>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
+      <artifactId>drools-model-codegen</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

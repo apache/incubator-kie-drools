@@ -27,29 +27,29 @@ import org.drools.drl.ast.descr.ConditionalElementDescr;
 import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
-import org.drools.util.ClassUtils;
-import org.drools.util.MethodUtils;
 import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.model.left.Constraint;
 import org.drools.impact.analysis.model.left.LeftHandSide;
 import org.drools.impact.analysis.model.left.MapConstraint;
 import org.drools.impact.analysis.model.left.Pattern;
 import org.drools.model.Index;
-import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.RuleContext;
-import org.drools.modelcompiler.builder.generator.TypedExpression;
-import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintExpression;
-import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
-import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
-import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
-import org.drools.modelcompiler.util.PatternUtil;
+import org.drools.model.codegen.execmodel.PackageModel;
+import org.drools.model.codegen.execmodel.generator.RuleContext;
+import org.drools.model.codegen.execmodel.generator.TypedExpression;
+import org.drools.model.codegen.execmodel.generator.drlxparse.ConstraintExpression;
+import org.drools.model.codegen.execmodel.generator.drlxparse.ConstraintParser;
+import org.drools.model.codegen.execmodel.generator.drlxparse.DrlxParseResult;
+import org.drools.model.codegen.execmodel.generator.drlxparse.SingleDrlxParseSuccess;
+import org.drools.model.codegen.execmodel.util.PatternUtil;
+import org.drools.util.ClassUtils;
+import org.drools.util.MethodUtils;
 
 import static org.drools.impact.analysis.parser.impl.ParserUtil.getLiteralString;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.literalToValue;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.objectCreationExprToValue;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.stripEnclosedAndCast;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isBooleanBoxedUnboxed;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
+import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.isBooleanBoxedUnboxed;
+import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.isThisExpression;
 
 public class LhsParser {
 

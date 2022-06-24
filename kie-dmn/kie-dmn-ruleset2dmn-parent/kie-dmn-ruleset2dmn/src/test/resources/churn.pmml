@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4.1">
+    <Header copyright="Copyright IBM Corp, exported to PMML by Nyoka (c) 2022 Software AG" description="Default description">
+        <Application name="SimpleRuleSetExport" version="0.0.1"/>
+        <Timestamp>1970-01-01 00:00:00+00:00</Timestamp>
+    </Header>
+    <DataDictionary numberOfFields="9">
+        <DataField name="Gender" optype="categorical" dataType="string"/>
+        <DataField name="Status" optype="categorical" dataType="string"/>
+        <DataField name="Children" optype="continuous" dataType="double"/>
+        <DataField name="EstIncome" optype="continuous" dataType="double"/>
+        <DataField name="CarOwner" optype="categorical" dataType="string"/>
+        <DataField name="Age" optype="continuous" dataType="double"/>
+        <DataField name="Paymethod" optype="categorical" dataType="string"/>
+        <DataField name="Usage" optype="continuous" dataType="double"/>
+        <DataField name="RatePlan" optype="ordinal" dataType="integer"/>
+    </DataDictionary>
+    <RuleSetModel functionName="classification" algorithmName="RuleSet">
+        <MiningSchema>
+            <MiningField name="Status" usageType="active"/>
+            <MiningField name="Gender" usageType="active"/>
+            <MiningField name="Usage" usageType="active"/>
+            <MiningField name="EstIncome" usageType="active"/>
+            <MiningField name="Children" usageType="active"/>
+            <MiningField name="Age" usageType="active"/>
+            <MiningField name="Paymethod" usageType="active"/>
+            <MiningField name="RatePlan" usageType="active"/>
+            <MiningField name="CarOwner" usageType="active"/>
+        </MiningSchema>
+        <RuleSet defaultScore="F">
+            <RuleSelectionMethod criterion="weightedMax"/>
+            <SimpleRule id="[Status == S] ^ [Gender == F] ^ [Usage &gt;= 50.29] ^ [EstIncome &lt;= 38000.0]" score="T" recordCount="360" nbCorrect="255" confidence="0.9459459459459459" weight="0.9459459459459459">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="Status" operator="equal" value="S"/>
+                    <SimplePredicate field="Gender" operator="equal" value="F"/>
+                    <SimplePredicate field="Usage" operator="greaterOrEqual" value="50.29"/>
+                    <SimplePredicate field="EstIncome" operator="lessOrEqual" value="38000.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[Children &lt;= 1.0] ^ [Age &lt;= 24.393333] ^ [Gender == F] ^ [EstIncome &lt;= 43382.3] ^ [Age &gt;= 12.846667]" score="T" recordCount="360" nbCorrect="242" confidence="0.9545454545454546" weight="0.9545454545454546">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="Children" operator="lessOrEqual" value="1.0"/>
+                    <SimplePredicate field="Age" operator="lessOrEqual" value="24.393333"/>
+                    <SimplePredicate field="Gender" operator="equal" value="F"/>
+                    <SimplePredicate field="EstIncome" operator="lessOrEqual" value="43382.3"/>
+                    <SimplePredicate field="Age" operator="greaterOrEqual" value="12.846667"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[Children &lt;= 1.0] ^ [Gender == M] ^ [Age &gt;= 39.213333] ^ [EstIncome &gt;= 58328.8] ^ [EstIncome &lt;= 95405.7] ^ [Age &lt;= 63.933333]" score="T" recordCount="360" nbCorrect="263" confidence="0.9555555555555556" weight="0.9555555555555556">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="Children" operator="lessOrEqual" value="1.0"/>
+                    <SimplePredicate field="Gender" operator="equal" value="M"/>
+                    <SimplePredicate field="Age" operator="greaterOrEqual" value="39.213333"/>
+                    <SimplePredicate field="EstIncome" operator="greaterOrEqual" value="58328.8"/>
+                    <SimplePredicate field="EstIncome" operator="lessOrEqual" value="95405.7"/>
+                    <SimplePredicate field="Age" operator="lessOrEqual" value="63.933333"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[Age &lt;= 21.78] ^ [Usage &gt;= 82.08] ^ [EstIncome &lt;= 43634.5]" score="T" recordCount="360" nbCorrect="233" confidence="0.9230769230769231" weight="0.9230769230769231">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="Age" operator="lessOrEqual" value="21.78"/>
+                    <SimplePredicate field="Usage" operator="greaterOrEqual" value="82.08"/>
+                    <SimplePredicate field="EstIncome" operator="lessOrEqual" value="43634.5"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[Status == S] ^ [Gender == F] ^ [Usage &lt;= 86.61] ^ [Age &lt;= 40.313333]" score="T" recordCount="360" nbCorrect="232" confidence="0.8125" weight="0.8125">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="Status" operator="equal" value="S"/>
+                    <SimplePredicate field="Gender" operator="equal" value="F"/>
+                    <SimplePredicate field="Usage" operator="lessOrEqual" value="86.61"/>
+                    <SimplePredicate field="Age" operator="lessOrEqual" value="40.313333"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[EstIncome &lt;= 45429.7] ^ [Paymethod == Auto] ^ [Status == S]" score="T" recordCount="360" nbCorrect="241" confidence="0.9130434782608695" weight="0.9130434782608695">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="EstIncome" operator="lessOrEqual" value="45429.7"/>
+                    <SimplePredicate field="Paymethod" operator="equal" value="Auto"/>
+                    <SimplePredicate field="Status" operator="equal" value="S"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[Age &gt;= 60.593333] ^ [EstIncome &lt;= 45429.7] ^ [Age &lt;= 62.753333] ^ [Gender == F]" score="T" recordCount="360" nbCorrect="228" confidence="0.75" weight="0.75">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="Age" operator="greaterOrEqual" value="60.593333"/>
+                    <SimplePredicate field="EstIncome" operator="lessOrEqual" value="45429.7"/>
+                    <SimplePredicate field="Age" operator="lessOrEqual" value="62.753333"/>
+                    <SimplePredicate field="Gender" operator="equal" value="F"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[Children &lt;= 1.0] ^ [Age &lt;= 30.18] ^ [RatePlan == 1] ^ [Usage &lt;= 88.79]" score="T" recordCount="360" nbCorrect="224" confidence="0.75" weight="0.75">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="Children" operator="lessOrEqual" value="1.0"/>
+                    <SimplePredicate field="Age" operator="lessOrEqual" value="30.18"/>
+                    <SimplePredicate field="RatePlan" operator="equal" value="1"/>
+                    <SimplePredicate field="Usage" operator="lessOrEqual" value="88.79"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[Paymethod == CH] ^ [EstIncome &gt;= 63670.8] ^ [CarOwner == N] ^ [Age &gt;= 38.0]" score="T" recordCount="360" nbCorrect="228" confidence="0.875" weight="0.875">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="Paymethod" operator="equal" value="CH"/>
+                    <SimplePredicate field="EstIncome" operator="greaterOrEqual" value="63670.8"/>
+                    <SimplePredicate field="CarOwner" operator="equal" value="N"/>
+                    <SimplePredicate field="Age" operator="greaterOrEqual" value="38.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[Age &gt;= 53.013333] ^ [Age &lt;= 54.013333] ^ [CarOwner == N]" score="T" recordCount="360" nbCorrect="230" confidence="0.9" weight="0.9">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="Age" operator="greaterOrEqual" value="53.013333"/>
+                    <SimplePredicate field="Age" operator="lessOrEqual" value="54.013333"/>
+                    <SimplePredicate field="CarOwner" operator="equal" value="N"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[EstIncome &gt;= 96223.4] ^ [Children &lt;= 0.0] ^ [Usage &lt;= 43.13]" score="T" recordCount="360" nbCorrect="223" confidence="0.6666666666666666" weight="0.6666666666666666">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="EstIncome" operator="greaterOrEqual" value="96223.4"/>
+                    <SimplePredicate field="Children" operator="lessOrEqual" value="0.0"/>
+                    <SimplePredicate field="Usage" operator="lessOrEqual" value="43.13"/>
+                </CompoundPredicate>
+            </SimpleRule>
+        </RuleSet>
+    </RuleSetModel>
+</PMML>

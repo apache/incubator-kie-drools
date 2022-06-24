@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -41,7 +41,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static java.util.Arrays.asList;
-
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
