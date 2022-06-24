@@ -1,4 +1,4 @@
-package org.kie.drl.engine.compilation;/*
+/*
  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,23 +13,25 @@ package org.kie.drl.engine.compilation;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
-import org.kie.efesto.compilationmanager.api.model.EfestoResource;
-import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
-import org.kie.drl.engine.compilation.model.DrlFileSetResource;
-import org.kie.drl.engine.compilation.service.KieCompilerServiceDrl;
-import org.kie.memorycompiler.KieMemoryCompiler;
+package org.kie.drl.engine.compilation;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.kie.drl.engine.compilation.model.DrlFileSetResource;
+import org.kie.drl.engine.compilation.service.KieCompilerServiceDrl;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
+import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
+import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,7 +49,7 @@ class KieCompilerServiceDrlTest {
 
     @Test
     void canManageResource() throws IOException {
-        Set<File> files = Files.list(Path.of("src/test/resources"))
+        Set<File> files = Files.list(Paths.get("src/test/resources"))
                 .map(Path::toFile)
                 .filter(File::isFile)
                 .collect(Collectors.toSet());
@@ -61,7 +63,7 @@ class KieCompilerServiceDrlTest {
 
     @Test
     void processResource() throws IOException {
-        Set<File> files = Files.walk(Path.of("src/test/resources"))
+        Set<File> files = Files.walk(Paths.get("src/test/resources"))
                 .map(Path::toFile)
                 .filter(File::isFile)
                 .collect(Collectors.toSet());

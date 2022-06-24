@@ -16,7 +16,8 @@
 package org.kie.drl.engine.runtime.utils;
 
 import org.drools.model.Model;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.KieBaseBuilder;
+//import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.efesto.common.api.model.FRI;

@@ -14,6 +14,16 @@ package org.kie.drl.engine.compilation.utils;/*
  * limitations under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -21,20 +31,11 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.util.io.FileSystemResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.drl.engine.compilation.model.DrlCallableClassesContainer;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.memorycompiler.KieMemoryCompiler;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.efesto.common.api.model.FRI.SLASH;
@@ -48,7 +49,7 @@ class DrlCompilerHelperTest {
     @BeforeAll
     static void setUp() throws IOException, DroolsParserException {
         memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-        drlFiles = Files.walk(Path.of("src/test/resources"))
+        drlFiles = Files.walk(Paths.get("src/test/resources"))
                 .map(Path::toFile)
                 .filter(File::isFile)
                 .collect(Collectors.toSet());
