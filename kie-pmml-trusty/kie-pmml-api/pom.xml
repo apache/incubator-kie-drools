@@ -24,14 +24,14 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>runtime-manager-api</artifactId>
+    </dependency>
     <!-- EXTERNAL -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>runtime-manager-api</artifactId>
     </dependency>
     <!-- TEST -->
   </dependencies>

@@ -17,7 +17,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <artifactId>drl-engine-map-input-runtime</artifactId>
+        <artifactId>kie-drl-map-input-runtime</artifactId>
         <groupId>org.kie</groupId>
         <version>${project.version}</version>
       </dependency>
@@ -47,7 +47,7 @@
       <artifactId>runtime-manager-core</artifactId>
     </dependency>
     <dependency>
-      <artifactId>drl-engine-map-input-runtime</artifactId>
+      <artifactId>kie-drl-map-input-runtime</artifactId>
       <groupId>org.kie</groupId>
     </dependency>
   </dependencies>

@@ -17,7 +17,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <artifactId>drl-engine-map-input-runtime</artifactId>
+        <artifactId>kie-drl-map-input-runtime</artifactId>
         <groupId>org.kie</groupId>
         <version>${project.version}</version>
       </dependency>
@@ -50,7 +50,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>drl-engine-map-input-runtime</artifactId>
+      <artifactId>kie-drl-map-input-runtime</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <dependency>

@@ -20,13 +20,13 @@
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>drl-engine-compilation-common</artifactId>
+        <artifactId>kie-drl-compilation-common</artifactId>
         <version>${project.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>drl-engine-map-input-runtime</artifactId>
+        <artifactId>kie-drl-map-input-runtime</artifactId>
         <version>${project.version}</version>
         <scope>test</scope>
       </dependency>
@@ -114,12 +114,12 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>drl-engine-compilation-common</artifactId>
+      <artifactId>kie-drl-compilation-common</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>drl-engine-map-input-runtime</artifactId>
+      <artifactId>kie-drl-map-input-runtime</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- KIE -->
