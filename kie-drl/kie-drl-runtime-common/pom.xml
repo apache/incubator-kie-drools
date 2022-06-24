@@ -22,7 +22,6 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-model-compiler</artifactId>
-            <version>8.24.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
