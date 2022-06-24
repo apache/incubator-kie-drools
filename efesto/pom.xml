@@ -27,7 +27,6 @@
   <modules>
     <module>efesto-common-utils</module>
     <module>efesto-core</module>
-    <module>engines</module>
   </modules>
 
   <dependencyManagement>
