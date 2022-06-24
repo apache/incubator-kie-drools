@@ -35,6 +35,13 @@ public class KnativeEventingConfigSource implements ConfigSource {
     private static final Map<String, String> configuration = new HashMap<>();
 
     private static final String URL_CONFIG = "mp.messaging.outgoing." + KogitoEventStreams.OUTGOING + ".url";
+
+    /**
+     * Default Knative Sink for local dev environments. Just a default endpoint, nothing in particular.
+     * Users can then configure their local sinks to this port.
+     */
+    private static final String DEFAULT_SINK_URL = "http://localhost:9090";
+
     /**
      * Environment variable injected by Knative
      */
@@ -46,7 +53,7 @@ public class KnativeEventingConfigSource implements ConfigSource {
         // add the default configuration to fallback to a placeholder since the underlying connector will fail on
         // bootstrap if either the env var is not defined or the URL is not valid.
         // we handle the missing env var injected by knative via probe
-        configuration.put(URL_CONFIG, "${K_SINK:http://localhost}");
+        configuration.put(URL_CONFIG, "${K_SINK:" + DEFAULT_SINK_URL + "}");
     }
 
     /**
