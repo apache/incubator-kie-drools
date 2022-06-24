@@ -22,6 +22,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-mongodb-client-deployment</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

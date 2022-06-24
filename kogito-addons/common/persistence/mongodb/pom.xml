@@ -41,12 +41,14 @@
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver-sync</artifactId>
+      <version>${version.org.mongo}</version><!-- Do not use managed version as SB and Quarkus use different versions -->
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java-util</artifactId>
     </dependency>
-	
+
     <!-- Test -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
