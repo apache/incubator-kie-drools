@@ -24,44 +24,37 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.RuleBase;
-import org.drools.util.io.FileSystemResource;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.drools.modelcompiler.builder.GeneratedFile;
-import org.kie.api.KieServices;
-import org.kie.api.io.Resource;
-import org.kie.maven.plugin.PMMLResource;
+import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
+import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.kie.efesto.compilationmanager.api.service.CompilationManager;
+import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
 import org.kie.maven.plugin.KieMavenPluginContext;
-import org.kie.maven.plugin.ProjectPomModel;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
-import org.kie.pmml.commons.model.HasNestedModels;
-import org.kie.pmml.commons.model.HasSourcesMap;
-import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.compileAndWriteClasses;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
-import static org.kie.maven.plugin.helpers.GenerateCodeHelper.toClassName;
-//import static org.kie.pmml.compiler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
 
 public class GeneratePMMLModelExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(GeneratePMMLModelExecutor.class);
 
     private static final String PMML = "pmml";
+
+    private GeneratePMMLModelExecutor() {
+    }
 
     public static void generatePMMLModel(final KieMavenPluginContext kieMavenPluginContext) throws MojoExecutionException {
         final MavenProject project = kieMavenPluginContext.getProject();
@@ -103,23 +96,33 @@ public class GeneratePMMLModelExecutor {
                                                      final File projectDir,
                                                      final List<org.apache.maven.model.Resource> resourcesDirectories,
                                                      final Log log) throws MojoExecutionException {
-        final List<GeneratedFile> generatedFiles = getGeneratedFiles(resourcesDirectories, log);
-        KieServices ks = KieServices.Factory.get();
-        final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(projectDir);
-        kieBuilder.setPomModel(new ProjectPomModel(mavenSession));
+        CompilationManager compilationManager = SPIUtils.getCompilationManager(true).orElseThrow(() -> new MojoExecutionException("Failed to load CompilationManager"));
+
+        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(CompilationManager.class.getClassLoader());
+
+
+        final List<EfestoResource> efestoResources = getEfestoResources(resourcesDirectories, log);
+
+        List<IndexFile> indexFiles = compilationManager.processResources(efestoResources, memoryCompilerClassLoader);
+
+        System.out.println(indexFiles);
+//
+//        KieServices ks = KieServices.Factory.get();
+//        final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(projectDir);
+//        kieBuilder.setPomModel(new ProjectPomModel(mavenSession));
 
         Map<String, String> classNameSourceMap = new HashMap<>();
-        for (GeneratedFile generatedFile : generatedFiles) {
-            String className = toClassName(generatedFile.getPath());
-            classNameSourceMap.put(className, new String(generatedFile.getData()));
-            log.info("Generating " + className);
-        }
+//        for (GeneratedFile generatedFile : generatedFiles) {
+//            String className = toClassName(generatedFile.getPath());
+//            classNameSourceMap.put(className, new String(generatedFile.getData()));
+//            log.info("Generating " + className);
+//        }
         return classNameSourceMap;
     }
 
-    private static List<GeneratedFile> getGeneratedFiles(final List<org.apache.maven.model.Resource> resourcesDirectories,
-                                                         final Log log) throws MojoExecutionException {
-        List<GeneratedFile> toReturn = new ArrayList<>();
+    private static List<EfestoResource> getEfestoResources(final List<org.apache.maven.model.Resource> resourcesDirectories,
+                                                           final Log log) throws MojoExecutionException {
+        List<EfestoResource> toReturn = new ArrayList<>();
         for (org.apache.maven.model.Resource resourceDirectory : resourcesDirectories) {
             File directoryFile = new File(resourceDirectory.getDirectory());
             log.info("Looking for PMML models in " + directoryFile.getPath());
@@ -134,7 +137,7 @@ public class GeneratePMMLModelExecutor {
             if (errorMessageTemplate != null) {
                 throw new MojoExecutionException(String.format(errorMessageTemplate, resourceDirectory));
             }
-            toReturn.addAll(getGeneratedFiles(directoryFile));
+            toReturn.addAll(getEfestoResources(directoryFile));
         }
         if (toReturn.isEmpty()) {
             log.info("No PMML Models found.");
@@ -144,10 +147,51 @@ public class GeneratePMMLModelExecutor {
         return toReturn;
     }
 
-    private static List<GeneratedFile> getGeneratedFiles(File resourceDirectory) throws MojoExecutionException {
-        final List<GeneratedFile> toReturn = new ArrayList<>();
-        return toReturn;
-        // TODO @gcardosi
+    private static List<EfestoResource> getEfestoResources(File resourceDirectory) throws MojoExecutionException {
+        final List<EfestoResource> toReturn = new ArrayList<>();
+        try (Stream<Path> stream = Files
+                .walk(resourceDirectory.toPath(), Integer.MAX_VALUE)
+                .filter(path -> path.toFile().isFile() && path.toString().endsWith(PMML))) {
+            return stream
+                    .map(Path::toFile)
+                    .map(EfestoFileResource::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
+    }
+
+//    private static List<GeneratedFile> getGeneratedFiles(final List<org.apache.maven.model.Resource> resourcesDirectories,
+//                                                         final Log log) throws MojoExecutionException {
+//        List<GeneratedFile> toReturn = new ArrayList<>();
+//        for (org.apache.maven.model.Resource resourceDirectory : resourcesDirectories) {
+//            File directoryFile = new File(resourceDirectory.getDirectory());
+//            log.info("Looking for PMML models in " + directoryFile.getPath());
+//            String errorMessageTemplate = null;
+//            if (!directoryFile.exists()) {
+//                errorMessageTemplate = "Resource path %s does not exists";
+//            } else if (!directoryFile.canRead()) {
+//                errorMessageTemplate = "Resource path %s is not readable";
+//            } else if (!directoryFile.isDirectory()) {
+//                errorMessageTemplate = "Resource path %s is not a directory";
+//            }
+//            if (errorMessageTemplate != null) {
+//                throw new MojoExecutionException(String.format(errorMessageTemplate, resourceDirectory));
+//            }
+//            toReturn.addAll(getGeneratedFiles(directoryFile));
+//        }
+//        if (toReturn.isEmpty()) {
+//            log.info("No PMML Models found.");
+//        } else {
+//            log.info(String.format("Found %s PMML models", toReturn.size()));
+//        }
+//        return toReturn;
+//    }
+
+//    private static List<GeneratedFile> getGeneratedFiles(File resourceDirectory) throws MojoExecutionException {
+//        final List<GeneratedFile> toReturn = new ArrayList<>();
+//        return toReturn;
+//        // TODO @gcardosi
 //        try (Stream<Path> stream = Files
 //                .walk(resourceDirectory.toPath(), Integer.MAX_VALUE)
 //                .filter(path -> path.toFile().isFile() && path.toString().endsWith(PMML))) {
@@ -163,19 +207,18 @@ public class GeneratePMMLModelExecutor {
 //        } catch (Exception e) {
 //            throw new MojoExecutionException(e.getMessage(), e);
 //        }
-    }
+//    }
 
-    private static List<GeneratedFile> getGenerateFiles(final PMMLResource pmmlResources) {
-        final List<GeneratedFile> toReturn = new ArrayList<>();
-        List<KiePMMLModel> kiepmmlModels = pmmlResources.getKiePmmlModels();
-        addModels(kiepmmlModels, pmmlResources, toReturn);
-        return toReturn;
-    }
+//    private static List<GeneratedFile> getGenerateFiles(final PMMLResource pmmlResources) {
+//        final List<GeneratedFile> toReturn = new ArrayList<>();
+//        List<KiePMMLModel> kiepmmlModels = pmmlResources.getKiePmmlModels();
+//        addModels(kiepmmlModels, pmmlResources, toReturn);
+//        return toReturn;
+//    }
 
-    private static void addModels(final List<KiePMMLModel> kiepmmlModels,
-                           final PMMLResource resource,
-                           final List<GeneratedFile> generatedFiles) {
-        // TODO @gcardosi
+//    private static void addModels(final List<KiePMMLModel> kiepmmlModels,
+//                           final PMMLResource resource,
+//                           final List<GeneratedFile> generatedFiles) {
 //        for (KiePMMLModel model : kiepmmlModels) {
 //            if (model.getName() == null || model.getName().isEmpty()) {
 //                String errorMessage = String.format("Model name should not be empty inside %s",
@@ -193,21 +236,12 @@ public class GeneratePMMLModelExecutor {
 //                String path = sourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
 //                generatedFiles.add(new GeneratedFile(GeneratedFile.Type.PMML, path, sourceMapEntry.getValue()));
 //            }
-//            Map<String, String> rulesSourceMap = ((HasSourcesMap) model).getRulesSourcesMap();
-//            if (rulesSourceMap != null) {
-//                for (Map.Entry<String, String> rulesSourceMapEntry : rulesSourceMap.entrySet()) {
-//                    String path = rulesSourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
-//                    generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, path,
-//                                                         rulesSourceMapEntry.getValue()));
-//                }
-//            }
 //            if (model instanceof HasNestedModels) {
 //                addModels(((HasNestedModels) model).getNestedModels(), resource, generatedFiles);
 //            }
 //        }
-    }
+//    }
 
-//    TODO @gcardosi
 //    private static PMMLResource parseResource(Resource resource) {
 //        final RuleBase ruleBase = new KnowledgeBaseImpl("PMML", null);
 //        final InternalKnowledgeBase knowledgeBase = new SessionsAwareKnowledgeBase(ruleBase);

@@ -8,7 +8,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.assertj.core.api.Condition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.util.maven.support.ReleaseIdImpl;
 

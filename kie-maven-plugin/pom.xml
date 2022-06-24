@@ -16,6 +16,15 @@
 
   <name>KIE :: Maven Plugin</name>
 
+  <properties>
+    <skipITs>false</skipITs>
+    <plugin.testing.harness.version>3.3.0</plugin.testing.harness.version>
+    <plugin.plugin.version>3.6.4</plugin.plugin.version>
+    <maven.version>3.8.4</maven.version>
+    <sisu.inject.version>1.4.2</sisu.inject.version>
+    <maven.resolver.api.version>1.7.3</maven.resolver.api.version>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -67,11 +76,38 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>compilation-manager-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-pmml-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-testing</groupId>
+        <artifactId>maven-plugin-testing-harness</artifactId>
+        <version>${plugin.testing.harness.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-inject-plexus</artifactId>
+        <version>${sisu.inject.version}</version>
+        <scope>test</scope>
+      </dependency>
+<!--      <dependency>-->
+<!--        <groupId>org.apache.maven.resolver</groupId>-->
+<!--        <artifactId>maven-resolver-api</artifactId>-->
+<!--        <version>${maven.resolver.api.version}</version>-->
+<!--      </dependency>-->
     </dependencies>
   </dependencyManagement>
 
@@ -221,7 +257,11 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>
     </dependency>
-
+    <!-- EFESTO -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>compilation-manager-core</artifactId>
+    </dependency>
     <!-- Testing deps -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -239,21 +279,28 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.maven.resolver</groupId>
-          <artifactId>maven-resolver-util</artifactId>
-        </exclusion>
-      </exclusions>
+<!--      <exclusions>-->
+<!--        <exclusion>-->
+<!--          <groupId>org.apache.maven.resolver</groupId>-->
+<!--          <artifactId>maven-resolver-util</artifactId>-->
+<!--        </exclusion>-->
+<!--      </exclusions>-->
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
+      <groupId>org.apache.maven.plugin-testing</groupId>
+      <artifactId>maven-plugin-testing-harness</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-plexus</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
     <!--Logs -->
@@ -263,13 +310,38 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-connector-basic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-transport-file</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-transport-http</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

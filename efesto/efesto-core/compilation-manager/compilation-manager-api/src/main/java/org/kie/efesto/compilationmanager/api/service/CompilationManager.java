@@ -24,8 +24,8 @@ import java.util.List;
 public interface CompilationManager {
 
     /**
-     * Produce one <code>EfestoCallableOutput</code> from the given <code>EfestoRedirectOutput</code>.
-     * The return is <code>Optional</code> because the engine required to process given <code>EfestoRedirectOutput</code>
+     * Produce a <code>List<IndexFile></code> from the given <code>EfestoResource</code>.
+     * The return may be <code>empty</code> because the engine required to process given <code>EfestoResource</code>
      * may not be found
      *
      * @param toProcess
@@ -33,13 +33,15 @@ public interface CompilationManager {
      */
     List<IndexFile> processResource(EfestoResource toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
 
-//    /**
-//     * Produce a <code>List&lt;EfestoCallableOutput&gt;</code> from the given <code>List&lt;EfestoRedirectOutput&gt;</code>
-//     *
-//     * @param toProcess
-//     * @return
-//     */
-//    List<IndexFile> processResources(List<EfestoRedirectOutput> toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
+    /**
+     * Produce a <code>List<IndexFile></code> from the given <code>EfestoResource</code>.
+     * The return may be <code>empty</code> because the engine required to process given <code>EfestoResource</code>
+     * may not be found
+     *
+     * @param toProcess
+     * @return
+     */
+    List<IndexFile> processResources(List<EfestoResource> toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
 
 
 }

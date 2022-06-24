@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import static org.kie.efesto.compilationmanager.core.utils.CompilationManagerUtils.populateIndexFilesWithProcessedResource;
 
@@ -37,14 +39,18 @@ public class CompilationManagerImpl implements CompilationManager {
         return toReturn;
     }
 
-
-//    @Override
-//    public List<IndexFile>  processResources(List<EfestoRedirectOutput> toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-//        return toProcess.stream()
-//                .map(darResource -> this.processResource(darResource, memoryCompilerClassLoader))
-//                .flatMap(Collection::stream)
-//                .collect(Collectors.toList());
-//    }
-
-
+    @Override
+    public List<IndexFile> processResources(List<EfestoResource> toProcess,
+                                            KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        List<IndexFile> toReturn = new ArrayList<>();
+        toProcess.forEach(efestoResource -> {
+            List<IndexFile> partial = processResource(efestoResource, memoryCompilerClassLoader);
+            partial.forEach(partialIndexFile -> {
+                if (!toReturn.contains(partialIndexFile)) {
+                    toReturn.add(partialIndexFile);
+                }
+            });
+        });
+        return toReturn;
+    }
 }
