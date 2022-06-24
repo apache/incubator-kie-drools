@@ -62,8 +62,6 @@ jobs:
     name: "Build against latest Quarkus LTS"
     runs-on: ubuntu-latest
     if: github.actor == 'quarkusbot'
-    env:
-      MAVEN_EXTRA_OPTS: -Dproductized
     steps:
       - name: Install yq
         run: sudo add-apt-repository ppa:rmescandon/yq && sudo apt update && sudo apt install yq -y
@@ -98,3 +96,4 @@ jobs:
         env:
           ECOSYSTEM_CI_TOKEN: ${{ secrets.ECOSYSTEM_CI_TOKEN }}
           ALTERNATIVE: lts
+          MAVEN_EXTRA_OPTS: -Dproductized
