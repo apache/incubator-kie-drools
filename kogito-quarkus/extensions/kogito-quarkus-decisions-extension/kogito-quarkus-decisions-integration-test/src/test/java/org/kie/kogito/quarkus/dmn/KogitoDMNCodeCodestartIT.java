@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import io.quarkus.devtools.codestarts.quarkus.QuarkusCodestartData.QuarkusDataKey;
 import io.quarkus.devtools.testing.codestarts.QuarkusCodestartTest;
 import io.quarkus.maven.ArtifactCoords;
+import io.quarkus.maven.ArtifactKey;
 
 import static io.quarkus.devtools.codestarts.quarkus.QuarkusCodestartCatalog.Language.JAVA;
 
@@ -38,19 +39,14 @@ public class KogitoDMNCodeCodestartIT {
         }
     }
 
-    public static String projectVersion() {
-        return properties.getProperty("version");
-    }
-
     public static String assertjVersion() {
         return properties.getProperty("version.assertj");
     }
 
     @RegisterExtension
     public static QuarkusCodestartTest codestartTest = QuarkusCodestartTest.builder()
-            .standaloneExtensionCatalog()
-            .extension(ArtifactCoords.pom("io.quarkus", "quarkus-resteasy-jackson", null)) // account for KOGITO-5817
-            .extension(ArtifactCoords.fromString("org.kie.kogito:kogito-quarkus-decisions:" + projectVersion()))
+            .setupStandaloneExtensionTest("org.kie.kogito:kogito-quarkus-decisions")
+            .extension(ArtifactKey.fromString("io.quarkus:quarkus-resteasy-jackson")) // account for KOGITO-5817
             .extension(ArtifactCoords.fromString("org.assertj:assertj-core:" + assertjVersion()))
             .putData(QuarkusDataKey.APP_CONFIG, Map.of("quarkus.http.test-port", "0"))
             .languages(JAVA)
