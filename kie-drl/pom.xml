@@ -99,6 +99,12 @@
         <groupId>org.drools</groupId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-model-compiler</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
