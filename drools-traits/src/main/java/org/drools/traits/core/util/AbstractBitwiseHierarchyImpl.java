@@ -39,7 +39,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
                                                                                               CodedHierarchy<H> {
 
 
-    protected SortedMap<BitSet,J> line = new TreeMap<BitSet,J>( new HierCodeComparator() );
+    protected SortedMap<BitSet,J> line = new TreeMap<>( new HierCodeComparator() );
     protected boolean fixedRoot = false;
 
     public int size() {
@@ -115,7 +115,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
     }
 
     public List<H> getSortedMembers() {
-        List<H> anx = new ArrayList<H>( size() );
+        List<H> anx = new ArrayList<>( size() );
         for ( J node : getNodes() ) {
             if ( node.getValue() != null ) {
                 anx.add( node.getValue() );
@@ -125,7 +125,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
     }
 
     public Collection<H> upperAncestors( BitSet key ) {
-        List<H> vals = new LinkedList<H>();
+        List<H> vals = new LinkedList<>();
         int l = key.length();
         //System.out.println( key );
 
@@ -184,7 +184,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
      */
     Collection<H> gcs( BitSet key, boolean includeEquals ) {
 
-        List<H> vals = new LinkedList<H>();
+        List<H> vals = new LinkedList<>();
         List<J> border = gcsBorderNodes( key, includeEquals );
 
         for ( int j = 0; j < border.size(); j++ ) {
@@ -199,7 +199,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
     }
 
     List<J> gcsBorderNodes( BitSet key, boolean includeEquals ) {
-        List<J> border = new LinkedList<J>();
+        List<J> border = new LinkedList<>();
         int l = key.length();
 
         int n = line.size() != 0 ? line.lastKey().length() : 0;
@@ -259,7 +259,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
      * @return
      */
     Collection<H> lcs( BitSet key, boolean includeEquals ) {
-        List<H> vals = new LinkedList<H>();
+        List<H> vals = new LinkedList<>();
         List<J> border = lcsBorderNodes( key, includeEquals );
         for ( int j = 0; j < border.size(); j++ ) {
             J node = border.get( j );
@@ -271,7 +271,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
     }
 
     List<J> lcsBorderNodes( BitSet key, boolean includeEquals ) {
-        List<J> border = new ArrayList<J>();
+        List<J> border = new ArrayList<>();
         if ( key == null ) { return border; }
 //        System.out.println( key );
 
@@ -461,7 +461,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
     }
 
     public Map<H, BitSet> getSortedMap() {
-        Map<H,BitSet> anx = new LinkedHashMap<H, BitSet>( size() );
+        Map<H,BitSet> anx = new LinkedHashMap<>( size() );
         for ( J node : getNodes() ) {
             if ( node.getValue() != null ) {
                 anx.put( node.getValue(), node.getBitMask() );
@@ -479,7 +479,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
 //    }
 
     public Collection<H> lowerDescendants( BitSet key ) {
-        List<H> vals = new LinkedList<H>();
+        List<H> vals = new LinkedList<>();
         int l = key.length();
         if ( l == 0 || line.isEmpty() ) {
             return new ArrayList( getSortedMembers() );

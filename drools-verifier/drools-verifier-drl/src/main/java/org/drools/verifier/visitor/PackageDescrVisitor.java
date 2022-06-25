@@ -65,7 +65,7 @@ public class PackageDescrVisitor {
 
     private void visitImports(List<ImportDescr> importDescrs) throws IOException, ClassNotFoundException {
 
-        HashSet<String> imports = new HashSet<String>();
+        HashSet<String> imports = new HashSet<>();
         for (ImportDescr i : importDescrs) {
             String fullName = i.getTarget();
             String name = fullName.substring(fullName.lastIndexOf(".") + 1);

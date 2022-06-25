@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 public class Bag<T> implements Collection<T>, Serializable {
 
-    private Map<T, Counter> map = new HashMap<T, Counter>();
+    private Map<T, Counter> map = new HashMap<>();
 
     private int size = 0;
 

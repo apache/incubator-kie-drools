@@ -32,7 +32,7 @@ public class TDecisionService extends TInvocable implements DecisionService {
     @Override
     public List<DMNElementReference> getOutputDecision() {
         if (outputDecision == null) {
-            outputDecision = new ArrayList<DMNElementReference>();
+            outputDecision = new ArrayList<>();
         }
         return this.outputDecision;
     }
@@ -40,7 +40,7 @@ public class TDecisionService extends TInvocable implements DecisionService {
     @Override
     public List<DMNElementReference> getEncapsulatedDecision() {
         if (encapsulatedDecision == null) {
-            encapsulatedDecision = new ArrayList<DMNElementReference>();
+            encapsulatedDecision = new ArrayList<>();
         }
         return this.encapsulatedDecision;
     }
@@ -48,7 +48,7 @@ public class TDecisionService extends TInvocable implements DecisionService {
     @Override
     public List<DMNElementReference> getInputDecision() {
         if (inputDecision == null) {
-            inputDecision = new ArrayList<DMNElementReference>();
+            inputDecision = new ArrayList<>();
         }
         return this.inputDecision;
     }
@@ -56,7 +56,7 @@ public class TDecisionService extends TInvocable implements DecisionService {
     @Override
     public List<DMNElementReference> getInputData() {
         if (inputData == null) {
-            inputData = new ArrayList<DMNElementReference>();
+            inputData = new ArrayList<>();
         }
         return this.inputData;
     }

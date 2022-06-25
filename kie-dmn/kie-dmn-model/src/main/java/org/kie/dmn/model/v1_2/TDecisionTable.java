@@ -43,7 +43,7 @@ public class TDecisionTable extends TExpression implements DecisionTable {
     @Override
     public List<InputClause> getInput() {
         if (input == null) {
-            input = new ArrayList<InputClause>();
+            input = new ArrayList<>();
         }
         return this.input;
     }
@@ -51,7 +51,7 @@ public class TDecisionTable extends TExpression implements DecisionTable {
     @Override
     public List<OutputClause> getOutput() {
         if (output == null) {
-            output = new ArrayList<OutputClause>();
+            output = new ArrayList<>();
         }
         return this.output;
     }
@@ -59,7 +59,7 @@ public class TDecisionTable extends TExpression implements DecisionTable {
     @Override
     public List<RuleAnnotationClause> getAnnotation() {
         if (annotation == null) {
-            annotation = new ArrayList<RuleAnnotationClause>();
+            annotation = new ArrayList<>();
         }
         return this.annotation;
     }
@@ -67,7 +67,7 @@ public class TDecisionTable extends TExpression implements DecisionTable {
     @Override
     public List<DecisionRule> getRule() {
         if (rule == null) {
-            rule = new ArrayList<DecisionRule>();
+            rule = new ArrayList<>();
         }
         return this.rule;
     }

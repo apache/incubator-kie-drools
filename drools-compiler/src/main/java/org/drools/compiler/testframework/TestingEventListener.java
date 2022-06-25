@@ -49,7 +49,7 @@ import org.kie.api.runtime.rule.Match;
  */
 public class TestingEventListener implements AgendaEventListener {
 
-    final Map<String, Integer> firingCounts = new HashMap<String, Integer>(100);
+    final Map<String, Integer> firingCounts = new HashMap<>(100);
 
     long totalFires;
 

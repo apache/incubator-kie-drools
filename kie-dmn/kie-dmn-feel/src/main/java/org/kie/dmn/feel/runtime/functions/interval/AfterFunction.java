@@ -23,9 +23,6 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AfterFunction
         extends BaseFEELFunction {

@@ -53,7 +53,7 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
         this.index = index;
         this.constraintType = constraintType;
         this.left = left;
-        tree = new TupleRBTree<Comparable<Comparable>>();
+        tree = new TupleRBTree<>();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -107,8 +107,8 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
             return new Entry[0];
         }
 
-        List<Comparable> toBeRemoved = new ArrayList<Comparable>();
-        List<Tuple> result = new ArrayList<Tuple>();
+        List<Comparable> toBeRemoved = new ArrayList<>();
+        List<Tuple> result = new ArrayList<>();
 
         TupleList list = null;
         while ( (list = (TupleList) it.next( list )) != null ) {
@@ -248,7 +248,7 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
     }
 
     public void clear() {
-        tree = new TupleRBTree<Comparable<Comparable>>();
+        tree = new TupleRBTree<>();
     }
 
     public IndexType getIndexType() {

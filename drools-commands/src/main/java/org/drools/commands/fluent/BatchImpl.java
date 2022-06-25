@@ -25,7 +25,7 @@ public class BatchImpl implements Batch {
 
     private final long distance;
 
-    private List<Command> commands = new ArrayList<Command>();
+    private List<Command> commands = new ArrayList<>();
 
     public BatchImpl() {
         this(0L);

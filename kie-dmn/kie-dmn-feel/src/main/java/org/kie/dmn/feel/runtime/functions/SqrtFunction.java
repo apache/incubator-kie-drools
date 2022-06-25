@@ -24,7 +24,6 @@ import org.kie.dmn.model.api.GwtIncompatible;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 
 @GwtIncompatible
 public class SqrtFunction

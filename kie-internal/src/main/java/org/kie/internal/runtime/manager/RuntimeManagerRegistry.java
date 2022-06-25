@@ -25,7 +25,7 @@ public class RuntimeManagerRegistry {
 
     private static RuntimeManagerRegistry INSTANCE = new RuntimeManagerRegistry();
 
-    protected volatile ConcurrentHashMap<String, RuntimeManager> registeredManager = new ConcurrentHashMap<String, RuntimeManager>();
+    protected volatile ConcurrentHashMap<String, RuntimeManager> registeredManager = new ConcurrentHashMap<>();
 
     private RuntimeManagerRegistry() {
 

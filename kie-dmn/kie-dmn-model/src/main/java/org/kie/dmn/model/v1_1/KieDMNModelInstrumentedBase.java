@@ -74,7 +74,7 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
 
     public Map<String, String> getNsContext() {
         if (nsContext == null) {
-            nsContext = new HashMap<String, String>();  
+            nsContext = new HashMap<>();  
         }
         return nsContext;
     }

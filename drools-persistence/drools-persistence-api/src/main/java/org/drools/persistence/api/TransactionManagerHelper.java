@@ -41,7 +41,7 @@ public class TransactionManagerHelper {
         }
         Set<Transformable> toBeUpdated = (Set<Transformable>) txm.getResource(APP_UPDETEABLE_RESOURCE);
         if (toBeUpdated == null) {
-            toBeUpdated = new LinkedHashSet<Transformable>();
+            toBeUpdated = new LinkedHashSet<>();
             txm.putResource(APP_UPDETEABLE_RESOURCE, toBeUpdated);
         }
         toBeUpdated.add(transformable);
@@ -63,6 +63,6 @@ public class TransactionManagerHelper {
             return Collections.emptySet();
         }
 
-        return new LinkedHashSet<Transformable>(toBeUpdated);
+        return new LinkedHashSet<>(toBeUpdated);
     }
 }

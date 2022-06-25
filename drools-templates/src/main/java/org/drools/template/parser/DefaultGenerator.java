@@ -41,7 +41,7 @@ public class DefaultGenerator
 
     private TemplateRegistry registry = new SimpleTemplateRegistry();
 
-    private List<String> rules = new ArrayList<String>();
+    private List<String> rules = new ArrayList<>();
 
     public DefaultGenerator( final Map<String, RuleTemplate> t ) {
         ruleTemplates = t;
@@ -58,7 +58,7 @@ public class DefaultGenerator
         try {
             CompiledTemplate template = getTemplate( templateName );
             VariableResolverFactory factory = new MapVariableResolverFactory();
-            Map<String, Object> vars = new HashMap<String, Object>();
+            Map<String, Object> vars = new HashMap<>();
 
             initializePriorCommaConstraints( vars );
             initializeHasPriorJunctionConstraint( vars );

@@ -50,7 +50,7 @@ public class SetProcessInstanceVariablesCommand implements ExecutableCommand<Voi
 
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name = "variables")
-    private Map<String, Object> variables = new HashMap<String, Object>();
+    private Map<String, Object> variables = new HashMap<>();
 
     public SetProcessInstanceVariablesCommand() {
     }

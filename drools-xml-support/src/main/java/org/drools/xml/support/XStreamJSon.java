@@ -241,7 +241,7 @@ public class XStreamJSon {
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            List<Command> list = new ArrayList<Command>();
+            List<Command> list = new ArrayList<>();
             String lookup = null;
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
@@ -560,7 +560,7 @@ public class XStreamJSon {
             FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( reader.getValue() );
             reader.moveUp();
 
-            List<Setter> setters = new ArrayList<Setter>();
+            List<Setter> setters = new ArrayList<>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
 
@@ -627,7 +627,7 @@ public class XStreamJSon {
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            List<Object> objects = new ArrayList<Object>();
+            List<Object> objects = new ArrayList<>();
             String outIdentifier = null;
             String returnObjects = null;
             String entryPoint = null;
@@ -802,7 +802,7 @@ public class XStreamJSon {
                         facts.put( identifier,
                                    DefaultFactHandle.createFromExternalFormat( externalForm ) );
                     } else if ( reader.getNodeName().equals( "fact-handles" ) ) {
-                        List<FactHandle> list = new ArrayList<FactHandle>();
+                        List<FactHandle> list = new ArrayList<>();
                         String identifier = null;
                         while ( reader.hasMoreChildren() ) {
                             reader.moveDown();
@@ -1115,7 +1115,7 @@ public class XStreamJSon {
                 } else if ( "name".equals( nodeName ) ) {
                     name = reader.getValue();
                 } else if ( "args".equals( nodeName ) ) {
-                    args = new ArrayList<Object>();
+                    args = new ArrayList<>();
                     while ( reader.hasMoreChildren() ) {
                         reader.moveDown();
                         Object arg = readItem( reader,
@@ -1180,7 +1180,7 @@ public class XStreamJSon {
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             reader.moveDown();
-            Set<String> identifiers = new TreeSet<String>();
+            Set<String> identifiers = new TreeSet<>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 identifiers.add( (String) readItem( reader,
@@ -1190,12 +1190,12 @@ public class XStreamJSon {
             }
             reader.moveUp();
 
-            ArrayList<Map<String, Object>> idResults = new ArrayList<Map<String,Object>>();
-            ArrayList<Map<String, FactHandle>> idHandles = new ArrayList<Map<String, FactHandle>>();
+            ArrayList<Map<String, Object>> idResults = new ArrayList<>();
+            ArrayList<Map<String, FactHandle>> idHandles = new ArrayList<>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                Map<String, Object> idResultMap = new HashMap<String, Object>();
-                Map<String, FactHandle> idFactHandleMap = new HashMap<String, FactHandle>();
+                Map<String, Object> idResultMap = new HashMap<>();
+                Map<String, FactHandle> idFactHandleMap = new HashMap<>();
                 while ( reader.hasMoreChildren() ) {
                     reader.moveDown();
                     RowItemContainer container = (RowItemContainer) readItem( reader,
@@ -1259,7 +1259,7 @@ public class XStreamJSon {
             reader.moveUp();
 
             String outIdentifier = null;
-            HashMap<String, Object> params = new HashMap<String, Object>();
+            HashMap<String, Object> params = new HashMap<>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 if ( "parameters".equals( reader.getNodeName() ) ) {
@@ -1393,7 +1393,7 @@ public class XStreamJSon {
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             String id = null;
-            Map<String, Object> results = new HashMap<String, Object>();
+            Map<String, Object> results = new HashMap<>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();

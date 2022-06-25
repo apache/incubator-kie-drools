@@ -64,7 +64,7 @@ public class KieServicesImpl implements InternalKieServices {
 
     private WeakReference<KieServicesEventListerner> listener;
     
-    private final ConcurrentMap<String, KieContainer> kContainers = new ConcurrentHashMap<String, KieContainer>();
+    private final ConcurrentMap<String, KieContainer> kContainers = new ConcurrentHashMap<>();
 
     public KieRepository getRepository() {
         return KieRepositoryImpl.INSTANCE;
@@ -316,7 +316,7 @@ public class KieServicesImpl implements InternalKieServices {
 
     @Override
     public void registerListener(KieServicesEventListerner listener) {
-        this.listener = new WeakReference<KieServicesEventListerner>(listener);
+        this.listener = new WeakReference<>(listener);
     }
 }
 

@@ -41,7 +41,7 @@ public class KieModuleKieProject extends AbstractKieProject {
 
     private List<InternalKieModule>        kieModules;
 
-    private Map<String, InternalKieModule> kJarFromKBaseName = new HashMap<String, InternalKieModule>();
+    private Map<String, InternalKieModule> kJarFromKBaseName = new HashMap<>();
 
     private InternalKieModule              kieModule;
 
@@ -60,7 +60,7 @@ public class KieModuleKieProject extends AbstractKieProject {
         if ( kieModules == null ) {
             Collection<InternalKieModule> depKieModules = kieModule.getKieDependencies().values();
             indexParts( kieModule, depKieModules, kJarFromKBaseName );
-            kieModules = new ArrayList<InternalKieModule>();
+            kieModules = new ArrayList<>();
             kieModules.addAll( depKieModules );
             kieModules.add( kieModule );
             cl.storeClasses( getClassesMap() );
@@ -68,7 +68,7 @@ public class KieModuleKieProject extends AbstractKieProject {
     }
 
     private Map<String, byte[]> getClassesMap() {
-        Map<String, byte[]> classes = new HashMap<String, byte[]>();
+        Map<String, byte[]> classes = new HashMap<>();
         for ( InternalKieModule kModule : kieModules ) {
             classes.putAll( kModule.getClassesMap() );
         }
@@ -104,7 +104,7 @@ public class KieModuleKieProject extends AbstractKieProject {
     }
 
     public Map<String, KieBaseModel> updateToModule(InternalKieModule updatedKieModule) {
-        Map<String, KieBaseModel> oldKieBaseModels = new HashMap<String, KieBaseModel>();
+        Map<String, KieBaseModel> oldKieBaseModels = new HashMap<>();
         oldKieBaseModels.putAll( kBaseModels );
 
         this.kieModules = null;

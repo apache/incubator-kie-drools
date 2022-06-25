@@ -27,7 +27,7 @@ public class JavaTryBlockDescr extends AbstractJavaContainerBlockDescr
 
     private int                       textStart;
 
-    private List<JavaCatchBlockDescr> catchBlocks = new ArrayList<JavaCatchBlockDescr>();
+    private List<JavaCatchBlockDescr> catchBlocks = new ArrayList<>();
     private JavaFinalBlockDescr       finalBlock;
 
     public JavaTryBlockDescr() {

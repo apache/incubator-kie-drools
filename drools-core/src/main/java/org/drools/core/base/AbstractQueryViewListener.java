@@ -15,7 +15,7 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
     protected List<Object> results;
 
     public AbstractQueryViewListener() {
-        this.results = new ArrayList<Object>(250);
+        this.results = new ArrayList<>(250);
     }
 
     public List<? extends Object> getResults() {

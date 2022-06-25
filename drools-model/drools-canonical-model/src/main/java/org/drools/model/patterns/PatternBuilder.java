@@ -46,7 +46,7 @@ public class PatternBuilder {
     }
 
     public <T> BoundPatternBuilder<T> filter(Variable<T> var) {
-        return new BoundPatternBuilder<T>(var, dataSourceDefinition);
+        return new BoundPatternBuilder<>(var, dataSourceDefinition);
     }
 
     public interface ValidBuilder<T> {

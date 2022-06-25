@@ -51,7 +51,7 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
 
     private String releaseTxKey;
 
-    private Set<Long> forceUnlock = new CopyOnWriteArraySet<Long>();
+    private Set<Long> forceUnlock = new CopyOnWriteArraySet<>();
 
     public TransactionLockInterceptor(Environment environment) {
         this(environment, "tx-unlock");

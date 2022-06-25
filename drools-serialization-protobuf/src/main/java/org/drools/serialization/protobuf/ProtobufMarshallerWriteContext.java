@@ -93,7 +93,7 @@ public class ProtobufMarshallerWriteContext extends ObjectOutputStream implement
         this.kBase = kBase;
         this.wm = wm;
         this.sinks = sinks;
-        this.writersByClass = new HashMap<Class< ? >, TimersOutputMarshaller>();
+        this.writersByClass = new HashMap<>();
 
         this.writersByClass.put( SlidingTimeWindow.BehaviorJobContext.class, new BehaviorJobContextTimerOutputMarshaller() );
 
@@ -111,10 +111,10 @@ public class ProtobufMarshallerWriteContext extends ObjectOutputStream implement
         else {
             this.objectMarshallingStrategyStore = resolverStrategyFactory;
         }
-        this.usedStrategies = new HashMap<ObjectMarshallingStrategy, Integer>();
-        this.strategyContext = new HashMap<ObjectMarshallingStrategy, ObjectMarshallingStrategy.Context>();
+        this.usedStrategies = new HashMap<>();
+        this.strategyContext = new HashMap<>();
 
-        this.terminalTupleMap = new IdentityHashMap<LeftTuple, Integer>();
+        this.terminalTupleMap = new IdentityHashMap<>();
 
         this.marshalProcessInstances = marshalProcessInstances;
         this.marshalWorkItems = marshalWorkItems;

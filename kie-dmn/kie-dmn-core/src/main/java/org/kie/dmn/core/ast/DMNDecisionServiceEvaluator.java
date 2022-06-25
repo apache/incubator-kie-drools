@@ -65,7 +65,7 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
         DMNModel dmnModel = dmnRuntime.getModel(dsNode.getModelNamespace(), dsNode.getModelName());
         List<String> decisionIDs = dsNode.getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
         DMNResult evaluateById = dmnRuntime.evaluateById(dmnModel, result.getContext().clone(), decisionIDs.toArray(new String[]{}));
-        Map<String, Object> ctx = new HashMap<String, Object>();
+        Map<String, Object> ctx = new HashMap<>();
         List<DMNDecisionResult> decisionResults = new ArrayList<>();
         for (String id : decisionIDs) {
             DMNDecisionResult decisionResultById = evaluateById.getDecisionResultById(id);

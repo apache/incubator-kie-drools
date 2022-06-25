@@ -30,7 +30,7 @@ public class FireLogicalExample {
         KieSession ksession = kc.newKieSession("FireLogicalKS");
 
         String[] names = new String[]{"kitchen", "bedroom", "office", "livingroom"};
-        Map<String,Room> name2room = new HashMap<String,Room>();
+        Map<String,Room> name2room = new HashMap<>();
 
         for( String name: names ){
             Room room = new Room( name );

@@ -37,7 +37,7 @@ public class ObjectModelResolverProvider {
         if (resolvers == null) {
             synchronized (serviceLoader) {
                 if (resolvers == null) {
-                    List<ObjectModelResolver> foundResolvers = new ArrayList<ObjectModelResolver>();
+                    List<ObjectModelResolver> foundResolvers = new ArrayList<>();
                     for (ObjectModelResolver resolver : serviceLoader) {
                         foundResolvers.add(resolver);
                     }

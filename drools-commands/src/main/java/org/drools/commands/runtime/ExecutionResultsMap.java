@@ -26,7 +26,7 @@ import org.drools.commands.jaxb.JaxbMapAdapter;
 @XmlJavaTypeAdapter(JaxbMapAdapter.class)
 public class ExecutionResultsMap {
 
-    Map<String, Object> results = new HashMap<String, Object>();
+    Map<String, Object> results = new HashMap<>();
 
     public Collection<String> keySet() {
         return results.keySet();

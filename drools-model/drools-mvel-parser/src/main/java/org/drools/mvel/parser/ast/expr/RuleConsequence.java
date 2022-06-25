@@ -19,7 +19,6 @@
 package org.drools.mvel.parser.ast.expr;
 
 import com.github.javaparser.TokenRange;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;

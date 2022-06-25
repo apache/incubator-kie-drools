@@ -76,10 +76,10 @@ public class ParserHelper {
                                                                                DroolsSoftKeywords.QUERY
                                                                                };
 
-    public List<DroolsParserException>                errors                   = new ArrayList<DroolsParserException>();
+    public List<DroolsParserException>                errors                   = new ArrayList<>();
     public LinkedList<DroolsSentence>                 editorInterface          = null;
     public boolean                                    isEditorInterfaceEnabled = false;
-    private Stack<Map<DroolsParaphraseTypes, String>> paraphrases              = new Stack<Map<DroolsParaphraseTypes, String>>();
+    private Stack<Map<DroolsParaphraseTypes, String>> paraphrases              = new Stack<>();
 
     // parameters from parser
     private DroolsParserExceptionFactory              errorMessageFactory      = null;
@@ -133,7 +133,7 @@ public class ParserHelper {
     public void beginSentence( DroolsSentenceType sentenceType ) {
         if ( isEditorInterfaceEnabled ) {
             if ( null == editorInterface ) {
-                editorInterface = new LinkedList<DroolsSentence>();
+                editorInterface = new LinkedList<>();
             }
             if (editorInterface.isEmpty()){
                 DroolsSentence sentence = new DroolsSentence();
@@ -353,7 +353,7 @@ public class ParserHelper {
 
     /** Return a list of pretty strings summarising the errors */
     public List<String> getErrorMessages() {
-        List<String> messages = new ArrayList<String>( errors.size() );
+        List<String> messages = new ArrayList<>( errors.size() );
 
         for ( DroolsParserException activeException : errors ) {
             messages.add( activeException.getMessage() );
@@ -374,7 +374,7 @@ public class ParserHelper {
      *            paraphrase type
      */
     public void pushParaphrases( DroolsParaphraseTypes type ) {
-        Map<DroolsParaphraseTypes, String> activeMap = new HashMap<DroolsParaphraseTypes, String>();
+        Map<DroolsParaphraseTypes, String> activeMap = new HashMap<>();
         activeMap.put( type,
                        "" );
         paraphrases.push( activeMap );

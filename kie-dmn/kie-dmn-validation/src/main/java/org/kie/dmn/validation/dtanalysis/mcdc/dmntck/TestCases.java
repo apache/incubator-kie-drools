@@ -192,7 +192,7 @@ public class TestCases {
      */
     public java.util.List<TestCases.TestCase> getTestCase() {
         if (testCase == null) {
-            testCase = new ArrayList<TestCases.TestCase>();
+            testCase = new ArrayList<>();
         }
         return this.testCase;
     }
@@ -275,7 +275,7 @@ public class TestCases {
          */
         public java.util.List<String> getLabel() {
             if (label == null) {
-                label = new ArrayList<String>();
+                label = new ArrayList<>();
             }
             return this.label;
         }
@@ -382,7 +382,7 @@ public class TestCases {
         @XmlAttribute(name = "name")
         protected String name;
         @XmlAnyAttribute
-        private Map<QName, String> otherAttributes = new HashMap<QName, String>();
+        private Map<QName, String> otherAttributes = new HashMap<>();
 
         /**
          * Gets the value of the description property.
@@ -432,7 +432,7 @@ public class TestCases {
          */
         public java.util.List<TestCases.TestCase.InputNode> getInputNode() {
             if (inputNode == null) {
-                inputNode = new ArrayList<TestCases.TestCase.InputNode>();
+                inputNode = new ArrayList<>();
             }
             return this.inputNode;
         }
@@ -461,7 +461,7 @@ public class TestCases {
          */
         public java.util.List<TestCases.TestCase.ResultNode> getResultNode() {
             if (resultNode == null) {
-                resultNode = new ArrayList<TestCases.TestCase.ResultNode>();
+                resultNode = new ArrayList<>();
             }
             return this.resultNode;
         }
@@ -724,7 +724,7 @@ public class TestCases {
              */
             public java.util.List<Object> getAny() {
                 if (any == null) {
-                    any = new ArrayList<Object>();
+                    any = new ArrayList<>();
                 }
                 return this.any;
             }

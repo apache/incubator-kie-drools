@@ -21,7 +21,6 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.util.EvalHelper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A name is defined either as a sequence of

@@ -38,7 +38,7 @@ public class PropertiesSheetListener implements DataListener {
 
     private static final String EMPTY_STRING   = "";
 
-    private final Map<Integer, String[]> _rowProperties = new HashMap<Integer, String[]>();
+    private final Map<Integer, String[]> _rowProperties = new HashMap<>();
 
     private final CaseInsensitiveMap _properties = new CaseInsensitiveMap();
 
@@ -132,7 +132,7 @@ public class PropertiesSheetListener implements DataListener {
             key = key.toLowerCase();
             List<String[]> r  = getPropertyCell( key );
             if( r == null ){
-                r = new ArrayList<String[]>();
+                r = new ArrayList<>();
             }
             r.add( value );
             super.put( key, r );
@@ -141,7 +141,7 @@ public class PropertiesSheetListener implements DataListener {
         private List<String> getList( String key, int index ) {
             List<String[]> pcList  = getPropertyCell( key );
             if( pcList == null ) return null;
-            List<String> r = new ArrayList<String>();
+            List<String> r = new ArrayList<>();
             for( String[] pc: pcList ){
                 r.add( pc[index] );
             }

@@ -17,10 +17,7 @@ package org.kie.pmml.compiler.commons.factories;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
-import org.dmg.pmml.LinearNorm;
 import org.dmg.pmml.NormContinuous;
 import org.kie.pmml.api.enums.OUTLIER_TREATMENT_METHOD;
 import org.kie.pmml.commons.model.expressions.KiePMMLLinearNorm;

@@ -60,7 +60,7 @@ public class TraitFieldImpl implements Serializable, Externalizable,
     }
 
     public TraitFieldImpl(TypeWrapper klass, Object value, Object defaultValue, short pos ) {
-        this.rangeTypes = new PriorityQueue<TypeWrapper>( 1, TypeComparator.instance() );
+        this.rangeTypes = new PriorityQueue<>( 1, TypeComparator.instance() );
         this.rangeTypes.offer( klass );
 
         this.defaultValueByClass = defaultValue;
@@ -337,7 +337,7 @@ public class TraitFieldImpl implements Serializable, Externalizable,
 
     @Override
     public Set<Class<?>> getRangeTypes() {
-        Set<Class<?>> set = new HashSet<Class<?>>( rangeTypes.size() );
+        Set<Class<?>> set = new HashSet<>( rangeTypes.size() );
         for ( TypeWrapper type : rangeTypes ) {
             set.add( type.getKlass() );
         }

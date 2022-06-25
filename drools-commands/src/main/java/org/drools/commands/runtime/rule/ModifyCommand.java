@@ -81,7 +81,7 @@ public class ModifyCommand implements ExecutableCommand<Object> {
     @XmlElement(type=SetterImpl.class)
     public List<Setter> getSetters() {
         if ( this.setters == null ) {
-            this.setters = new ArrayList<Setter>();
+            this.setters = new ArrayList<>();
         }
         checkSetters();
         return this.setters;

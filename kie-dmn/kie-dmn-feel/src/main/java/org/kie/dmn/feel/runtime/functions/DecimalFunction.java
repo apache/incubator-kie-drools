@@ -19,7 +19,6 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;

@@ -746,8 +746,7 @@ public final class KieModuleCache {
           KieModuleCache.Version, KieModuleCache.Version.Builder, KieModuleCache.VersionOrBuilder>
           getVersionFieldBuilder() {
         if (versionBuilder_ == null) {
-          versionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              KieModuleCache.Version, KieModuleCache.Version.Builder, KieModuleCache.VersionOrBuilder>(
+          versionBuilder_ = new com.google.protobuf.SingleFieldBuilder<>(
                   version_,
                   getParentForChildren(),
                   isClean());
@@ -899,8 +898,7 @@ public final class KieModuleCache {
           KieModuleCache.Signature, KieModuleCache.Signature.Builder, KieModuleCache.SignatureOrBuilder>
           getSignatureFieldBuilder() {
         if (signatureBuilder_ == null) {
-          signatureBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              KieModuleCache.Signature, KieModuleCache.Signature.Builder, KieModuleCache.SignatureOrBuilder>(
+          signatureBuilder_ = new com.google.protobuf.SingleFieldBuilder<>(
                   signature_,
                   getParentForChildren(),
                   isClean());
@@ -2166,7 +2164,7 @@ public final class KieModuleCache {
             }
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                compilationData_ = new java.util.ArrayList<KieModuleCache.CompilationData>();
+                compilationData_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000001;
               }
               compilationData_.add(input.readMessage( KieModuleCache.CompilationData.PARSER, extensionRegistry));
@@ -2513,7 +2511,7 @@ public final class KieModuleCache {
         java.util.Collections.emptyList();
       private void ensureCompilationDataIsMutable() {
         if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          compilationData_ = new java.util.ArrayList<KieModuleCache.CompilationData>(compilationData_);
+          compilationData_ = new java.util.ArrayList<>(compilationData_);
           bitField0_ |= 0x00000001;
          }
       }
@@ -2737,8 +2735,7 @@ public final class KieModuleCache {
           KieModuleCache.CompilationData, KieModuleCache.CompilationData.Builder, KieModuleCache.CompilationDataOrBuilder>
           getCompilationDataFieldBuilder() {
         if (compilationDataBuilder_ == null) {
-          compilationDataBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              KieModuleCache.CompilationData, KieModuleCache.CompilationData.Builder, KieModuleCache.CompilationDataOrBuilder>(
+          compilationDataBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<>(
                   compilationData_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
                   getParentForChildren(),
@@ -2860,7 +2857,7 @@ public final class KieModuleCache {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                entry_ = new java.util.ArrayList<KieModuleCache.CompDataEntry>();
+                entry_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000002;
               }
               entry_.add(input.readMessage( KieModuleCache.CompDataEntry.PARSER, extensionRegistry));
@@ -3346,7 +3343,7 @@ public final class KieModuleCache {
         java.util.Collections.emptyList();
       private void ensureEntryIsMutable() {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          entry_ = new java.util.ArrayList<KieModuleCache.CompDataEntry>(entry_);
+          entry_ = new java.util.ArrayList<>(entry_);
           bitField0_ |= 0x00000002;
          }
       }
@@ -3570,8 +3567,7 @@ public final class KieModuleCache {
           KieModuleCache.CompDataEntry, KieModuleCache.CompDataEntry.Builder, KieModuleCache.CompDataEntryOrBuilder>
           getEntryFieldBuilder() {
         if (entryBuilder_ == null) {
-          entryBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              KieModuleCache.CompDataEntry, KieModuleCache.CompDataEntry.Builder, KieModuleCache.CompDataEntryOrBuilder>(
+          entryBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<>(
                   entry_,
                   ((bitField0_ & 0x00000002) == 0x00000002),
                   getParentForChildren(),

@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class Row {
     int rowNum;
-    List<Cell> cells = new ArrayList<Cell>();
+    List<Cell> cells = new ArrayList<>();
 
     public Row() {
 

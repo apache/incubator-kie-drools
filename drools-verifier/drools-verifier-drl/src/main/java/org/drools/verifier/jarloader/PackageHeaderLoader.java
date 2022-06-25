@@ -33,19 +33,19 @@ public class PackageHeaderLoader {
 
     private final static Collection<String> IGNORED_FIELDS = getIgnoredFields();
 
-    private Set<String> classNames = new HashSet<String>();
+    private Set<String> classNames = new HashSet<>();
 
-    private Map<String, String> fieldTypesByClassAndFieldNames = new HashMap<String, String>();
+    private Map<String, String> fieldTypesByClassAndFieldNames = new HashMap<>();
 
     private TreeMultimap<String, String> fieldsByClassNames = TreeMultimap.create();
-    private List<String> missingClasses = new ArrayList<String>();
+    private List<String> missingClasses = new ArrayList<>();
 
     public PackageHeaderLoader(Collection<String> imports, List<JarInputStream> jarInputStreams) throws IOException {
         findImportsFromJars(imports, jarInputStreams);
     }
 
     private void findImportsFromJars(Collection<String> imports, List<JarInputStream> jarInputStreams) throws IOException {
-        ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<String>(), new VerifierMapBackedClassLoader(jarInputStreams));
+        ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), new VerifierMapBackedClassLoader(jarInputStreams));
 
         for (String className : imports) {
 
@@ -101,7 +101,7 @@ public class PackageHeaderLoader {
     }
 
     private static Collection<String> getIgnoredFields() {
-        Collection<String> fields = new ArrayList<String>();
+        Collection<String> fields = new ArrayList<>();
 
         fields.add("toString");
         fields.add("hashCode");

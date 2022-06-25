@@ -48,7 +48,7 @@ public class TypeDeclarationDescrBuilderImpl extends BaseDescrBuilderImpl<Packag
     }
 
     public AnnotationDescrBuilder<TypeDeclarationDescrBuilder> newAnnotation( String name ) {
-        AnnotationDescrBuilder<TypeDeclarationDescrBuilder> annotation = new AnnotationDescrBuilderImpl<TypeDeclarationDescrBuilder>( this, name );
+        AnnotationDescrBuilder<TypeDeclarationDescrBuilder> annotation = new AnnotationDescrBuilderImpl<>( this, name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }

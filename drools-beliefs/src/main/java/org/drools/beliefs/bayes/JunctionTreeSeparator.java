@@ -40,7 +40,7 @@ public class JunctionTreeSeparator {
         child.setParentSeparator(this);
         parent.getChildren().add( this );
 
-        values = new ArrayList<BayesVariable>((int) bitSet.cardinality());
+        values = new ArrayList<>((int) bitSet.cardinality());
         for (int i = bitSet.nextSetBit(0); i >= 0; i = bitSet.nextSetBit(i + 1)) {
             values.add(graph.getNode(i).getContent());
         }

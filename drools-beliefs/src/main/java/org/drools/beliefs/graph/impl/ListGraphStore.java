@@ -22,13 +22,13 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ListGraphStore<T> implements GraphStore<T> {
-    List<GraphNode<T>> nodes = new ArrayList<GraphNode<T>>();
+    List<GraphNode<T>> nodes = new ArrayList<>();
 
-    List<Integer> oldIds = new ArrayList<Integer>();
+    List<Integer> oldIds = new ArrayList<>();
 
     @Override
     public GraphNode<T> addNode() {
-        GraphNode<T> v = new GraphNodeImpl<T>(nodes.size());
+        GraphNode<T> v = new GraphNodeImpl<>(nodes.size());
         nodes.add( v );
         return v;
     }

@@ -51,7 +51,7 @@ public class GetProcessInstancesCommand
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         Collection<ProcessInstance> instances = ksession.getProcessInstances();
-        Collection<ProcessInstance> result = new ArrayList<ProcessInstance>();
+        Collection<ProcessInstance> result = new ArrayList<>();
 
         for ( ProcessInstance instance : instances ) {
             result.add( instance );

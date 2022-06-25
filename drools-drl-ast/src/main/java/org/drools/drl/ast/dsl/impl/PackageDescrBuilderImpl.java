@@ -132,7 +132,7 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
     }
 
     public AttributeDescrBuilder<PackageDescrBuilder> attribute( String name ) {
-        AttributeDescrBuilder<PackageDescrBuilder> attribute = new AttributeDescrBuilderImpl<PackageDescrBuilder>( this, name );
+        AttributeDescrBuilder<PackageDescrBuilder> attribute = new AttributeDescrBuilderImpl<>( this, name );
         descr.addAttribute( initDescr(attribute) );
         return attribute;
     }

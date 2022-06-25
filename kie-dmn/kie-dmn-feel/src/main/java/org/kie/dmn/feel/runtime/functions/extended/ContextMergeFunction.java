@@ -46,7 +46,7 @@ public class ContextMergeFunction extends BaseFEELFunction {
         }
 
         StringBuilder errors = new StringBuilder();
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
         for (int i = 0; i < contexts.size(); i++) {
             FEELFnResult<Map<String, Object>> ci = ContextPutFunction.toMap(contexts.get(i));
             final int index = i + 1;

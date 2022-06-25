@@ -321,7 +321,7 @@ public class ProtobufOutputMarshaller {
 
         // serialize all dormant activations
         org.drools.core.util.Iterator it = ActivationIterator.iterator( wm );
-        List<Activation> dormant = new ArrayList<Activation>();
+        List<Activation> dormant = new ArrayList<>();
         for (Activation item = (Activation) it.next(); item != null; item = (Activation) it.next() ) {
             if ( !item.isQueued() ) {
                 dormant.add( item );
@@ -762,7 +762,7 @@ public class ProtobufOutputMarshaller {
     private static ProtobufMessages.Timers writeTimers(Collection<TimerJobInstance> timers,
                                                        MarshallerWriteContext outCtx) {
         if ( !timers.isEmpty() ) {
-            List<TimerJobInstance> sortedTimers = new ArrayList<TimerJobInstance>( timers );
+            List<TimerJobInstance> sortedTimers = new ArrayList<>( timers );
             Collections.sort( sortedTimers,
                               new Comparator<TimerJobInstance>() {
                                   public int compare(TimerJobInstance o1,

@@ -172,7 +172,7 @@ public class ClassObjectTypeConf
     }
 
     private ObjectTypeNode[] getMatchingObjectTypes(final Class<?> clazz) {
-        final List<ObjectTypeNode> cache = new ArrayList<ObjectTypeNode>();
+        final List<ObjectTypeNode> cache = new ArrayList<>();
 
         for ( ObjectTypeNode node : ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {
             if ( clazz == DroolsQuery.class ) {

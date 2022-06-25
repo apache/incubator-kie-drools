@@ -147,7 +147,7 @@ public class MVELDataProvider implements DataProvider, MVELCompileable, External
         MVELDataProvider clone = new MVELDataProvider(unit.clone(), id);
         clone.evaluator = evaluator;
         if (clones == null) {
-            clones = new ArrayList<MVELDataProvider>();
+            clones = new ArrayList<>();
         }
         clones.add(clone);
         return clone;

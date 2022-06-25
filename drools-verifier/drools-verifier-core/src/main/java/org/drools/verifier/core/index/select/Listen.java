@@ -51,7 +51,7 @@ public class Listen<T>
                     return;
                 }
 
-                final ChangeHelper<T> changeHelper = new ChangeHelper<T>(changeSet,
+                final ChangeHelper<T> changeHelper = new ChangeHelper<>(changeSet,
                                                                          matcher);
 
                 if (!firstListeners.isEmpty()) {

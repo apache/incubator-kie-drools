@@ -53,7 +53,7 @@ public class MVELConsequenceBuilder
     implements
     ConsequenceBuilder {
 
-    public static final Map<String, Macro> macros = new HashMap<String,Macro>( 10 );
+    public static final Map<String, Macro> macros = new HashMap<>( 10 );
     static {
         macros.put( "insert",
                     new Macro() {

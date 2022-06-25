@@ -19,14 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.CompoundPredicate;
-import org.dmg.pmml.Extension;
 import org.dmg.pmml.False;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
-import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 
 import static org.kie.pmml.compiler.commons.factories.KiePMMLCompoundPredicateInstanceFactory.getKiePMMLCompoundPredicate;

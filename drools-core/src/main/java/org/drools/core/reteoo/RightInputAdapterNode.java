@@ -366,7 +366,7 @@ public class RightInputAdapterNode extends ObjectSource
             return result;
         }
 
-        List<PathEndNode> remainingPathNodes = new ArrayList<PathEndNode>();
+        List<PathEndNode> remainingPathNodes = new ArrayList<>();
         for (PathEndNode pathEndNode : pathEndNodes) {
             if (pathEndNode.getAssociationsSize() > 0) {
                 remainingPathNodes.add(pathEndNode);

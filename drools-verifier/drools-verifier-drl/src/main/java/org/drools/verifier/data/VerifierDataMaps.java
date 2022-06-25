@@ -26,23 +26,23 @@ class VerifierDataMaps
         implements
         VerifierData {
 
-    private Map<VerifierComponentType, Map<String, VerifierComponent>> all = new TreeMap<VerifierComponentType, Map<String, VerifierComponent>>();
+    private Map<VerifierComponentType, Map<String, VerifierComponent>> all = new TreeMap<>();
 
-    private Map<String, RulePackage> packagesByName = new TreeMap<String, RulePackage>(STRING_NULL_SAFE_COMPARATOR);
-    private Map<String, ObjectType> objectTypesByFullName = new TreeMap<String, ObjectType>(STRING_NULL_SAFE_COMPARATOR);
-    private Map<String, Field> fieldsByObjectTypeAndFieldName = new TreeMap<String, Field>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, RulePackage> packagesByName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, ObjectType> objectTypesByFullName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, Field> fieldsByObjectTypeAndFieldName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
     private Multimap<String, Field> fieldsByObjectTypeId = TreeMultimap.create();
     private Multimap<String, Pattern> patternsByObjectTypeId = TreeMultimap.create();
     private Multimap<String, Pattern> patternsByRuleName = TreeMultimap.create();
     private Multimap<String, Restriction> restrictionsByFieldId = TreeMultimap.create();
-    private Map<String, Variable> variablesByRuleAndVariableName = new TreeMap<String, Variable>(STRING_NULL_SAFE_COMPARATOR);
-    private Map<String, EntryPoint> entryPointsByEntryId = new TreeMap<String, EntryPoint>(STRING_NULL_SAFE_COMPARATOR);
-    private Map<String, VerifierRule> rulesByName = new TreeMap<String, VerifierRule>(STRING_NULL_SAFE_COMPARATOR);
-    private Map<String, Import> importsByName = new TreeMap<String, Import>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, Variable> variablesByRuleAndVariableName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, EntryPoint> entryPointsByEntryId = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, VerifierRule> rulesByName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
+    private Map<String, Import> importsByName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
     private Multimap<String, VerifierRule> rulesByCategory = TreeMultimap.create();
 
     public Collection<ObjectType> getObjectTypesByRuleName(String ruleName) {
-        Set<ObjectType> set = new HashSet<ObjectType>();
+        Set<ObjectType> set = new HashSet<>();
 
         for (Pattern pattern : patternsByRuleName.get(ruleName)) {
             ObjectType objectType = (ObjectType) getVerifierObject(VerifierComponentType.OBJECT_TYPE,
@@ -68,7 +68,7 @@ class VerifierDataMaps
     }
 
     public Collection<VerifierComponent> getAll() {
-        List<VerifierComponent> objects = new ArrayList<VerifierComponent>();
+        List<VerifierComponent> objects = new ArrayList<>();
 
         for (VerifierComponentType type : all.keySet()) {
             objects.addAll(all.get(type).values());
@@ -82,7 +82,7 @@ class VerifierDataMaps
     }
 
     public Collection<VerifierRule> getRulesByObjectTypePath(String id) {
-        Set<VerifierRule> rules = new HashSet<VerifierRule>();
+        Set<VerifierRule> rules = new HashSet<>();
 
         for (Pattern pattern : patternsByObjectTypeId.get(id)) {
 
@@ -95,7 +95,7 @@ class VerifierDataMaps
 
     public Collection<VerifierRule> getRulesByFieldPath(String id) {
 
-        Set<VerifierRule> rules = new HashSet<VerifierRule>();
+        Set<VerifierRule> rules = new HashSet<>();
 
         for (Restriction restriction : restrictionsByFieldId.get(id)) {
 
@@ -170,7 +170,7 @@ class VerifierDataMaps
         Map<String, VerifierComponent> map = all.get(object.getVerifierComponentType());
 
         if (map == null) {
-            map = new TreeMap<String, VerifierComponent>();
+            map = new TreeMap<>();
             all.put(object.getVerifierComponentType(),
                     map);
         }
@@ -234,7 +234,7 @@ class VerifierDataMaps
         return null;
     }
 
-    private static final NullSafeComparator<String> STRING_NULL_SAFE_COMPARATOR = new NullSafeComparator<String>();
+    private static final NullSafeComparator<String> STRING_NULL_SAFE_COMPARATOR = new NullSafeComparator<>();
 
     public static class NullSafeComparator<T extends Comparable<T>> implements Comparator<T> {
         public int compare(T o1, T o2) {

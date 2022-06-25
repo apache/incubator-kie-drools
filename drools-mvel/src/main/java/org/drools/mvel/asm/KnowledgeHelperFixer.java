@@ -22,7 +22,7 @@ import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
 public class KnowledgeHelperFixer {
-    private static final Map<String, Macro> macros = new HashMap<String, Macro>();
+    private static final Map<String, Macro> macros = new HashMap<>();
     
     static {
         macros.put( "insert",

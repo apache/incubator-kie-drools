@@ -162,9 +162,9 @@ public class DefaultExpander
     public String expand(String drl) {
 
         if ( showUsage ) {
-            useKeyword = new HashMap<String, Integer>();
-            useWhen = new HashMap<String, Integer>();
-            useThen = new HashMap<String, Integer>();
+            useKeyword = new HashMap<>();
+            useWhen = new HashMap<>();
+            useThen = new HashMap<>();
         }
 
         drl = removeComments( drl );
@@ -336,7 +336,7 @@ public class DefaultExpander
      * @return
      */
     private String expandKeywords(String drl) {
-        substitutions = new ArrayList<Map<String, String>>();
+        substitutions = new ArrayList<>();
         // apply all keywords templates
         drl = substitute( drl,
                           this.keywords,
@@ -436,7 +436,7 @@ public class DefaultExpander
         if ( showSingleSteps ) {
             logger.info( "to expand: |" + exp + "|" );
         }
-        Map<String, String> key2value = new HashMap<String, String>();
+        Map<String, String> key2value = new HashMap<>();
         for ( final DSLMappingEntry entry : entries ) {
             Map<String, Integer> vars = entry.getVariables();
             String mappingKey = entry.getMappingKey();
@@ -540,7 +540,7 @@ public class DefaultExpander
      */
     private String expandLHS(final String lhs,
                              int lineOffset) {
-        substitutions = new ArrayList<Map<String, String>>();
+        substitutions = new ArrayList<>();
 
         //        logger.info( "*** LHS>" + lhs + "<" );
         final StringBuilder buf = new StringBuilder();
@@ -705,7 +705,7 @@ public class DefaultExpander
 
     private void addError(final ExpanderException error) {
         if ( this.errors == Collections.EMPTY_LIST ) {
-            this.errors = new ArrayList<ExpanderException>();
+            this.errors = new ArrayList<>();
         }
         this.errors.add( error );
     }

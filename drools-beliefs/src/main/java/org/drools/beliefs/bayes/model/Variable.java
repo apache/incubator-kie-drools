@@ -19,7 +19,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 
 @XStreamAlias("VARIABLE")

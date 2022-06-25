@@ -39,8 +39,8 @@ class VerifierMessagesVisitor extends ReportVisitor {
 
     public static String visitVerifierMessagesCollection(String title,
             Collection<VerifierMessageBase> messages, VerifierData data) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        Collection<String> messageTemplates = new ArrayList<String>();
+        Map<String, Object> map = new HashMap<>();
+        Collection<String> messageTemplates = new ArrayList<>();
         String myTemplate = readFile(VERIFIER_MESSAGES_TEMPLATE);
 
         for (VerifierMessageBase message : messages) {
@@ -74,8 +74,8 @@ class VerifierMessagesVisitor extends ReportVisitor {
 
     public static String visitVerifierMessage(VerifierMessage message) {
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        Collection<String> causeUrls = new ArrayList<String>();
+        Map<String, Object> map = new HashMap<>();
+        Collection<String> causeUrls = new ArrayList<>();
         String myTemplate = readFile(VERIFIER_MESSAGE_TEMPLATE);
 
         // Solve the url's to causes if there is any.

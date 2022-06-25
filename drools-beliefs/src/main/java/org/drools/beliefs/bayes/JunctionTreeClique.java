@@ -35,9 +35,9 @@ public class JunctionTreeClique {
     public JunctionTreeClique(int id, Graph<BayesVariable> graph, OpenBitSet bitSet) {
         this.id = id;
         this.bitSet = bitSet;
-        this.children = new ArrayList<JunctionTreeSeparator>();
+        this.children = new ArrayList<>();
 
-        values = new ArrayList<BayesVariable>((int) bitSet.cardinality());
+        values = new ArrayList<>((int) bitSet.cardinality());
         for (int i = bitSet.nextSetBit(0); i >= 0; i = bitSet.nextSetBit( i + 1 ) ) {
             values.add(graph.getNode(i).getContent());
         }

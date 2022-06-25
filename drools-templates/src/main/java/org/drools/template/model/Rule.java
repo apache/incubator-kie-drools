@@ -51,9 +51,9 @@ public class Rule extends AttributedDRLElement
         super(salience);
         this._name = asStringLiteral(name);
         this._description = null;
-        this._metadata = new LinkedList<String>();
-        this._lhs = new LinkedList<Condition>();
-        this._rhs = new LinkedList<Consequence>();
+        this._metadata = new LinkedList<>();
+        this._lhs = new LinkedList<>();
+        this._rhs = new LinkedList<>();
         this._spreadsheetRow = spreadsheetRow;
     }
 

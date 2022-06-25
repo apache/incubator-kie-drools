@@ -101,7 +101,7 @@ public class SnippetBuilder {
 
     private String buildForAll( final String cellValue ) {
         final String[] cellVals = split( cellValue );
-        Map<String, String> replacements = new HashMap<String, String>();
+        Map<String, String> replacements = new HashMap<>();
         Matcher forallMatcher = PARAM_FORALL_PATTERN.matcher( _template );
         while ( forallMatcher.find() ) {
             replacements.put( forallMatcher.group(), "" );

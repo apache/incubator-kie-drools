@@ -30,7 +30,7 @@ public class FieldDescrBuilderImpl<T extends DescrBuilder<?,?>> extends BaseDesc
     }
 
     public AnnotationDescrBuilder<FieldDescrBuilder<T>> newAnnotation( String name ) {
-        AnnotationDescrBuilder<FieldDescrBuilder<T>> annotation = new AnnotationDescrBuilderImpl<FieldDescrBuilder<T>>( this, name );
+        AnnotationDescrBuilder<FieldDescrBuilder<T>> annotation = new AnnotationDescrBuilderImpl<>( this, name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }

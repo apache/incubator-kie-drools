@@ -47,7 +47,7 @@ public class DrlParser {
 
     // TODO: REMOVE THIS GENERIC MESSAGE ASAP
     private static final String     GENERIC_ERROR_MESSAGE = "Unexpected exception raised while parsing. This is a bug. Please contact the Development team :\n";
-    private final List<DroolsError> results               = new ArrayList<DroolsError>();
+    private final List<DroolsError> results               = new ArrayList<>();
     private List<DroolsSentence>    editorSentences       = null;
     private Location                location              = new Location( Location.LOCATION_UNKNOWN );
     private DRLLexer                lexer                 = null;

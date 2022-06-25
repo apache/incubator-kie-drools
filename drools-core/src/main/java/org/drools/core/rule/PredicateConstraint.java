@@ -301,7 +301,7 @@ public class PredicateConstraint extends MutableTypeConstraint
                                                              local );
 
         if ( this.cloned == Collections.EMPTY_LIST ) {
-            this.cloned = new ArrayList<PredicateConstraint>( 1 );
+            this.cloned = new ArrayList<>( 1 );
         }
 
         this.cloned.add( clone );

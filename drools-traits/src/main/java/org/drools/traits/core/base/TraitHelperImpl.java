@@ -212,7 +212,7 @@ public class TraitHelperImpl implements Externalizable,
         Collection<Thing> mostSpecificTraits = inner.getMostSpecificTraits();
         boolean newTraitsAdded = false;
         T firstThing = null;
-        List<Thing> things = new ArrayList<Thing>( traits.size() );
+        List<Thing> things = new ArrayList<>( traits.size() );
 
         checkStaticTypeCode( inner );
 
@@ -345,7 +345,7 @@ public class TraitHelperImpl implements Externalizable,
             Thing<K> thing = core.getTrait( Thing.class.getName() );
             if ( trait == Thing.class ) {
 
-                removedTypes = new ArrayList<Thing<K>>( core._getTraitMap().values() );
+                removedTypes = new ArrayList<>( core._getTraitMap().values() );
                 for ( Thing t : removedTypes ) {
                     if ( ! ((TraitType) t)._isVirtual() ) {
                         delete( getFactHandle( t ), activation );
@@ -363,7 +363,7 @@ public class TraitHelperImpl implements Externalizable,
                 removedTypes = core.removeTrait( code );
             }
 
-            removedTypes = new ArrayList<Thing<K>>( removedTypes );
+            removedTypes = new ArrayList<>( removedTypes );
             reassignNodes( core, removedTypes );
             for ( Thing t : removedTypes ) {
                 if ( ! ((TraitType) t)._isVirtual() ) {
@@ -419,7 +419,7 @@ public class TraitHelperImpl implements Externalizable,
         if ( inner._getTraitMap() == null || inner instanceof Thing ) return Collections.EMPTY_LIST;
         if ( inner._getTraitMap().isEmpty() ) return null;
 
-        Collection<Thing> ts = new ArrayList<Thing>();
+        Collection<Thing> ts = new ArrayList<>();
         for ( Thing t : inner._getTraitMap().values() )     {
             if ( t instanceof TraitProxyImpl) {
                 if ( ( (TraitProxyImpl) t ).hasOtns() ) {
@@ -632,7 +632,7 @@ public class TraitHelperImpl implements Externalizable,
         TraitableBean traitableBean = (TraitableBean) handle.getObject();
         if( traitableBean.hasTraits() ){
             PriorityQueue<TraitProxyImpl> removedTypes =
-                    new PriorityQueue<TraitProxyImpl>(traitableBean._getTraitMap().values().size() );
+                    new PriorityQueue<>(traitableBean._getTraitMap().values().size() );
             removedTypes.addAll( traitableBean._getTraitMap().values() );
 
             while ( ! removedTypes.isEmpty() ) {

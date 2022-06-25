@@ -26,7 +26,7 @@ public class TransactionSynchronizationContainer implements TransactionSynchroni
     private static Logger logger = LoggerFactory.getLogger( TransactionSynchronizationContainer.class );
     public static final String RESOURCE_KEY = "org.drools.persistence.txsync.container";
 
-    private Set<TransactionSynchronization> synchronizations = new TreeSet<TransactionSynchronization>();
+    private Set<TransactionSynchronization> synchronizations = new TreeSet<>();
 
     @Override
     public void beforeCompletion() {

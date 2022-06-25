@@ -44,14 +44,14 @@ public class RuleTemplate {
 
     public RuleTemplate(final String n, final TemplateContainer tc) {
         name = n;
-        columns = new ArrayList<TemplateColumn>();
+        columns = new ArrayList<>();
         templateContainer = tc;
         this.replaceOptionals = true;
     }
 
     public RuleTemplate(final String n, final TemplateContainer tc, boolean replaceOptionals) {
         name = n;
-        columns = new ArrayList<TemplateColumn>();
+        columns = new ArrayList<>();
         templateContainer = tc;
         this.replaceOptionals = replaceOptionals;
     }
@@ -125,7 +125,7 @@ public class RuleTemplate {
     }
 
     private Collection<String> getColumnNames() {
-        Collection<String> columnNames = new ArrayList<String>();
+        Collection<String> columnNames = new ArrayList<>();
         for (TemplateColumn column : getColumns()) {
             columnNames.add(column.getName());
         }

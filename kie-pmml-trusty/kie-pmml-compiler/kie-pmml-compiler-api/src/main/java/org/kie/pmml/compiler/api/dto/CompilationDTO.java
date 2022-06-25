@@ -37,11 +37,6 @@ import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.commons.model.HasClassLoader;
-import org.kie.pmml.commons.model.KiePMMLMiningField;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.KiePMMLTarget;
-import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
-import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
 
 /**
