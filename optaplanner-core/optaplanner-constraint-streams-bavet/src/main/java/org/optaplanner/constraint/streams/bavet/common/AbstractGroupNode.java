@@ -36,6 +36,9 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     private final Map<GroupKey_, Group<OutTuple_, GroupKey_, ResultContainer_>> groupMap;
     /**
      * Used when {@link #hasMultipleGroups} is false, otherwise {@link #groupMap} is used.
+     *
+     * The field is lazy initialized in order to maintain the same semantics as with the groupMap above.
+     * When all tuples are removed, the field will be set to null, as if the group never existed.
      */
     private Group<OutTuple_, GroupKey_, ResultContainer_> singletonGroup;
     private final Queue<Group<OutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
@@ -52,6 +55,9 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         this.hasMultipleGroups = groupKeyFunction != null;
         this.hasCollector = supplier != null;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
+        // Not using the default sizing to 1000.
+        // The number of groups can be very small, and that situation is not unlikely.
+        // Therefore, the size of these collections is kept default.
         this.groupMap = hasMultipleGroups ? new HashMap<>() : null;
         this.dirtyGroupQueue = new ArrayDeque<>();
     }
