@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import org.assertj.core.api.Assertions;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
@@ -396,5 +397,65 @@ public class MiscDRLParserTest extends TestCase {
             assertEquals("pdo2",
                          ((PatternDescr) pdo2).getIdentifier());
         }
+    }
+
+    @Test
+    public void testCompatibleRestriction() throws Exception {
+        String source = "package com.sample  rule test  when  Test( ( text == null || text2 matches \"\" ) )  then  end";
+        PackageDescr pkg = parser.parse(source);
+
+        assertEquals( "com.sample",
+                      pkg.getName() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( "test",
+                      rule.getName() );
+        ExprConstraintDescr expr = (ExprConstraintDescr) ((PatternDescr) rule.getLhs().getDescrs().get(0 )).getDescrs().get(0 );
+        assertEquals( "( text == null || text2 matches \"\" )",
+                      expr.getText() );
+    }
+
+    @Test
+    public void testSimpleConstraint() throws Exception {
+        String source = "package com.sample  rule test  when  Cheese( type == 'stilton', price > 10 )  then  end";
+        PackageDescr pkg = parser.parse(source);
+
+        assertEquals( "com.sample",
+                      pkg.getName() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( "test",
+                      rule.getName() );
+
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        AndDescr constraint = (AndDescr) pattern.getConstraint();
+        assertEquals( 2,
+                      constraint.getDescrs().size() );
+        assertEquals( "type == \"stilton\"",
+                      constraint.getDescrs().get( 0 ).toString() );
+        assertEquals( "price > 10",
+                      constraint.getDescrs().get( 1 ).toString() );
+    }
+
+    @Test
+    public void testStringEscapes() throws Exception {
+        String source = "package com.sample  rule test  when  Cheese( type matches \"\\..*\\\\.\" )  then  end";
+        PackageDescr pkg = parser.parse(source);
+        assertEquals( "com.sample",
+                      pkg.getName() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( "test",
+                      rule.getName() );
+
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        AndDescr constraint = (AndDescr) pattern.getConstraint();
+        assertEquals( 1,
+                      constraint.getDescrs().size() );
+        assertEquals( "type matches \"\\..*\\\\.\"",
+                      constraint.getDescrs().get( 0 ).toString() );
     }
 }
