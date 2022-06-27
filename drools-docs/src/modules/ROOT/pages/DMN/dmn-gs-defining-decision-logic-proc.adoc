@@ -4,10 +4,10 @@
 To calculate the fine and to decide whether the driver is to be suspended or not, you can define the traffic violations DMN decision logic using a DMN decision table and context boxed expression.
 
 .Fine expression
-image::dmn/dmn-gs-fine-decision-table.png[]
+image::dmn/dmn-gs-fine-decision-table.png[Fine expression decision table]
 
 .Should the driver be suspended expression
-image::dmn/dmn-gs-context-table.png[]
+image::dmn/dmn-gs-context-table.png[Should the driver be suspended expression decision table]
 
 .Prerequisites
 * You have assigned the DMN custom data types to the appropriate decision and input nodes in the traffic violations DRD in {CENTRAL}.
@@ -17,13 +17,13 @@ image::dmn/dmn-gs-context-table.png[]
 +
 
 .Decision node edit icon
-image::dmn/decision_node_edit.png[]
+image::dmn/decision_node_edit.png[Decision node edit icon]
 
 . Click *Select expression* -> *Decision Table*.
 +
 
 .Select Decisiong Table logic type
-image::dmn/select_logic_type.png[]
+image::dmn/select_logic_type.png[Select logic type menu]
 
 . For the *Violation.Date*, *Violation.Code*, and *Violation.Speed Limit* columns, right-click and select *Delete* for each field.
 . Click the *Violation.Actual Speed* column header and enter the expression `Violation.Actual Speed - Violation.Speed Limit` in the *Expression* field."

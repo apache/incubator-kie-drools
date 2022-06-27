@@ -4,7 +4,7 @@
 Use the test scenarios designer in {CENTRAL} to test the DMN decision requirements diagrams (DRDs) and define decision logic for the traffic violations project.
 
 .Test scenario for the traffic violations example
-image::dmn/dmn-gs-traffic-violation-test-scenarios.png[]
+image::dmn/dmn-gs-traffic-violation-test-scenarios.png[Test scenario for the traffic violations example]
 
 .Prerequisites
 * You have successfully built the traffic violations project in {CENTRAL}.
@@ -76,9 +76,6 @@ Right-click the fourth row and select *Insert row below* to add another row.
 . Click the *Play* icon image:dmn/dmn-play-icon.png[] to check whether the test scenarios pass or fail.
 +
 .Test scenario execution result for the traffic violations example
-image::dmn/dmn-gs-test-scenarios-execution-results.png[]
+image::dmn/dmn-gs-test-scenarios-execution-results.png[Test scenario execution result for the traffic violations example]
 +
 In case of failure, correct the errors and run the test scenarios again.
-
-//.DRD for the Traffic Violation example
-//image::dmn/dmn-traffic-violations-drd.png[]

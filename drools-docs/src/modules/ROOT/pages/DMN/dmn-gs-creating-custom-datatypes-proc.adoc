@@ -4,12 +4,7 @@
 DMN data types determine the structure of the data that you use within a table, column, or field in a DMN boxed expression for defining decision logic. You can use default DMN data types (such as string, number, or boolean) or you can create custom data types to specify additional fields and constraints that you want to implement for the boxed expression values. Use the DMN designer's *Data Types* tab in {CENTRAL} to define the custom data types for the traffic violations project.
 
 .The custom data types tab
-image::dmn/dmn-custom-datatypes-tab.png[]
-
-//Alternately, you can also access the *Data Types* tab from the *Properties* tab on the right. From the *Properties* tab, click *Manage* from *Data type* under *Information item*.
-
-//.Diagram properties tab
-//image::dmn/dmn-diagram-properties-tab.png[]
+image::dmn/dmn-custom-datatypes-tab.png[The custom data types tab]
 
 The following tables list the `tDriver`, `tViolation`, and `tFine` custom data types that you will create for this project.
 
@@ -57,7 +52,7 @@ The following tables list the `tDriver`, `tViolation`, and `tFine` custom data t
 . Click the check mark to the right of the new data type to save your changes.
 +
 .The tDriver custom data type
-image::dmn/dmn-tDriver-custom-datatype.png[]
+image::dmn/dmn-tDriver-custom-datatype.png[The tDriver custom data type]
 . Add each of the following nested data types to the `tDriver` structured data type by clicking the plus sign next to `tDriver` for each new nested data type. Click the check mark to the right of each new data type to save your changes.
 +
 * `Name` (string)
@@ -70,7 +65,7 @@ image::dmn/dmn-tDriver-custom-datatype.png[]
 . Click the check mark to the right of the new data type to save your changes.
 +
 .The tViolation custom data type
-image::dmn/dmn-tViolation-custom-datatype.png[]
+image::dmn/dmn-tViolation-custom-datatype.png[The tViolation custom data type]
 . Add each of the following nested data types to the `tViolation` structured data type by clicking the plus sign next to `tViolation` for each new nested data type. Click the check mark to the right of each new data type to save your changes.
 +
 * `Code` (string)
@@ -89,7 +84,7 @@ image::dmn/dmn-tViolation-custom-datatype.png[]
 . To create the `tFine` custom data type, click *New Data Type*, enter `tFine` in the *Name* field, select `Structure` from the *Type* list, and click *Save*.
 +
 .The tFine custom data type
-image::dmn/dmn-tFine-custom-datatype.png[]
+image::dmn/dmn-tFine-custom-datatype.png[The tFine custom data type]
 . Add each of the following nested data types to the `tFine` structured data type by clicking the plus sign next to `tFine` for each new nested data type. Click the check mark to the right of each new data type to save your changes.
 +
 * `Amount` (number)
