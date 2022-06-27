@@ -145,7 +145,16 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitExpression(DRLParser.ExpressionContext ctx) {
+    public Object visitDrlExpression(DRLParser.DrlExpressionContext ctx) {
+        return ctx.children.stream()
+                .map(c -> c instanceof TerminalNode ? c : c.accept(this))
+                .filter(Objects::nonNull)
+                .map(Object::toString)
+                .collect(Collectors.joining(" "));
+    }
+
+    @Override
+    public Object visitDrlPrimary(DRLParser.DrlPrimaryContext ctx) {
         return ctx.children.stream()
                 .map(c -> c instanceof TerminalNode ? c : c.accept(this))
                 .filter(Objects::nonNull)
@@ -163,14 +172,14 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitLiteral(DRLParser.LiteralContext ctx) {
+    public Object visitDrlLiteral(DRLParser.DrlLiteralContext ctx) {
         ParseTree node = ctx;
         while (true) {
             if (node instanceof TerminalNode) {
                 return node.toString();
             }
             if (node.getChildCount() != 1) {
-                return super.visitLiteral(ctx);
+                return super.visitDrlLiteral(ctx);
             }
             node = node.getChild(0);
         }
