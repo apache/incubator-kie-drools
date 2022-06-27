@@ -39,6 +39,7 @@ EXISTS : 'exists';
 NOT : 'not';
 IN : 'in';
 FROM : 'from';
+MATCHES : 'matches';
 
 SALIENCE : 'salience';
 ENABLED : 'enabled';
@@ -69,6 +70,10 @@ TIME_INTERVAL
     | (('0'..'9')+ 'ms')
     ;
 
+DRL_STRING_LITERAL
+    :  ('"' ( DrlEscapeSequence | ~('\\'|'"') )* '"')
+    |  ('\'' ( DrlEscapeSequence | ~('\\'|'\'') )* '\'') { setText( normalizeString( getText() ) ); }
+    ;
 
 /////////////////
 // SYMBOLS
@@ -80,3 +85,28 @@ NULL_SAFE_DOT :	'!.' ;
 QUESTION_DIV :	'?/' ;
 
 MISC : '\'' | '\\' | '$' ;
+
+/////////////////
+// Fragment
+/////////////////
+fragment
+DrlEscapeSequence
+    :   '\\' ('b'|'B'|'t'|'n'|'f'|'r'|'"'|'\''|'\\'|'.'|'o'|
+              'x'|'a'|'e'|'c'|'d'|'D'|'s'|'S'|'w'|'W'|'p'|'A'|
+              'G'|'Z'|'z'|'Q'|'E'|'*'|'['|']'|'('|')'|'$'|'^'|
+              '{'|'}'|'?'|'+'|'-'|'&'|'|')
+    |   DrlUnicodeEscape
+    |   DrlOctalEscape
+    ;
+
+fragment
+DrlOctalEscape
+    :   '\\' ('0'..'3') ('0'..'7') ('0'..'7')
+    |   '\\' ('0'..'7') ('0'..'7')
+    |   '\\' ('0'..'7')
+    ;
+
+fragment
+DrlUnicodeEscape
+    :   '\\' 'u' HexDigit HexDigit HexDigit HexDigit
+    ;
