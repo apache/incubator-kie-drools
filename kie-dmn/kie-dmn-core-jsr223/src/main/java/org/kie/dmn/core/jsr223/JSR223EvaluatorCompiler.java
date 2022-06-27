@@ -24,9 +24,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
@@ -45,13 +42,6 @@ import org.slf4j.LoggerFactory;
 
 public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
     private static final Logger LOG = LoggerFactory.getLogger( JSR223EvaluatorCompiler.class );
-
-    private final ObjectMapper MAPPER = JsonMapper.builder()
-        .addModule(new JavaTimeModule())
-        .build()
-        //.configure(JsonWriteFeature.QUOTE_FIELD_NAMES.mappedFeature(), true)
-        ;
-
     private final ScriptEngineManager SEMANAGER;
     
     public JSR223EvaluatorCompiler(DMNCompilerImpl compiler) { // TODO for composition, need DMNEvaluatorCompiler not to rely on self-def methods but go again via compilerConfig defined compiler.
@@ -78,7 +68,7 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
         if (model.getDefinitions().getExpressionLanguage().equals(model.getDefinitions().getURIFEEL())) {
             return super.compileDecisionTable(ctx, model, node, dtName, dt);
         }
-        LOG.info("exprLanguage {}", model.getDefinitions().getExpressionLanguage());
+        LOG.debug("exprLanguage {}", model.getDefinitions().getExpressionLanguage());
         List<JSR223LiteralExpressionEvaluator> ins = new ArrayList<>();
         for (InputClause input : dt.getInput()) {
             LiteralExpression inExpr = input.getInputExpression();
@@ -133,7 +123,7 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
     protected DMNExpressionEvaluator compileLiteralExpr(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, LiteralExpression expression) {
         String exprLanguage = Optional.ofNullable(expression.getExpressionLanguage()).orElse(model.getDefinitions().getExpressionLanguage());
         if (!exprLanguage.equals(model.getDefinitions().getURIFEEL())) {
-            LOG.info("exprLanguage {}", exprLanguage);
+            LOG.debug("exprLanguage {}", exprLanguage);
             final ScriptEngine efEngine = getScriptEngine(exprLanguage);
             // TODO ensure pick only from explicit Requirements?
             final JSR223ScriptEngineEvaluator eval = new JSR223ScriptEngineEvaluator(efEngine, expression.getText());
@@ -152,7 +142,7 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
         if (engine == null) {
             throw new IllegalStateException("was unable to locate scripting engine: "+exprLanguage);
         }
-        LOG.info("Selected ScriptEngine: {}", engine.getFactory().getEngineName());
+        LOG.debug("Selected ScriptEngine: {}", engine.getFactory().getEngineName());
         return engine;
     }
 

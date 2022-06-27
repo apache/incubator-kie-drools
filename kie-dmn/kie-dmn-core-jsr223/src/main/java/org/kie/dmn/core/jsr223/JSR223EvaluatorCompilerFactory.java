@@ -28,7 +28,7 @@ public class JSR223EvaluatorCompilerFactory implements DMNDecisionLogicCompilerF
 
     @Override
     public DMNDecisionLogicCompiler newDMNDecisionLogicCompiler(DMNCompilerImpl dmnCompiler, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        LOG.info("Instantiating JSR223EvaluatorCompilerFactory");
+        LOG.debug("Instantiating JSR223EvaluatorCompilerFactory");
         return new JSR223EvaluatorCompiler(dmnCompiler);
     }
 
