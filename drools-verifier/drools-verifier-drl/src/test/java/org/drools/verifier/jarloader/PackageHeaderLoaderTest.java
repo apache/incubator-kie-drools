@@ -15,17 +15,18 @@
 
 package org.drools.verifier.jarloader;
 
-import org.drools.verifier.Verifier;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.jar.JarInputStream;
 
-import static org.junit.Assert.*;
+import org.drools.verifier.Verifier;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 
 public class PackageHeaderLoaderTest {
@@ -52,9 +53,9 @@ public class PackageHeaderLoaderTest {
 
         Collection<String> classNames = packageHeaderLoader.getClassNames();
 
-        assertEquals(2, classNames.size());
-        assertTrue(classNames.contains("org.test.Rambo"));
-        assertTrue(classNames.contains("org.test.Pet"));
+        assertThat(classNames.size()).isEqualTo(2);
+        assertThat(classNames.contains("org.test.Rambo")).isTrue();
+        assertThat(classNames.contains("org.test.Pet")).isTrue();
     }
 
     @Test
@@ -64,8 +65,8 @@ public class PackageHeaderLoaderTest {
         Collection<String> classNames = packageHeaderLoader.getClassNames();
         Collection<String> missingClasses = packageHeaderLoader.getMissingClasses();
 
-        assertEquals(3, classNames.size());
-        assertEquals(2, missingClasses.size());
+        assertThat(classNames.size()).isEqualTo(3);
+        assertThat(missingClasses.size()).isEqualTo(2);
     }
 
     @Test
@@ -74,20 +75,20 @@ public class PackageHeaderLoaderTest {
 
         Collection<String> fieldNames = packageHeaderLoader.getFieldNames("org.test.Person");
 
-        assertTrue(fieldNames.contains("birhtday")); // Yes it is a typo -Rikkola-
-        assertTrue(fieldNames.contains("firstName"));
-        assertTrue(fieldNames.contains("lastName"));
-        assertTrue(fieldNames.contains("pets"));
-        assertTrue(fieldNames.contains("this"));
+        assertThat(fieldNames.contains("birhtday")).isTrue(); // Yes it is a typo -Rikkola-
+        assertThat(fieldNames.contains("firstName")).isTrue();
+        assertThat(fieldNames.contains("lastName")).isTrue();
+        assertThat(fieldNames.contains("pets")).isTrue();
+        assertThat(fieldNames.contains("this")).isTrue();
 
-        assertEquals("java.lang.String", packageHeaderLoader.getFieldType("org.test.Person", "firstName"));
-        assertEquals("java.lang.String", packageHeaderLoader.getFieldType("org.test.Person", "firstName"));
-        assertEquals("java.util.List", packageHeaderLoader.getFieldType("org.test.Person", "pets"));
-        assertEquals("java.util.Calendar", packageHeaderLoader.getFieldType("org.test.Person", "birhtday"));
-        assertEquals("org.test.Person", packageHeaderLoader.getFieldType("org.test.Person", "this"));
-        assertNull(packageHeaderLoader.getFieldType("org.test.Person", "toString"));
-        assertNull(packageHeaderLoader.getFieldType("org.test.Person", "class"));
-        assertNull(packageHeaderLoader.getFieldType("org.test.Person", "hashCode"));
+        assertThat(packageHeaderLoader.getFieldType("org.test.Person", "firstName")).isEqualTo("java.lang.String");
+        assertThat(packageHeaderLoader.getFieldType("org.test.Person", "firstName")).isEqualTo("java.lang.String");
+        assertThat(packageHeaderLoader.getFieldType("org.test.Person", "pets")).isEqualTo("java.util.List");
+        assertThat(packageHeaderLoader.getFieldType("org.test.Person", "birhtday")).isEqualTo("java.util.Calendar");
+        assertThat(packageHeaderLoader.getFieldType("org.test.Person", "this")).isEqualTo("org.test.Person");
+        assertThat(packageHeaderLoader.getFieldType("org.test.Person", "toString")).isNull();
+        assertThat(packageHeaderLoader.getFieldType("org.test.Person", "class")).isNull();
+        assertThat(packageHeaderLoader.getFieldType("org.test.Person", "hashCode")).isNull();
     }
 
     private PackageHeaderLoader getPackageHeaderLoader(String... imports) {

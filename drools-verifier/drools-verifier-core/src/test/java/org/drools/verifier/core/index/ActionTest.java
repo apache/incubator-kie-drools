@@ -24,7 +24,7 @@ import org.drools.verifier.core.index.model.Column;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class ActionTest {
@@ -44,13 +44,11 @@ public class ActionTest {
     @Test
     public void valueSet() throws
                            Exception {
-        assertEquals( 1,
-                      action.getValues()
-                              .size() );
-        assertEquals( true,
-                      action.getValues()
-                              .iterator()
-                              .next() );
+        assertThat(action.getValues()
+                .size()).isEqualTo(1);
+        assertThat(action.getValues()
+                .iterator()
+                .next()).isEqualTo(true);
     }
 
     @Test
@@ -58,12 +56,10 @@ public class ActionTest {
                               Exception {
         action.setValue( new Values( false ) );
 
-        assertEquals( 1,
-                      action.getValues()
-                              .size() );
-        assertEquals( false,
-                      action.getValues()
-                              .iterator()
-                              .next() );
+        assertThat(action.getValues()
+                .size()).isEqualTo(1);
+        assertThat(action.getValues()
+                .iterator()
+                .next()).isEqualTo(false);
     }
 }

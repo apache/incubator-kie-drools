@@ -30,8 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -70,8 +69,8 @@ public class ConditionsInspectorTest {
                                                                                                                          configurationMock),
                                                                                                       configurationMock));
 
-        assertTrue(a.subsumes(b));
-        assertTrue(b.subsumes(a));
+        assertThat(a.subsumes(b)).isTrue();
+        assertThat(b.subsumes(a)).isTrue();
     }
 
     @Test
@@ -101,8 +100,8 @@ public class ConditionsInspectorTest {
                                                                                                                          configurationMock),
                                                                                                       configurationMock));
 
-        assertFalse(a.subsumes(b));
-        assertTrue(b.subsumes(a));
+        assertThat(a.subsumes(b)).isFalse();
+        assertThat(b.subsumes(a)).isTrue();
     }
 
     @Test
@@ -150,8 +149,8 @@ public class ConditionsInspectorTest {
                                                                                                                         configurationMock),
                                                                                                      configurationMock));
 
-        assertFalse(a.subsumes(b));
-        assertTrue(b.subsumes(a));
+        assertThat(a.subsumes(b)).isFalse();
+        assertThat(b.subsumes(a)).isTrue();
     }
 
     private ConditionsInspectorMultiMap getConditions(final ConditionInspector... numericIntegerConditions) {

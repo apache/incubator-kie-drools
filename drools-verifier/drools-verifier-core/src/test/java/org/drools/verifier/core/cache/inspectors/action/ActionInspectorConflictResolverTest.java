@@ -31,8 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -63,8 +62,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "Toni");
 
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isTrue();
+        assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
@@ -84,8 +83,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "Rambo");
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
@@ -105,8 +104,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "Toni");
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
@@ -125,8 +124,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "true");
 
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isTrue();
+        assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
@@ -145,8 +144,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "false");
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
@@ -165,8 +164,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "20");
 
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isTrue();
+        assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
@@ -185,8 +184,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "10");
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
@@ -206,8 +205,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      format(date));
 
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isTrue();
+        assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
@@ -229,8 +228,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "29-Dec-1981");
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertThat(a.isRedundant(b)).isFalse();
+        assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
@@ -250,8 +249,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "Rambo");
 
-        assertTrue(a.conflicts(b));
-        assertTrue(b.conflicts(a));
+        assertThat(a.conflicts(b)).isTrue();
+        assertThat(b.conflicts(a)).isTrue();
     }
 
     @Test
@@ -270,8 +269,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "false");
 
-        assertTrue(a.conflicts(b));
-        assertTrue(b.conflicts(a));
+        assertThat(a.conflicts(b)).isTrue();
+        assertThat(b.conflicts(a)).isTrue();
     }
 
     @Test
@@ -290,8 +289,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "Rambo");
 
-        assertFalse(a.conflicts(b));
-        assertFalse(b.conflicts(a));
+        assertThat(a.conflicts(b)).isFalse();
+        assertThat(b.conflicts(a)).isFalse();
     }
 
     @Test
@@ -310,8 +309,8 @@ public class ActionInspectorConflictResolverTest {
                                                                new AnalyzerConfigurationMock()),
                                                      "Toni");
 
-        assertFalse(a.conflicts(b));
-        assertFalse(b.conflicts(a));
+        assertThat(a.conflicts(b)).isFalse();
+        assertThat(b.conflicts(a)).isFalse();
     }
 
     @Test
@@ -334,8 +333,8 @@ public class ActionInspectorConflictResolverTest {
                                                                      new Values(true),
                                                                      new AnalyzerConfigurationMock()));
 
-        assertFalse(a.conflicts(b));
-        assertFalse(b.conflicts(a));
+        assertThat(a.conflicts(b)).isFalse();
+        assertThat(b.conflicts(a)).isFalse();
     }
 
     private ActionInspector createSetActionInspector(final Field field,
