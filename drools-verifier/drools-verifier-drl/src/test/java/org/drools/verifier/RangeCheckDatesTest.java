@@ -16,12 +16,8 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
@@ -30,13 +26,15 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Gap;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.StatelessKieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class RangeCheckDatesTest extends TestBaseOld {
 
     @Test
     public void testFake() {
-        assertTrue(true);
+        assertThat(true).isTrue();
     }
 
     @Test
@@ -63,8 +61,8 @@ public class RangeCheckDatesTest extends TestBaseOld {
             // System.out.println(o);
         }
 
-        assertTrue(rulesThatHadErrors.remove("Date gap rule 4a"));
-        assertTrue(rulesThatHadErrors.remove("Date gap rule 5a"));
+        assertThat(rulesThatHadErrors.remove("Date gap rule 4a")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Date gap rule 5a")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -97,8 +95,8 @@ public class RangeCheckDatesTest extends TestBaseOld {
             // System.out.println(o);
         }
 
-        assertTrue(rulesThatHadErrors.remove("Date gap rule 4b"));
-        assertTrue(rulesThatHadErrors.remove("Date gap rule 5b"));
+        assertThat(rulesThatHadErrors.remove("Date gap rule 4b")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Date gap rule 5b")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -131,9 +129,9 @@ public class RangeCheckDatesTest extends TestBaseOld {
             // System.out.println(o);
         }
 
-        assertTrue(rulesThatHadErrors.remove("Date gap rule 1"));
-        assertTrue(rulesThatHadErrors.remove("Date gap rule 7b"));
-        assertTrue(rulesThatHadErrors.remove("Date gap rule 3"));
+        assertThat(rulesThatHadErrors.remove("Date gap rule 1")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Date gap rule 7b")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Date gap rule 3")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -166,9 +164,9 @@ public class RangeCheckDatesTest extends TestBaseOld {
             // System.out.println(o);
         }
 
-        assertTrue(rulesThatHadErrors.remove("Date gap rule 1"));
-        assertTrue(rulesThatHadErrors.remove("Date gap rule 6b"));
-        assertTrue(rulesThatHadErrors.remove("Date gap rule 2"));
+        assertThat(rulesThatHadErrors.remove("Date gap rule 1")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Date gap rule 6b")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Date gap rule 2")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {

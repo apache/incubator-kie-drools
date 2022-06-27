@@ -26,8 +26,7 @@ import org.drools.verifier.core.maps.MultiMapFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ListenRemoveTest {
 
@@ -91,29 +90,27 @@ public class ListenRemoveTest {
     public void testBeginning() throws Exception {
         map.remove( new Value( 0 ) );
 
-        assertEquals( teenager,
-                      first );
-        assertNull( last );
-        assertEquals( 2, all.size() );
+        assertThat(first).isEqualTo(teenager);
+        assertThat(last).isNull();
+        assertThat(all.size()).isEqualTo(2);
     }
 
     @Test
     public void testEnd() throws Exception {
         map.remove( new Value( 100 ) );
 
-        assertNull( first );
-        assertEquals( teenager,
-                      last );
-        assertEquals( 2, all.size() );
+        assertThat(first).isNull();
+        assertThat(last).isEqualTo(teenager);
+        assertThat(all.size()).isEqualTo(2);
     }
 
     @Test
     public void testMiddle() throws Exception {
         map.remove( new Value( 15 ) );
 
-        assertNull( first );
-        assertNull( last );
-        assertEquals( 2, all.size() );
+        assertThat(first).isNull();
+        assertThat(last).isNull();
+        assertThat(all.size()).isEqualTo(2);
     }
 
     class Person {

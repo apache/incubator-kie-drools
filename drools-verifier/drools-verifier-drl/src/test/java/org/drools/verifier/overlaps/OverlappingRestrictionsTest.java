@@ -30,7 +30,7 @@ import org.kie.api.runtime.ClassObjectFilter;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OverlappingRestrictionsTest extends TestBaseOld {
 
@@ -45,10 +45,10 @@ public class OverlappingRestrictionsTest extends TestBaseOld {
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource(
                 "RestrictionsTest.drl", getClass()), ResourceType.DRL);
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<? extends Object> overlaps = ((VerifierImpl) verifier)
                 .getKnowledgeSession().getObjects(
@@ -58,7 +58,7 @@ public class OverlappingRestrictionsTest extends TestBaseOld {
             System.out.println(object);
         }
 
-        assertEquals(3, overlaps.size());
+        assertThat(overlaps.size()).isEqualTo(3);
 
         verifier.dispose();
 
@@ -66,6 +66,6 @@ public class OverlappingRestrictionsTest extends TestBaseOld {
 
     @Test
     public void testDUMMY() throws Exception {
-        assertTrue(true);
+        assertThat(true).isTrue();
     }
 }

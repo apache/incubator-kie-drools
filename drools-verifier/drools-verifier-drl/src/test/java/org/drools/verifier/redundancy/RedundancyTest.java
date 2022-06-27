@@ -29,7 +29,7 @@ import org.kie.api.runtime.ClassObjectFilter;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RedundancyTest {
 
@@ -44,18 +44,16 @@ public class RedundancyTest {
                 getClass()),
                                       ResourceType.DRL);
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
         Collection<? extends Object> redundancyList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Redundancy.class));
 
-        assertEquals(2,
-                     subsumptionList.size());
-        assertEquals(1,
-                     redundancyList.size());
+        assertThat(subsumptionList.size()).isEqualTo(2);
+        assertThat(redundancyList.size()).isEqualTo(1);
 
         verifier.dispose();
     }
