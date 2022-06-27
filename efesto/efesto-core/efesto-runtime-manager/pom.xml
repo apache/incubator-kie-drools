@@ -6,18 +6,17 @@
 
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>efesto</artifactId>
+    <artifactId>efesto-core</artifactId>
     <version>8.24.0-SNAPSHOT</version>
   </parent>
   <packaging>pom</packaging>
 
-  <artifactId>efesto-core</artifactId>
-  <name>Efesto :: Core</name>
+  <artifactId>runtime-manager</artifactId>
+  <name>Efesto :: Runtime :: Manager</name>
 
   <modules>
-    <module>efesto-common-api</module>
-    <module>efesto-compilation-manager</module>
-    <module>efesto-runtime-manager</module>
+    <module>efesto-runtime-manager-api</module>
+    <module>efesto-runtime-manager-core</module>
   </modules>
 
 

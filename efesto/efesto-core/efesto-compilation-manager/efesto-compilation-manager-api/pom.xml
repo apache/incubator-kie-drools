@@ -6,12 +6,12 @@
 
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>efesto</artifactId>
+    <artifactId>compilation-manager</artifactId>
     <version>8.24.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>efesto-common-utils</artifactId>
-  <name>Efesto :: Common :: Utils</name>
+  <artifactId>efesto-compilation-manager-api</artifactId>
+  <name>Efesto :: Compilation :: Manager :: Api</name>
 
   <properties>
     <skip.jdepend>false</skip.jdepend>
@@ -23,10 +23,9 @@
       <artifactId>efesto-common-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.github.javaparser</groupId>
-      <artifactId>javaparser-core</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
     </dependency>
   </dependencies>
-
 
 </project>

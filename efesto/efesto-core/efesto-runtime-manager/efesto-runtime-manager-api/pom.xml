@@ -6,12 +6,12 @@
 
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>efesto</artifactId>
+    <artifactId>runtime-manager</artifactId>
     <version>8.24.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>efesto-common-utils</artifactId>
-  <name>Efesto :: Common :: Utils</name>
+ <artifactId>efesto-runtime-manager-api</artifactId>
+  <name>Efesto :: Runtime :: Manager :: Api</name>
 
   <properties>
     <skip.jdepend>false</skip.jdepend>
@@ -22,9 +22,10 @@
       <groupId>org.kie</groupId>
       <artifactId>efesto-common-api</artifactId>
     </dependency>
+    <!--- Needed to propagate MemoryCompiler for on-the-fly compilation -->
     <dependency>
-      <groupId>com.github.javaparser</groupId>
-      <artifactId>javaparser-core</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
     </dependency>
   </dependencies>
 

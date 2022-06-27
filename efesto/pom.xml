@@ -29,62 +29,6 @@
     <module>efesto-core</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-common-utils</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>common-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>compilation-manager-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>compilation-manager-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>runtime-manager-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>runtime-manager-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- ENGINES -->
-      <!-- External -->
-      <!-- Kie -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-memory-compiler</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Logging -->
-      <!-- Test -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>runtime-manager-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>tests</classifier>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <!-- Dependencies core to all modules. Keep that as limited as possible. Please avoid indirect or looped dependencies-->
   <dependencies>
     <!-- External -->
