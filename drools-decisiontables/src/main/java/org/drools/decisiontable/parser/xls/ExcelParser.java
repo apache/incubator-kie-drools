@@ -190,10 +190,11 @@ public class ExcelParser
                         break;
                     case FORMULA:
                         try {
+                            boolean ignoreNumericFormat = doesIgnoreNumericFormat(listeners) && !isGeneralFormat(cell);
                             newCell(listeners,
                                     i,
                                     cellNum,
-                                    getFormulaValue( formatter, formulaEvaluator, cell ),
+                                    getFormulaValue( formatter, formulaEvaluator, cell, ignoreNumericFormat ),
                                     mergedColStart);
                         } catch (RuntimeException e) {
                             // This is thrown if an external link cannot be resolved, so try the cached value
@@ -255,9 +256,13 @@ public class ExcelParser
         return nf.getFormat().equalsIgnoreCase("General");
     }
 
-    private String getFormulaValue( DataFormatter formatter, FormulaEvaluator formulaEvaluator, Cell cell ) {
-        if ( formulaEvaluator.evaluate( cell ).getCellType() == CellType.BOOLEAN ) {
+    private String getFormulaValue(DataFormatter formatter, FormulaEvaluator formulaEvaluator, Cell cell, boolean ignoreNumericFormat) {
+        CellType cellType = formulaEvaluator.evaluate(cell).getCellType();
+        if (cellType == CellType.BOOLEAN) {
             return cell.getBooleanCellValue() ? "true" : "false";
+        }
+        if (cellType == CellType.NUMERIC && ignoreNumericFormat) {
+            return String.valueOf(formulaEvaluator.evaluate(cell).getNumberValue());
         }
         return formatter.formatCellValue(cell, formulaEvaluator);
     }
