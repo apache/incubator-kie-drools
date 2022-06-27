@@ -29,9 +29,6 @@ import org.junit.Test;
 import org.kie.api.io.ResourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class CauseTest {
 
@@ -42,9 +39,8 @@ public class CauseTest {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
-        assertFalse( vBuilder.hasErrors() );
-        assertEquals( 0,
-                      vBuilder.getErrors().size() );
+        assertThat(vBuilder.hasErrors()).isFalse();
+        assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
         Verifier verifier = vBuilder.newVerifier();
 
@@ -52,18 +48,16 @@ public class CauseTest {
                                                               getClass() ),
                                        ResourceType.DRL );
 
-        assertFalse( verifier.hasErrors() );
-        assertEquals( 0,
-                      verifier.getErrors().size() );
+        assertThat(verifier.hasErrors()).isFalse();
+        assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis();
 
-        assertTrue( works );
+        assertThat(works).isTrue();
 
         VerifierReport result = verifier.getResult();
         assertThat(result).isNotNull();
-        assertEquals( 0,
-                      result.getBySeverity( Severity.ERROR ).size() );
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(0);
         Collection<VerifierMessageBase> warnings = result.getBySeverity( Severity.WARNING );
         Collection<VerifierMessageBase> redundancyWarnings = new ArrayList<VerifierMessageBase>();
 
@@ -73,45 +67,37 @@ public class CauseTest {
             }
         }
 
-        assertEquals( 1,
-                      redundancyWarnings.size() );
+        assertThat(redundancyWarnings.size()).isEqualTo(1);
 
         VerifierMessage message = (VerifierMessage) redundancyWarnings.toArray()[0];
 
         //        System.out.println( message );
 
-        assertEquals( 2,
-                      message.getImpactedRules().size() );
+        assertThat(message.getImpactedRules().size()).isEqualTo(2);
 
-        assertTrue( message.getImpactedRules().values().contains( "Your First Rule" ) );
-        assertTrue( message.getImpactedRules().values().contains( "Your Second Rule" ) );
+        assertThat(message.getImpactedRules().values().contains("Your First Rule")).isTrue();
+        assertThat(message.getImpactedRules().values().contains("Your Second Rule")).isTrue();
 
         Cause[] causes = message.getCauses().toArray( new Cause[message.getCauses().size()] );
 
-        assertEquals( 1,
-                      causes.length );
+        assertThat(causes.length).isEqualTo(1);
         causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
 
-        assertEquals( 2,
-                      causes.length );
-
-        causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
-
-        assertEquals( 1,
-                      causes.length );
+        assertThat(causes.length).isEqualTo(2);
 
         causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
 
-        assertEquals( 1,
-                      causes.length );
+        assertThat(causes.length).isEqualTo(1);
 
         causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
 
-        assertEquals( 2,
-                      causes.length );
+        assertThat(causes.length).isEqualTo(1);
 
-        assertEquals( 0,
-                      result.getBySeverity( Severity.NOTE ).size() );
+        causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
+
+        assertThat(causes.length).isEqualTo(2);
+
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(0);
 
     }
 }

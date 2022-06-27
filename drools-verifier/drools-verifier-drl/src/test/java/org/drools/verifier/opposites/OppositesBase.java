@@ -24,14 +24,14 @@ import org.drools.verifier.report.components.Opposites;
 
 import java.util.*;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OppositesBase extends TestBaseOld {
 
     public void testDummy() {
         // this is needed as eclipse will try to run this and produce a failure
         // if its not here.
-        assertTrue(true);
+        assertThat(true).isTrue();
     }
 
     /**

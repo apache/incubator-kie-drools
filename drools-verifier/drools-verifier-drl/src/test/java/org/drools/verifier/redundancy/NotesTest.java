@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NotesTest extends TestBaseOld {
 
@@ -75,16 +75,13 @@ public class NotesTest extends TestBaseOld {
         Collection<VerifierMessageBase> notes = result.getBySeverity(Severity.NOTE);
 
         // Has at least one item.
-        assertEquals(1,
-                     notes.size());
+        assertThat(notes.size()).isEqualTo(1);
 
         VerifierMessageBase note = notes.iterator().next();
         Iterator<Cause> causes = note.getCauses().iterator();
 
-        assertEquals(left,
-                     causes.next());
-        assertEquals(right,
-                     causes.next());
+        assertThat(causes.next()).isEqualTo(left);
+        assertThat(causes.next()).isEqualTo(right);
     }
 
     @Test
@@ -127,15 +124,12 @@ public class NotesTest extends TestBaseOld {
         Collection<VerifierMessageBase> notes = result.getBySeverity(Severity.NOTE);
 
         // Has at least one item.
-        assertEquals(1,
-                     notes.size());
+        assertThat(notes.size()).isEqualTo(1);
 
         VerifierMessageBase note = notes.iterator().next();
         Iterator<Cause> causes = note.getCauses().iterator();
 
-        assertEquals(left,
-                     causes.next());
-        assertEquals(right,
-                     causes.next());
+        assertThat(causes.next()).isEqualTo(left);
+        assertThat(causes.next()).isEqualTo(right);
     }
 }

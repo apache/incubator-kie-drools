@@ -18,23 +18,22 @@ package org.drools.verifier.core.maps;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultiMapFactoryTest {
 
     @Test
     public void testDefault() throws Exception {
-        assertFalse(MultiMapFactory.make() instanceof ChangeHandledMultiMap);
+        assertThat(MultiMapFactory.make() instanceof ChangeHandledMultiMap).isFalse();
     }
 
     @Test
     public void normal() throws Exception {
-        assertFalse( MultiMapFactory.make( false ) instanceof ChangeHandledMultiMap );
+        assertThat(MultiMapFactory.make(false) instanceof ChangeHandledMultiMap).isFalse();
     }
 
     @Test
     public void changeHandled() throws Exception {
-        assertTrue( MultiMapFactory.make( true ) instanceof ChangeHandledMultiMap );
+        assertThat(MultiMapFactory.make(true) instanceof ChangeHandledMultiMap).isTrue();
     }
 }

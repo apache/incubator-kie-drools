@@ -24,7 +24,7 @@ import org.drools.verifier.core.index.model.ConditionSuperType;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class ConditionTest {
@@ -45,13 +45,11 @@ public class ConditionTest {
     @Test
     public void valueSet() throws
                            Exception {
-        assertEquals( 1,
-                      condition.getValues()
-                              .size() );
-        assertEquals( 1,
-                      condition.getValues()
-                              .iterator()
-                              .next() );
+        assertThat(condition.getValues()
+                .size()).isEqualTo(1);
+        assertThat(condition.getValues()
+                .iterator()
+                .next()).isEqualTo(1);
     }
 
     @Test
@@ -59,12 +57,10 @@ public class ConditionTest {
                               Exception {
         condition.setValue( new Values( 2 ) );
 
-        assertEquals( 1,
-                      condition.getValues()
-                              .size() );
-        assertEquals( 2,
-                      condition.getValues()
-                              .iterator()
-                              .next() );
+        assertThat(condition.getValues()
+                .size()).isEqualTo(1);
+        assertThat(condition.getValues()
+                .iterator()
+                .next()).isEqualTo(2);
     }
 }
