@@ -1,4 +1,4 @@
-Drools core
+Efesto core
 ===========
 
 This is the module containing the core - business - functionalities of Drools, that are
