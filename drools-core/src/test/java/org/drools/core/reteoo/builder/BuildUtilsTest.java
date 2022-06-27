@@ -31,9 +31,9 @@ import org.drools.core.time.TemporalDependencyMatrix;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.time.Interval.MAX;
 import static org.drools.core.time.Interval.MIN;
-import static org.junit.Assert.assertEquals;
 
 public class BuildUtilsTest {
     
@@ -116,17 +116,17 @@ public class BuildUtilsTest {
         TemporalDependencyMatrix matrix = utils.calculateTemporalDistance( and );
         //printMatrix( matrix.getMatrix() );
         assertEqualsMatrix( expected, matrix.getMatrix() );
-        
-        assertEquals( 15, matrix.getExpirationOffset( a ) );
-        assertEquals( 11, matrix.getExpirationOffset( d ) );
-        assertEquals( 1, matrix.getExpirationOffset( e ) );
+
+        assertThat(matrix.getExpirationOffset(a)).isEqualTo(15);
+        assertThat(matrix.getExpirationOffset(d)).isEqualTo(11);
+        assertThat(matrix.getExpirationOffset(e)).isEqualTo(1);
         
     }
 
     public void assertEqualsMatrix( Interval[][] expected, Interval[][] matrix ) {
         for( int i = 0; i < matrix.length; i++ ) {
             for( int j = 0; j < matrix[i].length; j++ ) {
-                assertEquals( "Wrong value at ("+i+", "+j, expected[i][j], matrix[i][j] );
+                assertThat(matrix[i][j]).as("Wrong value at (" + i + ", " + j).isEqualTo(expected[i][j]);
             }
         }
     }

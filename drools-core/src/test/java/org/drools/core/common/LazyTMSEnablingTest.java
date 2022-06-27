@@ -24,9 +24,7 @@ import org.drools.core.test.model.MockActivation;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * <p>
@@ -61,23 +59,19 @@ public class LazyTMSEnablingTest {
 
         ksession.insert(fact1);
 
-        assertEquals(
-                "Shouldn't have anything, since no logical insert was performed.",
-                0, tms.getEqualityKeyMap().size());
+        assertThat(tms.getEqualityKeyMap().size()).as("Shouldn't have anything, since no logical insert was performed.").isEqualTo(0);
 
         final String fact2 = "logical";
 
         ksession.getTruthMaintenanceSystem().insert( fact2, null, null, new MockActivation() );
 
-        assertEquals(
-                "Now that a logical insert was done, it should have an element.",
-                1, tms.getEqualityKeyMap().size());
+        assertThat(tms.getEqualityKeyMap().size()).as("Now that a logical insert was done, it should have an element.").isEqualTo(1);
 
         // Make sure the internals are fine.
         ObjectTypeConf typeConf = ksession.getObjectTypeConfigurationRegistry()
                 .getOrCreateObjectTypeConf(ksession.getEntryPoint(), fact1);
 
-        assertTrue("Should have enabled TMS", typeConf.isTMSEnabled());
+        assertThat(typeConf.isTMSEnabled()).as("Should have enabled TMS").isTrue();
 
     }
 
@@ -107,24 +101,22 @@ public class LazyTMSEnablingTest {
         for (ObjectTypeConf conf : ksession.getObjectTypeConfigurationRegistry()
                 .values()) {
 
-            assertFalse(
-                    "TMS shouldn't be enabled for any type, since no logical insert was done.",
-                    conf.isTMSEnabled());
+            assertThat(conf.isTMSEnabled()).as("TMS shouldn't be enabled for any type, since no logical insert was done.").isFalse();
 
         }
 
         ksession.getTruthMaintenanceSystem().insert( stringFact2, null, null, new MockActivation() );
 
-        assertTrue("Should have enabled TMS for Strings.", stringTypeConf
-                .isTMSEnabled());
+        assertThat(stringTypeConf
+                .isTMSEnabled()).as("Should have enabled TMS for Strings.").isTrue();
 
-        assertFalse("Shouldn't have enabled TMS for Integers.", intTypeConf
-                .isTMSEnabled());
+        assertThat(intTypeConf
+                .isTMSEnabled()).as("Shouldn't have enabled TMS for Integers.").isFalse();
 
         ksession.getTruthMaintenanceSystem().insert( intFact2, null, null, new MockActivation() );
 
-        assertTrue("Now it should have enabled TMS for Integers!.", intTypeConf
-                .isTMSEnabled());
+        assertThat(intTypeConf
+                .isTMSEnabled()).as("Now it should have enabled TMS for Integers!.").isTrue();
 
     }
 

@@ -24,7 +24,8 @@ import org.drools.core.reteoo.TupleIterator.OnLeaf;
 
 import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class TupleIterationTest {
@@ -76,9 +77,9 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
         };
         
         iterator.traverse( t0, t0, onLeaf );
-        
-        assertEquals( leafs.length, foundLeafs.size() );
-        assertEquals( Arrays.asList( leafs ), foundLeafs );
+
+        assertThat(foundLeafs).hasSameSizeAs(leafs);
+        assertThat(foundLeafs).isEqualTo(Arrays.asList(leafs));
     }
     
     @Test
@@ -135,8 +136,8 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
         };
         
         iterator.traverse( t0, t0, onLeaf );
-        
-        assertEquals( leafs.length, foundLeafs.size() );
-        assertEquals( Arrays.asList( leafs ), foundLeafs );
+
+        assertThat(foundLeafs).hasSameSizeAs(leafs);
+        assertThat(foundLeafs).isEqualTo(Arrays.asList(leafs));
     }
 }

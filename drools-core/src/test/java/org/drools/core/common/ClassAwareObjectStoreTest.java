@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class ClassAwareObjectStoreTest {
@@ -110,7 +109,7 @@ public class ClassAwareObjectStoreTest {
 
     @Test
     public void onceSuperClassIsSetUpForReadingItCanBecomeSetUpForWritingWithoutGettingDuplicateQueryReturns() throws Exception {
-        assertTrue(collect(underTest.iterateObjects(SuperClass.class)).isEmpty());
+        assertThat(collect(underTest.iterateObjects(SuperClass.class)).isEmpty()).isTrue();
 
         insertObjectWithFactHandle(new SubClass());
         insertObjectWithFactHandle(new SuperClass());

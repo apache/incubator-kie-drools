@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.drools.core.impl.KnowledgeBaseFactory;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleUnlinkingTest {
     InternalKnowledgeBase kBase;
@@ -176,16 +176,16 @@ public class RuleUnlinkingTest {
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         PathMemory rs = (PathMemory) wm.getNodeMemory( rtn1 );
-        assertFalse( rs.isRuleLinked() );
-        assertEquals( 1, rs.getAllLinkedMaskTest() );
+        assertThat(rs.isRuleLinked()).isFalse();
+        assertThat(rs.getAllLinkedMaskTest()).isEqualTo(1);
 
         rs = (PathMemory) wm.getNodeMemory( rtn2 );
-        assertFalse( rs.isRuleLinked() );
-        assertEquals( 3, rs.getAllLinkedMaskTest() );
+        assertThat(rs.isRuleLinked()).isFalse();
+        assertThat(rs.getAllLinkedMaskTest()).isEqualTo(3);
 
         rs = (PathMemory) wm.getNodeMemory( rtn3 );
-        assertFalse( rs.isRuleLinked() );
-        assertEquals( 7, rs.getAllLinkedMaskTest() );
+        assertThat(rs.isRuleLinked()).isFalse();
+        assertThat(rs.getAllLinkedMaskTest()).isEqualTo(7);
     }
 
     @Test
@@ -204,83 +204,83 @@ public class RuleUnlinkingTest {
 
         // n1
         bm = createSegmentMemory( n1, wm );
-        assertEquals( 2, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
-        assertEquals( 1, bm.getSegmentMemory().getSegmentPosMaskBit() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(2);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
+        assertThat(bm.getSegmentMemory().getSegmentPosMaskBit()).isEqualTo(1);
         list = bm.getSegmentMemory().getPathMemories();
-        assertEquals( 3, list.size() );
-        assertTrue( list.contains( rtn1Rs ) );
-        assertTrue( list.contains( rtn2Rs ) );
-        assertTrue( list.contains( rtn3Rs ) );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains(rtn1Rs)).isTrue();
+        assertThat(list.contains(rtn2Rs)).isTrue();
+        assertThat(list.contains(rtn3Rs)).isTrue();
 
         // n2
         bm = createSegmentMemory( n2, wm );
-        assertEquals( 4, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
-        assertEquals( 1, bm.getSegmentMemory().getSegmentPosMaskBit() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(4);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
+        assertThat(bm.getSegmentMemory().getSegmentPosMaskBit()).isEqualTo(1);
         list = bm.getSegmentMemory().getPathMemories();
-        assertEquals( 3, list.size() );
-        assertTrue( list.contains( rtn1Rs ) );
-        assertTrue( list.contains( rtn2Rs ) );
-        assertTrue( list.contains( rtn3Rs ) );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains(rtn1Rs)).isTrue();
+        assertThat(list.contains(rtn2Rs)).isTrue();
+        assertThat(list.contains(rtn3Rs)).isTrue();
 
         // n3
         bm = createSegmentMemory( n3, wm );
-        assertEquals( 8, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
-        assertEquals( 1, bm.getSegmentMemory().getSegmentPosMaskBit() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(8);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
+        assertThat(bm.getSegmentMemory().getSegmentPosMaskBit()).isEqualTo(1);
         list = bm.getSegmentMemory().getPathMemories();
-        assertEquals( 3, list.size() );
-        assertTrue( list.contains( rtn1Rs ) );
-        assertTrue( list.contains( rtn2Rs ) );
-        assertTrue( list.contains( rtn3Rs ) );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains(rtn1Rs)).isTrue();
+        assertThat(list.contains(rtn2Rs)).isTrue();
+        assertThat(list.contains(rtn3Rs)).isTrue();
 
         // n4
         bm = createSegmentMemory( n4, wm );
-        assertEquals( 1, bm.getNodePosMaskBit() );
-        assertEquals( 3, bm.getSegmentMemory().getAllLinkedMaskTest() );
-        assertEquals( 2, bm.getSegmentMemory().getSegmentPosMaskBit() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(1);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3);
+        assertThat(bm.getSegmentMemory().getSegmentPosMaskBit()).isEqualTo(2);
         list = bm.getSegmentMemory().getPathMemories();
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( rtn2Rs ) );
-        assertTrue( list.contains( rtn3Rs ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains(rtn2Rs)).isTrue();
+        assertThat(list.contains(rtn3Rs)).isTrue();
 
         // n5
         bm = createSegmentMemory( n5, wm );
-        assertEquals( 2, bm.getNodePosMaskBit() );
-        assertEquals( 3, bm.getSegmentMemory().getAllLinkedMaskTest() );
-        assertEquals( 2, bm.getSegmentMemory().getSegmentPosMaskBit() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(2);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3);
+        assertThat(bm.getSegmentMemory().getSegmentPosMaskBit()).isEqualTo(2);
         list = bm.getSegmentMemory().getPathMemories();
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( rtn2Rs ) );
-        assertTrue( list.contains( rtn3Rs ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains(rtn2Rs)).isTrue();
+        assertThat(list.contains(rtn3Rs)).isTrue();
 
         // n6
         bm = createSegmentMemory( n6, wm );
-        assertEquals( 1, bm.getNodePosMaskBit() );
-        assertEquals( 7, bm.getSegmentMemory().getAllLinkedMaskTest() );
-        assertEquals( 4, bm.getSegmentMemory().getSegmentPosMaskBit() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(1);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(7);
+        assertThat(bm.getSegmentMemory().getSegmentPosMaskBit()).isEqualTo(4);
         list = bm.getSegmentMemory().getPathMemories();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( rtn3Rs ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains(rtn3Rs)).isTrue();
 
         // n7
         bm = createSegmentMemory( n7, wm );
-        assertEquals( 2, bm.getNodePosMaskBit() );
-        assertEquals( 7, bm.getSegmentMemory().getAllLinkedMaskTest() );
-        assertEquals( 4, bm.getSegmentMemory().getSegmentPosMaskBit() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(2);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(7);
+        assertThat(bm.getSegmentMemory().getSegmentPosMaskBit()).isEqualTo(4);
         list = bm.getSegmentMemory().getPathMemories();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( rtn3Rs ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains(rtn3Rs)).isTrue();
 
         // n8
         bm = createSegmentMemory( n8, wm );
-        assertEquals( 4, bm.getNodePosMaskBit() );
-        assertEquals( 7, bm.getSegmentMemory().getAllLinkedMaskTest() );
-        assertEquals( 4, bm.getSegmentMemory().getSegmentPosMaskBit() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(4);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(7);
+        assertThat(bm.getSegmentMemory().getSegmentPosMaskBit()).isEqualTo(4);
         list = bm.getSegmentMemory().getPathMemories();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( rtn3Rs ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains(rtn3Rs)).isTrue();
     }
 
     @Test
@@ -306,47 +306,47 @@ public class RuleUnlinkingTest {
         n4.assertObject( f1, context, wm );
         n8.assertObject( f1, context, wm );
 
-        assertFalse( rtn1Rs.isRuleLinked() );
-        assertFalse( rtn2Rs.isRuleLinked() );
-        assertFalse( rtn3Rs.isRuleLinked() );
+        assertThat(rtn1Rs.isRuleLinked()).isFalse();
+        assertThat(rtn2Rs.isRuleLinked()).isFalse();
+        assertThat(rtn3Rs.isRuleLinked()).isFalse();
 
         // Link in Rule1
         bm = (BetaMemory) wm.getNodeMemory( n2 );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();
 
         DefaultFactHandle f2 = (DefaultFactHandle) wm.insert( "test2" );
         n2.assertObject( f2, context, wm );
-        assertTrue( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isTrue();
 
-        assertTrue( rtn1Rs.isRuleLinked() );
-        assertFalse( rtn2Rs.isRuleLinked() );
-        assertFalse( rtn3Rs.isRuleLinked() );
+        assertThat(rtn1Rs.isRuleLinked()).isTrue();
+        assertThat(rtn2Rs.isRuleLinked()).isFalse();
+        assertThat(rtn3Rs.isRuleLinked()).isFalse();
 
         // Link in Rule2
         bm = (BetaMemory) wm.getNodeMemory( n5 );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();
 
         n5.assertObject( f1, context, wm );
-        assertTrue( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isTrue();
 
-        assertTrue( rtn1Rs.isRuleLinked() );
-        assertTrue( rtn2Rs.isRuleLinked() );
-        assertFalse( rtn3Rs.isRuleLinked() );
+        assertThat(rtn1Rs.isRuleLinked()).isTrue();
+        assertThat(rtn2Rs.isRuleLinked()).isTrue();
+        assertThat(rtn3Rs.isRuleLinked()).isFalse();
 
         // Link in Rule3
         n6.assertObject( f1, context, wm );
         n7.assertObject( f1, context, wm );
-        assertTrue( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isTrue();
 
-        assertTrue( rtn1Rs.isRuleLinked() );
-        assertTrue( rtn2Rs.isRuleLinked() );
-        assertTrue( rtn3Rs.isRuleLinked() );
+        assertThat(rtn1Rs.isRuleLinked()).isTrue();
+        assertThat(rtn2Rs.isRuleLinked()).isTrue();
+        assertThat(rtn3Rs.isRuleLinked()).isTrue();
 
         // retract n2, should unlink all rules
         n2.retractRightTuple( f2.getFirstRightTuple(), context, wm );
-        assertFalse( rtn1Rs.isRuleLinked() );
-        assertFalse( rtn2Rs.isRuleLinked() );
-        assertFalse( rtn3Rs.isRuleLinked() );
+        assertThat(rtn1Rs.isRuleLinked()).isFalse();
+        assertThat(rtn2Rs.isRuleLinked()).isFalse();
+        assertThat(rtn3Rs.isRuleLinked()).isFalse();
     }
 
     private static BetaMemory createSegmentMemory(BetaNode node,

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DroolsAssert {
 
@@ -32,7 +32,7 @@ public class DroolsAssert {
             enumeration.nextElement();
             actualSize++;
         }
-        assertEquals("Enumeration size different than expected.", expectedSize, actualSize);
+        assertThat(actualSize).as("Enumeration size different than expected.").isEqualTo(expectedSize);
     }
 
     public static void assertUrlEnumerationContainsMatch(String regex, Enumeration<URL> enumeration) {

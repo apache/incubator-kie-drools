@@ -27,7 +27,7 @@ public class Person {
     private String name;
     private int    age;
     
-    private String likes;
+    private String likes; 
     
     private String street;
     private String city;

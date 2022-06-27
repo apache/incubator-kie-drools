@@ -18,8 +18,7 @@ package org.drools.core.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScalablePoolTest {
 
@@ -63,7 +62,7 @@ public class ScalablePoolTest {
         check( monitor, 1, 1, 0 );
 
         PooledResource resource2 = pool.get();
-        assertSame(resource, resource2);
+        assertThat(resource).isSameAs(resource2);
         check( monitor, 1, 1, 0 );
 
         pool.shutdown();
@@ -109,8 +108,8 @@ public class ScalablePoolTest {
     }
 
     private void check( Monitor monitor, int expectedNew, int expectedReset, int expectedDispose ) {
-        assertEquals(expectedNew, monitor.newCounter);
-        assertEquals(expectedReset, monitor.resetCounter);
-        assertEquals(expectedDispose, monitor.disposeCounter);
+        assertThat(monitor.newCounter).isEqualTo(expectedNew);
+        assertThat(monitor.resetCounter).isEqualTo(expectedReset);
+        assertThat(monitor.disposeCounter).isEqualTo(expectedDispose);
     }
 }
