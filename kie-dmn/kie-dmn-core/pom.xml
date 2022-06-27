@@ -139,6 +139,12 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-utils</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-tree-model</artifactId>
       <scope>provided</scope>
       <optional>true</optional>

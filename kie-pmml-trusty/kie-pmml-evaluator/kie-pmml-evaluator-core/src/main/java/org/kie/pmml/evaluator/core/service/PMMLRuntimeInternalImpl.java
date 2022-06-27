@@ -77,4 +77,8 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         return Optional.empty();
     }
 
+    @Override
+    public KieMemoryCompiler.MemoryCompilerClassLoader getMemoryClassLoader() {
+        return memoryCompilerClassLoader;
+    }
 }

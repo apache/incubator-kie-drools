@@ -3,25 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kie-pmml-models</artifactId>
+    <artifactId>kie-pmml-evaluator</artifactId>
     <groupId>org.kie</groupId>
     <version>8.24.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-models-tests</artifactId>
-
-  <name>KIE :: PMML :: Models :: Tests</name>
-  <description>PMML Common classes for Tests</description>
+  <artifactId>kie-pmml-evaluator-utils</artifactId>
+  <name>KIE :: PMML :: Evaluator :: Utils</name>
+  <description>Evaluation utils for PMML models inside KIE runtime environment</description>
 
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-evaluator-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-evaluator-utils</artifactId>
+      <artifactId>kie-pmml-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -29,13 +24,13 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>compilation-manager-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
     </dependency>
   </dependencies>
 
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
 
 </project>

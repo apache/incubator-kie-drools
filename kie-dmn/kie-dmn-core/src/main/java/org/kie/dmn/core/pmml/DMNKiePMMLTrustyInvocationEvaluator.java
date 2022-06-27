@@ -42,10 +42,9 @@ import org.kie.dmn.model.api.DMNElement;
 import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-// TODO gcardosi
-//import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
+import org.kie.pmml.evaluator.utils.PMMLRuntimeFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +52,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLTrustyInvocationEvaluator.class);
 
-    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = null;//new PMMLRuntimeFactoryImpl();
+    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = new PMMLRuntimeFactoryImpl();
 
     public DMNKiePMMLTrustyInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model,
                                                PMMLInfo<?> pmmlInfo) {
@@ -129,10 +128,11 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
 
     private PMMLRuntime getPMMLRuntimeFromDMNRuntimeKBWrappingIKB(DMNRuntimeKBWrappingIKB runtimeKB) {
         String pmmlFilePath = documentResource.getSourcePath();
-        String pmmlFileName = pmmlFilePath.contains("/") ? pmmlFilePath.substring(pmmlFilePath.lastIndexOf('/')+1) : pmmlFilePath;
-        PMMLRuntime toReturn = PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFileNameModelNameAndKieBase(pmmlFileName,
-                                                                                                  model,
-                                                                                                  runtimeKB.getInternalKnowledgeBase());
+        String pmmlFileName = pmmlFilePath.contains("/") ? pmmlFilePath.substring(pmmlFilePath.lastIndexOf('/') + 1)
+                : pmmlFilePath;
+
+        PMMLRuntime toReturn = PMML_RUNTIME_FACTORY.getPMMLRuntimeFromClasspath(pmmlFileName);
+
         if (!toReturn.getPMMLModel(model).isPresent()) {
             File pmmlFile = getPMMLFile();
             toReturn = PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);

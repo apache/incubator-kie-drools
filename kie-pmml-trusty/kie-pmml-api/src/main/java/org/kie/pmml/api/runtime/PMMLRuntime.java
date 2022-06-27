@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.models.PMMLModel;
 
 public interface PMMLRuntime {
@@ -46,4 +47,6 @@ public interface PMMLRuntime {
      * is registered with the given name.
      */
     Optional<PMMLModel> getPMMLModel(final String modelName);
+
+    KieMemoryCompiler.MemoryCompilerClassLoader getMemoryClassLoader();
 }

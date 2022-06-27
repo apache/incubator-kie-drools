@@ -102,6 +102,11 @@
         <artifactId>kie-pmml-evaluator-core</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-evaluator-utils</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Drools -->
       <dependency>
         <groupId>org.kie</groupId>

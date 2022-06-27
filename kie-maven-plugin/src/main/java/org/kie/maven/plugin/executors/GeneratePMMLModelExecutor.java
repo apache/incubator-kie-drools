@@ -67,10 +67,10 @@ public class GeneratePMMLModelExecutor {
                 kieMavenPluginContext.getResourcesDirectories();
         final Log log = kieMavenPluginContext.getLog();
 
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         JavaCompilerSettings javaCompilerSettings = createJavaCompilerSettings();
         URLClassLoader projectClassLoader = getProjectClassLoader(project, outputDirectory, javaCompilerSettings);
 
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(projectClassLoader);
 
         try {
@@ -152,7 +152,15 @@ public class GeneratePMMLModelExecutor {
                                                             KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         List<String> generatedClasses = getGeneratedClassesFromIndexFile(indexFile);
         return generatedClasses.stream().collect(Collectors.toMap(fullClassName -> fullClassName,
-                                                                  memoryCompilerClassLoader::getCode));
+                                                                  fullClassName -> getMappedCode(fullClassName, memoryCompilerClassLoader)));
+    }
+
+    private static byte[] getMappedCode(String fullClassName, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) throws KiePMMLException {
+        byte[] toReturn = memoryCompilerClassLoader.getCode(fullClassName);
+        if (toReturn == null) {
+            throw new KiePMMLException(String.format("Failed to found %s in %s",  fullClassName, memoryCompilerClassLoader));
+        }
+        return toReturn;
     }
 
     private static List<String> getGeneratedClassesFromIndexFile(IndexFile indexFile) {
