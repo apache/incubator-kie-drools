@@ -58,18 +58,73 @@ andExpression : left=equalityExpression (BITAND right=equalityExpression)* ;
 equalityExpression : left=instanceOfExpression ( ( op=EQUAL | op=NOTEQUAL ) right=instanceOfExpression )* ;
 instanceOfExpression : left=inExpression ( 'instanceof' right=type )? ;
 inExpression : left=relationalExpression ( 'not'? 'in' LPAREN drlExpression (COMMA drlExpression)* RPAREN )? ;
-relationalExpression : expression? ; // TODO : shiftExpression, additiveExpression, multiplicativeExpression, unaryExpression, unaryExpressionNotPlusMinus, ..., primary
+relationalExpression : drlExpression? ;
 
-/* extending JavaParser */
-primary
-    : LPAREN expression RPAREN
+/* extending JavaParser expression */
+drlExpression
+    : drlPrimary
+    | drlExpression bop=DOT
+      (
+         identifier
+       | methodCall
+       | THIS
+       | NEW nonWildcardTypeArguments? innerCreator
+       | SUPER superSuffix
+       | explicitGenericInvocation
+      )
+    | drlExpression LBRACK drlExpression RBRACK
+    | methodCall
+    | NEW creator
+    | LPAREN annotation* typeType (BITAND typeType)* RPAREN drlExpression
+    | drlExpression postfix=(INC | DEC)
+    | prefix=(ADD|SUB|INC|DEC) drlExpression
+    | prefix=(TILDE|BANG) drlExpression
+    | drlExpression bop=(MUL|DIV|MOD) drlExpression
+    | drlExpression bop=(ADD|SUB) drlExpression
+    | drlExpression (LT LT | GT GT GT | GT GT) drlExpression
+    | drlExpression bop=(LE | GE | GT | LT) drlExpression
+    | drlExpression bop=INSTANCEOF (typeType | pattern)
+    | drlExpression bop=MATCHES drlExpression
+    | drlExpression bop=(EQUAL | NOTEQUAL) drlExpression
+    | drlExpression bop=BITAND drlExpression
+    | drlExpression bop=CARET drlExpression
+    | drlExpression bop=BITOR drlExpression
+    | drlExpression bop=AND drlExpression
+    | drlExpression bop=OR drlExpression
+    | <assoc=right> drlExpression bop=QUESTION drlExpression COLON drlExpression
+    | <assoc=right> drlExpression
+      bop=(ASSIGN | ADD_ASSIGN | SUB_ASSIGN | MUL_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | RSHIFT_ASSIGN | URSHIFT_ASSIGN | LSHIFT_ASSIGN | MOD_ASSIGN)
+      drlExpression
+    | lambdaExpression // Java8
+    | switchExpression // Java17
+
+    // Java 8 methodReference
+    | drlExpression COLONCOLON typeArguments? identifier
+    | typeType COLONCOLON (typeArguments? identifier | NEW)
+    | classType COLONCOLON typeArguments? NEW
+    ;
+
+/* extending JavaParser primary */
+drlPrimary
+    : LPAREN drlExpression RPAREN
     | THIS
     | SUPER
-    | literal
+    | drlLiteral
     | identifier
     | typeTypeOrVoid DOT CLASS
     | nonWildcardTypeArguments (explicitGenericInvocationSuffix | THIS arguments)
     | inlineListExpression
+    ;
+
+/* extending JavaParser literal */
+drlLiteral
+    : integerLiteral
+    | floatLiteral
+    | CHAR_LITERAL
+    | DRL_STRING_LITERAL
+    | BOOL_LITERAL
+    | NULL_LITERAL
+    | TEXT_BLOCK // Java17
     ;
 
 inlineListExpression
@@ -77,12 +132,8 @@ inlineListExpression
     ;
 
 expressionList
-    :   expression (COMMA expression)*
+    :   drlExpression (COMMA drlExpression)*
     ;
-
-drlExpression : conditionalExpression ( op=assignmentOperator right=drlExpression )? ;
-conditionalExpression : left=conditionalOrExpression ternaryExpression? ;
-ternaryExpression : QUESTION ts=drlExpression COLON fs=drlExpression ;
 
 /*
  patternSource := FROM
@@ -112,9 +163,9 @@ lhsExists : EXISTS lhsPatternBind ;
 */
 lhsNot : NOT lhsPatternBind ;
 
-rhs : blockStatement+ ;
+rhs : blockStatement* ;
 
-stringId : ( IDENTIFIER | STRING_LITERAL ) ;
+stringId : ( IDENTIFIER | DRL_STRING_LITERAL ) ;
 
 type : IDENTIFIER typeArguments? ( DOT IDENTIFIER typeArguments? )* (LBRACK RBRACK)* ;
 
@@ -129,8 +180,8 @@ drlAnnotation : AT name=qualifiedName drlArguments? ;
 attributes : attribute ( COMMA? attribute )* ;
 attribute : ( 'salience' DECIMAL_LITERAL )
           | ( 'enabled' | 'no-loop' | 'auto-focus' | 'lock-on-active' | 'refract' | 'direct' ) BOOL_LITERAL?
-          | ( 'agenda-group' | 'activation-group' | 'ruleflow-group' | 'date-effective' | 'date-expires' | 'dialect' ) STRING_LITERAL
-          |   'calendars' STRING_LITERAL ( COMMA STRING_LITERAL )*
+          | ( 'agenda-group' | 'activation-group' | 'ruleflow-group' | 'date-effective' | 'date-expires' | 'dialect' ) DRL_STRING_LITERAL
+          |   'calendars' DRL_STRING_LITERAL ( COMMA DRL_STRING_LITERAL )*
           |   'timer' ( DECIMAL_LITERAL | TEXT )
           |   'duration' ( DECIMAL_LITERAL | TEXT ) ;
 
