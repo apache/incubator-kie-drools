@@ -4,7 +4,7 @@
 A decision requirements diagram (DRD) is a visual representation of your DMN model. Use the  DMN designer in {CENTRAL} to design the DRD for the traffic violations project and to define the decision logic of the DRD components.
 
 .DRD for the Traffic Violations example
-image::dmn/dmn-traffic-violations-drd.png[]
+image::dmn/dmn-traffic-violations-drd.png[DRD for the Traffic Violations example]
 
 .Prerequisites
 * You have created the traffic violations project in {CENTRAL}.
@@ -19,9 +19,9 @@ image::dmn/dmn-traffic-violations-drd.png[]
 +
 
 .DMN Input Data nodes
-image::dmn/library_objects.png[]
+image::dmn/library_objects.png[DMN Input Data nodes]
 
-. In the upper-right corner, click the image:getting-started/diagram_properties.png[] icon.
+. In the upper-right corner, click the image:getting-started/diagram_properties.png[Properties] icon.
 . Double-click the input nodes and rename one to `Driver` and the other to `Violation`.
 . Drag a *DMN Decision* decision node onto the canvas.
 . Double-click the decision node and rename it to `Fine`.
@@ -29,7 +29,7 @@ image::dmn/library_objects.png[]
 +
 
 .Create DMN Information Requirement icon
-image::dmn/info-requirement.png[]
+image::dmn/info-requirement.png[Create DMN Information Requirement icon]
 
 . Drag a *DMN Decision* decision node onto the canvas.
 . Double-click the decision node and rename it to `Should the driver be suspended?`.

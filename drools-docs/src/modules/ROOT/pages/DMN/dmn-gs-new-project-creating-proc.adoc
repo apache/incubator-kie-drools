@@ -6,19 +6,13 @@ For this example, create a new project called `traffic-violation`. A project is 
 .Procedure
 . In {CENTRAL}, go to *Menu* -> *Design* -> *Projects*.
 +
-
-{PRODUCT} provides a default space called *MySpace*, as shown in the following image. You can use the default space to create and test example projects.
-+
-
-.Default space
-image::getting-started/spaces-teams.png[]
-
+{PRODUCT} provides a default space called *MySpace*. You can use the default space to create and test example projects.
 . Click *Add Project*.
 . Enter `traffic-violation` in the *Name* field.
 . Click *Add*.
 +
 
 .Add Project window
-image::dmn/dmn-new-project-gs.png[]
+image::dmn/dmn-new-project-gs.png[Add project window]
 +
 The *Assets* view of the project opens.
