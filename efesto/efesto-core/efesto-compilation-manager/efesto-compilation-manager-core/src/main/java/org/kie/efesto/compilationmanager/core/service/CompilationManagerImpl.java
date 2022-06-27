@@ -15,8 +15,9 @@
  */
 package org.kie.efesto.compilationmanager.core.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
@@ -32,25 +33,13 @@ public class CompilationManagerImpl implements CompilationManager {
     private static final Logger logger = LoggerFactory.getLogger(CompilationManagerImpl.class.getName());
 
     @Override
-    public List<IndexFile> processResource(EfestoResource toProcess,
-                                           KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        final List<IndexFile> toReturn = new ArrayList<>();
-        populateIndexFilesWithProcessedResource(toReturn, toProcess, memoryCompilerClassLoader);
+    public Collection<IndexFile> processResource(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader,
+                                                 EfestoResource... toProcess) {
+        final Collection<IndexFile> toReturn = new LinkedHashSet<>();
+        Arrays.stream(toProcess).sequential().forEach(resource -> populateIndexFilesWithProcessedResource(toReturn,
+                                                                                                          resource,
+                                                                                                          memoryCompilerClassLoader));
         return toReturn;
     }
 
-    @Override
-    public List<IndexFile> processResources(List<EfestoResource> toProcess,
-                                            KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        List<IndexFile> toReturn = new ArrayList<>();
-        toProcess.forEach(efestoResource -> {
-            List<IndexFile> partial = processResource(efestoResource, memoryCompilerClassLoader);
-            partial.forEach(partialIndexFile -> {
-                if (!toReturn.contains(partialIndexFile)) {
-                    toReturn.add(partialIndexFile);
-                }
-            });
-        });
-        return toReturn;
-    }
 }

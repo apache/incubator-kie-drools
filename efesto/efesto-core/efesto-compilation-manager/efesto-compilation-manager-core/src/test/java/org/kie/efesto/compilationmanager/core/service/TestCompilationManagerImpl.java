@@ -15,10 +15,16 @@
  */
 package org.kie.efesto.compilationmanager.core.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.model.EfestoRedirectOutput;
+import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputA;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputB;
@@ -26,11 +32,9 @@ import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputC;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputD;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class TestCompilationManagerImpl {
@@ -52,32 +56,33 @@ class TestCompilationManagerImpl {
         MANAGED_Efesto_RESOURCES.forEach(managedResource -> {
             try {
                 EfestoRedirectOutput toProcess = managedResource.getDeclaredConstructor().newInstance();
-                List<IndexFile> retrieved = compilationManager.processResource(toProcess, memoryCompilerClassLoader);
+                Collection<IndexFile> retrieved = compilationManager.processResource(memoryCompilerClassLoader,
+                                                                                     toProcess);
                 assertEquals(1, retrieved.size());
-                retrieved.get(0).delete();
+                retrieved.clear();
             } catch (Exception e) {
                 fail(e);
             }
         });
-        List<IndexFile> retrieved = compilationManager.processResource(new MockEfestoRedirectOutputD(), memoryCompilerClassLoader);
+        Collection<IndexFile> retrieved = compilationManager.processResource(memoryCompilerClassLoader,
+                                                                             new MockEfestoRedirectOutputD());
         assertThat(retrieved.isEmpty()).isTrue();
     }
 
-    // TODO restore
-//    @Test
-//    void processResources() {
-//        List<EfestoRedirectOutput> toProcess = new ArrayList<>();
-//        MANAGED_Efesto_RESOURCES.forEach(managedResource -> {
-//            try {
-//                EfestoRedirectOutput toAdd = managedResource.getDeclaredConstructor().newInstance();
-//                toProcess.add(toAdd);
-//            } catch (Exception e) {
-//                fail(e);
-//            }
-//        });
-//        toProcess.add(new MockEfestoRedirectOutputD());
-//        List<EfestoCompilationOutput> retrieved = compilationManager.processResources(toProcess, memoryCompilerClassLoader);
-//        assertNotNull(retrieved);
-//        assertEquals(MANAGED_Efesto_RESOURCES.size(), retrieved.size());
-//    }
+    @Test
+    void processResources() {
+        List<EfestoRedirectOutput> toProcess = new ArrayList<>();
+        MANAGED_Efesto_RESOURCES.forEach(managedResource -> {
+            try {
+                EfestoRedirectOutput toAdd = managedResource.getDeclaredConstructor().newInstance();
+                toProcess.add(toAdd);
+            } catch (Exception e) {
+                fail(e);
+            }
+        });
+        toProcess.add(new MockEfestoRedirectOutputD());
+        Collection<IndexFile> retrieved = compilationManager.processResource(memoryCompilerClassLoader,
+                                                                             toProcess.toArray(new EfestoResource[0]));
+        assertNotNull(retrieved);
+    }
 }

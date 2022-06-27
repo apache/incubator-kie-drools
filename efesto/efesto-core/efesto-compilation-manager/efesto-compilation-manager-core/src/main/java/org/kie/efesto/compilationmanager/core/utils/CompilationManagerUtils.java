@@ -15,23 +15,33 @@
  */
 package org.kie.efesto.compilationmanager.core.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.common.api.model.*;
+import org.kie.efesto.common.api.model.GeneratedClassResource;
+import org.kie.efesto.common.api.model.GeneratedExecutableResource;
+import org.kie.efesto.common.api.model.GeneratedRedirectResource;
+import org.kie.efesto.common.api.model.GeneratedResource;
+import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
-import org.kie.efesto.compilationmanager.api.model.*;
+import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutput;
+import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
+import org.kie.efesto.compilationmanager.api.model.EfestoClassesContainer;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
+import org.kie.efesto.compilationmanager.api.model.EfestoRedirectOutput;
+import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.memorycompiler.KieMemoryCompilerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
@@ -47,14 +57,17 @@ public class CompilationManagerUtils {
     private CompilationManagerUtils() {
     }
 
-    public static void populateIndexFilesWithProcessedResource(final List<IndexFile> toPopulate, EfestoResource toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, true);
+    public static void populateIndexFilesWithProcessedResource(final Collection<IndexFile> toPopulate,
+                                                               EfestoResource toProcess,
+                                                               KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
             return;
         }
-        Optional<List<EfestoCompilationOutput>> darCompilationOutputOptional = retrieved.map(service -> service.processResource(toProcess, memoryCompilerClassLoader));
-        darCompilationOutputOptional.ifPresent(darCompilationOutputs -> {
+        Optional<List<EfestoCompilationOutput>> compilationOutputOptional =
+                retrieved.map(service -> service.processResource(toProcess, memoryCompilerClassLoader));
+        compilationOutputOptional.ifPresent(darCompilationOutputs -> {
             Optional<IndexFile> indexFileOptional = getIndexFileFromCompilationOutputs(darCompilationOutputs);
             indexFileOptional.ifPresent(indexFile -> {
                 toPopulate.add(indexFile);
@@ -64,7 +77,9 @@ public class CompilationManagerUtils {
                         loadClasses(((EfestoCallableOutputClassesContainer) darCompilationOutput).getCompiledClassesMap(), memoryCompilerClassLoader);
                     }
                     if (darCompilationOutput instanceof EfestoRedirectOutput) {
-                        populateIndexFilesWithProcessedResource(toPopulate, (EfestoRedirectOutput) darCompilationOutput, memoryCompilerClassLoader);
+                        populateIndexFilesWithProcessedResource(toPopulate,
+                                                                (EfestoRedirectOutput) darCompilationOutput,
+                                                                memoryCompilerClassLoader);
                     }
                 });
             });

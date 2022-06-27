@@ -35,13 +35,13 @@ public class RuntimeManagerImpl implements RuntimeManager {
     @Override
     @SuppressWarnings({"unchecked", "raw"})
     public Optional<EfestoOutput> evaluateInput(EfestoInput toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        Optional<KieRuntimeService> retrieved = getKieRuntimeService(toEvaluate, true, memoryCompilerClassLoader);
+        Optional<KieRuntimeService> retrieved = getKieRuntimeService(toEvaluate, false, memoryCompilerClassLoader);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieRuntimeService for {}", toEvaluate.getFRI());
             return Optional.empty();
         }
-        KieRuntimeService kieRuntimeService = retrieved.get();
-        return kieRuntimeService.evaluateInput(toEvaluate, memoryCompilerClassLoader);
+        return retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(toEvaluate,
+                                                                                      memoryCompilerClassLoader));
     }
 
     @Override
