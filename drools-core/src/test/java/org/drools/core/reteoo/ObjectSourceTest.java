@@ -22,21 +22,18 @@ import org.drools.core.test.model.DroolsTestCase;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ObjectSourceTest extends DroolsTestCase {
 
     @Test
     public void testObjectSourceConstructor() {
         final MockObjectSource source = new MockObjectSource( 15 );
-        assertEquals( 15,
-                      source.getId() );
+        assertThat(source.getId()).isEqualTo(15);
 
-        assertEquals( 0,
-                      source.getAttached() );
+        assertThat(source.getAttached()).isEqualTo(0);
         source.attach();
-        assertEquals( 1,
-                      source.getAttached() );
+        assertThat(source.getAttached()).isEqualTo(1);
     }
 
     @Test
@@ -48,50 +45,36 @@ public class ObjectSourceTest extends DroolsTestCase {
         field.setAccessible( true );
         ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( source );
 
-        assertSame( EmptyObjectSinkAdapter.getInstance(),
-                    sink );
-
+        assertThat(sink).isSameAs(EmptyObjectSinkAdapter.getInstance());
         final MockObjectSink sink1 = new MockObjectSink();
         source.addObjectSink( sink1 );
         sink = (ObjectSinkPropagator) field.get( source );
-        assertSame( SingleObjectSinkAdapter.class,
-                    sink.getClass() );
-        assertEquals( 1,
-                      sink.getSinks().length );
+        assertThat(sink).isInstanceOf(SingleObjectSinkAdapter.class);
+        assertThat(sink.getSinks()).hasSize(1);
 
         final MockObjectSink sink2 = new MockObjectSink();
         source.addObjectSink( sink2 );
         sink = (ObjectSinkPropagator) field.get( source );
-        assertSame( CompositeObjectSinkAdapter.class,
-                    sink.getClass() );
-        assertEquals( 2,
-                      sink.getSinks().length );
+        assertThat(sink).isInstanceOf(CompositeObjectSinkAdapter.class);
+        assertThat(sink.getSinks()).hasSize(2);
 
         final MockObjectSink sink3 = new MockObjectSink();
         source.addObjectSink( sink3 );
-        assertSame( CompositeObjectSinkAdapter.class,
-                    sink.getClass() );
-        assertEquals( 3,
-                      sink.getSinks().length );
+        assertThat(sink).isInstanceOf(CompositeObjectSinkAdapter.class);
+        assertThat(sink.getSinks()).hasSize(3);
 
         source.removeObjectSink( sink2 );
-        assertSame( CompositeObjectSinkAdapter.class,
-                    sink.getClass() );
-        assertEquals( 2,
-                      sink.getSinks().length );
+        assertThat(sink).isInstanceOf(CompositeObjectSinkAdapter.class);
+        assertThat(sink.getSinks()).hasSize(2);
 
         source.removeObjectSink( sink1 );
         sink = (ObjectSinkPropagator) field.get( source );
-        assertSame( SingleObjectSinkAdapter.class,
-                    sink.getClass() );
-        assertEquals( 1,
-                      sink.getSinks().length );
+        assertThat(sink).isInstanceOf(SingleObjectSinkAdapter.class);
+        assertThat(sink.getSinks()).hasSize(1);
 
         source.removeObjectSink( sink3 );
         sink = (ObjectSinkPropagator) field.get( source );
-        assertSame( EmptyObjectSinkAdapter.getInstance(),
-                    sink );
-        assertEquals( 0,
-                      sink.getSinks().length );
+        assertThat(sink).isSameAs(EmptyObjectSinkAdapter.getInstance());
+        assertThat(sink.getSinks()).hasSize(0);
     }
 }

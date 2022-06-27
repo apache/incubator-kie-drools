@@ -18,7 +18,9 @@ package org.drools.core.util;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class LinkedListTest {
 
@@ -46,47 +48,23 @@ public class LinkedListTest {
     @Test
     public void testAdd() {
         this.list.add( this.node1 );
-        assertNull( "Node1 previous should be null",
-                           this.node1.getPrevious() );
-        assertNull( "Node1 next should be null",
-                           this.node1.getNext() );
-        assertSame( "First node should be node1",
-                           this.list.getFirst(),
-                           this.node1 );
-        assertSame( "Last node should be node1",
-                           this.list.getLast(),
-                           this.node1 );
+        assertThat(this.node1.getPrevious()).as("Node1 previous should be null").isNull();
+        assertThat(this.node1.getNext()).as("Node1 next should be null").isNull();
+        assertThat(this.node1).as("First node should be node1").isSameAs(this.list.getFirst());
+        assertThat(this.node1).as("Last node should be node1").isSameAs(this.list.getLast());
 
         this.list.add( this.node2 );
-        assertSame( "node1 next should be node2",
-                           this.node1.getNext(),
-                           this.node2 );
-        assertSame( "node2 previous should be node1",
-                           this.node2.getPrevious(),
-                           this.node1 );
-        assertSame( "First node should be node1",
-                           this.list.getFirst(),
-                           this.node1 );
-        assertSame( "Last node should be node2",
-                           this.list.getLast(),
-                           this.node2 );
+        assertThat(this.node2).as("node1 next should be node2").isSameAs(this.node1.getNext());
+        assertThat(this.node1).as("node2 previous should be node1").isSameAs(this.node2.getPrevious());
+        assertThat(this.node1).as("First node should be node1").isSameAs(this.list.getFirst());
+        assertThat(this.node2).as("Last node should be node2").isSameAs(this.list.getLast());
 
         this.list.add( this.node3 );
-        assertSame( "node2 next should be node3",
-                           this.node2.getNext(),
-                           this.node3 );
-        assertSame( "node3 previous should be node2",
-                           this.node3.getPrevious(),
-                           this.node2 );
-        assertEquals( "LinkedList should have 3 nodes",
-                             this.list.size(),
-                             3 );
-        assertSame( "First node should be node1",
-                           this.list.getFirst(),
-                           this.node1 );
-        assertSame( "Last node should be node3",
-                           this.list.getLast(),
-                           this.node3 );
+        assertThat(this.node3).as("node2 next should be node3").isSameAs(this.node2.getNext());
+        assertThat(this.node2).as("node3 previous should be node2").isSameAs(this.node3.getPrevious());
+        assertThat(this.list.size()).as("LinkedList should have 3 nodes").isEqualTo(3);
+        assertThat(this.node1).as("First node should be node1").isSameAs(this.list.getFirst());
+        assertThat(this.node3).as("Last node should be node3").isSameAs(this.list.getLast());
     }
 
     /*
@@ -98,38 +76,24 @@ public class LinkedListTest {
         this.list.add( this.node2 );
         this.list.add( this.node3 );
 
-        assertSame( "Node2 previous should be node1",
-                           this.node2.getPrevious(),
-                           this.node1 );
-        assertSame( "Node2 next should be node3",
-                           this.node2.getNext(),
-                           this.node3 );
+        assertThat(this.node1).as("node2 previous should be node1").isSameAs(this.node2.getPrevious());
+        assertThat(this.node3).as("node2 next should be node3").isSameAs(this.node2.getNext());
+
         this.list.remove( this.node2 );
-        assertNull( "Node2 previous should be null",
-                           this.node2.getPrevious() );
-        assertNull( "Node2 next should be null",
-                           this.node2.getNext() );
+        assertThat(this.node2.getPrevious()).as("Node2 previous should be null").isNull();
+        assertThat(this.node2.getNext()).as("Node2 next should be null").isNull();
+        assertThat(this.node1.getPrevious()).as("Node1 previous should be null").isNull();
+        assertThat(this.node3).as("node1 next should be node3").isSameAs(this.node1.getNext());
 
-        assertNull( "Node1 previous should be null",
-                           this.node1.getPrevious() );
-        assertSame( "Node1 next should be node3",
-                           this.node1.getNext(),
-                           this.node3 );
         this.list.remove( this.node1 );
-        assertNull( "Node1 previous should be null",
-                           this.node1.getPrevious() );
-        assertNull( "Node1 next should be null",
-                           this.node1.getNext() );
+        assertThat(this.node1.getPrevious()).as("Node1 previous should be null").isNull();
+        assertThat(this.node1.getNext()).as("Node1 next should be null").isNull();
+        assertThat(this.node3.getPrevious()).as("Node3 previous should be null").isNull();
+        assertThat(this.node3.getNext()).as("Node3 next should be null").isNull();
 
-        assertNull( "Node3 previous should be null",
-                           this.node3.getPrevious() );
-        assertNull( "Node3 next should be null",
-                           this.node3.getNext() );
         this.list.remove( this.node3 );
-        assertNull( "Node3 previous should be null",
-                           this.node3.getPrevious() );
-        assertNull( "Node3 next should be null",
-                           this.node3.getNext() );
+        assertThat(this.node3.getPrevious()).as("Node3 previous should be null").isNull();
+        assertThat(this.node3.getNext()).as("Node3 next should be null").isNull();
     }
 
     /*
@@ -137,20 +101,16 @@ public class LinkedListTest {
      */
     @Test
     public void testGetFirst() {
-        assertNull( "Empty list should return null on getFirst()",
-                           this.list.getFirst() );
+        assertThat(this.list.getFirst()).as("Empty list should return null on getFirst()").isNull();
+        
         this.list.add( this.node1 );
-        assertSame( "List should return node1 on getFirst()",
-                           this.list.getFirst(),
-                           this.node1 );
+        assertThat(this.node1).as("First node should be node1").isSameAs(this.list.getFirst());
+        
         this.list.add( this.node2 );
-        assertSame( "List should return node1 on getFirst()",
-                           this.list.getFirst(),
-                           this.node1 );
+        assertThat(this.node1).as("List should return node1 on getFirst()").isSameAs(this.list.getFirst());
+
         this.list.add( this.node3 );
-        assertSame( "List should return node1 on getFirst()",
-                           this.list.getFirst(),
-                           this.node1 );
+        assertThat(this.node1).as("List should return node1 on getFirst()").isSameAs(this.list.getFirst());
     }
 
     /*
@@ -158,20 +118,13 @@ public class LinkedListTest {
      */
     @Test
     public void testGetLast() {
-        assertNull( "Empty list should return null on getLast()",
-                           this.list.getLast() );
+        assertThat(this.list.getLast()).as("Empty list should return null on getLast()").isNull();
         this.list.add( this.node1 );
-        assertSame( "List should return node1 on getLast()",
-                           this.list.getLast(),
-                           this.node1 );
+        assertThat(this.node1).as("Last node should be node1").isSameAs(this.list.getLast());
         this.list.add( this.node2 );
-        assertSame( "List should return node2 on getLast()",
-                           this.list.getLast(),
-                           this.node2 );
+        assertThat(this.node2).as("Last node should be node2").isSameAs(this.list.getLast());
         this.list.add( this.node3 );
-        assertSame( "List should return node3 on getLast()",
-                           this.list.getLast(),
-                           this.node3 );
+        assertThat(this.node3).as("Last node should be node3").isSameAs(this.list.getLast());
     }
 
     /*
@@ -183,20 +136,15 @@ public class LinkedListTest {
         this.list.add( this.node2 );
         this.list.add( this.node3 );
 
-        assertSame( "List should return node1 on getFirst()",
-                           this.list.getFirst(),
-                           this.node1 );
+        assertThat(this.node1).as("First node should be node1").isSameAs(this.list.getFirst());
         this.list.removeFirst();
-        assertSame( "List should return node2 on getFirst()",
-                           this.list.getFirst(),
-                           this.node2 );
+        assertThat(this.node2).as("List should return node2 on getFirst()").isSameAs(this.list.getFirst());
+
         this.list.removeFirst();
-        assertSame( "List should return node3 on getFirst()",
-                           this.list.getFirst(),
-                           this.node3 );
+        assertThat(this.node3).as("List should return node3 on getFirst()").isSameAs(this.list.getFirst());
+
         this.list.removeFirst();
-        assertNull( "Empty list should return null on getFirst()",
-                           this.list.getFirst() );
+        assertThat(this.list.getFirst()).as("Empty list should return null on getFirst()").isNull();
     }
 
     /*
@@ -208,20 +156,16 @@ public class LinkedListTest {
         this.list.add( this.node2 );
         this.list.add( this.node3 );
 
-        assertSame( "List should return node1 on getLast()",
-                           this.list.getLast(),
-                           this.node3 );
+        assertThat(this.node3).as("Last node should be node3").isSameAs(this.list.getLast());
+        
         this.list.removeLast();
-        assertSame( "List should return node2 on getLast()",
-                           this.list.getLast(),
-                           this.node2 );
+        assertThat(this.node2).as("Last node should be node2").isSameAs(this.list.getLast());
+        
         this.list.removeLast();
-        assertSame( "List should return node3 on getLast()",
-                           this.list.getLast(),
-                           this.node1 );
+        assertThat(this.node1).as("Last node should be node1").isSameAs(this.list.getLast());
+
         this.list.removeLast();
-        assertNull( "Empty list should return null on getLast()",
-                           this.list.getLast() );
+        assertThat(this.list.getLast()).as("Empty list should return null on getLast()").isNull();
     }
 
     /*
@@ -229,11 +173,10 @@ public class LinkedListTest {
      */
     @Test
     public void testIsEmpty() {
-        assertTrue( "Empty list should return true on isEmpty()",
-                           this.list.isEmpty() );
+        assertThat(this.list.isEmpty()).as("Empty list should return true on isEmpty()").isTrue();
+        
         this.list.add( this.node1 );
-        assertFalse( "Not empty list should return false on isEmpty()",
-                            this.list.isEmpty() );
+        assertThat(this.list.isEmpty()).as("Not empty list should return false on isEmpty()").isFalse();
     }
 
     /*
@@ -245,13 +188,9 @@ public class LinkedListTest {
         this.list.add( this.node2 );
         this.list.add( this.node3 );
 
-        assertEquals( "List size should be 3",
-                             this.list.size(),
-                             3 );
+        assertThat(this.list.size()).as("List size should be 3").isEqualTo(3);
         this.list.clear();
-        assertEquals( "Empty list should have size 0",
-                             this.list.size(),
-                             0 );
+        assertThat(this.list.size()).as("Empty list should have size 0").isEqualTo(0);
     }
 
     /*
@@ -260,19 +199,13 @@ public class LinkedListTest {
     @Test
     public void testSize() {
         this.list.add( this.node1 );
-        assertEquals( "LinkedList should have 1 node",
-                             this.list.size(),
-                             1 );
+        assertThat(this.list.size()).as("LinkedList should have 1 node").isEqualTo(1);
 
         this.list.add( this.node2 );
-        assertEquals( "LinkedList should have 2 nodes",
-                             this.list.size(),
-                             2 );
+        assertThat(this.list.size()).as("LinkedList should have 2 node").isEqualTo(2);
 
         this.list.add( this.node3 );
-        assertEquals( "LinkedList should have 3 nodes",
-                             this.list.size(),
-                             3 );
+        assertThat(this.list.size()).as("LinkedList should have 3 node").isEqualTo(3);
     }
 
     @Test

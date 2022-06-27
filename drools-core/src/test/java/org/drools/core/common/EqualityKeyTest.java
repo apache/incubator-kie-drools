@@ -17,8 +17,8 @@
 package org.drools.core.common;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 
@@ -29,36 +29,36 @@ public class EqualityKeyTest {
         
         InternalFactHandle ch1 = factory.newFactHandle( new Cheese ("c", 10), null, null, null );
         EqualityKey key = new EqualityKey( ch1 );
-        
-        assertSame( ch1, key.getFactHandle() );
-        assertEquals( 1, key.size() );
+
+        assertThat(key.getFactHandle()).isSameAs(ch1);
+        assertThat(key.size()).isEqualTo(1);
         
         InternalFactHandle ch2 = factory.newFactHandle( new Cheese ("c", 10), null, null, null );
         key.addFactHandle( ch2 );
-        
-        assertEquals( 2, key.size() );
-        assertEquals( ch2, key.get( 1 ) );
+
+        assertThat(key.size()).isEqualTo(2);
+        assertThat(key.get(1)).isEqualTo(ch2);
         
         key.removeFactHandle( ch1 );
-        assertSame( ch2, key.getFactHandle() );
-        assertEquals( 1, key.size() );
+        assertThat(key.getFactHandle()).isSameAs(ch2);
+        assertThat(key.size()).isEqualTo(1);
         
         key.removeFactHandle( ch2 );
-        assertNull( key.getFactHandle() );
-        assertEquals( 0, key.size() );
+        assertThat(key.getFactHandle()).isNull();
+        assertThat(key.size()).isEqualTo(0);
         
         key = new EqualityKey( ch2 );
         key.addFactHandle( ch1 );
-        assertSame( ch2, key.getFactHandle() );
-        assertEquals( 2, key.size() );
-        assertEquals( ch1, key.get( 1 ) );
+        assertThat(key.getFactHandle()).isSameAs(ch2);
+        assertThat(key.size()).isEqualTo(2);
+        assertThat(key.get(1)).isEqualTo(ch1);
         
         key.removeFactHandle( ch1 );
-        assertSame( ch2, key.getFactHandle() );
-        assertEquals( 1, key.size() );
+        assertThat(key.getFactHandle()).isSameAs(ch2);
+        assertThat(key.size()).isEqualTo(1);
         
         key.removeFactHandle( ch2 );
-        assertNull( key.getFactHandle() );
-        assertEquals( 0, key.size() );
+        assertThat(key.getFactHandle()).isNull();
+        assertThat(key.size()).isEqualTo(0);
     }
 }

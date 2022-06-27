@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.drools.core.impl.KnowledgeBaseFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test case to ensure that the ReteooRuleBase is thread safe. Specifically to test for
@@ -93,18 +93,18 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
             printThreadStatus(modifier);
         }
 
-        assertEquals("Threads are deadlocked! See previous stacks for more detail", false, deadlockDetected);
+        assertThat(deadlockDetected).as("Threads are deadlocked! See previous stacks for more detail").isEqualTo(false);
 
         // check to see if either had an exception also
         if (creator.isInError()) {
             creator.getError().printStackTrace();
         }
-        assertEquals("Exception in creator thread", false, creator.isInError());
+        assertThat(creator.isInError()).as("Exception in creator thread").isEqualTo(false);
 
         if (modifier.isInError()) {
             modifier.getError().printStackTrace();
         }
-        assertEquals("Exception in modifier thread", false, modifier.isInError());
+        assertThat(modifier.isInError()).as("Exception in modifier thread").isEqualTo(false);
     }
 
     private void printThreadStatus(Thread thread) {

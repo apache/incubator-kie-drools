@@ -22,8 +22,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.junit.Test;
 import org.drools.core.impl.KnowledgeBaseFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BetaNodeTest {
 
@@ -57,23 +56,17 @@ public class BetaNodeTest {
                                          EmptyBetaConstraints.getInstance(),
                                          buildContext );
 
-        assertEquals( j1,
-                      j1 );
-        assertEquals( j2,
-                      j2 );
-        assertEquals( j1,
-                      j2 );
-        assertEquals( n1,
-                      n1 );
-        assertEquals( n2,
-                      n2 );
-        assertEquals( n1,
-                      n2 );
+        assertThat(j1).isEqualTo(j1);
+        assertThat(j2).isEqualTo(j2);
+        assertThat(j2).isEqualTo(j1);
+        assertThat(n1).isEqualTo(n1);
+        assertThat(n2).isEqualTo(n2);
+        assertThat(n2).isEqualTo(n1);
 
-        assertFalse( j1.equals( n1 ) );
-        assertFalse( j1.equals( n2 ) );
-        assertFalse( n1.equals( j1 ) );
-        assertFalse( n1.equals( j2 ) );
+        assertThat(j1.equals(n1)).isFalse();
+        assertThat(j1.equals(n2)).isFalse();
+        assertThat(n1.equals(j1)).isFalse();
+        assertThat(n1.equals(j2)).isFalse();
     }
 
 }

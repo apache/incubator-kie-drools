@@ -19,26 +19,19 @@ package org.drools.core.test.model;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public abstract class DroolsTestCase {
 
     public void assertLength(final int len,
                              final Object[] array) {
-        assertEquals( Arrays.asList( array ) + " does not have length of " + len,
-                      len,
-                      array.length );
+        assertThat(array).as(Arrays.asList(array) + " does not have length of " + len).hasSize(len);
     }
 
     public void assertLength(final int len,
                              final Collection collection) {
-        assertEquals( collection + " does not have length of " + len,
-                      len,
-                      collection.size() );
+        assertThat(collection).as(collection + " does not have length of " + len).hasSize(len);
     }
     
     public void assertNotContains (final Object obj,
@@ -74,8 +67,7 @@ public abstract class DroolsTestCase {
     
     public void assertContains(final Object obj,
                                final Collection collection) {
-        assertTrue( collection + " does not contain " + obj,
-                    collection.contains( obj ) );
+        assertThat(collection.contains(obj)).as(collection + " does not contain " + obj).isTrue();
     }
 
 }

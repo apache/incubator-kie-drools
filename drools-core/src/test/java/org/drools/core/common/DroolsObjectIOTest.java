@@ -38,7 +38,6 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class DroolsObjectIOTest {
 
@@ -66,7 +65,7 @@ public class DroolsObjectIOTest {
         InputStream fis = new FileInputStream(testFile);
         GroupElement streamedGroupElement = (GroupElement) DroolsStreamUtils.streamIn(new FileInputStream(testFile));
 
-        assertEquals(streamedGroupElement, testGroupElement);
+        assertThat(testGroupElement).isEqualTo(streamedGroupElement);
     }
 
     public static class SerializableObject implements Serializable {
@@ -112,11 +111,11 @@ public class DroolsObjectIOTest {
         SerializableObject    obj = new ExternalizableObject();
 
         byte[]  buf = serialize(obj);
-        assertEquals(deserialize(buf), obj);
+        assertThat(obj).isEqualTo(deserialize(buf));
 
         obj = new SerializableObject();
         buf = serialize(obj);
-        assertEquals(deserialize(buf), obj);
+        assertThat(obj).isEqualTo(deserialize(buf));
     }
 
     private static Object deserialize(byte[] buf) throws Exception {
@@ -154,10 +153,10 @@ public class DroolsObjectIOTest {
         InternalKnowledgePackage pkg = new KnowledgePackageImpl("test");
 
         byte[]  buf = marshal(pkg);
-        assertEquals(unmarshal(buf), pkg);
+        assertThat(pkg).isEqualTo(unmarshal(buf));
 
         buf = serialize(pkg);
-        assertEquals(deserialize(buf), pkg);
+        assertThat(pkg).isEqualTo(deserialize(buf));
     }
 
     @Test
@@ -171,8 +170,8 @@ public class DroolsObjectIOTest {
         RuleImpl retrievedRule = (RuleImpl)unmarshal(buf);
         assertThat(retrievedRule).isNotNull();
         assertThat(retrievedRule.getCalendars()).isNotNull();
-        assertEquals(1, retrievedRule.getCalendars().length);
-        assertEquals("mycalendar", retrievedRule.getCalendars()[0]);
+        assertThat(retrievedRule.getCalendars()).hasSize(1);
+        assertThat(retrievedRule.getCalendars()[0]).isEqualTo("mycalendar");
 
     }
 }

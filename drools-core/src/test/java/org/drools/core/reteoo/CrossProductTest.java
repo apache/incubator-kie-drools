@@ -29,8 +29,8 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
@@ -111,8 +111,7 @@ public class CrossProductTest {
 
         // A full cross product is 16, this is just 12
         System.out.println(values);
-        assertEquals( 16,
-                      this.values.size() );
+        assertThat(this.values.size()).isEqualTo(16);
     }
 
     @Test
@@ -132,8 +131,7 @@ public class CrossProductTest {
             this.ksession.fireAllRules();
 
             // A full cross product is 16, this is just 12
-            assertEquals( 12,
-                          this.values.size() );
+            assertThat(this.values.size()).isEqualTo(12);
         } finally {
             System.setProperty( "drools.removeIdentities",
                                 "false" );

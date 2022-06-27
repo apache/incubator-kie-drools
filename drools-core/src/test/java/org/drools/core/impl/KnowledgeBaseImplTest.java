@@ -15,14 +15,13 @@
 
 package org.drools.core.impl;
 
+import java.util.Collections;
+
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.junit.Test;
 
-import java.util.Collections;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KnowledgeBaseImplTest {
 
@@ -32,7 +31,7 @@ public class KnowledgeBaseImplTest {
         KnowledgeBaseImpl base = new KnowledgeBaseImpl( "default", null);
 
         // assume empty knowledge base
-        assertTrue( base.getPackages().length == 0 );
+        assertThat(base.getPackages()).isEmpty();
 
         // add package with function static import into knowledge base
         InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.test" );
@@ -40,10 +39,10 @@ public class KnowledgeBaseImplTest {
         base.addPackage( pkg );
 
         // verify package has been added
-        assertTrue( base.getPackages().length == 1 );
+        assertThat(base.getPackages()).hasSize(1);
 
         // retrieve copied and merged package from the base
         InternalKnowledgePackage copy = base.getPackage( "org.drools.test" );
-        assertEquals( Collections.singleton( "org.drools.function.myFunction" ), copy.getStaticImports() );
+        assertThat(copy.getStaticImports()).isEqualTo(Collections.singleton("org.drools.function.myFunction"));
     }
 }
