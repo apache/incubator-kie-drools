@@ -19,7 +19,7 @@ package org.drools.core.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 public class KieFunctionsTest {
@@ -27,154 +27,152 @@ public class KieFunctionsTest {
     @Test
     public void testKieFunctions() {
 
-        assertEquals(true, KieFunctions.isNull(null));
-        assertEquals(false, KieFunctions.isNull("nothing"));
+        assertThat(KieFunctions.isNull(null)).isTrue();
+        assertThat(KieFunctions.isNull("nothing")).isFalse();
 
-        assertEquals(true, KieFunctions.isEmpty(null));
-        assertEquals(true, KieFunctions.isEmpty(""));
-        assertEquals(false, KieFunctions.isEmpty(" "));
+        assertThat(KieFunctions.isEmpty(null)).isTrue();
+        assertThat(KieFunctions.isEmpty("")).isTrue();
+        assertThat(KieFunctions.isEmpty(" ")).isFalse();
 
 
-        assertEquals(true, KieFunctions.equalsTo(55, "55"));
-        assertEquals(false, KieFunctions.equalsTo(55, "550"));
+        assertThat(KieFunctions.equalsTo(55, "55")).isTrue();
+        assertThat(KieFunctions.equalsTo(55, "550")).isFalse();
 
-        assertEquals(true, KieFunctions.equalsTo(new BigDecimal("322.123"), "322.123"));
-        assertEquals(false, KieFunctions.equalsTo(new BigDecimal("322.123"), "3322.123"));
+        assertThat(KieFunctions.equalsTo(new BigDecimal("322.123"), "322.123")).isTrue();
+        assertThat(KieFunctions.equalsTo(new BigDecimal("322.123"), "3322.123")).isFalse();
 
-        assertEquals(true, KieFunctions.equalsTo(new BigInteger("123456"), "123456"));
-        assertEquals(false, KieFunctions.equalsTo(new BigInteger("123456"), "1234567"));
+        assertThat(KieFunctions.equalsTo(new BigInteger("123456"), "123456")).isTrue();
+        assertThat(KieFunctions.equalsTo(new BigInteger("123456"), "1234567")).isFalse();
 
-        assertEquals(true, KieFunctions.equalsTo((String)null, null));
-        assertEquals(false, KieFunctions.equalsTo((String)null, "a"));
-        assertEquals(false, KieFunctions.equalsTo("f", null));
+        assertThat(KieFunctions.equalsTo((String) null, null)).isTrue();
+        assertThat(KieFunctions.equalsTo((String) null, "a")).isFalse();
+        assertThat(KieFunctions.equalsTo("f", null)).isFalse();
 
-        assertEquals(true, KieFunctions.equalsTo((Integer)null, null));
-        assertEquals(false, KieFunctions.equalsTo((Integer)null, "1"));
+        assertThat(KieFunctions.equalsTo((Integer) null, null)).isTrue();
+        assertThat(KieFunctions.equalsTo((Integer) null, "1")).isFalse();
+
 
         boolean comparitionFailed = false;
         try {
-            assertEquals(false, KieFunctions.equalsTo(44, null));
+            assertThat(KieFunctions.equalsTo(44, null)).isFalse();
         } catch (RuntimeException e) {
             comparitionFailed = true;
         }
-        assertEquals(true, comparitionFailed);
+        assertThat(comparitionFailed).isTrue();
 
 
-        assertEquals(true, KieFunctions.contains("welcome to jamaica", "jama"));
-        assertEquals(false, KieFunctions.contains("welcome to jamaica", "Jama"));
-        assertEquals(true, KieFunctions.contains(null, null));
-        assertEquals(false, KieFunctions.contains("hello", null));
-        assertEquals(false, KieFunctions.contains(null, "hello"));
+        assertThat(KieFunctions.contains("welcome to jamaica", "jama")).isTrue();
+        assertThat(KieFunctions.contains("welcome to jamaica", "Jama")).isFalse();
+        assertThat(KieFunctions.contains(null, null)).isTrue();
+        assertThat(KieFunctions.contains("hello", null)).isFalse();
+        assertThat(KieFunctions.contains(null, "hello")).isFalse();
 
-        assertEquals(true, KieFunctions.startsWith("welcome to jamaica", "wel"));
-        assertEquals(false, KieFunctions.startsWith("welcome to jamaica", "Well"));
-        assertEquals(true, KieFunctions.startsWith(null, null));
-        assertEquals(false, KieFunctions.startsWith("hello", null));
-        assertEquals(false, KieFunctions.startsWith(null, "hello"));
+        assertThat(KieFunctions.startsWith("welcome to jamaica", "wel")).isTrue();
+        assertThat(KieFunctions.startsWith("welcome to jamaica", "Well")).isFalse();
+        assertThat(KieFunctions.startsWith(null, null)).isTrue();
+        assertThat(KieFunctions.startsWith("hello", null)).isFalse();
+        assertThat(KieFunctions.startsWith(null, "hello")).isFalse();
 
-        assertEquals(true, KieFunctions.endsWith("welcome to jamaica", "jamaica"));
-        assertEquals(false, KieFunctions.endsWith("welcome to jamaica", "Jamaica"));
-        assertEquals(true, KieFunctions.endsWith(null, null));
-        assertEquals(false, KieFunctions.endsWith("hello", null));
-        assertEquals(false, KieFunctions.endsWith(null, "hello"));
+        assertThat(KieFunctions.endsWith("welcome to jamaica", "jamaica")).isTrue();
+        assertThat(KieFunctions.endsWith("welcome to jamaica", "Jamaica")).isFalse();
+        assertThat(KieFunctions.endsWith(null, null)).isTrue();
+        assertThat(KieFunctions.endsWith("hello", null)).isFalse();
+        assertThat(KieFunctions.endsWith(null, "hello")).isFalse();
 
 
-        assertEquals(true, KieFunctions.greaterThan(5, "2"));
-        assertEquals(false, KieFunctions.greaterThan(0, "2"));
-        assertEquals(false, KieFunctions.greaterThan(0, "0"));
-        assertEquals(false, KieFunctions.greaterThan(null, "0"));
-        assertEquals(false, KieFunctions.greaterThan(null, null));
+        assertThat(KieFunctions.greaterThan(5, "2")).isTrue();
+        assertThat(KieFunctions.greaterThan(0, "2")).isFalse();
+        assertThat(KieFunctions.greaterThan(0, "0")).isFalse();
+        assertThat(KieFunctions.greaterThan(null, "0")).isFalse();
+        assertThat(KieFunctions.greaterThan(null, null)).isFalse();
 
         comparitionFailed = false;
         try {
-            assertEquals(false, KieFunctions.greaterThan(2, null));
+            assertThat(KieFunctions.greaterThan(2, null)).isFalse();
         } catch (RuntimeException e) {
             comparitionFailed = true;
         }
-        assertEquals(true, comparitionFailed);
+        assertThat(comparitionFailed).isTrue();
 
 
-        assertEquals(true, KieFunctions.greaterOrEqualThan(5, "2"));
-        assertEquals(true, KieFunctions.greaterOrEqualThan(2, "2"));
-        assertEquals(false, KieFunctions.greaterOrEqualThan(0, "2"));
-        assertEquals(true, KieFunctions.greaterOrEqualThan(0, "0"));
-        assertEquals(false, KieFunctions.greaterOrEqualThan(null, "0"));
-        assertEquals(false, KieFunctions.greaterOrEqualThan(null, null));
+        assertThat(KieFunctions.greaterOrEqualThan(5, "2")).isTrue();
+        assertThat(KieFunctions.greaterOrEqualThan(2, "2")).isTrue();
+        assertThat(KieFunctions.greaterOrEqualThan(0, "2")).isFalse();
+        assertThat(KieFunctions.greaterOrEqualThan(0, "0")).isTrue();
+        assertThat(KieFunctions.greaterOrEqualThan(null, "0")).isFalse();
+        assertThat(KieFunctions.greaterOrEqualThan(null, null)).isFalse();
 
         comparitionFailed = false;
         try {
-            assertEquals(false, KieFunctions.greaterOrEqualThan(2, null));
+            assertThat(KieFunctions.greaterOrEqualThan(2, null)).isFalse();
         } catch (RuntimeException e) {
             comparitionFailed = true;
         }
-        assertEquals(true, comparitionFailed);
+        assertThat(comparitionFailed).isTrue();
 
 
-        assertEquals(false, KieFunctions.lessThan(5, "2"));
-        assertEquals(true, KieFunctions.lessThan(0, "2"));
-        assertEquals(false, KieFunctions.lessThan(0, "0"));
-        assertEquals(false, KieFunctions.lessThan(null, "0"));
-        assertEquals(false, KieFunctions.lessThan(null, null));
+        assertThat(KieFunctions.lessThan(5, "2")).isFalse();
+        assertThat(KieFunctions.lessThan(0, "2")).isTrue();
+        assertThat(KieFunctions.lessThan(0, "0")).isFalse();
+        assertThat(KieFunctions.lessThan(null, "0")).isFalse();
+        assertThat(KieFunctions.lessThan(null, null)).isFalse();
 
         comparitionFailed = false;
         try {
-            assertEquals(false, KieFunctions.lessThan(2, null));
+            assertThat(KieFunctions.lessThan(2, null)).isFalse();
         } catch (RuntimeException e) {
             comparitionFailed = true;
         }
-        assertEquals(true, comparitionFailed);
+        assertThat(comparitionFailed).isTrue();
 
 
-
-        assertEquals(false, KieFunctions.lessOrEqualThan(5, "2"));
-        assertEquals(true, KieFunctions.lessOrEqualThan(2, "2"));
-        assertEquals(true, KieFunctions.lessOrEqualThan(0, "2"));
-        assertEquals(true, KieFunctions.lessOrEqualThan(0, "0"));
-        assertEquals(false, KieFunctions.lessOrEqualThan(null, "0"));
-        assertEquals(false, KieFunctions.lessOrEqualThan(null, null));
+        assertThat(KieFunctions.lessOrEqualThan(5, "2")).isFalse();
+        assertThat(KieFunctions.lessOrEqualThan(2, "2")).isTrue();
+        assertThat(KieFunctions.lessOrEqualThan(0, "2")).isTrue();
+        assertThat(KieFunctions.lessOrEqualThan(0, "0")).isTrue();
+        assertThat(KieFunctions.lessOrEqualThan(null, "0")).isFalse();
+        assertThat(KieFunctions.lessOrEqualThan(null, null)).isFalse();
 
         comparitionFailed = false;
         try {
-            assertEquals(false, KieFunctions.lessOrEqualThan(2, null));
+            assertThat(KieFunctions.lessOrEqualThan(2, null)).isFalse();
         } catch (RuntimeException e) {
             comparitionFailed = true;
         }
-        assertEquals(true, comparitionFailed);
+        assertThat(comparitionFailed).isTrue();
 
 
-
-        assertEquals(false, KieFunctions.between(0, "1", "10"));
-        assertEquals(false, KieFunctions.between(11, "1", "10"));
-        assertEquals(true, KieFunctions.between(1, "1", "10"));
-        assertEquals(true, KieFunctions.between(10, "1", "10"));
-        assertEquals(true, KieFunctions.between(2, "1", "10"));
-        assertEquals(false, KieFunctions.between(null, "5", "6"));
+        assertThat(KieFunctions.between(0, "1", "10")).isFalse();
+        assertThat(KieFunctions.between(11, "1", "10")).isFalse();
+        assertThat(KieFunctions.between(1, "1", "10")).isTrue();
+        assertThat(KieFunctions.between(10, "1", "10")).isTrue();
+        assertThat(KieFunctions.between(2, "1", "10")).isTrue();
+        assertThat(KieFunctions.between(null, "5", "6")).isFalse();
 
         comparitionFailed = false;
         try {
-            assertEquals(false, KieFunctions.between(2, null, "9"));
+            assertThat(KieFunctions.between(2, null, "9")).isFalse();
         } catch (RuntimeException e) {
             comparitionFailed = true;
         }
-        assertEquals(true, comparitionFailed);
+        assertThat(comparitionFailed).isTrue();
 
         comparitionFailed = false;
         try {
-            assertEquals(false, KieFunctions.between(2, "1", null));
+            assertThat(KieFunctions.between(2, "1", null)).isFalse();
         } catch (RuntimeException e) {
             comparitionFailed = true;
         }
-        assertEquals(true, comparitionFailed);
+        assertThat(comparitionFailed).isTrue();
 
 
+        assertThat(KieFunctions.isTrue(true)).isTrue();
+        assertThat(KieFunctions.isTrue(null)).isFalse();
+        assertThat(KieFunctions.isTrue(false)).isFalse();
 
-        assertEquals(true, KieFunctions.isTrue(true));
-        assertEquals(false, KieFunctions.isTrue(null));
-        assertEquals(false, KieFunctions.isTrue(false));
-
-        assertEquals(true, KieFunctions.isFalse(false));
-        assertEquals(false, KieFunctions.isFalse(null));
-        assertEquals(false, KieFunctions.isFalse(true));
+        assertThat(KieFunctions.isFalse(false)).isTrue();
+        assertThat(KieFunctions.isFalse(null)).isFalse();
+        assertThat(KieFunctions.isFalse(true)).isFalse();
 
     }
 }

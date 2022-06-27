@@ -29,10 +29,8 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ObjectHashMapTest {
 
@@ -57,12 +55,12 @@ public class ObjectHashMapTest {
         for ( int i = 0; i < length; i++) { 
             String s = objects.get(i);
             FactHandle handle = handles.get( i );
-            assertEquals( s, ksession.getObject( handle ) );            
-            assertSame( handle, ksession.getFactHandle( s ) );
+            assertThat(ksession.getObject(handle)).isEqualTo(s);
+            assertThat(ksession.getFactHandle(s)).isSameAs(handle);
             
             // now check with disconnected facthandle
             handle = DefaultFactHandle.createFromExternalFormat(((DefaultFactHandle)handle).toExternalForm());
-            assertEquals( s, ksession.getObject( handle ) );
+            assertThat(ksession.getObject(handle)).isEqualTo(s);
         }
         
         for ( int i = 0; i < length; i++) { 
@@ -71,12 +69,12 @@ public class ObjectHashMapTest {
             // now retract with disconnected facthandle
             handle = DefaultFactHandle.createFromExternalFormat(((DefaultFactHandle)handle).toExternalForm());
             ksession.retract( handle );
-            assertEquals( length - i -1, ksession.getObjects().size() );
-            assertEquals( length - i -1, ksession.getFactHandles().size() );            
-        }        
-        
-        assertEquals( 0, ksession.getObjects().size() );
-        assertEquals( 0, ksession.getFactHandles().size() );        
+            assertThat(ksession.getObjects().size()).isEqualTo(length - i - 1);
+            assertThat(ksession.getFactHandles().size()).isEqualTo(length - i - 1);            
+        }
+
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
+        assertThat(ksession.getFactHandles().size()).isEqualTo(0);        
     }
     
     @Test
@@ -100,12 +98,12 @@ public class ObjectHashMapTest {
         for ( int i = 0; i < length; i++) { 
             String s = objects.get(i);
             FactHandle handle = handles.get( i );
-            assertEquals( s, ksession.getObject( handle ) );            
-            assertSame( handle, ksession.getFactHandle( s ) );
+            assertThat(ksession.getObject(handle)).isEqualTo(s);
+            assertThat(ksession.getFactHandle(s)).isSameAs(handle);
             
             // now check with disconnected facthandle
             handle = DefaultFactHandle.createFromExternalFormat(((DefaultFactHandle)handle).toExternalForm());
-            assertEquals( s, ksession.getObject( handle ) );
+            assertThat(ksession.getObject(handle)).isEqualTo(s);
         }
         
         for ( int i = 0; i < length; i++) { 
@@ -114,12 +112,12 @@ public class ObjectHashMapTest {
             // now retract with disconnected facthandle
             handle = DefaultFactHandle.createFromExternalFormat(((DefaultFactHandle)handle).toExternalForm());
             ksession.retract( handle );
-            assertEquals( length - i -1, ksession.getObjects().size() );
-            assertEquals( length - i -1, ksession.getFactHandles().size() );            
-        }        
-        
-        assertEquals( 0, ksession.getObjects().size() );
-        assertEquals( 0, ksession.getFactHandles().size() );         
+            assertThat(ksession.getObjects().size()).isEqualTo(length - i - 1);
+            assertThat(ksession.getFactHandles().size()).isEqualTo(length - i - 1);            
+        }
+
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
+        assertThat(ksession.getFactHandles().size()).isEqualTo(0);         
     }    
     
     public String getPropertyName(int i) {
@@ -140,52 +138,49 @@ public class ObjectHashMapTest {
     @Test
     public void testStringData() {
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final int count = 1000;
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
             final String val = "value" + idx;
             map.put( key,
                      val );
-            assertEquals( val,
-                          map.get( key ) );
+            assertThat(map.get(key)).isEqualTo(val);
         }
     }
 
     @Test
     public void testIntegerData() {
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final int count = 1000;
         for ( int idx = 0; idx < count; idx++ ) {
             final Integer key = new Integer( idx );
             final Integer val = new Integer( idx );
             map.put( key,
                      val );
-            assertEquals( val,
-                          map.get( key ) );
+            assertThat(map.get(key)).isEqualTo(val);
         }
     }
 
     @Test
     public void testJUHashmap() {
         final java.util.HashMap map = new java.util.HashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final int count = 1000;
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
             final String val = "value" + idx;
             map.put( key,
                      val );
-            assertEquals( val,
-                          map.get( key ) );
+            assertThat(map.get(key)).isEqualTo(val);
         }
     }
 
     @Test
     public void testStringDataDupFalse() {
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final int count = 10000;
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
@@ -193,8 +188,7 @@ public class ObjectHashMapTest {
             map.put( key,
                      val,
                      false );
-            assertEquals( val,
-                          map.get( key ) );
+            assertThat(map.get(key)).isEqualTo(val);
         }
     }
 
@@ -202,7 +196,7 @@ public class ObjectHashMapTest {
     public void testJUHashMap1() {
         final int count = 100000;
         final java.util.HashMap map = new java.util.HashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final long start = System.currentTimeMillis();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
@@ -218,7 +212,7 @@ public class ObjectHashMapTest {
     public void testStringData2() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final long start = System.currentTimeMillis();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
@@ -234,7 +228,7 @@ public class ObjectHashMapTest {
     public void testStringData3() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
             final String strval = "value" + idx;
@@ -254,7 +248,7 @@ public class ObjectHashMapTest {
     public void testJUHashMap2() {
         final int count = 100000;
         final java.util.HashMap map = new java.util.HashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
             final String strval = "value" + idx;
@@ -274,7 +268,7 @@ public class ObjectHashMapTest {
     public void testStringData4() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
             final String strval = "value" + idx;
@@ -295,7 +289,7 @@ public class ObjectHashMapTest {
     public void testJUHashMap3() {
         final int count = 100000;
         final java.util.HashMap map = new java.util.HashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;
             final String strval = "value" + idx;
@@ -315,7 +309,7 @@ public class ObjectHashMapTest {
     public void testStringData5() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
-        assertNotNull( map );
+        assertThat(map).isNotNull();
         final long start = System.currentTimeMillis();
         for ( int idx = 0; idx < count; idx++ ) {
             final String key = "key" + idx;

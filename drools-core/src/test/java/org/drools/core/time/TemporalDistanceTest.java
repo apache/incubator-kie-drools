@@ -17,7 +17,8 @@
 package org.drools.core.time;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test class for the time distance calculation algorithm
@@ -69,7 +70,7 @@ public class TemporalDistanceTest {
     public void assertEqualsMatrix( Interval[][] expected, Interval[][] matrix ) {
         for( int i = 0; i < matrix.length; i++ ) {
             for( int j = 0; j < matrix[i].length; j++ ) {
-                assertEquals( "Wrong value at ("+i+", "+j, expected[i][j], matrix[i][j] );
+                assertThat(matrix[i][j]).as("Wrong value at (" + i + ", " + j).isEqualTo(expected[i][j]);
             }
         }
     }

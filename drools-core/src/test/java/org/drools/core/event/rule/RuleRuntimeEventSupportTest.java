@@ -31,7 +31,7 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleRuntimeEventSupportTest {
 
@@ -67,19 +67,16 @@ public class RuleRuntimeEventSupportTest {
         final FactHandle stiltonHandle = ksession.insert( stilton );
 
         final ObjectInsertedEvent oae = (ObjectInsertedEvent) wmList.get( 0 );
-        assertSame( stiltonHandle,
-                    oae.getFactHandle() );
+        assertThat(oae.getFactHandle()).isSameAs(stiltonHandle);
 
         ksession.update( stiltonHandle,
                          stilton );
         final ObjectUpdatedEvent ome = (ObjectUpdatedEvent) wmList.get( 1 );
-        assertSame( stiltonHandle,
-                    ome.getFactHandle() );
+        assertThat(ome.getFactHandle()).isSameAs(stiltonHandle);
 
         ksession.retract( stiltonHandle );
         final ObjectDeletedEvent ore = (ObjectDeletedEvent) wmList.get( 2 );
-        assertSame( stiltonHandle,
-                    ore.getFactHandle() );
+        assertThat(ore.getFactHandle()).isSameAs(stiltonHandle);
 
         ksession.insert( cheddar );
     }
@@ -115,16 +112,16 @@ public class RuleRuntimeEventSupportTest {
                                      17 );
 
         final FactHandle stiltonHandle = ksession.insert( stilton );
-        assertTrue( wmList.isEmpty() );
+        assertThat(wmList.isEmpty()).isTrue();
 
         ksession.update( stiltonHandle,
                          stilton );
-        assertTrue( wmList.isEmpty() );
+        assertThat(wmList.isEmpty()).isTrue();
 
         ksession.retract( stiltonHandle );
-        assertTrue( wmList.isEmpty() );
+        assertThat(wmList.isEmpty()).isTrue();
 
         ksession.insert( cheddar );
-        assertTrue( wmList.isEmpty() );
+        assertThat(wmList.isEmpty()).isTrue();
     }
 }

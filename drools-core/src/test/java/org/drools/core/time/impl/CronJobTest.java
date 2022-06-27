@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CronJobTest {
     @Test
@@ -51,27 +51,22 @@ public class CronJobTest {
                                  ctx,
                                  trigger );
 
-        assertEquals( 0,
-                      ctx.getList().size() );
+        assertThat(ctx.getList()).hasSize(0);
 
         timeService.advanceTime( 10,
                                  TimeUnit.SECONDS );
-        assertEquals( 0,
-                      ctx.getList().size() );
+        assertThat(ctx.getList()).hasSize(0);
 
         timeService.advanceTime( 10,
                                  TimeUnit.SECONDS );
-        assertEquals( 1,
-                      ctx.getList().size() );
+        assertThat(ctx.getList()).hasSize(1);
 
         timeService.advanceTime( 30,
                                  TimeUnit.SECONDS );
-        assertEquals( 1,
-                      ctx.getList().size() );
+        assertThat(ctx.getList()).hasSize(1);
 
         timeService.advanceTime( 30,
                                  TimeUnit.SECONDS );
-        assertEquals( 2,
-                      ctx.getList().size() );
+        assertThat(ctx.getList()).hasSize(2);
     }
 }

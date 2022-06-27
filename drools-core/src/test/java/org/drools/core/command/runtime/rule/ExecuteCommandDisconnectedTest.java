@@ -31,7 +31,7 @@ import org.kie.internal.command.CommandFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExecuteCommandDisconnectedTest {
 
@@ -54,11 +54,11 @@ public class ExecuteCommandDisconnectedTest {
 
         ExecutionResults results = execCmd.execute( context );
 
-        assertNotNull(results);
+        assertThat(results).isNotNull();
 
-        assertNotNull(results.getFactHandle("handle"));
+        assertThat(results.getFactHandle("handle")).isNotNull();
 
-        assertTrue(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
+        assertThat(((DefaultFactHandle) results.getFactHandle("handle")).isDisconnected()).isTrue();
 
         cmds = new ArrayList();
         cmds.add(new InsertObjectCommand(new String("Hi!"), "handle"));
@@ -67,11 +67,11 @@ public class ExecuteCommandDisconnectedTest {
 
         results = execCmd.execute( context );
 
-        assertNotNull(results);
+        assertThat(results).isNotNull();
 
-        assertNotNull(results.getFactHandle("handle"));
+        assertThat(results.getFactHandle("handle")).isNotNull();
 
-        assertFalse(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
+        assertThat(((DefaultFactHandle) results.getFactHandle("handle")).isDisconnected()).isFalse();
 
     }
 }

@@ -18,12 +18,12 @@ package org.drools.core.facttemplates;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FactTemplateFieldExtractorTest {
     @Test
@@ -52,19 +52,18 @@ public class FactTemplateFieldExtractorTest {
         stilton.setFieldValue( "price",
                                new Integer( 200 ) );
 
-        assertEquals( "stilton",
-                      extractName.getValue( null, stilton ) );
+        assertThat(extractName.getValue(null, stilton)).isEqualTo("stilton");
 
-        assertEquals( new Integer( 200 ),
-                      extractPrice.getValue( null, stilton ) );
+        assertThat(extractPrice.getValue(null, stilton)).isEqualTo(200);
 
-        assertFalse( extractName.isNullValue( null, stilton ) );
+        assertThat(extractName.isNullValue(null, stilton)).isFalse();
         
         stilton.setFieldValue( "name",
                                null );
         
-        assertTrue( extractName.isNullValue( null, stilton ) );
-        assertFalse( extractPrice.isNullValue( null, stilton ) );
+
+        assertThat(extractName.isNullValue(null, stilton)).isTrue();
+        assertThat(extractPrice.isNullValue(null, stilton)).isFalse();
         
         final Fact brie = cheese.createFact( 12 );
         brie.setFieldValue( "name",
@@ -72,19 +71,16 @@ public class FactTemplateFieldExtractorTest {
         brie.setFieldValue( "price",
                             new Integer( 55 ) );
 
-        assertEquals( "brie",
-                      extractName.getValue( null, brie ) );
+        assertThat(extractName.getValue(null, brie)).isEqualTo("brie");
 
-        assertEquals( new Integer( 55 ),
-                      extractPrice.getValue( null, brie ) );
+        assertThat(extractPrice.getValue(null, brie)).isEqualTo(55);
+
+        assertThat(extractName.isNullValue(null, brie)).isFalse();
         
-        assertFalse( extractName.isNullValue( null, brie ) );
-        
-        brie.setFieldValue( "name",
-                            null );
-        
-        assertTrue( extractName.isNullValue( null, brie ) );
-        assertFalse( extractPrice.isNullValue( null, stilton ) );
+        brie.setFieldValue( "name", null );
+
+        assertThat(extractName.isNullValue(null, brie)).isTrue();
+        assertThat(extractPrice.isNullValue(null, stilton)).isFalse();
     }
 
     @Test
@@ -119,7 +115,6 @@ public class FactTemplateFieldExtractorTest {
                             new Integer( 55 ) );
 
         // Check we can extract Declarations correctly 
-        assertEquals( "brie",
-                      declaration.getValue( null, brie ) );
+        assertThat(declaration.getValue(null, brie)).isEqualTo("brie");
     }
 }

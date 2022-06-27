@@ -37,7 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Thes test class uses auxiliary test classes in org.kie.util:
@@ -48,8 +48,8 @@ import static org.junit.Assert.assertTrue;
  * position. Finally, Items are retrieved and the order is checked.
  * 
  * Experience has shown that at least 6 Items are required to demonstrate
- * a certain bug, so don't reduce the max parameter. 
- *
+ * a certain bug, so don't reduce the max parameter.
+ * 
  */
 public class BinaryHeapQueueTest {
 
@@ -113,8 +113,7 @@ public class BinaryHeapQueueTest {
                 sb.append( " " ).append( sal );
                 if ( sal != i ) ok = false;
             }
-            assertTrue( "incorrect order in " + sb.toString(),
-                        ok );
+            assertThat(ok).as("incorrect order in " + sb.toString()).isTrue();
             //      System.out.println( sb.toString() );
         }
     }

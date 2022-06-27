@@ -16,6 +16,17 @@
 
 package org.drools.core.time.impl;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Stack;
+
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
@@ -28,18 +39,7 @@ import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.time.Trigger;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Stack;
-
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JDKTimerServiceTest {
     
@@ -53,7 +53,7 @@ public class JDKTimerServiceTest {
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
         Thread.sleep( 500 );
         timeService.shutdown();
-        assertEquals( 1, ctx.getList().size() );
+        assertThat(ctx.getList()).hasSize(1);
     }
     
     @Test
@@ -66,7 +66,7 @@ public class JDKTimerServiceTest {
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
         Thread.sleep( 500 );
         timeService.shutdown();
-        assertEquals( 3, ctx.getList().size() );
+        assertThat(ctx.getList()).hasSize(3);
     }
         
     
@@ -81,7 +81,7 @@ public class JDKTimerServiceTest {
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
         Thread.sleep( 1000 );
         timeService.shutdown();
-        assertEquals( 5, ctx.getList().size() );
+        assertThat(ctx.getList()).hasSize(5);
     }
 
     public static class HelloWorldJob implements Job {

@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.drools.core.impl.KnowledgeBaseFactory;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NodeSegmentUnlinkingTest {
     InternalKnowledgeBase kBase;
@@ -217,17 +217,17 @@ public class NodeSegmentUnlinkingTest {
         createSegmentMemory( n2, ksession );
 
         BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n1 );
-        assertNull( bm.getSegmentMemory() );
+        assertThat(bm.getSegmentMemory()).isNull();
 
         bm = (BetaMemory) ksession.getNodeMemory( n3 );
-        assertNull( bm.getSegmentMemory() );
+        assertThat(bm.getSegmentMemory()).isNull();
 
         bm = (BetaMemory) ksession.getNodeMemory( n4 );
-        assertNull( bm.getSegmentMemory() );
+        assertThat(bm.getSegmentMemory()).isNull();
 
         bm = (BetaMemory) ksession.getNodeMemory( n2 );
-        assertEquals( 1, bm.getNodePosMaskBit() );
-        assertEquals( 1, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(1);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(1);
     }
     
     @Test
@@ -244,12 +244,12 @@ public class NodeSegmentUnlinkingTest {
         
 
         LiaNodeMemory liaMem = (LiaNodeMemory) ksession.getNodeMemory( liaNode );
-        assertEquals( 1, liaMem.getNodePosMaskBit() );
-        assertEquals( 3, liaMem.getSegmentMemory().getAllLinkedMaskTest() ); 
+        assertThat(liaMem.getNodePosMaskBit()).isEqualTo(1);
+        assertThat(liaMem.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3); 
         
         BetaMemory bm1 = (BetaMemory) ksession.getNodeMemory( n1 );
-        assertEquals( 2, bm1.getNodePosMaskBit() );
-        assertEquals( 3, bm1.getSegmentMemory().getAllLinkedMaskTest() );         
+        assertThat(bm1.getNodePosMaskBit()).isEqualTo(2);
+        assertThat(bm1.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3);         
         
         // Initialise from n1     
         kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
@@ -259,12 +259,12 @@ public class NodeSegmentUnlinkingTest {
         
 
         liaMem = (LiaNodeMemory) ksession.getNodeMemory( liaNode );
-        assertEquals( 1, liaMem.getNodePosMaskBit() );
-        assertEquals( 3, liaMem.getSegmentMemory().getAllLinkedMaskTest() ); 
+        assertThat(liaMem.getNodePosMaskBit()).isEqualTo(1);
+        assertThat(liaMem.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3); 
         
         bm1 = (BetaMemory) ksession.getNodeMemory( n1 );
-        assertEquals( 2, bm1.getNodePosMaskBit() );
-        assertEquals( 3, bm1.getSegmentMemory().getAllLinkedMaskTest() );           
+        assertThat(bm1.getNodePosMaskBit()).isEqualTo(2);
+        assertThat(bm1.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3);           
     }
     
     @Test
@@ -281,38 +281,38 @@ public class NodeSegmentUnlinkingTest {
         n1.assertObject( fh1, context, ksession );
         
         LiaNodeMemory liaMem = (LiaNodeMemory) ksession.getNodeMemory( liaNode );
-        assertEquals( 1, liaMem.getNodePosMaskBit() );
-        assertEquals( 3, liaMem.getSegmentMemory().getAllLinkedMaskTest() ); 
+        assertThat(liaMem.getNodePosMaskBit()).isEqualTo(1);
+        assertThat(liaMem.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3); 
         
         BetaMemory bm1 = (BetaMemory) ksession.getNodeMemory( n1 );
-        assertEquals( 2, bm1.getNodePosMaskBit() );
-        assertEquals( 3, bm1.getSegmentMemory().getAllLinkedMaskTest() );     
-        
+        assertThat(bm1.getNodePosMaskBit()).isEqualTo(2);
+        assertThat(bm1.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3);
+
         // still unlinked
-        assertFalse( liaMem.getSegmentMemory().isSegmentLinked() );
+        assertThat(liaMem.getSegmentMemory().isSegmentLinked()).isFalse();
         
         // now linked
         InternalFactHandle fh2 = (InternalFactHandle) ksession.insert( "str2" );
         liaNode.assertObject( fh2, context, ksession );
-        assertTrue( liaMem.getSegmentMemory().isSegmentLinked() );
+        assertThat(liaMem.getSegmentMemory().isSegmentLinked()).isTrue();
         
         // test unlink after one retract
         liaNode.retractLeftTuple( fh2.getFirstLeftTuple(), context, ksession );
-        assertFalse( liaMem.getSegmentMemory().isSegmentLinked() );
+        assertThat(liaMem.getSegmentMemory().isSegmentLinked()).isFalse();
         
         // check counter, after multiple asserts
         InternalFactHandle fh3 = (InternalFactHandle) ksession.insert( "str3" );
         InternalFactHandle fh4 = (InternalFactHandle) ksession.insert( "str4" );
         liaNode.assertObject( fh3, context, ksession );
         liaNode.assertObject( fh4, context, ksession );
-        
-        assertTrue( liaMem.getSegmentMemory().isSegmentLinked() );
+
+        assertThat(liaMem.getSegmentMemory().isSegmentLinked()).isTrue();
         
         liaNode.retractLeftTuple( fh3.getFirstLeftTuple(), context, ksession );
-        assertTrue( liaMem.getSegmentMemory().isSegmentLinked() );
+        assertThat(liaMem.getSegmentMemory().isSegmentLinked()).isTrue();
 
         liaNode.retractLeftTuple( fh4.getFirstLeftTuple(), context, ksession );
-        assertFalse( liaMem.getSegmentMemory().isSegmentLinked() );
+        assertThat(liaMem.getSegmentMemory().isSegmentLinked()).isFalse();
     }
 
     @Test
@@ -326,23 +326,23 @@ public class NodeSegmentUnlinkingTest {
         createSegmentMemory(n3, ksession);
 
         BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n1 );
-        assertNull(bm.getSegmentMemory());
+        assertThat(bm.getSegmentMemory()).isNull();
 
         bm = (BetaMemory) ksession.getNodeMemory( n3 );
-        assertEquals( 1, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(1);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n4 );
-        assertEquals( 2, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(2);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n5 );
-        assertEquals( 4, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(4);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n6 );
-        assertEquals( 8, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(8);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         // Initialise from n4       
         kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
@@ -351,23 +351,23 @@ public class NodeSegmentUnlinkingTest {
         bm = createSegmentMemory( n4, ksession );
 
         bm = (BetaMemory) ksession.getNodeMemory( n1 );
-        assertNull( bm.getSegmentMemory() );
+        assertThat(bm.getSegmentMemory()).isNull();
 
         bm = (BetaMemory) ksession.getNodeMemory( n3 );
-        assertEquals( 1, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(1);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n4 );
-        assertEquals( 2, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(2);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n5 );
-        assertEquals( 4, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(4);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n6 );
-        assertEquals(8, bm.getNodePosMaskBit());
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(8);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         // Initialise from n5
         kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
@@ -376,23 +376,23 @@ public class NodeSegmentUnlinkingTest {
         createSegmentMemory( n5, ksession );
 
         bm = (BetaMemory) ksession.getNodeMemory( n1 );
-        assertNull(bm.getSegmentMemory());
+        assertThat(bm.getSegmentMemory()).isNull();
 
         bm = (BetaMemory) ksession.getNodeMemory( n3 );
-        assertEquals( 1, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(1);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n4 );
-        assertEquals( 2, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(2);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n5 );
-        assertEquals( 4, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(4);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n6 );
-        assertEquals( 8, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(8);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         // Initialise from n6
         kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
@@ -401,30 +401,30 @@ public class NodeSegmentUnlinkingTest {
         createSegmentMemory( n6, ksession );
 
         bm = (BetaMemory) ksession.getNodeMemory( n1 );
-        assertNull( bm.getSegmentMemory() );
+        assertThat(bm.getSegmentMemory()).isNull();
 
         bm = (BetaMemory) ksession.getNodeMemory( n3 );
-        assertEquals( 1, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(1);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n4 );
-        assertEquals( 2, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(2);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n5 );
-        assertEquals( 4, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(4);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         bm = (BetaMemory) ksession.getNodeMemory( n6 );
-        assertEquals( 8, bm.getNodePosMaskBit() );
-        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertThat(bm.getNodePosMaskBit()).isEqualTo(8);
+        assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
     }
 
     @Test
     public void testAllLinkedInWithJoinNodesOnly() {
         setUp( JOIN_NODE );
 
-        assertEquals( JoinNode.class, n3.getClass() ); // make sure it created JoinNodes
+        assertThat(n3.getClass()).isEqualTo(JoinNode.class); // make sure it created JoinNodes
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
@@ -434,23 +434,23 @@ public class NodeSegmentUnlinkingTest {
         n3.assertObject( f1, context, ksession );
 
         BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n3 );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();
 
         n4.assertObject( f1, context, ksession );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();
 
         n5.assertObject( f1, context, ksession );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();
 
         n6.assertObject( f1, context, ksession );
-        assertTrue( bm.getSegmentMemory().isSegmentLinked() ); // only after all 4 nodes are populated, is the segment linked in
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isTrue(); // only after all 4 nodes are populated, is the segment linked in
     }
 
     @Test
     public void testAllLinkedInWithExistsNodesOnly() {
         setUp( EXISTS_NODE );
 
-        assertEquals( ExistsNode.class, n3.getClass() ); // make sure it created ExistsNodes
+        assertThat(n3.getClass()).isEqualTo(ExistsNode.class); // make sure it created ExistsNodes
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
@@ -460,16 +460,16 @@ public class NodeSegmentUnlinkingTest {
         n3.assertObject( f1, context, ksession );
 
         BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n3 );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();
 
         n4.assertObject( f1, context, ksession );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();
 
         n5.assertObject( f1, context, ksession );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() );
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();
 
         n6.assertObject( f1, context, ksession );
-        assertTrue( bm.getSegmentMemory().isSegmentLinked() ); // only after all 4 nodes are populated, is the segment linked in
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isTrue(); // only after all 4 nodes are populated, is the segment linked in
     }
 
     private static BetaMemory createSegmentMemory(BetaNode node,
@@ -486,7 +486,7 @@ public class NodeSegmentUnlinkingTest {
     public void testAllLinkedInWithNotNodesOnly() {
         setUp( NOT_NODE );
 
-        assertEquals( NotNode.class, n3.getClass() ); // make sure it created NotNodes
+        assertThat(n3.getClass()).isEqualTo(NotNode.class); // make sure it created NotNodes
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
@@ -494,17 +494,17 @@ public class NodeSegmentUnlinkingTest {
 
         BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n3 );
         createSegmentMemory( n3, ksession );
-        assertTrue( bm.getSegmentMemory().isSegmentLinked() ); // not nodes start off linked
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isTrue(); // not nodes start off linked
 
         DefaultFactHandle f1 = (DefaultFactHandle) ksession.insert( "test1" ); // unlinked after first assertion
         n3.assertObject( f1, context, ksession );
                 
         // this doesn't unlink on the assertObject, as the node's memory must be processed. So use the helper method the main network evaluator uses.
         PhreakNotNode.unlinkNotNodeOnRightInsert( (NotNode) n3, bm, ksession );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() );                
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();                
 
         n3.retractRightTuple( f1.getFirstRightTuple(), context, ksession );
-        assertTrue( bm.getSegmentMemory().isSegmentLinked() ); 
+        assertThat(bm.getSegmentMemory().isSegmentLinked()).isTrue(); 
                 //assertFalse( bm.getSegmentMemory().isSigmentLinked() ); // check retraction unlinks again         
     }
 

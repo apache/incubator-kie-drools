@@ -40,9 +40,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReteTest extends DroolsTestCase {
     private PropagationContextFactory pctxFactory;
@@ -84,11 +82,10 @@ public class ReteTest extends DroolsTestCase {
         final List<ObjectTypeNode> list = rete.getObjectTypeNodes();
 
         // Check the ObjectTypeNodes are correctly added to Rete
-        assertEquals(3,
-                     list.size());
+        assertThat(list.size()).isEqualTo(3);
 
-        assertTrue(list.contains(objectTypeNode));
-        assertTrue(list.contains(stringTypeNode));
+        assertThat(list.contains(objectTypeNode)).isTrue();
+        assertThat(list.contains(stringTypeNode)).isTrue();
     }
 
     /**
@@ -211,8 +208,7 @@ public class ReteTest extends DroolsTestCase {
                      asserted);
 
         final Object[] results = (Object[]) asserted.get(0);
-        assertSame(list,
-                   ((DefaultFactHandle) results[0]).getObject());
+        assertThat(((DefaultFactHandle) results[0]).getObject()).isSameAs(list);
     }
 
     @Test
@@ -220,16 +216,14 @@ public class ReteTest extends DroolsTestCase {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final Rete rete = kBase.getRete();
-        assertEquals(1,
-                     rete.getObjectTypeNodes().size());
+        assertThat(rete.getObjectTypeNodes().size()).isEqualTo(1);
 
         List list = new ArrayList();
 
         ksession.insert(list);
         ksession.fireAllRules();
 
-        assertEquals(1,
-                     rete.getObjectTypeNodes().size());
+        assertThat(rete.getObjectTypeNodes().size()).isEqualTo(1);
     }
 
     @Test
@@ -251,25 +245,21 @@ public class ReteTest extends DroolsTestCase {
         FactHandle handle = ksession.insert(new ArrayList());
 
         // Check we have three ObjectTypeNodes, List, ArrayList and InitialFactImpl
-        assertEquals(3,
-                     rete.getObjectTypeNodes().size());
+        assertThat(rete.getObjectTypeNodes().size()).isEqualTo(3);
 
         // double check that the List reference is the same as the one we created, i.e. engine should try and recreate it
-        assertSame(listOtn,
-                   rete.getObjectTypeNodes(EntryPointId.DEFAULT).get(new ClassObjectType(List.class)));
+        assertThat(rete.getObjectTypeNodes(EntryPointId.DEFAULT).get(new ClassObjectType(List.class))).isSameAs(listOtn);
 
         // ArrayConf should match two ObjectTypenodes for List and ArrayList
         ClassObjectTypeConf arrayConf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
         final ObjectTypeNode arrayOtn = arrayConf.getConcreteObjectTypeNode();
-        assertEquals(2,
-                     arrayConf.getObjectTypeNodes().length);
+        assertThat(arrayConf.getObjectTypeNodes().length).isEqualTo(2);
 
         // Check it contains List and ArrayList
         List nodes = Arrays.asList(arrayConf.getObjectTypeNodes());
-        assertEquals(2,
-                     nodes.size());
-        assertTrue(nodes.contains(arrayOtn));
-        assertTrue(nodes.contains(listOtn));
+        assertThat(nodes.size()).isEqualTo(2);
+        assertThat(nodes.contains(arrayOtn)).isTrue();
+        assertThat(nodes.contains(listOtn)).isTrue();
 
         // Nodes are there, retract the fact so we can check both nodes are populated
         ksession.retract(handle);
@@ -282,10 +272,8 @@ public class ReteTest extends DroolsTestCase {
         listOtn.addObjectSink(arraySink);
 
         ksession.insert(new ArrayList());
-        assertEquals(1,
-                     listSink.getAsserted().size());
-        assertEquals(1,
-                     arraySink.getAsserted().size());
+        assertThat(listSink.getAsserted().size()).isEqualTo(1);
+        assertThat(arraySink.getAsserted().size()).isEqualTo(1);
 
         // Add a Collection ObjectTypeNode, so that we can check that the data from ArrayList is sent to it
         final ObjectTypeNode collectionOtn = new ObjectTypeNode(idGenerator.getNextId(),
@@ -297,16 +285,14 @@ public class ReteTest extends DroolsTestCase {
 
         collectionOtn.attach(new TestBuildContext(kBase));
 
-        assertEquals(1,
-                     collectionSink.getAsserted().size());
+        assertThat(collectionSink.getAsserted().size()).isEqualTo(1);
 
         // check that ArrayListConf was updated with the new ObjectTypeNode
         nodes = Arrays.asList(arrayConf.getObjectTypeNodes());
-        assertEquals(3,
-                     nodes.size());
-        assertTrue(nodes.contains(arrayOtn));
-        assertTrue(nodes.contains(listOtn));
-        assertTrue(nodes.contains(collectionOtn));
+        assertThat(nodes.size()).isEqualTo(3);
+        assertThat(nodes.contains(arrayOtn)).isTrue();
+        assertThat(nodes.contains(listOtn)).isTrue();
+        assertThat(nodes.contains(collectionOtn)).isTrue();
     }
 
     /**
@@ -373,8 +359,7 @@ public class ReteTest extends DroolsTestCase {
                      retracted);
 
         final Object[] results = (Object[]) retracted.get(0);
-        assertSame(list,
-                   ((DefaultFactHandle) results[0]).getObject());
+        assertThat(((DefaultFactHandle) results[0]).getObject()).isSameAs(list);
     }
 
     @Test

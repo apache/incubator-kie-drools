@@ -16,15 +16,14 @@
 
 package org.drools.core.util;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.kie.api.runtime.rule.Variable;
 
 public class TripleStoreTest {
@@ -38,12 +37,12 @@ public class TripleStoreTest {
         TripleStore store = new TripleStore(10*100*1000, 0.6f );
         Individual ind = new Individual();
         Triple t = new TripleImpl(ind, "hasName", "mark");
-        
-        assertFalse( store.put( t ) );
+
+        assertThat(store.put(t)).isFalse();
         
         Triple tKey = new TripleImpl(ind, "hasName", V );
         t = store.get( tKey );
-        assertEquals("mark", t.getValue() );
+        assertThat(t.getValue()).isEqualTo("mark");
     }
     
     @Test
@@ -53,20 +52,20 @@ public class TripleStoreTest {
         TripleStore store = new TripleStore(10*100*1000, 0.6f );
         Individual ind = new Individual();
         Triple t = new TripleImpl(ind, "hasName", "mark");
-        
-        assertFalse( store.put( t ) );
+
+        assertThat(store.put(t)).isFalse();
         
         Triple tKey = new TripleImpl(ind, "hasName", V );
         t = store.get( tKey );
-        assertEquals("mark", t.getValue() );
+        assertThat(t.getValue()).isEqualTo("mark");
         
         t = new TripleImpl(ind, "hasName", "davide");
-        
-        assertTrue( store.put( t ) );
+
+        assertThat(store.put(t)).isTrue();
         
         tKey = new TripleImpl(ind, "hasName", V );
         t = store.get( tKey );
-        assertEquals("davide", t.getValue() );        
+        assertThat(t.getValue()).isEqualTo("davide");        
     }  
     
     @Test
@@ -76,21 +75,21 @@ public class TripleStoreTest {
         TripleStore store = new TripleStore(10*100*1000, 0.6f );
         Individual ind = new Individual();
         Triple t = new TripleImpl(ind, "hasName", "mark");
-        
-        assertFalse( store.put( t ) );
+
+        assertThat(store.put(t)).isFalse();
         
         Triple tKey = new TripleImpl(ind, "hasName", V );
         t = store.get( tKey );
-        assertEquals("mark", t.getValue() );
+        assertThat(t.getValue()).isEqualTo("mark");
         
         t = new TripleImpl(ind, "hasName", V );
-        assertEquals( 1, store.removeAll( t ) );
-        
-        assertFalse( store.remove( t ) ); // try again and make sure it's false.
+        assertThat(store.removeAll(t)).isEqualTo(1);
+
+        assertThat(store.remove(t)).isFalse(); // try again and make sure it's false.
         
         
         tKey = new TripleImpl(ind, "hasName", V );
-        assertNull( store.get( tKey ) );        
+        assertThat(store.get(tKey)).isNull();        
     }   
     
     @Test
@@ -106,21 +105,21 @@ public class TripleStoreTest {
             Individual ind = new Individual();
             inds.add( ind );
             for (int j = 0; j < tripleLength; j++) {  
-                t = new TripleImpl(ind, getPropertyName(j), i*j);            
-                assertFalse( store.put( t ) );                
+                t = new TripleImpl(ind, getPropertyName(j), i*j);
+                assertThat(store.put(t)).isFalse();                
             }
         }
-        
-        assertEquals( instanceLength * tripleLength, store.size() );
+
+        assertThat(store.size()).isEqualTo(instanceLength * tripleLength);
         
         for ( int i = 0; i < instanceLength; i++) {
             for (int j = 0; j < tripleLength; j++) {  
                 t = new TripleImpl(inds.get( i ),getPropertyName(j), V );
                 store.removeAll( t );
             }
-        }        
-        
-        assertEquals( 0,  store.size()  );    
+        }
+
+        assertThat(store.size()).isEqualTo(0);    
     }
     
     public String getPropertyName(int i) {
@@ -138,24 +137,24 @@ public class TripleStoreTest {
         Individual ind = new Individual();
 
         Triple t1 = new TripleImpl(ind, "hasName", "mark");
-        assertFalse( store.put( t1 ) );
+        assertThat(store.put(t1)).isFalse();
 
         Triple t2 = new TripleImpl(ind, "hasAge", "35");
-        assertFalse( store.put( t2 ) );
+        assertThat(store.put(t2)).isFalse();
 
         Triple t3 = new TripleImpl(ind, "hasCity", "london");
-        assertFalse( store.put( t3 ) );
+        assertThat(store.put(t3)).isFalse();
 
         Individual ind2 = new Individual();
 
         Triple t4 = new TripleImpl(ind2, "hasCity", "bologna");
-        assertFalse( store.put( t4 ) );
+        assertThat(store.put(t4)).isFalse();
 
         Triple t5 = new TripleImpl(ind2, "hasCar", "lancia" );
-        assertFalse( store.put( t5 ) );
+        assertThat(store.put(t5)).isFalse();
 
         Triple t6 = new TripleImpl(ind2, "hasWeapon", "lancia");
-        assertFalse( store.put( t6 ) );
+        assertThat(store.put(t6)).isFalse();
 
 
         Triple tKey;
@@ -164,49 +163,49 @@ public class TripleStoreTest {
 
         tKey = new TripleImpl(ind, "hasName", V );
         t = store.get( tKey );
-        assertEquals("mark", t.getValue() );
+        assertThat(t.getValue()).isEqualTo("mark");
 
         tKey = new TripleImpl(ind2, "hasCity", V );
         t = store.get( tKey );
-        assertEquals("bologna", t.getValue() );
+        assertThat(t.getValue()).isEqualTo("bologna");
 
         tKey = new TripleImpl(ind, "hasCar", V );
         t = store.get( tKey );
-        assertNull(t);
+        assertThat(t).isNull();
 
         tKey = new TripleImpl(ind2, "hasCar", V );
         t = store.get( tKey );
-        assertEquals("lancia", t.getValue());
+        assertThat(t.getValue()).isEqualTo("lancia");
 
 
 
         tKey = new TripleImpl( V, "hasCity", V );
         coll = store.getAll(tKey);
-        assertTrue( coll.containsAll( Arrays.asList( t3, t4 ) ) );
-        assertEquals( 2, coll.size() );
+        assertThat(coll.containsAll(Arrays.asList(t3, t4))).isTrue();
+        assertThat(coll.size()).isEqualTo(2);
 
 
         tKey = new TripleImpl( ind, V, V );
         coll = store.getAll(tKey);
-        assertTrue( coll.containsAll( Arrays.asList( t1, t2, t3 ) ) );
-        assertEquals( 3, coll.size() );
+        assertThat(coll.containsAll(Arrays.asList(t1, t2, t3))).isTrue();
+        assertThat(coll.size()).isEqualTo(3);
 
 
         tKey = new TripleImpl( ind2, V, "lancia" );
         coll = store.getAll(tKey);
-        assertTrue( coll.containsAll( Arrays.asList( t5, t6 ) ) );
-        assertEquals( 2, coll.size() );
+        assertThat(coll.containsAll(Arrays.asList(t5, t6))).isTrue();
+        assertThat(coll.size()).isEqualTo(2);
 
 
         tKey = new TripleImpl( V, V, "lancia" );
         coll = store.getAll(tKey);
-        assertTrue( coll.containsAll( Arrays.asList( t5, t6 ) ) );
-        assertEquals( 2, coll.size() );
+        assertThat(coll.containsAll(Arrays.asList(t5, t6))).isTrue();
+        assertThat(coll.size()).isEqualTo(2);
 
         tKey = new TripleImpl( V, V, V );
         coll = store.getAll(tKey);
-        assertTrue( coll.containsAll( Arrays.asList( t1, t2, t3, t4, t5, t6 ) ) );
-        assertEquals( 6, coll.size() );
+        assertThat(coll.containsAll(Arrays.asList(t1, t2, t3, t4, t5, t6))).isTrue();
+        assertThat(coll.size()).isEqualTo(6);
 
 
     }
@@ -222,10 +221,10 @@ public class TripleStoreTest {
         Individual ind = new Individual();
 
         Triple t1 = new TripleImpl(ind, "hasName", "marc");
-        assertFalse( store.put( t1 ) );
+        assertThat(store.put(t1)).isFalse();
 
         Triple t2 = new TripleImpl(ind, "hasName", "mark");
-        assertTrue(store.put(t2));
+        assertThat(store.put(t2)).isTrue();
 
 
         Triple t3 = new TripleImpl(ind, "hasName", "daniel");
@@ -249,35 +248,35 @@ public class TripleStoreTest {
 
         tKey = new TripleImpl( ind, "hasName", V );
         coll = store.getAll(tKey);
-        assertTrue( coll.containsAll( Arrays.asList( new TripleImpl(ind, "hasName", "oscar"),
-                                                     new TripleImpl(ind, "hasName", "mark"),
-                                                     new TripleImpl(ind, "hasName", "daniel") ) ) );
+        assertThat(coll.containsAll(Arrays.asList(new TripleImpl(ind, "hasName", "oscar"),
+                new TripleImpl(ind, "hasName", "mark"),
+                new TripleImpl(ind, "hasName", "daniel")))).isTrue();
 
-        assertFalse( store.contains( new TripleImpl(ind, "hasName", "marc") ) );
-        assertTrue( store.contains( new TripleImpl(ind, "hasName", "mark") ) );
-        assertTrue( store.contains( new TripleImpl(ind, "hasName", "daniel") ) );
-        assertTrue( store.contains( new TripleImpl(ind, "hasCar", "mini") ) );
-        assertTrue( store.contains( new TripleImpl(ind, "hasName", "oscar") ) );
-        assertTrue( store.contains( new TripleImpl(ind, "hasCar", "ferrari") ) );
-        assertTrue( store.contains( new TripleImpl(ind, "hasName", "oscar") ) );
+        assertThat(store.contains(new TripleImpl(ind, "hasName", "marc"))).isFalse();
+        assertThat(store.contains(new TripleImpl(ind, "hasName", "mark"))).isTrue();
+        assertThat(store.contains(new TripleImpl(ind, "hasName", "daniel"))).isTrue();
+        assertThat(store.contains(new TripleImpl(ind, "hasCar", "mini"))).isTrue();
+        assertThat(store.contains(new TripleImpl(ind, "hasName", "oscar"))).isTrue();
+        assertThat(store.contains(new TripleImpl(ind, "hasCar", "ferrari"))).isTrue();
+        assertThat(store.contains(new TripleImpl(ind, "hasName", "oscar"))).isTrue();
 
 
         tKey = new TripleImpl( ind, "hasCar", V );
         coll = store.getAll(tKey);
-        assertTrue( coll.containsAll( Arrays.asList( new TripleImpl(ind, "hasCar", "mini"),
-                                                     new TripleImpl(ind, "hasCar", "ferrari") ) ) );
+        assertThat(coll.containsAll(Arrays.asList(new TripleImpl(ind, "hasCar", "mini"),
+                new TripleImpl(ind, "hasCar", "ferrari")))).isTrue();
 
         store.remove( new TripleImpl(ind, "hasCar", "mini") );
 
         tKey = new TripleImpl( ind, "hasCar", V );
         coll = store.getAll(tKey);
-        assertEquals( 1, coll.size() );
+        assertThat(coll.size()).isEqualTo(1);
 
         store.remove( new TripleImpl(ind, "hasCar", "ferrari") );
 
         tKey = new TripleImpl( ind, "hasCar", V );
         coll = store.getAll(tKey);
-        assertEquals( 0, coll.size() );
+        assertThat(coll.size()).isEqualTo(0);
 
     }
 

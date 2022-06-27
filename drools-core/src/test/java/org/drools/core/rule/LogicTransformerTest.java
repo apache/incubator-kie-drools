@@ -29,7 +29,7 @@ import org.drools.core.spi.ObjectType;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LogicTransformerTest extends DroolsTestCase {
     /**
@@ -81,25 +81,19 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         assertLength( 2,
                       parent.getChildren() );
-        assertEquals( GroupElement.class,
-                      parent.getChildren().get( 0 ).getClass() );
-        assertEquals( GroupElement.class,
-                      parent.getChildren().get( 1 ).getClass() );
+        assertThat(parent.getChildren().get(0).getClass()).isEqualTo(GroupElement.class);
+        assertThat(parent.getChildren().get(1).getClass()).isEqualTo(GroupElement.class);
 
         final GroupElement and1 = (GroupElement) parent.getChildren().get( 0 );
-        assertTrue( and1.isAnd() );
+        assertThat(and1.isAnd()).isTrue();
 
         // transformation MUST keep the order
-        assertEquals( a,
-                      and1.getChildren().get( 0 ) );
-        assertEquals( c,
-                      and1.getChildren().get( 1 ) );
+        assertThat(and1.getChildren().get(0)).isEqualTo(a);
+        assertThat(and1.getChildren().get(1)).isEqualTo(c);
 
         final GroupElement and2 = (GroupElement) parent.getChildren().get( 1 );
-        assertEquals( b,
-                      and2.getChildren().get( 0 ) );
-        assertEquals( c,
-                      and2.getChildren().get( 1 ) );
+        assertThat(and2.getChildren().get(0)).isEqualTo(b);
+        assertThat(and2.getChildren().get(1)).isEqualTo(c);
 
     }
 
@@ -174,71 +168,50 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         LogicTransformer.getInstance().applyOrTransformation( parent );
 
-        assertEquals( GroupElement.Type.OR,
-                      parent.getType() );
+        assertThat(parent.getType()).isEqualTo(GroupElement.Type.OR);
 
         assertLength( 4,
                       parent.getChildren() );
-        assertEquals( GroupElement.class,
-                      parent.getChildren().get( 0 ).getClass() );
-        assertEquals( GroupElement.class,
-                      parent.getChildren().get( 1 ).getClass() );
-        assertEquals( GroupElement.class,
-                      parent.getChildren().get( 2 ).getClass() );
-        assertEquals( GroupElement.class,
-                      parent.getChildren().get( 3 ).getClass() );
+        assertThat(parent.getChildren().get(0).getClass()).isEqualTo(GroupElement.class);
+        assertThat(parent.getChildren().get(1).getClass()).isEqualTo(GroupElement.class);
+        assertThat(parent.getChildren().get(2).getClass()).isEqualTo(GroupElement.class);
+        assertThat(parent.getChildren().get(3).getClass()).isEqualTo(GroupElement.class);
 
         GroupElement and1 = (GroupElement) parent.getChildren().get( 0 );
-        assertTrue( and1.isAnd() );
+        assertThat(and1.isAnd()).isTrue();
         assertLength( 4,
                       and1.getChildren() );
-        assertEquals( a,
-                      and1.getChildren().get( 0 ) );
-        assertEquals( c,
-                      and1.getChildren().get( 1 ) );
-        assertEquals( d,
-                      and1.getChildren().get( 2 ) );
-        assertEquals( not,
-                      and1.getChildren().get( 3 ) );
+        assertThat(and1.getChildren().get(0)).isEqualTo(a);
+        assertThat(and1.getChildren().get(1)).isEqualTo(c);
+        assertThat(and1.getChildren().get(2)).isEqualTo(d);
+        assertThat(and1.getChildren().get(3)).isEqualTo(not);
 
         and1 = (GroupElement) parent.getChildren().get( 1 );
-        assertTrue( and1.isAnd() );
+        assertThat(and1.isAnd()).isTrue();
         assertLength( 4,
                       and1.getChildren() );
-        assertEquals( a,
-                      and1.getChildren().get( 0 ) );
-        assertEquals( c,
-                      and1.getChildren().get( 1 ) );
-        assertEquals( e,
-                      and1.getChildren().get( 2 ) );
-        assertEquals( not,
-                      and1.getChildren().get( 3 ) );
+        assertThat(and1.getChildren().get(0)).isEqualTo(a);
+        assertThat(and1.getChildren().get(1)).isEqualTo(c);
+        assertThat(and1.getChildren().get(2)).isEqualTo(e);
+        assertThat(and1.getChildren().get(3)).isEqualTo(not);
 
         and1 = (GroupElement) parent.getChildren().get( 2 );
-        assertTrue( and1.isAnd() );
+        assertThat(and1.isAnd()).isTrue();
         assertLength( 4,
                       and1.getChildren() );
-        assertEquals( b,
-                      and1.getChildren().get( 0 ) );
-        assertEquals( c,
-                      and1.getChildren().get( 1 ) );
-        assertEquals( d,
-                      and1.getChildren().get( 2 ) );
-        assertEquals( not,
-                      and1.getChildren().get( 3 ) );
+        assertThat(and1.getChildren().get(0)).isEqualTo(b);
+        assertThat(and1.getChildren().get(1)).isEqualTo(c);
+        assertThat(and1.getChildren().get(2)).isEqualTo(d);
+        assertThat(and1.getChildren().get(3)).isEqualTo(not);
 
         and1 = (GroupElement) parent.getChildren().get( 3 );
-        assertTrue( and1.isAnd() );
+        assertThat(and1.isAnd()).isTrue();
         assertLength( 4,
                       and1.getChildren() );
-        assertEquals( b,
-                      and1.getChildren().get( 0 ) );
-        assertEquals( c,
-                      and1.getChildren().get( 1 ) );
-        assertEquals( e,
-                      and1.getChildren().get( 2 ) );
-        assertEquals( not,
-                      and1.getChildren().get( 3 ) );
+        assertThat(and1.getChildren().get(0)).isEqualTo(b);
+        assertThat(and1.getChildren().get(1)).isEqualTo(c);
+        assertThat(and1.getChildren().get(2)).isEqualTo(e);
+        assertThat(and1.getChildren().get(3)).isEqualTo(not);
 
     }
 
@@ -284,25 +257,20 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         LogicTransformer.getInstance().applyOrTransformation( parent );
 
-        assertTrue( parent.isAnd() );
-        assertEquals( 2,
-                      parent.getChildren().size() );
+        assertThat(parent.isAnd()).isTrue();
+        assertThat(parent.getChildren().size()).isEqualTo(2);
 
         // we must ensure order
         final GroupElement b1 = (GroupElement) parent.getChildren().get( 0 );
         final GroupElement b2 = (GroupElement) parent.getChildren().get( 1 );
-        assertTrue( b1.isNot() );
-        assertTrue( b2.isNot() );
+        assertThat(b1.isNot()).isTrue();
+        assertThat(b2.isNot()).isTrue();
 
-        assertEquals( 1,
-                      b1.getChildren().size() );
-        assertEquals( a,
-                      b1.getChildren().get( 0 ) );
+        assertThat(b1.getChildren().size()).isEqualTo(1);
+        assertThat(b1.getChildren().get(0)).isEqualTo(a);
 
-        assertEquals( 1,
-                      b2.getChildren().size() );
-        assertEquals( b,
-                      b2.getChildren().get( 0 ) );
+        assertThat(b2.getChildren().size()).isEqualTo(1);
+        assertThat(b2.getChildren().get(0)).isEqualTo(b);
     }
 
     /**
@@ -352,25 +320,21 @@ public class LogicTransformerTest extends DroolsTestCase {
         GroupElement wrapper = transformed[0];
         GroupElement notR = (GroupElement) wrapper.getChildren().get( 0 );
 
-        assertTrue( notR.isNot() );
-        assertEquals( 1,
-                      notR.getChildren().size() );
+        assertThat(notR.isNot()).isTrue();
+        assertThat(notR.getChildren().size()).isEqualTo(1);
 
-        assertTrue( notR.getChildren().get( 0 ) instanceof GroupElement );
+        assertThat(notR.getChildren().get(0) instanceof GroupElement).isTrue();
         GroupElement andR = (GroupElement) notR.getChildren().get( 0 );
-        assertTrue( andR.isAnd() );
-        
-        assertEquals( 2,
-                      andR.getChildren().size() );
-        assertTrue( andR.getChildren().get( 0 ) instanceof Pattern );
-        assertTrue( andR.getChildren().get( 1 ) instanceof Pattern );
+        assertThat(andR.isAnd()).isTrue();
+
+        assertThat(andR.getChildren().size()).isEqualTo(2);
+        assertThat(andR.getChildren().get(0) instanceof Pattern).isTrue();
+        assertThat(andR.getChildren().get(1) instanceof Pattern).isTrue();
         final Pattern a1 = (Pattern) andR.getChildren().get( 0 );
         final Pattern b1 = (Pattern) andR.getChildren().get( 1 );
 
-        assertEquals( a,
-                      a1 );
-        assertEquals( b,
-                      b1 );
+        assertThat(a1).isEqualTo(a);
+        assertThat(b1).isEqualTo(b);
     }
 
     /**
@@ -415,29 +379,24 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         LogicTransformer.getInstance().applyOrTransformation( parent );
 
-        assertTrue( parent.isNot() );
-        assertEquals( 1,
-                      parent.getChildren().size() );
+        assertThat(parent.isNot()).isTrue();
+        assertThat(parent.getChildren().size()).isEqualTo(1);
 
         final GroupElement and = (GroupElement) parent.getChildren().get( 0 );
-        assertTrue( and.isAnd() );
-        assertEquals( 2, and.getChildren().size() );
+        assertThat(and.isAnd()).isTrue();
+        assertThat(and.getChildren().size()).isEqualTo(2);
 
         // we must ensure order
         final GroupElement b1 = (GroupElement) and.getChildren().get( 0 );
         final GroupElement b2 = (GroupElement) and.getChildren().get( 1 );
-        assertTrue( b1.isNot() );
-        assertTrue( b2.isNot() );
+        assertThat(b1.isNot()).isTrue();
+        assertThat(b2.isNot()).isTrue();
 
-        assertEquals( 1,
-                      b1.getChildren().size() );
-        assertEquals( a,
-                      b1.getChildren().get( 0 ) );
+        assertThat(b1.getChildren().size()).isEqualTo(1);
+        assertThat(b1.getChildren().get(0)).isEqualTo(a);
 
-        assertEquals( 1,
-                      b2.getChildren().size() );
-        assertEquals( b,
-                      b2.getChildren().get( 0 ) );
+        assertThat(b2.getChildren().size()).isEqualTo(1);
+        assertThat(b2.getChildren().get(0)).isEqualTo(b);
 
     }
 
@@ -477,14 +436,10 @@ public class LogicTransformerTest extends DroolsTestCase {
         assertLength( 4,
                       result[0].getChildren() );
         // we must ensure order
-        assertEquals( a,
-                      result[0].getChildren().get( 0 ) );
-        assertEquals( b,
-                      result[0].getChildren().get( 1 ) );
-        assertEquals( c,
-                      result[0].getChildren().get( 2 ) );
-        assertEquals( d,
-                      result[0].getChildren().get( 3 ) );
+        assertThat(result[0].getChildren().get(0)).isEqualTo(a);
+        assertThat(result[0].getChildren().get(1)).isEqualTo(b);
+        assertThat(result[0].getChildren().get(2)).isEqualTo(c);
+        assertThat(result[0].getChildren().get(3)).isEqualTo(d);
 
     }
 
@@ -609,8 +564,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Make sure they are equal
         for ( int j = 0; j < correctResultRoot.length; j++ ) {
-            assertEquals( correctResultRoot[j],
-                          result[j] );
+            assertThat(result[j]).isEqualTo(correctResultRoot[j]);
         }
     }
 
@@ -665,8 +619,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         final GroupElement cloned = (GroupElement) and.clone();
 
-        assertEquals( and,
-                      cloned );
+        assertThat(cloned).isEqualTo(and);
 
     }
 
@@ -791,8 +744,7 @@ public class LogicTransformerTest extends DroolsTestCase {
                 (GroupElement[]) DroolsStreamUtils.streamIn( new FileInputStream(testFile));
 
         for ( int j = 0; j < ands.length; j++ ) {
-            assertEquals( correctResultAnds[j],
-                          ands[j] );
+            assertThat(ands[j]).isEqualTo(correctResultAnds[j]);
         }
     }
 

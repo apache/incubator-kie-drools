@@ -41,12 +41,12 @@ import org.drools.core.command.runtime.rule.UpdateCommand;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
 
 public class XStreamXMLTest {
@@ -63,8 +63,8 @@ public class XStreamXMLTest {
     public void testMarshallStartProcessCmd() {
         StartProcessCommand cmd = new StartProcessCommand("some-process-id", "some-out-identifier");
         String xmlString = xstream.toXML(cmd);
-        Assert.assertTrue(xmlString.contains("processId=\"some-process-id\""));
-        Assert.assertTrue(xmlString.contains("out-identifier=\"some-out-identifier\""));
+        assertThat(xmlString.contains("processId=\"some-process-id\"")).isTrue();
+        assertThat(xmlString.contains("out-identifier=\"some-out-identifier\"")).isTrue();
     }
 
     @Test
@@ -72,7 +72,7 @@ public class XStreamXMLTest {
         // the "out-identifier" is optional -> the marshalling should succeed even if it is null
         StartProcessCommand cmd = new StartProcessCommand("some-process-id");
         String xmlString = xstream.toXML(cmd);
-        Assert.assertTrue(xmlString.contains("processId=\"some-process-id\""));
+        assertThat(xmlString.contains("processId=\"some-process-id\"")).isTrue();
     }
 
     @Test
@@ -80,45 +80,45 @@ public class XStreamXMLTest {
         // the "out-identifier" is optional -> the unmarshalling should create valid object
         Object obj = xstream.fromXML(
                 "<start-process processId=\"some-process-id\"/>");
-        Assert.assertEquals(StartProcessCommand.class, obj.getClass());
+        assertThat(obj.getClass()).isEqualTo(StartProcessCommand.class);
         StartProcessCommand cmd = (StartProcessCommand)obj;
-        Assert.assertEquals( "some-process-id", cmd.getProcessId() );
+        assertThat(cmd.getProcessId()).isEqualTo("some-process-id");
     }
 
     @Test
     public void testMarshallAgendaGroupSetFocusCommand() {
         AgendaGroupSetFocusCommand cmd = new AgendaGroupSetFocusCommand("foo-group");
         String xmlString = xstream.toXML( cmd );
-        Assert.assertEquals( "<set-focus name=\"foo-group\"/>", xmlString );
+        assertThat(xmlString).isEqualTo("<set-focus name=\"foo-group\"/>");
         AgendaGroupSetFocusCommand cmd2 = (AgendaGroupSetFocusCommand) xstream.fromXML( xmlString );
-        Assert.assertEquals( cmd.getName(), cmd2.getName() );
+        assertThat(cmd2.getName()).isEqualTo(cmd.getName());
     }
 
     @Test
     public void testClearActivationGroupCommand() {
         ClearActivationGroupCommand cmd = new ClearActivationGroupCommand("foo-group");
         String xmlString = xstream.toXML( cmd );
-        Assert.assertEquals( "<clear-activation-group name=\"foo-group\"/>", xmlString );
+        assertThat(xmlString).isEqualTo("<clear-activation-group name=\"foo-group\"/>");
 
         ClearActivationGroupCommand cmd2 = (ClearActivationGroupCommand) xstream.fromXML( xmlString );
-        Assert.assertEquals( cmd.getName(), cmd2.getName() );
+        assertThat(cmd2.getName()).isEqualTo(cmd.getName());
     }
 
     @Test
     public void testClearAgendaGroupCommand() {
         ClearAgendaGroupCommand cmd = new ClearAgendaGroupCommand("foo-group");
         String xmlString = xstream.toXML( cmd );
-        Assert.assertEquals( "<clear-agenda-group name=\"foo-group\"/>", xmlString );
+        assertThat(xmlString).isEqualTo("<clear-agenda-group name=\"foo-group\"/>");
 
         ClearAgendaGroupCommand cmd2 = (ClearAgendaGroupCommand) xstream.fromXML( xmlString );
-        Assert.assertEquals(cmd.getName(), cmd2.getName());
+        assertThat(cmd2.getName()).isEqualTo(cmd.getName());
     }
 
     @Test
     public void testClearAgendaCommand() {
         ClearAgendaCommand cmd = new ClearAgendaCommand();
         String xmlString = xstream.toXML(cmd);
-        Assert.assertEquals( "<clear-agenda/>", xmlString );
+        assertThat(xmlString).isEqualTo("<clear-agenda/>");
 
         ClearAgendaCommand cmd2 = (ClearAgendaCommand) xstream.fromXML( xmlString );
     }
@@ -127,10 +127,10 @@ public class XStreamXMLTest {
     public void testClearRuleFlowGroupCommand() {
         ClearRuleFlowGroupCommand cmd = new ClearRuleFlowGroupCommand("foo-group");
         String xmlString = xstream.toXML(cmd);
-        Assert.assertEquals( "<clear-ruleflow-group name=\"foo-group\"/>", xmlString );
+        assertThat(xmlString).isEqualTo("<clear-ruleflow-group name=\"foo-group\"/>");
 
         ClearRuleFlowGroupCommand cmd2 = (ClearRuleFlowGroupCommand) xstream.fromXML( xmlString );
-        Assert.assertEquals(cmd.getName(), cmd2.getName());
+        assertThat(cmd2.getName()).isEqualTo(cmd.getName());
     }
 
     @Test
@@ -140,15 +140,15 @@ public class XStreamXMLTest {
 
         ModifyCommand cmd = new ModifyCommand(factHandle, Arrays.asList(new ModifyCommand.SetterImpl("name", "value")));
         String xmlString = xstream.toXML( cmd );
-        Assert.assertEquals( "<modify fact-handle=\"0:1:10:10:20:null:NON_TRAIT:null\">\n" +
-                             "  <set accessor=\"name\" value=\"value\"/>\n" +
-                             "</modify>", xmlString );
+        assertThat(xmlString).isEqualTo("<modify fact-handle=\"0:1:10:10:20:null:NON_TRAIT:null\">\n" +
+                "  <set accessor=\"name\" value=\"value\"/>\n" +
+                "</modify>");
 
         ModifyCommand cmd2 = (ModifyCommand) xstream.fromXML( xmlString );
-        Assert.assertEquals( factHandle.toExternalForm(), cmd2.getFactHandle().toExternalForm() );
-        Assert.assertEquals( 1, cmd2.getSetters().size() );
-        Assert.assertEquals( "name", cmd2.getSetters().get(0).getAccessor() );
-        Assert.assertEquals( "value", cmd2.getSetters().get(0).getValue() );
+        assertThat(cmd2.getFactHandle().toExternalForm()).isEqualTo(factHandle.toExternalForm());
+        assertThat(cmd2.getSetters().size()).isEqualTo(1);
+        assertThat(cmd2.getSetters().get(0).getAccessor()).isEqualTo("name");
+        assertThat(cmd2.getSetters().get(0).getValue()).isEqualTo("value");
     }
 
     @Test
@@ -158,20 +158,20 @@ public class XStreamXMLTest {
 
         DeleteCommand cmd = new DeleteCommand(factHandle);
         String xmlString = xstream.toXML( cmd );
-        Assert.assertEquals( "<delete fact-handle=\"0:1:10:10:20:null:NON_TRAIT:null\"/>", xmlString );
+        assertThat(xmlString).isEqualTo("<delete fact-handle=\"0:1:10:10:20:null:NON_TRAIT:null\"/>");
 
         DeleteCommand cmd2 = (DeleteCommand) xstream.fromXML( xmlString );
-        Assert.assertEquals( factHandle.toExternalForm(), cmd2.getFactHandle().toExternalForm() );
+        assertThat(cmd2.getFactHandle().toExternalForm()).isEqualTo(factHandle.toExternalForm());
     }
 
     @Test
     public void testGetFactHandlesCommand() {
         GetFactHandlesCommand cmd = new GetFactHandlesCommand();
         String xmlString = xstream.toXML( cmd );
-        Assert.assertEquals( "<get-fact-handles disconnected=\"false\"/>", xmlString );
+        assertThat(xmlString).isEqualTo("<get-fact-handles disconnected=\"false\"/>");
 
         GetFactHandlesCommand cmd2 = (GetFactHandlesCommand) xstream.fromXML( xmlString );
-        Assert.assertNull(cmd2.getOutIdentifier() );
+        assertThat(cmd2.getOutIdentifier()).isNull();
     }
 
     @Test
@@ -179,10 +179,10 @@ public class XStreamXMLTest {
         GetFactHandlesCommand cmd = new GetFactHandlesCommand();
         cmd.setOutIdentifier("facts");
         String xmlString = xstream.toXML( cmd );
-        Assert.assertEquals( "<get-fact-handles disconnected=\"false\" out-identifier=\"facts\"/>", xmlString );
+        assertThat(xmlString).isEqualTo("<get-fact-handles disconnected=\"false\" out-identifier=\"facts\"/>");
 
         GetFactHandlesCommand cmd2 = (GetFactHandlesCommand) xstream.fromXML( xmlString );
-        Assert.assertEquals("facts", cmd2.getOutIdentifier());
+        assertThat(cmd2.getOutIdentifier()).isEqualTo("facts");
     }
 
     @Test
@@ -218,8 +218,7 @@ public class XStreamXMLTest {
         executionResult.setResults(results);
 
         String xmlString = xstream.toXML(executionResult);
-        Assert.assertEquals(
-                "<execution-results>\n" +
+        assertThat(xmlString).isEqualTo("<execution-results>\n" +
                 "  <result identifier=\"message1\">\n" +
                 "    <org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
                 "      <msg>Hello World!</msg>\n" +
@@ -232,12 +231,11 @@ public class XStreamXMLTest {
                 "  </result>\n" +
                 "  <fact-handle identifier=\"first\" external-form=\"0:1:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
                 "  <fact-handle identifier=\"second\" external-form=\"0:2:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
-                "</execution-results>",
-                xmlString );
+                "</execution-results>");
 
         ExecutionResultImpl executionResult2 = (ExecutionResultImpl) xstream.fromXML( xmlString );
-        Assert.assertEquals(executionResult.getFactHandles().size(), executionResult2.getFactHandles().size());
-        Assert.assertEquals(executionResult.getResults().size(), executionResult2.getResults().size());
+        assertThat(executionResult2.getFactHandles().size()).isEqualTo(executionResult.getFactHandles().size());
+        assertThat(executionResult2.getResults().size()).isEqualTo(executionResult.getResults().size());
     }
 
     @Test
@@ -275,20 +273,18 @@ public class XStreamXMLTest {
         executionResult.setResults(results);
 
         String xmlString = xstream.toXML(executionResult);
-        Assert.assertEquals(
-                "<execution-results>\n" +
-                        "  <result identifier=\"facts\">\n" +
-                        "    <list>\n" +
-                        "      <fact-handle external-form=\"0:1:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
-                        "      <fact-handle external-form=\"0:2:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
-                        "    </list>\n" +
-                        "  </result>\n" +
-                        "</execution-results>",
-                xmlString );
+        assertThat(xmlString).isEqualTo("<execution-results>\n" +
+                "  <result identifier=\"facts\">\n" +
+                "    <list>\n" +
+                "      <fact-handle external-form=\"0:1:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
+                "      <fact-handle external-form=\"0:2:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
+                "    </list>\n" +
+                "  </result>\n" +
+                "</execution-results>");
 
         ExecutionResultImpl executionResult2 = (ExecutionResultImpl) xstream.fromXML( xmlString );
-        Assert.assertEquals(executionResult.getFactHandles().size(), executionResult2.getFactHandles().size());
-        Assert.assertEquals(executionResult.getResults().size(), executionResult2.getResults().size());
+        assertThat(executionResult2.getFactHandles().size()).isEqualTo(executionResult.getFactHandles().size());
+        assertThat(executionResult2.getResults().size()).isEqualTo(executionResult.getResults().size());
     }
 
     @Test
@@ -330,10 +326,10 @@ public class XStreamXMLTest {
 
         QueryResults results = new FlatQueryResults( identifiers, idFactHandleMaps, factHandleResultMap );
         String xmlString = xstream.toXML( results );
-        Assert.assertEquals( EXPECTED_XML, xmlString );
+        assertThat(xmlString).isEqualTo(EXPECTED_XML);
 
         QueryResults results2 = (QueryResults) xstream.fromXML( xmlString );
-        Assert.assertEquals( results, results2 );
+        assertThat(results2).isEqualTo(results);
     }
 
     private static class Message {
@@ -384,9 +380,9 @@ public class XStreamXMLTest {
         Assertions.assertThat(expected).isEqualToIgnoringWhitespace(xmlString);
 
         UpdateCommand cmd2 = (UpdateCommand) xstream.fromXML(xmlString);
-        Assert.assertEquals(factHandle.toExternalForm(), cmd2.getHandle().toExternalForm());
-        Assert.assertEquals(1, cmd2.getModifiedProperties().length);
-        Assert.assertEquals("msg", cmd2.getModifiedProperties()[0]);
+        assertThat(cmd2.getHandle().toExternalForm()).isEqualTo(factHandle.toExternalForm());
+        assertThat(cmd2.getModifiedProperties().length).isEqualTo(1);
+        assertThat(cmd2.getModifiedProperties()[0]).isEqualTo("msg");
     }
 
     @Test
@@ -403,9 +399,9 @@ public class XStreamXMLTest {
         Assertions.assertThat(expected).isEqualToIgnoringWhitespace(xmlString);
 
         FireAllRulesCommand cmd2 = (FireAllRulesCommand) xstream.fromXML(xmlString);
-        Assert.assertEquals(100, cmd2.getMax());
-        Assert.assertEquals(RuleNameEndsWithAgendaFilter.class, cmd2.getAgendaFilter().getClass());
-        Assert.assertEquals("mySuffix", ((RuleNameEndsWithAgendaFilter) cmd2.getAgendaFilter()).getSuffix());
-        Assert.assertTrue(((RuleNameEndsWithAgendaFilter) cmd2.getAgendaFilter()).isAccept());
+        assertThat(cmd2.getMax()).isEqualTo(100);
+        assertThat(cmd2.getAgendaFilter().getClass()).isEqualTo(RuleNameEndsWithAgendaFilter.class);
+        assertThat(((RuleNameEndsWithAgendaFilter) cmd2.getAgendaFilter()).getSuffix()).isEqualTo("mySuffix");
+        assertThat(((RuleNameEndsWithAgendaFilter) cmd2.getAgendaFilter()).isAccept()).isTrue();
     }
 }
