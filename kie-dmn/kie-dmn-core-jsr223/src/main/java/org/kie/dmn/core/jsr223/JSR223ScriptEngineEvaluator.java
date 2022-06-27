@@ -59,7 +59,7 @@ public class JSR223ScriptEngineEvaluator {
     public Object eval(Map<String, Object> ins) throws ScriptException {
         Bindings engineScope = createBindings(ins);
         Object result = scriptEngine.eval(expression, engineScope);
-        LOG.info("Script eval of '{}' result: {}", expression, result);
+        LOG.debug("Script eval of '{}' result: {}", expression, result);
         return EvalHelper.coerceNumber(result);
     }
     
@@ -71,7 +71,7 @@ public class JSR223ScriptEngineEvaluator {
         String keyForUnaryTest = Optional.ofNullable(scriptEngine.getFactory().getParameter(DMN_UNARYTEST_SYMBOL).toString()).orElse("_");
         engineScope.put(keyForUnaryTest, in);
         Object result = scriptEngine.eval(expression, engineScope);
-        LOG.info("Script test of '{}' result: {}", expression, result);
+        LOG.debug("Script test of '{}' result: {}", expression, result);
         return result == Boolean.TRUE ? true : false;
     }
 
@@ -89,7 +89,7 @@ public class JSR223ScriptEngineEvaluator {
             if (value instanceof FEELFunction) {
                 LOG.trace("SKIP binding {} of {}", key, value);
             } else {
-                LOG.info("Setting binding {} to {}", key, value);
+                LOG.trace("Setting binding {} to {}", key, value);
                 engineScope.put(key, value);
                 _context.put(kv.getKey(), value);
             }
