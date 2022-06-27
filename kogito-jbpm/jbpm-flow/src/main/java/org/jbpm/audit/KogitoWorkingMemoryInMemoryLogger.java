@@ -18,8 +18,8 @@ package org.jbpm.audit;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.core.WorkingMemory;
 import org.drools.kiesession.audit.LogEvent;
@@ -32,7 +32,7 @@ import org.kie.api.event.KieRuntimeEventManager;
  */
 public class KogitoWorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
 
-    private List<LogEvent> events = new ArrayList<>();
+    private List<LogEvent> events = new CopyOnWriteArrayList<>();
 
     public KogitoWorkingMemoryInMemoryLogger() {
     }

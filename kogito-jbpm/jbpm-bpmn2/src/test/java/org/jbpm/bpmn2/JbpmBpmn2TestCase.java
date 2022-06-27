@@ -283,11 +283,9 @@ public abstract class JbpmBpmn2TestCase {
     }
 
     protected void clearHistory() {
-
         if (workingMemoryLogger != null) {
             workingMemoryLogger.clear();
         }
-
     }
 
     public void assertProcessVarExists(KogitoProcessInstance process,
