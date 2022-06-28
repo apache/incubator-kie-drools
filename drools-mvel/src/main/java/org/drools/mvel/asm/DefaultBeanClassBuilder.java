@@ -466,7 +466,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         }
 
         // Building constructor with key fields only
-        List<FieldDefinition> keys = new ArrayList<FieldDefinition>();
+        List<FieldDefinition> keys = new ArrayList<>();
         for ( FieldDefinition fieldDef : classDef.getFieldsDefinitions() ) {
             if ( fieldDef.isKey() ) {
                 keys.add( fieldDef );

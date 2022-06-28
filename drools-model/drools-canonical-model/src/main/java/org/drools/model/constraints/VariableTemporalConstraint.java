@@ -70,7 +70,7 @@ public class VariableTemporalConstraint<A> extends TemporalConstraint {
 
     @Override
     public VariableTemporalConstraint<A> negate() {
-        return new VariableTemporalConstraint<A>( "!" + getExprId(), var1, f1, var2, f2, temporalPredicate.negate() );
+        return new VariableTemporalConstraint<>( "!" + getExprId(), var1, f1, var2, f2, temporalPredicate.negate() );
     }
 
     @Override

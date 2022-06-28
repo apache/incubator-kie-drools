@@ -122,7 +122,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20160719/testcase", name = "value", scope = ValueType.class)
     public JAXBElement<Object> createValueTypeValue(Object value) {
-        return new JAXBElement<Object>(_ValueTypeValue_QNAME, Object.class, ValueType.class, value);
+        return new JAXBElement<>(_ValueTypeValue_QNAME, Object.class, ValueType.class, value);
     }
 
     /**
@@ -131,7 +131,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20160719/testcase", name = "list", scope = ValueType.class)
     public JAXBElement<ValueType.List> createValueTypeList(ValueType.List value) {
-        return new JAXBElement<ValueType.List>(_ValueTypeList_QNAME, ValueType.List.class, ValueType.class, value);
+        return new JAXBElement<>(_ValueTypeList_QNAME, ValueType.List.class, ValueType.class, value);
     }
 
 }

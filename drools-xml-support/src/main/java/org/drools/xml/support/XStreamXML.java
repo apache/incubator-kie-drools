@@ -736,12 +736,12 @@ public class XStreamXML {
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            List<String> outs = new ArrayList<String>();
+            List<String> outs = new ArrayList<>();
 
             // Query cmd = null;
             String outIdentifier = reader.getAttribute( "out-identifier" );
             String name = reader.getAttribute( "name" );
-            List<Object> args = new ArrayList<Object>();
+            List<Object> args = new ArrayList<>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 Object arg = readItem( reader,
@@ -797,7 +797,7 @@ public class XStreamXML {
             String processId = reader.getAttribute( "processId" );
             String outIdentifier = reader.getAttribute( "out-identifier" );
 
-            HashMap<String, Object> params = new HashMap<String, Object>();
+            HashMap<String, Object> params = new HashMap<>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String identifier = reader.getAttribute( "identifier" );
@@ -908,7 +908,7 @@ public class XStreamXML {
                                 UnmarshallingContext context) {
             String id = reader.getAttribute( "id" );
 
-            Map<String, Object> results = new HashMap<String, Object>();
+            Map<String, Object> results = new HashMap<>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String identifier = reader.getAttribute( "identifier" );
@@ -1063,7 +1063,7 @@ public class XStreamXML {
                                DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "external-form" ) ) );
                 } else if ( reader.getNodeName().equals( "fact-handles" ) ) {
                     String identifier = reader.getAttribute( "identifier" );
-                    List<FactHandle> list = new ArrayList<FactHandle>();
+                    List<FactHandle> list = new ArrayList<>();
                     while ( reader.hasMoreChildren() ) {
                         reader.moveDown();
                         list.add( DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "external-form" ) ) );
@@ -1100,7 +1100,7 @@ public class XStreamXML {
 
             // write out identifiers
             List<String> originalIds = Arrays.asList( results.getIdentifiers() );
-            Set<String> actualIds = new HashSet<String>();
+            Set<String> actualIds = new HashSet<>();
             if ( results instanceof QueryResultsImpl) {
                 for ( String identifier : originalIds ) {
                     // we don't want to marshall the query parameters
@@ -1162,7 +1162,7 @@ public class XStreamXML {
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             reader.moveDown();
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 list.add( reader.getValue() );
@@ -1170,17 +1170,17 @@ public class XStreamXML {
             }
             reader.moveUp();
 
-            Set<String> identifiers = new TreeSet<String>();
+            Set<String> identifiers = new TreeSet<>();
             for ( int i = 0; i < list.size(); i++ ) {
                 identifiers.add( list.get( i ) );
             }
 
-            ArrayList<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
-            ArrayList<Map<String, FactHandle>> resultHandles = new ArrayList<Map<String,FactHandle>>();
+            ArrayList<Map<String, Object>> results = new ArrayList<>();
+            ArrayList<Map<String, FactHandle>> resultHandles = new ArrayList<>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown(); // row
-                Map<String, Object> objects = new HashMap<String, Object>();
-                Map<String, FactHandle> handles = new HashMap<String, FactHandle>();
+                Map<String, Object> objects = new HashMap<>();
+                Map<String, FactHandle> handles = new HashMap<>();
                 while ( reader.hasMoreChildren() ) {
                     reader.moveDown(); // identifier node
                     String identifier = reader.getAttribute("id");

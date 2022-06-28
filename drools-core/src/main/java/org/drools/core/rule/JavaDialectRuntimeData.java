@@ -64,7 +64,7 @@ public class JavaDialectRuntimeData implements DialectRuntimeData, Externalizabl
 
     private final Map<String, byte[]>      classLookups = new ConcurrentHashMap<>();
 
-    private Map<String, byte[]>            store = new HashMap<String, byte[]>();
+    private Map<String, byte[]>            store = new HashMap<>();
 
     private transient ClassLoader          classLoader;
 
@@ -414,7 +414,7 @@ public class JavaDialectRuntimeData implements DialectRuntimeData, Externalizabl
         } else if (!this.dirty) {
             try {
                 if (this.wireList == Collections.<String> emptyList()) {
-                    this.wireList = new ArrayList<String>();
+                    this.wireList = new ArrayList<>();
                 }
                 this.wireList.add( resourceName );
             } catch (final Exception e) {

@@ -29,7 +29,7 @@ public class EnvironmentImpl implements Environment {
     // that (16^(1.5))=64 *concurrent* updates are possible/likely
     // then the concurrencyLevel will need to be upgraded,
     // but that situation is fairly unlikely
-    private Map<String, Object> environment = new NullValueConcurrentHashMap<String, Object>();
+    private Map<String, Object> environment = new NullValueConcurrentHashMap<>();
 
     private Environment delegate;
     

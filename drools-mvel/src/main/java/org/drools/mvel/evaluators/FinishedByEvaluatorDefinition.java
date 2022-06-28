@@ -143,7 +143,7 @@ public class FinishedByEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, FinishedByEvaluator>();
+            this.cache = new HashMap<>();
         }
         String key = isNegated + ":" + parameterText;
         FinishedByEvaluator eval = this.cache.get( key );

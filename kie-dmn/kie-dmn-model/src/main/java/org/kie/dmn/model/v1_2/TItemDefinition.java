@@ -59,7 +59,7 @@ public class TItemDefinition extends TNamedElement implements ItemDefinition {
     @Override
     public List<ItemDefinition> getItemComponent() {
         if (itemComponent == null) {
-            itemComponent = new ArrayList<ItemDefinition>();
+            itemComponent = new ArrayList<>();
         }
         return this.itemComponent;
     }

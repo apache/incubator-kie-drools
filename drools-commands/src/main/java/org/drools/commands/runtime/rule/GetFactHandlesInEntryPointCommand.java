@@ -60,7 +60,7 @@ public class GetFactHandlesInEntryPointCommand
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         EntryPoint ep = ksession.getEntryPoint(entryPoint);
 
-        Collection<FactHandle> disconnectedFactHandles = new ArrayList<FactHandle>();
+        Collection<FactHandle> disconnectedFactHandles = new ArrayList<>();
         if ( filter != null ) {
             Collection<InternalFactHandle> factHandles = ep.getFactHandles( this.filter );
             if(factHandles != null && disconnected){

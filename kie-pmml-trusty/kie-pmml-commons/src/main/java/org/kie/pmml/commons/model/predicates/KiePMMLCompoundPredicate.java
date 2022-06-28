@@ -18,7 +18,6 @@ package org.kie.pmml.commons.model.predicates;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BinaryOperator;
 
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.exceptions.KiePMMLException;

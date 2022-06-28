@@ -13,7 +13,6 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-import java.util.stream.IntStream;
 
 /**
  * Custom DT collector: it only 1 output, return the output itself.

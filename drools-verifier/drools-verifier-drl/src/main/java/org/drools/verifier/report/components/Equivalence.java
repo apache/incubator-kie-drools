@@ -18,7 +18,6 @@ package org.drools.verifier.report.components;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.drools.verifier.data.VerifierComponent;
@@ -32,14 +31,14 @@ public class Equivalence
     implements
     Cause {
 
-    private final List<VerifierComponent> items = new ArrayList<VerifierComponent>( 2 );
+    private final List<VerifierComponent> items = new ArrayList<>( 2 );
     private final Collection<Cause>       causes;
 
     public Equivalence(VerifierComponent first,
                        VerifierComponent second) {
         items.add( first );
         items.add( second );
-        this.causes = new ArrayList<Cause>();
+        this.causes = new ArrayList<>();
         causes.add( first );
         causes.add( second );
     }

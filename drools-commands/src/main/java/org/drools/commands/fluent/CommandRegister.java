@@ -27,7 +27,7 @@ import org.kie.api.runtime.StatelessKieSession;
 public class CommandRegister {
 
     public Map<String, Object> createCommandRegister() {
-        Map<String, Object> register = new HashMap<String, Object>();
+        Map<String, Object> register = new HashMap<>();
 
         register.put(KieContainer.class.getName(), null);
         register.put(KieBase.class.getName(), null);

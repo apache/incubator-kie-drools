@@ -48,7 +48,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
                       final short nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
-        this.stagedRightTuples = new TupleSetsImpl<RightTuple>();
+        this.stagedRightTuples = new TupleSetsImpl<>();
         this.context = context;
         this.nodeType = nodeType;
     }

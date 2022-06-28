@@ -17,13 +17,10 @@ package org.kie.pmml.compiler.commons.factories;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.Interval;
 import org.dmg.pmml.MiningField;
-import org.kie.pmml.api.enums.CLOSURE;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;

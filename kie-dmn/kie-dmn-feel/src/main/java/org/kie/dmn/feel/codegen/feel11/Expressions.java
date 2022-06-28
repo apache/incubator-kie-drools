@@ -52,7 +52,6 @@ import org.kie.dmn.feel.util.EvalHelper;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static org.kie.dmn.feel.codegen.feel11.Constants.BigDecimalT;
 import static org.kie.dmn.feel.codegen.feel11.Constants.BuiltInTypeT;
 
 public class Expressions {

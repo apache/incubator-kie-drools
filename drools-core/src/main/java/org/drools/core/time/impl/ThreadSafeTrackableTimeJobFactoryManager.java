@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ThreadSafeTrackableTimeJobFactoryManager extends TrackableTimeJobFactoryManager {
     public ThreadSafeTrackableTimeJobFactoryManager() {
-        super(new ConcurrentHashMap<Long, TimerJobInstance>());
+        super(new ConcurrentHashMap<>());
     }
 
     protected SelfRemovalJobContext createJobContext( JobContext ctx ) {

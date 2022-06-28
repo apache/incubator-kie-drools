@@ -33,7 +33,7 @@ abstract class ReportModeller {
 
     protected String formPage(String sourceFolder,
                               String content) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         String myTemplate = VerifierMessagesVisitor.readFile( "frame.htm" );
 
         map.put( "cssStyle",

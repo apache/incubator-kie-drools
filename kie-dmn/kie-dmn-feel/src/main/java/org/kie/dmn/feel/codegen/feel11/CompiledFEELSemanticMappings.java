@@ -254,7 +254,7 @@ public class CompiledFEELSemanticMappings {
     @SafeVarargs
     @SuppressWarnings("varargs")
     public static <T> List<T> list(T... a) {
-        ArrayList<T> result = new ArrayList<T>();
+        ArrayList<T> result = new ArrayList<>();
         if (a == null) {
             result.add(null);
             return result;

@@ -49,7 +49,7 @@ import org.kie.api.definition.rule.Rule;
  */
 public class BuildUtils {
 
-    private final Map<Class< ? >, ReteooComponentBuilder> componentBuilders = new HashMap<Class< ? >, ReteooComponentBuilder>();
+    private final Map<Class< ? >, ReteooComponentBuilder> componentBuilders = new HashMap<>();
 
     /**
      * Adds the given builder for the given target to the builders map
@@ -244,7 +244,7 @@ public class BuildUtils {
      */
     public TemporalDependencyMatrix calculateTemporalDistance(GroupElement groupElement) {
         // find the events
-        List<Pattern> events = new ArrayList<Pattern>();
+        List<Pattern> events = new ArrayList<>();
         selectAllEventPatterns( events,
                                 groupElement );
 

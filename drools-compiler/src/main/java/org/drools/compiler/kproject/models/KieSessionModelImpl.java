@@ -46,9 +46,9 @@ public class KieSessionModelImpl
 
     private KieBaseModelImpl                 kBase;
 
-    private final List<ListenerModel>        listeners = new ArrayList<ListenerModel>();
-    private final List<WorkItemHandlerModel> wihs = new ArrayList<WorkItemHandlerModel>();
-    private final List<ChannelModel>         channels = new ArrayList<ChannelModel>();
+    private final List<ListenerModel>        listeners = new ArrayList<>();
+    private final List<WorkItemHandlerModel> wihs = new ArrayList<>();
+    private final List<ChannelModel>         channels = new ArrayList<>();
     private       Map<String, String>        calendars;
 
     private boolean                          isDefault = false;
@@ -193,7 +193,7 @@ public class KieSessionModelImpl
     }
 
     public List<ListenerModel> getListenerModels(ListenerModel.Kind kind) {
-        List<ListenerModel> listeners = new ArrayList<ListenerModel>();
+        List<ListenerModel> listeners = new ArrayList<>();
         for (ListenerModel listener : getListenerModels()) {
             if (listener.getKind() == kind) {
                 listeners.add(listener);

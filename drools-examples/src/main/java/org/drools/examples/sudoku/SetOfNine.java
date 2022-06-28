@@ -26,7 +26,7 @@ public abstract class SetOfNine {
     private Set<Integer> free;
 
     protected SetOfNine() {
-        free = new HashSet<Integer>( CellGroup.ALL_NINE);
+        free = new HashSet<>( CellGroup.ALL_NINE);
     }
     
     /**

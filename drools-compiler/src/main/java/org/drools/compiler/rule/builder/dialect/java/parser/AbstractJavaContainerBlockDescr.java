@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractJavaContainerBlockDescr implements JavaContainerBlockDescr {
-    private List<JavaBlockDescr> blocks = new ArrayList<JavaBlockDescr>();
+    private List<JavaBlockDescr> blocks = new ArrayList<>();
     private Map<String, Class< ? >> inputs;
     private List<JavaLocalDeclarationDescr> inScopeLocalVars;
     

@@ -38,7 +38,7 @@ public final class DMNEventUtils {
     private static final Logger LOG = LoggerFactory.getLogger(DMNEventUtils.class);
 
     public static Map<String, Object> extractBKMParameters(BeforeInvokeBKMEvent event) {
-        Map<String, Object> results = new LinkedHashMap<String, Object>();
+        Map<String, Object> results = new LinkedHashMap<>();
         BusinessKnowledgeModelNodeImpl bkmi = (BusinessKnowledgeModelNodeImpl) event.getBusinessKnowledgeModel();
         List<String> names = ((DMNFunctionDefinitionEvaluator) bkmi.getEvaluator()).getParameterNames().get(0);
         for (int i = 0; i < names.size(); i++) {
@@ -50,7 +50,7 @@ public final class DMNEventUtils {
     }
 
     public static Map<String, Object> extractDSParameters(BeforeEvaluateDecisionServiceEvent event) {
-        Map<String, Object> results = new LinkedHashMap<String, Object>();
+        Map<String, Object> results = new LinkedHashMap<>();
         DecisionServiceNodeImpl dsi = (DecisionServiceNodeImpl) event.getDecisionService();
         Map<String, DMNNode> params = dsi.getInputParameters();
         for (Entry<String, DMNNode> entry : params.entrySet()) {
@@ -62,7 +62,7 @@ public final class DMNEventUtils {
     }
 
     public static Map<String, Object> extractDSOutputDecisionsValues(AfterEvaluateDecisionServiceEvent event) {
-        Map<String, Object> results = new LinkedHashMap<String, Object>();
+        Map<String, Object> results = new LinkedHashMap<>();
         List<String> decisionIDs = event.getDecisionService().getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
         for (String id : decisionIDs) {
             String decisionName = ((DMNResultImpl) event.getResult()).getModel().getDecisionById(id).getName();

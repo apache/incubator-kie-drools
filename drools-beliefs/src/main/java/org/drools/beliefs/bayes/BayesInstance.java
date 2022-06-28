@@ -58,8 +58,8 @@ public class BayesInstance<T> {
     public BayesInstance(JunctionTree tree) {
         this.graph = tree.getGraph();
         this.tree = tree;
-        variables = new HashMap<String, BayesVariable>();
-        fieldNames = new HashMap<String, BayesVariable>();
+        variables = new HashMap<>();
+        fieldNames = new HashMap<>();
         likelyhoods = new BayesLikelyhood[graph.size()];
 
         cliqueStates = new CliqueState[tree.getJunctionTreeNodes().length];

@@ -62,7 +62,7 @@ public class Expr1ViewItemImpl<T> extends AbstractExprViewItem<T> implements Exp
 
     @Override
     public <U> Expr1ViewItemImpl<T> indexedBy( Class<U> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, U> leftOperandExtractor, U rightValue ) {
-        index = new AlphaIndexImpl<T, U>( indexedClass, constraintType, indexId, leftOperandExtractor, rightValue);
+        index = new AlphaIndexImpl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightValue);
         return this;
     }
 }

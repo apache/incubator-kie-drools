@@ -47,7 +47,7 @@ public class MVELEnabledBuilder
             // This builder is re-usable in other dialects, so specify by name            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
-            Map<String, Class< ? >> otherVars = new HashMap<String, Class< ? >>();
+            Map<String, Class< ? >> otherVars = new HashMap<>();
             otherVars.put( "rule",
                            RuleImpl.class );
 

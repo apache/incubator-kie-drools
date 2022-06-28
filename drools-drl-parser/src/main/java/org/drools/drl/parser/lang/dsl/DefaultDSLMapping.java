@@ -43,8 +43,8 @@ public class DefaultDSLMapping
 
     public DefaultDSLMapping(final String identifier) {
         this.identifier = identifier;
-        this.entries = new ArrayList<DSLMappingEntry>();
-        this.options = new HashSet<String>();
+        this.entries = new ArrayList<>();
+        this.options = new HashSet<>();
     }
 
     /**
@@ -76,7 +76,7 @@ public class DefaultDSLMapping
      * @return
      */
     public List<DSLMappingEntry> getEntries(final DSLMappingEntry.Section section) {
-        final List<DSLMappingEntry> list = new ArrayList<DSLMappingEntry>();
+        final List<DSLMappingEntry> list = new ArrayList<>();
         for ( final Iterator<DSLMappingEntry> it = this.entries.iterator(); it.hasNext(); ) {
             final DSLMappingEntry entry = it.next();
             if ( entry.getSection().equals( section ) ) {

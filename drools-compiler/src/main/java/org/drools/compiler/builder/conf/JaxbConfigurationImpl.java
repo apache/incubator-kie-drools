@@ -48,7 +48,7 @@ public class JaxbConfigurationImpl extends ResourceConfigurationImpl implements 
                                  String systemId) {
         this.xjcOpts = xjcOpts;
         this.systemId = systemId;
-        this.classes = new ArrayList<String>();
+        this.classes = new ArrayList<>();
     }
 
 
@@ -126,7 +126,7 @@ public class JaxbConfigurationImpl extends ResourceConfigurationImpl implements 
         systemId = prop.getProperty( "drools.jaxb.conf.systemId", null );
         String classesStr = prop.getProperty( "drools.jaxb.conf.classes", "[]" );
         classesStr = classesStr.substring( 1, classesStr.length()-1 ).trim();
-        classes = new ArrayList<String>();
+        classes = new ArrayList<>();
         if( classesStr != null && classesStr.length() > 1 ) {
             // can't use Arrays.asList() because have to trim() each element
             for( String clz : classesStr.split( "," ) ) {

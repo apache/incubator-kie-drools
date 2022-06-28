@@ -38,7 +38,7 @@ import java.util.Set;
 public class JPAWorkItemManager implements WorkItemManager {
 
     private InternalKnowledgeRuntime kruntime;
-    private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
+    private Map<String, WorkItemHandler> workItemHandlers = new HashMap<>();
     private transient Map<Long, WorkItemInfo> workItems;
     private transient volatile boolean pessimisticLocking;
 
@@ -60,7 +60,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         ((WorkItemImpl) workItem).setId( workItemInfo.getId() );
 
         if ( this.workItems == null ) {
-            this.workItems = new HashMap<Long, WorkItemInfo>();
+            this.workItems = new HashMap<>();
         }
         workItems.put( workItem.getId(), workItemInfo );
 
@@ -237,7 +237,7 @@ public class JPAWorkItemManager implements WorkItemManager {
     }
 
     public Set<WorkItem> getWorkItems() {
-        return new HashSet<WorkItem>();
+        return new HashSet<>();
     }
 
     public void registerWorkItemHandler( String workItemName, WorkItemHandler handler ) {

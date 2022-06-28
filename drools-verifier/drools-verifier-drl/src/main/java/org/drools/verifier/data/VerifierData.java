@@ -19,7 +19,6 @@ package org.drools.verifier.data;
 import java.util.Collection;
 
 import org.drools.verifier.components.*;
-import org.drools.verifier.components.PatternVariable;
 
 public interface VerifierData {
 

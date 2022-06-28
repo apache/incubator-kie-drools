@@ -41,7 +41,7 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
     
     private String worksheetName;
 
-    private Set<RuleTemplateConfiguration> templates = new HashSet<RuleTemplateConfiguration>();
+    private Set<RuleTemplateConfiguration> templates = new HashSet<>();
 
     private boolean trimCell = true;
 

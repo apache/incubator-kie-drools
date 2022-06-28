@@ -29,7 +29,7 @@ public class ContextImplWithEviction extends ContextImpl{
 
     private  Logger log = Logger.getLogger( ContextImplWithEviction.class.getName() );
     
-    private Map<String, Long> evictionMap = new ConcurrentHashMap<String, Long>();
+    private Map<String, Long> evictionMap = new ConcurrentHashMap<>();
     
     private boolean           evictionEnabled = true;
     //I need a way to set up this parameters 

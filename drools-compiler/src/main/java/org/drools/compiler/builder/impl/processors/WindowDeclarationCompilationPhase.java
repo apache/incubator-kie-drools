@@ -1,6 +1,5 @@
 package org.drools.compiler.builder.impl.processors;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;

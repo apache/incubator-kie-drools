@@ -150,7 +150,7 @@ public class OverlappedByEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, OverlappedByEvaluator>();
+            this.cache = new HashMap<>();
         }
         String key = isNegated + ":" + parameterText;
         OverlappedByEvaluator eval = this.cache.get( key );

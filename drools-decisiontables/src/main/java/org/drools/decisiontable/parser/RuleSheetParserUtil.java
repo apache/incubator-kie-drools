@@ -50,7 +50,7 @@ public class RuleSheetParserUtil {
      * @return A list of Import classes, which can be added to the ruleset.
      */
     public static List<Import> getImportList(final List<String> importCells) {
-        final List<Import> importList = new ArrayList<Import>();
+        final List<Import> importList = new ArrayList<>();
         if ( importCells == null ) return importList;
 
         for( String importCell: importCells ){
@@ -70,7 +70,7 @@ public class RuleSheetParserUtil {
      * @return A list of Variable classes, which can be added to the ruleset.
      */
     public static List<Global> getVariableList( final List<String> variableCells ){
-        final List<Global> variableList = new ArrayList<Global>();
+        final List<Global> variableList = new ArrayList<>();
         if ( variableCells == null ) return variableList;
 
         for( String variableCell: variableCells ){

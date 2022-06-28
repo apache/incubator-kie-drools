@@ -25,7 +25,7 @@ import org.drools.model.datasources.PassiveDataStore;
 
 public class ListDataStore<T> implements PassiveDataStore<T> {
 
-    private final List<T> store = new ArrayList<T>();
+    private final List<T> store = new ArrayList<>();
 
     @Override
     public void insert(T obj) {

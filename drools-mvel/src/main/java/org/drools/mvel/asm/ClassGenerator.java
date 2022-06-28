@@ -102,7 +102,7 @@ public class ClassGenerator {
     private final String classDescriptor;
     private String superDescriptor;
 
-    private List<ClassPartDescr> classParts = new ArrayList<ClassPartDescr>();
+    private List<ClassPartDescr> classParts = new ArrayList<>();
     private StaticInitializerDescr staticInitializer = null;
 
     private byte[] bytecode;
@@ -227,7 +227,7 @@ public class ClassGenerator {
 
     // Utility
 
-    private Map<Class<?>, String> descriptorsCache = new HashMap<Class<?>, String>();
+    private Map<Class<?>, String> descriptorsCache = new HashMap<>();
 
     private String descriptorOf(Class<?> type) {
         String descriptor = descriptorsCache.get(type);
@@ -439,7 +439,7 @@ public class ClassGenerator {
         }
 
         protected final int store(int registry, Type t) {
-            if (storedTypes == null) storedTypes = new HashMap<Integer, Type>();
+            if (storedTypes == null) storedTypes = new HashMap<>();
             mv.visitVarInsn(t.getOpcode(ISTORE), registry);
             storedTypes.put(registry, t);
             return t.getSize();
@@ -870,7 +870,7 @@ public class ClassGenerator {
 
     private static class StaticInitializerDescr implements ClassPartDescr {
 
-        private final List<MethodBody> initializerBodies = new ArrayList<MethodBody>();
+        private final List<MethodBody> initializerBodies = new ArrayList<>();
 
         public void write(ClassGenerator cg, ClassWriter cw) {
             MethodVisitor mv = cw.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);

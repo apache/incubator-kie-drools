@@ -18,7 +18,6 @@ package org.kie.dmn.core.impl;
 
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.BeforeEvaluateContextEntryEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 
 public class BeforeEvaluateContextEntryEventImpl
         implements BeforeEvaluateContextEntryEvent {

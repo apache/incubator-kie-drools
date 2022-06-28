@@ -46,7 +46,7 @@ public class EnumLiteralDefinition implements Externalizable {
     public EnumLiteralDefinition(String name,
                                  List<String> args) {
         this.name = name;
-        this.constructorArgs = new ArrayList<String>( args );
+        this.constructorArgs = new ArrayList<>( args );
     }
 
 

@@ -30,7 +30,7 @@ public class JavaModifyBlockDescr extends AbstractJavaBlockDescr implements Java
     
     public JavaModifyBlockDescr( String targetExpression ) {
         this.targetExpression = targetExpression;
-        this.expressions = new ArrayList<String>();
+        this.expressions = new ArrayList<>();
     }
     
     public int getStart() {

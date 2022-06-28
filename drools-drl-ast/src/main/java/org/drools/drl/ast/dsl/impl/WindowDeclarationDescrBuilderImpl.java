@@ -37,21 +37,21 @@ public class WindowDeclarationDescrBuilderImpl extends BaseDescrBuilderImpl<Pack
     }
 
     public AnnotationDescrBuilder<WindowDeclarationDescrBuilder> newAnnotation( String name ) {
-        AnnotationDescrBuilder<WindowDeclarationDescrBuilder> annotation = new AnnotationDescrBuilderImpl<WindowDeclarationDescrBuilder>( this,
+        AnnotationDescrBuilder<WindowDeclarationDescrBuilder> annotation = new AnnotationDescrBuilderImpl<>( this,
                                                                                                                                           name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }
 
     public PatternDescrBuilder<WindowDeclarationDescrBuilder> pattern( String type ) {
-        PatternDescrBuilder<WindowDeclarationDescrBuilder> pattern = new PatternDescrBuilderImpl<WindowDeclarationDescrBuilder>( this,
+        PatternDescrBuilder<WindowDeclarationDescrBuilder> pattern = new PatternDescrBuilderImpl<>( this,
                                                                                                                                  type );
         descr.setPattern( pattern.getDescr() );
         return pattern;
     }
 
     public PatternDescrBuilder<WindowDeclarationDescrBuilder> pattern() {
-        PatternDescrBuilder<WindowDeclarationDescrBuilder> pattern = new PatternDescrBuilderImpl<WindowDeclarationDescrBuilder>( this );
+        PatternDescrBuilder<WindowDeclarationDescrBuilder> pattern = new PatternDescrBuilderImpl<>( this );
         descr.setPattern( pattern.getDescr() );
         return pattern;
     }

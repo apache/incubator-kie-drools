@@ -31,7 +31,7 @@ public class MapGraphStore<T> implements GraphStore<T> {
     }
 
     public GraphNode<T> addNode() {
-        GraphNode<T> v = new GraphNodeImpl<T>(idCounter++);
+        GraphNode<T> v = new GraphNodeImpl<>(idCounter++);
         nodes.put( v.getId(), v);
         return v;
     }

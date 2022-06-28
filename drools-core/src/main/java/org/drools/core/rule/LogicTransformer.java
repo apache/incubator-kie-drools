@@ -36,7 +36,7 @@ import org.drools.core.rule.accessor.DeclarationScopeResolver;
  *
  */
 public class LogicTransformer {
-    private final Map<GroupElement.Type, Transformation> orTransformations = new HashMap<GroupElement.Type, Transformation>();
+    private final Map<GroupElement.Type, Transformation> orTransformations = new HashMap<>();
 
     private static LogicTransformer INSTANCE          = new LogicTransformer();
 
@@ -99,7 +99,7 @@ public class LogicTransformer {
     }
 
     private GroupElement[] processNamedConsequences(GroupElement[] ands) {
-        List<GroupElement> result = new ArrayList<GroupElement>();
+        List<GroupElement> result = new ArrayList<>();
 
         for (GroupElement and : ands) {
             List<RuleConditionElement> children = and.getChildren();
@@ -143,7 +143,7 @@ public class LogicTransformer {
      * we need to fix any references to cloned declarations.
      */
     protected void fixClonedDeclarations( GroupElement and, Map<String, Class<?>> globals ) {
-        Stack<RuleConditionElement> contextStack = new Stack<RuleConditionElement>();
+        Stack<RuleConditionElement> contextStack = new Stack<>();
         DeclarationScopeResolver resolver = new DeclarationScopeResolver( globals,
                                                                           contextStack );
 
@@ -303,7 +303,7 @@ public class LogicTransformer {
     }
 
     private static List<Integer> asList(int[] ints) {
-        List<Integer> list = new ArrayList<Integer>(ints.length);
+        List<Integer> list = new ArrayList<>(ints.length);
         for ( int i : ints ) {
             list.add( i );
         }
@@ -426,7 +426,7 @@ public class LogicTransformer {
         Transformation {
 
         public void transform(final GroupElement parent) throws InvalidPatternException {
-            final List<GroupElement> orsList = new ArrayList<GroupElement>();
+            final List<GroupElement> orsList = new ArrayList<>();
             // must keep order, so, using array
             final RuleConditionElement[] others = new RuleConditionElement[parent.getChildren().size()];
 

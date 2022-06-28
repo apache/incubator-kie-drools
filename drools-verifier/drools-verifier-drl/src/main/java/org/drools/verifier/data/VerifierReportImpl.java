@@ -37,12 +37,12 @@ public class VerifierReportImpl
     VerifierReport {
     private static final long                       serialVersionUID               = 510l;
 
-    private Map<String, Gap>                        gapsById                       = new TreeMap<String, Gap>();
+    private Map<String, Gap>                        gapsById                       = new TreeMap<>();
     private Multimap<String, Gap>                   gapsByFieldId                  = TreeMultimap.create();
-    private Map<String, MissingNumberPattern>       missingNumberPatternsById      = new TreeMap<String, MissingNumberPattern>();
+    private Map<String, MissingNumberPattern>       missingNumberPatternsById      = new TreeMap<>();
     private Multimap<String, MissingNumberPattern>  missingNumberPatternsByFieldId = TreeMultimap.create();
 
-    private List<VerifierMessageBase>               messages                       = new ArrayList<VerifierMessageBase>();
+    private List<VerifierMessageBase>               messages                       = new ArrayList<>();
     private Multimap<Severity, VerifierMessageBase> messagesBySeverity             = TreeMultimap.create();
 
     private VerifierData                            data;
@@ -88,7 +88,7 @@ public class VerifierReportImpl
     }
 
     public Collection<MissingRange> getRangeCheckCauses() {
-        Collection<MissingRange> result = new ArrayList<MissingRange>();
+        Collection<MissingRange> result = new ArrayList<>();
 
         result.addAll( gapsById.values() );
         result.addAll( missingNumberPatternsById.values() );
@@ -106,7 +106,7 @@ public class VerifierReportImpl
     }
 
     public Collection<MissingRange> getRangeCheckCausesByFieldPath(String id) {
-        Collection<MissingRange> result = new ArrayList<MissingRange>();
+        Collection<MissingRange> result = new ArrayList<>();
 
         result.addAll( gapsByFieldId.get( id ) );
 
