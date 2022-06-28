@@ -32,4 +32,6 @@ public interface Drools extends DroolsEntryPoint {
     Channel getChannel(String name);
 
     void logicalInsert(Object object);
+
+    void insertAsync(Object object);
 }
