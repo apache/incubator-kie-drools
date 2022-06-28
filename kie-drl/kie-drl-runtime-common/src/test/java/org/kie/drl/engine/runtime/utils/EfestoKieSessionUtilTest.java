@@ -1,4 +1,4 @@
-package org.kie.drl.engine.runtime.utils;/*
+/*
  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@ package org.kie.drl.engine.runtime.utils;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.drl.engine.runtime.utils;
 
 import org.drools.model.Model;
 import org.junit.jupiter.api.BeforeAll;
