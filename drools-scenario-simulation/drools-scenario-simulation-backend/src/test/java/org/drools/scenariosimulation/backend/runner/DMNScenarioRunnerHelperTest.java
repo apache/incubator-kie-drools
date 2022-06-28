@@ -63,6 +63,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.impl.DMNMessageImpl;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -118,6 +119,11 @@ public class DMNScenarioRunnerHelperTest {
     protected DMNScenarioExecutableBuilder dmnScenarioExecutableBuilderMock;
     @Mock
     protected KieContainer kieContainerMock;
+    @Captor
+    private ArgumentCaptor<Object> valueCaptor;
+    @Captor
+    private ArgumentCaptor<String> keyCaptor;
+
     private Simulation simulation;
     private Settings settings;
     private FactIdentifier personFactIdentifier;
@@ -371,9 +377,6 @@ public class DMNScenarioRunnerHelperTest {
 
     @Test
     public void executeScenario() {
-        ArgumentCaptor<Object> setValueCaptor = ArgumentCaptor.forClass(Object.class);
-        ArgumentCaptor<String> setKeyCaptor = ArgumentCaptor.forClass(String.class);
-
         FactIdentifier bookFactIdentifier = FactIdentifier.create("Book", "Book");
         FactIdentifier importedPersonFactIdentifier = FactIdentifier.create(IMPORTED_PREFIX + ".Person", IMPORTED_PREFIX + ".Person", IMPORTED_PREFIX);
         FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create(IMPORTED_PREFIX + ".Dispute", IMPORTED_PREFIX + ".Dispute", IMPORTED_PREFIX);
@@ -419,11 +422,11 @@ public class DMNScenarioRunnerHelperTest {
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
         verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_FILE_PATH);
-        verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(setKeyCaptor.capture(), setValueCaptor.capture());
-        assertTrue(setKeyCaptor.getAllValues().containsAll(expectedInputDataToLoad));
+        verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(keyCaptor.capture(), valueCaptor.capture());
+        assertTrue(keyCaptor.getAllValues().containsAll(expectedInputDataToLoad));
         for (int i = 0; i < inputObjects; i++) {
-            String key = setKeyCaptor.getAllValues().get(i);
-            Map<String, Object> value = (Map<String, Object>) setValueCaptor.getAllValues().get(i);
+            String key = keyCaptor.getAllValues().get(i);
+            Map<String, Object> value = (Map<String, Object>) valueCaptor.getAllValues().get(i);
             if (personFactIdentifier.getName().equals(key)) {
                 assertEquals(backgroundPersonFactData.getValue(), value.get(backgroundPersonFactData.getKey()));
                 assertNotEquals(backgroundPersonFactData2.getValue(), value.get(backgroundPersonFactData2.getKey()));
@@ -467,6 +470,57 @@ public class DMNScenarioRunnerHelperTest {
         assertThatThrownBy(() -> runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessageStartingWith("Impossible to run");
+    }
+
+    @Test
+    public void validateWrongImportPrefix() {
+        String wrongPrefix = "WrongPrefix";
+        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create(IMPORTED_PREFIX + ".Person", IMPORTED_PREFIX + ".Person", wrongPrefix);
+
+        ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
+        AbstractMap.SimpleEntry<String, Object> givenImportedPersonFactData = new AbstractMap.SimpleEntry<>("surname", "White");
+        AbstractMap.SimpleEntry<String, Object> givenImportedPersonFactData2 = new AbstractMap.SimpleEntry<>("age", 67);
+        scenarioRunnerData.addGiven(new InstanceGiven(importedPersonFactIdentifier, instantiateMap(givenImportedPersonFactData, givenImportedPersonFactData2)));
+
+        assertThatThrownBy(() -> runnerHelper.executeScenario(kieContainerMock,
+                                                              scenarioRunnerData,
+                                                              expressionEvaluatorFactory,
+                                                              simulation.getScesimModelDescriptor(),
+                                                              settings))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Fact name: " + IMPORTED_PREFIX + ".Person has defined an invalid import prefix: " + wrongPrefix);
+    }
+
+    /* If a malicious user injects a regex as a prefix in both importPrefix and as a part of fact name, the injected
+       regex shouldn't be applied, but it should be used as a plain string */
+    @Test
+    public void validateUnSecureImportPrefix() {
+        String injectedPrefix = "/.(a+)+$/";
+        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create(injectedPrefix + ".Person", injectedPrefix + ".Person", injectedPrefix);
+
+        ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
+        AbstractMap.SimpleEntry<String, Object> givenImportedPersonFactData = new AbstractMap.SimpleEntry<>("surname", "White");
+        AbstractMap.SimpleEntry<String, Object> givenImportedPersonFactData2 = new AbstractMap.SimpleEntry<>("age", 67);
+        scenarioRunnerData.addGiven(new InstanceGiven(importedPersonFactIdentifier, instantiateMap(givenImportedPersonFactData, givenImportedPersonFactData2)));
+
+        List<String> expectedInputDataToLoad = asList(injectedPrefix);
+        int inputObjects = expectedInputDataToLoad.size();
+
+        runnerHelper.executeScenario(kieContainerMock,
+                                     scenarioRunnerData,
+                                     expressionEvaluatorFactory,
+                                     simulation.getScesimModelDescriptor(),
+                                     settings);
+
+        verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(keyCaptor.capture(), valueCaptor.capture());
+        assertTrue(keyCaptor.getAllValues().containsAll(expectedInputDataToLoad));
+        String key = keyCaptor.getAllValues().get(0);
+        Map<String, Object> value = (Map<String, Object>) valueCaptor.getAllValues().get(0);
+        assertEquals(injectedPrefix, key);
+        Map<String, Object> subValuePerson = (Map<String, Object>) value.get("Person");
+        assertEquals(givenImportedPersonFactData.getValue(), subValuePerson.get(givenImportedPersonFactData.getKey()));
+        assertEquals(givenImportedPersonFactData2.getValue(), subValuePerson.get(givenImportedPersonFactData2.getKey()));
+        assertEquals(2, subValuePerson.size());
     }
 
     private Map<String, Object> instantiateMap(AbstractMap.SimpleEntry<String, Object> ... entries) {
