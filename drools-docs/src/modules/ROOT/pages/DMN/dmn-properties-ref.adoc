@@ -1,0 +1,87 @@
+[id='dmn-properties-ref_{context}']
+= Configurable DMN properties in {PRODUCT}
+
+{PRODUCT} provides the following DMN properties that you can configure when you execute your DMN models on {KIE_SERVER} or on your client application.
+You can configure some of these properties using the `kmodule.xml` file in your {PRODUCT} project when you deploy your project on {KIE_SERVER}.
+
+org.kie.dmn.strictConformance::
+When enabled, this property disables by default any extensions or profiles provided beyond the DMN standard, such as some helper functions or enhanced features of DMN 1.2 backported into DMN 1.1. You can use this property to configure the {DECISION_ENGINE} to support only pure DMN features, such as when running the https://dmn-tck.github.io/tck/[DMN Technology Compatibility Kit] (TCK).
++
+--
+Default value: `false`
+
+[source]
+----
+-Dorg.kie.dmn.strictConformance=true
+----
+--
+
+org.kie.dmn.runtime.typecheck::
+When enabled, this property enables verification of actual values conforming to their declared types in the DMN model, as input or output of DRD elements. You can use this property to verify whether data supplied to the DMN model or produced by the DMN model is compliant with what is specified in the model.
++
+--
+Default value: `false`
+
+[source]
+----
+-Dorg.kie.dmn.runtime.typecheck=true
+----
+--
+
+org.kie.dmn.decisionservice.coercesingleton::
+By default, this property makes the result of a decision service defining a single output decision be the single value of the output decision value. When disabled, this property makes the result of a decision service defining a single output decision be a `context` with the single entry for that decision. You can use this property to adjust your decision service outputs according to your project requirements.
++
+--
+Default value: `true`
+
+[source]
+----
+-Dorg.kie.dmn.decisionservice.coercesingleton=false
+----
+--
+
+org.kie.dmn.profiles.$PROFILE_NAME::
+When valorized with a Java fully qualified name, this property loads a DMN profile onto the {DECISION_ENGINE} at start time. You can use this property to implement a predefined DMN profile with supported features different from or beyond the DMN standard. For example, if you are creating DMN models using the Signavio DMN modeller, use this property to implement features from the Signavio DMN profile into your DMN decision service.
++
+--
+[source]
+----
+-Dorg.kie.dmn.profiles.signavio=org.kie.dmn.signavio.KieDMNSignavioProfile
+----
+--
+
+org.kie.dmn.runtime.listeners.$LISTENER_NAME::
+When valorized with a Java fully qualified name, this property loads and registers a DMN Runtime Listener onto the {DECISION_ENGINE} at start time.
+You can use this property to register a DMN listener in order to be notified of several events during DMN model evaluations.
++
+--
+To configure this property when deploying your project on {KIE_SERVER}, modify this property in the `kmodule.xml` file of your project. This approach is helpful when the listener is specific to your project and when the configuration must be applied in {KIE_SERVER} only to your deployed project.
+
+[source,xml]
+----
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
+  <configuration>
+    <property key="org.kie.dmn.runtime.listeners.mylistener" value="org.acme.MyDMNListener"/>
+  </configuration>
+</kmodule>
+----
+
+To configure this property globally for your {PRODUCT} environment, modify this property using a command terminal or any other global application configuration mechanism. This approach is helpful when the {DECISION_ENGINE} is embedded as part of your Java application.
+
+[source]
+----
+-Dorg.kie.dmn.runtime.listeners.mylistener=org.acme.MyDMNListener
+----
+--
+
+org.kie.dmn.compiler.execmodel::
+When enabled, this property enables DMN decision table logic to be compiled into executable rule models during run time. You can use this property to evaluate DMN decision table logic more efficiently. This property is helpful when the executable model compilation was not originally performed during project compile time. Enabling this property may result in added compile time during the first evaluation by the {DECISION_ENGINE}, but subsequent compilations are more efficient.
++
+--
+Default value: `false`
+
+[source]
+----
+-Dorg.kie.dmn.compiler.execmodel=true
+----
+--

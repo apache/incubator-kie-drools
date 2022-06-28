@@ -1,0 +1,150 @@
+[id='dmn-execution-remote-java-proc']
+= Executing a DMN service using the {KIE_SERVER} Java client API
+
+The {KIE_SERVER} Java client API provides a lightweight approach to invoking a remote DMN service either through the REST or JMS interfaces of {KIE_SERVER}. This approach reduces the number of runtime dependencies necessary to interact with a KIE base. Decoupling the calling code from the decision definition also increases flexibility by enabling them to iterate independently at the appropriate pace.
+
+For more information about the {KIE_SERVER} Java client API, see
+ifdef::DM,PAM[]
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-kie-apis[_{KIE_APIS}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+xref:kie-server-java-api-con_kie-apis[].
+endif::[]
+
+.Prerequisites
+* {KIE_SERVER} is installed and configured, including a known user name and credentials for a user with the `kie-server` role. For installation options, see
+ifdef::DM,PAM[]
+{URL_INSTALLING_AND_CONFIGURING}#assembly-planning[_{PLANNING_INSTALL}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+<<_installationandsetup>>.
+endif::[]
+* You have built the DMN project as a KJAR artifact and deployed it to {KIE_SERVER}:
++
+--
+[source]
+----
+mvn clean install
+----
+
+For more information about project packaging and deployment and executable models, see
+ifdef::DM,PAM[]
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+<<_builddeployutilizeandrunsection>>.
+endif::[]
+--
+* You have the ID of the KIE container containing the DMN model. If more than one model is present, you must also know the model namespace and model name of the relevant model.
+
+.Procedure
+. In your client application, add the following dependency to the relevant classpath of your Java project:
++
+--
+[source,xml,subs="attributes+"]
+----
+<!-- Required for the {KIE_SERVER} Java client API -->
+<dependency>
+  <groupId>org.kie.server</groupId>
+  <artifactId>kie-server-client</artifactId>
+  <version>${{PRODUCT_INIT}.version}</version>
+</dependency>
+----
+
+The `<version>` is the Maven artifact version for {PRODUCT} currently used in your project (for example, {MAVEN_ARTIFACT_VERSION}).
+
+ifdef::DM,PAM[]
+[NOTE]
+====
+Instead of specifying a {PRODUCT} `<version>` for individual dependencies, consider adding the {PRODUCT_BA} bill of materials (BOM) dependency to your project `pom.xml` file. The {PRODUCT_BA} BOM applies to both {PRODUCT_DM} and {PRODUCT_PAM}. When you add the BOM files, the correct versions of transitive dependencies from the provided Maven repositories are included in the project.
+
+Example BOM dependency:
+
+[source,xml,subs="attributes+"]
+----
+<dependency>
+  <groupId>com.redhat.ba</groupId>
+  <artifactId>ba-platform-bom</artifactId>
+  <version>{BOM_VERSION}</version>
+  <scope>import</scope>
+  <type>pom</type>
+</dependency>
+----
+
+For more information about the {PRODUCT_BA} BOM, see
+ifdef::PAM[]
+https://access.redhat.com/solutions/3405361[What is the mapping between RHPAM product and maven library version?].
+endif::[]
+ifdef::DM[]
+https://access.redhat.com/solutions/3363991[What is the mapping between RHDM product and maven library version?].
+endif::[]
+====
+endif::DM,PAM[]
+--
+. Instantiate a `KieServicesClient` instance with the appropriate connection information.
++
+--
+Example:
+
+[source,java]
+----
+KieServicesConfiguration conf =
+    KieServicesFactory.newRestConfiguration(URL, USER, PASSWORD); // <1>
+
+conf.setMarshallingFormat(MarshallingFormat.JSON);  // <2>
+
+KieServicesClient kieServicesClient = KieServicesFactory.newKieServicesClient(conf);
+----
+<1> The connection information:
+* Example URL: `\http://localhost:8080/kie-server/services/rest/server`
+* The credentials should reference a user with the `kie-server` role.
+<2> The Marshalling format is an instance of `org.kie.server.api.marshalling.MarshallingFormat`. It controls whether the messages will be JSON or XML. Options for Marshalling format are JSON, JAXB, or XSTREAM.
+--
+. Obtain a `DMNServicesClient` from the KIE server Java client connected to the related {KIE_SERVER} by invoking the method `getServicesClient()` on the KIE server Java client instance:
++
+[source,java]
+----
+DMNServicesClient dmnClient = kieServicesClient.getServicesClient(DMNServicesClient.class );
+----
++
+The `dmnClient` can now execute decision services on {KIE_SERVER}.
+
+. Execute the decision services for the desired model.
++
+--
+Example:
+
+[source,java]
+----
+for (Integer age : Arrays.asList(1,12,13,64,65,66)) {
+    DMNContext dmnContext = dmnClient.newContext(); // <1>
+    dmnContext.set("Age", age);  // <2>
+    ServiceResponse<DMNResult> serverResp =   // <3>
+        dmnClient.evaluateAll($kieContainerId,
+                              $modelNamespace,
+                              $modelName,
+                              dmnContext);
+
+    DMNResult dmnResult = serverResp.getResult();  // <4>
+    for (DMNDecisionResult dr : dmnResult.getDecisionResults()) {
+        log.info("Age: " + age + ", " +
+                 "Decision: '" + dr.getDecisionName() + "', " +
+                 "Result: " + dr.getResult());
+    }
+}
+----
+<1> Instantiate a new DMN Context to be the input for the model evaluation. Note that this example is looping through the Age Classification decision multiple times.
+<2> Assign input variables for the input DMN Context.
+<3> Evaluate all the DMN Decisions defined in the DMN model:
+* `$kieContainerId` is the ID of the container where the KJAR containing the DMN model is deployed
+* `$modelNamespace` is the namespace for the model.
+* `$modelName` is the name for the model.
+<4> The DMN Result object is available from the server response.
+
+At this point, the `dmnResult` contains all the decision results from the evaluated DMN model.
+
+You can also execute only a specific DMN decision in the model by using alternative methods of the `DMNServicesClient`.
+
+NOTE: If the KIE container only contains one DMN model, you can omit `$modelNamespace` and `$modelName` because the {KIE_SERVER} API selects it by default.
+
+--

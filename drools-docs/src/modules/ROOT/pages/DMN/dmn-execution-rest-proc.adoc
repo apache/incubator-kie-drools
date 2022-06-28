@@ -1,0 +1,935 @@
+[id='dmn-execution-rest-proc_{context}']
+= Executing a DMN service using the {KIE_SERVER} REST API
+
+Directly interacting with the REST endpoints of {KIE_SERVER} provides the most separation between the calling code and the decision logic definition. The calling code is completely free of direct dependencies, and you can implement it in an entirely different development platform such as `Node.js` or `.NET`. The examples in this section demonstrate Nix-style curl commands but provide relevant information to adapt to any REST client.
+
+When you use a REST endpoint of {KIE_SERVER}, the best practice is to define a domain object POJO Java class, annotated with standard {KIE_SERVER} marshalling annotations. For example, the following code is using a domain object `Person` class that is annotated properly:
+
+.Example POJO Java class
+[source,java]
+----
+@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)
+public class Person implements java.io.Serializable {
+
+    static final long serialVersionUID = 1L;
+
+    private java.lang.String id;
+    private java.lang.String name;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.kie.internal.jaxb.LocalDateXmlAdapter.class)
+    private java.time.LocalDate dojoining;
+
+    public Person() {
+    }
+
+    public java.lang.String getId() {
+        return this.id;
+    }
+
+    public void setId(java.lang.String id) {
+        this.id = id;
+    }
+
+    public java.lang.String getName() {
+        return this.name;
+    }
+
+    public void setName(java.lang.String name) {
+        this.name = name;
+    }
+
+    public java.time.LocalDate getDojoining() {
+        return this.dojoining;
+    }
+
+    public void setDojoining(java.time.LocalDate dojoining) {
+        this.dojoining = dojoining;
+    }
+
+    public Person(java.lang.String id, java.lang.String name,
+            java.time.LocalDate dojoining) {
+        this.id = id;
+        this.name = name;
+        this.dojoining = dojoining;
+    }
+
+}
+----
+
+For more information about the {KIE_SERVER} REST API, see
+ifdef::DM,PAM[]
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-kie-apis[_{KIE_APIS}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+xref:kie-server-rest-api-con_kie-apis[].
+endif::[]
+
+.Prerequisites
+* {KIE_SERVER} is installed and configured, including a known user name and credentials for a user with the `kie-server` role. For installation options, see
+ifdef::DM,PAM[]
+{URL_INSTALLING_AND_CONFIGURING}#assembly-planning[_{PLANNING_INSTALL}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+<<_installationandsetup>>.
+endif::[]
+* You have built the DMN project as a KJAR artifact and deployed it to {KIE_SERVER}:
++
+--
+[source]
+----
+mvn clean install
+----
+
+For more information about project packaging and deployment and executable models, see
+ifdef::DM,PAM[]
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+<<_builddeployutilizeandrunsection>>.
+endif::[]
+--
+* You have the ID of the KIE container containing the DMN model. If more than one model is present, you must also know the model namespace and model name of the relevant model.
+
+.Procedure
+. Determine the base URL for accessing the {KIE_SERVER} REST API endpoints. This requires knowing the following values (with the default local deployment values as an example):
++
+--
+* Host (`localhost`)
+* Port (`8080`)
+* Root context (`kie-server`)
+* Base REST path (`services/rest/`)
+
+ifeval::["{context}" == "dmn-models"]
+Example base URL in local deployment:
+
+`\http://localhost:8080/kie-server/services/rest/`
+endif::[]
+
+ifeval::["{context}" == "getting-started-decision-services"]
+Example base URL in local deployment for the traffic violations project:
+
+`\http://localhost:8080/kie-server/services/rest/server/containers/traffic-violation_1.0.0-SNAPSHOT`
+endif::[]
+--
+. Determine user authentication requirements.
++
+When users are defined directly in the {KIE_SERVER} configuration, HTTP Basic authentication is used and requires the user name and password. Successful requests require that the user have the `kie-server` role.
++
+The following example demonstrates how to add credentials to a curl request:
++
+[source]
+----
+curl -u username:password <request>
+----
++
+If {KIE_SERVER} is configured with {RH-SSO}, the request must include a bearer token:
++
+[source,java]
+----
+curl -H "Authorization: bearer $TOKEN" <request>
+----
+
+. Specify the format of the request and response. The REST API endpoints work with both JSON and XML formats and are set using request headers:
++
+.JSON
+[source]
+----
+curl -H "accept: application/json" -H "content-type: application/json"
+----
++
+.XML
+[source]
+----
+curl -H "accept: application/xml" -H "content-type: application/xml"
+----
+
+. Optional: Query the container for a list of deployed decision models:
++
+--
+*[GET]* `server/containers/{containerId}/dmn`
+
+Example curl request:
+
+ifeval::["{context}" == "dmn-models"]
+[source]
+----
+curl -u krisv:krisv -H "accept: application/xml" -X GET "http://localhost:8080/kie-server/services/rest/server/containers/MovieDMNContainer/dmn"
+----
+
+Sample XML output:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response type="SUCCESS" msg="OK models successfully retrieved from container 'MovieDMNContainer'">
+    <dmn-model-info-list>
+        <model>
+            <model-namespace>http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a</model-namespace>
+            <model-name>dmn-movieticket-ageclassification</model-name>
+            <model-id>_99</model-id>
+            <decisions>
+                <dmn-decision-info>
+                    <decision-id>_3</decision-id>
+                    <decision-name>AgeClassification</decision-name>
+                </dmn-decision-info>
+            </decisions>
+        </model>
+    </dmn-model-info-list>
+</response>
+----
+
+Sample JSON output:
+
+[source,json]
+----
+{
+  "type" : "SUCCESS",
+  "msg" : "OK models successfully retrieved from container 'MovieDMNContainer'",
+  "result" : {
+    "dmn-model-info-list" : {
+      "models" : [ {
+        "model-namespace" : "http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a",
+        "model-name" : "dmn-movieticket-ageclassification",
+        "model-id" : "_99",
+        "decisions" : [ {
+          "decision-id" : "_3",
+          "decision-name" : "AgeClassification"
+        } ]
+      } ]
+    }
+  }
+}
+----
+--
+endif::[]
+ifeval::["{context}" == "getting-started-decision-services"]
+[source]
+----
+curl -u wbadmin:wbadmin -H "accept: application/xml" -X GET "http://localhost:8080/kie-server/services/rest/server/containers/traffic-violation_1.0.0-SNAPSHOT/dmn"
+----
+
+Sample XML output:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response type="SUCCESS" msg="Ok models successfully retrieved from container 'traffic-violation_1.0.0-SNAPSHOT'">
+    <dmn-model-info-list>
+        <model>
+            <model-namespace>https://kiegroup.org/dmn/_60b01f4d-e407-43f7-848e-258723b5fac8</model-namespace>
+            <model-name>Traffic Violation</model-name>
+            <model-id>_2CD7D1AA-BD84-4B43-AD21-B0342ADE655A</model-id>
+            <decisions>
+                <dmn-decision-info>
+                    <decision-id>_23428EE8-DC8B-4067-8E67-9D7C53EC975F</decision-id>
+                    <decision-name>Fine</decision-name>
+                </dmn-decision-info>
+                <dmn-decision-info>
+                    <decision-id>_B5EEE2B1-915C-44DC-BE43-C244DC066FD8</decision-id>
+                    <decision-name>Should the driver be suspended?</decision-name>
+                </dmn-decision-info>
+            </decisions>
+            <inputs>
+                <dmn-inputdata-info>
+                    <inputdata-id>_CEB959CD-3638-4A87-93BA-03CD0FB63AE3</inputdata-id>
+                    <inputdata-name>Violation</inputdata-name>
+                    <inputdata-typeref>
+                        <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                        <local-part>tViolation</local-part>
+                        <prefix></prefix>
+                    </inputdata-typeref>
+                </dmn-inputdata-info>
+                <dmn-inputdata-info>
+                    <inputdata-id>_B0E810E6-7596-430A-B5CF-67CE16863B6C</inputdata-id>
+                    <inputdata-name>Driver</inputdata-name>
+                    <inputdata-typeref>
+                        <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                        <local-part>tDriver</local-part>
+                        <prefix></prefix>
+                    </inputdata-typeref>
+                </dmn-inputdata-info>
+            </inputs>
+            <itemdefinitions>
+                <dmn-itemdefinition-info>
+                    <itemdefinition-id>_9C758F4A-7D72-4D0F-B63F-2F5B8405980E</itemdefinition-id>
+                    <itemdefinition-name>tViolation</itemdefinition-name>
+                    <itemdefinition-itemcomponent>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_0B6FF1E2-ACE9-4FB3-876B-5BB30B88009B</itemdefinition-id>
+                            <itemdefinition-name>Code</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60b01f4d-e407-43f7-848e-258723b5fac8</namespace-uri>
+                                <local-part>string</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_27A5DA18-3CA7-4C06-81B7-CF7F2F050E29</itemdefinition-id>
+                            <itemdefinition-name>date</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                                <local-part>date</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_8961969A-8A80-4F12-B568-346920C0F038</itemdefinition-id>
+                            <itemdefinition-name>type</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                                <local-part>string</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_7450F12A-3E95-4D5E-8DCE-2CB1FAC2BDD4</itemdefinition-id>
+                            <itemdefinition-name>speed limit</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60b01f4d-e407-43f7-848e-258723b5fac8</namespace-uri>
+                                <local-part>number</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_0A9A6F26-6C14-414D-A9BF-765E5850429A</itemdefinition-id>
+                            <itemdefinition-name>Actual Speed</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                                <local-part>number</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                    </itemdefinition-itemcomponent>
+                    <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                </dmn-itemdefinition-info>
+                <dmn-itemdefinition-info>
+                    <itemdefinition-id>_13C7EFD8-B85C-43BF-94D3-14FABE39A4A0</itemdefinition-id>
+                    <itemdefinition-name>tDriver</itemdefinition-name>
+                    <itemdefinition-itemcomponent>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_EC11744C-4160-4549-9610-2C757F40DFE8</itemdefinition-id>
+                            <itemdefinition-name>Name</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                                <local-part>string</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_E95BE3DB-4A51-4658-A166-02493EAAC9D2</itemdefinition-id>
+                            <itemdefinition-name>Age</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                                <local-part>number</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_7B3023E2-BC44-4BF3-BF7E-773C240FB9AD</itemdefinition-id>
+                            <itemdefinition-name>State</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                                <local-part>string</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_3D4B49DD-700C-4925-99A7-3B2B873F7800</itemdefinition-id>
+                            <itemdefinition-name>city</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                                <local-part>string</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_B37C49E8-B0D9-4B20-9DC6-D655BB1CA7B1</itemdefinition-id>
+                            <itemdefinition-name>Points</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                                <local-part>number</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                    </itemdefinition-itemcomponent>
+                    <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                </dmn-itemdefinition-info>
+                <dmn-itemdefinition-info>
+                    <itemdefinition-id>_A4077C7E-B57A-4DEE-9C65-7769636316F3</itemdefinition-id>
+                    <itemdefinition-name>tFine</itemdefinition-name>
+                    <itemdefinition-itemcomponent>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_79B152A8-DE83-4001-B88B-52DFF0D73B2D</itemdefinition-id>
+                            <itemdefinition-name>Amount</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                                <local-part>number</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                        <dmn-itemdefinition-info>
+                            <itemdefinition-id>_D7CB5F9C-9D55-48C2-83EE-D47045EC90D0</itemdefinition-id>
+                            <itemdefinition-name>Points</itemdefinition-name>
+                            <itemdefinition-typeref>
+                                <namespace-uri>https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</namespace-uri>
+                                <local-part>number</local-part>
+                                <prefix></prefix>
+                            </itemdefinition-typeref>
+                            <itemdefinition-itemcomponent/>
+                            <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                        </dmn-itemdefinition-info>
+                    </itemdefinition-itemcomponent>
+                    <itemdefinition-iscollection>false</itemdefinition-iscollection>
+                </dmn-itemdefinition-info>
+            </itemdefinitions>
+            <decisionservices/>
+        </model>
+    </dmn-model-info-list>
+</response>
+----
+
+Sample JSON output:
+
+[source,json]
+----
+{
+  "type" : "SUCCESS",
+  "msg" : "OK models successfully retrieved from container 'Traffic-Violation_1.0.0-SNAPSHOT'",
+  "result" : {
+    "dmn-model-info-list" : {
+      "models" : [ {
+        "model-namespace" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+        "model-name" : "Traffic Violation",
+        "model-id" : "_2CD7D1AA-BD84-4B43-AD21-B0342ADE655A",
+        "decisions" : [ {
+          "decision-id" : "_23428EE8-DC8B-4067-8E67-9D7C53EC975F",
+          "decision-name" : "Fine"
+        }, {
+          "decision-id" : "_B5EEE2B1-915C-44DC-BE43-C244DC066FD8",
+          "decision-name" : "Should the driver be suspended?"
+        } ],
+        "inputs" : [ {
+          "inputdata-id" : "_CEB959CD-3638-4A87-93BA-03CD0FB63AE3",
+          "inputdata-name" : "Violation",
+          "inputdata-typeRef" : {
+            "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+            "local-part" : "tViolation",
+            "prefix" : ""
+          }
+        }, {
+          "inputdata-id" : "_B0E810E6-7596-430A-B5CF-67CE16863B6C",
+          "inputdata-name" : "Driver",
+          "inputdata-typeRef" : {
+            "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+            "local-part" : "tDriver",
+            "prefix" : ""
+          }
+        } ],
+        "itemDefinitions" : [ {
+          "itemdefinition-id" : "_13C7EFD8-B85C-43BF-94D3-14FABE39A4A0",
+          "itemdefinition-name" : "tDriver",
+          "itemdefinition-typeRef" : null,
+          "itemdefinition-itemComponent" : [ {
+            "itemdefinition-id" : "_EC11744C-4160-4549-9610-2C757F40DFE8",
+            "itemdefinition-name" : "Name",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "string",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_E95BE3DB-4A51-4658-A166-02493EAAC9D2",
+            "itemdefinition-name" : "Age",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_7B3023E2-BC44-4BF3-BF7E-773C240FB9AD",
+            "itemdefinition-name" : "State",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "string",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_3D4B49DD-700C-4925-99A7-3B2B873F7800",
+            "itemdefinition-name" : "City",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "string",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_B37C49E8-B0D9-4B20-9DC6-D655BB1CA7B1",
+            "itemdefinition-name" : "Points",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          } ],
+          "itemdefinition-isCollection" : false
+        }, {
+          "itemdefinition-id" : "_A4077C7E-B57A-4DEE-9C65-7769636316F3",
+          "itemdefinition-name" : "tFine",
+          "itemdefinition-typeRef" : null,
+          "itemdefinition-itemComponent" : [ {
+            "itemdefinition-id" : "_79B152A8-DE83-4001-B88B-52DFF0D73B2D",
+            "itemdefinition-name" : "Amount",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_D7CB5F9C-9D55-48C2-83EE-D47045EC90D0",
+            "itemdefinition-name" : "Points",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          } ],
+          "itemdefinition-isCollection" : false
+        }, {
+          "itemdefinition-id" : "_9C758F4A-7D72-4D0F-B63F-2F5B8405980E",
+          "itemdefinition-name" : "tViolation",
+          "itemdefinition-typeRef" : null,
+          "itemdefinition-itemComponent" : [ {
+            "itemdefinition-id" : "_0B6FF1E2-ACE9-4FB3-876B-5BB30B88009B",
+            "itemdefinition-name" : "Code",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "string",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_27A5DA18-3CA7-4C06-81B7-CF7F2F050E29",
+            "itemdefinition-name" : "Date",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "date",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_8961969A-8A80-4F12-B568-346920C0F038",
+            "itemdefinition-name" : "Type",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "string",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_7450F12A-3E95-4D5E-8DCE-2CB1FAC2BDD4",
+            "itemdefinition-name" : "Speed Limit",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_0A9A6F26-6C14-414D-A9BF-765E5850429A",
+            "itemdefinition-name" : "Actual Speed",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          } ],
+          "itemdefinition-isCollection" : false
+        } ],
+        "decisionServices" : [ ]
+      } ]
+    }
+  }
+}
+----
+--
+endif::[]
+
+. Execute the model:
+
+ifeval::["{context}" == "dmn-models"]
++
+--
+*[POST]* `server/containers/{containerId}/dmn`
+
+Example curl request:
+
+[source]
+----
+curl -u krisv:krisv -H "accept: application/json" -H "content-type: application/json" -X POST "http://localhost:8080/kie-server/services/rest/server/containers/MovieDMNContainer/dmn" -d "{ \"model-namespace\" : \"http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a\", \"model-name\" : \"dmn-movieticket-ageclassification\", \"decision-name\" : [ ], \"decision-id\" : [ ], \"dmn-context\" : {\"Age\" : 66}}"
+----
+
+Example JSON request:
+
+[source,json]
+----
+{
+  "model-namespace" : "http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a",
+  "model-name" : "dmn-movieticket-ageclassification",
+  "decision-name" : [ ],
+  "decision-id" : [ ],
+  "dmn-context" : {"Age" : 66}
+}
+----
+
+Example XML request (JAXB format):
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn-evaluation-context>
+    <model-namespace>http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a</model-namespace>
+    <model-name>dmn-movieticket-ageclassification</model-name>
+    <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <type>MAP</type>
+        <element xsi:type="jaxbStringObjectPair" key="Age">
+            <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">66</value>
+        </element>
+    </dmn-context>
+</dmn-evaluation-context>
+----
+
+[NOTE]
+====
+Regardless of the request format, the request requires the following elements:
+
+* Model namespace
+* Model name
+* Context object containing input values
+====
+
+Example JSON response:
+
+[source,json]
+----
+{
+  "type" : "SUCCESS",
+  "msg" : "OK from container 'MovieDMNContainer'",
+  "result" : {
+    "dmn-evaluation-result" : {
+      "messages" : [ ],
+      "model-namespace" : "http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a",
+      "model-name" : "dmn-movieticket-ageclassification",
+      "decision-name" : [ ],
+      "dmn-context" : {
+        "Age" : 66,
+        "AgeClassification" : "Senior"
+      },
+      "decision-results" : {
+        "_3" : {
+          "messages" : [ ],
+          "decision-id" : "_3",
+          "decision-name" : "AgeClassification",
+          "result" : "Senior",
+          "status" : "SUCCEEDED"
+        }
+      }
+    }
+  }
+}
+----
+
+Example XML (JAXB format) response:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response type="SUCCESS" msg="OK from container 'MovieDMNContainer'">
+      <dmn-evaluation-result>
+            <model-namespace>http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a</model-namespace>
+            <model-name>dmn-movieticket-ageclassification</model-name>
+            <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                  <type>MAP</type>
+                  <element xsi:type="jaxbStringObjectPair" key="Age">
+                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">66</value>
+                  </element>
+                  <element xsi:type="jaxbStringObjectPair" key="AgeClassification">
+                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">Senior</value>
+                  </element>
+            </dmn-context>
+            <messages/>
+            <decisionResults>
+                  <entry>
+                        <key>_3</key>
+                        <value>
+                              <decision-id>_3</decision-id>
+                              <decision-name>AgeClassification</decision-name>
+                              <result xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Senior</result>
+                              <messages/>
+                              <status>SUCCEEDED</status>
+                        </value>
+                  </entry>
+            </decisionResults>
+      </dmn-evaluation-result>
+</response>
+----
+--
+endif::[]
+ifeval::["{context}" == "getting-started-decision-services"]
++
+--
+*[POST]* `server/containers/{containerId}/dmn`
+
+[NOTE]
+====
+The attribute `model-namespace` is automatically generated and is different for every user. Ensure that the `model-namespace` and `model-name` attributes that you use match those of the deployed model.
+====
+
+Example curl request:
+
+[source]
+----
+curl -u wbadmin:wbadmin -H "accept: application/json" -H "content-type: application/json" -X POST "http://localhost:8080/kie-server/services/rest/server/containers/traffic-violation_1.0.0-SNAPSHOT/dmn" -d "{ \"model-namespace\" : \"https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8\", \"model-name\" : \"Traffic Violation\", \"dmn-context\" : {\"Driver\" : {\"Points\" : 15}, \"Violation\" : {\"Type\" : \"speed\", \"Actual Speed\" : 135, \"Speed Limit\" : 100}}}"
+----
+
+Example JSON request:
+
+[source,json]
+----
+{
+  "model-namespace" : "https://kiegroup.org/dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+  "model-name" : "Traffic Violation",
+  "dmn-context" :
+  {
+    "Driver" :
+    {
+  	   "Points" : 15
+    },
+  	"Violation" :
+    {
+  		"Type" : "speed",
+  		"Actual Speed" : 135,
+  		"Speed Limit" : 100
+  	}
+  }
+}
+----
+
+Example XML request (JAXB format):
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dmn-evaluation-context>
+    <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <type>MAP</type>
+        <element xsi:type="jaxbStringObjectPair" key="Violation">
+            <value xsi:type="jaxbListWrapper">
+                <type>MAP</type>
+                <element xsi:type="jaxbStringObjectPair" key="Type">
+                    <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">speed</value>
+                </element>
+                <element xsi:type="jaxbStringObjectPair" key="Speed Limit">
+                    <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">100</value>
+                </element>
+                <element xsi:type="jaxbStringObjectPair" key="Actual Speed">
+                    <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">135</value>
+                </element>
+            </value>
+        </element>
+        <element xsi:type="jaxbStringObjectPair" key="Driver">
+            <value xsi:type="jaxbListWrapper">
+                <type>MAP</type>
+                <element xsi:type="jaxbStringObjectPair" key="Points">
+                    <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">15</value>
+                </element>
+            </value>
+        </element>
+    </dmn-context>
+</dmn-evaluation-context>
+----
+
+[NOTE]
+====
+Regardless of the request format, the request requires the following elements:
+
+* Model namespace
+* Model name
+* Context object containing input values
+====
+
+Example JSON response:
+
+[source,json]
+----
+{
+  "type": "SUCCESS",
+  "msg": "OK from container 'Traffic-Violation_1.0.0-SNAPSHOT'",
+  "result": {
+      "dmn-evaluation-result": {
+          "messages": [],
+          "model-namespace": "https://kiegroup.org/dmn/_7D8116DE-ADF5-4560-A116-FE1A2EAFFF48",
+          "model-name": "Traffic Violation",
+          "decision-name": [],
+          "dmn-context": {
+              "Violation": {
+                "Type": "speed",
+                "Speed Limit": 100,
+                "Actual Speed": 135
+              },
+              "Should Driver be Suspended?": "Yes",
+                "Driver": {
+                  "Points": 15
+                },
+                "Fine": {
+                  "Points": 7,
+                  "Amount": 1000
+                }
+            },
+      "decision-results": {
+          "_E1AF5AC2-E259-455C-96E4-596E30D3BC86": {
+              "messages": [],
+              "decision-id": "_E1AF5AC2-E259-455C-96E4-596E30D3BC86",
+              "decision-name": "Should the Driver be Suspended?",
+              "result": "Yes",
+              "status": "SUCCEEDED"
+            },
+          "_D7F02CE0-AF50-4505-AB80-C7D6DE257920": {
+              "messages": [],
+              "decision-id": "_D7F02CE0-AF50-4505-AB80-C7D6DE257920",
+              "decision-name": "Fine",
+              "result": {
+                "Points": 7,
+                "Amount": 1000
+              },
+          "status": "SUCCEEDED"
+        }
+      }
+    }
+  }
+}
+----
+
+Example XML (JAXB format) response:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response type="SUCCESS" msg="OK from container 'Traffic_1.0.0-SNAPSHOT'">
+    <dmn-evaluation-result>
+        <model-namespace>https://kiegroup.org/dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF</model-namespace>
+        <model-name>Traffic Violation</model-name>
+        <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <type>MAP</type>
+            <element xsi:type="jaxbStringObjectPair" key="Violation">
+                <value xsi:type="jaxbListWrapper">
+                    <type>MAP</type>
+                    <element xsi:type="jaxbStringObjectPair" key="Type">
+                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">speed</value>
+                    </element>
+                    <element xsi:type="jaxbStringObjectPair" key="Speed Limit">
+                        <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">100</value>
+                    </element>
+                    <element xsi:type="jaxbStringObjectPair" key="Actual Speed">
+                        <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">135</value>
+                    </element>
+                </value>
+            </element>
+            <element xsi:type="jaxbStringObjectPair" key="Driver">
+                <value xsi:type="jaxbListWrapper">
+                    <type>MAP</type>
+                    <element xsi:type="jaxbStringObjectPair" key="Points">
+                        <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">15</value>
+                    </element>
+                </value>
+            </element>
+            <element xsi:type="jaxbStringObjectPair" key="Fine">
+                <value xsi:type="jaxbListWrapper">
+                    <type>MAP</type>
+                    <element xsi:type="jaxbStringObjectPair" key="Points">
+                        <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">7</value>
+                    </element>
+                    <element xsi:type="jaxbStringObjectPair" key="Amount">
+                        <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</value>
+                    </element>
+                </value>
+            </element>
+            <element xsi:type="jaxbStringObjectPair" key="Should the driver be suspended?">
+                <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">Yes</value>
+            </element>
+        </dmn-context>
+        <messages/>
+        <decisionResults>
+            <entry>
+                <key>_4055D956-1C47-479C-B3F4-BAEB61F1C929</key>
+                <value>
+                    <decision-id>_4055D956-1C47-479C-B3F4-BAEB61F1C929</decision-id>
+                    <decision-name>Fine</decision-name>
+                    <result xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <type>MAP</type>
+                        <element xsi:type="jaxbStringObjectPair" key="Points">
+                            <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">7</value>
+                        </element>
+                        <element xsi:type="jaxbStringObjectPair" key="Amount">
+                            <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</value>
+                        </element>
+                    </result>
+                    <messages/>
+                    <status>SUCCEEDED</status>
+                </value>
+            </entry>
+            <entry>
+                <key>_8A408366-D8E9-4626-ABF3-5F69AA01F880</key>
+                <value>
+                    <decision-id>_8A408366-D8E9-4626-ABF3-5F69AA01F880</decision-id>
+                    <decision-name>Should the driver be suspended?</decision-name>
+                    <result xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Yes</result>
+                    <messages/>
+                    <status>SUCCEEDED</status>
+                </value>
+            </entry>
+        </decisionResults>
+    </dmn-evaluation-result>
+</response>
+----
+--
+endif::[]

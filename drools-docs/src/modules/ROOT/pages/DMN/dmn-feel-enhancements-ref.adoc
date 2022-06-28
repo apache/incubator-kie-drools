@@ -1,0 +1,81 @@
+[id='dmn-feel-enhancements-ref_{context}']
+= FEEL enhancements in {PRODUCT}
+
+{PRODUCT} includes the following enhancements and other changes to FEEL in the current DMN implementation:
+
+* _Space Sensitivity_: This DMN implementation of the FEEL language is space insensitive. The goal is to avoid non-deterministic behavior based on the context and differences in behavior based on invisible characters, such as white spaces. This means that for this implementation, a variable named `first name` with one space is exactly the same as `first  name` with two spaces in it.
+
+* __List functions `or()` and `and()` __: The specification defines two list functions named `or()` and `and()`. However,
+according to the FEEL grammar, these are not valid function names, as `and` and `or` are reserved keywords.
+ This implementation renames these functions to `any()` and `all()` respectively, in anticipation for DMN 1.2.
+
+* __Keyword `in` cannot be used in variable names__: The specification defines that any keyword can be reused as part
+ of a variable name, but the ambiguities caused with the `for ... in ... return` loop prevent the reuse of the `in`
+ keyword. All other keywords are supported as part of variable names.
+
+* __Keywords are not supported in attributes of anonymous types__: FEEL is not a strongly typed language and the parser must resolve ambiguity in name parts of an attribute of an anonymous type. The parser supports reusable keywords as part of a variable name defined in the scope, but the parser does not support keywords in attributes of an anonymous type. For example, `for item in Order.items return Federal Tax for Item( item )` is a valid and supported FEEL expression, where a function named `Federal Tax for Item(...)` can be defined and invoked correctly in the scope. However, the expression `for i in [ {x and y : true, n : 1}, {x and y : false, n: 2} ] return i.x and y` is not supported because anonymous types are defined in the iteration context of the `for` expression and the parser cannot resolve the ambiguity.
+
+* __Support for date and time literals on ranges__: According to the grammar rules #8, #18, #19, #34 and #62, `date
+ and time` literals are supported in ranges (pages 110-111). Chapter 10.3.2.7 on page 114, on the other hand, contradicts
+ the grammar and says they are not supported. This implementation chose to follow the grammar and support `date and
+ time` literals on ranges, as well as extend the specification to support any arbitrary expression (see extensions below).
+
+* __Invalid time syntax__: Chapter 10.3.2.3.4 on page 112 and bullet point about `time` on page 131 both state that
+ the `time` string lexical representation follows the XML Schema Datatypes specification as well as ISO 8601. According
+ to the XML Schema specification (https://www.w3.org/TR/xmlschema-2/#time), the lexical representation of a time follows
+ the pattern `hh:mm:ss.sss` without any leading character. The DMN specification uses a leading "T" in several examples,
+ that we understand is a typo and not in accordance with the standard.
+
+* __Support for scientific and hexadecimal notations__: This implementation supports scientific and hexadecimal
+  notation for numbers. For example, `1.2e5` (scientific notation), `0xD5` (hexadecimal notation).
+
+* __Support for expressions as end points in ranges__: This implementation supports expressions as endpoints
+  for ranges. For example, `[date("2016-11-24")..date("2016-11-27")]`
+
+* __Support for additional types__: The specification only defines the following as basic types of the language:
+  ** number
+  ** string
+  ** boolean
+  ** days and time duration
+  ** years and month duration
+  ** time
+  ** date and time
++
+For completeness and orthogonality, this implementation also supports the following types:
+
+  ** context
+  ** list
+  ** range
+  ** function
+  ** unary test
+
+* __Support for unary tests__: For completeness and orthogonality, unary tests are supported
+  as first class citizens in the language. They are functions with an implicit single
+  parameter and can be invoked in the same way as functions. For example,
++
+[source,json]
+.UnaryTestAsFunction.feel
+----
+  {
+      is minor : < 18,
+      Bob is minor : is minor( bob.age )
+  }
+----
+
+* __Support for additional built-in functions__: The following additional functions are supported:
+
+  ** `now()` : Returns the current local date and time.
+  ** `today()` : Returns the current local date.
+  ** `decision table()` : Returns a decision table function, although the specification mentions a decision table.
+  The function on page 114 is not implementable as defined.
+  ** `string( mask, p... )` : Returns a string formatted as per the mask. See Java String.format() for
+  details on the mask syntax. For example, `string( "%4.2f", 7.1298 )` returns the string `"7.12"`.
+
+* __Support for additional date and time arithmetics__: Subtracting two dates returns a day and time duration with the number of days between the two
+  dates, ignoring daylight savings. For example,
++
+[source,json]
+.DateArithmetic.feel
+----
+date( "2017-05-12" ) - date( "2017-04-25" ) = duration( "P17D" )
+----

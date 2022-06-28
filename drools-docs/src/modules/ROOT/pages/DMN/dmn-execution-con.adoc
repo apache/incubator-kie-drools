@@ -1,0 +1,18 @@
+[id='dmn-execution-con_{context}']
+= DMN model execution
+
+You can create or import DMN files in your {PRODUCT} project using {CENTRAL} or package the DMN files as part of your project knowledge JAR (KJAR) file without {CENTRAL}. After you implement your DMN files in your {PRODUCT} project, you can execute the DMN decision service by deploying the KIE container that contains it to {KIE_SERVER} for remote access
+ifeval::["{context}" == "getting-started-decision-services"]
+and interacting with the container using the {KIE_SERVER} REST API.
+endif::[]
+ifeval::["{context}" == "dmn-models"]
+or by manipulating the KIE container directly as a dependency of the calling application. Other options for creating and deploying DMN knowledge packages are also available, and most are similar for all types of knowledge assets, such as DRL files or process definitions.
+endif::[]
+
+For information about including external DMN assets with your project packaging and deployment method, see
+ifdef::DM,PAM[]
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+<<_builddeployutilizeandrunsection>>.
+endif::[]

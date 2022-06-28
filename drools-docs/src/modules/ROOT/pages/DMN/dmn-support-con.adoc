@@ -1,0 +1,56 @@
+[id='dmn-support-con_{context}']
+= DMN support in {PRODUCT}
+
+{PRODUCT} provides runtime support for DMN 1.1, 1.2, 1.3, and 1.4 models at conformance level 3, and design support for DMN 1.2 models at conformance level 3. You can integrate DMN models with your {PRODUCT} decision services in several ways:
+
+* Design your DMN models directly in {CENTRAL} using the DMN designer.
+* Import DMN files into your project in {CENTRAL} (*Menu -> Design -> Projects -> Import Asset*). Any DMN 1.1 and 1.3 models (do not contain DMN 1.3 features) that you import into {CENTRAL}, open in the DMN designer, and save are converted to DMN 1.2 models.
+* Package DMN files as part of your project knowledge JAR (KJAR) file without {CENTRAL}.
+
+The following table summarizes the design and runtime support for each DMN version in {PRODUCT}:
+
+.DMN support in {PRODUCT}
+[cols="25%,25%,25%,25%"]
+|===
+.2+h|DMN version
+1+h|DMN engine support
+2+h|DMN modeler support
+
+h|Execution
+h|Open
+h|Save
+
+|DMN 1.1
+|image:BPMN2/grn_check.png[]
+|image:BPMN2/grn_check.png[]
+|image:BPMN2/bk_x.png[]
+
+|DMN 1.2
+|image:BPMN2/grn_check.png[]
+|image:BPMN2/grn_check.png[]
+|image:BPMN2/grn_check.png[]
+
+|DMN 1.3
+|image:BPMN2/grn_check.png[]
+|image:BPMN2/grn_check.png[]
+|image:BPMN2/bk_x.png[]
+
+|DMN 1.4
+|image:BPMN2/grn_check.png[]
+|image:BPMN2/bk_x.png[]
+|image:BPMN2/bk_x.png[]
+|===
+
+In addition to all DMN conformance level 3 requirements, {PRODUCT} also includes enhancements and fixes to FEEL and DMN model components to optimize the experience of implementing DMN decision services with {PRODUCT}. From a platform perspective, DMN models are like any other business asset in {PRODUCT}, such as DRL files or spreadsheet decision tables, that you can include in your {PRODUCT} project and deploy to {KIE_SERVER} in order to start your DMN decision services.
+
+For more information about including external DMN files with your {PRODUCT} project packaging and deployment method, see
+ifdef::DM,PAM[]
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+<<_builddeployutilizeandrunsection>>.
+endif::[]
+
+ifdef::DM,PAM[]
+You can design a new DMN decision service using a {KOGITO} microservice as an alternative for the cloud-native capabilities of DMN decision services. You can migrate your DMN service to a {KOGITO} microservice. For more information about migrating to {KOGITO} microservices, see {URL_GETTING_STARTED_KOGITO_MICROSERVICES}#assembly-migration-to-kogito-microservices[_{MIGRATION_KOGITO_SERVICES}_].
+endif::[]

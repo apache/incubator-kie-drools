@@ -1,0 +1,18 @@
+[id='dmn-gs-new-project-creating-proc_{context}']
+= Creating the traffic violations project in {CENTRAL}
+
+For this example, create a new project called `traffic-violation`. A project is a container for assets such as data objects, DMN assets, and test scenarios. This example project that you are creating is similar to the existing *Traffic_Violation* sample project in {CENTRAL}.
+
+.Procedure
+. In {CENTRAL}, go to *Menu* -> *Design* -> *Projects*.
++
+{PRODUCT} provides a default space called *MySpace*. You can use the default space to create and test example projects.
+. Click *Add Project*.
+. Enter `traffic-violation` in the *Name* field.
+. Click *Add*.
++
+
+.Add Project window
+image::dmn/dmn-new-project-gs.png[Add project window]
++
+The *Assets* view of the project opens.

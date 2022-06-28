@@ -1,0 +1,46 @@
+[id='dmn-designer-nav-ref_{context}']
+= DMN designer navigation and properties in {CENTRAL}
+
+The DMN designer in {CENTRAL} provides the following additional features to help you navigate through the components and properties of decision requirements diagrams (DRDs).
+
+DMN file and diagram views::
+In the upper-left corner of the DMN designer, select the *Project Explorer* view to navigate between all DMN and other files or select the *Decision Navigator* view to navigate between the decision components, graphs, and boxed expressions of a selected DRD:
++
+--
+.Project Explorer view
+image::dmn/dmn-designer-project-view.png[]
+
+.Decision Navigator view
+image::dmn/dmn-designer-nav-view.png[]
+
+image::dmn/dmn-designer-nav-view2.png[]
+
+NOTE: The DRD components from any DMN models included in the DMN file (in the *Included Models* tab) are also listed in the *Decision Components* panel for the DMN file.
+
+In the upper-right corner of the DMN designer, select the *Explore diagram* icon to view an elevated preview of the selected DRD and to navigate between the nodes of the selected DRD:
+
+.Explore diagram view
+image::dmn/dmn-designer-preview.png[]
+--
+
+DRD properties and design::
+In the upper-right corner of the DMN designer, select the *Properties* icon to modify the identifying information, data types, and appearance of a selected DRD, DRD node, or boxed expression cell:
++
+--
+.DRD node properties
+image::dmn/dmn-designer-properties.png[]
+
+To view the properties of the entire DRD, click the DRD canvas background instead of a specific node.
+--
+
+DRD search::
+In the upper-right corner of the DMN designer, use the search bar to search for text that appears in your DRD. The search feature is especially helpful in complex DRDs with many nodes:
++
+.DRD search
+image::dmn/dmn-designer-search.png[]
+
+DMN decision service details::
+Select a decision service node in the DMN designer to view additional properties, including *Input Data*, *Encapsulated Decisions*, and *Output Decisions* in the *Properties* panel.
++
+.Decision Service details
+image::dmn/dmn-decision-service-details.png[]
