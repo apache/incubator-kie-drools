@@ -76,10 +76,10 @@ public class ProcessInstanceWorkUnit<T> implements WorkUnit<ProcessInstance<T>> 
         if (getClass() != obj.getClass())
             return false;
         ProcessInstanceWorkUnit<T> other = (ProcessInstanceWorkUnit) obj;
-        if (data == null) {
-            if (other.data != null)
+        if (action == null) {
+            if (other.action != null)
                 return false;
-        } else if (!data.equals(other.data))
+        } else if (!action.equals(other.action))
             return false;
         return true;
     }

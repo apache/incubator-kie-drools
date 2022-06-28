@@ -148,7 +148,7 @@ class FileSystemProcessInstancesTest {
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
 
         fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
-        verify(fileSystemBasedStorage, times(2)).remove(processInstance.id());
+        verify(fileSystemBasedStorage, times(1)).remove(processInstance.id());
         assertThat(fileSystemBasedStorage.size()).isZero();
     }
 
@@ -176,7 +176,7 @@ class FileSystemProcessInstancesTest {
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
 
         fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
-        verify(fileSystemBasedStorage, times(2)).remove(any());
+        verify(fileSystemBasedStorage, times(1)).remove(any());
         assertThat(fileSystemBasedStorage.size()).isZero();
     }
 

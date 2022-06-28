@@ -50,5 +50,4 @@ abstract class Repository {
     protected RuntimeException uncheckedException(Exception ex, String message, Object... param) {
         return new RuntimeException(String.format(message, param), ex);
     }
-
 }

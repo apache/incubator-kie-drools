@@ -45,33 +45,15 @@ public class JDBCProcessInstances implements MutableProcessInstances {
 
     private final Process<?> process;
     private final ProcessInstanceMarshallerService marshaller;
-    private final boolean autoDDL;
     private final boolean lock;
     private final Repository repository;
 
     public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean autoDDL, boolean lock) {
         this.process = process;
-        this.autoDDL = autoDDL;
         this.lock = lock;
         this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
         this.repository = new GenericRepository(dataSource);
-        init();
-    }
-
-    private void init() {
-        if (!autoDDL) {
-            LOGGER.debug("Auto DDL is disabled, do not running initializer scripts");
-            return;
-        }
-        try {
-            if (!repository.tableExists()) {
-                LOGGER.info("Dynamically creating process_instances table");
-                repository.createTable();
-            }
-        } catch (Exception e) {
-            // not break the execution flow in case of any missing permission for db application user, for instance.
-            LOGGER.error(e.getMessage(), e);
-        }
+        DDLRunner.init(repository, autoDDL);
     }
 
     @Override
@@ -159,5 +141,4 @@ public class JDBCProcessInstances implements MutableProcessInstances {
         };
         ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
     }
-
 }

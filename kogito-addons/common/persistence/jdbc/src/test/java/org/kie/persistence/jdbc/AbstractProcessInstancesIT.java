@@ -97,7 +97,7 @@ abstract class AbstractProcessInstancesIT {
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
 
         processInstances = (JDBCProcessInstances) process.instances();
-        verify(processInstances, times(2)).remove(processInstance.id());
+        verify(processInstances, times(1)).remove(processInstance.id());
         assertThat(processInstances.size()).isZero();
         assertThat(process.instances().values()).isEmpty();
     }

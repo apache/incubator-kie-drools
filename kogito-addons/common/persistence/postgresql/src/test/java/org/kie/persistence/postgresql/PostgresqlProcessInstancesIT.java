@@ -111,7 +111,7 @@ class PostgresqlProcessInstancesIT {
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
 
         processInstances = (PostgresqlProcessInstances) process.instances();
-        verify(processInstances, times(2)).remove(processInstance.id());
+        verify(processInstances, times(1)).remove(processInstance.id());
 
         assertThat(processInstances.size()).isZero();
 

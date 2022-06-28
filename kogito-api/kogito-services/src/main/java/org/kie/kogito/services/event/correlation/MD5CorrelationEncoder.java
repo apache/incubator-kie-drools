@@ -19,23 +19,34 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.StringJoiner;
 
+import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.correlation.Correlation;
 import org.kie.kogito.correlation.CorrelationEncoder;
+
+import static java.util.stream.Collectors.joining;
 
 public class MD5CorrelationEncoder implements CorrelationEncoder {
 
     @Override
     public String encode(Correlation correlation) {
         try {
-            String raw = new StringJoiner("|").add(correlation.getKey()).add(correlation.asString()).toString();
+            String rawCorrelationString = encodeCorrelation(correlation);
             MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(raw.getBytes());
+            md.update(rawCorrelationString.getBytes());
             byte[] digest = md.digest();
             String myHash = bytesToHex(digest);
             return myHash;
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error generating MD5 hash for correlation " + correlation);
         }
+    }
+
+    private String encodeCorrelation(Correlation correlation) {
+        if (correlation instanceof CompositeCorrelation) {
+            CompositeCorrelation compositeCorrelation = (CompositeCorrelation) correlation;
+            return compositeCorrelation.getValue().stream().map(this::encodeCorrelation).sorted().collect(joining("|"));
+        }
+        return new StringJoiner("|").add(correlation.getKey()).add(correlation.asString()).toString();
     }
 
     private static String bytesToHex(byte[] bytes) {

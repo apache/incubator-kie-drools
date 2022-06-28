@@ -23,6 +23,9 @@ public class SimpleCorrelation<T> implements Correlation<T> {
     private String key;
     private T value;
 
+    public SimpleCorrelation() {
+    }
+
     public SimpleCorrelation(String key) {
         this(key, null);
     }

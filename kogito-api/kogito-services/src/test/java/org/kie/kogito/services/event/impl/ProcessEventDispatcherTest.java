@@ -231,17 +231,16 @@ class ProcessEventDispatcherTest {
     void testSigCloudEventWithCorrelation() throws Exception {
         String userId = "userId";
         String name = "name";
-        String userValue = UUID.randomUUID().toString();
-        String nameValue = UUID.randomUUID().toString();
+        String userValue = "aaaa";
+        String nameValue = "zzzz";
         SimpleCorrelation<String> userCorrelation = new SimpleCorrelation<>(userId, userValue);
         SimpleCorrelation<String> nameCorrelation = new SimpleCorrelation<>(name, nameValue);
         Set<Correlation<?>> correlations = Set.of(userCorrelation, nameCorrelation);
         CompositeCorrelation compositeCorrelation = new CompositeCorrelation(correlations);
         correlationService.create(compositeCorrelation, "1");
-
         EventDispatcher<DummyModel> dispatcher =
                 new ProcessEventDispatcher<>(process, modelConverter().get(), processService, executor,
-                        correlations.stream().map(Correlation::getKey).collect(Collectors.toSet()),
+                        Set.of(name, userId),
                         AbstractMessageConsumer::cloudEventResolver);
         DummyCloudEvent event = new DummyCloudEvent(new DummyEvent("pepe"), DUMMY_TOPIC, "source");
         event.addExtensionAttribute(userId, userValue);

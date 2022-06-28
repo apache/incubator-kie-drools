@@ -27,8 +27,11 @@ public class CompositeCorrelation implements Correlation<Set<? extends Correlati
     private String key;
     private Set<? extends Correlation<?>> correlations;
 
+    public CompositeCorrelation() {
+    }
+
     public CompositeCorrelation(Set<? extends Correlation<?>> correlations) {
-        this.correlations = Collections.unmodifiableSet(new TreeSet<>(correlations));
+        setValue(correlations);
         this.key = buildKey(this.correlations);
     }
 
@@ -44,6 +47,10 @@ public class CompositeCorrelation implements Correlation<Set<? extends Correlati
     @Override
     public Set<? extends Correlation<?>> getValue() {
         return correlations;
+    }
+
+    public void setValue(Set<? extends Correlation<?>> correlations) {
+        this.correlations = Collections.unmodifiableSet(new TreeSet<>(correlations));
     }
 
     @Override

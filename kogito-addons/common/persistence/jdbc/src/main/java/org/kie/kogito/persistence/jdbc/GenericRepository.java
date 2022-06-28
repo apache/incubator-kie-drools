@@ -32,6 +32,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.kogito.persistence.jdbc.DatabaseType.getDataBaseType;
 import static org.kie.kogito.persistence.jdbc.JDBCProcessInstances.PAYLOAD;
 import static org.kie.kogito.persistence.jdbc.JDBCProcessInstances.VERSION;
 
@@ -45,49 +46,13 @@ public class GenericRepository extends Repository {
         this.dataSource = dataSource;
     }
 
-    private enum DatabaseType {
-        ANSI("ansi", "process_instances"),
-        ORACLE("Oracle", "PROCESS_INSTANCES"),
-        POSTGRES("PostgreSQL", "process_instances");
-
-        private final String dbIdentifier;
-        private final String tableNamePattern;
-
-        DatabaseType(final String dbIdentifier, final String tableNamePattern) {
-            this.dbIdentifier = dbIdentifier;
-            this.tableNamePattern = tableNamePattern;
-        }
-
-        String getDbIdentifier() {
-            return this.dbIdentifier;
-        }
-
-        public static DatabaseType create(final String dbIdentifier) {
-            if (ORACLE.getDbIdentifier().equals(dbIdentifier)) {
-                return ORACLE;
-            } else if (POSTGRES.getDbIdentifier().equals(dbIdentifier)) {
-                return POSTGRES;
-            } else {
-                var msg = String.format("Unrecognized DB (%s), defaulting to ansi", dbIdentifier);
-                LOGGER.warn(msg);
-                return ANSI;
-            }
-        }
-    }
-
-    private DatabaseType getDataBaseType(Connection connection) throws SQLException {
-        final DatabaseMetaData metaData = connection.getMetaData();
-        final String dbProductName = metaData.getDatabaseProductName();
-        return DatabaseType.create(dbProductName);
-    }
-
     @Override
     boolean tableExists() {
         try (Connection connection = dataSource.getConnection()) {
             DatabaseType databaseType = getDataBaseType(connection);
             final DatabaseMetaData metaData = connection.getMetaData();
             final String[] types = { "TABLE" };
-            ResultSet tables = metaData.getTables(null, null, databaseType.tableNamePattern, types);
+            ResultSet tables = metaData.getTables(null, null, databaseType.getTableNamePattern(), types);
             while (tables.next()) {
                 LOGGER.debug("Found process_instance table");
                 return true;
@@ -103,7 +68,7 @@ public class GenericRepository extends Repository {
     void createTable() {
         try (Connection connection = dataSource.getConnection()) {
             DatabaseType databaseType = getDataBaseType(connection);
-            final List<String> statements = FileLoader.getQueryFromFile(databaseType.dbIdentifier, "create_tables");
+            final List<String> statements = FileLoader.getQueryFromFile(databaseType.getDbIdentifier(), "create_tables");
             for (String s : statements) {
                 try (PreparedStatement prepareStatement = connection.prepareStatement(s.trim())) {
                     prepareStatement.execute();
