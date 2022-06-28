@@ -186,6 +186,7 @@
     <module>drools-engine-classic</module>
     <module>drools-impact-analysis</module>
     <module>drools-retediagram</module>
+    <module>efesto</module>
     <module>kie-maven-plugin</module>
     <module>drools-drl-quarkus-extension</module>
   </modules>
