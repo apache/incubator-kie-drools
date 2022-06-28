@@ -62,7 +62,7 @@ public abstract class BaseNode
         this.id = id;
         this.partitionId = partitionId;
         this.partitionsEnabled = partitionsEnabled;
-        this.associations = new Bag<Rule>();
+        this.associations = new Bag<>();
     }
 
     /* (non-Javadoc)

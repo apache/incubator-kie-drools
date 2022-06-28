@@ -143,7 +143,7 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
     
     public Collection<Resource> listResources() {
         File[] files = this.file.listFiles();
-        List<Resource> resources = new ArrayList<Resource>();
+        List<Resource> resources = new ArrayList<>();
         
         for ( File file : files ) {
             resources.add( new FileSystemResource( file ) );

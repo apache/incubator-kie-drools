@@ -34,7 +34,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
@@ -77,21 +77,18 @@ public class StringConditionInspectorToHumanReadableTest {
         final StringConditionInspector inspector = getStringConditionInspector();
 
         if (IS_NOT_NULL.matches(operator)) {
-            assertEquals(format("%s %s",
-                                FIELD_NAME,
-                                operator),
-                         inspector.toHumanReadableString());
+            assertThat(inspector.toHumanReadableString()).isEqualTo(format("%s %s",
+                    FIELD_NAME,
+                    operator));
         } else if (IS_NULL.matches(operator)) {
-            assertEquals(format("%s %s",
-                                FIELD_NAME,
-                                operator),
-                         inspector.toHumanReadableString());
+            assertThat(inspector.toHumanReadableString()).isEqualTo(format("%s %s",
+                    FIELD_NAME,
+                    operator));
         } else {
-            assertEquals(format("%s %s %s",
-                                FIELD_NAME,
-                                operator,
-                                VALUE),
-                         inspector.toHumanReadableString());
+            assertThat(inspector.toHumanReadableString()).isEqualTo(format("%s %s %s",
+                    FIELD_NAME,
+                    operator,
+                    VALUE));
         }
     }
 

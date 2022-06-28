@@ -347,7 +347,7 @@ public enum HitPolicy {
     }
 
     public static <T> Collector<T, ?, Object> singleValueOrContext(List<? extends DecisionTable.OutputClause> outputs) {
-        return new SingleValueOrContextCollector<T>( outputs.stream().map( DecisionTable.OutputClause::getName ).collect( toList() ) );
+        return new SingleValueOrContextCollector<>( outputs.stream().map( DecisionTable.OutputClause::getName ).collect( toList() ) );
     }
 
     public static Object generalizedCollect(

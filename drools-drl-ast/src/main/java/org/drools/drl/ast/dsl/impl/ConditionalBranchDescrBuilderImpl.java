@@ -30,19 +30,19 @@ public class ConditionalBranchDescrBuilderImpl<P extends DescrBuilder< ?, ? >>
     }
 
     public EvalDescrBuilder<ConditionalBranchDescrBuilder<P>> condition() {
-        EvalDescrBuilder<ConditionalBranchDescrBuilder<P>> eval = new EvalDescrBuilderImpl<ConditionalBranchDescrBuilder<P>>( this );
+        EvalDescrBuilder<ConditionalBranchDescrBuilder<P>> eval = new EvalDescrBuilderImpl<>( this );
         getDescr().setCondition( eval.getDescr() );
         return eval;
     }
 
     public NamedConsequenceDescrBuilder<ConditionalBranchDescrBuilder<P>> consequence() {
-        NamedConsequenceDescrBuilder<ConditionalBranchDescrBuilder<P>> namedConsequence = new NamedConsequenceDescrBuilderImpl<ConditionalBranchDescrBuilder<P>>( this );
+        NamedConsequenceDescrBuilder<ConditionalBranchDescrBuilder<P>> namedConsequence = new NamedConsequenceDescrBuilderImpl<>( this );
         getDescr().setConsequence( namedConsequence.getDescr() );
         return namedConsequence;
     }
 
     public ConditionalBranchDescrBuilder<P> otherwise() {
-        ConditionalBranchDescrBuilder<P> elseBranch = new ConditionalBranchDescrBuilderImpl<P>( parent );
+        ConditionalBranchDescrBuilder<P> elseBranch = new ConditionalBranchDescrBuilderImpl<>( parent );
         getDescr().setElseBranch(elseBranch.getDescr());
         return elseBranch;
     }

@@ -16,7 +16,6 @@
 
 package org.kie.dmn.backend.marshalling.v1_3.xstream;
 
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

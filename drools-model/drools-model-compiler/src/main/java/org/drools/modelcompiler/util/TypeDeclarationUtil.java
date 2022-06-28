@@ -174,7 +174,7 @@ public class TypeDeclarationUtil {
 
         @Override
         public Map<String, Object> getAsMap(Object bean) {
-            Map<String, Object> m = new HashMap<String, Object>(fields.size());
+            Map<String, Object> m = new HashMap<>(fields.size());
             for (String field : fields.keySet()) {
                 m.put(field, get(bean, field));
             }

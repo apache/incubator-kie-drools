@@ -15,15 +15,15 @@
 
 package org.drools.verifier.jarloader;
 
-import org.drools.verifier.Verifier;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.jar.JarInputStream;
 
+import org.drools.verifier.Verifier;
+import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

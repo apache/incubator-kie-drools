@@ -41,7 +41,7 @@ public class SignavioRemoveFunction
         }
 
         // spec requires us to return a new list
-        List<Object> result = new ArrayList<Object>( list );
+        List<Object> result = new ArrayList<>( list );
 
         result.remove(element);
 

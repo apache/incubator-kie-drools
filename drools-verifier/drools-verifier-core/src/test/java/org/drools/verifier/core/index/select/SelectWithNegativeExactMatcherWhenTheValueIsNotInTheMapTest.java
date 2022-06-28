@@ -31,7 +31,7 @@ import org.drools.verifier.core.maps.util.HasKeys;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
 
@@ -68,19 +68,17 @@ public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
     public void testAll() throws Exception {
         final Collection<Item> all = select.all();
 
-        assertEquals(4, all.size());
+        assertThat(all.size()).isEqualTo(4);
     }
 
     @Test
     public void testFirst() throws Exception {
-        assertEquals(0,
-                     select.first().cost);
+        assertThat(select.first().cost).isEqualTo(0);
     }
 
     @Test
     public void testLast() throws Exception {
-        assertEquals(1200,
-                     select.last().cost);
+        assertThat(select.last().cost).isEqualTo(1200);
     }
 
     private class Item

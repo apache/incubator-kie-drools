@@ -806,7 +806,7 @@ public class PackageModel {
 
     private MethodCallExpr buildRulesField( ClassOrInterfaceDeclaration rulesClass ) {
         MethodCallExpr rulesInit = new MethodCallExpr( null, "java.util.Arrays.asList" );
-        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<Type>(toClassOrInterfaceType(Rule.class)));
+        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<>(toClassOrInterfaceType(Rule.class)));
         MethodDeclaration rulesGetter = new MethodDeclaration( NodeList.nodeList( publicModifier()), rulesType, "getRulesList" );
         rulesGetter.createBody().addStatement( new ReturnStmt(rulesInit ) );
         rulesClass.addMember( rulesGetter );

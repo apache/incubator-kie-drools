@@ -25,6 +25,7 @@ public class ValueHolder {
     private BigDecimal percentValue;
     private BigDecimal currencyValue1;
     private BigDecimal currencyValue2;
+    private BigDecimal currencyValue3;
 
     private int intValue;
     private double doubleValue;
@@ -68,6 +69,14 @@ public class ValueHolder {
 
     public void setCurrencyValue2(BigDecimal currencyValue2) {
         this.currencyValue2 = currencyValue2;
+    }
+
+    public BigDecimal getCurrencyValue3() {
+        return currencyValue3;
+    }
+
+    public void setCurrencyValue3(BigDecimal currencyValue3) {
+        this.currencyValue3 = currencyValue3;
     }
 
     public int getIntValue() {

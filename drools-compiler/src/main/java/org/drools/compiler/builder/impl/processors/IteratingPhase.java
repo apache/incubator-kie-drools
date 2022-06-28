@@ -22,9 +22,7 @@ import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.builder.ResultSeverity;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**

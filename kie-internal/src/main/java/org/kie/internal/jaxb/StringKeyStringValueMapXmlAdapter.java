@@ -51,7 +51,7 @@ public class StringKeyStringValueMapXmlAdapter extends XmlAdapter<StringKeyStrin
         if( xmlMap == null ) {
             return null;
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for( StringKeyStringValueEntry xmlEntry : xmlMap.entries ) {
             String key = xmlEntry.getKey();
             String value = xmlEntry.getValue();

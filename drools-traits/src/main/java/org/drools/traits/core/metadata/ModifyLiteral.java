@@ -159,7 +159,7 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
         addTask( p, val, Lit.SET );
     }
     protected <R,C> void addTask( MetaProperty<?,R,C> p, C val, Lit mode ) {
-        ModifyTaskLiteral<T,R,C> newTask = new ModifyTaskLiteral<T,R,C>( p, val, mode );
+        ModifyTaskLiteral<T,R,C> newTask = new ModifyTaskLiteral<>( p, val, mode );
         if ( task == null ) {
             task = newTask;
         } else {

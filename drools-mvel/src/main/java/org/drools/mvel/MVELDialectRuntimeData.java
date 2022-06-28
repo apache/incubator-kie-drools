@@ -60,7 +60,7 @@ public class MVELDialectRuntimeData
 
     private List<Wireable>                   wireList = Collections.emptyList();
 
-    private Map<String, Object>              imports = new HashMap<String, Object>();
+    private Map<String, Object>              imports = new HashMap<>();
     private HashSet<String>                  packageImports = new HashSet<>();
     private ParserConfiguration              parserConfiguration;
 
@@ -90,7 +90,7 @@ public class MVELDialectRuntimeData
         invokerLookups = (Map<Wireable, List<MVELCompileable>>) in.readObject();
         if ( !invokerLookups.isEmpty() ) {
             // we need a wireList for serialisation
-            wireList = new ArrayList<Wireable>( invokerLookups.keySet() );
+            wireList = new ArrayList<>( invokerLookups.keySet() );
         }
 
         mvelReaders = ( Set<MVELCompileable> ) in.readObject();
@@ -125,12 +125,12 @@ public class MVELDialectRuntimeData
             invokerLookups.put( entry.getKey(),
                                 entry.getValue() );
             if ( this.wireList == Collections.<Wireable> emptyList() ) {
-                this.wireList = new ArrayList<Wireable>();
+                this.wireList = new ArrayList<>();
             }
             wireList.add( entry.getKey() );
         }
         if ( this.mvelReaders == null ) {
-            this.mvelReaders = new HashSet<MVELCompileable>();
+            this.mvelReaders = new HashSet<>();
         }
         this.mvelReaders.addAll( other.mvelReaders );
     }
@@ -187,7 +187,7 @@ public class MVELDialectRuntimeData
 
     private void rewireImportedMethods() {
         if (imports != null) {
-            Map<String, Object> rewiredMethod = new HashMap<String, Object>();
+            Map<String, Object> rewiredMethod = new HashMap<>();
             for (Object imp : imports.values()) {
                 if (imp instanceof Method) {
                     Method method = (Method)imp;

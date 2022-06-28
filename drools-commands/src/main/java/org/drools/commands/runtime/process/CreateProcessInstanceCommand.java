@@ -43,7 +43,7 @@ public class CreateProcessInstanceCommand implements ExecutableCommand<ProcessIn
 
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name="parameter")
-    private Map<String, Object> parameters = new HashMap<String, Object>();
+    private Map<String, Object> parameters = new HashMap<>();
 
     @XmlElementWrapper(name="data")
     private List<Object> data = null;
@@ -86,9 +86,9 @@ public class CreateProcessInstanceCommand implements ExecutableCommand<ProcessIn
 
     public void setParameters(Map<String, Object> parameters) {
 	if (parameters != null) {
-        	this.parameters = new HashMap<String, Object>(parameters);
+        	this.parameters = new HashMap<>(parameters);
 	} else {
-        	this.parameters = new HashMap<String, Object>();
+        	this.parameters = new HashMap<>();
 	}
     }
 

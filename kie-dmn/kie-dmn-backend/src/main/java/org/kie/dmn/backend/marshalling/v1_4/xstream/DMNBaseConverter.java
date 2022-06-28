@@ -23,8 +23,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_4.TChildExpression;
 
 public abstract class DMNBaseConverter
         extends AbstractCollectionConverter {

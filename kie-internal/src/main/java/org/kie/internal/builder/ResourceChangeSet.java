@@ -21,8 +21,8 @@ import java.util.List;
 public class ResourceChangeSet {
     private final String     resourceName;  // src/main/resources/org/drools/rules.drl
     private final ChangeType status;
-    private final List<ResourceChange> changes = new ArrayList<ResourceChange>();
-    private List<RuleLoadOrder> loadOrder = new ArrayList<RuleLoadOrder>();
+    private final List<ResourceChange> changes = new ArrayList<>();
+    private List<RuleLoadOrder> loadOrder = new ArrayList<>();
     private String packageName;
 
 

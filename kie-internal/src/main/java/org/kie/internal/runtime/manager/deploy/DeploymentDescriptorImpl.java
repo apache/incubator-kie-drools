@@ -75,11 +75,11 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
     @XmlElement(name = "marshalling-strategy")
     @XmlElementWrapper(name = "marshalling-strategies")
-    private Set<ObjectModel> marshallingStrategies = new LinkedHashSet<ObjectModel>();
+    private Set<ObjectModel> marshallingStrategies = new LinkedHashSet<>();
 
     @XmlElement(name = "event-listener")
     @XmlElementWrapper(name = "event-listeners")
-    private Set<ObjectModel> eventListeners = new LinkedHashSet<ObjectModel>();
+    private Set<ObjectModel> eventListeners = new LinkedHashSet<>();
 
     @XmlElement(name = "task-event-listener")
     @XmlElementWrapper(name = "task-event-listeners")
@@ -87,27 +87,27 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
     @XmlElement(name = "global")
     @XmlElementWrapper(name = "globals")
-    private Set<NamedObjectModel> globals = new LinkedHashSet<NamedObjectModel>();
+    private Set<NamedObjectModel> globals = new LinkedHashSet<>();
 
     @XmlElement(name = "work-item-handler")
     @XmlElementWrapper(name = "work-item-handlers")
-    private Set<NamedObjectModel> workItemHandlers = new LinkedHashSet<NamedObjectModel>();
+    private Set<NamedObjectModel> workItemHandlers = new LinkedHashSet<>();
 
     @XmlElement(name = "environment-entry")
     @XmlElementWrapper(name = "environment-entries")
-    private Set<NamedObjectModel> environmentEntries = new LinkedHashSet<NamedObjectModel>();
+    private Set<NamedObjectModel> environmentEntries = new LinkedHashSet<>();
 
     @XmlElement(name = "configuration")
     @XmlElementWrapper(name = "configurations")
-    private Set<NamedObjectModel> configuration = new LinkedHashSet<NamedObjectModel>();
+    private Set<NamedObjectModel> configuration = new LinkedHashSet<>();
 
     @XmlElement(name = "required-role")
     @XmlElementWrapper(name = "required-roles")
-    private Set<String> requiredRoles = new LinkedHashSet<String>();
+    private Set<String> requiredRoles = new LinkedHashSet<>();
 
     @XmlElement(name = "remoteable-class")
     @XmlElementWrapper(name = "remoteable-classes")
-    private List<String> classes = new ArrayList<String>();
+    private List<String> classes = new ArrayList<>();
 
     @XmlElement(name = "limit-serialization-classes")
     private Boolean limitSerializationClasses = true;
@@ -119,11 +119,11 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
         if (mappedRoles != null) {
             return;
         }
-        mappedRoles = new HashMap<String, Set<String>>();
+        mappedRoles = new HashMap<>();
 
-        Set<String> typeAll = new LinkedHashSet<String>();
-        Set<String> typeView = new LinkedHashSet<String>();
-        Set<String> typeExecute = new LinkedHashSet<String>();
+        Set<String> typeAll = new LinkedHashSet<>();
+        Set<String> typeView = new LinkedHashSet<>();
+        Set<String> typeExecute = new LinkedHashSet<>();
 
         mappedRoles.put(TYPE_ALL, typeAll);
         mappedRoles.put(TYPE_VIEW, typeView);
@@ -190,22 +190,22 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
     @Override
     public List<ObjectModel> getMarshallingStrategies() {
-        return new ArrayList<ObjectModel>(cleanSet(marshallingStrategies));
+        return new ArrayList<>(cleanSet(marshallingStrategies));
     }
 
     @Override
     public List<ObjectModel> getEventListeners() {
-        return new ArrayList<ObjectModel>(cleanSet(eventListeners));
+        return new ArrayList<>(cleanSet(eventListeners));
     }
 
     @Override
     public List<NamedObjectModel> getGlobals() {
-        return new ArrayList<NamedObjectModel>(cleanNamedSet(globals));
+        return new ArrayList<>(cleanNamedSet(globals));
     }
 
     @Override
     public List<NamedObjectModel> getWorkItemHandlers() {
-        return new ArrayList<NamedObjectModel>(cleanNamedSet(workItemHandlers));
+        return new ArrayList<>(cleanNamedSet(workItemHandlers));
     }
 
     @Override
@@ -215,17 +215,17 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
     @Override
     public List<NamedObjectModel> getEnvironmentEntries() {
-        return new ArrayList<NamedObjectModel>(cleanNamedSet(environmentEntries));
+        return new ArrayList<>(cleanNamedSet(environmentEntries));
     }
 
     @Override
     public List<NamedObjectModel> getConfiguration() {
-        return new ArrayList<NamedObjectModel>(cleanNamedSet(configuration));
+        return new ArrayList<>(cleanNamedSet(configuration));
     }
 
     @Override
     public List<String> getRequiredRoles() {
-        return new ArrayList<String>(requiredRoles);
+        return new ArrayList<>(requiredRoles);
     }
 
     @Override
@@ -233,18 +233,18 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
         mapRequiredRoles();
         Set<String> roles = mappedRoles.get(type);
         if (roles == null) {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         } else {
-            return new ArrayList<String>(roles);
+            return new ArrayList<>(roles);
         }
     }
 
     @Override
     public List<String> getClasses() {
         if (classes == null) {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
-        return new ArrayList<String>(classes);
+        return new ArrayList<>(classes);
     }
 
     public void setPersistenceUnit(String persistenceUnit) {
@@ -269,13 +269,13 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
     public void setMarshallingStrategies(List<ObjectModel> marshallingStrategies) {
         if (marshallingStrategies != null) {
-            this.marshallingStrategies = new HashSet<ObjectModel>(marshallingStrategies);
+            this.marshallingStrategies = new HashSet<>(marshallingStrategies);
         }
     }
 
     public void setEventListeners(List<ObjectModel> eventListeners) {
         if (eventListeners != null) {
-            this.eventListeners = new HashSet<ObjectModel>(eventListeners);
+            this.eventListeners = new HashSet<>(eventListeners);
         }
     }
 
@@ -287,37 +287,37 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
     public void setGlobals(List<NamedObjectModel> globals) {
         if (globals != null) {
-            this.globals = new HashSet<NamedObjectModel>(globals);
+            this.globals = new HashSet<>(globals);
         }
     }
 
     public void setWorkItemHandlers(List<NamedObjectModel> workItemHandlers) {
         if (workItemHandlers != null) {
-            this.workItemHandlers = new HashSet<NamedObjectModel>(workItemHandlers);
+            this.workItemHandlers = new HashSet<>(workItemHandlers);
         }
     }
 
     public void setEnvironmentEntries(List<NamedObjectModel> environmentEntires) {
         if (environmentEntires != null) {
-            this.environmentEntries = new HashSet<NamedObjectModel>(environmentEntires);
+            this.environmentEntries = new HashSet<>(environmentEntires);
         }
     }
 
     public void setConfiguration(List<NamedObjectModel> configuration) {
         if (configuration != null) {
-            this.configuration = new HashSet<NamedObjectModel>(configuration);
+            this.configuration = new HashSet<>(configuration);
         }
     }
 
     public void setRequiredRoles(List<String> requiredRoles) {
         if (requiredRoles != null) {
-            this.requiredRoles = new HashSet<String>(requiredRoles);
+            this.requiredRoles = new HashSet<>(requiredRoles);
         }
     }
 
     public void setClasses(List<String> classes) {
         if (classes != null) {
-            this.classes = new ArrayList<String>(classes);
+            this.classes = new ArrayList<>(classes);
         }
     }
 

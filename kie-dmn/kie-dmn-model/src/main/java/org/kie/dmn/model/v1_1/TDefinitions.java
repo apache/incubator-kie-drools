@@ -79,7 +79,7 @@ public class TDefinitions extends TNamedElement implements Definitions {
     @Override
     public List<Artifact> getArtifact() {
         if ( artifact == null ) {
-            artifact = new ArrayList<Artifact>();
+            artifact = new ArrayList<>();
         }
         return this.artifact;
     }

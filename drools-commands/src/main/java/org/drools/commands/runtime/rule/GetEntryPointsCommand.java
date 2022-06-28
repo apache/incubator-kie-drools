@@ -53,7 +53,7 @@ public class GetEntryPointsCommand
         if (epCreator == null) {
             return eps;
         }
-        Collection<EntryPoint> result = new ArrayList<EntryPoint>();
+        Collection<EntryPoint> result = new ArrayList<>();
         for (EntryPoint ep : eps) {
             result.add(epCreator.getEntryPoint(ep.getEntryPointId()));
         }

@@ -16,7 +16,6 @@
 
 package org.drools.decisiontable.parser;
 
-import java.util.Properties;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
 import org.drools.template.model.Package;

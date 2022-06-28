@@ -30,7 +30,7 @@ abstract public class VerifierMessageBase
     private static int          index            = 0;
 
     // <path,rule name>
-    private Map<String, String> impactedRules    = new HashMap<String, String>();
+    private Map<String, String> impactedRules    = new HashMap<>();
 
     protected final Severity    severity;
     protected final MessageType messageType;

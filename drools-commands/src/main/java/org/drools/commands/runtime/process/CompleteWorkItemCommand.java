@@ -41,7 +41,7 @@ public class CompleteWorkItemCommand implements ExecutableCommand<Void> {
     
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name="result")
-    private Map<String, Object> results = new HashMap<String, Object>();
+    private Map<String, Object> results = new HashMap<>();
 
     public CompleteWorkItemCommand() {}
 

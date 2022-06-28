@@ -131,7 +131,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         }
         
         for (int i = 0; i < rows.length; i++) {
-            Set<Integer> aSet = new HashSet<Integer>();
+            Set<Integer> aSet = new HashSet<>();
             for (int j = 0; j < rows[i].getCells().size(); j++) {
                 Cell cell = rows[i].getCells().get(j);
                 Integer value = cell.getValue();
@@ -147,7 +147,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         }
         
         for (int i = 0; i < cols.length; i++) {
-            Set<Integer> aSet = new HashSet<Integer>();
+            Set<Integer> aSet = new HashSet<>();
             for (int j = 0; j < cols[i].getCells().size(); j++) {
                 Cell cell = cols[i].getCells().get(j);
                 Integer value = cell.getValue();
@@ -164,7 +164,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
 
         for (int ir = 0; ir < sqrs.length; ir++) {
             for (int ic = 0; ic < sqrs[ir] .length; ic++) {
-                Set<Integer> aSet = new HashSet<Integer>();
+                Set<Integer> aSet = new HashSet<>();
                 for (int j = 0; j < sqrs[ir][ic].getCells().size(); j++) {
                     Cell cell = sqrs[ir][ic].getCells().get(j);
                     Integer value = cell.getValue();

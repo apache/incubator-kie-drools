@@ -26,8 +26,7 @@ import org.drools.verifier.core.maps.MultiMapFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ListenAddTest {
 
@@ -78,9 +77,9 @@ public class ListenAddTest {
 
     @Test
     public void testEmpty() throws Exception {
-        assertNull( all );
-        assertNull( first );
-        assertNull( last );
+        assertThat(all).isNull();
+        assertThat(first).isNull();
+        assertThat(last).isNull();
     }
 
     @Test
@@ -90,9 +89,9 @@ public class ListenAddTest {
         map.put( new Value( 0 ),
                  baby );
 
-        assertEquals( baby, first );
-        assertNull( last );
-        assertEquals( 3, all.size() );
+        assertThat(first).isEqualTo(baby);
+        assertThat(last).isNull();
+        assertThat(all.size()).isEqualTo(3);
     }
 
     @Test
@@ -102,10 +101,9 @@ public class ListenAddTest {
         map.put( new Value( 100 ),
                  grandpa );
 
-        assertNull( first );
-        assertEquals( grandpa,
-                      last );
-        assertEquals( 3, all.size() );
+        assertThat(first).isNull();
+        assertThat(last).isEqualTo(grandpa);
+        assertThat(all.size()).isEqualTo(3);
     }
 
     @Test
@@ -114,9 +112,9 @@ public class ListenAddTest {
                  new Person( 15,
                              "teenager" ) );
 
-        assertNull( first );
-        assertNull( last );
-        assertEquals( 3, all.size() );
+        assertThat(first).isNull();
+        assertThat(last).isNull();
+        assertThat(all.size()).isEqualTo(3);
     }
 
     class Person {

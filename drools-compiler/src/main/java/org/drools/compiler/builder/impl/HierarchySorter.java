@@ -26,9 +26,9 @@ public class HierarchySorter<K> {
     }
 
     public List<K> sort( Collection<K> sortables, Comparator<K> comparator ) {
-        hierarchy = new HashMap<K, Collection<K>>( sortables.size() );
+        hierarchy = new HashMap<>( sortables.size() );
         for ( K item : sortables ) {
-            Collection<K> parents = new ArrayList<K>(  );
+            Collection<K> parents = new ArrayList<>(  );
             for ( K other : sortables ) {
                 if ( comparator.compare( item, other ) < 0 ) {
                     parents.add( other );
@@ -40,8 +40,8 @@ public class HierarchySorter<K> {
     }
 
     public List<K> sort( Map<K,Collection<K>> hierarchy ) {
-        Node<K,K> root = new Node<K,K>( null );
-        Map<K, Node<K,K>> map = new HashMap<K, Node<K,K>>();
+        Node<K,K> root = new Node<>( null );
+        Map<K, Node<K,K>> map = new HashMap<>();
         for ( K element : hierarchy.keySet() ) {
             K key = element;
 
@@ -64,7 +64,7 @@ public class HierarchySorter<K> {
 
                     Node<K,K> superNode = map.get( superKey );
                     if ( superNode == null ) {
-                        superNode = new Node<K,K>( superKey );
+                        superNode = new Node<>( superKey );
                         map.put( superKey,
                                 superNode );
                     }
@@ -84,7 +84,7 @@ public class HierarchySorter<K> {
 
         }
 
-        List<K> sortedList = new java.util.LinkedList<K>();
+        List<K> sortedList = new java.util.LinkedList<>();
         root.accept( sortedList );
 
         return sortedList;
@@ -102,7 +102,7 @@ public class HierarchySorter<K> {
 
         public Node(K key) {
             this.key = key;
-            this.children = new java.util.LinkedList<Node<K,T>>();
+            this.children = new java.util.LinkedList<>();
         }
 
         public Node(K key,

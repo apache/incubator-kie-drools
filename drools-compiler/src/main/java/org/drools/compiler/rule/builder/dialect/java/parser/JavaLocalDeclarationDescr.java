@@ -38,8 +38,8 @@ public class JavaLocalDeclarationDescr {
         this.start = start;
         this.end = end;
         this.type = type;
-        this.modifiers = new ArrayList<String>();
-        this.identifiers = new ArrayList<IdentifierDescr>();
+        this.modifiers = new ArrayList<>();
+        this.identifiers = new ArrayList<>();
     }
 
     public int getEnd() {

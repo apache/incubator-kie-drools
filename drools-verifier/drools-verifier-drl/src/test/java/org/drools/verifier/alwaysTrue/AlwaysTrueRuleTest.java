@@ -36,7 +36,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class AlwaysTrueRuleTest extends TestBaseOld {
 
@@ -121,10 +122,10 @@ public class AlwaysTrueRuleTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rp1true);
-        assertTrue(rp2true);
-        assertFalse(rp3true);
-        assertTrue(rp4true);
+        assertThat(rp1true).isTrue();
+        assertThat(rp2true).isTrue();
+        assertThat(rp3true).isFalse();
+        assertThat(rp4true).isTrue();
     }
 
     @Test
@@ -189,12 +190,9 @@ public class AlwaysTrueRuleTest extends TestBaseOld {
             }
         }
 
-        assertEquals(0,
-                     result.getBySeverity(Severity.ERROR).size());
-        assertEquals(1,
-                     result.getBySeverity(Severity.WARNING).size());
-        assertEquals(0,
-                     result.getBySeverity(Severity.NOTE).size());
-        assertTrue(works);
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(1);
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(0);
+        assertThat(works).isTrue();
     }
 }

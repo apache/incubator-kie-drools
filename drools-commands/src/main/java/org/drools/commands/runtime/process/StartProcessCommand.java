@@ -47,7 +47,7 @@ public class StartProcessCommand implements ExecutableCommand<ProcessInstance>, 
 
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name="parameter")
-    private Map<String, Object> parameters = new HashMap<String, Object>();
+    private Map<String, Object> parameters = new HashMap<>();
 
     @XmlElementWrapper(name="data")
     private List<Object> data = null;

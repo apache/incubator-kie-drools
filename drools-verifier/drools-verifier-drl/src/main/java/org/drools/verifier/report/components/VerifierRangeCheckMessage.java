@@ -29,7 +29,7 @@ public class VerifierRangeCheckMessage extends VerifierMessageBase {
                                      Cause faulty,
                                      String message,
                                      Collection<MissingRange> causes) {
-        super( new HashMap<String, String>(),
+        super( new HashMap<>(),
                severity,
                MessageType.RANGE_CHECK,
                faulty,
@@ -43,7 +43,7 @@ public class VerifierRangeCheckMessage extends VerifierMessageBase {
     }
 
     public Collection<Cause> getCauses() {
-        Collection<Cause> causes = new ArrayList<Cause>();
+        Collection<Cause> causes = new ArrayList<>();
         for ( Cause cause : this.causes ) {
             causes.add( cause );
         }

@@ -31,8 +31,8 @@ public class HierNode<T> implements LatticeElement<T>,Comparable<HierNode<T>>, E
 
     public T value;
     public BitSet bitMask = null;
-    public List<HierNode<T>> parents = new ArrayList<HierNode<T>>();
-    public List<HierNode<T>> children = new ArrayList<HierNode<T>>();
+    public List<HierNode<T>> parents = new ArrayList<>();
+    public List<HierNode<T>> children = new ArrayList<>();
 
 
     public HierNode() {

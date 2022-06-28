@@ -41,7 +41,7 @@ public class TInvocation extends TExpression implements Invocation {
     @Override
     public List<Binding> getBinding() {
         if (binding == null) {
-            binding = new ArrayList<Binding>();
+            binding = new ArrayList<>();
         }
         return this.binding;
     }

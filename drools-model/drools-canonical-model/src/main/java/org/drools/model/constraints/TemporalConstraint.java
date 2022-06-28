@@ -52,10 +52,10 @@ public abstract class TemporalConstraint<A> extends AbstractSingleConstraint {
 
     public static <A> TemporalConstraint<A> createTemporalConstraint( TemporalExprViewItem<A> expr ) {
         if (expr instanceof FixedTemporalExprViewItem) {
-            return new FixedTemporalConstraint<A>( (( FixedTemporalExprViewItem<A> ) expr) );
+            return new FixedTemporalConstraint<>( (( FixedTemporalExprViewItem<A> ) expr) );
         }
         if (expr instanceof VariableTemporalExprViewItem ) {
-            return new VariableTemporalConstraint<A>( (( VariableTemporalExprViewItem<A> ) expr) );
+            return new VariableTemporalConstraint<>( (( VariableTemporalExprViewItem<A> ) expr) );
         }
         throw new UnsupportedOperationException("Unknown expression " + expr);
     }

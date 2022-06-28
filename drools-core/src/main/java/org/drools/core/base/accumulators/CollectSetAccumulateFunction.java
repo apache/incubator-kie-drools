@@ -60,7 +60,7 @@ public class CollectSetAccumulateFunction extends AbstractAccumulateFunction<Col
     public static class CollectListData
         implements
         Externalizable {
-        public Map< Object, MutableInt > map = new HashMap<Object, MutableInt>();
+        public Map< Object, MutableInt > map = new HashMap<>();
 
         public CollectListData() {
         }

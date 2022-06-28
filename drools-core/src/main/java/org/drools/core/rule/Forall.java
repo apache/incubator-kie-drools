@@ -140,7 +140,7 @@ public class Forall extends ConditionalElement {
     }
 
     public List<Pattern> getNestedElements() {
-        List<Pattern> elements = new ArrayList<Pattern>( 1 + this.remainingPatterns.size() );
+        List<Pattern> elements = new ArrayList<>( 1 + this.remainingPatterns.size() );
         elements.add( this.basePattern );
         elements.addAll( this.remainingPatterns );
         return elements;

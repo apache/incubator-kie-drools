@@ -33,7 +33,6 @@ import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.IsDrools;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.drools.utils.KiePMMLSessionUtils;
 import org.slf4j.Logger;

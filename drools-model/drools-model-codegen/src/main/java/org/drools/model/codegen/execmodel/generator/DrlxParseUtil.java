@@ -567,7 +567,7 @@ public class DrlxParseUtil {
     }
 
     public static AnnotationExpr createSimpleAnnotation(String className) {
-        return new NormalAnnotationExpr(new Name(className), new NodeList<MemberValuePair>());
+        return new NormalAnnotationExpr(new Name(className), new NodeList<>());
     }
 
     public static Type classToReferenceType(Class<?> declarationClass) {

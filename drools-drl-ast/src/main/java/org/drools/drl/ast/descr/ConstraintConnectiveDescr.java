@@ -29,7 +29,7 @@ public class ConstraintConnectiveDescr extends AnnotatedBaseDescr {
     private static final long serialVersionUID = 520l;
     
     private ConnectiveType     connective       = ConnectiveType.AND;
-    private List<BaseDescr>    descrs           = new ArrayList<BaseDescr>();
+    private List<BaseDescr>    descrs           = new ArrayList<>();
 
     private boolean negated;
 

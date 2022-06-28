@@ -177,7 +177,7 @@ public abstract class TraitProxyImpl implements Externalizable,
 
     public void assignOtn( BitSet typeCode ) {
         if ( otns == null ) {
-            otns = new HashSet<BitSet>();
+            otns = new HashSet<>();
         }
         otns.add( typeCode );
         propagationTypeCode.or( typeCode );

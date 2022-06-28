@@ -87,7 +87,7 @@ public class WindowNode extends ObjectSource
               context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold(),
               context.getRuleBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
         // needs to be cloned as the list is managed externally
-        this.constraints = new ArrayList<AlphaNodeFieldConstraint>(constraints);
+        this.constraints = new ArrayList<>(constraints);
         this.behavior = new BehaviorManager(behaviors);
         this.entryPoint = context.getCurrentEntryPoint();
         for ( Behavior b :  behaviors ) {
@@ -352,7 +352,7 @@ public class WindowNode extends ObjectSource
         }
 
         public Collection<EventFactHandle> getFactHandles() {
-            List<EventFactHandle> eventFactHandles = new ArrayList<EventFactHandle>(  );
+            List<EventFactHandle> eventFactHandles = new ArrayList<>(  );
             for (Behavior.Context ctx : behaviorContext) {
                 for (EventFactHandle efh : ctx.getFactHandles()) {
                     eventFactHandles.add(efh.getLinkedFactHandle());

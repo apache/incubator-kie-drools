@@ -141,7 +141,7 @@ public class MeetsEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, MeetsEvaluator>();
+            this.cache = new HashMap<>();
         }
         String key = isNegated + ":" + parameterText;
         MeetsEvaluator eval = this.cache.get( key );

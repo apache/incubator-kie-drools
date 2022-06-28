@@ -126,7 +126,7 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
     }
 
     public Set<String> keySet() {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for ( Triple t : getTriplesForSubject( getObject() ) ) {
             set.add( (String) t.getProperty() );
         }
@@ -134,7 +134,7 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
     }
 
     public Collection<Object> values() {
-        List<Object> values = new ArrayList<Object>();
+        List<Object> values = new ArrayList<>();
         for ( Triple t : getTriplesForSubject( getObject() ) ) {
             values.add( t.getValue() );
         }
@@ -142,7 +142,7 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
     }
 
     public Set<Entry<String, Object>> entrySet() {
-        Set<Entry<String, Object>> set = new HashSet<Entry<String, Object>>();
+        Set<Entry<String, Object>> set = new HashSet<>();
         for ( Triple t : getTriplesForSubject( getObject() ) ) {
             set.add(TraitProxyImpl.buildEntry((String) t.getProperty(), t.getValue() ) );
         }

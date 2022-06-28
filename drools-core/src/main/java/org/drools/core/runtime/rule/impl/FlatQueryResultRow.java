@@ -47,7 +47,7 @@ public class FlatQueryResultRow
     }
 
     public List<String> getIdentifiers() {
-        return new ArrayList<String>(this.idFacthandleMap.keySet());
+        return new ArrayList<>(this.idFacthandleMap.keySet());
     }
 
 }

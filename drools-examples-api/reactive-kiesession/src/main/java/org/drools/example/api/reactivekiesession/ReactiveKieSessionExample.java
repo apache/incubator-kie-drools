@@ -35,7 +35,7 @@ public class ReactiveKieSessionExample {
 
         KieSession ksession = kContainer.newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();

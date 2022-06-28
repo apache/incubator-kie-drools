@@ -25,7 +25,7 @@ import org.drools.model.datasources.PassiveDataStore;
 
 public class SetDataStore<T> implements PassiveDataStore<T> {
 
-    private final Set<T> store = new HashSet<T>();
+    private final Set<T> store = new HashSet<>();
 
     public static <T> PassiveDataStore<T> storeOf( T... items ) {
         SetDataStore<T> dataStore = new SetDataStore();

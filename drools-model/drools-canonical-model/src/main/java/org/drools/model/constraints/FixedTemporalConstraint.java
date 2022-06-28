@@ -71,7 +71,7 @@ public class FixedTemporalConstraint<A> extends TemporalConstraint {
 
     @Override
     public FixedTemporalConstraint<A> negate() {
-        return new FixedTemporalConstraint<A>( "!" + getExprId(), var1, func, value, temporalPredicate.negate() );
+        return new FixedTemporalConstraint<>( "!" + getExprId(), var1, func, value, temporalPredicate.negate() );
     }
 
     @Override

@@ -20,8 +20,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -398,4 +400,19 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
 
         assertThat(decisionTable).containsEntry("nn abs", BigDecimal.ZERO);
     }
+
+    @Test
+    public void testShortCircuitFIRST_withNullResults() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("First DT not stopping - null result.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_e56151c4-d522-4974-88e8-f6c88ffaaba4", "Drawing 1");
+        assertThat(dmnModel).isNotNull();
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors()).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("First Decision Table").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
+        assertThat(dmnResult.getDecisionResultByName("First Decision Table").getResult()).asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class)).containsEntry("nn abs", null);
+    }
+    
 }

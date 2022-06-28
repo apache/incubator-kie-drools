@@ -64,7 +64,7 @@ public class SortFunction
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
-        final List<Object> newList = new ArrayList<Object>( list );
+        final List<Object> newList = new ArrayList<>( list );
         try {
             newList.sort(comparator);
         } catch (final Throwable ex) {

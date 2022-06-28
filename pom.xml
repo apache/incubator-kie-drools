@@ -175,6 +175,8 @@
     <module>drools-examples</module>
     <module>kie-ci</module>
     <module>drools-model</module>
+    <module>kie-dmn</module>
+    <module>kie-pmml-trusty</module>
     <module>drools-examples-api</module>
     <module>drools-test-coverage</module>
     <module>drools-scenario-simulation</module>

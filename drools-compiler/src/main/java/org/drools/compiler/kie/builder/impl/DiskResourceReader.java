@@ -64,7 +64,7 @@ public class DiskResourceReader implements ResourceReader {
     }
 
     public Collection<String> getModifiedResourcesSinceLastMark() {
-        Set<String> modifiedResources = new HashSet<String>();
+        Set<String> modifiedResources = new HashSet<>();
         Map<PortablePath, Integer> newHashing = hashFiles();
         for (Map.Entry<PortablePath, Integer> entry : newHashing.entrySet()) {
             Integer oldHashing = filesHashing.get(entry.getKey());

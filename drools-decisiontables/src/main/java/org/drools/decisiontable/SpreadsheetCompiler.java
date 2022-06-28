@@ -188,8 +188,8 @@ public class SpreadsheetCompiler {
                                                    final String worksheetName) {
         final DefaultRuleSheetListener listener = new DefaultRuleSheetListener();
         listener.setWorksheetName(worksheetName);
-        final Map<String, List<DataListener>> sheetListeners = new HashMap<String, List<DataListener>>();
-        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final Map<String, List<DataListener>> sheetListeners = new HashMap<>();
+        final List<DataListener> listeners = new ArrayList<>();
         listeners.add(listener);
         sheetListeners.put( worksheetName, listeners );
         parseResource( new ExcelParser( sheetListeners ), resource );

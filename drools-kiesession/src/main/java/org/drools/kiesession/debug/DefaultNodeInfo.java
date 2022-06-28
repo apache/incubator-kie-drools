@@ -48,7 +48,7 @@ public class DefaultNodeInfo
 
     public DefaultNodeInfo(NetworkNode node) {
         this.node = node;
-        this.rules = new HashSet<RuleImpl>();
+        this.rules = new HashSet<>();
     }
 
     public void assign(RuleImpl rule) {
@@ -119,13 +119,13 @@ public class DefaultNodeInfo
             EntryPointNode epn = (EntryPointNode) node;
             return epn.getObjectTypeNodes().values();
         } else if ( node instanceof ObjectSource ) {
-            List<NetworkNode> result = new ArrayList<NetworkNode>();
+            List<NetworkNode> result = new ArrayList<>();
             for ( ObjectSink sink : ((ObjectSource)node).getObjectSinkPropagator().getSinks() ) {
                 result.add( (NetworkNode) sink );
             }
             return result;
         } else if ( node instanceof LeftTupleSource ) {
-            List<NetworkNode> result = new ArrayList<NetworkNode>();
+            List<NetworkNode> result = new ArrayList<>();
             LeftTupleSource source = (LeftTupleSource) node;
             for ( LeftTupleSink sink : source.getSinkPropagator().getSinks() ) {
                 result.add( (NetworkNode) sink );

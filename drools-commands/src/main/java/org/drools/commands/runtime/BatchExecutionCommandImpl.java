@@ -156,7 +156,7 @@ public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<Execu
 
     public BatchExecutionCommandImpl addCommand( Command cmd ) {
         if ( commands == null ) {
-            commands = new ArrayList<Command>();
+            commands = new ArrayList<>();
         }
         this.commands.add(cmd);
         return this;

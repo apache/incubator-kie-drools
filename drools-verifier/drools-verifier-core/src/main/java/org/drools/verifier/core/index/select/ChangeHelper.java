@@ -26,9 +26,9 @@ class ChangeHelper<T> {
 
     ChangeHelper(final MultiMapChangeHandler.ChangeSet<Value, T> changeSet,
                  final Matcher matcher) {
-        addedSelector = new Select<T>(changeSet.getAdded(),
+        addedSelector = new Select<>(changeSet.getAdded(),
                                       matcher);
-        removedSelector = new Select<T>(changeSet.getRemoved(),
+        removedSelector = new Select<>(changeSet.getRemoved(),
                                         matcher);
     }
 

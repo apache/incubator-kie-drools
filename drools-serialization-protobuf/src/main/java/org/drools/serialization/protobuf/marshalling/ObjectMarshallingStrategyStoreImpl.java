@@ -29,7 +29,7 @@ public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStra
     
     public ObjectMarshallingStrategyStoreImpl(ObjectMarshallingStrategy[] strategiesList) {
         this.strategiesList = strategiesList;
-        Set<String> names = new HashSet<String>();
+        Set<String> names = new HashSet<>();
         //Validate received set
         for( ObjectMarshallingStrategy strategy : strategiesList ){
         	String name = strategy.getName();

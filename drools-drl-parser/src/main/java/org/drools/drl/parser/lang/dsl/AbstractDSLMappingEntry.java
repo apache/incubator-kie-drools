@@ -29,7 +29,7 @@ public abstract class AbstractDSLMappingEntry
     private MetaData             metadata;
     private String               key;
     private String               value;
-    private Map<String, Integer> variables = new HashMap<String, Integer>();
+    private Map<String, Integer> variables = new HashMap<>();
     private Pattern              keyPattern;
     private String               valuePattern;
 

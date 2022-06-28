@@ -30,7 +30,7 @@ import org.kie.api.io.ResourceType;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EquivalentRulesTest {
 
@@ -50,10 +50,10 @@ public class EquivalentRulesTest {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         VerifierReport result = verifier.getResult();
 
@@ -69,8 +69,7 @@ public class EquivalentRulesTest {
         }
 
         // Has at least one item.
-        assertEquals(1,
-                     counter);
+        assertThat(counter).isEqualTo(1);
 
         verifier.dispose();
     }

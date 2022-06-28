@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
@@ -247,19 +247,15 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                                                   operator2);
 
         boolean conflicts = a.conflicts(b);
-        assertEquals(getAssertDescription(a,
-                                          b,
-                                          conflictExpected,
-                                          "conflict"),
-                     conflictExpected,
-                     conflicts);
+        assertThat(conflicts).as(getAssertDescription(a,
+                b,
+                conflictExpected,
+                "conflict")).isEqualTo(conflictExpected);
         boolean conflicts1 = b.conflicts(a);
-        assertEquals(getAssertDescription(b,
-                                          a,
-                                          conflictExpected,
-                                          "conflict"),
-                     conflictExpected,
-                     conflicts1);
+        assertThat(conflicts1).as(getAssertDescription(b,
+                a,
+                conflictExpected,
+                "conflict")).isEqualTo(conflictExpected);
     }
 
     @Test
@@ -270,19 +266,15 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                                                   operator2);
 
         boolean overlaps = a.overlaps(b);
-        assertEquals(getAssertDescription(a,
-                                          b,
-                                          overlapExpected,
-                                          "overlap"),
-                     overlapExpected,
-                     overlaps);
+        assertThat(overlaps).as(getAssertDescription(a,
+                b,
+                overlapExpected,
+                "overlap")).isEqualTo(overlapExpected);
         boolean overlaps1 = b.overlaps(a);
-        assertEquals(getAssertDescription(b,
-                                          a,
-                                          overlapExpected,
-                                          "overlap"),
-                     overlapExpected,
-                     overlaps1);
+        assertThat(overlaps1).as(getAssertDescription(b,
+                a,
+                overlapExpected,
+                "overlap")).isEqualTo(overlapExpected);
     }
 
     private StringConditionInspector getCondition(final Values values,

@@ -49,7 +49,7 @@ public class CsvParser implements DecisionTableParser {
 
     public CsvParser(final DataListener listener,
             final CsvLineParser lineParser) {
-        _listeners = new ArrayList<DataListener>();
+        _listeners = new ArrayList<>();
         _listeners.add(listener);
         this._lineParser = lineParser;
     }

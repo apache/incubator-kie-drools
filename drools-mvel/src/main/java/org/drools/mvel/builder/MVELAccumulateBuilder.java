@@ -128,7 +128,7 @@ public class MVELAccumulateBuilder
                                                       readLocalsFromTuple );
             }
 
-            List<Declaration> requiredDeclarations = new ArrayList<Declaration>();
+            List<Declaration> requiredDeclarations = new ArrayList<>();
             for ( Accumulator acc : accumulators ) {
                 Collections.addAll( requiredDeclarations, acc.getRequiredDeclarations() );
             }
@@ -366,7 +366,7 @@ public class MVELAccumulateBuilder
     private Declaration[] getUsedDeclarations( Map<String, Declaration> decls,
                                                AnalysisResult analysis ) {
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-        List<Declaration> usedDeclarations = new ArrayList<Declaration>();
+        List<Declaration> usedDeclarations = new ArrayList<>();
         for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
             if ( decls.containsKey( id ) ) {
                 usedDeclarations.add( decls.get( id ) );

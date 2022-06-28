@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
  */
 public abstract class AttributedDRLElement extends DRLElement {
 
-    private Map<String, String> _attr2value = new HashMap<String, String>();
+    private Map<String, String> _attr2value = new HashMap<>();
 
     protected AttributedDRLElement() {
     }

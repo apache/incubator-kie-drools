@@ -35,7 +35,7 @@ public class TypeCache implements Externalizable {
 
     private static final Logger LOG = LoggerFactory.getLogger(TypeCache.class);
 
-    private Map<String,TypeWrapper> typeCache = new LinkedHashMap<String, TypeWrapper>();
+    private Map<String,TypeWrapper> typeCache = new LinkedHashMap<>();
     private boolean needsInit = false;
 
     public TypeCache( ) {
@@ -47,7 +47,7 @@ public class TypeCache implements Externalizable {
 
     public void writeExternal( ObjectOutput out ) throws IOException {
         out.writeInt( typeCache.size() );
-        List<String> keys = new ArrayList<String>( typeCache.keySet() );
+        List<String> keys = new ArrayList<>( typeCache.keySet() );
         Collections.sort( keys );
         for ( String k : keys ) {
             out.writeObject( k );
@@ -56,7 +56,7 @@ public class TypeCache implements Externalizable {
     }
 
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        typeCache = new HashMap<String, TypeWrapper>();
+        typeCache = new HashMap<>();
         int n = in.readInt();
         for ( int j = 0; j < n; j++ ) {
             String k = (String) in.readObject();

@@ -44,7 +44,7 @@ public class Subsumption
                        VerifierComponent right) {
         this.left = left;
         this.right = right;
-        this.causes = new ArrayList<Cause>();
+        this.causes = new ArrayList<>();
         causes.add( left );
         causes.add( right );
     }

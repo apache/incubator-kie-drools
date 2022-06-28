@@ -20,7 +20,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>common-api</artifactId>
+      <artifactId>efesto-common-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.github.javaparser</groupId>

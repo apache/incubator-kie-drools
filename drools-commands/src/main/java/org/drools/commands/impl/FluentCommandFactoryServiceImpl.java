@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class FluentCommandFactoryServiceImpl {
     private final CommandFactoryServiceImpl factory = new CommandFactoryServiceImpl();
-    private final List<Command> commands = new ArrayList<Command>();
+    private final List<Command> commands = new ArrayList<>();
 
     public FluentCommandFactoryServiceImpl newGetGlobal(String identifier) {
         commands.add(factory.newGetGlobal(identifier));

@@ -362,7 +362,7 @@ public class LinkedList<T extends LinkedListNode<T>>
     }
 
     public java.util.Iterator<T> javaUtilIterator() {
-        return new JavaUtilIterator<T>( this );
+        return new JavaUtilIterator<>( this );
     }
 
     /**

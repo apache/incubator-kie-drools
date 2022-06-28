@@ -268,7 +268,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
 
     public List<String> getDeclarationIds() {
         Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) getTupleSink()).getAllDeclarations();
-        List<String> declarations = new ArrayList<String>();
+        List<String> declarations = new ArrayList<>();
         for (Declaration decl : declArray) {
             declarations.add(decl.getIdentifier());
         }

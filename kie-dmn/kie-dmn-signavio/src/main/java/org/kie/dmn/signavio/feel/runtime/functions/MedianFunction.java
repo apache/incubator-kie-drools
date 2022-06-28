@@ -24,7 +24,6 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

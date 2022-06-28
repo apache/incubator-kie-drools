@@ -242,7 +242,7 @@ public class ProtobufInputMarshaller {
         readNodeMemories( context,
                           _session.getRuleData() );
 
-        List<PropagationContext> pctxs = new ArrayList<PropagationContext>();
+        List<PropagationContext> pctxs = new ArrayList<>();
 
         if ( _session.getRuleData().hasInitialFact() ) {
             session.setInitialFactHandle( session.initInitialFact(context) );
@@ -322,7 +322,7 @@ public class ProtobufInputMarshaller {
                 // ACCUMULATE, RIA and FROM memories are no longer serialized, so the following 3 cases are useless for
                 // new serialized session, but are still necessary for sessions serialized before the marshalling refactor
                 case ACCUMULATE : {
-                    Map<TupleKey, ProtobufMessages.FactHandle> map = new HashMap<TupleKey, ProtobufMessages.FactHandle>();
+                    Map<TupleKey, ProtobufMessages.FactHandle> map = new HashMap<>();
                     for ( ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext _ctx : _node.getAccumulate().getContextList() ) {
                         map.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), _ctx.getResultHandle() );
                     }
@@ -331,7 +331,7 @@ public class ProtobufInputMarshaller {
                     break;
                 }
                 case RIA : {
-                    Map<TupleKey, ProtobufMessages.FactHandle> map = new HashMap<TupleKey, ProtobufMessages.FactHandle>();
+                    Map<TupleKey, ProtobufMessages.FactHandle> map = new HashMap<>();
                     for ( ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext _ctx : _node.getRia().getContextList() ) {
                         map.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), _ctx.getResultHandle() );
                     }
@@ -350,7 +350,7 @@ public class ProtobufInputMarshaller {
                     break;
                 }
                 case QUERY_ELEMENT : {
-                    Map<TupleKey, QueryElementContext> map = new HashMap<TupleKey, QueryElementContext>();
+                    Map<TupleKey, QueryElementContext> map = new HashMap<>();
                     for ( ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext _ctx : _node.getQueryElement().getContextList() ) {
                         // we have to use a "cloned" query element context as we need to write on it during deserialization process and the 
                         // protobuf one is read-only
@@ -373,7 +373,7 @@ public class ProtobufInputMarshaller {
 
         public QueryElementContext(ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext _ctx) {
             this.handle = _ctx.getHandle();
-            this.results = new LinkedList<ProtobufMessages.FactHandle>( _ctx.getResultList() );
+            this.results = new LinkedList<>( _ctx.getResultList() );
         }
     }
 
@@ -580,7 +580,7 @@ public class ProtobufInputMarshaller {
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((NamedEntryPoint) wmep);
         
         boolean wasOTCSerialized = _ep.getOtcCount() > 0; // if 0, then the OTC was not serialized (older versions of drools)
-        Set<String> tmsEnabled = new HashSet<String>();
+        Set<String> tmsEnabled = new HashSet<>();
         for( ObjectTypeConfiguration _otc : _ep.getOtcList() ) {
         	if( _otc.getTmsEnabled() ) {
             	tmsEnabled.add( _otc.getType() );

@@ -57,7 +57,7 @@ public class Incompatibility
     }
 
     public Collection<Cause> getCauses() {
-        List<Cause> list = new ArrayList<Cause>();
+        List<Cause> list = new ArrayList<>();
         list.add( left );
         list.add( right );
         return list;

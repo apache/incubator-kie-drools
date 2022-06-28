@@ -39,9 +39,9 @@ public class KieModuleDeploymentConfig {
     private String kbaseName = null;
     private String ksessionName = null;
     
-    List<String> resourceFilePaths = new ArrayList<String>();
-    List<Class<?>> classes = new ArrayList<Class<?>>();
-    List<String> dependencies = new ArrayList<String>();
+    List<String> resourceFilePaths = new ArrayList<>();
+    List<Class<?>> classes = new ArrayList<>();
+    List<String> dependencies = new ArrayList<>();
     
     private KieModuleModel kproj = null;
     String pomText;
@@ -56,7 +56,7 @@ public class KieModuleDeploymentConfig {
         kieServicesLocal.set(ks);
     }
     
-    private final ThreadLocal<KieServices> kieServicesLocal = new ThreadLocal<KieServices>();
+    private final ThreadLocal<KieServices> kieServicesLocal = new ThreadLocal<>();
     
     KieServices getKieServicesInstance() { 
         KieServices ks = kieServicesLocal.get();

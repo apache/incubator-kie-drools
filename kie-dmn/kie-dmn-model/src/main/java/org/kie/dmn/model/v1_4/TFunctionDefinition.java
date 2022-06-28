@@ -33,7 +33,7 @@ public class TFunctionDefinition extends TExpression implements FunctionDefiniti
     @Override
     public List<InformationItem> getFormalParameter() {
         if (formalParameter == null) {
-            formalParameter = new ArrayList<InformationItem>();
+            formalParameter = new ArrayList<>();
         }
         return this.formalParameter;
     }

@@ -59,7 +59,7 @@ public final class GeneratorHelper {
     // DeclarationMatcher
 
     public static List<DeclarationMatcher> matchDeclarationsToTuple(Declaration[] declarations) {
-        List<DeclarationMatcher> matchers = new ArrayList<DeclarationMatcher>();
+        List<DeclarationMatcher> matchers = new ArrayList<>();
         for (int i = 0; i < declarations.length; i++) {
             matchers.add(new DeclarationMatcher(i, declarations[i]));
         }
@@ -134,7 +134,7 @@ public final class GeneratorHelper {
         InternalKnowledgePackage pkg = reteEvaluator.getKnowledgeBase().getPackage(stub.getPackageName());
         TypeResolver typeResolver = pkg == null ? null : pkg.getTypeResolver();
         if (typeResolver == null) {
-            Set<String> imports = new HashSet<String>();
+            Set<String> imports = new HashSet<>();
             for (String imp : stub.getPackageImports()) {
                 imports.add(imp);
             }

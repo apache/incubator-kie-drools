@@ -136,7 +136,7 @@ public class MavenEmbedderUtils {
 
     private static ClassRealm createParentRealm(ClassWorld classWorld, ClassLoader parent, Class... requiredClasses) {
         ClassLoader parentCL = parent == null ? Thread.currentThread().getContextClassLoader() : parent;
-        Set<ClassLoader> usedCLs = new HashSet<ClassLoader>();
+        Set<ClassLoader> usedCLs = new HashSet<>();
         usedCLs.add(parentCL);
 
         ClassRealm parentRealm = createClassRealm( classWorld, "maven-parent", parentCL);

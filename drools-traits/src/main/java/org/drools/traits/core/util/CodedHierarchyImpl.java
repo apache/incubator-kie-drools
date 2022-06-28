@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class CodedHierarchyImpl<T> extends AbstractCodedHierarchyImpl<T> implements Externalizable {
 
-    protected transient Map<T, HierNode<T>> cache = new HashMap<T, HierNode<T>>();
+    protected transient Map<T, HierNode<T>> cache = new HashMap<>();
 
     protected HierNode<T> getNode( T name ) {
         return cache.get( name );

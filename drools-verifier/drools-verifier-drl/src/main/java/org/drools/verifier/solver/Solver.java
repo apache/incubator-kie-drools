@@ -29,7 +29,7 @@ import org.drools.verifier.data.VerifierComponent;
  */
 class Solver {
 
-    private List<Set<VerifierComponent>> possibilityLists = new ArrayList<Set<VerifierComponent>>();
+    private List<Set<VerifierComponent>> possibilityLists = new ArrayList<>();
     private Solver                       subSolver        = null;
     private boolean                      isChildExists    = false;
     private boolean                      isChildForall    = false;
@@ -61,13 +61,13 @@ class Solver {
         } else {
             if ( type == OperatorDescrType.AND ) {
                 if ( possibilityLists.isEmpty() ) {
-                    possibilityLists.add( new HashSet<VerifierComponent>() );
+                    possibilityLists.add( new HashSet<>() );
                 }
                 for ( Set<VerifierComponent> set : possibilityLists ) {
                     set.add( descr );
                 }
             } else if ( type == OperatorDescrType.OR ) {
-                Set<VerifierComponent> set = new HashSet<VerifierComponent>();
+                Set<VerifierComponent> set = new HashSet<>();
                 set.add( descr );
                 possibilityLists.add( set );
             }
@@ -81,16 +81,16 @@ class Solver {
         if ( subSolver != null && subSolver.subSolver == null ) {
             if ( type == OperatorDescrType.AND ) {
                 if ( possibilityLists.isEmpty() ) {
-                    possibilityLists.add( new HashSet<VerifierComponent>() );
+                    possibilityLists.add( new HashSet<>() );
                 }
 
-                List<Set<VerifierComponent>> newPossibilities = new ArrayList<Set<VerifierComponent>>();
+                List<Set<VerifierComponent>> newPossibilities = new ArrayList<>();
 
                 List<Set<VerifierComponent>> sets = subSolver.getPossibilityLists();
                 for ( Set<VerifierComponent> possibilityList : possibilityLists ) {
 
                     for ( Set<VerifierComponent> set : sets ) {
-                        Set<VerifierComponent> newSet = new HashSet<VerifierComponent>();
+                        Set<VerifierComponent> newSet = new HashSet<>();
                         newSet.addAll( possibilityList );
                         newSet.addAll( set );
                         newPossibilities.add( newSet );

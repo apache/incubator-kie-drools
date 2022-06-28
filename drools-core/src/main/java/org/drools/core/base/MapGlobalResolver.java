@@ -75,7 +75,7 @@ public class MapGlobalResolver
         } else if ( map.isEmpty() ) {
             return Collections.unmodifiableCollection( ((MapGlobalResolver) delegate).map.keySet() );
         } else {
-            Collection<String> combined = new HashSet<String>( map.keySet() );
+            Collection<String> combined = new HashSet<>( map.keySet() );
             combined.addAll( ((MapGlobalResolver) delegate).map.keySet() );
             return Collections.unmodifiableCollection( combined );
         }
@@ -116,14 +116,14 @@ public class MapGlobalResolver
             Map<String,Object> delegateMap = ((MapGlobalResolver) delegate).map;
             return (Entry<String, Object>[]) delegateMap.entrySet().toArray(new Entry[delegateMap.size()]);
         } else {
-            Map<String,Object> combined = new HashMap<String,Object>( ((MapGlobalResolver) delegate).map );
+            Map<String,Object> combined = new HashMap<>( ((MapGlobalResolver) delegate).map );
             combined.putAll( map );
             return (Entry<String, Object>[]) combined.entrySet().toArray(new Entry[combined.size()]);
         }
     }
     
     public GlobalResolver clone() {
-        Map<String,Object> clone = new HashMap<String,Object>();
+        Map<String,Object> clone = new HashMap<>();
         
         for ( Entry<String,Object> entry : getGlobals() ) {
             clone.put( entry.getKey(), entry.getValue() );

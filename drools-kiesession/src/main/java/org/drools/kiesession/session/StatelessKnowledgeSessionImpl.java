@@ -60,9 +60,9 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
 
     private InternalKnowledgeBase kBase;
     private MapGlobalResolver    sessionGlobals = new MapGlobalResolver();
-    private Map<String, Channel> channels       = new HashMap<String, Channel>();
+    private Map<String, Channel> channels       = new HashMap<>();
 
-    private final List<ListnerHolder> listeners = new CopyOnWriteArrayList<ListnerHolder>();
+    private final List<ListnerHolder> listeners = new CopyOnWriteArrayList<>();
 
     private SessionConfiguration    conf;
     private Environment             environment;
@@ -193,7 +193,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
         if ( listeners.isEmpty()) {
             return Collections.emptySet();
         }
-        Collection<EventListener> l = new ArrayList<EventListener>();
+        Collection<EventListener> l = new ArrayList<>();
         for (ListnerHolder listnerHolder : listeners ) {
             if (listnerHolder.type == type) {
                 l.add( listnerHolder.listener );
