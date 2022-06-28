@@ -1,7 +1,7 @@
 [id='dmn-data-types-defining-proc_{context}']
-= Creating custom data types for DMN boxed expressions in {CENTRAL}
+= Creating custom data types for DMN boxed expressions in {DMN_EDITOR}
 
-In DMN boxed expressions in {CENTRAL}, data types determine the structure of the data that you use within an associated table, column, or field in the boxed expression. You can use default DMN data types (such as String, Number, Boolean) or you can create custom data types to specify additional fields and constraints that you want to implement for the boxed expression values.
+In DMN boxed expressions in {DMN_EDITOR}, data types determine the structure of the data that you use within an associated table, column, or field in the boxed expression. You can use default DMN data types (such as String, Number, Boolean) or you can create custom data types to specify additional fields and constraints that you want to implement for the boxed expression values.
 
 Custom data types that you create for a boxed expression can be simple or structured:
 
@@ -9,10 +9,9 @@ Custom data types that you create for a boxed expression can be simple or struct
 * *Structured* data types contain multiple fields associated with a parent data type. Example: A single type `Person` containing the fields `Name (string)`, `Age (number)`, `Email (string)`.
 
 .Prerequisites
-* A DMN file is created or imported in {CENTRAL}.
+* A DMN file is created or imported in {DMN_EDITOR}.
 
 .Procedure
-. In {CENTRAL}, go to *Menu* -> *Design* -> *Projects*, click the project name, and select the DMN file you want to modify.
 . In the DMN designer canvas, select a decision node or business knowledge model for which you want to define the data types and click the *Edit* icon to open the DMN boxed expression designer.
 . If the boxed expression is for a decision node that is not yet defined, click the undefined table to select the type of boxed expression you want to use, such as a boxed literal expression, boxed context expression, decision table, or other DMN boxed expression.
 +

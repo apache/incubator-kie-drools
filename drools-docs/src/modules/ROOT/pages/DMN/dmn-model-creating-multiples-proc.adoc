@@ -1,13 +1,13 @@
 [id='dmn-model-creating-multiples-proc_{context}']
-= Creating DMN models with multiple diagrams in {CENTRAL}
+= Creating DMN models with multiple diagrams in {DMN_EDITOR}
 
-For complex DMN models, you can use the DMN designer in {CENTRAL} to design multiple DMN decision requirements diagrams (DRDs) that represent parts of the overall decision requirements graph (DRG) for the DMN decision model. In simple cases, you can use a single DRD to represent all of the overall DRG for the decision model, but in complex cases, a single DRD can become large and difficult to follow. Therefore, to better organize DMN decision models with many decision requirements, you can divide the model into smaller nested DRDs that constitute the larger central DRD representation of the overall DRG.
+For complex DMN models, you can use the DMN designer in {DMN_EDITOR} to design multiple DMN decision requirements diagrams (DRDs) that represent parts of the overall decision requirements graph (DRG) for the DMN decision model. In simple cases, you can use a single DRD to represent all of the overall DRG for the decision model, but in complex cases, a single DRD can become large and difficult to follow. Therefore, to better organize DMN decision models with many decision requirements, you can divide the model into smaller nested DRDs that constitute the larger central DRD representation of the overall DRG.
 
 .Prerequisites
-* You understand how to design DRDs in {CENTRAL}. For information about creating DRDs, see xref:dmn-model-creating-proc_dmn-models[].
+* You understand how to design DRDs in {DMN_EDITOR}. For information about creating DRDs, see xref:dmn-model-creating-proc_dmn-models[].
 
 .Procedure
-. In {CENTRAL}, navigate to your DMN project and create or import a DMN file in the project.
+. In {DMN_EDITOR}, navigate to your DMN project and create or import a DMN file in the project.
 . Open the new or imported DMN file to view the DRD in the DMN designer, and begin designing or modifying the DRD using the DMN nodes in the left toolbar.
 . For any DMN nodes that you want to define in a separate nested DRD, select the node, click the *DRD Actions* icon, and select from the available options.
 +

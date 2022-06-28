@@ -13,6 +13,6 @@ The following are the types of DMN boxed expressions:
 * Invocations
 * Lists
 
-NOTE: {PRODUCT} does not provide boxed list expressions in {CENTRAL}, but supports a FEEL `list` data type that you can use in boxed literal expressions. For more information about the `list` data type and other FEEL data types in {PRODUCT}, see xref:dmn-feel-data-types-ref_dmn-models[].
+NOTE: {DMN_EDITOR} does not provide boxed list expressions, but supports a FEEL `list` data type that you can use in boxed literal expressions. For more information about the `list` data type and other FEEL data types in {PRODUCT}, see xref:dmn-feel-data-types-ref_dmn-models[].
 
 All Friendly Enough Expression Language (FEEL) expressions that you use in your boxed expressions must conform to the FEEL syntax requirements in the OMG https://www.omg.org/spec/DMN[Decision Model and Notation specification].

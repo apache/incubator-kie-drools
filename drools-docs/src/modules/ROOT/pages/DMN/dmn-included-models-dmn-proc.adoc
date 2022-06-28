@@ -1,16 +1,15 @@
 [id='dmn-included-models-dmn-proc_{context}']
-= Including other DMN models within a DMN file in {CENTRAL}
+= Including other DMN models within a DMN file in {DMN_EDITOR}
 
-In {CENTRAL}, you can include other DMN models from your project in a specified DMN file. When you include a DMN model within another DMN file, you can use all of the nodes and logic from both models in the same decision requirements diagram (DRD), but you cannot edit the nodes from the included model. To edit nodes from included models, you must update the source file for the included model directly. If you update the source file for an included DMN model, open the DMN file where the DMN model is included (or close an re-open) to verify the changes.
+In {DMN_EDITOR}, you can include other DMN models from your project in a specified DMN file. When you include a DMN model within another DMN file, you can use all of the nodes and logic from both models in the same decision requirements diagram (DRD), but you cannot edit the nodes from the included model. To edit nodes from included models, you must update the source file for the included model directly. If you update the source file for an included DMN model, open the DMN file where the DMN model is included (or close an re-open) to verify the changes.
 
-You cannot include DMN models from other projects in {CENTRAL}.
+You cannot include DMN models from other projects in {DMN_EDITOR}.
 
 .Prerequisites
-* The DMN models are created or imported (as `.dmn` files) in the same project in {CENTRAL} as the DMN file in which you want to include the models.
+* The DMN models are created or imported (as `.dmn` files) in the same project in {DMN_EDITOR} as the DMN file in which you want to include the models.
 
 .Procedure
-. In {CENTRAL}, go to *Menu* -> *Design* -> *Projects*, click the project name, and select the DMN file you want to modify.
-. In the DMN designer, click the *Included Models* tab.
+. In the {DMN_EDITOR}, click the *Included Models* tab.
 . Click *Include Model*, select a DMN model from your project in the *Models* list, enter a unique name for the included model, and click *Include*:
 +
 --

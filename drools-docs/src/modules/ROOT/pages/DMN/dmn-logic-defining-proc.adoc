@@ -1,15 +1,14 @@
 [id='dmn-logic-defining-proc_{context}']
-= Defining DMN decision logic in boxed expressions in {CENTRAL}
+= Defining DMN decision logic in boxed expressions in {DMN_EDITOR}
 
 Boxed expressions in DMN are tables that you use to define the underlying logic of decision nodes and business knowledge models in a decision requirements diagram (DRD). Some boxed expressions can contain other boxed expressions, but the top-level boxed expression corresponds to the decision logic of a single DRD artifact. While DRDs represent the flow of a DMN decision model, boxed expressions define the actual decision logic of individual nodes. DRDs and boxed expressions together form a complete and functional DMN decision model.
 
-You can use the DMN designer in {CENTRAL} to define decision logic for your DRD components using built-in boxed expressions.
+You can use the {DMN_EDITOR} to define decision logic for your DRD components using built-in boxed expressions.
 
 .Prerequisites
-* A DMN file is created or imported in {CENTRAL}.
+* A DMN file is created or imported in {DMN_EDITOR}.
 
 .Procedure
-. In {CENTRAL}, go to *Menu* -> *Design* -> *Projects*, click the project name, and select the DMN file you want to modify.
 . In the DMN designer canvas, select a decision node or business knowledge model node that you want to define and click the *Edit* icon to open the DMN boxed expression designer:
 +
 --

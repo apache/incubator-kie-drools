@@ -1,11 +1,11 @@
 [id='dmn-properties-ref_{context}']
-= Configurable DMN properties in {PRODUCT}
+= Configurable DMN properties in {DMN_ENGINE}
 
-{PRODUCT} provides the following DMN properties that you can configure when you execute your DMN models on {KIE_SERVER} or on your client application.
-You can configure some of these properties using the `kmodule.xml` file in your {PRODUCT} project when you deploy your project on {KIE_SERVER}.
+{DMN_ENGINE} provides the following DMN properties that you can configure when you execute your DMN models on your client application.
+You can configure some of these properties using the `kmodule.xml` file in your {PRODUCT} project (preferred method also for the previous traditional {KIE_SERVER} deployment).
 
 org.kie.dmn.strictConformance::
-When enabled, this property disables by default any extensions or profiles provided beyond the DMN standard, such as some helper functions or enhanced features of DMN 1.2 backported into DMN 1.1. You can use this property to configure the {DECISION_ENGINE} to support only pure DMN features, such as when running the https://dmn-tck.github.io/tck/[DMN Technology Compatibility Kit] (TCK).
+When enabled, this property disables by default any extensions or profiles provided beyond the DMN standard, such as some helper functions or enhanced features of DMN 1.2 backported into DMN 1.1. You can use this property to configure the {DMN_ENGINE} to support only pure DMN features, such as when running the https://dmn-tck.github.io/tck/[DMN Technology Compatibility Kit] (TCK).
 +
 --
 Default value: `false`
@@ -41,7 +41,7 @@ Default value: `true`
 --
 
 org.kie.dmn.profiles.$PROFILE_NAME::
-When valorized with a Java fully qualified name, this property loads a DMN profile onto the {DECISION_ENGINE} at start time. You can use this property to implement a predefined DMN profile with supported features different from or beyond the DMN standard. For example, if you are creating DMN models using the Signavio DMN modeller, use this property to implement features from the Signavio DMN profile into your DMN decision service.
+When valorized with a Java fully qualified name, this property loads a DMN profile onto the {DMN_ENGINE} at start time. You can use this property to implement a predefined DMN profile with supported features different from or beyond the DMN standard. For example, if you are creating DMN models using the Signavio DMN modeller, use this property to implement features from the Signavio DMN profile into your DMN decision service.
 +
 --
 [source]
@@ -51,11 +51,12 @@ When valorized with a Java fully qualified name, this property loads a DMN profi
 --
 
 org.kie.dmn.runtime.listeners.$LISTENER_NAME::
-When valorized with a Java fully qualified name, this property loads and registers a DMN Runtime Listener onto the {DECISION_ENGINE} at start time.
+When valorized with a Java fully qualified name, this property loads and registers a DMN Runtime Listener onto the {DMN_ENGINE} at start time.
 You can use this property to register a DMN listener in order to be notified of several events during DMN model evaluations.
 +
 --
-To configure this property when deploying your project on {KIE_SERVER}, modify this property in the `kmodule.xml` file of your project. This approach is helpful when the listener is specific to your project and when the configuration must be applied in {KIE_SERVER} only to your deployed project.
+To configure this property, modify this property in the `kmodule.xml` file of your project
+(preferred method also for the previous traditional {KIE_SERVER} deployment).
 
 [source,xml]
 ----
@@ -66,7 +67,7 @@ To configure this property when deploying your project on {KIE_SERVER}, modify t
 </kmodule>
 ----
 
-To configure this property globally for your {PRODUCT} environment, modify this property using a command terminal or any other global application configuration mechanism. This approach is helpful when the {DECISION_ENGINE} is embedded as part of your Java application.
+Alternatively, you can configure this property globally for your {PRODUCT} environment; modify this property using a command terminal or any other global application configuration mechanism. 
 
 [source]
 ----
@@ -75,7 +76,7 @@ To configure this property globally for your {PRODUCT} environment, modify this 
 --
 
 org.kie.dmn.compiler.execmodel::
-When enabled, this property enables DMN decision table logic to be compiled into executable rule models during run time. You can use this property to evaluate DMN decision table logic more efficiently. This property is helpful when the executable model compilation was not originally performed during project compile time. Enabling this property may result in added compile time during the first evaluation by the {DECISION_ENGINE}, but subsequent compilations are more efficient.
+When enabled, this property enables DMN decision table logic to be compiled into executable rule models during run time. You can use this property to evaluate DMN decision table logic more efficiently. This property is helpful when the executable model compilation was not originally performed during project compile time. Enabling this property may result in added compile time during the first evaluation by the {DMN_ENGINE}, but subsequent compilations are more efficient.
 +
 --
 Default value: `false`
