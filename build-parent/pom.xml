@@ -1545,6 +1545,13 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>efesto-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-dmn-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
