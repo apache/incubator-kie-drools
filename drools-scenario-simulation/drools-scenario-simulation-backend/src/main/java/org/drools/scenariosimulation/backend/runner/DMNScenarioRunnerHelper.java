@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
@@ -105,7 +106,10 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
             String factName = input.getFactIdentifier().getName();
             String importPrefix = input.getFactIdentifier().getImportPrefix();
             if (importPrefix != null && !importPrefix.isEmpty()) {
-                String importedFactName = factName.replaceFirst(importPrefix + ".", "");
+                if (!factName.startsWith(importPrefix)) {
+                    throw new IllegalArgumentException("Fact name: " + factName + " has defined an invalid import prefix: " + importPrefix);
+                }
+                String importedFactName = factName.replaceFirst(Pattern.quote(importPrefix + "."), "");
                 Map<String, Object> groupedFacts = importedInputValues.computeIfAbsent(importPrefix, k -> new HashMap<>());
                 Object value = groupedFacts.containsKey(importedFactName) ?
                         mergeValues(groupedFacts.get(importedFactName), input.getValue()) :
