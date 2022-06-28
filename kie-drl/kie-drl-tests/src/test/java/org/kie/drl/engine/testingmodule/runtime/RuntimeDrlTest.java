@@ -79,7 +79,7 @@ class RuntimeDrlTest {
                 .filter(File::isFile)
                 .collect(Collectors.toSet());
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, onTheFlyPath);
-        compilationManager.processResource(toProcess, memoryCompilerClassLoader);
+        compilationManager.processResource(memoryCompilerClassLoader, toProcess);
         darOutput = runtimeManager.evaluateInput(toEvaluate, memoryCompilerClassLoader);
         assertThat(darOutput).isNotNull().isPresent();
         assertThat(darOutput.get()).isInstanceOf(EfestoOutputDrlKieSessionLocal.class);
