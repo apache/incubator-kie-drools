@@ -92,10 +92,10 @@ public class KieContainerImpl
 
     private KieProject kProject;
 
-    private final Map<String, KieBase> kBases = new ConcurrentHashMap<String, KieBase>();
+    private final Map<String, KieBase> kBases = new ConcurrentHashMap<>();
 
-    private final Map<String, KieSession> kSessions = new ConcurrentHashMap<String, KieSession>();
-    private final Map<String, StatelessKieSession> statelessKSessions = new ConcurrentHashMap<String, StatelessKieSession>();
+    private final Map<String, KieSession> kSessions = new ConcurrentHashMap<>();
+    private final Map<String, StatelessKieSession> statelessKSessions = new ConcurrentHashMap<>();
 
     private final KieRepository        kr;
 
@@ -378,7 +378,7 @@ public class KieContainerImpl
             reloadedClasses.addAll( projectClassLoader.reinitTypes().stream().map( ClassUtils::convertClassToResourcePath ).collect( toList() ) );
         }
 
-        List<Class<?>> classes = new ArrayList<Class<?>>();
+        List<Class<?>> classes = new ArrayList<>();
         for (String resourceName : reloadedClasses) {
             String className = convertResourceToClassName( resourceName );
             byte[] bytes = newKM.getBytes(resourceName);
@@ -716,7 +716,7 @@ public class KieContainerImpl
         sessionConfsCache.clear();
         kBases.values().forEach( kb -> ( (InternalKnowledgeBase) kb ).setKieContainer( null ) );
 
-        Set<DroolsManagementAgent.CBSKey> cbskeys = new HashSet<DroolsManagementAgent.CBSKey>();
+        Set<DroolsManagementAgent.CBSKey> cbskeys = new HashSet<>();
         if ( isMBeanOptionEnabled() ) {
             for (Entry<String, KieSession> kv : kSessions.entrySet()) {
                 cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((RuleBase) kv.getValue().getKieBase()).getId(), kv.getKey()));

@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 public class ScalablePool<T> {
 
-    private final java.util.Queue<T> pool = new ConcurrentLinkedQueue<T>();
+    private final java.util.Queue<T> pool = new ConcurrentLinkedQueue<>();
     private final List<T> resources = Collections.synchronizedList( new ArrayList<>() );
 
     private final Supplier<? extends T> supplier;

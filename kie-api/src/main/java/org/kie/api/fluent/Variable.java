@@ -46,7 +46,7 @@ public class Variable<T> {
     }
     
     public static <T> Variable<T> var(String name, Class<T> type) {
-        return new Variable<T>(name, type);
+        return new Variable<>(name, type);
     }
 
     public Variable<T> value(T value) {

@@ -92,14 +92,14 @@ public class ConnectiveDescr extends RestrictionDescr {
 
     public void add(ConnectiveDescr restriction) {
         if ( this.children == Collections.EMPTY_LIST ) {
-            this.children = new ArrayList<Object>(2);
+            this.children = new ArrayList<>(2);
         }
         this.children.add( restriction );
     }    
     
     public void add(String restriction) {
         if ( this.children == Collections.EMPTY_LIST ) {
-            this.children = new ArrayList<Object>(2);
+            this.children = new ArrayList<>(2);
         }        
         this.children.add( restriction );
     }      

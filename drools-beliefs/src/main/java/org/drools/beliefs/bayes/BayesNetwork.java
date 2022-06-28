@@ -24,18 +24,18 @@ public class BayesNetwork extends GraphImpl<BayesVariable> {
     private String packageName;
 
     public BayesNetwork(String name) {
-        super(new ListGraphStore<BayesVariable>());
+        super(new ListGraphStore<>());
         this.name = name;
     }
 
     public BayesNetwork(String name, String packageName) {
-        super(new ListGraphStore<BayesVariable>());
+        super(new ListGraphStore<>());
         this.name = name;
         this.packageName = packageName;
     }
 
     public BayesNetwork() {
-        super(new ListGraphStore<BayesVariable>());
+        super(new ListGraphStore<>());
     }
 
     public String getName() {

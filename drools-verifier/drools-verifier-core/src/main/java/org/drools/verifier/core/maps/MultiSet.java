@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class MultiSet<K, V> {
 
-    private Map<K, HashSet<V>> map = new HashMap<K, HashSet<V>>();
+    private Map<K, HashSet<V>> map = new HashMap<>();
 
     public boolean isEmpty() {
         return map.isEmpty();
@@ -41,7 +41,7 @@ public class MultiSet<K, V> {
         if (map.containsKey(key)) {
             return map.get(key).add(value);
         } else {
-            HashSet<V> list = new HashSet<V>();
+            HashSet<V> list = new HashSet<>();
             list.add(value);
             map.put(key, list);
             return true;
@@ -58,7 +58,7 @@ public class MultiSet<K, V> {
         if (map.containsKey(key)) {
             return map.get(key).addAll(values);
         } else {
-            HashSet<V> set = new HashSet<V>();
+            HashSet<V> set = new HashSet<>();
             set.addAll(values);
             map.put(key, set);
             return true;
@@ -86,7 +86,7 @@ public class MultiSet<K, V> {
     }
 
     public List<V> allValues() {
-        ArrayList<V> allValues = new ArrayList<V>();
+        ArrayList<V> allValues = new ArrayList<>();
 
         for (K k : keys()) {
             allValues.addAll(get(k));

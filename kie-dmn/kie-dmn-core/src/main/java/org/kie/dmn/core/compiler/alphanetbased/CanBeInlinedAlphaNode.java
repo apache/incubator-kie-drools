@@ -85,11 +85,11 @@ public class CanBeInlinedAlphaNode extends AlphaNode implements CanInlineInANC<L
             // TODO DT-ANC need these twos to keep the two code paths otherwise only the second
             SingleConstraint1<T> constraint;
             if (predicate != null) {
-                constraint = new SingleConstraint1<T>(id, variable, predicate);
+                constraint = new SingleConstraint1<>(id, variable, predicate);
             } else {
                 // TODO DT-ANC predicate information
                 PredicateInformation predicateInformation = PredicateInformation.EMPTY_PREDICATE_INFORMATION;
-                constraint = new SingleConstraint1<T>(id, predicateInformation);
+                constraint = new SingleConstraint1<>(id, predicateInformation);
             }
             constraint.setIndex(index);
             LambdaConstraint lambda = new LambdaConstraint(new ConstraintEvaluator(new Declaration[]{declaration}, constraint));

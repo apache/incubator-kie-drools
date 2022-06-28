@@ -83,7 +83,7 @@ public class CsvLineParser {
         }
 
         /** The fields in the current String */
-        protected List<String> list = new ArrayList<String>();
+        protected List<String> list = new ArrayList<>();
 
         /** the separator char for this parser */
         protected char fieldSep;

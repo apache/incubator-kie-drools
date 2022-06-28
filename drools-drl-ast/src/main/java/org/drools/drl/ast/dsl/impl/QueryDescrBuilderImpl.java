@@ -36,7 +36,7 @@ public class QueryDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuil
 
 
     public AnnotationDescrBuilder<QueryDescrBuilder> newAnnotation( String name ) {
-        AnnotationDescrBuilder<QueryDescrBuilder> annotation = new AnnotationDescrBuilderImpl<QueryDescrBuilder>( this, name );
+        AnnotationDescrBuilder<QueryDescrBuilder> annotation = new AnnotationDescrBuilderImpl<>( this, name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }
@@ -47,7 +47,7 @@ public class QueryDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuil
     }
 
     public CEDescrBuilder<QueryDescrBuilder, AndDescr> lhs() {
-        CEDescrBuilder<QueryDescrBuilder, AndDescr> ce = new CEDescrBuilderImpl<QueryDescrBuilder, AndDescr>( this, new AndDescr() );
+        CEDescrBuilder<QueryDescrBuilder, AndDescr> ce = new CEDescrBuilderImpl<>( this, new AndDescr() );
         descr.setLhs( ce.getDescr() );
         return ce;
     }

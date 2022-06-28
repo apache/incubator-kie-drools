@@ -44,7 +44,7 @@ public class GroupElement extends ConditionalElement
 
     private Type              type                 = null;
 
-    private List<RuleConditionElement> children    = new ArrayList<RuleConditionElement>();
+    private List<RuleConditionElement> children    = new ArrayList<>();
 
     private boolean           root;
     
@@ -420,7 +420,7 @@ public class GroupElement extends ConditionalElement
             } else if ( children.size() == 1 ) {
                 return getOuterDeclarations(children.get(0), consequenceName);
             } else {
-                Map<String, Declaration> declarations = new HashMap<String, Declaration>();
+                Map<String, Declaration> declarations = new HashMap<>();
                 if ( scopeDelimiter == ScopeDelimiter.NEVER ) {
                     for ( RuleConditionElement rce : children ) {
                         declarations.putAll( getOuterDeclarations( rce, consequenceName ) );

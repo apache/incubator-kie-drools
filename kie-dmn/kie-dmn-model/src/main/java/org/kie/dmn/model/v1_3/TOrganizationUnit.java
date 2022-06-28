@@ -30,7 +30,7 @@ public class TOrganizationUnit extends TBusinessContextElement implements Organi
     @Override
     public List<DMNElementReference> getDecisionMade() {
         if (decisionMade == null) {
-            decisionMade = new ArrayList<DMNElementReference>();
+            decisionMade = new ArrayList<>();
         }
         return this.decisionMade;
     }
@@ -38,7 +38,7 @@ public class TOrganizationUnit extends TBusinessContextElement implements Organi
     @Override
     public List<DMNElementReference> getDecisionOwned() {
         if (decisionOwned == null) {
-            decisionOwned = new ArrayList<DMNElementReference>();
+            decisionOwned = new ArrayList<>();
         }
         return this.decisionOwned;
     }

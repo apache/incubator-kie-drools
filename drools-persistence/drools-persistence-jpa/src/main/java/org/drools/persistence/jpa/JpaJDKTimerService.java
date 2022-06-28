@@ -59,7 +59,7 @@ public class JpaJDKTimerService extends JDKTimerService {
 
     public JpaJDKTimerService(int size) {
         super( size );
-        timerInstances = new ConcurrentHashMap<Long, TimerJobInstance>();
+        timerInstances = new ConcurrentHashMap<>();
     }
 
     @Override

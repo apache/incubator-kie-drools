@@ -667,7 +667,7 @@ public class ConditionAnalyzer {
 
     public static class CombinedCondition extends Condition {
         private final boolean isAnd;
-        private List<Condition> conditions = new ArrayList<Condition>();
+        private List<Condition> conditions = new ArrayList<>();
 
         protected CombinedCondition(boolean isAnd, boolean negated) {
             super(negated);
@@ -784,7 +784,7 @@ public class ConditionAnalyzer {
 
     public static class EvaluatedExpression implements Expression {
         Expression firstExpression;
-        final List<Invocation> invocations = new ArrayList<Invocation>();
+        final List<Invocation> invocations = new ArrayList<>();
 
         EvaluatedExpression () { }
 
@@ -892,7 +892,7 @@ public class ConditionAnalyzer {
 
     public static class ArrayCreationExpression implements Expression {
         private final Class<?> arrayType;
-        final List<Expression> items = new ArrayList<Expression>();
+        final List<Expression> items = new ArrayList<>();
 
         public ArrayCreationExpression(Class<?> arrayType) {
             this.arrayType = arrayType;
@@ -929,7 +929,7 @@ public class ConditionAnalyzer {
     }
 
     public static abstract class Invocation {
-        private final List<Expression> arguments = new ArrayList<Expression>();
+        private final List<Expression> arguments = new ArrayList<>();
 
         public List<Expression> getArguments() {
             return arguments;

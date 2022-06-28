@@ -83,7 +83,7 @@ public class SerializableActivation
     }
 
     public List<Object> getObjects() {
-        List<Object> objects = new ArrayList<Object>( this.factHandles.size() );
+        List<Object> objects = new ArrayList<>( this.factHandles.size() );
         for( FactHandle handle : this.factHandles ) {
             objects.add( ((InternalFactHandle)handle).getObject() );
         }
@@ -96,7 +96,7 @@ public class SerializableActivation
     }
 
     public List<String> getDeclarationIds() {
-        List<String> decls = new ArrayList<String>();
+        List<String> decls = new ArrayList<>();
         for( Declaration decl : this.declarations ) {
             decls.add( decl.getIdentifier() );
         }

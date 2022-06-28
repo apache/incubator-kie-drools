@@ -133,8 +133,8 @@ public class DroolsJaxbHelperProviderImpl
 
         boolean useProjectClassLoader = kBuilder.getRootClassLoader() instanceof ProjectClassLoader;
 
-        List<String> classNames = new ArrayList<String>();
-        List<String> srcNames = new ArrayList<String>();
+        List<String> classNames = new ArrayList<>();
+        List<String> srcNames = new ArrayList<>();
 
         for ( Entry<String, byte[]> entry : codeWriter.getMap().entrySet() ) {
             String name = entry.getKey();
@@ -260,7 +260,7 @@ public class DroolsJaxbHelperProviderImpl
         private String                    currentPath;
 
         public MapVfsCodeWriter() {
-            this.map = new LinkedHashMap<String, byte[]>();
+            this.map = new LinkedHashMap<>();
         }
 
         public OutputStream openBinary(JPackage pkg,

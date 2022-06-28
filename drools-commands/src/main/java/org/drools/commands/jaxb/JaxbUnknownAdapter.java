@@ -57,7 +57,7 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
     @Override
     public Object marshal( Object o ) throws Exception {
         try {
-            return recursiveMarshal(o, new IdentityHashMap<Object, Object>());
+            return recursiveMarshal(o, new IdentityHashMap<>());
         } catch( Exception e ) {
             // because exceptions are always swallowed by JAXB
             logger.error("Unable to marshal " + o.getClass().getName() + " instance: " + e.getMessage(), e);
@@ -83,8 +83,8 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
                 return new JaxbListWrapper(serializedArr, JaxbWrapperType.SET);
             } else if( o instanceof Map ) {
                 Map<Object, Object> map = (Map<Object, Object>) o;
-                List<JaxbStringObjectPair> pairList = new ArrayList<JaxbStringObjectPair>(map.size());
-                if( map == null || map.isEmpty() ) {
+                List<JaxbStringObjectPair> pairList = new ArrayList<>(map.size());
+                if( map.isEmpty() ) {
                     pairList = Collections.EMPTY_LIST;
                 }
 
@@ -126,7 +126,7 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
     }
 
     private Object[] convertCollectionToSerializedArray( Collection collection, Map<Object, Object> seenObjectsMap ) {
-        List<Object> serializedList = new ArrayList<Object>(collection.size());
+        List<Object> serializedList = new ArrayList<>(collection.size());
         for( Object elem : collection ) {
             elem = convertObjectToSerializableVariant(elem, seenObjectsMap);
             serializedList.add(elem);
@@ -168,18 +168,18 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
                 size = elements.length;
             }
             if( wrapper.getType() == null ) {
-                List<Object> list = new ArrayList<Object>(size);
+                List<Object> list = new ArrayList<>(size);
                 return convertSerializedElementsToCollection(elements, list);
             } else {
                 switch ( wrapper.getType() ) {
                 case LIST:
-                    List<Object> list = new ArrayList<Object>(size);
+                    List<Object> list = new ArrayList<>(size);
                     return convertSerializedElementsToCollection(elements, list);
                 case SET:
-                    Set<Object> set = new HashSet<Object>(size);
+                    Set<Object> set = new HashSet<>(size);
                     return convertSerializedElementsToCollection(elements, set);
                 case MAP:
-                    Map<String, Object> map = new HashMap<String, Object>(size);
+                    Map<String, Object> map = new HashMap<>(size);
                     if( size > 0 ) {
                         for( Object keyValueObj : elements ) {
                             JaxbStringObjectPair keyValue = (JaxbStringObjectPair) keyValueObj;
@@ -209,7 +209,7 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
         } else if( o instanceof JaxbStringObjectPair[] ) {
             // backwards compatibile: remove in 7.0.x
             JaxbStringObjectPair[] value = (JaxbStringObjectPair[]) o;
-            Map<Object, Object> r = new HashMap<Object, Object>();
+            Map<Object, Object> r = new HashMap<>();
             for( JaxbStringObjectPair p : value ) {
                 if( p.getValue() instanceof JaxbListWrapper ) {
                     r.put(p.getKey(), new ArrayList(Arrays.asList(((JaxbListWrapper) p.getValue()).getElements())));
@@ -224,7 +224,7 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
     }
 
     // idea stolen from org.apache.commons.lang3.ClassUtils
-    private static final Map<String, String> classToArrayTypeMap = new HashMap<String, String>();
+    private static final Map<String, String> classToArrayTypeMap = new HashMap<>();
     static {
         classToArrayTypeMap.put("int", "I");
         classToArrayTypeMap.put("boolean", "Z");
@@ -263,7 +263,7 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
         if( elements == null ) {
             list = Collections.EMPTY_LIST;
         } else {
-            list = new ArrayList<Object>(elements.length);
+            list = new ArrayList<>(elements.length);
             for( Object elem : elements ) {
                 elem = convertSerializedObjectToObject(elem);
                 list.add(elem);

@@ -64,7 +64,7 @@ public class PetStoreExample {
 
     public void init(KieContainer kc, boolean exitOnClose) {
         //RuleB
-        Vector<Product> stock = new Vector<Product>();
+        Vector<Product> stock = new Vector<>();
         stock.add( new Product( "Gold Fish",
                                 5 ) );
         stock.add( new Product( "Fish Tank",
@@ -322,7 +322,7 @@ public class PetStoreExample {
 
         public TableModel() {
             super();
-            items = new ArrayList<Product>();
+            items = new ArrayList<>();
         }
 
         public int getColumnCount() {
@@ -445,7 +445,7 @@ public class PetStoreExample {
         private static String newline         = System.getProperty( "line.separator" );
 
         public Order() {
-            this.items = new ArrayList<Purchase>();
+            this.items = new ArrayList<>();
         }
 
         public void addItem(Purchase item) {

@@ -34,7 +34,7 @@ public class ExecutableImpl implements InternalExecutable,
     private List<Batch> batches;
 
     public ExecutableImpl() {
-        batches = new ArrayList<Batch>();
+        batches = new ArrayList<>();
     }
 
     public ExecutableBuilder getExecutableBuilder() {

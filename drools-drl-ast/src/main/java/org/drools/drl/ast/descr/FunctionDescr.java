@@ -82,12 +82,12 @@ public class FunctionDescr extends BaseDescr implements Namespaceable {
     public void addParameter( final String type,
                               final String name ) {
         if ( this.parameterTypes == Collections.EMPTY_LIST ) {
-            this.parameterTypes = new ArrayList<String>();
+            this.parameterTypes = new ArrayList<>();
         }
         this.parameterTypes.add( type );
 
         if ( this.parameterNames == Collections.EMPTY_LIST ) {
-            this.parameterNames = new ArrayList<String>();
+            this.parameterNames = new ArrayList<>();
         }
         this.parameterNames.add( name );
     }

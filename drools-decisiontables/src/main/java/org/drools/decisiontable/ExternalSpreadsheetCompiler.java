@@ -163,7 +163,7 @@ public class ExternalSpreadsheetCompiler {
     public String compile(final InputStream xlsStream,
                           final InputType type,
                           final TemplateDataListener listener) {
-        ArrayList<DataListener> listeners = new ArrayList<DataListener>();
+        ArrayList<DataListener> listeners = new ArrayList<>();
         listeners.add( listener );
         compile( xlsStream,
                  type,
@@ -174,8 +174,8 @@ public class ExternalSpreadsheetCompiler {
     public String compile(final InputStream xlsStream,
                           final String worksheetName,
                           final TemplateDataListener listener) {
-        Map<String, List<DataListener>> listeners = new HashMap<String, List<DataListener>>();
-        List<DataListener> l = new ArrayList<DataListener>();
+        Map<String, List<DataListener>> listeners = new HashMap<>();
+        List<DataListener> l = new ArrayList<>();
         l.add( listener );
         listeners.put( worksheetName,
                        l );

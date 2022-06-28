@@ -36,7 +36,7 @@ public class ChecksRepeatingCommand
     private boolean isCancelled = false;
     private int currentStartIndex = 0;
 
-    private ArrayList<Check> checksToRun = new ArrayList<Check>();
+    private ArrayList<Check> checksToRun = new ArrayList<>();
 
     private StatusUpdate onStatus;
     private Command onCompletion;

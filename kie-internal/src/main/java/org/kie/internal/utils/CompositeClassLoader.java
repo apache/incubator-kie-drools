@@ -36,8 +36,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class CompositeClassLoader extends ClassLoader {
     /* Assumption: modifications are really rare, but iterations are frequent. */
-    private final List<ClassLoader>       classLoaders = new CopyOnWriteArrayList<ClassLoader>();
-    private final AtomicReference<Loader> loader       = new AtomicReference<Loader>();
+    private final List<ClassLoader>       classLoaders = new CopyOnWriteArrayList<>();
+    private final AtomicReference<Loader> loader       = new AtomicReference<>();
 
     public CompositeClassLoader() {
         super( null );
@@ -157,7 +157,7 @@ public class CompositeClassLoader extends ClassLoader {
 
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
-        CompositeEnumeration<URL> enumerations = new CompositeEnumeration<URL>();
+        CompositeEnumeration<URL> enumerations = new CompositeEnumeration<>();
 
         for ( final ClassLoader classLoader : this.classLoaders ) {
             Enumeration<URL> e = classLoader.getResources( name );
@@ -241,7 +241,7 @@ public class CompositeClassLoader extends ClassLoader {
         implements
         Loader {
 
-        private final Map<String, Object> classLoaderResultMap = new HashMap<String, Object>();
+        private final Map<String, Object> classLoaderResultMap = new HashMap<>();
         public long                       successfulCalls      = 0;
         public long                       failedCalls          = 0;
         public long                       cacheHits            = 0;
@@ -322,7 +322,7 @@ public class CompositeClassLoader extends ClassLoader {
             }
 
             if ( this.list == null ) {
-                this.list = new ArrayList<URL>();
+                this.list = new ArrayList<>();
             }
 
             while ( enumeration.hasMoreElements() ) {

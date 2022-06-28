@@ -35,8 +35,8 @@ public class KieModuleModelImpl implements KieModuleModel {
     public static final PortablePath KMODULE_SPRING_JAR_PATH = PortablePath.of("META-INF/kmodule-spring.xml");
     public static final PortablePath KMODULE_SRC_PATH = PortablePath.of("src/main/resources").resolve(KMODULE_JAR_PATH);
 
-    private Map<String, String> confProps = new HashMap<String, String>();
-    private Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();
+    private Map<String, String> confProps = new HashMap<>();
+    private Map<String, KieBaseModel> kBases = new HashMap<>();
 
     public KieModuleModelImpl() { }
 
@@ -62,7 +62,7 @@ public class KieModuleModelImpl implements KieModuleModel {
      */
     public KieBaseModel newKieBaseModel(String name) {
         KieBaseModel kbase = new KieBaseModelImpl(this, name);
-        Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
+        Map<String, KieBaseModel> newMap = new HashMap<>();
         newMap.putAll( this.kBases );
         newMap.put( kbase.getName(), kbase );
         setKBases( newMap );
@@ -74,7 +74,7 @@ public class KieModuleModelImpl implements KieModuleModel {
      * @see org.kie.kModule.KieProject#removeKieBaseModel(org.kie.kModule.KieBaseModel)
      */
     public void removeKieBaseModel(String qName) {
-        Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
+        Map<String, KieBaseModel> newMap = new HashMap<>();
         newMap.putAll( this.kBases );
         newMap.remove( qName );
         setKBases( newMap );
@@ -84,7 +84,7 @@ public class KieModuleModelImpl implements KieModuleModel {
      * @see org.kie.kModule.KieProject#removeKieBaseModel(org.kie.kModule.KieBaseModel)
      */
     public void moveKBase(String oldQName, String newQName) {
-        Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
+        Map<String, KieBaseModel> newMap = new HashMap<>();
         newMap.putAll( this.kBases );
         KieBaseModel kieBaseModel = newMap.remove( oldQName );
         newMap.put( newQName, kieBaseModel);

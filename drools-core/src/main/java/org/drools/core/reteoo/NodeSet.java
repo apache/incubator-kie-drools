@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 public class NodeSet implements Iterable<BaseNode> {
-    private final List<BaseNode> nodes = new ArrayList<BaseNode>();
-    private final Set<Integer> nodeIds = new HashSet<Integer>();
+    private final List<BaseNode> nodes = new ArrayList<>();
+    private final Set<Integer> nodeIds = new HashSet<>();
 
     public List<BaseNode> getNodes() {
         return nodes;

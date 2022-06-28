@@ -36,7 +36,7 @@ public class EnumDeclarationDescrBuilderImpl extends BaseDescrBuilderImpl<Packag
 
 
     public AnnotationDescrBuilder<EnumDeclarationDescrBuilder> newAnnotation( String name ) {
-        AnnotationDescrBuilder<EnumDeclarationDescrBuilder> annotation = new AnnotationDescrBuilderImpl<EnumDeclarationDescrBuilder>( this, name );
+        AnnotationDescrBuilder<EnumDeclarationDescrBuilder> annotation = new AnnotationDescrBuilderImpl<>( this, name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }

@@ -26,8 +26,8 @@ public class IncrementalResultsImpl implements IncrementalResults {
 
     private long          idGenerator = 1L;
 
-    private List<Message> addedMessages = new ArrayList<Message>();
-    private List<Message> removedMessages = new ArrayList<Message>();
+    private List<Message> addedMessages = new ArrayList<>();
+    private List<Message> removedMessages = new ArrayList<>();
 
     @Override
     public List<Message> getAddedMessages() {

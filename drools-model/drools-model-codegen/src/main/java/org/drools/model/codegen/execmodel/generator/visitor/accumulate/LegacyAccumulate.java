@@ -115,7 +115,7 @@ public class LegacyAccumulate {
         final String generatedClassName = invokerGenerated.getGeneratedClass().getName().asString();
         String typeWithPackage = String.format("%s.%s", packageName, generatedClassName);
 
-        Expression accExpr = new MethodReferenceExpr(new NameExpr( typeWithPackage ), new NodeList<Type>(), "new");
+        Expression accExpr = new MethodReferenceExpr(new NameExpr( typeWithPackage ), new NodeList<>(), "new");
         MethodCallExpr accFunctionCall = createDslTopLevelMethod(ACC_FUNCTION_CALL, nodeList(accExpr));
 
         if (accumulate.getRequiredDeclarations().length > 0) {

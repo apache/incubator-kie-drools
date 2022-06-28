@@ -35,7 +35,7 @@ public class TrackableTimeJobFactoryManager
     protected final Map<Long, TimerJobInstance> timerInstances;
 
     public TrackableTimeJobFactoryManager() {
-        this(new HashMap<Long, TimerJobInstance>());
+        this(new HashMap<>());
     }
 
     protected TrackableTimeJobFactoryManager(Map<Long, TimerJobInstance> timerInstances) {

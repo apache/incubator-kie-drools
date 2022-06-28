@@ -79,7 +79,7 @@ class FullArgumentConstructor implements GeneratedConstructor {
 
     @Override
     public void generateConstructor(Collection<FieldDefinition> inheritedFields, List<FieldDefinition> keyFields) {
-        NodeList<Modifier> modifiers = publicConstructor ? new NodeList<>(Modifier.publicModifier()) : new NodeList<Modifier>();
+        NodeList<Modifier> modifiers = publicConstructor ? new NodeList<>(Modifier.publicModifier()) : new NodeList<>();
         ConstructorDeclaration constructor = new ConstructorDeclaration(modifiers, generatedClass.getNameAsString());
         NodeList<Statement> fieldAssignStatement = nodeList();
 

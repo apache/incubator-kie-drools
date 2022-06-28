@@ -50,7 +50,7 @@ public class Severity implements Comparable<Severity> {
     }
 
     public static Collection<Severity> values() {
-        Collection<Severity> all = new ArrayList<Severity>();
+        Collection<Severity> all = new ArrayList<>();
 
         all.add(NOTE);
         all.add(WARNING);

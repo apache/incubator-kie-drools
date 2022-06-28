@@ -75,7 +75,7 @@ public class RuleMatrixSheetListener extends DefaultRuleSheetListener {
     private String             _action;
     private String             _horizontalCondition;
     private String             _verticalCondition;
-    private List<Condition>    _horizontalConditions   = new ArrayList<Condition>();
+    private List<Condition>    _horizontalConditions   = new ArrayList<>();
     private Condition          _currentVerticalCondition;
     private boolean            isInRuleTable;
     private Rule               firstRule;

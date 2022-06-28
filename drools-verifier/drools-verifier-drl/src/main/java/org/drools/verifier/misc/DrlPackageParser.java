@@ -90,11 +90,11 @@ public class DrlPackageParser {
                                      DrlRuleParser.findRulesDataFromDrl( drl ),
                                      findGlobals( drl ),
                                      comment.metadata,
-                                     new HashMap<String, List<String>>() );
+                                     new HashMap<>() );
     }
 
     public static List<String> findGlobals(String drl) {
-        List<String> globals = new ArrayList<String>();
+        List<String> globals = new ArrayList<>();
         Matcher gm = globalFinder.matcher( drl );
 
         while ( gm.find() ) {
@@ -123,7 +123,7 @@ public class DrlPackageParser {
     }
 
     private static List<String> findMetaData(String text) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
 
         while ( text.contains( "@" ) ) {
             int start = text.indexOf( '@' );

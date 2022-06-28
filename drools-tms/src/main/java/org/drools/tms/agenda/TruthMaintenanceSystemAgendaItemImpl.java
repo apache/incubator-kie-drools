@@ -53,7 +53,7 @@ public class TruthMaintenanceSystemAgendaItemImpl<T extends ModedAssertion<T>> e
         // now ad the blocker to the blocked's list - we need to check that references are null first
         TruthMaintenanceSystemAgendaItemImpl blocked = (TruthMaintenanceSystemAgendaItemImpl) dep.getJustified();
         if (blocked.blockers == null) {
-            blocked.blockers = new LinkedList<SimpleMode>();
+            blocked.blockers = new LinkedList<>();
             blocked.blockers.add( dep.getMode());
         } else if (dep.getMode().getNext() == null && dep.getMode().getPrevious() == null && blocked.getBlockers().getFirst() != dep.getMode()) {
             blocked.blockers.add(dep.getMode());

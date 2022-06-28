@@ -73,7 +73,7 @@ public class ResultSetGenerator {
      */
     public String compile(final ResultSet rs,
                           final TemplateDataListener listener) {
-        List<DataListener> listeners = new ArrayList<DataListener>();
+        List<DataListener> listeners = new ArrayList<>();
         listeners.add(listener);
         processData(rs,
                     listeners);

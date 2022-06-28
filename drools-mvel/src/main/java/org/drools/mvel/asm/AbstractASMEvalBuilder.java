@@ -53,7 +53,7 @@ public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
                                                                           new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ),
                                                                                                 context ) );
 
-        List<Declaration> requiredDeclarations = new ArrayList<Declaration>();
+        List<Declaration> requiredDeclarations = new ArrayList<>();
         for (String usedIdentifier : analysis.getIdentifiers()) {
             Declaration usedDec = decls.get(usedIdentifier);
             if (usedDec != null) {
@@ -103,7 +103,7 @@ public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
 
     private Declaration[] getUsedDeclarations(RuleBuildContext context, Pattern pattern, AnalysisResult analysis) {
         BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-        final List<Declaration> declarations = new ArrayList<Declaration>();
+        final List<Declaration> declarations = new ArrayList<>();
 
         for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
             declarations.add( context.getDeclarationResolver().getDeclaration( id ) );

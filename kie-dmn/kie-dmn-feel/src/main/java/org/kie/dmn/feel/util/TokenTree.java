@@ -25,7 +25,7 @@ public class TokenTree {
 
     public TokenTree() {
         root = new Node();
-        root.children = new ArrayList<Node>();
+        root.children = new ArrayList<>();
     }
 
     public void addName( List<String> tokens ) {

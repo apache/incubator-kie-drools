@@ -28,7 +28,7 @@ public class TList extends TExpression implements List {
     @Override
     public java.util.List<Expression> getExpression() {
         if (expression == null) {
-            expression = new ArrayList<Expression>();
+            expression = new ArrayList<>();
         }
         return this.expression;
     }

@@ -89,7 +89,7 @@ public class ActionType {
 
     public static final EnumSet<Code> ATTRIBUTE_CODE_SET = EnumSet.range( Code.SALIENCE, Code.DATEEXPIRES );
 
-    private static final Map<String, Code> tag2code = new HashMap<String, Code>();
+    private static final Map<String, Code> tag2code = new HashMap<>();
 
     static {
         for ( Code code : EnumSet.allOf( Code.class ) ) {

@@ -38,7 +38,7 @@ public class DialectRuntimeRegistry
     private Map<String, LineMappings> lineMappings = new ConcurrentHashMap<>();
 
     public DialectRuntimeRegistry() {
-        this.dialects = new HashMap<String, DialectRuntimeData>();
+        this.dialects = new HashMap<>();
     }
 
     /**

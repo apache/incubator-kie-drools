@@ -25,14 +25,14 @@ import java.util.List;
 
 public class KieScannersRegistry {
 
-    private static List<WeakReference<InternalKieScanner>> scanners = new ArrayList<WeakReference<InternalKieScanner>>();
+    private static List<WeakReference<InternalKieScanner>> scanners = new ArrayList<>();
 
     static void register(InternalKieScanner scanner) {
-        scanners.add(new WeakReference<InternalKieScanner>(scanner));
+        scanners.add(new WeakReference<>(scanner));
     }
 
     public static Collection<InternalKieScanner> getAllKieScanners() {
-        List<InternalKieScanner> allScanners = new ArrayList<InternalKieScanner>();
+        List<InternalKieScanner> allScanners = new ArrayList<>();
         Iterator<WeakReference<InternalKieScanner>> i = scanners.iterator();
         while (i.hasNext()) {
             InternalKieScanner scanner = i.next().get();

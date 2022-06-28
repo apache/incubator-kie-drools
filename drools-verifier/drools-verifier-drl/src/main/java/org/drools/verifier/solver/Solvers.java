@@ -34,8 +34,8 @@ public class Solvers {
     private RuleSolver       ruleSolver        = null;
     private PatternSolver    patternSolver     = null;
 
-    private List<SubPattern> subPatterns       = new ArrayList<SubPattern>();
-    private List<SubRule>    rulePossibilities = new ArrayList<SubRule>();
+    private List<SubPattern> subPatterns       = new ArrayList<>();
+    private List<SubRule>    rulePossibilities = new ArrayList<>();
 
     private int              subRuleIndex      = 0;
     private int              subPatternIndex   = 0;

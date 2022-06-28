@@ -83,7 +83,7 @@ public class DataDrivenTemplateExample {
     }
 
     public void testCompiler() {
-        ArrayList<FeeScheduleRule> rules = new ArrayList<FeeScheduleRule>();
+        ArrayList<FeeScheduleRule> rules = new ArrayList<>();
         FeeScheduleType standard = new FeeScheduleType( "STANDARD" );
         FeeScheduleType flat = new FeeScheduleType( "FLAT" );
         ProductType sblc = new ProductType( "SBLC" );

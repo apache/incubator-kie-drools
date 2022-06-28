@@ -26,7 +26,7 @@ import org.drools.core.reteoo.Tuple;
 public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements List<T>{
 
     public ReactiveList() {
-        this(new ArrayList<T>());
+        this(new ArrayList<>());
     }
     
     public ReactiveList(List<T> wrapped) {
@@ -110,7 +110,7 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
-        ReactiveList<T> result = new ReactiveList<T>( wrapped.subList(fromIndex, toIndex) );
+        ReactiveList<T> result = new ReactiveList<>( wrapped.subList(fromIndex, toIndex) );
         for ( Tuple lts : getLeftTuples() ) {
             result.addLeftTuple( lts );
         }

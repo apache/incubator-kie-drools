@@ -204,19 +204,19 @@ public interface InternalKieModule extends KieModule, Serializable {
     class CompilationCache implements Serializable {
         private static final long serialVersionUID = 3812243055974412935L;
         // this is a { DIALECT -> ( RESOURCE, List<CompilationEntry> ) } cache
-        protected final Map<String, Map<String, List<CompilationCacheEntry>>> compilationCache = new HashMap<String, Map<String, List<CompilationCacheEntry>>>();
+        protected final Map<String, Map<String, List<CompilationCacheEntry>>> compilationCache = new HashMap<>();
 
         public void addEntry(String dialect, String className, byte[] bytecode) {
             Map<String, List<CompilationCacheEntry>> resourceEntries = compilationCache.get(dialect);
             if( resourceEntries == null ) {
-                resourceEntries = new HashMap<String, List<CompilationCacheEntry>>();
+                resourceEntries = new HashMap<>();
                 compilationCache.put(dialect, resourceEntries);
             }
 
             String key = className.contains("$") ? className.substring(0, className.indexOf('$') ) + ".class" : className;
             List<CompilationCacheEntry> bytes = resourceEntries.get(key);
             if( bytes == null ) {
-                bytes = new ArrayList<CompilationCacheEntry>();
+                bytes = new ArrayList<>();
                 resourceEntries.put(key, bytes);
             }
             //System.out.println(String.format("Adding to in-memory cache: %s %s", key, className ));

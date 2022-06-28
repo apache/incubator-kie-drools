@@ -144,7 +144,7 @@ public class CompositePackageDescr extends PackageDescr {
     }
     
     public static class CompositeAssetFilter implements AssetFilter {
-        public List<AssetFilter> filters = new ArrayList<AssetFilter>();
+        public List<AssetFilter> filters = new ArrayList<>();
 
         @Override
         public Action accept(ResourceChange.Type type, String pkgName, String assetName) {

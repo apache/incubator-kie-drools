@@ -77,7 +77,7 @@ public interface AgendaItem extends Activation {
 
     default List<Object> getObjects(Tuple tuple) {
         FactHandle[] factHandles = tuple.toFactHandles();
-        List<Object> list = new ArrayList<Object>(factHandles.length);
+        List<Object> list = new ArrayList<>(factHandles.length);
         for (FactHandle factHandle : factHandles) {
             Object o = ((InternalFactHandle) factHandle).getObject();
             if (!(o instanceof QueryElementFactHandle)) {

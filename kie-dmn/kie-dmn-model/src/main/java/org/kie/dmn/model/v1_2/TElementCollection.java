@@ -29,7 +29,7 @@ public class TElementCollection extends TNamedElement implements ElementCollecti
     @Override
     public List<DMNElementReference> getDrgElement() {
         if (drgElement == null) {
-            drgElement = new ArrayList<DMNElementReference>();
+            drgElement = new ArrayList<>();
         }
         return this.drgElement;
     }

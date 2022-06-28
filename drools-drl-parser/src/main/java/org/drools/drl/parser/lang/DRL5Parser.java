@@ -3898,7 +3898,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                DroolsEditorType.SYMBOL );
         if ( state.failed ) return null;
 
-        List<String> parameters = new ArrayList<String>();
+        List<String> parameters = new ArrayList<>();
         if ( input.LA( 1 ) != DRL5Lexer.EOF && input.LA( 1 ) != DRL5Lexer.RIGHT_PAREN ) {
             String param = conditionalExpression();
             if ( state.failed ) return null;

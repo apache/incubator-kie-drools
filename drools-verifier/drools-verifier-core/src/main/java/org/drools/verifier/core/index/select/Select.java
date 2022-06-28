@@ -92,7 +92,7 @@ public class Select<T> {
                 if (list == null) {
                     return null;
                 }
-                return new Entry<T>(key,
+                return new Entry<>(key,
                                     list.get(list.size() - 1));
             } catch (NoSuchElementException e) {
                 return null;

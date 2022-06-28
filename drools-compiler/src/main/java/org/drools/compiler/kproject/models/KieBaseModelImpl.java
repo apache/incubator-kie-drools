@@ -48,7 +48,7 @@ public class KieBaseModelImpl
 
     private String                       name;
 
-    private Set<String>                  includes= new HashSet<String>();
+    private Set<String>                  includes= new HashSet<>();
 
     private List<String>                 packages;
 
@@ -66,13 +66,13 @@ public class KieBaseModelImpl
 
     private BetaRangeIndexOption         betaRangeIndexOption = BetaRangeIndexOption.DISABLED;
 
-    private Map<String, KieSessionModel> kSessions = new HashMap<String, KieSessionModel>();
+    private Map<String, KieSessionModel> kSessions = new HashMap<>();
 
     private KieModuleModel               kModule;
     
     private String                       scope = "javax.enterprise.context.ApplicationScoped";
 
-    private List<RuleTemplateModel>      ruleTemplates = new ArrayList<RuleTemplateModel>();
+    private List<RuleTemplateModel>      ruleTemplates = new ArrayList<>();
 
     private boolean                      isDefault = false;
 
@@ -106,7 +106,7 @@ public class KieBaseModelImpl
 
     public KieBaseModel addPackage(String pkg) {
         if ( packages == null ) {
-            packages = new ArrayList<String>();
+            packages = new ArrayList<>();
         }
         packages.add( pkg );
         return this;
@@ -150,7 +150,7 @@ public class KieBaseModelImpl
      */
     public KieSessionModel newKieSessionModel(String name) {
         KieSessionModel kieSessionModel = new KieSessionModelImpl( this, name );
-        Map<String, KieSessionModel> newMap = new HashMap<String, KieSessionModel>();
+        Map<String, KieSessionModel> newMap = new HashMap<>();
         newMap.putAll( this.kSessions );
         newMap.put( kieSessionModel.getName(), kieSessionModel );
         setKSessions( newMap );
@@ -162,7 +162,7 @@ public class KieBaseModelImpl
      * @see org.kie.kproject.KieBaseModel#removeKieSessionModel(org.kie.kproject.KieSessionModelImpl)
      */
     public KieBaseModel removeKieSessionModel(String qName) {
-        Map<String, KieSessionModel> newMap = new HashMap<String, KieSessionModel>();
+        Map<String, KieSessionModel> newMap = new HashMap<>();
         newMap.putAll( this.kSessions );
         newMap.remove(qName);
         setKSessions(newMap);
@@ -171,7 +171,7 @@ public class KieBaseModelImpl
 
     public void moveKSession(String oldQName,
                              String newQName) {
-        Map<String, KieSessionModel> newMap = new HashMap<String, KieSessionModel>();
+        Map<String, KieSessionModel> newMap = new HashMap<>();
         newMap.putAll( this.kSessions );
         KieSessionModel kieSessionModel = newMap.remove( oldQName );
         newMap.put(newQName, kieSessionModel);
@@ -315,7 +315,7 @@ public class KieBaseModelImpl
 
     public static List<String> getFiles(String kBaseName,
                                         ZipFile zipFile) {
-        List<String> files = new ArrayList<String>();
+        List<String> files = new ArrayList<>();
         Enumeration< ? extends ZipEntry> zipEntries = zipFile.entries();
         while ( zipEntries.hasMoreElements() ) {
             ZipEntry zipEntry = zipEntries.nextElement();

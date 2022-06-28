@@ -275,7 +275,7 @@ public class Pattern
 
     public void addConstraint(int index, Constraint constraint) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
-            this.constraints = new ArrayList<Constraint>( 1 );
+            this.constraints = new ArrayList<>( 1 );
         }
         if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
             this.setConstraintType( (MutableTypeConstraint) constraint );
@@ -287,7 +287,7 @@ public class Pattern
 
     public void addConstraints(Collection<Constraint> constraints) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
-            this.constraints = new ArrayList<Constraint>( constraints.size() );
+            this.constraints = new ArrayList<>( constraints.size() );
         }
         for (Constraint constraint : constraints) {
             if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
@@ -301,7 +301,7 @@ public class Pattern
 
     public void addConstraint(Constraint constraint) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
-            this.constraints = new ArrayList<Constraint>( 1 );
+            this.constraints = new ArrayList<>( 1 );
         }
         if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
             this.setConstraintType( (MutableTypeConstraint) constraint );
@@ -339,7 +339,7 @@ public class Pattern
     
     public void addDeclaration(final Declaration decl) {
         if ( this.declarations == Collections.EMPTY_MAP ) {
-            this.declarations = new HashMap<String, Declaration>();
+            this.declarations = new HashMap<>();
         }        
         this.declarations.put( decl.getIdentifier(), decl );
     }
@@ -499,7 +499,7 @@ public class Pattern
 
     public void addBehavior(Behavior behavior) {
         if ( this.behaviors == null ) {
-            this.behaviors = new ArrayList<Behavior>();
+            this.behaviors = new ArrayList<>();
         }
         this.behaviors.add( behavior );
     }
@@ -550,7 +550,7 @@ public class Pattern
 
     public Map<String, AnnotationDefinition> getAnnotations() {
         if ( annotations == null ) {
-            annotations = new HashMap<String, AnnotationDefinition>();
+            annotations = new HashMap<>();
         }
         return annotations;
     }

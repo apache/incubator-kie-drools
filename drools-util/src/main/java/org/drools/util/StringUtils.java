@@ -347,7 +347,7 @@ public class StringUtils {
         if ( len == 0 ) {
             return EMPTY_STRING_ARRAY;
         }
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
         int sizePlus1 = 1;
         int i = 0, start = 0;
         boolean match = false;
@@ -1003,7 +1003,7 @@ public class StringUtils {
     }
 
     public static List<String> codeAwareSplitOnChar(CharSequence string, boolean trimArgs, char... chs) {
-        List<String> args = new ArrayList<String>();
+        List<String> args = new ArrayList<>();
         int lastStart = 0;
         int nestedParam = 0;
         boolean isSingleQuoted = false;

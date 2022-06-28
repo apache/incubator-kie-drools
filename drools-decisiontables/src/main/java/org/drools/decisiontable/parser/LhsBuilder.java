@@ -55,7 +55,7 @@ public class LhsBuilder implements SourceBuilder {
     private static Set<String> annotations;
 
     static {
-        operators = new HashSet<String>();
+        operators = new HashSet<>();
         operators.add( "==" );
         operators.add( "=" );
         operators.add( "!=" );
@@ -70,7 +70,7 @@ public class LhsBuilder implements SourceBuilder {
         operators.add( "str[endsWith]" );
         operators.add( "str[length]" );
 
-        annotations = new HashSet<String>();
+        annotations = new HashSet<>();
         annotations.add( "@watch" );
     }
 
@@ -89,9 +89,9 @@ public class LhsBuilder implements SourceBuilder {
                        String colDefinition ) {
         this.headerRow = row;
         this.headerCol = column;
-        this.constraints = new HashMap<Integer, String>();
+        this.constraints = new HashMap<>();
         this.fieldTypes = new HashMap<>();
-        this.values = new ArrayList<String>();
+        this.values = new ArrayList<>();
         this.forAll = false;
 
         String colDef = colDefinition == null ? "" : colDefinition;

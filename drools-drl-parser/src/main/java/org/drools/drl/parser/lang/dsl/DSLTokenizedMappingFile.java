@@ -48,7 +48,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
     // Original line lengths, for fixing error messages.
     private List<Integer> lineLengths;
     // Option keywords, i.e., anything on a #/ line.
-    private Set<String> optionSet = new HashSet<String>();
+    private Set<String> optionSet = new HashSet<>();
 
     /**
      * Read a DSL file and convert it to a String. Comment lines are removed.
@@ -60,7 +60,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
      * @throws IOException
      */
     private String readFile( Reader reader ) throws IOException {
-        lineLengths = new ArrayList<Integer>();
+        lineLengths = new ArrayList<>();
         lineLengths.add( null );
         LineNumberReader lnr = new LineNumberReader( reader );
         StringBuilder sb = new StringBuilder();
@@ -108,7 +108,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
 
     @Override
     public boolean parseAndLoad(Reader dsl) throws IOException {
-        List<ParserError> errors = new ArrayList<ParserError>();
+        List<ParserError> errors = new ArrayList<>();
         String text = readFile( dsl );
         dsl = new StringReader( text );
 
@@ -116,7 +116,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
             DSLMapping mapping = buildFileMapping(errors, dsl);
             mapping.setOptions( optionSet );
             setMapping( mapping );
-            List<ParserError> moderr = new ArrayList<ParserError>();
+            List<ParserError> moderr = new ArrayList<>();
             for( ParserError err: errors ){
                 int row = err.getRow();
                 int col = err.getCol();

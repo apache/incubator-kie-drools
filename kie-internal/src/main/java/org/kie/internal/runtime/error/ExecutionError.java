@@ -146,7 +146,7 @@ public class ExecutionError implements Serializable {
     }
     
     public void setAcknowledged(boolean acknowledged) {
-        setAcknowledged(acknowledged ? new Short("1") : new Short("0")); 
+        setAcknowledged(acknowledged ? Short.valueOf("1") : Short.valueOf("0")); 
     }
 
     public String getAcknowledgedBy() {
@@ -262,7 +262,7 @@ public class ExecutionError implements Serializable {
         }
         
         public Builder acknowledged(boolean acknowledged) {
-            error.setAcknowledged(acknowledged ? new Short("1") : new Short("0"));
+            error.setAcknowledged(acknowledged ? Short.valueOf("1") : Short.valueOf("0"));
             return this;
         }
         

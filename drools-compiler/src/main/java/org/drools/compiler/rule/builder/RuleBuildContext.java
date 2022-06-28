@@ -21,7 +21,6 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.Optional;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
