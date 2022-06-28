@@ -1,7 +1,7 @@
 [id='dmn-designer-nav-ref_{context}']
-= DMN designer navigation and properties in {CENTRAL}
+= DMN designer navigation and properties in {DMN_EDITOR}
 
-The DMN designer in {CENTRAL} provides the following additional features to help you navigate through the components and properties of decision requirements diagrams (DRDs).
+The DMN designer in {DMN_EDITOR} provides the following additional features to help you navigate through the components and properties of decision requirements diagrams (DRDs).
 
 DMN file and diagram views::
 In the upper-left corner of the DMN designer, select the *Project Explorer* view to navigate between all DMN and other files or select the *Decision Navigator* view to navigate between the decision components, graphs, and boxed expressions of a selected DRD:

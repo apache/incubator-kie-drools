@@ -1,12 +1,12 @@
 [id='dmn-included-models-pmml-proc_{context}']
-= Including PMML models within a DMN file in {CENTRAL}
+= Including PMML models within a DMN file in {DMN_EDITOR}
 
-In {CENTRAL}, you can include Predictive Model Markup Language (PMML) models from your project in a specified DMN file. When you include a PMML model within a DMN file, you can invoke that PMML model as a boxed function expression for a DMN decision node or business knowledge model node. If you update the source file for an included PMML model, you must remove and re-include the PMML model in the DMN file to apply the source changes.
+In {DMN_EDITOR}, you can include Predictive Model Markup Language (PMML) models from your project in a specified DMN file. When you include a PMML model within a DMN file, you can invoke that PMML model as a boxed function expression for a DMN decision node or business knowledge model node. If you update the source file for an included PMML model, you must remove and re-include the PMML model in the DMN file to apply the source changes.
 
-You cannot include PMML models from other projects in {CENTRAL}.
+You cannot include PMML models from other projects in {DMN_EDITOR}.
 
 .Prerequisites
-* The PMML models are imported (as `.pmml` files) in the same project in {CENTRAL} as the DMN file in which you want to include the models.
+* The PMML models are imported (as `.pmml` files) in the same project in {DMN_EDITOR} as the DMN file in which you want to include the models.
 
 .Procedure
 . In your DMN project, add the following dependencies to the project `pom.xml` file to enable PMML evaluation:
@@ -17,16 +17,16 @@ You cannot include PMML models from other projects in {CENTRAL}.
 <!-- Required for the PMML compiler -->
 <dependency>
   <groupId>org.drools</groupId>
-  <artifactId>kie-pmml</artifactId>
-  <version>${{PRODUCT_INIT}.version}</version>
+  <artifactId>kie-pmml-trusty</artifactId>
+  <version>${drools.version}</version>
   <scope>provided</scope>
 </dependency>
 
-<!-- Alternative dependencies for JPMML Evaluator, override `kie-pmml` dependency -->
+<!-- Alternative dependencies for JPMML Evaluator, override `kie-pmml-trusty` dependency -->
 <dependency>
   <groupId>org.kie</groupId>
   <artifactId>kie-dmn-jpmml</artifactId>
-  <version>${{PRODUCT_INIT}.version}</version>
+  <version>${drools.version}</version>
   <scope>provided</scope>
 </dependency>
 <dependency>
@@ -43,72 +43,46 @@ You cannot include PMML models from other projects in {CENTRAL}.
 </dependency>
 ----
 
-To access the project `pom.xml` file in {CENTRAL}, you can select any existing asset in the project and then in the *Project Explorer* menu on the left side of the screen, click the *Customize View* gear icon and select *Repository View* -> *pom.xml*.
+If you want to use the full PMML specification implementation with the Java Evaluator API for PMML (JPMML), use the alternative set of JPMML dependencies in your DMN project. If the JPMML dependencies and the standard `kie-pmml-trusty` dependency are both present, the `kie-pmml-trusty` dependency is disabled. For information about JPMML licensing terms, see https://openscoring.io/[Openscoring.io].
 
-If you want to use the full PMML specification implementation with the Java Evaluator API for PMML (JPMML), use the alternative set of JPMML dependencies in your DMN project. If the JPMML dependencies and the standard `kie-pmml` dependency are both present, the `kie-pmml` dependency is disabled. For information about JPMML licensing terms, see https://openscoring.io/[Openscoring.io].
-
-ifdef::DM,PAM[]
 [IMPORTANT]
 ====
-The legacy `kie-pmml` dependency is deprecated with {PRODUCT} 7.10.0 and will be replaced by `kie-pmml-trusty` dependency in a future {PRODUCT} release.
+The legacy `kie-pmml` dependency is deprecated with {PRODUCT} 7.48.0 and was be replaced by `kie-pmml-trusty` dependency in the following {PRODUCT} release.
 ====
-endif::[]
-ifdef::DROOLS,JBPM,OP[]
-[IMPORTANT]
-====
-The legacy `kie-pmml` dependency is deprecated with {PRODUCT} 7.48.0 and will be replaced by `kie-pmml-trusty` dependency in a future {PRODUCT} release.
-====
-endif::[]
 
-ifdef::DM,PAM[]
 [NOTE]
 ====
-Instead of specifying a {PRODUCT} `<version>` for individual dependencies, consider adding the {PRODUCT_BA} bill of materials (BOM) dependency to `dependencyManagement` section of your project `pom.xml` file. The {PRODUCT_BA} BOM applies to both {PRODUCT_DM} and {PRODUCT_PAM}. When you add the BOM files, the correct versions of transitive dependencies from the provided Maven repositories are included in the project.
+Instead of specifying a {PRODUCT} `<version>` for individual dependencies, consider adding the {PRODUCT} bill of materials (BOM) dependency to `dependencyManagement` section of your project `pom.xml` file. When you add the BOM files, the correct versions of transitive dependencies from the provided Maven repositories are included in the project.
 
 Example BOM dependency:
 
 [source,xml,subs="attributes+"]
 ----
 <dependency>
-  <groupId>com.redhat.ba</groupId>
-  <artifactId>ba-platform-bom</artifactId>
-  <version>{BOM_VERSION}</version>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-dmn-bom</artifactId>
+  <version>${drools.version}</version>
   <scope>import</scope>
   <type>pom</type>
 </dependency>
 ----
 
-For more information about the {PRODUCT_BA} BOM, see
-ifdef::PAM[]
-https://access.redhat.com/solutions/3405361[What is the mapping between RHPAM product and maven library version?].
-endif::[]
-ifdef::DM[]
-https://access.redhat.com/solutions/3363991[What is the mapping between RHDM product and maven library version?].
-endif::[]
 ====
-endif::DM,PAM[]
+
 --
-. If you added the JPMML dependencies in your DMN project to use the JPMML Evaluator, download the following JAR files and add them to the `~/kie-server.war/WEB-INF/lib` and `~/business-central.war/WEB-INF/lib` directories in your {PRODUCT} distribution:
-ifdef::DROOLS,JBPM,OP[]
+. If you added the JPMML dependencies in your DMN project to use the JPMML Evaluator, download the following JAR files and add them to the classpath (in traditional {KIE_SERVER} deployment these were needed in the `~/kie-server.war/WEB-INF/lib` and `~/business-central.war/WEB-INF/lib` directories of the distribution):
 * https://mvnrepository.com/artifact/org.kie/kie-dmn-jpmml/{COMMUNITY_VERSION_FINAL}[KIE JPMML Integration {COMMUNITY_VERSION_FINAL}] JAR file from the online Maven repository
-endif::[]
-ifdef::DM,PAM[]
-* `kie-dmn-jpmml` JAR file in the *{PRODUCT} {PRODUCT_VERSION_LONG} Maven Repository* distribution (`{PRODUCT_FILE}-maven-repository/maven-repository/org/kie/kie-dmn-jpmml/{MAVEN_ARTIFACT_VERSION}/kie-dmn-jpmml-{MAVEN_ARTIFACT_VERSION}.jar`) from the https://access.redhat.com/jbossnetwork/restricted/listSoftware.html?downloadType=distributions&product={PRODUCT_INIT}&version={PRODUCT_VERSION_LONG}[Red Hat Customer Portal]
-endif::[]
 * https://mvnrepository.com/artifact/org.jpmml/pmml-evaluator/1.5.1[JPMML Evaluator 1.5.1] JAR file from the online Maven repository
 * https://mvnrepository.com/artifact/org.jpmml/pmml-evaluator-extension/1.5.1[JPMML Evaluator Extensions 1.5.1] JAR file from the online Maven repository
 
 +
 --
-These artifacts are required to enable JPMML evaluation in {KIE_SERVER} and {CENTRAL}.
+These artifacts are required to enable JPMML evaluation.
 
-ifdef::DM,PAM[]
-IMPORTANT: Red Hat supports integration with the Java Evaluator API for PMML (JPMML) for PMML execution in {PRODUCT}. However, Red Hat does not support the JPMML libraries directly. If you include JPMML libraries in your {PRODUCT} distribution, see the https://openscoring.io/[Openscoring.io] licensing terms for JPMML.
-endif::[]
+IMPORTANT: Red Hat supports integration with the Java Evaluator API for PMML (JPMML) for PMML execution in {PRODUCT}. However, Red Hat does not support the JPMML libraries directly. If *you* include JPMML libraries in your {PRODUCT} distribution, see the https://openscoring.io/[Openscoring.io] licensing terms for JPMML.
 
 --
-. In {CENTRAL}, go to *Menu* -> *Design* -> *Projects*, click the project name, and select the DMN file you want to modify.
-. In the DMN designer, click the *Included Models* tab.
+. In the {DMN_EDITOR}, click the *Included Models* tab.
 . Click *Include Model*, select a PMML model from your project in the *Models* list, enter a unique name for the included model, and click *Include*:
 +
 --

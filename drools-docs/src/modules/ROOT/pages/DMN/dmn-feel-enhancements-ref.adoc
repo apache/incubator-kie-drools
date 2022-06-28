@@ -1,7 +1,7 @@
 [id='dmn-feel-enhancements-ref_{context}']
-= FEEL enhancements in {PRODUCT}
+= FEEL enhancements in {DMN_ENGINE}
 
-{PRODUCT} includes the following enhancements and other changes to FEEL in the current DMN implementation:
+{DMN_ENGINE} includes the following enhancements and other changes to FEEL in the current DMN implementation:
 
 * _Space Sensitivity_: This DMN implementation of the FEEL language is space insensitive. The goal is to avoid non-deterministic behavior based on the context and differences in behavior based on invisible characters, such as white spaces. This means that for this implementation, a variable named `first name` with one space is exactly the same as `first  name` with two spaces in it.
 

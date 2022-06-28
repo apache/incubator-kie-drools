@@ -1,18 +1,15 @@
 [id='dmn-model-creating-proc_{context}']
-= Creating and editing DMN models in {CENTRAL}
+= Creating and editing DMN models in {DMN_EDITOR}
 
-You can use the DMN designer in {CENTRAL} to design DMN decision requirements diagrams (DRDs) and define decision logic for a complete and functional DMN decision model. {PRODUCT} provides design support for DMN 1.2 models at conformance level 3, and includes enhancements and fixes to FEEL and DMN model components to optimize the experience of implementing DMN decision services with {PRODUCT}. {PRODUCT} also provides runtime support for DMN 1.1, 1.2, 1.3, and 1.4 models at conformance level 3, but any DMN 1.1 and 1.3 models (do not contain DMN 1.3 features) that you import into {CENTRAL}, open in the DMN designer, and save are converted to DMN 1.2 models.
+You can use the {DMN_EDITOR} to design DMN decision requirements diagrams (DRDs) and define decision logic for a complete and functional DMN decision model. {PRODUCT} provides design support for DMN 1.2 models at conformance level 3, and includes enhancements and fixes to FEEL and DMN model components to optimize the experience of implementing DMN decision services with {PRODUCT}. {DMN_ENGINE} also provides runtime support for DMN 1.1, 1.2, 1.3, and 1.4 models at conformance level 3, but any DMN 1.1 and 1.3 models (do not contain DMN 1.3 features) that you import or open into {DMN_EDITOR} and save are converted to DMN 1.2 models
 
 .Procedure
-. In {CENTRAL}, go to *Menu* -> *Design* -> *Projects* and click the project name.
-. Create or import a DMN file in your {CENTRAL} project.
+. Create or import a DMN file in your {DMN_EDITOR}.
 +
 --
-To create a DMN file, click *Add Asset* -> *DMN*, enter an informative DMN model name, select the appropriate *Package*, and click *Ok*.
+To create a DMN file, follow the instruction on the {DMN_EDITOR} online, or create a new `.dmn` file in VSCode.
 
-To import an existing DMN file, click *Import Asset*, enter the DMN model name, select the appropriate *Package*, select the DMN file to upload, and click *Ok*.
-
-The new DMN file is now listed in the *DMN* panel of the *Project Explorer*, and the DMN decision requirements diagram (DRD) canvas appears.
+To import an existing DMN file, follow the instruction on the {DMN_EDITOR} online, or double click to open a `.dmn` file in VSCode.
 
 [NOTE]
 ====

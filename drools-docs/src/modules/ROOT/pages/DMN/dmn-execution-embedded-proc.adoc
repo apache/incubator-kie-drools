@@ -3,7 +3,7 @@
 
 A KIE container is local when the knowledge assets are either embedded directly into the calling program or are physically pulled in using Maven dependencies for the KJAR. You typically embed knowledge assets directly into a project if there is a tight relationship between the version of the code and the version of the DMN definition. Any changes to the decision take effect after you have intentionally updated and redeployed the application. A benefit of this approach is that proper operation does not rely on any external dependencies to the run time, which can be a limitation of locked-down environments.
 
-Using Maven dependencies enables further flexibility because the specific version of the decision can dynamically change, (for example, by using a system property), and it can be periodically scanned for updates and automatically updated. This introduces an external dependency on the deploy time of the service, but executes the decision locally, reducing reliance on an external service being available during run time.
+Using Maven dependencies enables further flexibility because the specific version of the decision can dynamically change, (for example, by using a `kmodule.xml` or a system property), and it can be periodically scanned for updates and automatically updated. This introduces an external dependency on the deploy time of the service, but executes the decision locally, reducing reliance on an external service being available during run time.
 
 .Prerequisites
 * You have built the DMN project as a KJAR artifact and deployed it to a Maven repository, or you have included your DMN assets as part of your project classpath:
@@ -15,12 +15,7 @@ mvn clean install
 ----
 
 For more information about project packaging and deployment and executable models, see
-ifdef::DM,PAM[]
-{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
-endif::[]
-ifdef::DROOLS,JBPM,OP[]
 <<_builddeployutilizeandrunsection>>.
-endif::[]
 --
 
 .Procedure
@@ -44,35 +39,27 @@ endif::[]
 </dependency>
 ----
 
-The `<version>` is the Maven artifact version for {PRODUCT} currently used in your project (for example, {MAVEN_ARTIFACT_VERSION}).
+The `<version>` is the Maven artifact version for {PRODUCT} currently used in your project (for example, {COMMUNITY_VERSION_FINAL}).
 
-ifdef::DM,PAM[]
 [NOTE]
 ====
-Instead of specifying a {PRODUCT} `<version>` for individual dependencies, consider adding the {PRODUCT_BA} bill of materials (BOM) dependency to your project `pom.xml` file. The {PRODUCT_BA} BOM applies to both {PRODUCT_DM} and {PRODUCT_PAM}. When you add the BOM files, the correct versions of transitive dependencies from the provided Maven repositories are included in the project.
+Instead of specifying a {PRODUCT} `<version>` for individual dependencies, consider adding the {PRODUCT} bill of materials (BOM) dependency to `dependencyManagement` section of your project `pom.xml` file. When you add the BOM files, the correct versions of transitive dependencies from the provided Maven repositories are included in the project.
 
 Example BOM dependency:
 
 [source,xml,subs="attributes+"]
 ----
 <dependency>
-  <groupId>com.redhat.ba</groupId>
-  <artifactId>ba-platform-bom</artifactId>
-  <version>{BOM_VERSION}</version>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-dmn-bom</artifactId>
+  <version>${drools.version}</version>
   <scope>import</scope>
   <type>pom</type>
 </dependency>
 ----
 
-For more information about the {PRODUCT_BA} BOM, see
-ifdef::PAM[]
-https://access.redhat.com/solutions/3405361[What is the mapping between RHPAM product and maven library version?].
-endif::[]
-ifdef::DM[]
-https://access.redhat.com/solutions/3363991[What is the mapping between RHDM product and maven library version?].
-endif::[]
 ====
-endif::DM,PAM[]
+
 --
 . Create a KIE container from `classpath` or `ReleaseId`:
 +
@@ -141,10 +128,4 @@ Age 65 Decision 'AgeClassification' : Senior
 Age 66 Decision 'AgeClassification' : Senior
 ----
 
-If the DMN model was not previously compiled as an executable model for more efficient execution, you can enable the following property when you execute your DMN models:
-
-[source]
-----
--Dorg.kie.dmn.compiler.execmodel=true
-----
 --

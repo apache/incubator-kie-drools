@@ -22,3 +22,8 @@
 :RULE_ENGINE: Drools rule engine
 :RULE_ENGINE_CAP: Drools rule engine
 
+:DMN_ENGINE: Drools DMN engine
+:DMN_EDITOR: KIE DMN Editor
+
+:KOGITO: Kogito
+:KIE_SERVER: KIE Server
