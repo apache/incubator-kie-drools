@@ -98,6 +98,15 @@ exports[`ProcessList test Envelope not connected 1`] = `
   >
     <MockedProcessListToolbar
       applyFilter={[Function]}
+      defaultStatusFilter={
+        Array [
+          "ABORTED",
+          "ACTIVE",
+          "COMPLETED",
+          "ERROR",
+          "SUSPENDED",
+        ]
+      }
       driver={
         TestProcessListDriver {
           "applyFilter": [MockFunction],
@@ -190,7 +199,11 @@ exports[`ProcessList test Envelope not connected 1`] = `
         Object {
           "businessKey": Array [],
           "status": Array [
+            "ABORTED",
             "ACTIVE",
+            "COMPLETED",
+            "ERROR",
+            "SUSPENDED",
           ],
         }
       }
@@ -198,7 +211,11 @@ exports[`ProcessList test Envelope not connected 1`] = `
       processInstances={Array []}
       processStates={
         Array [
+          "ABORTED",
           "ACTIVE",
+          "COMPLETED",
+          "ERROR",
+          "SUSPENDED",
         ]
       }
       refresh={[Function]}

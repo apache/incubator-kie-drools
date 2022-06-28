@@ -1,7 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`inline edit tests snapshot 1`] = `
-<InlineEdit>
+<ForwardRef
+  getBusinessKey={[Function]}
+  setBusinessKey={[MockFunction]}
+>
   <div
     className="pf-c-inline-edit false"
     data-ouia-component-type="inline-edit"
@@ -232,5 +235,5 @@ exports[`inline edit tests snapshot 1`] = `
       </div>
     </div>
   </div>
-</InlineEdit>
+</ForwardRef>
 `;

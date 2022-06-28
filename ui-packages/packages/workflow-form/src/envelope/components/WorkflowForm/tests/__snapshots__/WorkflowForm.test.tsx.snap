@@ -1,0 +1,549 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WorkflowForm Test Workflow Form rendering 1`] = `
+<WorkflowForm
+  driver={
+    Object {
+      "resetBusinessKey": [MockFunction],
+      "startWorkflow": [MockFunction],
+    }
+  }
+  workflowDefinition={
+    Object {
+      "endpoint": "http://localhost:4000/hiring",
+      "workflowName": "workflow1",
+    }
+  }
+>
+  <div
+    data-ouia-component-type="workflow-form"
+    data-ouia-safe={true}
+  >
+    <Form
+      isHorizontal={true}
+    >
+      <form
+        className="pf-c-form pf-m-horizontal"
+        noValidate={true}
+      >
+        <FormGroup
+          fieldId="formType"
+          isRequired={true}
+          label="Type"
+          labelIcon={
+            <Popover
+              bodyContent={
+                <div>
+                  The type of the cloud event.
+                </div>
+              }
+              id="workflow-form-type-help"
+            >
+              <button
+                aria-label="More info for type field"
+                className="pf-c-form__group-label-help"
+                onClick={[Function]}
+                type="button"
+              >
+                <HelpIcon
+                  color="currentColor"
+                  noVerticalAlign={true}
+                  size="sm"
+                />
+              </button>
+            </Popover>
+          }
+        >
+          <div
+            className="pf-c-form__group"
+          >
+            <div
+              className="pf-c-form__group-label"
+            >
+              <label
+                className="pf-c-form__label"
+                htmlFor="formType"
+              >
+                <span
+                  className="pf-c-form__label-text"
+                >
+                  Type
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="pf-c-form__label-required"
+                >
+                   
+                  *
+                </span>
+              </label>
+               
+              <Popover
+                bodyContent={
+                  <div>
+                    The type of the cloud event.
+                  </div>
+                }
+                id="workflow-form-type-help"
+              >
+                <Popper
+                  appendTo={[Function]}
+                  distance={25}
+                  enableFlip={true}
+                  flipBehavior={
+                    Array [
+                      "top",
+                      "right",
+                      "bottom",
+                      "left",
+                      "top",
+                      "right",
+                      "bottom",
+                    ]
+                  }
+                  isVisible={false}
+                  onDocumentClick={[Function]}
+                  onDocumentKeyDown={[Function]}
+                  onTriggerClick={[Function]}
+                  onTriggerEnter={[Function]}
+                  placement="top"
+                  popper={
+                    <FocusTrap
+                      active={false}
+                      aria-describedby="popover-workflow-form-type-help-body"
+                      aria-label=""
+                      aria-modal="true"
+                      className="pf-c-popover"
+                      focusTrapOptions={
+                        Object {
+                          "clickOutsideDeactivates": true,
+                          "fallbackFocus": [Function],
+                          "returnFocusOnDeactivate": true,
+                        }
+                      }
+                      onMouseDown={[Function]}
+                      paused={false}
+                      preventScrollOnDeactivate={true}
+                      role="dialog"
+                      style={
+                        Object {
+                          "maxWidth": null,
+                          "minWidth": null,
+                          "opacity": 0,
+                          "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
+                        }
+                      }
+                    >
+                      <PopoverArrow />
+                      <PopoverContent>
+                        <PopoverCloseButton
+                          aria-label="Close"
+                          onClose={[Function]}
+                        />
+                        <PopoverBody
+                          id="popover-workflow-form-type-help-body"
+                        >
+                          <div>
+                            The type of the cloud event.
+                          </div>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </FocusTrap>
+                  }
+                  popperMatchesTriggerWidth={false}
+                  positionModifiers={
+                    Object {
+                      "bottom": "pf-m-bottom",
+                      "bottom-end": "pf-m-bottom-right",
+                      "bottom-start": "pf-m-bottom-left",
+                      "left": "pf-m-left",
+                      "left-end": "pf-m-left-bottom",
+                      "left-start": "pf-m-left-top",
+                      "right": "pf-m-right",
+                      "right-end": "pf-m-right-bottom",
+                      "right-start": "pf-m-right-top",
+                      "top": "pf-m-top",
+                      "top-end": "pf-m-top-right",
+                      "top-start": "pf-m-top-left",
+                    }
+                  }
+                  trigger={
+                    <button
+                      aria-label="More info for type field"
+                      className="pf-c-form__group-label-help"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <HelpIcon
+                        color="currentColor"
+                        noVerticalAlign={true}
+                        size="sm"
+                      />
+                    </button>
+                  }
+                  zIndex={9999}
+                >
+                  <FindRefWrapper
+                    onFoundRef={[Function]}
+                  >
+                    <button
+                      aria-label="More info for type field"
+                      className="pf-c-form__group-label-help"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <HelpIcon
+                        color="currentColor"
+                        noVerticalAlign={true}
+                        size="sm"
+                      >
+                        <svg
+                          aria-hidden={true}
+                          aria-labelledby={null}
+                          fill="currentColor"
+                          height="1em"
+                          role="img"
+                          style={null}
+                          viewBox="0 0 1024 1024"
+                          width="1em"
+                        >
+                          <path
+                            d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
+                          />
+                        </svg>
+                      </HelpIcon>
+                    </button>
+                  </FindRefWrapper>
+                </Popper>
+              </Popover>
+            </div>
+            <div
+              className="pf-c-form__group-control"
+            >
+              <TextInput
+                id="formType"
+                isRequired={true}
+                name="formType"
+                onChange={[Function]}
+                type="text"
+                value=""
+              >
+                <TextInputBase
+                  aria-label={null}
+                  className=""
+                  id="formType"
+                  innerRef={null}
+                  isDisabled={false}
+                  isLeftTruncated={false}
+                  isReadOnly={false}
+                  isRequired={true}
+                  name="formType"
+                  onChange={[Function]}
+                  ouiaSafe={true}
+                  type="text"
+                  validated="default"
+                  value=""
+                >
+                  <input
+                    aria-invalid={false}
+                    aria-label={null}
+                    className="pf-c-form-control"
+                    data-ouia-component-id="OUIA-Generated-TextInputBase-1"
+                    data-ouia-component-type="PF4/TextInput"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="formType"
+                    name="formType"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    onFocus={[Function]}
+                    readOnly={false}
+                    required={true}
+                    type="text"
+                    value=""
+                  />
+                </TextInputBase>
+              </TextInput>
+            </div>
+          </div>
+        </FormGroup>
+        <FormGroup
+          fieldId="formData"
+          isRequired={true}
+          label="Data"
+          labelIcon={
+            <Popover
+              bodyContent={
+                <div>
+                  A JSON containing the data of the cloud event.
+                </div>
+              }
+              id="workflow-form-data-help"
+            >
+              <button
+                aria-label="More info for data field"
+                className="pf-c-form__group-label-help"
+                onClick={[Function]}
+                type="button"
+              >
+                <HelpIcon
+                  color="currentColor"
+                  noVerticalAlign={true}
+                  size="sm"
+                />
+              </button>
+            </Popover>
+          }
+        >
+          <div
+            className="pf-c-form__group"
+          >
+            <div
+              className="pf-c-form__group-label"
+            >
+              <label
+                className="pf-c-form__label"
+                htmlFor="formData"
+              >
+                <span
+                  className="pf-c-form__label-text"
+                >
+                  Data
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="pf-c-form__label-required"
+                >
+                   
+                  *
+                </span>
+              </label>
+               
+              <Popover
+                bodyContent={
+                  <div>
+                    A JSON containing the data of the cloud event.
+                  </div>
+                }
+                id="workflow-form-data-help"
+              >
+                <Popper
+                  appendTo={[Function]}
+                  distance={25}
+                  enableFlip={true}
+                  flipBehavior={
+                    Array [
+                      "top",
+                      "right",
+                      "bottom",
+                      "left",
+                      "top",
+                      "right",
+                      "bottom",
+                    ]
+                  }
+                  isVisible={false}
+                  onDocumentClick={[Function]}
+                  onDocumentKeyDown={[Function]}
+                  onTriggerClick={[Function]}
+                  onTriggerEnter={[Function]}
+                  placement="top"
+                  popper={
+                    <FocusTrap
+                      active={false}
+                      aria-describedby="popover-workflow-form-data-help-body"
+                      aria-label=""
+                      aria-modal="true"
+                      className="pf-c-popover"
+                      focusTrapOptions={
+                        Object {
+                          "clickOutsideDeactivates": true,
+                          "fallbackFocus": [Function],
+                          "returnFocusOnDeactivate": true,
+                        }
+                      }
+                      onMouseDown={[Function]}
+                      paused={false}
+                      preventScrollOnDeactivate={true}
+                      role="dialog"
+                      style={
+                        Object {
+                          "maxWidth": null,
+                          "minWidth": null,
+                          "opacity": 0,
+                          "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
+                        }
+                      }
+                    >
+                      <PopoverArrow />
+                      <PopoverContent>
+                        <PopoverCloseButton
+                          aria-label="Close"
+                          onClose={[Function]}
+                        />
+                        <PopoverBody
+                          id="popover-workflow-form-data-help-body"
+                        >
+                          <div>
+                            A JSON containing the data of the cloud event.
+                          </div>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </FocusTrap>
+                  }
+                  popperMatchesTriggerWidth={false}
+                  positionModifiers={
+                    Object {
+                      "bottom": "pf-m-bottom",
+                      "bottom-end": "pf-m-bottom-right",
+                      "bottom-start": "pf-m-bottom-left",
+                      "left": "pf-m-left",
+                      "left-end": "pf-m-left-bottom",
+                      "left-start": "pf-m-left-top",
+                      "right": "pf-m-right",
+                      "right-end": "pf-m-right-bottom",
+                      "right-start": "pf-m-right-top",
+                      "top": "pf-m-top",
+                      "top-end": "pf-m-top-right",
+                      "top-start": "pf-m-top-left",
+                    }
+                  }
+                  trigger={
+                    <button
+                      aria-label="More info for data field"
+                      className="pf-c-form__group-label-help"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <HelpIcon
+                        color="currentColor"
+                        noVerticalAlign={true}
+                        size="sm"
+                      />
+                    </button>
+                  }
+                  zIndex={9999}
+                >
+                  <FindRefWrapper
+                    onFoundRef={[Function]}
+                  >
+                    <button
+                      aria-label="More info for data field"
+                      className="pf-c-form__group-label-help"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <HelpIcon
+                        color="currentColor"
+                        noVerticalAlign={true}
+                        size="sm"
+                      >
+                        <svg
+                          aria-hidden={true}
+                          aria-labelledby={null}
+                          fill="currentColor"
+                          height="1em"
+                          role="img"
+                          style={null}
+                          viewBox="0 0 1024 1024"
+                          width="1em"
+                        >
+                          <path
+                            d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
+                          />
+                        </svg>
+                      </HelpIcon>
+                    </button>
+                  </FindRefWrapper>
+                </Popper>
+              </Popover>
+            </div>
+            <div
+              className="pf-c-form__group-control"
+            >
+              <CodeEditor
+                code=""
+                height="400px"
+                isCopyEnabled={false}
+                isDarkTheme={false}
+                isLanguageLabelVisible={false}
+                isLineNumbersVisible={true}
+                isMinimapVisible={true}
+                isReadOnly={false}
+                language="json"
+                onChange={[Function]}
+              >
+                <MockedComponent />
+              </CodeEditor>
+            </div>
+          </div>
+        </FormGroup>
+        <ActionGroup>
+          <div
+            className="pf-c-form__group pf-m-action"
+          >
+            <div
+              className="pf-c-form__group-control"
+            >
+              <div
+                className="pf-c-form__actions"
+              >
+                <Button
+                  onClick={[Function]}
+                  variant="primary"
+                >
+                  <ButtonBase
+                    innerRef={null}
+                    onClick={[Function]}
+                    variant="primary"
+                  >
+                    <button
+                      aria-disabled={false}
+                      aria-label={null}
+                      className="pf-c-button pf-m-primary"
+                      data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                      data-ouia-component-type="PF4/Button"
+                      data-ouia-safe={true}
+                      disabled={false}
+                      onClick={[Function]}
+                      role={null}
+                      type="button"
+                    >
+                      Send
+                    </button>
+                  </ButtonBase>
+                </Button>
+                <Button
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <ButtonBase
+                    innerRef={null}
+                    onClick={[Function]}
+                    variant="secondary"
+                  >
+                    <button
+                      aria-disabled={false}
+                      aria-label={null}
+                      className="pf-c-button pf-m-secondary"
+                      data-ouia-component-id="OUIA-Generated-Button-secondary-1"
+                      data-ouia-component-type="PF4/Button"
+                      data-ouia-safe={true}
+                      disabled={false}
+                      onClick={[Function]}
+                      role={null}
+                      type="button"
+                    >
+                      Reset
+                    </button>
+                  </ButtonBase>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </ActionGroup>
+      </form>
+    </Form>
+  </div>
+</WorkflowForm>
+`;

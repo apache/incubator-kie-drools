@@ -52,7 +52,8 @@ const props = {
   setProcessInstances: jest.fn(),
   isAllChecked: false,
   setIsAllChecked: jest.fn(),
-  driver: null
+  driver: null,
+  defaultStatusFilter: [ProcessInstanceState.Active]
 };
 beforeEach(() => {
   props.setProcessStates.mockClear();

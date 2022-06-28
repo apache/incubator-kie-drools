@@ -28,11 +28,13 @@ import { ProcessDefinition } from '@kogito-apps/process-definition-list';
 import { PageTitle } from '@kogito-apps/consoles-common';
 import { FormNotification, Notification } from '@kogito-apps/components-common';
 import InlineEdit from './components/InlineEdit/InlineEdit';
+import { useProcessFormGatewayApi } from '../../../channel/ProcessForm/ProcessFormContext';
 
 const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [notification, setNotification] = useState<Notification>();
 
   const history = useHistory();
+  const gatewayApi = useProcessFormGatewayApi();
 
   const processDefinition: ProcessDefinition =
     history.location.state['processDefinition'];
@@ -105,7 +107,12 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
       >
         <PageTitle
           title={`Start ${processDefinition.processName}`}
-          extra={<InlineEdit />}
+          extra={
+            <InlineEdit
+              setBusinessKey={bk => gatewayApi.setBusinessKey(bk)}
+              getBusinessKey={() => gatewayApi.getBusinessKey()}
+            />
+          }
         />
         {notification && (
           <div>

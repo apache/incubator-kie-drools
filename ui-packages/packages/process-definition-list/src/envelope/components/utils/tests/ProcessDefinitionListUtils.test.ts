@@ -27,7 +27,7 @@ describe('Utils tests', () => {
   });
 
   it('Test action column', () => {
-    const column = getActionColumn(jest.fn());
+    const column = getActionColumn(jest.fn(), 'Workflow');
 
     expect(column).not.toBeNull();
     expect(column.path).toBe('actions');

@@ -32,6 +32,7 @@ export interface DevUIAppContext {
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
+  isWorkflow(): boolean;
 }
 
 export interface UserChangeListener {
@@ -117,6 +118,10 @@ export class DevUIAppContextImpl implements DevUIAppContext {
         }
       }
     };
+  }
+
+  isWorkflow(): boolean {
+    return this.customLabels.singularProcessLabel == 'Workflow';
   }
 }
 

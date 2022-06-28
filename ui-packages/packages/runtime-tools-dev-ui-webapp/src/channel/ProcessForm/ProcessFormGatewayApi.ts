@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { ProcessDefinition } from '@kogito-apps/process-definition-list';
 import { getProcessSchema, startProcessInstance } from '../apis';
+
 export interface ProcessFormGatewayApi {
   getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<any>;
   startProcess(

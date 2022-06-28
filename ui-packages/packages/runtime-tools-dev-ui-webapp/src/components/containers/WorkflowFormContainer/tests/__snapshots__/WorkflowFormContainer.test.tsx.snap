@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WorkflowFormContainer tests Snapshot 1`] = `
+<WorkflowFormContainer
+  onSubmitError={[MockFunction]}
+  onSubmitSuccess={[MockFunction]}
+  workflowDefinitionData={
+    Object {
+      "endpoint": "http://localhost:4000",
+      "workflowName": "workflow1",
+    }
+  }
+>
+  <ForwardRef
+    data-ouia-component-type="workflow-form-container"
+    data-ouia-safe={true}
+    driver={
+      Object {
+        "resetBusinessKey": [Function],
+        "startWorkflow": [Function],
+      }
+    }
+    targetOrigin="*"
+    workflowDefinition={
+      Object {
+        "endpoint": "http://localhost:4000",
+        "workflowName": "workflow1",
+      }
+    }
+  >
+    <ForwardRef>
+      <div />
+    </ForwardRef>
+  </ForwardRef>
+</WorkflowFormContainer>
+`;

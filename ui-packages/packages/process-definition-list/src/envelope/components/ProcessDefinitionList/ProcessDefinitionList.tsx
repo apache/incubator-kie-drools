@@ -79,7 +79,7 @@ const ProcessDefinitionList: React.FC<ProcessDefinitionListProps &
     getColumn('endpoint', 'Endpoint'),
     getActionColumn(processDefinition => {
       driver.openProcessForm(processDefinition);
-    })
+    }, singularProcessLabel)
   ];
 
   const applyFilter = async (): Promise<void> => {

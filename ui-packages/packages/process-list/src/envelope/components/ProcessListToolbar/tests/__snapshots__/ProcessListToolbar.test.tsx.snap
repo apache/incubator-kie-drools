@@ -3,6 +3,11 @@
 exports[`ProcessListToolbar test Snapshot tests 1`] = `
 <ProcessListToolbar
   applyFilter={[MockFunction]}
+  defaultStatusFilter={
+    Array [
+      "ACTIVE",
+    ]
+  }
   driver={null}
   filters={
     Object {

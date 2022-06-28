@@ -50,6 +50,7 @@
     "@kogito-apps/task-form": "^1.0.0",
     "@kogito-apps/task-inbox": "^1.0.0",
     "@kogito-apps/trusty": "^1.0.0",
+    "@kogito-apps/workflow-form": "^1.0.0",
     "@apidevtools/swagger-parser": "^10.0.3"
   },
   "devDependencies": {

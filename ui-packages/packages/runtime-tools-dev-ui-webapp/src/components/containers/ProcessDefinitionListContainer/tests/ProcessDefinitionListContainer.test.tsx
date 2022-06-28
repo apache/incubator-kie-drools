@@ -20,6 +20,7 @@ import ProcessDefinitionListContainer from '../ProcessDefinitionListContainer';
 import * as ProcessDefinitionListContext from '../../../../channel/ProcessDefinitionList/ProcessDefinitionListContext';
 import { ProcessDefinitionListGatewayApiImpl } from '../../../../channel/ProcessDefinitionList/ProcessDefinitionListGatewayApi';
 import { ProcessDefinitionListQueries } from '../../../../channel/ProcessDefinitionList/ProcessDefinitionListQueries';
+import * as RuntimeToolsDevUIAppContext from '../../../contexts/DevUIAppContext';
 
 const MockQueries = jest.fn<ProcessDefinitionListQueries>(() => ({
   getProcessDefinitions: jest.fn()
@@ -30,6 +31,16 @@ jest
   .mockImplementation(
     () => new ProcessDefinitionListGatewayApiImpl(new MockQueries())
   );
+
+jest
+  .spyOn(RuntimeToolsDevUIAppContext, 'useDevUIAppContext')
+  .mockImplementation(() => {
+    return {
+      isWorkflow: () => {
+        return false;
+      }
+    };
+  });
 
 describe('ProcessDefinitionListContainer tests', () => {
   it('Snapshot', () => {

@@ -10,17 +10,13 @@ exports[`ProcessDefinitionListContainer tests Snapshot 1`] = `
         "devUIUrl": Object {
           "getProcessDefinitions": [MockFunction],
         },
-        "getProcessDefinitionFilter": [Function],
-        "getProcessDefinitionsQuery": [Function],
         "listeners": Array [
           Object {
             "onOpen": [Function],
           },
         ],
         "openApiPath": undefined,
-        "openProcessForm": [Function],
         "processDefinitonFilter": Array [],
-        "setProcessDefinitionFilter": [Function],
       }
     }
     targetOrigin="*"

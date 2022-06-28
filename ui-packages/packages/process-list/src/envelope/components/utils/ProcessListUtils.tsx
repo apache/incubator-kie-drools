@@ -137,3 +137,13 @@ export const formatForBulkListProcessInstance = (
   );
   return formattedItems;
 };
+
+export const processListDefaultStatusFilter = [ProcessInstanceState.Active];
+
+export const workflowListDefaultStatusFilter = [
+  ProcessInstanceState.Aborted,
+  ProcessInstanceState.Active,
+  ProcessInstanceState.Completed,
+  ProcessInstanceState.Error,
+  ProcessInstanceState.Suspended
+];

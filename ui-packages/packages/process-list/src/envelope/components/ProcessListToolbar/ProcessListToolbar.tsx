@@ -83,6 +83,7 @@ interface ProcessListToolbarProps {
   isAllChecked: boolean;
   setIsAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   driver: ProcessListDriver;
+  defaultStatusFilter: ProcessInstanceState[];
 }
 
 const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
@@ -99,6 +100,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   isAllChecked,
   setIsAllChecked,
   driver,
+  defaultStatusFilter,
   ouiaId,
   ouiaSafe
 }) => {
@@ -362,7 +364,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
 
   const resetAllFilters = (): void => {
     const defaultFilters = {
-      status: [ProcessInstanceState.Active],
+      status: defaultStatusFilter,
       businessKey: []
     };
     setProcessStates(defaultFilters.status);

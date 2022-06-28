@@ -6,6 +6,11 @@ import { ProcessFormGatewayApiImpl } from '../../../../../../channel/ProcessForm
 import { Button, TextInput } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
 
+const props = {
+  getBusinessKey: () => '',
+  setBusinessKey: jest.fn()
+};
+
 describe('inline edit tests', () => {
   beforeEach(() => {
     jest
@@ -13,12 +18,12 @@ describe('inline edit tests', () => {
       .mockImplementation(() => new ProcessFormGatewayApiImpl());
   });
   it('snapshot', () => {
-    const wrapper = mount(<InlineEdit />);
+    const wrapper = mount(<InlineEdit {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it('enter text and confirm', async () => {
-    let wrapper = mount(<InlineEdit />);
+    let wrapper = mount(<InlineEdit {...props} />);
     await act(async () => {
       wrapper
         .find(Button)

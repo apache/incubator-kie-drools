@@ -23,6 +23,7 @@ import {
 import { ProcessDefinitionListGatewayApi } from '../../../channel/ProcessDefinitionList';
 import { useProcessDefinitionListGatewayApi } from '../../../channel/ProcessDefinitionList/ProcessDefinitionListContext';
 import { useHistory } from 'react-router-dom';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface ProcessDefinitionListProps {
   singularProcessLabel: string;
@@ -31,10 +32,11 @@ interface ProcessDefinitionListProps {
 const ProcessDefinitionListContainer: React.FC<ProcessDefinitionListProps &
   OUIAProps> = ({ singularProcessLabel, ouiaId, ouiaSafe }) => {
   const history = useHistory();
+  const appContext = useDevUIAppContext();
   const gatewayApi: ProcessDefinitionListGatewayApi = useProcessDefinitionListGatewayApi();
 
   useEffect(() => {
-    const unsubscriber = gatewayApi.onOpenProcessFormListen({
+    const onOpenProcess = {
       onOpen(processDefinition: ProcessDefinition) {
         history.push({
           pathname: `ProcessDefinition/Form/${processDefinition.processName}`,
@@ -43,7 +45,23 @@ const ProcessDefinitionListContainer: React.FC<ProcessDefinitionListProps &
           }
         });
       }
-    });
+    };
+    const onOpenWorkflow = {
+      onOpen(processDefinition: ProcessDefinition) {
+        history.push({
+          pathname: `WorkflowDefinition/Form/${processDefinition.processName}`,
+          state: {
+            workflowDefinition: {
+              workflowName: processDefinition.processName,
+              endpoint: processDefinition.endpoint
+            }
+          }
+        });
+      }
+    };
+    const unsubscriber = gatewayApi.onOpenProcessFormListen(
+      appContext.isWorkflow() ? onOpenWorkflow : onOpenProcess
+    );
     return () => {
       unsubscriber.unSubscribe();
     };

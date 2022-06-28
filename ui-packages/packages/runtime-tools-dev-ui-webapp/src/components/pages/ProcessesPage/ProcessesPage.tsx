@@ -105,33 +105,31 @@ const ProcessesPage: React.FC<RouteComponentProps<
               </Card>
             </PageSection>
           </Tab>
-          {apiContext.customLabels.singularProcessLabel === 'Process' && (
-            <Tab
-              id="process-definitions-tab"
-              eventKey={1}
-              title={
-                <TabTitleText>
-                  {apiContext.customLabels.singularProcessLabel} Definitions
-                </TabTitleText>
-              }
+          <Tab
+            id="process-definitions-tab"
+            eventKey={1}
+            title={
+              <TabTitleText>
+                {apiContext.customLabels.singularProcessLabel} Definitions
+              </TabTitleText>
+            }
+          >
+            <PageSection
+              {...componentOuiaProps(
+                ouiaId,
+                'process-definition-list-page-section',
+                ouiaSafe
+              )}
             >
-              <PageSection
-                {...componentOuiaProps(
-                  ouiaId,
-                  'process-definition-list-page-section',
-                  ouiaSafe
-                )}
-              >
-                <Card className="Dev-ui__card-size">
-                  <ProcessDefinitionListContainer
-                    singularProcessLabel={
-                      apiContext.customLabels.singularProcessLabel
-                    }
-                  />
-                </Card>
-              </PageSection>
-            </Tab>
-          )}
+              <Card className="Dev-ui__card-size">
+                <ProcessDefinitionListContainer
+                  singularProcessLabel={
+                    apiContext.customLabels.singularProcessLabel
+                  }
+                />
+              </Card>
+            </PageSection>
+          </Tab>
         </Tabs>
       </div>
     </React.Fragment>

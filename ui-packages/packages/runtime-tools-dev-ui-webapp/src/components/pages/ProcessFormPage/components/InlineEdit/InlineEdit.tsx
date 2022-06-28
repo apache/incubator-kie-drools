@@ -13,37 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { Button, TextInput } from '@patternfly/react-core';
 import { PencilAltIcon, CheckIcon, TimesIcon } from '@patternfly/react-icons';
-import { useProcessFormGatewayApi } from '../../../../../channel/ProcessForm/ProcessFormContext';
-import { ProcessFormGatewayApi } from '../../../../../channel/ProcessForm/ProcessFormGatewayApi';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
-const InlineEdit: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
+export interface InlineEditApi {
+  reset: () => void;
+}
+
+interface InlineEditProps {
+  setBusinessKey: (businessKey: string) => void;
+  getBusinessKey: () => string;
+}
+
+export const InlineEdit = React.forwardRef<
+  InlineEditApi,
+  InlineEditProps & OUIAProps
+>(({ setBusinessKey, getBusinessKey, ouiaId, ouiaSafe }, forwardedRef) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
-
-  const gatewayApi: ProcessFormGatewayApi = useProcessFormGatewayApi();
-  const businessKeyValue: string = gatewayApi.getBusinessKey();
+  const [currentBusinessKey, setCurrentBusinessKey] = useState<string>(
+    getBusinessKey()
+  );
 
   useEffect(() => {
-    if (businessKeyValue.length === 0) {
+    if (currentBusinessKey.length === 0) {
       setInputValue('');
     }
-  }, [businessKeyValue]);
+  }, [currentBusinessKey]);
 
   const toggleEditableMode = (): void => {
     setIsEditable(!isEditable);
   };
   const confirmBusinessKey = (isConfirmed: boolean): void => {
     if (isConfirmed) {
-      gatewayApi.setBusinessKey(inputValue);
-      toggleEditableMode();
-    } else {
-      toggleEditableMode();
+      setBusinessKey(inputValue);
+      setCurrentBusinessKey(inputValue);
     }
+
+    toggleEditableMode();
   };
+
+  useImperativeHandle(
+    forwardedRef,
+    () => ({
+      reset: () => {
+        setInputValue('');
+        setCurrentBusinessKey('');
+      }
+    }),
+    []
+  );
 
   return (
     <div
@@ -56,8 +78,8 @@ const InlineEdit: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           className="pf-c-inline-edit__value"
           id="single-editable-example-label"
         >
-          {gatewayApi.getBusinessKey().length > 0 ? (
-            gatewayApi.getBusinessKey()
+          {currentBusinessKey.length > 0 ? (
+            currentBusinessKey
           ) : (
             <span className="pf-u-disabled-color-100">Business key</span>
           )}
@@ -94,6 +116,6 @@ const InlineEdit: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
       </div>
     </div>
   );
-};
+});
 
 export default InlineEdit;

@@ -1,0 +1,357 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WorkflowFormPage tests Snapshot 1`] = `
+<WorkflowFormPage>
+  <PageSection
+    data-ouia-component-id="title"
+    data-ouia-component-type="workflow-form-page-section"
+    data-ouia-safe={true}
+    variant="light"
+  >
+    <section
+      className="pf-c-page__main-section pf-m-light"
+      data-ouia-component-id="title"
+      data-ouia-component-type="workflow-form-page-section"
+      data-ouia-safe={true}
+    >
+      <PageTitle
+        extra={
+          <ForwardRef
+            getBusinessKey={[Function]}
+            setBusinessKey={[Function]}
+          />
+        }
+        title="Trigger cloud event"
+      >
+        <Flex
+          data-ouia-component-type="page-title"
+          data-ouia-safe={true}
+        >
+          <div
+            className="pf-l-flex"
+            data-ouia-component-type="page-title"
+            data-ouia-safe={true}
+          >
+            <FlexItem
+              spacer={
+                Object {
+                  "default": "spacerSm",
+                }
+              }
+            >
+              <div
+                className="pf-m-spacer-sm"
+              >
+                <Title
+                  headingLevel="h1"
+                  size="4xl"
+                >
+                  <h1
+                    className="pf-c-title pf-m-4xl"
+                    data-ouia-component-id="OUIA-Generated-Title-1"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe={true}
+                  >
+                    Trigger cloud event
+                  </h1>
+                </Title>
+              </div>
+            </FlexItem>
+            <FlexItem
+              spacer={
+                Object {
+                  "default": "spacerSm",
+                }
+              }
+            >
+              <div
+                className="pf-m-spacer-sm"
+              >
+                <ForwardRef
+                  getBusinessKey={[Function]}
+                  setBusinessKey={[Function]}
+                >
+                  <div
+                    className="pf-c-inline-edit false"
+                    data-ouia-component-type="inline-edit"
+                    data-ouia-safe={true}
+                    id="inline-edit-toggle-example"
+                  >
+                    <div
+                      className="pf-c-inline-edit__group"
+                    >
+                      <div
+                        className="pf-c-inline-edit__value"
+                        id="single-editable-example-label"
+                      >
+                        <span
+                          className="pf-u-disabled-color-100"
+                        >
+                          Business key
+                        </span>
+                      </div>
+                      <div
+                        className="pf-c-inline-edit__action pf-m-enable-editable"
+                      >
+                        <Button
+                          onClick={[Function]}
+                          variant="plain"
+                        >
+                          <ButtonBase
+                            innerRef={null}
+                            onClick={[Function]}
+                            variant="plain"
+                          >
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-plain"
+                              data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              onClick={[Function]}
+                              role={null}
+                              type="button"
+                            >
+                              <PencilAltIcon
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
+                              >
+                                <svg
+                                  aria-hidden={true}
+                                  aria-labelledby={null}
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style={
+                                    Object {
+                                      "verticalAlign": "-0.125em",
+                                    }
+                                  }
+                                  viewBox="0 0 512 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"
+                                  />
+                                </svg>
+                              </PencilAltIcon>
+                            </button>
+                          </ButtonBase>
+                        </Button>
+                      </div>
+                    </div>
+                    <div
+                      className="pf-c-inline-edit__group"
+                    >
+                      <div
+                        className="pf-c-inline-edit__input"
+                      >
+                        <TextInput
+                          aria-label="text input example"
+                          onChange={[Function]}
+                          placeholder="Enter business key"
+                          type="text"
+                          value=""
+                        >
+                          <TextInputBase
+                            aria-label="text input example"
+                            className=""
+                            innerRef={null}
+                            isDisabled={false}
+                            isLeftTruncated={false}
+                            isReadOnly={false}
+                            isRequired={false}
+                            onChange={[Function]}
+                            ouiaSafe={true}
+                            placeholder="Enter business key"
+                            type="text"
+                            validated="default"
+                            value=""
+                          >
+                            <input
+                              aria-invalid={false}
+                              aria-label="text input example"
+                              className="pf-c-form-control"
+                              data-ouia-component-id="OUIA-Generated-TextInputBase-1"
+                              data-ouia-component-type="PF4/TextInput"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              onBlur={[Function]}
+                              onChange={[Function]}
+                              onFocus={[Function]}
+                              placeholder="Enter business key"
+                              readOnly={false}
+                              required={false}
+                              type="text"
+                              value=""
+                            />
+                          </TextInputBase>
+                        </TextInput>
+                      </div>
+                      <div
+                        className="pf-c-inline-edit__group pf-m-action-group pf-m-icon-group"
+                      >
+                        <div
+                          className="pf-c-inline-edit__action pf-m-valid"
+                        >
+                          <Button
+                            onClick={[Function]}
+                            variant="plain"
+                          >
+                            <ButtonBase
+                              innerRef={null}
+                              onClick={[Function]}
+                              variant="plain"
+                            >
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-plain"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                onClick={[Function]}
+                                role={null}
+                                type="button"
+                              >
+                                <CheckIcon
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                >
+                                  <svg
+                                    aria-hidden={true}
+                                    aria-labelledby={null}
+                                    fill="currentColor"
+                                    height="1em"
+                                    role="img"
+                                    style={
+                                      Object {
+                                        "verticalAlign": "-0.125em",
+                                      }
+                                    }
+                                    viewBox="0 0 512 512"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"
+                                    />
+                                  </svg>
+                                </CheckIcon>
+                              </button>
+                            </ButtonBase>
+                          </Button>
+                        </div>
+                        <div
+                          className="pf-c-inline-edit__action"
+                        >
+                          <Button
+                            onClick={[Function]}
+                            variant="plain"
+                          >
+                            <ButtonBase
+                              innerRef={null}
+                              onClick={[Function]}
+                              variant="plain"
+                            >
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-plain"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-3"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                onClick={[Function]}
+                                role={null}
+                                type="button"
+                              >
+                                <TimesIcon
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                >
+                                  <svg
+                                    aria-hidden={true}
+                                    aria-labelledby={null}
+                                    fill="currentColor"
+                                    height="1em"
+                                    role="img"
+                                    style={
+                                      Object {
+                                        "verticalAlign": "-0.125em",
+                                      }
+                                    }
+                                    viewBox="0 0 352 512"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                    />
+                                  </svg>
+                                </TimesIcon>
+                              </button>
+                            </ButtonBase>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ForwardRef>
+              </div>
+            </FlexItem>
+          </div>
+        </Flex>
+      </PageTitle>
+    </section>
+  </PageSection>
+  <PageSection
+    data-ouia-component-id="content"
+    data-ouia-component-type="workflow-form-page-section"
+    data-ouia-safe={true}
+  >
+    <section
+      className="pf-c-page__main-section"
+      data-ouia-component-id="content"
+      data-ouia-component-type="workflow-form-page-section"
+      data-ouia-safe={true}
+    >
+      <Card
+        className="Dev-ui__card-size"
+      >
+        <article
+          className="pf-c-card Dev-ui__card-size"
+          data-ouia-component-id="OUIA-Generated-Card-1"
+          data-ouia-component-type="PF4/Card"
+          data-ouia-safe={true}
+          id=""
+        >
+          <CardBody
+            className="pf-u-h-100"
+          >
+            <div
+              className="pf-c-card__body pf-u-h-100"
+            >
+              <MockedWorkflowFormContainer
+                onResetForm={[Function]}
+                onSubmitError={[Function]}
+                onSubmitSuccess={[Function]}
+                workflowDefinitionData={
+                  Object {
+                    "endpoint": "http://localhost:4000",
+                    "workflowName": "workflow1",
+                  }
+                }
+              />
+            </div>
+          </CardBody>
+        </article>
+      </Card>
+    </section>
+  </PageSection>
+</WorkflowFormPage>
+`;

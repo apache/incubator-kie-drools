@@ -33,6 +33,7 @@ import ProcessDefinitionListContextProvider from '../../../channel/ProcessDefini
 import ProcessFormContextProvider from '../../../channel/ProcessForm/ProcessFormContextProvider';
 import { CustomLabels } from '../../../api/CustomLabels';
 import { DiagramPreviewSize } from '@kogito-apps/process-details/dist/api';
+import WorkflowFormContextProvider from '../../../channel/WorkflowForm/WorkflowFormContextProvider';
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -95,11 +96,13 @@ const DevUILayout: React.FC<IOwnProps> = ({
                     <FormsListContextProvider>
                       <FormDetailsContextProvider>
                         <ProcessFormContextProvider>
-                          <MemoryRouter>
-                            <Switch>
-                              <Route path="/" render={renderPage} />
-                            </Switch>
-                          </MemoryRouter>
+                          <WorkflowFormContextProvider>
+                            <MemoryRouter>
+                              <Switch>
+                                <Route path="/" render={renderPage} />
+                              </Switch>
+                            </MemoryRouter>
+                          </WorkflowFormContextProvider>
                         </ProcessFormContextProvider>
                       </FormDetailsContextProvider>
                     </FormsListContextProvider>

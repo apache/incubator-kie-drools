@@ -15,7 +15,12 @@ exports[`ProcessFormPage tests Snapshot 1`] = `
       data-ouia-safe={true}
     >
       <PageTitle
-        extra={<MockedComponent />}
+        extra={
+          <MockedComponent
+            getBusinessKey={[Function]}
+            setBusinessKey={[Function]}
+          />
+        }
         title="Start process1"
       >
         <Flex
@@ -62,7 +67,10 @@ exports[`ProcessFormPage tests Snapshot 1`] = `
               <div
                 className="pf-m-spacer-sm"
               >
-                <MockedComponent />
+                <MockedComponent
+                  getBusinessKey={[Function]}
+                  setBusinessKey={[Function]}
+                />
               </div>
             </FlexItem>
           </div>
