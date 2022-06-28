@@ -8,5 +8,5 @@ our [official documentation](https://docs.jboss.org/kogito/release/latest/html_s
 
 See the following examples to explore more about this capability:
 
-- [dmn-tracing-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/dmn-tracing-quarkus)
-- [dmn-tracing-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/dmn-tracing-springboot)
+- [dmn-tracing-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/dmn-tracing-quarkus)
+- [dmn-tracing-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-springboot-examples/dmn-tracing-springboot)

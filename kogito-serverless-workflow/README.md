@@ -47,11 +47,11 @@ The sections below describe in detail the current status of the supported featur
 
 #### Examples
 
-1. [Event Example](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-events-quarkus)
-2. [Operation Example](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-functions-quarkus)
-3. [Switch, Parallel, and SubFlow Example](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-order-processing)
-4. [Inject and Switch Example](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-greeting-quarkus)
-5. [Callback Example](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-callback-quarkus)
+1. [Event Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-events-quarkus)
+2. [Operation Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-functions-quarkus)
+3. [Switch, Parallel, and SubFlow Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-order-processing)
+4. [Inject and Switch Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-greeting-quarkus)
+5. [Callback Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-callback-quarkus)
 
 ### Workflow Model - Functions
 
@@ -197,11 +197,11 @@ Or, if you prefer you can pass only the necessary data:
 
 #### Examples
 
-1. [Functions With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-functions-quarkus)
-2. [Funqy](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-functions-quarkus)
-3. [The GitHub Showcase](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-github-showcase)
-4. [Greetings Example With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-greeting-quarkus)
-5. [Temperature Conversion Example](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-temperature-conversion)
+1. [Functions With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-functions-quarkus)
+2. [Funqy](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-functions-quarkus)
+3. [The GitHub Showcase](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-github-showcase)
+4. [Greetings Example With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-greeting-quarkus)
+5. [Temperature Conversion Example](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-temperature-conversion)
 
 ### Workflow Model - Events
 
@@ -217,9 +217,9 @@ Or, if you prefer you can pass only the necessary data:
 
 #### Examples
 
-1. [Events With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-events-quarkus)
-2. [Functions With Events](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-functions-events-quarkus)
-3. [Order Processing](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-order-processing)
+1. [Events With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-events-quarkus)
+2. [Functions With Events](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-functions-events-quarkus)
+3. [Order Processing](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-order-processing)
 
 ### Workflow Model - Retries
 
@@ -253,14 +253,14 @@ definition:
 
 #### Example
 
-1. [Expressions With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-expression-quarkus)
+1. [Expressions With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-expression-quarkus)
 
 ### Workflow Error Handling
 
 Kogito supports error handling. Find more details about this implementation on
 our [documentation](https://docs.jboss.org/kogito/release/latest/html_single/#con-serverless-workflow-error-handling_kogito-developing-decision-services).
 
-1. [Error Handling With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-error-quarkus)
+1. [Error Handling With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-error-quarkus)
 
 ### Workflow Compensation
 
@@ -269,4 +269,4 @@ the [specification](https://github.com/serverlessworkflow/specification/blob/0.8
 
 #### Examples
 
-1. [Workflow Compensation With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/kogito-quarkus-examples/serverless-workflow-compensation-quarkus)
+1. [Workflow Compensation With Quarkus](https://github.com/kiegroup/kogito-examples/tree/main/serverless-workflow-examples/serverless-workflow-compensation-quarkus)

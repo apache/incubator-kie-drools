@@ -12,15 +12,15 @@ See the following sections in our documentation to find out more:
 
 Please check the following examples to explore more about this capability:
 
-- [kogito-travel-agency](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-travel-agency)
-- [process-kafka-multi-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/process-kafka-multi-quarkus)
-- [process-kafka-multi-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/process-kafka-multi-springboot)
-- [process-kafka-quickstart-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/process-kafka-quickstart-quarkus)
-- [process-kafka-quickstart-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/process-kafka-quickstart-springboot)
-- [process-knative-quickstart-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/process-knative-quickstart-quarkus)
-- [serverless-workflow-github-showcase](https://github.com/kiegroup/kogito-examples/tree/stable/serverless-workflow-github-showcase)
-- [serverless-workflow-service-calls-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/serverless-workflow-service-calls-quarkus)
-- [serverless-workflow-temperature-conversion](https://github.com/kiegroup/kogito-examples/tree/stable/serverless-workflow-temperature-conversion)
+- [kogito-travel-agency](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/kogito-travel-agency)
+- [process-kafka-multi-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/process-kafka-multi-quarkus)
+- [process-kafka-multi-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-springboot-examples/process-kafka-multi-springboot)
+- [process-kafka-quickstart-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/process-kafka-quickstart-quarkus)
+- [process-kafka-quickstart-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-springboot-examples/process-kafka-quickstart-springboot)
+- [process-knative-quickstart-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/process-knative-quickstart-quarkus)
+- [serverless-workflow-github-showcase](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/serverless-workflow-github-showcase)
+- [serverless-workflow-service-calls-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/serverless-workflow-service-calls-quarkus)
+- [serverless-workflow-temperature-conversion](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/serverless-workflow-temperature-conversion)
 
 ## Message Payload Decorator
 

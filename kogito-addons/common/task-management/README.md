@@ -9,5 +9,5 @@ to find out more.
 
 See the following examples to explore more about this capability:
 
-- [process-usertasks-custom-lifecycle-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/process-usertasks-custom-lifecycle-quarkus)
-- [process-usertasks-custom-lifecycle-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/process-usertasks-custom-lifecycle-springboot)
+- [process-usertasks-custom-lifecycle-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/process-usertasks-custom-lifecycle-quarkus)
+- [process-usertasks-custom-lifecycle-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-springboot-examples/process-usertasks-custom-lifecycle-springboot)

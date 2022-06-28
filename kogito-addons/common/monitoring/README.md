@@ -8,9 +8,9 @@ for more information about how to use them in your project.
 
 Please check the following examples to explore more about this capability:
 
-- [dmn-drools-quarkus-metrics](https://github.com/kiegroup/kogito-examples/tree/stable/dmn-drools-quarkus-metrics)
-- [dmn-drools-springboot-metrics](https://github.com/kiegroup/kogito-examples/tree/stable/dmn-drools-springboot-metrics)
-- [dmn-tracing-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/dmn-tracing-quarkus)
-- [dmn-tracing-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/dmn-tracing-springboot)
-- [kogito-travel-agency](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-travel-agency)
-- [onboarding-example](https://github.com/kiegroup/kogito-examples/tree/stable/onboarding-example)
+- [dmn-drools-quarkus-metrics](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/dmn-drools-quarkus-metrics)
+- [dmn-drools-springboot-metrics](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-springboot-examples/dmn-drools-springboot-metrics)
+- [dmn-tracing-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/dmn-tracing-quarkus)
+- [dmn-tracing-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-springboot-examples/dmn-tracing-springboot)
+- [kogito-travel-agency](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/kogito-travel-agency)
+- [onboarding-example](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/onboarding-example)

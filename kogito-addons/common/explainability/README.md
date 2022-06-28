@@ -8,4 +8,4 @@ to find out more.
 
 See the following example to explore more about this capability:
 
-- [trusty-demonstration](https://github.com/kiegroup/kogito-examples/tree/stable/trusty-demonstration)
+- [trusty-demonstration](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/trusty-demonstration)
