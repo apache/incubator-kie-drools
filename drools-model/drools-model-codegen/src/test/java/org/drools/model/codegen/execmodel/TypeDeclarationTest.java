@@ -21,13 +21,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypeDeclarationTest extends BaseModelTest {
 
@@ -64,7 +63,7 @@ public class TypeDeclarationTest extends BaseModelTest {
         ksession.insert( child );
 
         int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
+        assertThat(rules).isEqualTo(1);
     }
 
     @Test
@@ -91,7 +90,7 @@ public class TypeDeclarationTest extends BaseModelTest {
         ksession.insert( parent );
 
         int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
+        assertThat(rules).isEqualTo(1);
     }
 
     public interface ValuesProvider {
@@ -125,7 +124,7 @@ public class TypeDeclarationTest extends BaseModelTest {
         ksession.insert( parent );
 
         int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
+        assertThat(rules).isEqualTo(1);
     }
 
     @Test
@@ -149,7 +148,7 @@ public class TypeDeclarationTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
+        assertThat(rules).isEqualTo(1);
     }
 
     @Test
@@ -173,7 +172,7 @@ public class TypeDeclarationTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
+        assertThat(rules).isEqualTo(1);
     }
 
     @Test
@@ -202,8 +201,8 @@ public class TypeDeclarationTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        Assert.assertEquals(37, results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo(37);
     }
 
     @Test
@@ -234,7 +233,7 @@ public class TypeDeclarationTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        Assert.assertEquals(37, results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo(37);
     }
 }

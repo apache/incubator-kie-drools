@@ -26,7 +26,7 @@ import org.drools.model.codegen.execmodel.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InTest extends BaseModelTest {
 
@@ -44,7 +44,7 @@ public class InTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(str);
         ksession.insert(new Child("Ben", 10));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class InTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(str);
         ksession.insert(new Child("Ben", 10));
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class InTest extends BaseModelTest {
         Child ben = new Child("Ben", 10, parentName);
         ksession.insert(ben);
         ksession.insert(gustav);
-        assertEquals( 1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         Assertions.assertThat(results).containsExactly(ben);
     }
 
@@ -99,6 +99,6 @@ public class InTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
         ksession.insert(new Address("Brno"));
         ksession.insert(new Address("Milan"));
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 }

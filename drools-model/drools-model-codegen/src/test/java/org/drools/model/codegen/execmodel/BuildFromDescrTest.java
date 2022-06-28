@@ -21,14 +21,12 @@ import org.drools.drl.ast.dsl.DescrFactory;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.codegen.execmodel.BaseModelTest.getObjectsIntoList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class BuildFromDescrTest {
 
@@ -58,7 +56,7 @@ public class BuildFromDescrTest {
                 .newKieSession();
 
         ksession.insert( new Person( "Mario" ) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -93,8 +91,8 @@ public class BuildFromDescrTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        Assert.assertEquals(77, results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo(77);
     }
 
     @Test
@@ -132,8 +130,8 @@ public class BuildFromDescrTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(2, results.size());
-        assertTrue( results.stream().map(Result::toString).anyMatch(s -> "M:77".equals(s)) );
-        assertTrue( results.stream().map(Result::toString).anyMatch(s -> "E:68".equals(s)) );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.stream().map(Result::toString).anyMatch(s -> "M:77".equals(s))).isTrue();
+        assertThat(results.stream().map(Result::toString).anyMatch(s -> "E:68".equals(s))).isTrue();
     }
 }

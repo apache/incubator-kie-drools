@@ -26,8 +26,7 @@ import org.drools.model.codegen.execmodel.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InlineCastTest extends BaseModelTest {
 
@@ -57,7 +56,7 @@ public class InlineCastTest extends BaseModelTest {
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.fireAllRules();
 
-        assertEquals( "Found: Mark", result.getValue() );
+        assertThat(result.getValue()).isEqualTo("Found: Mark");
     }
 
     @Test
@@ -81,7 +80,7 @@ public class InlineCastTest extends BaseModelTest {
         ksession.insert( new Person( "Mark", 37 ) );
         ksession.fireAllRules();
 
-        assertEquals( "Found: Mark $p class: " + Person.class.getCanonicalName(), result.getValue() );
+        assertThat(result.getValue()).isEqualTo("Found: Mark $p class: " + Person.class.getCanonicalName());
     }
 
     @Test
@@ -105,7 +104,7 @@ public class InlineCastTest extends BaseModelTest {
         ksession.insert( new Person( "Mark", 37 ) );
         ksession.fireAllRules();
 
-        assertEquals( "Found: Mark $p class: " + Person.class.getCanonicalName(), result.getValue() );
+        assertThat(result.getValue()).isEqualTo("Found: Mark $p class: " + Person.class.getCanonicalName());
     }
 
 
@@ -144,7 +143,7 @@ public class InlineCastTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertTrue(true);
+        assertThat(true).isTrue();
     }
 
     @Test
@@ -162,7 +161,7 @@ public class InlineCastTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertTrue(true);
+        assertThat(true).isTrue();
     }
 
     @Test
@@ -185,7 +184,7 @@ public class InlineCastTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals("Italy", results.iterator().next());
+        assertThat(results.iterator().next()).isEqualTo("Italy");
     }
 
     @Test
@@ -208,7 +207,7 @@ public class InlineCastTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals("Italy", results.iterator().next());
+        assertThat(results.iterator().next()).isEqualTo("Italy");
     }
 
 
@@ -232,7 +231,7 @@ public class InlineCastTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test
@@ -254,7 +253,7 @@ public class InlineCastTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test
@@ -277,7 +276,7 @@ public class InlineCastTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test
@@ -306,7 +305,7 @@ public class InlineCastTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test
@@ -335,6 +334,6 @@ public class InlineCastTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
     }
 }
