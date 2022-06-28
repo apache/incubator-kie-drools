@@ -63,6 +63,11 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
     }
 
     @Override
+    public void insertAsync(Object object) {
+        ((InternalWorkingMemoryEntryPoint) reteEvaluator.getDefaultEntryPoint()).insertAsync(object);
+    }
+
+    @Override
     public RuleImpl getRule() {
         return knowledgeHelper.getRule();
     }
