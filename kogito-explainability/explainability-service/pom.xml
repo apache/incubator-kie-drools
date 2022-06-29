@@ -32,6 +32,16 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>explainability-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.optaplanner</groupId>
+          <artifactId>optaplanner-quarkus</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-quarkus</artifactId>
     </dependency>
 
     <dependency>

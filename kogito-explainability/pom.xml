@@ -15,8 +15,6 @@
 
   <modules>
     <module>explainability-api</module>
-    <module>explainability-core</module>
-    <module>explainability-integrationtests</module>
     <module>explainability-service</module>
     <module>explainability-service-messaging</module>
     <module>explainability-service-rest</module>

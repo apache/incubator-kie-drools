@@ -87,6 +87,6 @@ public class JITDMNServiceImplTest {
 
         Assertions.assertNotNull(response.salienciesResponse);
         Assertions.assertEquals(1, response.salienciesResponse.getSaliencies().size());
-        Assertions.assertEquals(6, response.salienciesResponse.getSaliencies().get(0).getFeatureImportance().size());
+        Assertions.assertEquals(17, response.salienciesResponse.getSaliencies().get(0).getFeatureImportance().size());
     }
 }
