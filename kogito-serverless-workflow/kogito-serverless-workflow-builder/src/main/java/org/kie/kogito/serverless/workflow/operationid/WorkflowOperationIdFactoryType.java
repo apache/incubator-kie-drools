@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.io;
+package org.kie.kogito.serverless.workflow.operationid;
 
-import java.io.InputStream;
-import java.net.URI;
+public enum WorkflowOperationIdFactoryType {
 
-public interface URIContentLoader {
+    FULL_URI(new URIWorkflowOperationIdFactory()),
+    SPEC_TITLE(new SpecWorkflowOperationIdFactory()),
+    FILE_NAME(new FileNameWorkflowOperationIdFactory()),
+    FUNCTION_NAME(new FunctionWorkflowOperationIdFactory());
 
-    URI uri();
+    private final WorkflowOperationIdFactory factory;
 
-    InputStream getInputStream();
+    private WorkflowOperationIdFactoryType(WorkflowOperationIdFactory factory) {
+        this.factory = factory;
+    }
 
-    URIContentLoaderType type();
+    public WorkflowOperationIdFactory factory() {
+        return factory;
+    }
 }

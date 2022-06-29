@@ -13,27 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.parser.rest;
+package org.kie.kogito.serverless.workflow.operationid;
 
-import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
+import java.net.URI;
+import java.util.Optional;
+
+import org.kie.kogito.serverless.workflow.parser.ParserContext;
+import org.kie.kogito.serverless.workflow.parser.rest.DescriptorRestOperationHandler;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
-public class GeneratedRestOperationHandler implements RestOperationHandler {
-
-    private final String className;
-
-    public GeneratedRestOperationHandler(String className) {
-        this.className = className;
-    }
-
+public class SpecWorkflowOperationIdFactory extends AbstractWorkflowOperationIdFactory {
     @Override
-    public <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> fillWorkItemHandler(WorkItemNodeFactory<T> node,
-            Workflow workflow,
-            FunctionDefinition actionFunction) {
-        return node.workName(className);
-    }
+    public String getFileName(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context, URI uri, String operation, String service) {
+        return DescriptorRestOperationHandler.getOpenAPI(uri, workflow, function, context.map(c -> c.getContext().getClassLoader()).orElse(Thread.currentThread().getContextClassLoader())).getInfo()
+                .getTitle();
 
+    }
 }

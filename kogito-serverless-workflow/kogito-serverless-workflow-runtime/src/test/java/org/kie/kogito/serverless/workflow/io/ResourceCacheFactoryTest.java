@@ -42,7 +42,7 @@ public class ResourceCacheFactoryTest {
     void testDefaultResourceCache() {
         final int numOfTimes = 3;
         callIt(numOfTimes);
-        assertEquals(numOfTimes, counter.get());
+        assertEquals(1, counter.get());
     }
 
     @Test

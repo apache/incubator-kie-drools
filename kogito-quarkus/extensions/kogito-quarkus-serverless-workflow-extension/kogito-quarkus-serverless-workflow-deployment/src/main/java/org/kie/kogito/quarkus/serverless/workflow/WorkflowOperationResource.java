@@ -16,7 +16,7 @@
 package org.kie.kogito.quarkus.serverless.workflow;
 
 import org.kie.kogito.serverless.workflow.io.URIContentLoader;
-import org.kie.kogito.serverless.workflow.utils.WorkflowOperationId;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationId;
 
 public class WorkflowOperationResource {
 

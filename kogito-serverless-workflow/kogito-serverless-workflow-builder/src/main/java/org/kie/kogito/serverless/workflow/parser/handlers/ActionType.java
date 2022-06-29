@@ -16,24 +16,33 @@
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
 import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.OPERATION_SEPARATOR;
 
-enum ActionType {
+public enum ActionType {
     REST("rest"),
     SERVICE("service"),
-    OPENAPI,
+    OPENAPI(ActionType::justOperation),
     EXPRESSION,
     SCRIPT("script"),
     SYSOUT("sysout"),
-    RPC,
+    RPC(ActionType::withService),
     EMPTY;
 
-    private String[] prefixes;
+    private final String[] prefixes;
+    private Optional<Function<String, ActionResource>> actionResourceFactory;
 
     private ActionType(String... prefixes) {
+        this(null, prefixes);
+    }
+
+    private ActionType(Function<String, ActionResource> actionResourceFactory, String... prefixes) {
+        this.actionResourceFactory = Optional.ofNullable(actionResourceFactory);
         this.prefixes = prefixes;
     }
 
@@ -89,5 +98,27 @@ enum ActionType {
             }
         }
         return ActionType.EMPTY;
+    }
+
+    private static ActionResource justOperation(String operationStr) {
+        String[] tokens = getTokens(operationStr, 2);
+        return new ActionResource(tokens[0], tokens[1], null);
+    }
+
+    private static ActionResource withService(String operationStr) {
+        String[] tokens = getTokens(operationStr, 3);
+        return new ActionResource(tokens[0], tokens[2], tokens[1]);
+    }
+
+    private static String[] getTokens(String operationStr, int expectedTokens) {
+        String[] tokens = operationStr.split(OPERATION_SEPARATOR);
+        if (tokens.length != expectedTokens) {
+            throw new IllegalArgumentException(String.format("%s should have just %d %s", operationStr, expectedTokens - 1, OPERATION_SEPARATOR));
+        }
+        return tokens;
+    }
+
+    public ActionResource getActionResource(FunctionDefinition function) {
+        return actionResourceFactory.map(factory -> factory.apply(function.getOperation())).orElseThrow(() -> new UnsupportedOperationException(this.name() + " does not support action resources"));
     }
 }

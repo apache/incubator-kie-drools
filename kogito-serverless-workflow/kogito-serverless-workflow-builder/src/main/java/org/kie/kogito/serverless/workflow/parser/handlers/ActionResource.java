@@ -13,16 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.io;
+package org.kie.kogito.serverless.workflow.parser.handlers;
 
-import java.io.InputStream;
-import java.net.URI;
+public class ActionResource {
 
-public interface URIContentLoader {
+    private final String uri;
+    private final String operation;
+    private final String service;
 
-    URI uri();
+    public ActionResource(String uri, String operation, String service) {
+        this.uri = uri;
+        this.operation = operation;
+        this.service = service;
+    }
 
-    InputStream getInputStream();
+    public String getUri() {
+        return uri;
+    }
 
-    URIContentLoaderType type();
+    public String getOperation() {
+        return operation;
+    }
+
+    public String getService() {
+        return service;
+    }
 }

@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.serverless.workflow.parser.rest;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +23,7 @@ import java.util.function.Supplier;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.kie.kogito.internal.utils.ConversionUtils;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationId;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.handlers.openapi.OpenAPIDescriptor;
 import org.kie.kogito.serverless.workflow.parser.handlers.openapi.OpenAPIDescriptorFactory;
@@ -34,7 +34,6 @@ import org.kie.kogito.serverless.workflow.suppliers.ClientOAuth2AuthDecoratorSup
 import org.kie.kogito.serverless.workflow.suppliers.CollectionParamsDecoratorSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ConfigSuppliedWorkItemSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.PasswordOAuth2AuthDecoratorSupplier;
-import org.kie.kogito.serverless.workflow.utils.WorkflowOperationId;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator;
 import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator.Location;
@@ -68,6 +67,7 @@ import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.A
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.API_KEY_PREFIX;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.PASSWORD_PROP;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.USER_PROP;
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.replaceNonAlphanumeric;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.runtimeOpenApi;
 
 public class DescriptorRestOperationHandler implements RestOperationHandler {
@@ -93,29 +93,31 @@ public class DescriptorRestOperationHandler implements RestOperationHandler {
             Workflow workflow,
             FunctionDefinition function) {
         URI uri = operationId.getUri();
-        String serviceName = operationId.getPackageName();
-        try {
-            // although OpenAPIParser has built in support to load uri, it messes up when using contextclassloader, so using our retrieval apis to get the content
-            SwaggerParseResult result =
-                    new OpenAPIParser().readContents(new String(readAllBytes(buildLoader(uri, parserContext.getContext().getClassLoader(), workflow, function.getAuthRef()))), null, null);
-            OpenAPI openAPI = result.getOpenAPI();
-            if (openAPI == null) {
-                throw new IllegalArgumentException("Problem parsing uri " + uri);
-            }
-            logger.debug("OpenAPI parser messages {}", result.getMessages());
-            OpenAPIDescriptor openAPIDescriptor = OpenAPIDescriptorFactory.of(openAPI, operationId.getOperation());
-            addSecurity(node, openAPIDescriptor, serviceName);
-            return node.workParameter(RestWorkItemHandler.URL,
-                    runtimeOpenApi(serviceName, "base_path", String.class, OpenAPIDescriptorFactory.getDefaultURL(openAPI, "http://localhost:8080"),
-                            (key, clazz, defaultValue) -> new ConfigSuppliedWorkItemSupplier<>(key, clazz, defaultValue, calculatedKey -> concatPaths(calculatedKey, openAPIDescriptor.getPath()),
-                                    new LambdaExpr(new Parameter(new UnknownType(), "calculatedKey"),
-                                            new MethodCallExpr(ConversionUtils.class.getCanonicalName() + ".concatPaths")
-                                                    .addArgument(new NameExpr("calculatedKey")).addArgument(new StringLiteralExpr(openAPIDescriptor.getPath()))))))
-                    .workParameter(RestWorkItemHandler.METHOD, openAPIDescriptor.getMethod())
-                    .workParameter(RestWorkItemHandler.PARAMS_DECORATOR, new CollectionParamsDecoratorSupplier(openAPIDescriptor.getHeaderParams(), openAPIDescriptor.getQueryParams()));
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem retrieving uri " + uri);
+        String serviceName = replaceNonAlphanumeric(operationId.getFileName());
+        // although OpenAPIParser has built in support to load uri, it messes up when using contextclassloader, so using our retrieval apis to get the content
+        OpenAPI openAPI = getOpenAPI(uri, workflow, function, parserContext.getContext().getClassLoader());
+        OpenAPIDescriptor openAPIDescriptor = OpenAPIDescriptorFactory.of(openAPI, operationId.getOperation());
+        addSecurity(node, openAPIDescriptor, serviceName);
+        return node.workParameter(RestWorkItemHandler.URL,
+                runtimeOpenApi(serviceName, "base_path", String.class, OpenAPIDescriptorFactory.getDefaultURL(openAPI, "http://localhost:8080"),
+                        (key, clazz, defaultValue) -> new ConfigSuppliedWorkItemSupplier<>(key, clazz, defaultValue, calculatedKey -> concatPaths(calculatedKey, openAPIDescriptor.getPath()),
+                                new LambdaExpr(new Parameter(new UnknownType(), "calculatedKey"),
+                                        new MethodCallExpr(ConversionUtils.class.getCanonicalName() + ".concatPaths")
+                                                .addArgument(new NameExpr("calculatedKey")).addArgument(new StringLiteralExpr(openAPIDescriptor.getPath()))))))
+                .workParameter(RestWorkItemHandler.METHOD, openAPIDescriptor.getMethod())
+                .workParameter(RestWorkItemHandler.PARAMS_DECORATOR, new CollectionParamsDecoratorSupplier(openAPIDescriptor.getHeaderParams(), openAPIDescriptor.getQueryParams()));
+
+    }
+
+    public static OpenAPI getOpenAPI(URI uri, Workflow workflow, FunctionDefinition function, ClassLoader cl) {
+        SwaggerParseResult result =
+                new OpenAPIParser().readContents(new String(readAllBytes(buildLoader(uri, cl, workflow, function.getAuthRef()))), null, null);
+        OpenAPI openAPI = result.getOpenAPI();
+        if (openAPI == null) {
+            throw new IllegalArgumentException("Problem parsing uri " + uri + "Messages" + result.getMessages());
         }
+        logger.debug("OpenAPI parser messages {}", result.getMessages());
+        return openAPI;
     }
 
     private void addSecurity(WorkItemNodeFactory<?> node, OpenAPIDescriptor openAPI, String serviceName) {

@@ -16,7 +16,7 @@
 package org.kie.kogito.serverless.workflow.io;
 
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
+import java.io.UncheckedIOException;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,12 +39,12 @@ class URIContentLoaderTest {
 
     @Test
     void testNotExistingFile() {
-        assertThrows(NoSuchFileException.class, () -> readAllBytes(runtimeLoader("file:/noPepe.txt")));
+        assertThrows(UncheckedIOException.class, () -> readAllBytes(runtimeLoader("file:/noPepe.txt")));
     }
 
     @Test
     void testNotExistingClasspath() {
-        assertThrows(IOException.class, () -> readAllBytes(runtimeLoader("classpath:/noPepe.txt")));
+        assertThrows(IllegalArgumentException.class, () -> readAllBytes(runtimeLoader("classpath:/noPepe.txt")));
     }
 
 }

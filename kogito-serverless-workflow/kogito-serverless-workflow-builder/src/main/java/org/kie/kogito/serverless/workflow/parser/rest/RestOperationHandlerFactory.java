@@ -16,8 +16,9 @@
 package org.kie.kogito.serverless.workflow.parser.rest;
 
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationId;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
-import org.kie.kogito.serverless.workflow.utils.WorkflowOperationId;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 public class RestOperationHandlerFactory {
 
@@ -26,7 +27,8 @@ public class RestOperationHandlerFactory {
 
     public static RestOperationHandler get(ParserContext parserContext, WorkflowOperationId id) {
         KogitoBuildContext context = parserContext.getContext();
-        return context.getGeneratedHandlers().contains(id.geClassName()) ? new GeneratedRestOperationHandler(id) : new DescriptorRestOperationHandler(parserContext, id);
+        String className = ServerlessWorkflowUtils.getOpenApiClassName(id.getFileName(), id.getOperation());
+        return context.getGeneratedHandlers().contains(className) ? new GeneratedRestOperationHandler(className) : new DescriptorRestOperationHandler(parserContext, id);
     }
 
 }

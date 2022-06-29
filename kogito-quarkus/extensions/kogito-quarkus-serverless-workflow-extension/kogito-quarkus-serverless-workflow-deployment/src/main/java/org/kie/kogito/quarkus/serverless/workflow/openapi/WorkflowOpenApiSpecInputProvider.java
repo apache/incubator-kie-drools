@@ -41,17 +41,13 @@ public class WorkflowOpenApiSpecInputProvider implements OpenApiSpecInputProvide
             inputDir = inputDir.getParent();
         }
         try (Stream<Path> openApiFilesPaths = Files.walk(inputDir)) {
-            return WorkflowCodeGenUtils.operationResources(openApiFilesPaths, ServerlessWorkflowUtils::isOpenApiOperation).map(this::getSpecInput).collect(Collectors.toList());
+            return WorkflowCodeGenUtils.operationResources(openApiFilesPaths, ServerlessWorkflowUtils::isOpenApiOperation, context).map(this::getSpecInput).collect(Collectors.toList());
         } catch (IOException io) {
             throw new IllegalStateException(io);
         }
     }
 
     private SpecInputModel getSpecInput(WorkflowOperationResource resource) {
-        try {
-            return new SpecInputModel(resource.getOperationId().getFileName(), resource.getContentLoader().getInputStream(), KOGITO_PACKAGE_PREFIX + resource.getOperationId().getPackageName());
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+        return new SpecInputModel(resource.getOperationId().getFileName(), resource.getContentLoader().getInputStream(), KOGITO_PACKAGE_PREFIX + resource.getOperationId().getPackageName());
     }
 }

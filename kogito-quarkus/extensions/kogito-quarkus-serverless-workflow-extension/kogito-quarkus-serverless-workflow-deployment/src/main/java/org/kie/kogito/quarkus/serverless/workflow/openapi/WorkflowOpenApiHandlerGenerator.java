@@ -32,7 +32,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.quarkus.serverless.workflow.ClassAnnotatedWorkfkowHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
 import org.kie.kogito.serverless.workflow.openapi.OpenApiWorkItemHandler;
-import org.kie.kogito.serverless.workflow.utils.WorkflowOperationId;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -78,7 +78,7 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkfkowHandl
     private GeneratedFile generateHandler(KogitoBuildContext context, ClassInfo classInfo, String fileName, MethodInfo m) {
         final String packageName = context.getPackageName();
         final String methodName = m.annotation(generatedMethod).value().asString();
-        final String className = WorkflowOperationId.getClassName(fileName, methodName);
+        final String className = ServerlessWorkflowUtils.getOpenApiClassName(fileName, methodName);
         final ClassOrInterfaceType classNameType = parseClassOrInterfaceType(classInfo.name().toString());
         CompilationUnit unit = new CompilationUnit(packageName);
         ClassOrInterfaceDeclaration clazz = unit.addClass(className);

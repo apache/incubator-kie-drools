@@ -17,12 +17,15 @@ package org.kie.kogito.serverless.workflow.utils;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.util.StringUtils;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
@@ -48,14 +51,17 @@ public class ServerlessWorkflowUtils {
     public static final String ACCESS_TOKEN = "access_token";
     public static final String USER_PROP = "username";
     public static final String PASSWORD_PROP = "password";
+    public static final String OPERATION_SEPARATOR = "#";
 
     public static final String DEFAULT_WORKFLOW_FORMAT = "json";
     public static final String ALTERNATE_WORKFLOW_FORMAT = "yml";
-    private static final String APP_PROPERTIES_BASE = "kogito.sw.";
+    public static final String APP_PROPERTIES_BASE = "kogito.sw.";
     private static final String OPEN_API_PROPERTIES_BASE = "org.kogito.openapi.client.";
 
     private static final String APP_PROPERTIES_FUNCTIONS_BASE = APP_PROPERTIES_BASE + "functions.";
     private static final String APP_PROPERTIES_STATES_BASE = "states.";
+
+    private static final String REGEX_NO_EXT = "[.][^.]+$";
 
     private ServerlessWorkflowUtils() {
     }
@@ -69,7 +75,9 @@ public class ServerlessWorkflowUtils {
     }
 
     public static Workflow getWorkflow(Reader workflowFile, String workflowFormat) throws IOException {
-        return getObjectMapper(workflowFormat).readValue(workflowFile, Workflow.class);
+        BaseObjectMapper objectMapper = getObjectMapper(workflowFormat);
+        objectMapper.getWorkflowModule().getExtensionDeserializer().addExtension(URIDefinitions.URI_DEFINITIONS, URIDefinitions.class);
+        return objectMapper.readValue(workflowFile, Workflow.class);
     }
 
     private static String getOpenApiPrefix(String serviceName) {
@@ -134,7 +142,7 @@ public class ServerlessWorkflowUtils {
      * @return true if the given function refers to an OpenApi operation
      */
     public static boolean isOpenApiOperation(FunctionDefinition function) {
-        return function.getType() == Type.REST && function.getOperation() != null && function.getOperation().contains(WorkflowOperationId.OPERATION_SEPARATOR);
+        return function.getType() == Type.REST && function.getOperation() != null && function.getOperation().contains(OPERATION_SEPARATOR);
     }
 
     public static String getForEachVarName(KogitoBuildContext context) {
@@ -153,11 +161,16 @@ public class ServerlessWorkflowUtils {
     }
 
     public static Optional<byte[]> loadResourceFile(Workflow workflow, ParserContext parserContext, String uriStr, String authRef) {
+        return loadResourceFile(uriStr, Optional.of(workflow), Optional.of(parserContext), authRef);
+    }
+
+    public static Optional<byte[]> loadResourceFile(String uriStr, Optional<Workflow> workflow, Optional<ParserContext> parserContext, String authRef) {
         final URI uri = URI.create(uriStr);
         try {
-            final byte[] bytes = URIContentLoaderFactory.readAllBytes(URIContentLoaderFactory.buildLoader(uri, parserContext.getContext().getClassLoader(), workflow, authRef));
+            final byte[] bytes =
+                    URIContentLoaderFactory.readAllBytes(URIContentLoaderFactory.loader(uri, parserContext.map(p -> p.getContext().getClassLoader()), Optional.empty(), workflow, authRef));
             return Optional.of(bytes);
-        } catch (IOException io) {
+        } catch (UncheckedIOException io) {
             // if file cannot be found in build context, warn it and return the unmodified uri (it might be possible that later the resource is available at runtime)
             logger.warn("Resource {} cannot be found at build time, ignoring", uri, io);
         }
@@ -168,4 +181,37 @@ public class ServerlessWorkflowUtils {
         return "RPC_" + serviceName + "_WorkItemHandler";
     }
 
+    public static String getOpenApiClassName(String fileName, String methodName) {
+        return StringUtils.ucFirst(getValidIdentifier(removeExt(fileName.toLowerCase())) + '_' + methodName);
+    }
+
+    public static String removeExt(String fileName) {
+        return fileName.replaceFirst(REGEX_NO_EXT, "");
+    }
+
+    public static String onlyChars(String name) {
+        return filterString(name, Character::isLetter, Optional.empty());
+    }
+
+    public static String replaceNonAlphanumeric(final String name) {
+        return filterString(name, Character::isLetterOrDigit, Optional.of(() -> '_'));
+    }
+
+    protected static String getValidIdentifier(String name) {
+        return filterString(name, Character::isJavaIdentifierPart, Optional.empty());
+    }
+
+    protected static String filterString(String str, Predicate<Character> p, Optional<Supplier<Character>> replacer) {
+        int length = str.length();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            char c = str.charAt(i);
+            if (p.test(c)) {
+                sb.append(c);
+            } else {
+                replacer.ifPresent(r -> sb.append(r.get()));
+            }
+        }
+        return sb.toString();
+    }
 }

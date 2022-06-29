@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.io;
+package org.kie.kogito.serverless.workflow.operationid;
 
-import java.io.InputStream;
-import java.net.URI;
+import java.util.Optional;
 
-public interface URIContentLoader {
+import org.kie.kogito.serverless.workflow.parser.ParserContext;
 
-    URI uri();
+import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.functions.FunctionDefinition;
 
-    InputStream getInputStream();
+public interface WorkflowOperationIdFactory {
+    WorkflowOperationId from(Workflow workflow, FunctionDefinition function, Optional<ParserContext> parserContext);
 
-    URIContentLoaderType type();
 }

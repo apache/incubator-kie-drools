@@ -23,6 +23,7 @@ import java.util.Map;
 import org.drools.codegen.common.GeneratedFile;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactory;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 
 import io.serverlessworkflow.api.transitions.Transition;
@@ -32,15 +33,17 @@ public class ParserContext {
     private final Map<String, StateHandler<?>> stateHandlers = new LinkedHashMap<>();
     private final RuleFlowProcessFactory factory;
     private final NodeIdGenerator idGenerator;
+    private final WorkflowOperationIdFactory operationIdFactory;
     private final KogitoBuildContext context;
     private final Collection<GeneratedFile> generatedFiles;
 
     private boolean isCompensation;
 
-    public ParserContext(NodeIdGenerator idGenerator, RuleFlowProcessFactory factory, KogitoBuildContext context) {
+    public ParserContext(NodeIdGenerator idGenerator, RuleFlowProcessFactory factory, KogitoBuildContext context, WorkflowOperationIdFactory operationIdFactory) {
         this.idGenerator = idGenerator;
         this.factory = factory;
         this.context = context;
+        this.operationIdFactory = operationIdFactory;
         this.generatedFiles = new ArrayList<>();
     }
 
@@ -74,6 +77,10 @@ public class ParserContext {
 
     public RuleFlowProcessFactory factory() {
         return factory;
+    }
+
+    public WorkflowOperationIdFactory operationIdFactory() {
+        return operationIdFactory;
     }
 
     public boolean isCompensation() {

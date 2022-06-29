@@ -16,7 +16,6 @@
 package org.kie.kogito.quarkus.serverless.workflow.rpc;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -31,6 +30,7 @@ import org.kie.kogito.quarkus.serverless.workflow.WorkflowOperationResource;
 import org.kie.kogito.serverless.workflow.io.ClassPathContentLoader;
 import org.kie.kogito.serverless.workflow.io.FileContentLoader;
 import org.kie.kogito.serverless.workflow.io.URIContentLoader;
+import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +65,8 @@ public class WorkflowRPCCodeGenProvider implements CodeGenProvider {
             Path outputPath = context.workDir().resolve("proto_temp");
             Files.createDirectories(outputPath);
             Collection<Path> protoFiles =
-                    WorkflowCodeGenUtils.operationResources(rpcFilePaths, this::isRPC).map(r -> getPath(r, outputPath)).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+                    WorkflowCodeGenUtils.operationResources(rpcFilePaths, this::isRPC, context).map(r -> getPath(r, outputPath)).filter(Optional::isPresent).map(Optional::get)
+                            .collect(Collectors.toList());
             logger.debug("Collected proto paths are {}", protoFiles);
             if (protoFiles.isEmpty()) {
                 return false;
@@ -86,12 +87,12 @@ public class WorkflowRPCCodeGenProvider implements CodeGenProvider {
             case CLASSPATH:
                 return ((ClassPathContentLoader) contentLoader).getResource().map(this::fromURL);
             case HTTP:
-                try (InputStream is = resource.getContentLoader().getInputStream()) {
+                try {
                     Path tempPath = outputPath.resolve(resource.getOperationId().getFileName());
-                    Files.write(tempPath, is.readAllBytes());
+                    Files.write(tempPath, URIContentLoaderFactory.readAllBytes(contentLoader));
                     return Optional.of(tempPath);
-                } catch (IOException e) {
-                    throw new IllegalArgumentException("Error accessing http resource " + resource, e);
+                } catch (IOException io) {
+                    throw new IllegalStateException(io);
                 }
             default:
                 logger.warn("Unsupported content loader {}", contentLoader);

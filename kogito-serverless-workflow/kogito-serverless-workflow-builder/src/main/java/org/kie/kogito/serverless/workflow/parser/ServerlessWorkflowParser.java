@@ -33,6 +33,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactoryProvider;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.handlers.validation.WorkflowValidator;
@@ -90,7 +91,8 @@ public class ServerlessWorkflowParser {
                         DEFAULT_PACKAGE) : DEFAULT_PACKAGE)
                 .visibility("Public")
                 .variable(DEFAULT_WORKFLOW_VAR, new ObjectDataType(JsonNode.class), ObjectMapperFactory.get().createObjectNode());
-        ParserContext parserContext = new ParserContext(idGenerator, factory, context);
+        ParserContext parserContext =
+                new ParserContext(idGenerator, factory, context, WorkflowOperationIdFactoryProvider.getFactory(context.getApplicationProperty(WorkflowOperationIdFactoryProvider.PROPERTY_NAME)));
         loadConstants(workflow, factory, parserContext);
         Collection<StateHandler<?>> handlers =
                 workflow.getStates().stream().map(state -> StateHandlerFactory.getStateHandler(state, workflow, parserContext))

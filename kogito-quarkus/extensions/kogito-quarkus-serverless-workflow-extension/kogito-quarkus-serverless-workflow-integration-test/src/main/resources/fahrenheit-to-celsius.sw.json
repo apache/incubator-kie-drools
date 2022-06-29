@@ -3,14 +3,22 @@
   "name": "Fahrenheit to Celsius Conversion Flow",
   "version": "v1.0",
   "start": "SetConstants",
+  "extensions" : [ {
+      "extensionid": "workflow-uri-definitions",
+      "definitions": {
+        "multiplication": "specs/multiplication.yaml",
+        "subtraction": "specs/subtraction.yaml"
+       }
+     }
+  ],
   "functions": [
     {
       "name": "multiplication",
-      "operation": "specs/multiplication.yaml#doOperation"
+      "operation": "multiplication#doOperation"
     },
     {
       "name": "subtraction",
-      "operation": "specs/subtraction.yaml#doOperation"
+      "operation": "subtraction#doOperation"
     }
   ],
   "states": [

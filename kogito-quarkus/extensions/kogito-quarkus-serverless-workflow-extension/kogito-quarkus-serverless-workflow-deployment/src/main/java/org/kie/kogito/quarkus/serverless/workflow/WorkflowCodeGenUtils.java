@@ -34,8 +34,10 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationId;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactory;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactoryProvider;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
-import org.kie.kogito.serverless.workflow.utils.WorkflowOperationId;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -45,6 +47,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.SuperExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
+import io.quarkus.deployment.CodeGenContext;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
@@ -55,8 +58,12 @@ public class WorkflowCodeGenUtils {
     private WorkflowCodeGenUtils() {
     }
 
-    public static Stream<WorkflowOperationResource> operationResources(Stream<Path> files, Predicate<FunctionDefinition> predicate) {
-        return getWorkflows(files).flatMap(w -> processFunction(w, predicate));
+    private static WorkflowOperationIdFactory operationIdFactory(CodeGenContext context) {
+        return WorkflowOperationIdFactoryProvider.getFactory(context.config().getOptionalValue(WorkflowOperationIdFactoryProvider.PROPERTY_NAME, String.class));
+    }
+
+    public static Stream<WorkflowOperationResource> operationResources(Stream<Path> files, Predicate<FunctionDefinition> predicate, CodeGenContext context) {
+        return getWorkflows(files).flatMap(w -> processFunction(w, predicate, operationIdFactory(context)));
     }
 
     public static Stream<Workflow> getWorkflows(Stream<Path> files) {
@@ -94,15 +101,15 @@ public class WorkflowCodeGenUtils {
                 unit.toString());
     }
 
-    private static Stream<WorkflowOperationResource> processFunction(Workflow workflow, Predicate<FunctionDefinition> predicate) {
+    private static Stream<WorkflowOperationResource> processFunction(Workflow workflow, Predicate<FunctionDefinition> predicate, WorkflowOperationIdFactory factory) {
         if (workflow.getFunctions() == null || workflow.getFunctions().getFunctionDefs() == null) {
             return Stream.empty();
         }
-        return workflow.getFunctions().getFunctionDefs().stream().filter(predicate).map(f -> getResource(workflow, f));
+        return workflow.getFunctions().getFunctionDefs().stream().filter(predicate).map(f -> getResource(workflow, f, factory));
     }
 
-    private static WorkflowOperationResource getResource(Workflow workflow, FunctionDefinition function) {
-        WorkflowOperationId operationId = WorkflowOperationId.fromOperation(function.getOperation());
+    private static WorkflowOperationResource getResource(Workflow workflow, FunctionDefinition function, WorkflowOperationIdFactory factory) {
+        WorkflowOperationId operationId = factory.from(workflow, function, Optional.empty());
         return new WorkflowOperationResource(operationId,
                 URIContentLoaderFactory.buildLoader(operationId.getUri(), Thread.currentThread().getContextClassLoader(), workflow, function.getAuthRef()));
     }

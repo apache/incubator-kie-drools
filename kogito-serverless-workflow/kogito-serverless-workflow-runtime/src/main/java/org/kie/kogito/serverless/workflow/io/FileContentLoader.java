@@ -16,27 +16,23 @@
 package org.kie.kogito.serverless.workflow.io;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
 public class FileContentLoader extends FallbackContentLoader {
 
-    private Path path;
+    private final Path path;
 
-    public FileContentLoader(Path path, Optional<URIContentLoader> fallbackLoader) {
-        super(fallbackLoader);
-        this.path = path;
+    public FileContentLoader(URI uri, Optional<URIContentLoader> fallbackLoader) {
+        super(uri, fallbackLoader);
+        this.path = Path.of(uri);
     }
 
     public Path getPath() {
         return path;
-    }
-
-    @Override
-    protected InputStream internalInputStream() throws IOException {
-        return Files.newInputStream(path);
     }
 
     @Override
@@ -45,7 +41,11 @@ public class FileContentLoader extends FallbackContentLoader {
     }
 
     @Override
-    public String toString() {
-        return "FileContentLoader [path=" + path + "]";
+    protected byte[] loadURI(URI uri) {
+        try {
+            return Files.readAllBytes(path);
+        } catch (IOException io) {
+            throw new UncheckedIOException(io);
+        }
     }
 }

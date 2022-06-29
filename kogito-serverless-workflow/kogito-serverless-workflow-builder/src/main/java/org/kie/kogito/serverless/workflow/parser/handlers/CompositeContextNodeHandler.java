@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
@@ -34,6 +35,7 @@ import org.kie.kogito.jackson.utils.JsonNodeVisitor;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
+import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationId;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.parser.rest.RestOperationHandlerFactory;
@@ -45,7 +47,6 @@ import org.kie.kogito.serverless.workflow.suppliers.ParamsRestBodyBuilderSupplie
 import org.kie.kogito.serverless.workflow.suppliers.SysoutActionSupplier;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
-import org.kie.kogito.serverless.workflow.utils.WorkflowOperationId;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator;
 import org.kogito.workitem.rest.auth.BearerTokenAuthDecorator;
@@ -172,7 +173,6 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                 .orElseThrow(() -> new IllegalArgumentException("cannot find function " + actionName));
 
         ActionType actionType = ActionType.from(actionFunction);
-        String operation = actionType.getOperation(actionFunction);
         switch (actionType) {
             case SCRIPT:
                 return embeddedSubProcess
@@ -185,7 +185,8 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                 return embeddedSubProcess
                         .actionNode(parserContext.newId())
                         .name(actionName)
-                        .action(ExpressionActionSupplier.of(workflow, operation).withVarNames(inputVar, outputVar).withCollectVar(collectVar)
+                        .action(ExpressionActionSupplier.of(workflow, actionType.getOperation(actionFunction))
+                                .withVarNames(inputVar, outputVar).withCollectVar(collectVar)
                                 .withAddInputVars(extraVariables).build());
             case SYSOUT:
                 return embeddedSubProcess
@@ -199,13 +200,13 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                         .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, SERVICE_TASK_TYPE)
                         .workName(SERVICE_TASK_TYPE)
                         .inMapping(inputVar, WORKITEM_PARAM)
-                        .outMapping(WORKITEM_PARAM, outputVar), actionFunction, operation, functionRef.getArguments());
+                        .outMapping(WORKITEM_PARAM, outputVar), actionFunction, actionType.getOperation(actionFunction), functionRef.getArguments());
             case REST:
-                return addFunctionArgs(addRestParameters(buildWorkItem(embeddedSubProcess, actionFunction, inputVar, outputVar), actionFunction, operation), functionRef);
+                return addFunctionArgs(addRestParameters(buildWorkItem(embeddedSubProcess, actionFunction, inputVar, outputVar), actionFunction, actionType.getOperation(actionFunction)), functionRef);
             case RPC:
-                return addFunctionArgs(addRPCParameters(buildWorkItem(embeddedSubProcess, actionFunction, inputVar, outputVar), operation), functionRef);
+                return addFunctionArgs(addRPCParameters(buildWorkItem(embeddedSubProcess, actionFunction, inputVar, outputVar), actionFunction), functionRef);
             case OPENAPI:
-                WorkflowOperationId operationId = WorkflowOperationId.fromOperation(operation);
+                WorkflowOperationId operationId = parserContext.operationIdFactory().from(workflow, actionFunction, Optional.of(parserContext));
                 notifySourceFileCodegenBindListeners(operationId.getUri().toString());
                 return addFunctionArgs(RestOperationHandlerFactory.get(parserContext, operationId).fillWorkItemHandler(buildWorkItem(embeddedSubProcess, actionFunction, inputVar, outputVar), workflow,
                         actionFunction), functionRef);
@@ -316,8 +317,8 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                 .workParameter(ApiKeyAuthDecorator.KEY, runtimeRestApi(actionFunction, API_KEY, parserContext.getContext())));
     }
 
-    private <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> addRPCParameters(WorkItemNodeFactory<T> node, String operation) {
-        WorkflowOperationId operationId = WorkflowOperationId.fromOperation(operation);
+    private <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> addRPCParameters(WorkItemNodeFactory<T> node, FunctionDefinition function) {
+        WorkflowOperationId operationId = parserContext.operationIdFactory().from(workflow, function, Optional.of(parserContext));
         return node.workName(ServerlessWorkflowUtils.getRPCClassName(operationId.getService()))
                 .metaData(RPCWorkItemHandler.FILE_PROP, operationId.getFileName())
                 .metaData(RPCWorkItemHandler.SERVICE_PROP, operationId.getService())

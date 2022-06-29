@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.serverless.workflow.io;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -43,40 +42,17 @@ class HttpContentLoader extends FallbackContentLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpContentLoader.class);
 
-    private URI uri;
     private Optional<Workflow> workflow;
     private String authRef;
 
     public HttpContentLoader(URI uri, Optional<URIContentLoader> fallback, Optional<Workflow> workflow, String authRef) {
-        super(fallback);
-        this.uri = uri;
+        super(uri, fallback);
         this.workflow = workflow;
         this.authRef = authRef;
     }
 
-    private static class NoCopyByteArrayInputStream extends ByteArrayInputStream {
-        public NoCopyByteArrayInputStream(byte[] buf) {
-            super(buf);
-        }
-
-        @Override
-        public byte[] readAllBytes() {
-            // This is a minor optimization that avoids copying the whole array if no byte has been read
-            if (pos == 0) {
-                pos = count;
-                return buf;
-            } else {
-                return super.readAllBytes();
-            }
-        }
-    }
-
     @Override
-    protected InputStream internalInputStream() {
-        return new NoCopyByteArrayInputStream(ResourceCacheFactory.getCache().get(uri, this::loadURI));
-    }
-
-    private byte[] loadURI(URI u) {
+    protected byte[] loadURI(URI u) {
         try {
             HttpURLConnection conn = (HttpURLConnection) u.toURL().openConnection();
             // some http servers required specific accept header (*/* is specified for those we do not care about accept) 
@@ -165,10 +141,5 @@ class HttpContentLoader extends FallbackContentLoader {
     @Override
     public URIContentLoaderType type() {
         return URIContentLoaderType.HTTP;
-    }
-
-    @Override
-    public String toString() {
-        return "HttpContentLoader [uri=" + uri + "]";
     }
 }

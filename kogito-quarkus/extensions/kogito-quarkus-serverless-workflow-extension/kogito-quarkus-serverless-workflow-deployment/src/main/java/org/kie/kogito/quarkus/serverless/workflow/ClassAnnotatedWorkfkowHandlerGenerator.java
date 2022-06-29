@@ -34,7 +34,7 @@ public abstract class ClassAnnotatedWorkfkowHandlerGenerator implements Workflow
 
     @Override
     public Collection<GeneratedFile> generateHandlerClasses(KogitoBuildContext context, IndexView index) {
-        return index.getAnnotations(DotName.createSimple(getAnnotation().getCanonicalName())).stream().map(a -> generateHandler(context, a)).flatMap(x -> x).collect(Collectors.toList());
+        return index.getAnnotations(DotName.createSimple(getAnnotation().getCanonicalName())).stream().flatMap(a -> generateHandler(context, a)).collect(Collectors.toList());
     }
 
     protected abstract Class<? extends Annotation> getAnnotation();
