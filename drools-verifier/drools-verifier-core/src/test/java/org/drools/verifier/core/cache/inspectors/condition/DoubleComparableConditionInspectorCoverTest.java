@@ -31,7 +31,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
@@ -87,11 +87,9 @@ public class DoubleComparableConditionInspectorCoverTest {
         ComparableConditionInspector a = getCondition(conditionValue,
                                                       conditionOperator);
 
-        assertEquals(getAssertDescription(a,
-                                          value,
-                                          coverExpected),
-                     coverExpected,
-                     a.covers(value));
+        assertThat(a.covers(value)).as(getAssertDescription(a,
+                value,
+                coverExpected)).isEqualTo(coverExpected);
     }
 
     private String getAssertDescription(ComparableConditionInspector a,

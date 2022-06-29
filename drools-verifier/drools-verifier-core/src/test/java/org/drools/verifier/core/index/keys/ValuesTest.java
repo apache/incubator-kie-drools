@@ -17,8 +17,7 @@ package org.drools.verifier.core.index.keys;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValuesTest {
 
@@ -29,10 +28,9 @@ public class ValuesTest {
         final Values<Comparable> values = new Values<>();
         values.add( null );
 
-        assertFalse( values.isEmpty() );
-        assertEquals( null,
-                      values.iterator()
-                              .next() );
+        assertThat(values.isEmpty()).isFalse();
+        assertThat(values.iterator()
+                .next()).isEqualTo(null);
     }
 
     @Test
@@ -41,6 +39,6 @@ public class ValuesTest {
         final Values a = new Values();
         final Values b = new Values();
 
-        assertFalse( a.isThereChanges( b ) );
+        assertThat(a.isThereChanges(b)).isFalse();
     }
 }

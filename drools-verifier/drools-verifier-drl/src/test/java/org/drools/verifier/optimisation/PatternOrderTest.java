@@ -16,6 +16,10 @@
 
 package org.drools.verifier.optimisation;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.components.RuleComponent;
@@ -27,12 +31,8 @@ import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class PatternOrderTest extends TestBaseOld {
 
@@ -64,7 +64,7 @@ public class PatternOrderTest extends TestBaseOld {
             }
         }
 
-        assertTrue(ruleNames.remove("Wrong eval order 1"));
+        assertThat(ruleNames.remove("Wrong eval order 1")).isTrue();
 
         if (!ruleNames.isEmpty()) {
             for (String string : ruleNames) {

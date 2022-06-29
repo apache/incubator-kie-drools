@@ -26,9 +26,6 @@ import org.junit.Test;
 import org.kie.api.io.ResourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class RangeCheckTest {
 
@@ -37,9 +34,8 @@ public class RangeCheckTest {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
-        assertFalse( vBuilder.hasErrors() );
-        assertEquals( 0,
-                             vBuilder.getErrors().size() );
+        assertThat(vBuilder.hasErrors()).isFalse();
+        assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
         Verifier verifier = vBuilder.newVerifier();
 
@@ -47,13 +43,12 @@ public class RangeCheckTest {
                                                               Verifier.class ),
                                        ResourceType.DRL );
 
-        assertFalse( verifier.hasErrors() );
-        assertEquals( 0,
-                             verifier.getErrors().size() );
+        assertThat(verifier.hasErrors()).isFalse();
+        assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis();
 
-        assertTrue( works );
+        assertThat(works).isTrue();
 
         VerifierReport result = verifier.getResult();
         assertThat(result).isNotNull();
@@ -63,8 +58,7 @@ public class RangeCheckTest {
         }
 
         // This rule should not have errors, evereververevernever!
-        assertEquals( 0,
-                             result.getBySeverity( Severity.ERROR ).size() );
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(0);
 
     }
 
