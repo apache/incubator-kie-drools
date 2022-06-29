@@ -15,6 +15,11 @@
  */
 package org.kie.efesto.runtimemanager.core.service;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
@@ -23,10 +28,6 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getKieRuntimeService;
 
 public class RuntimeManagerImpl implements RuntimeManager {
@@ -34,22 +35,24 @@ public class RuntimeManagerImpl implements RuntimeManager {
 
     @Override
     @SuppressWarnings({"unchecked", "raw"})
-    public Optional<EfestoOutput> evaluateInput(EfestoInput toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        Optional<KieRuntimeService> retrieved = getKieRuntimeService(toEvaluate, false, memoryCompilerClassLoader);
-        if (!retrieved.isPresent()) {
-            logger.warn("Cannot find KieRuntimeService for {}", toEvaluate.getFRI());
-            return Optional.empty();
-        }
-        return retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(toEvaluate,
-                                                                                      memoryCompilerClassLoader));
+    public Collection<EfestoOutput> evaluateInput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoInput... toEvaluate) {
+        final Collection<EfestoOutput> toReturn = new LinkedHashSet<>();
+        Arrays.stream(toEvaluate)
+                .forEach(input -> {
+                    Optional<EfestoOutput> output = getOptionalOutput(memoryCompilerClassLoader, input);
+                    output.ifPresent(toReturn::add);
+                });
+        return toReturn;
     }
 
-    @Override
-    @SuppressWarnings({"unchecked", "raw"})
-    public List<EfestoOutput> evaluateInputs(List<EfestoInput> toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        return toEvaluate.stream().map(darInput -> evaluateInput(darInput, memoryCompilerClassLoader))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+    private Optional<EfestoOutput> getOptionalOutput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoInput input) {
+        Optional<KieRuntimeService> retrieved = getKieRuntimeService(input, false,
+                                                                     memoryCompilerClassLoader);
+        if (!retrieved.isPresent()) {
+            logger.warn("Cannot find KieRuntimeService for {}", input.getFRI());
+            return Optional.empty();
+        }
+        return retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input,
+                                                                                      memoryCompilerClassLoader));
     }
 }

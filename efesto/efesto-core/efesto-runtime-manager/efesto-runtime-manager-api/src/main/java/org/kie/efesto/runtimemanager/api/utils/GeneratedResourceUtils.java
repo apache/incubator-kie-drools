@@ -47,35 +47,33 @@ public class GeneratedResourceUtils {
     }
 
     public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, String modelType) {
-        return getIndexFile(modelType).map(indexFile -> {
+        return getIndexFile(modelType).flatMap(indexFile -> {
             try {
                 GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
                 return generatedResources.stream()
                         .filter(generatedResource -> generatedResource instanceof GeneratedExecutableResource &&
                                 ((GeneratedExecutableResource) generatedResource).getFri().equals(fri))
                         .findFirst()
-                        .map(GeneratedExecutableResource.class::cast)
-                        .orElse(null);
+                        .map(GeneratedExecutableResource.class::cast);
             } catch (IOException e) {
                 logger.debug("Failed to read GeneratedResources from {}.", indexFile.getName(), e);
-                return null;
+                return Optional.empty();
             }
         });
     }
 
     public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(FRI fri, String modelType) {
-        return getIndexFile(modelType).map(indexFile -> {
+        return getIndexFile(modelType).flatMap(indexFile -> {
             try {
                 GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
                 return generatedResources.stream()
                         .filter(generatedResource -> generatedResource instanceof GeneratedRedirectResource &&
                                 ((GeneratedRedirectResource) generatedResource).getFri().equals(fri))
                         .findFirst()
-                        .map(GeneratedRedirectResource.class::cast)
-                        .orElse(null);
+                        .map(GeneratedRedirectResource.class::cast);
             } catch (IOException e) {
                 logger.debug("Failed to read GeneratedResources from {}.", indexFile.getName(), e);
-                return null;
+                return Optional.empty();
             }
         });
     }

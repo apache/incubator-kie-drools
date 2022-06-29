@@ -15,13 +15,13 @@
  */
 package org.kie.efesto.common.utils;
 
-public class StringUtils {
+public class PackageClassNameUtils {
 
     private static final String FOLDER_SEPARATOR = "/";
 
     private static final String WINDOWS_FOLDER_SEPARATOR = "\\";
 
-    private StringUtils() {
+    private PackageClassNameUtils() {
     }
 
     /**

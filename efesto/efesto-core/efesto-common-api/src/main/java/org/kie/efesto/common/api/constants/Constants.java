@@ -27,10 +27,10 @@ public class Constants {
     public static final String MISSING_VARIABLE_INITIALIZER_TEMPLATE = "Missing '%s' initializer in %s";
     public static final String MISSING_CHAINED_METHOD_DECLARATION_TEMPLATE = "Missing '%s' MethodDeclaration in %s";
 
-
+    public static final String PACKAGE_CLASS_TEMPLATE = "%s.%s";
 
     //
-
+    public static final String OUTPUTFIELDS_MAP_IDENTIFIER = "$outputFieldsMap";
 
     //
     public static final String INDEXFILE_DIRECTORY_PROPERTY = "indexfile.directory";

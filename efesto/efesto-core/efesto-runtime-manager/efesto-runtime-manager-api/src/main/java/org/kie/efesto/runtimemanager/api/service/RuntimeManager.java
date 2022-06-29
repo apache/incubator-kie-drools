@@ -15,28 +15,21 @@
  */
 package org.kie.efesto.runtimemanager.api.service;
 
+import java.util.Collection;
+
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface RuntimeManager {
 
     /**
-     * @param toEvaluate
-     * @param memoryCompilerClassLoader
-     * @return
-     */
-    Optional<EfestoOutput> evaluateInput(EfestoInput toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
-
-    /**
      * Produce a <code>List&lt;EfestoOutput&gt;</code> from the given <code>List&lt;EfestoInput&gt;</code>
-     *
      * @param toEvaluate
      * @param memoryCompilerClassLoader
      * @return
      */
-    List<EfestoOutput> evaluateInputs(List<EfestoInput> toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
+    Collection<EfestoOutput> evaluateInput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader,
+                                           EfestoInput... toEvaluate);
+
 }
