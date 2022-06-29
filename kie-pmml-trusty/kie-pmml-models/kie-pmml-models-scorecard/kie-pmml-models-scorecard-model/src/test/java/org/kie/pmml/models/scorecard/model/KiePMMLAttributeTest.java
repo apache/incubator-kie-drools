@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
@@ -43,42 +43,42 @@ public class KiePMMLAttributeTest {
 
 
     @Test
-    public void evaluateNotMatchingAttribute() {
+    void evaluateNotMatchingAttribute() {
         KiePMMLAttribute attribute = KiePMMLAttribute.builder(ATTRIBUTE, Collections.emptyList(), KiePMMLFalsePredicate.builder(Collections.emptyList()).build())
                 .withPartialScore(value1)
                 .build();
         assertThat(attribute.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                      Collections.emptyMap())).isNull();
+                Collections.emptyMap())).isNull();
     }
 
     @Test
-    public void evaluateMatchingAttributePartialScore() {
+    void evaluateMatchingAttributePartialScore() {
         KiePMMLAttribute attribute = KiePMMLAttribute.builder(ATTRIBUTE, Collections.emptyList(), KiePMMLTruePredicate.builder(Collections.emptyList()).build())
                 .withPartialScore(value1)
                 .build();
         assertThat(attribute.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                      Collections.emptyMap())).isEqualTo(value1);
+                Collections.emptyMap())).isEqualTo(value1);
     }
 
     @Test
-    public void evaluateMatchingAttributeComplexPartialScore() {
+    void evaluateMatchingAttributeComplexPartialScore() {
         KiePMMLAttribute attribute = KiePMMLAttribute.builder(ATTRIBUTE, Collections.emptyList(), KiePMMLTruePredicate.builder(Collections.emptyList()).build())
                 .withComplexPartialScore(getKiePMMLComplexPartialScore())
                 .build();
         Object expected = value1 / value2;
         assertThat(attribute.evaluate(Collections.emptyList(), getDerivedFields(), Collections.emptyList(),
-                                                Collections.emptyMap())).isEqualTo(expected);
+                Collections.emptyMap())).isEqualTo(expected);
     }
 
     @Test
-    public void evaluateMatchingAttributePartialScoreComplexPartialScore() {
+    void evaluateMatchingAttributePartialScoreComplexPartialScore() {
         KiePMMLAttribute attribute = KiePMMLAttribute.builder(ATTRIBUTE, Collections.emptyList(), KiePMMLTruePredicate.builder(Collections.emptyList()).build())
                 .withPartialScore(value1)
                 .withComplexPartialScore(getKiePMMLComplexPartialScore())
                 .build();
         Object expected = value1 / value2;
         assertThat(attribute.evaluate(Collections.emptyList(), getDerivedFields(), Collections.emptyList(),
-                                                  Collections.emptyMap())).isEqualTo(expected);
+                Collections.emptyMap())).isEqualTo(expected);
     }
 
     private KiePMMLComplexPartialScore getKiePMMLComplexPartialScore() {

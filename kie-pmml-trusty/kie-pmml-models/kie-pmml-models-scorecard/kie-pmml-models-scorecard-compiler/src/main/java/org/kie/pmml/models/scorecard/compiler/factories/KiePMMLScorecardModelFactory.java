@@ -54,16 +54,6 @@ public class KiePMMLScorecardModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final ScorecardCompilationDTO compilationDTO) {
-        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(compilationDTO);
-        try {
-            Class<?> kiePMMLScorecardModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
-            return (KiePMMLScorecardModel) kiePMMLScorecardModelClass.newInstance();
-        } catch (Exception e) {
-            throw new KiePMMLException(e);
-        }
-    }
-
     public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final ScorecardCompilationDTO compilationDTO) {
         String className = compilationDTO.getSimpleClassName();
         String packageName = compilationDTO.getPackageName();

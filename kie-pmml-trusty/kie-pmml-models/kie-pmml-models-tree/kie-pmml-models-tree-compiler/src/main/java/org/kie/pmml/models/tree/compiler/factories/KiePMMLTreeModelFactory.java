@@ -29,7 +29,6 @@ import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.compiler.dto.TreeCompilationDTO;
-import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,17 +45,6 @@ public class KiePMMLTreeModelFactory {
 
     private KiePMMLTreeModelFactory() {
         // Avoid instantiation
-    }
-
-    public static KiePMMLTreeModel getKiePMMLTreeModel(final TreeCompilationDTO compilationDTO) {
-        logger.trace("getKiePMMLTreeModel {} {}", compilationDTO.getPackageName(), compilationDTO.getModel());
-        Map<String, String> sourcesMap = getKiePMMLTreeModelSourcesMap(compilationDTO);
-        try {
-            Class<?> kiePMMLTreeModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
-            return (KiePMMLTreeModel) kiePMMLTreeModelClass.newInstance();
-        } catch (Exception e) {
-            throw new KiePMMLException(e);
-        }
     }
 
     public static Map<String, String> getKiePMMLTreeModelSourcesMap(final TreeCompilationDTO compilationDTO) {

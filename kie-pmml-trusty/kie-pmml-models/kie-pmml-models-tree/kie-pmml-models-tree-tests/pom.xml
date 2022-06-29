@@ -41,6 +41,16 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- KIE -->
     <dependency>
       <groupId>org.kie</groupId>

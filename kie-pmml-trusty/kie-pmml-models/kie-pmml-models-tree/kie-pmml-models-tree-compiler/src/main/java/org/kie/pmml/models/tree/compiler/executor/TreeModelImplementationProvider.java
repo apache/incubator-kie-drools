@@ -47,15 +47,6 @@ public class TreeModelImplementationProvider implements ModelImplementationProvi
     }
 
     @Override
-    public KiePMMLTreeModel getKiePMMLModel(final CompilationDTO<TreeModel> compilationDTO) {
-        logger.trace("getKiePMMLModel {} {} {} {}", compilationDTO.getPackageName(),
-                     compilationDTO.getFields(),
-                     compilationDTO.getModel(),
-                     compilationDTO.getHasClassloader());
-        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(compilationDTO));
-    }
-
-    @Override
     public Map<String, String> getSourcesMap(final CompilationDTO<TreeModel> compilationDTO) {
         logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
                      compilationDTO.getFields(),

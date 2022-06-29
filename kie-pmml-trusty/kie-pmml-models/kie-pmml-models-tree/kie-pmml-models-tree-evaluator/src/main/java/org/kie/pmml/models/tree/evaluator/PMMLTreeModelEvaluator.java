@@ -42,15 +42,14 @@ public class PMMLTreeModelEvaluator implements PMMLModelEvaluator<KiePMMLTreeMod
     }
 
     @Override
-    public PMML4Result evaluate(final KieBase knowledgeBase,
-                                final KiePMMLTreeModel model,
+    public PMML4Result evaluate(final KiePMMLTreeModel model,
                                 final PMMLContext pmmlContext) {
-        logger.trace("evaluate {} {} {}", knowledgeBase, model, pmmlContext);
+        logger.trace("evaluate {} {}", model, pmmlContext);
         final Map<String, Object> requestData =
                 getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
         PMML4Result toReturn = new PMML4Result();
         String targetField = model.getTargetField();
-        Object result = model.evaluate(knowledgeBase, requestData, pmmlContext);
+        Object result = model.evaluate(requestData, pmmlContext);
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());

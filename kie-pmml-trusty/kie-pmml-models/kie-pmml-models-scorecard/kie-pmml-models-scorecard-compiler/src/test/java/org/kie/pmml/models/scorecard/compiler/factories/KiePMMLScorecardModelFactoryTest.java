@@ -28,9 +28,9 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -42,7 +42,6 @@ import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
-import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -70,7 +69,7 @@ public class KiePMMLScorecardModelFactoryTest {
     private static Scorecard basicComplexPartialScore;
     private ClassOrInterfaceDeclaration scorecardTemplate;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() throws Exception {
         basicComplexPartialScorePmml = TestUtils.loadFromFile(BASIC_COMPLEX_PARTIAL_SCORE_SOURCE);
         basicComplexPartialScoreDataDictionary = basicComplexPartialScorePmml.getDataDictionary();
@@ -80,30 +79,18 @@ public class KiePMMLScorecardModelFactoryTest {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + CONTAINER_CLASS_NAME));
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         scorecardTemplate = scorecardTemplateOriginal.clone();
     }
 
     @Test
-    public void getKiePMMLScorecardModel() {
+    void getKiePMMLScorecardModelSourcesMap() {
         final CommonCompilationDTO<Scorecard> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       basicComplexPartialScorePmml,
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME, basicComplexPartialScorePmml,
                                                                        basicComplexPartialScore,
-                                                                       new HasClassLoaderMock());
-        KiePMMLScorecardModel retrieved =
-                KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(ScorecardCompilationDTO.fromCompilationDTO(source));
-        assertThat(retrieved).isNotNull();
-    }
-
-    @Test
-    public void getKiePMMLScorecardModelSourcesMap() {
-        final CommonCompilationDTO<Scorecard> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       basicComplexPartialScorePmml,
-                                                                       basicComplexPartialScore,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(),
+                                                                       BASIC_COMPLEX_PARTIAL_SCORE_SOURCE);
         ScorecardCompilationDTO compilationDTO = ScorecardCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved =
                 KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(compilationDTO);
@@ -119,16 +106,15 @@ public class KiePMMLScorecardModelFactoryTest {
     }
 
     @Test
-    public void setConstructor() {
+    void setConstructor() {
         String fullCharacteristicsClassName = PACKAGE_NAME + ".fullCharacteristicsClassName";
         final CommonCompilationDTO<Scorecard> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       basicComplexPartialScorePmml,
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME, basicComplexPartialScorePmml,
                                                                        basicComplexPartialScore,
-                                                                       new HasClassLoaderMock());
+                                                                       new HasClassLoaderMock(),
+                                                                       BASIC_COMPLEX_PARTIAL_SCORE_SOURCE);
         KiePMMLScorecardModelFactory.setConstructor(ScorecardCompilationDTO.fromCompilationDTO(source),
-                                                    scorecardTemplate,
-                                                    fullCharacteristicsClassName);
+                                                    scorecardTemplate, fullCharacteristicsClassName);
         final ConstructorDeclaration constructorDeclaration =
                 scorecardTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, scorecardTemplate.getName())));
         final BlockStmt body = constructorDeclaration.getBody();

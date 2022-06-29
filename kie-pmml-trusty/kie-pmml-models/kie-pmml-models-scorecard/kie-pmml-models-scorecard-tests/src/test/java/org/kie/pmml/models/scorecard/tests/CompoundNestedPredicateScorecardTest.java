@@ -21,20 +21,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class CompoundNestedPredicateScorecardTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "CompoundNestedPredicateScorecard.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "CompoundNestedPredicateScorecard";
     private static final String MODEL_NAME = "CompoundNestedPredicateScorecard";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
@@ -47,7 +45,7 @@ public class CompoundNestedPredicateScorecardTest extends AbstractPMMLTest {
     private String reasonCode1;
     private String reasonCode2;
 
-    public CompoundNestedPredicateScorecardTest(double input1, String input2, double score,
+    public void initCompoundNestedPredicateScorecardTest(double input1, String input2, double score,
                                                 String reasonCode1, String reasonCode2) {
         this.input1 = input1;
         this.input2 = input2;
@@ -56,12 +54,11 @@ public class CompoundNestedPredicateScorecardTest extends AbstractPMMLTest {
         this.reasonCode2 = reasonCode2;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {-50, "classB", -8, "characteristic2ReasonCode", null},
@@ -77,12 +74,14 @@ public class CompoundNestedPredicateScorecardTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testCompoundNestedPredicateScorecard() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testCompoundNestedPredicateScorecard(double input1, String input2, double score, String reasonCode1, String reasonCode2) {
+        initCompoundNestedPredicateScorecardTest(input1, input2, score, reasonCode1, reasonCode2);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);

@@ -33,7 +33,7 @@ public abstract class KiePMMLTreeModel extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
+    public Object evaluate(final Map<String, Object> requestData,
                            final PMMLContext context) {
         KiePMMLNodeResult kiePMMLNodeResult = nodeFunction.apply(requestData);
         context.setProbabilityResultMap(kiePMMLNodeResult.getProbabilityMap());

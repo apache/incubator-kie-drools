@@ -34,7 +34,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MultipleLogisticRegressionTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME_NO_SUFFIX = "MultipleRegression";
-    private static final String FILE_NAME = "MultipleRegression.pmml";
     private static final String MODEL_NAME = "LogisticRegression";
     private static final String TARGET_FIELD = "class";
     private static final String PROBABILITY_AUTHENTIC = "probability(Authentic)";

@@ -21,20 +21,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class BostonHousingDataTreeTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "BostonHousingTree.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "BostonHousingTree";
     private static final String MODEL_NAME = "BostonHousingTreeModel";
     private static final String TARGET_FIELD = "medv";
     private static PMMLRuntime pmmlRuntime;
@@ -54,7 +52,7 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTest {
     private double lstat;
     private double expectedResult;
 
-    public BostonHousingDataTreeTest(double crim, double zn, double indus, String chas, double nox, double rm,
+    public void initBostonHousingDataTreeTest(double crim, double zn, double indus, String chas, double nox, double rm,
                                      double age, double dis, double rad, double tax, double ptratio, double b,
                                      double lstat, double expectedResult) {
         this.crim = crim;
@@ -73,12 +71,11 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 // crim,  zn, indus,chas,  nox,  rm,   age,  dis,   rad,tax, ptratio,b,    lstat,  expectedResult
@@ -95,8 +92,10 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testBostonHousesTree() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testBostonHousesTree(double crim, double zn, double indus, String chas, double nox, double rm, double age, double dis, double rad, double tax, double ptratio, double b, double lstat, double expectedResult) {
+        initBostonHousingDataTreeTest(crim, zn, indus, chas, nox, rm, age, dis, rad, tax, ptratio, b, lstat, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("crim", crim);
         inputData.put("zn", zn);
@@ -111,7 +110,7 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTest {
         inputData.put("ptratio", ptratio);
         inputData.put("b", b);
         inputData.put("lstat", lstat);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
