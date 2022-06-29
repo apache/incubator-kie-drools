@@ -42,9 +42,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -98,15 +96,12 @@ public class CheckRunManagerTest {
     @Test
     public void testChecksGetGenerated() throws
             Exception {
-        assertEquals(5,
-                     ruleInspector1.getChecks()
-                             .size());
-        assertEquals(5,
-                     ruleInspector2.getChecks()
-                             .size());
-        assertEquals(5,
-                     ruleInspector3.getChecks()
-                             .size());
+        assertThat(ruleInspector1.getChecks()
+                .size()).isEqualTo(5);
+        assertThat(ruleInspector2.getChecks()
+                .size()).isEqualTo(5);
+        assertThat(ruleInspector3.getChecks()
+                .size()).isEqualTo(5);
     }
 
     @Test
@@ -116,13 +111,11 @@ public class CheckRunManagerTest {
         this.checkRunManager.remove(ruleInspector2);
 
         final Set<Check> checks = ruleInspector1.getChecks();
-        assertEquals(3,
-                     checks.size());
-        assertTrue(ruleInspector2.getChecks()
-                           .isEmpty());
-        assertEquals(3,
-                     ruleInspector3.getChecks()
-                             .size());
+        assertThat(checks.size()).isEqualTo(3);
+        assertThat(ruleInspector2.getChecks()
+                .isEmpty()).isTrue();
+        assertThat(ruleInspector3.getChecks()
+                .size()).isEqualTo(3);
     }
 
     @Test
@@ -161,12 +154,10 @@ public class CheckRunManagerTest {
 
         assertHasIssues(newRuleInspector);
 
-        assertEquals(7,
-                     ruleInspector1.getChecks()
-                             .size());
-        assertEquals(7,
-                     newRuleInspector.getChecks()
-                             .size());
+        assertThat(ruleInspector1.getChecks()
+                .size()).isEqualTo(7);
+        assertThat(newRuleInspector.getChecks()
+                .size()).isEqualTo(7);
     }
 
     private RuleInspector mockRowInspector(final int rowNumber) {
@@ -179,13 +170,13 @@ public class CheckRunManagerTest {
 
     private void assertHasIssues(final RuleInspector ruleInspector) {
         for (final Check check : ruleInspector.getChecks()) {
-            assertTrue(check.hasIssues());
+            assertThat(check.hasIssues()).isTrue();
         }
     }
 
     private void assertNoIssues(final RuleInspector ruleInspector) {
         for (final Check check : (ruleInspector.getChecks())) {
-            assertFalse(check.hasIssues());
+            assertThat(check.hasIssues()).isFalse();
         }
     }
 

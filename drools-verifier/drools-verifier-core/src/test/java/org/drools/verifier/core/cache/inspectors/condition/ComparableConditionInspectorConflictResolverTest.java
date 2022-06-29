@@ -31,7 +31,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
@@ -143,26 +143,18 @@ public class ComparableConditionInspectorConflictResolverTest {
         final ComparableConditionInspector b = getCondition(value2,
                                                             operator2);
 
-        assertEquals(getAssertDescriptionConflict(a,
-                                                  b,
-                                                  conflictExpected),
-                     conflictExpected,
-                     a.conflicts(b));
-        assertEquals(getAssertDescriptionConflict(a,
-                                                  b,
-                                                  conflictExpected),
-                     conflictExpected,
-                     a.conflicts(b));
-        assertEquals(getAssertDescriptionOverlap(a,
-                                                 b,
-                                                 !conflictExpected),
-                     !conflictExpected,
-                     a.overlaps(b));
-        assertEquals(getAssertDescriptionOverlap(b,
-                                                 a,
-                                                 !conflictExpected),
-                     !conflictExpected,
-                     b.overlaps(a));
+        assertThat(a.conflicts(b)).as(getAssertDescriptionConflict(a,
+                b,
+                conflictExpected)).isEqualTo(conflictExpected);
+        assertThat(a.conflicts(b)).as(getAssertDescriptionConflict(a,
+                b,
+                conflictExpected)).isEqualTo(conflictExpected);
+        assertThat(a.overlaps(b)).as(getAssertDescriptionOverlap(a,
+                b,
+                !conflictExpected)).isEqualTo(!conflictExpected);
+        assertThat(b.overlaps(a)).as(getAssertDescriptionOverlap(b,
+                a,
+                !conflictExpected)).isEqualTo(!conflictExpected);
     }
 
     private String getAssertDescriptionConflict(final ComparableConditionInspector a,

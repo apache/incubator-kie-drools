@@ -16,8 +16,6 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertFalse;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -41,6 +39,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 abstract public class TestBaseOld {
 
     @Before
@@ -53,7 +53,7 @@ abstract public class TestBaseOld {
     public KieSession getStatelessKieSession(InputStream stream) throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(stream), ResourceType.DRL);
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());

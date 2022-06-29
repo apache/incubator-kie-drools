@@ -32,7 +32,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class NamedConsequencesTest extends TestBaseOld {
 
@@ -67,7 +68,7 @@ public class NamedConsequencesTest extends TestBaseOld {
             }
         }
 
-        assertFalse( rulesThatHadErrors.contains( "This one is has an unused named consequence" ) );
+        assertThat(rulesThatHadErrors.contains("This one is has an unused named consequence")).isFalse();
 
         if ( !rulesThatHadErrors.isEmpty() ) {
             for ( String string : rulesThatHadErrors ) {

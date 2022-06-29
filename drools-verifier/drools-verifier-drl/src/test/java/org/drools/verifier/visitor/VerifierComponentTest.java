@@ -43,7 +43,6 @@ import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class VerifierComponentTest {
 
@@ -114,9 +113,9 @@ public class VerifierComponentTest {
     assertThat(component).isNotNull();
     assertThat(component.getDescr()).isNotNull();
     if(component instanceof TextConsequence) {
-      assertEquals(line, ((TextConsequence)component).getDescr().getConsequenceLine());
+        assertThat(((TextConsequence) component).getDescr().getConsequenceLine()).isEqualTo(line);
     } else {
-      assertEquals(line, component.getDescr().getLine());
+        assertThat(component.getDescr().getLine()).isEqualTo(line);
     }
   }
 }

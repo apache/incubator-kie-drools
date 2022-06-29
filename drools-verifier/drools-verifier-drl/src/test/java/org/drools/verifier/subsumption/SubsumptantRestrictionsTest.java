@@ -28,7 +28,7 @@ import org.kie.api.runtime.ClassObjectFilter;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubsumptantRestrictionsTest {
 
@@ -47,15 +47,14 @@ public class SubsumptantRestrictionsTest {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
-        assertEquals(9,
-                     subsumptionList.size());
+        assertThat(subsumptionList.size()).isEqualTo(9);
 
         verifier.dispose();
     }
@@ -75,15 +74,14 @@ public class SubsumptantRestrictionsTest {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
-        assertEquals(9,
-                     subsumptionList.size());
+        assertThat(subsumptionList.size()).isEqualTo(9);
 
         verifier.dispose();
     }
@@ -103,15 +101,14 @@ public class SubsumptantRestrictionsTest {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
-        assertEquals(6,
-                     subsumptionList.size());
+        assertThat(subsumptionList.size()).isEqualTo(6);
 
         verifier.dispose();
     }
@@ -131,10 +128,10 @@ public class SubsumptantRestrictionsTest {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
@@ -142,8 +139,7 @@ public class SubsumptantRestrictionsTest {
         //            System.out.println( object );
         //        }
 
-        assertEquals(4,
-                     subsumptionList.size());
+        assertThat(subsumptionList.size()).isEqualTo(4);
 
         verifier.dispose();
     }

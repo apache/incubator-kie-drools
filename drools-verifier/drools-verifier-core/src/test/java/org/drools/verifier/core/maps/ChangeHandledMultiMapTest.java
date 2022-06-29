@@ -23,9 +23,7 @@ import org.drools.verifier.core.index.keys.Value;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ChangeHandledMultiMapTest {
 
@@ -50,8 +48,8 @@ public class ChangeHandledMultiMapTest {
 
     @Test
     public void testSize() throws Exception {
-        assertNull( changeSet );
-        assertEquals( 0, timesCalled );
+        assertThat(changeSet).isNull();
+        assertThat(timesCalled).isEqualTo(0);
     }
 
     @Test
@@ -59,9 +57,9 @@ public class ChangeHandledMultiMapTest {
         map.put( new Value( "hello" ),
                  "test" );
 
-        assertTrue( changeSet.getAdded().get( new Value( "hello" ) ).contains( "test" ) );
+        assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("test")).isTrue();
 
-        assertEquals( 1, timesCalled );
+        assertThat(timesCalled).isEqualTo(1);
     }
 
     @Test
@@ -74,11 +72,11 @@ public class ChangeHandledMultiMapTest {
         map.addAllValues( new Value( "hello" ),
                           list );
 
-        assertEquals( 3, changeSet.getAdded().get( new Value( "hello" ) ).size() );
-        assertTrue( changeSet.getAdded().get( new Value( "hello" ) ).contains( "a" ) );
-        assertTrue( changeSet.getAdded().get( new Value( "hello" ) ).contains( "b" ) );
-        assertTrue( changeSet.getAdded().get( new Value( "hello" ) ).contains( "c" ) );
+        assertThat(changeSet.getAdded().get(new Value( "hello" )).size()).isEqualTo(3);
+        assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("a")).isTrue();
+        assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("b")).isTrue();
+        assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("c")).isTrue();
 
-        assertEquals( 1, timesCalled );
+        assertThat(timesCalled).isEqualTo(1);
     }
 }

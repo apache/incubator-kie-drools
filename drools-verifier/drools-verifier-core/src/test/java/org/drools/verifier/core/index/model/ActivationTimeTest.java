@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ActivationTimeTest {
@@ -70,6 +70,6 @@ public class ActivationTimeTest {
 
     @Test
     public void testOverlaps() {
-        assertEquals(expected, start.overlaps(end));
+        assertThat(start.overlaps(end)).isEqualTo(expected);
     }
 }

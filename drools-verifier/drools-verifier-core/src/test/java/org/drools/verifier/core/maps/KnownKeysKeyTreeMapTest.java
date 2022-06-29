@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
 
 public class KnownKeysKeyTreeMapTest {
 
@@ -42,7 +41,7 @@ public class KnownKeysKeyTreeMapTest {
 
     @Test
     public void testUnknown() throws Exception {
-        assertNull(map.get(KeyDefinition.newKeyDefinition().withId("unknown").build()));
+        assertThat(map.get(KeyDefinition.newKeyDefinition().withId("unknown").build())).isNull();
     }
 
     class Person

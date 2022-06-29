@@ -29,10 +29,7 @@ import org.drools.verifier.core.maps.util.HasKeys;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -110,10 +107,10 @@ public class KeyTreeMapTest {
                               20,
                               20,
                               30);
-        assertTrue(age.get(new Value(20))
-                           .contains(toni));
-        assertTrue(age.get(new Value(20))
-                           .contains(eder));
+        assertThat(age.get(new Value(20))
+                .contains(toni)).isTrue();
+        assertThat(age.get(new Value(20))
+                .contains(eder)).isTrue();
     }
 
     @Test
@@ -126,10 +123,10 @@ public class KeyTreeMapTest {
 
         final MultiMap<Value, Person, List<Person>> age = map.get(AGE);
 
-        assertFalse(age.get(new Value(20))
-                            .contains(toni));
-        assertTrue(age.get(new Value(10))
-                           .contains(toni));
+        assertThat(age.get(new Value(20))
+                .contains(toni)).isFalse();
+        assertThat(age.get(new Value(10))
+                .contains(toni)).isTrue();
     }
 
     @Test
@@ -159,11 +156,10 @@ public class KeyTreeMapTest {
         final UUIDKey uuidKey = mock(UUIDKey.class);
         when(uuidKey.getKeyDefinition()).thenReturn(UUIDKey.UNIQUE_UUID);
         when(uuidKey.getSingleValue()).thenReturn(new Value("DoesNotExist"));
-        assertNull(map.remove(uuidKey));
+        assertThat(map.remove(uuidKey)).isNull();
 
-        assertEquals(3,
-                     map.get(UUIDKey.UNIQUE_UUID)
-                             .size());
+        assertThat(map.get(UUIDKey.UNIQUE_UUID)
+                .size()).isEqualTo(3);
     }
 
     private void put(final Person person) {
