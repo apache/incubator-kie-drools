@@ -36,7 +36,7 @@ import org.drools.compiler.builder.impl.processors.ImmutableRuleCompilationPhase
 import org.drools.compiler.builder.impl.processors.ImportCompilationPhase;
 import org.drools.compiler.builder.impl.processors.RuleAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
-import org.drools.compiler.builder.impl.processors.SimpleFunctionCompiler;
+import org.drools.compiler.builder.impl.processors.ImmutableFunctionCompiler;
 import org.drools.compiler.builder.impl.processors.TypeDeclarationAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.TypeDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
@@ -122,7 +122,7 @@ public class ExplicitCompilerTest {
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr),
                 /*         packageRegistry.setDialect(getPackageDialect(packageDescr)) */
                 new RuleValidator(packageRegistry, packageDescr, configuration),
-                new SimpleFunctionCompiler(packageRegistry, packageDescr, rootClassLoader),
+                new ImmutableFunctionCompiler(packageRegistry, packageDescr, rootClassLoader),
                 new ImmutableRuleCompilationPhase(packageRegistry, packageDescr, parallelRulesBuildThreshold,
                         attributesForPackage, resource, typeDeclarationContext),
 //                new ReteCompiler(packageRegistry, packageDescr, kBase, null), // no-op when kbase==null

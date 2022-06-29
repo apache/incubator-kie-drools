@@ -23,7 +23,7 @@ import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.internal.builder.ResourceChange;
 
-public class FunctionCompiler extends SimpleFunctionCompiler {
+public class FunctionCompiler extends ImmutableFunctionCompiler {
 
     private final AssetFilter assetFilter;
 

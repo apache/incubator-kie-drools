@@ -29,11 +29,11 @@ import java.util.List;
 import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
 import static org.drools.util.StringUtils.isEmpty;
 
-public class SimpleFunctionCompiler extends AbstractPackageCompilationPhase {
+public class ImmutableFunctionCompiler extends AbstractPackageCompilationPhase {
 
     private ClassLoader rootClassLoader;
 
-    public SimpleFunctionCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, ClassLoader rootClassLoader) {
+    public ImmutableFunctionCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, ClassLoader rootClassLoader) {
         super(pkgRegistry, packageDescr);
         this.rootClassLoader = rootClassLoader;
     }
