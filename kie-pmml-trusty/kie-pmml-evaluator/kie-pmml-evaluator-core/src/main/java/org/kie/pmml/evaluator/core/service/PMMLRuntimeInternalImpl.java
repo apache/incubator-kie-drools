@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.evaluator.core.service;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -57,14 +58,15 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         String basePath = context.getFileName() + SLASH + getSanitizedClassName(modelName);
         FRI fri = new FRI(basePath, "pmml");
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
-        Optional<EfestoOutput> retrieved = runtimeManager.evaluateInput(darInputPMML, memoryCompilerClassLoader);
-        if (!retrieved.isPresent()) {
+        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, darInputPMML);
+        if (retrieved.isEmpty()) {
             throw new KieRuntimeServiceException("Failed to retrieve EfestoOutput");
         }
-        if (!(retrieved.get() instanceof EfestoOutputPMML)) {
-            throw new KieRuntimeServiceException("Expected EfestoOutputPMML, retrieved " + retrieved.get().getClass());
+        EfestoOutput output = retrieved.iterator().next();
+        if (!(output instanceof EfestoOutputPMML)) {
+            throw new KieRuntimeServiceException("Expected EfestoOutputPMML, retrieved " + output.getClass());
         }
-        return retrieved.map(EfestoOutputPMML.class::cast).map(EfestoOutputPMML::getOutputData).orElse(null);
+        return ((EfestoOutputPMML) output).getOutputData();
     }
 
     @Override

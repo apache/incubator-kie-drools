@@ -21,6 +21,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class GeneratePMMLModelExecutor {
 
         final List<EfestoResource> efestoResources = getEfestoResources(resourcesDirectories, log);
 
-        List<IndexFile> indexFiles = compilationManager.processResources(efestoResources, memoryCompilerClassLoader);
+        Collection<IndexFile> indexFiles = compilationManager.processResource(memoryCompilerClassLoader, efestoResources.toArray(new EfestoResource[0]));
 
         List<IndexFile> allIndexFiles = getAllIndexFiles(indexFiles);
         logger.debug("IndexFiles generated  " + allIndexFiles);
@@ -114,7 +115,7 @@ public class GeneratePMMLModelExecutor {
         return toReturn;
     }
 
-    private static List<IndexFile> getAllIndexFiles(List<IndexFile> indexFiles) {
+    private static List<IndexFile> getAllIndexFiles(Collection<IndexFile> indexFiles) {
         List<IndexFile> toReturn = new ArrayList<>();
         indexFiles.forEach(indexFile -> {
             if (!toReturn.contains(indexFile)) {

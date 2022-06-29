@@ -20,7 +20,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>compilation-manager-api</artifactId>
+      <artifactId>efesto-compilation-manager-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

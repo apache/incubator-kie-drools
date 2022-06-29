@@ -27,11 +27,11 @@
     <!-- EXTERNAL -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>compilation-manager-api</artifactId>
+      <artifactId>efesto-compilation-manager-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>compilation-manager-core</artifactId>
+      <artifactId>efesto-compilation-manager-core</artifactId>
     </dependency>
     <!-- TEST -->
     <dependency>

@@ -16,6 +16,7 @@
 package org.kie.pmml.models.drools.commons.model;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,10 +114,9 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         if (!runtimeManager.isPresent()) {
             throw new KieRuntimeServiceException("Cannot find RuntimeManager");
         }
-        Optional<EfestoOutput> output = runtimeManager.get().evaluateInput(input,
-                                                                           (KieMemoryCompiler.MemoryCompilerClassLoader) context.getMemoryClassLoader());
+        Collection<EfestoOutput> output = runtimeManager.get().evaluateInput((KieMemoryCompiler.MemoryCompilerClassLoader) context.getMemoryClassLoader(), input);
         // TODO manage for different kind of retrieved output
-        if (!output.isPresent()) {
+        if (output.isEmpty()) {
             throw new KiePMMLException("Failed to retrieve value for " + this.getName());
         }
         return toReturn;

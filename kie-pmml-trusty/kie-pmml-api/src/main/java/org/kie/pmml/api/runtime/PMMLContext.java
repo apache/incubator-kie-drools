@@ -17,10 +17,8 @@ package org.kie.pmml.api.runtime;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.runtime.Context;
 import org.kie.efesto.runtimemanager.api.model.EfestoContext;
 import org.kie.pmml.api.models.PMMLStep;
 

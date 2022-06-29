@@ -6,7 +6,7 @@
 
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>compilation-manager</artifactId>
+    <artifactId>efesto-compilation-manager</artifactId>
     <version>8.24.0-SNAPSHOT</version>
   </parent>
 

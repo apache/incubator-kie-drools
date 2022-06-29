@@ -76,7 +76,7 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>compilation-manager-core</artifactId>
+        <artifactId>efesto-compilation-manager-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -260,7 +260,7 @@
     <!-- EFESTO -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>compilation-manager-core</artifactId>
+      <artifactId>efesto-compilation-manager-core</artifactId>
     </dependency>
     <!-- Testing deps -->
     <dependency>

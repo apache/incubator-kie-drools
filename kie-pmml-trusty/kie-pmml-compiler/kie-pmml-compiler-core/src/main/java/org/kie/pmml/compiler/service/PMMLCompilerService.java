@@ -130,12 +130,12 @@ public class PMMLCompilerService {
 
     }
 
-    static List<IndexFile> getRedirectCompilation(EfestoSetResource redirectOutput, KieMemoryCompiler.MemoryCompilerClassLoader memoryClassLoader) {
+    static Collection<IndexFile> getRedirectCompilation(EfestoSetResource redirectOutput, KieMemoryCompiler.MemoryCompilerClassLoader memoryClassLoader) {
         Optional<CompilationManager> compilationManager = getCompilationManager(true);
         if (!compilationManager.isPresent()) {
             throw new KieCompilerServiceException("Cannot find CompilationManager");
         }
-        return compilationManager.get().processResource(redirectOutput, memoryClassLoader);
+        return compilationManager.get().processResource(memoryClassLoader, redirectOutput);
     }
 
     /**

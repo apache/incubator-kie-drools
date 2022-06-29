@@ -41,7 +41,7 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
         EfestoResource<File> darResource = new EfestoFileResource(pmmlFile);
         memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-        compilationManager.processResource(darResource, memoryCompilerClassLoader);
+        compilationManager.processResource(memoryCompilerClassLoader, darResource);
         return new PMMLRuntimeInternalImpl(memoryCompilerClassLoader);
     }
 
