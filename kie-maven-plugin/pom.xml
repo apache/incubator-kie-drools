@@ -17,6 +17,15 @@
   <name>KIE :: Maven Plugin</name>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>3.2.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -25,12 +34,14 @@
           <goalPrefix>kie</goalPrefix>
         </configuration>
       </plugin>
-       <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration>
           <skipInstallation>${skipITs}</skipInstallation>
           <skipInvocation>${skipITs}</skipInvocation>
+          <writeJunitReport>false</writeJunitReport>
+          <junitPackageName></junitPackageName>
           <setupIncludes>
             <setupInclude>kie-maven-plugin-test-kjar-setup/pom.xml</setupInclude>
           </setupIncludes>
