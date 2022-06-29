@@ -102,6 +102,7 @@ public class Consequence {
     static {
         implicitDroolsMethods.add("insert");
         implicitDroolsMethods.add("insertLogical");
+        implicitDroolsMethods.add("insertAsync");
         implicitDroolsMethods.add("delete");
         implicitDroolsMethods.add("retract");
         implicitDroolsMethods.add("update");
