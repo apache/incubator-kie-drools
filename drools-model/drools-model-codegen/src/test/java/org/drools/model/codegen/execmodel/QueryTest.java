@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.model.codegen.execmodel.domain.Person;
@@ -30,7 +29,6 @@ import org.drools.model.codegen.execmodel.domain.Relationship;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.drools.model.codegen.execmodel.oopathdtables.InternationalAddress;
 import org.drools.model.codegen.execmodel.util.TrackingAgendaEventListener;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
@@ -43,8 +41,6 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class QueryTest extends BaseModelTest {
 
@@ -70,10 +66,10 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults("older than");
 
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
         QueryResultsRow res = results.iterator().next();
         Person p = (Person) res.get("$p");
-        Assert.assertEquals("Mario", p.getName());
+        assertThat(p.getName()).isEqualTo("Mario");
 
     }
 
@@ -92,9 +88,9 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "olderThan", 40 );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         Person p = (Person) results.iterator().next().get( "$p" );
-        Assert.assertEquals( "Mario", p.getName() );
+        assertThat(p.getName()).isEqualTo("Mario");
     }
 
     @Test
@@ -112,9 +108,9 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "olderThan", 40 );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         Person p = (Person) results.iterator().next().get( "$p" );
-        Assert.assertEquals( "Mario", p.getName() );
+        assertThat(p.getName()).isEqualTo("Mario");
     }
 
     @Test
@@ -139,8 +135,8 @@ public class QueryTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        Assert.assertEquals( "Mario", results.iterator().next().getValue() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
     @Test
@@ -167,8 +163,8 @@ public class QueryTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        Assert.assertEquals( "Mario", results.iterator().next().getValue() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
 
@@ -199,8 +195,8 @@ public class QueryTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        Assert.assertEquals( "Mario", results.iterator().next().getValue() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
     @Test
@@ -219,9 +215,9 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "findPerson", "Mario", 41 );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         Person p = (Person) results.iterator().next().get( "$p" );
-        Assert.assertEquals( "Mario", p.getName() );
+        assertThat(p.getName()).isEqualTo("Mario");
     }
 
     @Test
@@ -239,9 +235,9 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "findPerson", "Mario", 41 );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         Person p = (Person) results.iterator().next().get( "$p" );
-        Assert.assertEquals( "Mario", p.getName() );
+        assertThat(p.getName()).isEqualTo("Mario");
     }
 
     @Test
@@ -259,9 +255,9 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "personsAges",  41 );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         Person p = (Person) results.iterator().next().get( "$p" );
-        Assert.assertEquals( "Mario", p.getName() );
+        assertThat(p.getName()).isEqualTo("Mario");
     }
 
     @Test
@@ -282,9 +278,9 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "isRelatedTo", "A", "B" );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         String paramName = ((QueryImpl) ksession.getKieBase().getQuery("defaultpkg", "isRelatedTo" )).getParameters()[1].getIdentifier();
-        assertEquals("B", results.iterator().next().get(paramName));
+        assertThat(results.iterator().next().get(paramName)).isEqualTo("B");
 
     }
 
@@ -312,8 +308,8 @@ public class QueryTest extends BaseModelTest {
         QueryResults results = ksession.getQueryResults( "listSafeCities");
 
         List cities = (List) results.iterator().next().get("$cities");
-        assertEquals(1, cities.size());
-        assertEquals("Milan", cities.get(0));
+        assertThat(cities.size()).isEqualTo(1);
+        assertThat(cities.get(0)).isEqualTo("Milan");
     }
 
     @Test
@@ -342,8 +338,8 @@ public class QueryTest extends BaseModelTest {
         QueryResults results = ksession.getQueryResults( "listSafeCities");
 
         List cities = (List) results.iterator().next().get("$cities");
-        assertEquals(1, cities.size());
-        assertEquals("Milan", cities.get(0));
+        assertThat(cities.size()).isEqualTo(1);
+        assertThat(cities.get(0)).isEqualTo("Milan");
     }
 
     @Test
@@ -374,8 +370,8 @@ public class QueryTest extends BaseModelTest {
         QueryResults results = ksession.getQueryResults( "listSafeCities");
 
         List cities = (List) results.iterator().next().get("$cities");
-        assertEquals(1, cities.size());
-        assertEquals("Milan", cities.get(0));
+        assertThat(cities.size()).isEqualTo(1);
+        assertThat(cities.get(0)).isEqualTo("Milan");
     }
 
     @Test
@@ -395,11 +391,11 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "isRelatedTo", "A", "C" );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         final QueryResultsRow firstResult = results.iterator().next();
 
         Object resultDrlx = firstResult.get("z");
-        assertTrue("B".equals(resultDrlx));
+        assertThat("B".equals(resultDrlx)).isTrue();
     }
 
     @Test
@@ -472,8 +468,8 @@ public class QueryTest extends BaseModelTest {
         ksession.insert("pull");
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         // when location is changed of what Peter likes, pull query should
@@ -490,8 +486,8 @@ public class QueryTest extends BaseModelTest {
         ksession.delete(tableHandle);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         final Person paul = new Person("Paul");
@@ -499,8 +495,8 @@ public class QueryTest extends BaseModelTest {
         ksession.insert(paul);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
     }
 
     @Test
@@ -648,9 +644,9 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "getPersonsBetween", 40, 50 );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         Person p = (Person) results.iterator().next().get( "p" );
-        Assert.assertEquals( "Mario", p.getName() );
+        assertThat(p.getName()).isEqualTo("Mario");
     }
 
     @Test
@@ -674,38 +670,36 @@ public class QueryTest extends BaseModelTest {
         ksession.insert( p4 );
 
         QueryResultsImpl results = (QueryResultsImpl) ksession.getQueryResults( "peeps", Variable.v, Variable.v );
-        assertEquals( 4, results.size() );
+        assertThat(results.size()).isEqualTo(4);
         List names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertEquals( 4,
-                names.size() );
-        assertTrue( names.contains( "luke" ) );
-        assertTrue( names.contains( "yoda" ) );
-        assertTrue( names.contains( "bobba" ) );
-        assertTrue( names.contains( "darth" ) );
+        assertThat(names.size()).isEqualTo(4);
+        assertThat(names.contains("luke")).isTrue();
+        assertThat(names.contains("yoda")).isTrue();
+        assertThat(names.contains("bobba")).isTrue();
+        assertThat(names.contains("darth")).isTrue();
 
         results = (QueryResultsImpl) ksession.getQueryResults( "peeps", Variable.v, 300 );
-        assertEquals( 3, results.size() );
+        assertThat(results.size()).isEqualTo(3);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertEquals( 3,
-                names.size() );
-        assertTrue( names.contains( "luke" ) );
-        assertTrue( names.contains( "yoda" ) );
-        assertTrue( names.contains( "bobba" ) );
+        assertThat(names.size()).isEqualTo(3);
+        assertThat(names.contains("luke")).isTrue();
+        assertThat(names.contains("yoda")).isTrue();
+        assertThat(names.contains("bobba")).isTrue();
 
         results = (QueryResultsImpl) ksession.getQueryResults( "peeps", "darth", Variable.v );
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertEquals( 1, names.size() );
-        assertTrue( names.contains( "darth" ) );
+        assertThat(names.size()).isEqualTo(1);
+        assertThat(names.contains("darth")).isTrue();
     }
 
     @Test
@@ -741,9 +735,9 @@ public class QueryTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( 21, (int)list.get(0) );
-        assertEquals( 22, (int)list.get(1) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat((int) list.get(0)).isEqualTo(21);
+        assertThat((int) list.get(1)).isEqualTo(22);
     }
 
     @Test
@@ -772,8 +766,8 @@ public class QueryTest extends BaseModelTest {
         ksession.insert( new Person( "Mario", 44 ) );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "Mario : 44", list.get(0) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Mario : 44");
     }
 
     @Test
@@ -802,8 +796,8 @@ public class QueryTest extends BaseModelTest {
         ksession.insert( new Person( "Mario", 44 ) );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "Mario : 44", list.get(0) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Mario : 44");
     }
 
     @Test
@@ -834,8 +828,8 @@ public class QueryTest extends BaseModelTest {
 
             ksession.insert("darth");
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            Assert.assertEquals(p1, list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo(p1);
         } finally {
             ksession.dispose();
         }
@@ -862,16 +856,16 @@ public class QueryTest extends BaseModelTest {
         for (final QueryResultsRow result : results) {
             list.add((String) result.get("name"));
         }
-        assertEquals(3, list.size());
-        assertTrue(list.containsAll( Arrays.asList("Mario", "Edson", "Mark") ));
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.containsAll(Arrays.asList("Mario", "Edson", "Mark"))).isTrue();
 
         list.clear();
         results = ksession.getQueryResults( "peeps", "Mario" );
         for (final QueryResultsRow result : results) {
             list.add((String) result.get("name"));
         }
-        assertEquals(1, list.size());
-        assertEquals("Mario", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Mario");
     }
 
     @Test
@@ -908,8 +902,8 @@ public class QueryTest extends BaseModelTest {
         for (final QueryResultsRow result : results) {
             list.add((String) result.get("name"));
         }
-        assertEquals(1, list.size());
-        assertEquals("Mario", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Mario");
     }
 
     @Test
@@ -939,11 +933,11 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "accAge", "Mark" );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         final QueryResultsRow firstResult = results.iterator().next();
 
         Object resultDrlx = firstResult.get("$sum");
-        assertEquals(37, resultDrlx);
+        assertThat(resultDrlx).isEqualTo(37);
     }
 
     @Test
@@ -973,11 +967,11 @@ public class QueryTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "accAge", "Mark" );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         final QueryResultsRow firstResult = results.iterator().next();
 
         Object resultDrlx = firstResult.get("$sum");
-        assertEquals(37, resultDrlx);
+        assertThat(resultDrlx).isEqualTo(37);
     }
 
     @Test
@@ -1017,8 +1011,8 @@ public class QueryTest extends BaseModelTest {
         ksession.insert( "Mark" );
         ksession.fireAllRules();
 
-        assertEquals( 1, result.size() );
-        assertEquals( 37, (int)result.get(0) );
+        assertThat(result.size()).isEqualTo(1);
+        assertThat((int) result.get(0)).isEqualTo(37);
     }
 
     @Test
@@ -1061,8 +1055,8 @@ public class QueryTest extends BaseModelTest {
         ksession.insert( "Mark" );
         ksession.fireAllRules();
 
-        assertEquals( 1, result.size() );
-        assertEquals( 37, (int)result.get(0) );
+        assertThat(result.size()).isEqualTo(1);
+        assertThat((int) result.get(0)).isEqualTo(37);
     }
 
     @Test
@@ -1095,9 +1089,9 @@ public class QueryTest extends BaseModelTest {
         ksession.fireAllRules();
 
         QueryResults results = ksession.getQueryResults("whereFood", Variable.v, "kitchen");
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
         QueryResultsRow row = results.iterator().next();
-        assertEquals("crackers", row.get( "x" ));
+        assertThat(row.get("x")).isEqualTo("crackers");
     }
 
     @Test
@@ -1130,12 +1124,12 @@ public class QueryTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        List<Integer> list = new ArrayList<>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("peach", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("peach");
     }
 }

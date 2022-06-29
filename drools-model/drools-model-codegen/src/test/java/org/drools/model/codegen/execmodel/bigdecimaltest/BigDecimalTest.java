@@ -21,12 +21,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BigDecimalTest extends BaseModelTest {
 
@@ -63,7 +62,7 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(policy);
         ksession.fireAllRules();
 
-        assertEquals("0.5", policy.getRate().toString());
+        assertThat(policy.getRate().toString()).isEqualTo("0.5");
 
     }
 
@@ -96,7 +95,7 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(policy);
         ksession.fireAllRules();
 
-        assertEquals("0.5", policy.getRate().toString());
+        assertThat(policy.getRate().toString()).isEqualTo("0.5");
 
     }
 
@@ -117,7 +116,7 @@ public class BigDecimalTest extends BaseModelTest {
         Customer customer = new Customer();
 
         ksession.insert(customer);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -139,7 +138,7 @@ public class BigDecimalTest extends BaseModelTest {
         customer.setRate(new BigDecimal("0.5"));
 
         ksession.insert(customer);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -161,7 +160,7 @@ public class BigDecimalTest extends BaseModelTest {
         customer.setRate(new BigDecimal("0.5"));
 
         ksession.insert(customer);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -183,7 +182,7 @@ public class BigDecimalTest extends BaseModelTest {
         customer.setRate(new BigDecimal("0.5"));
 
         ksession.insert(customer);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -205,7 +204,7 @@ public class BigDecimalTest extends BaseModelTest {
         customer.setRate(new BigDecimal("0.5"));
 
         ksession.insert(customer);
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -227,7 +226,7 @@ public class BigDecimalTest extends BaseModelTest {
 
         ksession.insert(customer);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
     }
 
@@ -253,7 +252,7 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(c1);
         ksession.insert(c2);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -278,7 +277,7 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(c1);
         ksession.insert(c2);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static class Order {
@@ -332,8 +331,8 @@ public class BigDecimalTest extends BaseModelTest {
         order.setTaxRate(new BigDecimal("0.1"));
         ksession.insert(order);
 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal("9090909.09090909090909090909090909"), order.getTax());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(order.getTax()).isEqualTo(new BigDecimal("9090909.09090909090909090909090909"));
     }
 
     @Test
@@ -355,7 +354,7 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(order);
         ksession.insert("300");
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -377,7 +376,7 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(order);
         ksession.insert("300");
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static class BdHolder {
@@ -481,7 +480,7 @@ public class BigDecimalTest extends BaseModelTest {
         BdHolder holder = new BdHolder(new BigDecimal(bd1), new BigDecimal(bd2));
         ksession.insert(holder);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -502,7 +501,7 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(holder);
         int fired = ksession.fireAllRules();
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test
@@ -523,7 +522,7 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(holder);
         ksession.fireAllRules();
 
-        assertEquals(new BigDecimal("-10.5"), holder.getBd1());
+        assertThat(holder.getBd1()).isEqualTo(new BigDecimal("-10.5"));
     }
 
     @Test
@@ -549,6 +548,6 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(holder);
         ksession.fireAllRules();
 
-        Assertions.assertThat(result).containsExactly(new BigDecimal("0"));
+        assertThat(result).containsExactly(new BigDecimal("0"));
     }
 }

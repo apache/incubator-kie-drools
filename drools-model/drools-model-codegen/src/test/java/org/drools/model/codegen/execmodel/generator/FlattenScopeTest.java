@@ -19,8 +19,8 @@ import org.junit.Test;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.FlattenScope.flattenScope;
-import static org.junit.Assert.assertArrayEquals;
 
 public class FlattenScopeTest {
 
@@ -75,7 +75,7 @@ public class FlattenScopeTest {
     private void compareArrays(List<Node> actual, List<Node> expected) {
         actual = actual.stream().map(DrlxParseUtil::transformDrlNameExprToNameExpr).collect(Collectors.toList());
         expected = expected.stream().map(DrlxParseUtil::transformDrlNameExprToNameExpr).collect(Collectors.toList());
-        assertArrayEquals(expected.toArray(), actual.toArray());
+        assertThat(actual).isEqualTo(expected);
     }
 
     public static class MockTypeResolver implements TypeResolver {
