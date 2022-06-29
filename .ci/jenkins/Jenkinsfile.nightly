@@ -1,0 +1,167 @@
+import org.jenkinsci.plugins.workflow.libs.Library
+@Library('jenkins-pipeline-shared-libraries')_
+
+// Deploy jobs
+OPTAPLANNER_DEPLOY = 'optaplanner-deploy'
+
+// Map of executed jobs
+// See https://javadoc.jenkins.io/plugin/workflow-support/org/jenkinsci/plugins/workflow/support/steps/build/RunWrapper.html
+// for more options on built job entity
+JOBS = [:]
+
+FAILED_STAGES = [:]
+UNSTABLE_STAGES = [:]
+
+// Should be multibranch pipeline
+pipeline {
+    agent {
+        label 'kie-rhel7 && !master'
+    }
+
+    options {
+        timeout(time: 1380, unit: 'MINUTES')
+    }
+
+    // parameters {
+    // For parameters, check into ./dsl/jobs.groovy file
+    // }
+
+    environment {
+        // Some generated env is also defined into ./dsl/jobs.groovy file
+
+        OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
+        // Use branch name in nightly tag as we may have parallel main and release branch builds
+        NIGHTLY_TAG = """${getBuildBranch()}-${sh(
+                returnStdout: true,
+                script: 'date -u "+%Y-%m-%d"'
+            ).trim()}"""
+    }
+
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    echo "nightly tag is ${env.NIGHTLY_TAG}"
+
+                    currentBuild.displayName = env.NIGHTLY_TAG
+                }
+            }
+        }
+
+        stage('Build & Deploy OptaPlanner') {
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams(getBuildBranch())
+                    addSkipTestsParam(buildParams)
+                    addSkipIntegrationTestsParam(buildParams)
+                    def quickstartsBranch = getBuildBranch() == 'main' ? 'development' : getBuildBranch()
+                    addStringParam(buildParams, 'QUICKSTARTS_BUILD_BRANCH_NAME', quickstartsBranch)
+
+                    buildJob(OPTAPLANNER_DEPLOY, buildParams)
+                }
+            }
+            post {
+                failure {
+                    addFailedStage(OPTAPLANNER_DEPLOY)
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendPipelineErrorNotification()
+        }
+    }
+}
+
+def buildJob(String jobName, List buildParams, String jobKey = jobName) {
+    echo "[${jobKey}] Build ${jobName} with params ${buildParams}"
+
+    def job = build(job: "${jobName}", wait: true, parameters: buildParams, propagate: false)
+    JOBS[jobKey] = job
+
+    // Set Unstable if job did not succeed
+    if (!isJobSucceeded(jobKey)) {
+        addUnstableStage(jobKey)
+        unstable("Job ${jobName} finished with result ${job.getResult()}")
+    }
+    return job
+}
+
+def getJob(String jobKey) {
+    return JOBS[jobKey]
+}
+
+String getJobUrl(String jobKey) {
+    echo "getJobUrl for ${jobKey}"
+    return getJob(jobKey)?.getAbsoluteUrl() ?: ''
+}
+
+boolean isJobSucceeded(String jobKey) {
+    return getJob(jobKey)?.getResult() == 'SUCCESS'
+}
+
+void addFailedStage(String jobKey = '') {
+    FAILED_STAGES.put("${STAGE_NAME}", jobKey)
+}
+void addUnstableStage(String jobKey = '') {
+    UNSTABLE_STAGES.put("${STAGE_NAME}", jobKey)
+}
+
+void sendPipelineErrorNotification() {
+    String bodyMsg = "Optaplanner nightly job #${BUILD_NUMBER} was: ${currentBuild.currentResult}"
+
+    paramsStr = ''
+    if (params.SKIP_TESTS) {
+        paramsStr += '\n- Tests skipped'
+    }
+    bodyMsg += paramsStr ? "\n\nConfiguration:${paramsStr}" : '\n'
+
+    if (FAILED_STAGES.size() > 0) {
+        bodyMsg += '\nFailed stages: \n- '
+        bodyMsg += FAILED_STAGES.collect { "${it.key} => ${getJobUrl(it.value)}" }.join('\n- ')
+    }
+    bodyMsg += '\n'
+    if (UNSTABLE_STAGES.size() > 0) {
+        bodyMsg += '\nUnstable stages: \n- '
+        bodyMsg += UNSTABLE_STAGES.collect { "${it.key} => ${getJobUrl(it.value)}" }.join('\n- ')
+    }
+    bodyMsg += '\n'
+    bodyMsg += "\nPlease look here: ${BUILD_URL}"
+    emailext body: bodyMsg, subject: "[${getBuildBranch()}][d] Full Pipeline",
+                to: env.OPTAPLANNER_CI_EMAIL_TO
+}
+
+List getDefaultBuildParams(String buildBranchName = '', String key = '') {
+    buildBranchName = buildBranchName ?: getBuildBranch()
+    List params = []
+    addStringParam(params, 'DISPLAY_NAME', "${key ? "${key}-" : ''}${env.NIGHTLY_TAG}")
+    addBooleanParam(params, 'SEND_NOTIFICATION', true)
+
+    return params
+}
+
+void addSkipTestsParam(buildParams) {
+    addBooleanParam(buildParams, 'SKIP_TESTS', params.SKIP_TESTS)
+}
+
+void addSkipIntegrationTestsParam(buildParams) {
+    addBooleanParam(buildParams, 'SKIP_INTEGRATION_TESTS', params.SKIP_TESTS)
+}
+
+void addStringParam(List buildParams, String key, String value) {
+    buildParams.add(string(name: key, value: value))
+}
+
+void addBooleanParam(List buildParams, String key, boolean value) {
+    buildParams.add(booleanParam(name: key, value: value))
+}
+
+String getBuildBranch() {
+    return env.GIT_BRANCH_NAME
+}
+
+String getGitAuthor() {
+    return env.GIT_AUTHOR
+}

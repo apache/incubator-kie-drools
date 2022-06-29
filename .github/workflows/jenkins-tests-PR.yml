@@ -10,13 +10,9 @@ jobs:
   dsl-tests:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout 
-      uses: actions/checkout@v2
-
-    - name: Set up JDK 1.11
-      uses: actions/setup-java@v1
+    - name: DSL tests
+      uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main
       with:
-        java-version: 11
-
-    - name: Test DSL
-      run: .ci/jenkins/dsl/test.sh -h ${{ github.head_ref }} -r ${{ github.event.pull_request.head.repo.full_name }} -b ${{ github.base_ref }} -t ${{ github.event.pull_request.base.repo.full_name }} .ci/jenkins/dsl
+        main-config-file-repo: kiegroup/optaplanner
+        main-config-file-ref: main
+        main-config-file-path: .ci/jenkins/config/main.yaml

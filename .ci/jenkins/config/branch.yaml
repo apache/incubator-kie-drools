@@ -1,0 +1,67 @@
+environment:
+  quarkus:
+    main:
+      enabled: true
+    branch:
+      enabled: true
+      version: '2.10'
+    lts:
+      enabled: true
+      version: '2.7'
+
+  native:
+    enabled: true
+
+  mandrel:
+    enabled: true
+    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.0-java11
+
+  runtimes_bdd:
+    enabled: true
+
+productized_branch: true
+
+disable:
+  triggers: false
+
+repositories:
+  - name: optaplanner
+    branch: main
+  - name: optaweb-employee-rostering
+    branch: main
+  - name: optaweb-vehicle-routing
+    branch: main
+  - name: optaplanner-quickstarts
+    branch: development
+
+git:
+  author:
+    name: kiegroup
+    credentials_id: kie-ci
+    token_credentials_id: kie-ci3-token
+  bot_author:
+    name: bsig-gh-bot
+    credentials_id: bsig-gh-bot
+  jenkins_config_path: .ci/jenkins
+maven:
+  settings_file_id: kogito_release_settings
+  nexus:
+    release_url: https://repository.jboss.org/nexus
+    release_repository: jboss-releases-repository
+    staging_profile_url: https://repository.jboss.org/nexus/content/groups/kogito-public/
+    staging_profile_id: 2161b7b8da0080
+    build_promotion_profile_id: ea49ccd6f174
+  artifacts_repository: ''
+  pr_checks:
+    repository:
+      url: https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/kogito-runtimes-pr-full-testing/
+      creds_id: unpacks-zip-on-qa-nexus
+cloud:
+  image:
+    registry_credentials_nightly: nightly_kogito
+    registry_credentials_release: release_kogito
+    registry: quay.io
+    namespace: kiegroup
+    latest_git_branch: main
+jenkins:
+  email_creds_id: OPTAPLANNER_CI_EMAIL

@@ -1,0 +1,379 @@
+import org.jenkinsci.plugins.workflow.libs.Library
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+OPTAPLANNER_DEPLOY = 'optaplanner-deploy'
+OPTAPLANNER_PROMOTE = 'optaplanner-promote'
+
+ARTIFACTS_STAGING_STAGE = 'stage.artifacts.staging'
+ARTIFACTS_RELEASE_STAGE = 'stage.artifacts.release'
+
+JOB_PROPERTY_PREFIX = 'build'
+JOB_RESULT_PROPERTY_KEY = 'result'
+JOB_URL_PROPERTY_KEY = 'absoluteUrl'
+JOB_DECISION_PROPERTY_KEY = 'decision'
+JOB_DECISION_MESSAGE_PROPERTY_KEY = 'decisionMessage'
+
+releaseProperties = [:]
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && !master'
+    }
+
+    // parameters {
+    // For parameters, check into ./dsl/jobs.groovy file
+    // }
+
+    environment {
+        // Some generated env is also defined into ./dsl/jobs.groovy file
+
+        CI_EMAIL = credentials("${JENKINS_EMAIL_CREDS_ID}")
+    }
+
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    // Restore config from previous run
+                    if (params.RESTORE_FROM_PREVIOUS_JOB) {
+                        releaseProperties = readPropertiesFromUrl(params.RESTORE_FROM_PREVIOUS_JOB, 'release.properties')
+                        echo "Release properties imported from previous job: ${releaseProperties}"
+                    }
+
+                    assert getOptaPlannerVersion()
+
+                    currentBuild.displayName = getDisplayName()
+
+                    sendNotification("Release Pipeline has started...\nOptaplanner version = ${getOptaPlannerVersion()}\n=> ${env.BUILD_URL}")
+
+                    // Safety measure to not publish to main JBoss
+                    if (getGitAuthor() != 'kiegroup' && !getArtifactsRepositoryParam()) {
+                        sendNotification("Git Author is different from `kiegroup` and no `ARTIFACTS_REPOSITORY` parameter has been provided. Are you sure you want to continue ? => ${env.BUILD_URL}input")
+                        input message: 'Should the pipeline continue with no `ARTIFACTS_REPOSITORY` defined ?', ok: 'Yes'
+                    }
+                }
+            }
+            post {
+                always {
+                    setReleasePropertyIfneeded('optaplanner.version', getOptaPlannerVersion())
+                    setReleasePropertyIfneeded('optaplanner.branch', getOptaPlannerReleaseBranch())
+                }
+            }
+        }
+
+        stage('Build & Deploy OptaPlanner') {
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams(getOptaPlannerVersion())
+                    addSkipTestsParam(buildParams)
+                    addSkipIntegrationTestsParam(buildParams)
+                    addStringParam(buildParams, 'QUICKSTARTS_BUILD_BRANCH_NAME', getOptaPlannerReleaseBranch())
+                    buildJob(OPTAPLANNER_DEPLOY, buildParams)
+                }
+            }
+        }
+
+        stage('Artifacts\' staging finalization') {
+            steps {
+                script {
+                    if (!areArtifactsStaged()) {
+                        sendNotification("All artifacts have been staged. You can find them here: ${getStagingRepository()}")
+                    }
+                    setArtifactsStaged()
+                }
+            }
+        }
+
+        stage('Are staged artifacts released?') {
+            when {
+                // Execute only if artifacts repository was not given, which means the staging repository has been created
+                expression { return !getArtifactsRepositoryParam() && !areArtifactsReleased() }
+            }
+            steps {
+                script {
+                    String body = "${getOptaPlannerVersion()} artifacts are ready for release.\n" +
+                                 "Please release the staging repositories and then confirm here: ${env.BUILD_URL}input"
+                    sendNotification(body)
+                    input message: 'Has the staging repository been released ?', ok: 'Yes'
+
+                    sendNotification('Artifacts have been released. Finalizing now the release ...')
+                    setArtifactsReleased()
+                }
+            }
+        }
+
+        stage('Promote OptaPlanner') {
+            when {
+                expression { return isJobConsideredOk(OPTAPLANNER_DEPLOY) }
+            }
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams(getOptaPlannerVersion())
+                    addDeployBuildUrlParam(buildParams, OPTAPLANNER_DEPLOY)
+
+                    buildJob(OPTAPLANNER_PROMOTE, buildParams)
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                saveReleaseProperties()
+            }
+            cleanWs()
+        }
+        success {
+            script {
+                sendSuccessfulReleaseNotification()
+            }
+        }
+        unsuccessful {
+            sendErrorNotification()
+        }
+    }
+}
+
+def buildJob(String jobName, List buildParams) {
+    if (!hasJob(jobName) || (getJobResult(jobName) != 'SUCCESS' && getJobDecision(jobName) == 'retry')) {
+        sendStageNotification()
+        echo "Build ${jobName} with params ${buildParams}"
+        def job = build(job: "./${jobName}", wait: true, parameters: buildParams, propagate: false)
+        removeJobDecision(jobName)
+        registerJobExecution(jobName, job.result, job.absoluteUrl)
+    } else {
+        echo 'Job was already executed. Retrieving information...'
+    }
+
+    saveReleaseProperties()
+
+    def jobResult = getJobResult(jobName)
+    def jobUrl = getJobUrl(jobName)
+    def jobDecision = getJobDecision(jobName)
+    if (jobResult != 'SUCCESS') {
+        if (jobDecision != 'continue' && jobDecision != 'skip') {
+            echo "Sending a notification about an unsuccessful job build ${jobName}."
+            sendNotification("`${jobName}` finished with status `${jobResult}`.\nSee: ${jobUrl}\n\nPlease provide which action should be done (retry ? continue ? skip ? abort ?): ${env.BUILD_URL}input")
+
+            // abort is handled automatically by the pipeline in the input
+            def result = input message: "Job `${jobName}` is in status ${jobResult}. What do you want to do ?\nBeware that skipping a deploy job will not launch the promote part.", parameters: [choice(name: 'ACTION', choices: ['retry', 'continue', 'skip'].join('\n')), string(name: 'MESSAGE', description: 'If you want to add information to your action...')]
+            def inputDecision = result['ACTION']
+            def inputMessage = result['MESSAGE']
+            registerJobDecision(jobName, inputDecision, inputMessage)
+
+            String resultStr = "`${jobName}` failure => Decision was made to ${inputDecision}."
+            if (inputMessage) {
+                resultStr += "Additional Information: `${inputMessage}`"
+            }
+            sendNotification(resultStr)
+
+            if (inputDecision == 'retry') {
+                // If retry, remove job and build again
+                return buildJob(jobName, buildParams)
+            }
+        } else {
+            echo "Job decision was '${jobDecision}'"
+        }
+    } else {
+        echo 'Job succeeded'
+    }
+}
+
+String getJobPropertySuffix(String jobName) {
+    return "${JOB_PROPERTY_PREFIX}.${jobName}"
+}
+
+String getJobPropertyKey(String jobName, String key) {
+    return "${getJobPropertySuffix(jobName)}.${key}"
+}
+
+def registerJobExecution(String jobName, String result, String absoluteUrl) {
+    setReleasePropertyIfneeded(getJobPropertyKey(jobName, JOB_RESULT_PROPERTY_KEY), result)
+    setReleasePropertyIfneeded(getJobPropertyKey(jobName, JOB_URL_PROPERTY_KEY), absoluteUrl)
+}
+
+def registerJobDecision(String jobName, String decision, String message = '') {
+    setReleasePropertyIfneeded(getJobPropertyKey(jobName, JOB_DECISION_PROPERTY_KEY), decision)
+    setReleasePropertyIfneeded(getJobPropertyKey(jobName, JOB_DECISION_MESSAGE_PROPERTY_KEY), message)
+}
+
+def removeJobDecision(String jobName) {
+    removeReleaseProperty(getJobPropertyKey(jobName, JOB_DECISION_PROPERTY_KEY))
+    removeReleaseProperty(getJobPropertyKey(jobName, JOB_DECISION_MESSAGE_PROPERTY_KEY))
+}
+
+List getAllJobNames() {
+    return releaseProperties.findAll { it.key.startsWith(JOB_PROPERTY_PREFIX) }.collect { it.key.split('\\.')[1] }
+}
+
+boolean hasJob(String jobName) {
+    return releaseProperties.any { it.key.startsWith(getJobPropertySuffix(jobName)) }
+}
+
+String getJobUrl(String jobName) {
+    echo "getJobUrl for ${jobName}"
+    return getReleaseProperty(getJobPropertyKey(jobName, JOB_URL_PROPERTY_KEY)) ?: ''
+}
+
+String getJobResult(String jobName) {
+    echo "getJobResult for ${jobName}"
+    return getReleaseProperty(getJobPropertyKey(jobName, JOB_RESULT_PROPERTY_KEY)) ?: ''
+}
+
+String getJobDecision(String jobName) {
+    echo "getJobDecision for ${jobName}"
+    return getReleaseProperty(getJobPropertyKey(jobName, JOB_DECISION_PROPERTY_KEY)) ?: ''
+}
+
+boolean isJobConsideredOk(String jobName) {
+    String result = getJobResult(jobName)
+    String decision = getJobDecision(jobName)
+    return result == 'SUCCESS' || (result == 'UNSTABLE' &&  decision == 'continue')
+}
+
+void saveReleaseProperties() {
+    def propertiesStr = releaseProperties.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
+    writeFile( file : 'release.properties' , text : propertiesStr)
+    archiveArtifacts artifacts: 'release.properties'
+}
+
+void sendSuccessfulReleaseNotification() {
+    String bodyMsg = 'Release is successful with those jobs:\n'
+    getAllJobNames().findAll { isJobConsideredOk(it) }.each {
+        bodyMsg += "- ${it}\n"
+    }
+    bodyMsg += "\nPlease look here: ${BUILD_URL} for more information"
+    sendNotification(bodyMsg)
+}
+
+void sendErrorNotification() {
+    sendNotification("Release job #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}")
+}
+
+void sendStageNotification() {
+    sendNotification("${env.STAGE_NAME}")
+}
+
+void sendNotification(String body) {
+    echo 'Send Notification'
+    echo body
+    emailext body: body, subject: "[${env.GIT_BRANCH_NAME}] Release Pipeline",
+                to: env.CI_EMAIL
+}
+
+def readPropertiesFromUrl(String url, String propsFilename) {
+    if (!url.endsWith('/')) {
+        url += '/'
+    }
+    sh "wget ${url}artifact/${propsFilename} -O ${propsFilename}"
+    def props = readProperties file: propsFilename
+    echo props.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
+    return props
+}
+
+List getDefaultBuildParams(String version) {
+    List buildParams = []
+    addDisplayNameParam(buildParams, getDisplayName(version))
+    addStringParam(buildParams, 'PROJECT_VERSION', version)
+    return buildParams
+}
+
+void addDisplayNameParam(buildParams, name = '') {
+    name = name ?: getDisplayName()
+    addStringParam(buildParams, 'DISPLAY_NAME', name)
+}
+
+void addDeployBuildUrlParam(buildParams, jobName) {
+    addDeployBuildUrlParamOrClosure(buildParams, jobName)
+}
+
+void addDeployBuildUrlParamOrClosure(buildParams, jobName, closure = null) {
+    String url = getJobUrl(jobName)
+    if (url) {
+        addStringParam(buildParams, 'DEPLOY_BUILD_URL', getJobUrl(jobName))
+    } else if (closure) {
+        closure()
+    }
+}
+
+void addSkipTestsParam(buildParams) {
+    addBooleanParam(buildParams, 'SKIP_TESTS', params.SKIP_TESTS)
+}
+
+void addSkipIntegrationTestsParam(buildParams) {
+    addBooleanParam(buildParams, 'SKIP_INTEGRATION_TESTS', true)
+}
+
+void addStringParam(List params, String key, String value) {
+    params.add(string(name: key, value: value))
+}
+
+void addBooleanParam(List params, String key, boolean value) {
+    params.add(booleanParam(name: key, value: value))
+}
+
+String constructKey(String prefix, String paramId) {
+    return prefix ? "${prefix}_${paramId}" : paramId
+}
+
+String getDisplayName(version = '') {
+    version = version ?: getOptaPlannerVersion()
+    return "Release ${version}"
+}
+
+String getOptaPlannerVersion() {
+    return params.OPTAPLANNER_VERSION ?: getReleaseProperty('optaplanner.version')
+}
+
+String getGitAuthor() {
+    return env.GIT_AUTHOR
+}
+
+String getArtifactsRepositoryParam() {
+    return env['ARTIFACTS_REPOSITORY'] ?: ''
+}
+
+String getOptaPlannerReleaseBranch() {
+    return params.OPTAPLANNER_RELEASE_BRANCH ?: (getReleaseProperty('optaplanner.branch') ?: util.getReleaseBranchFromVersion(getOptaPlannerVersion()))
+}
+
+String getStagingRepository() {
+    return getArtifactsRepositoryParam() ?: env.DEFAULT_STAGING_REPOSITORY
+}
+
+void setReleasePropertyIfneeded(String key, def value) {
+    if (value) {
+        releaseProperties[key] = value
+    }
+}
+
+void removeReleaseProperty(String key) {
+    if (hasReleaseProperty(key)) {
+        releaseProperties.remove(key)
+    }
+}
+
+boolean hasReleaseProperty(String key) {
+    return releaseProperties.containsKey(key)
+}
+
+def getReleaseProperty(String key) {
+    return releaseProperties[key]
+}
+
+boolean areArtifactsStaged() {
+    return hasReleaseProperty(ARTIFACTS_STAGING_STAGE)
+}
+
+void setArtifactsStaged() {
+    setReleasePropertyIfneeded(ARTIFACTS_STAGING_STAGE, true)
+}
+
+boolean areArtifactsReleased() {
+    return hasReleaseProperty(ARTIFACTS_RELEASE_STAGE)
+}
+
+void setArtifactsReleased() {
+    setReleasePropertyIfneeded(ARTIFACTS_RELEASE_STAGE, true)
+}

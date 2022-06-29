@@ -56,6 +56,7 @@ KogitoJobUtils.createAllEnvsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConf
 setupDeployJob(Folder.PULLREQUEST_RUNTIMES_BDD)
 
 // Nightly jobs
+setupNightlyJob()
 setupNativeJob()
 setupDeployJob(Folder.NIGHTLY)
 setupMandrelJob()
@@ -64,6 +65,7 @@ setupQuarkusJob(Folder.NIGHTLY_QUARKUS_BRANCH)
 setupQuarkusJob(Folder.NIGHTLY_QUARKUS_LTS)
 
 // Release jobs
+setupReleaseJob()
 setupDeployJob(Folder.RELEASE)
 setupPromoteJob(Folder.RELEASE)
 setupPostReleaseJob()
@@ -76,6 +78,8 @@ if (Utils.isMainBranch(this)) {
 }
 
 // Tools folder
+KogitoJobUtils.createMainQuarkusUpdateToolsJob(this, 'Kogito Pipelines', [ 'optaplanner', 'optaplanner-quickstarts'
+ ])
 KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', [
   modules: [ 'optaplanner-build-parent' ],
   properties: [ 'version.io.quarkus' ],
@@ -146,6 +150,48 @@ void setupDroolsJob(String droolsBranch) {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+        }
+    }
+}
+
+void setupNightlyJob() {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-nightly', Folder.NIGHTLY, "${jenkins_path}/Jenkinsfile.nightly", 'Optaplanner Nightly')
+    jobParams.triggers = [cron : '@midnight']
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            booleanParam('SKIP_TESTS', false, 'Skip all tests')
+        }
+    }
+}
+
+void setupReleaseJob() {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-release', Folder.RELEASE, "${jenkins_path}/Jenkinsfile.release", 'Optaplanner Release')
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+        DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
+        ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('RESTORE_FROM_PREVIOUS_JOB', '', 'URL to a previous stopped release job which needs to be continued')
+
+            stringParam('OPTAPLANNER_VERSION', '', 'Project version of OptaPlanner and its examples to release as Major.minor.micro')
+            stringParam('OPTAPLANNER_RELEASE_BRANCH', '', '(optional) Use to override the release branch name deduced from the OPTAPLANNER_VERSION')
+
+            booleanParam('SKIP_TESTS', false, 'Skip all tests')
         }
     }
 }
