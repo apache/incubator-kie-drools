@@ -30,7 +30,7 @@ import org.drools.mvel.MVELConstraint;
 import org.junit.Test;
 import org.kie.api.io.Resource;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConstraintEvaluationExceptionTest extends BaseModelTest {
 
@@ -133,6 +133,6 @@ public class ConstraintEvaluationExceptionTest extends BaseModelTest {
         } else {
             ex = new org.drools.mvel.ConstraintEvaluationException(mvelConstraint.getExpression(), mvelConstraint.getEvaluationContext(), new RuntimeException("OriginalException"));
         }
-        assertEquals(expected, ex.getMessage());
+        assertThat(ex.getMessage()).isEqualTo(expected);
     }
 }

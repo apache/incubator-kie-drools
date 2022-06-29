@@ -34,8 +34,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // DROOLS-6506
 @RunWith(Parameterized.class)
@@ -127,9 +126,9 @@ public class PrimitiveConversionErrorsTest {
 
         session.fireAllRules();
 
-        assertEquals(2, values.size());
-        assertTrue(values.contains(this.valueA));
-        assertTrue(values.contains(this.valueB));
+        assertThat(values.size()).isEqualTo(2);
+        assertThat(values.contains(this.valueA)).isTrue();
+        assertThat(values.contains(this.valueB)).isTrue();
     }
 
     @Test
@@ -148,9 +147,9 @@ public class PrimitiveConversionErrorsTest {
 
         session.fireAllRules();
 
-        assertEquals(2, values.size());
-        assertTrue(values.contains(this.valueA));
-        assertTrue(values.contains(this.valueB));
+        assertThat(values.size()).isEqualTo(2);
+        assertThat(values.contains(this.valueA)).isTrue();
+        assertThat(values.contains(this.valueB)).isTrue();
     }
 
     private static KieBase loadRules(Class<?> valueType, Object value, boolean useExecutable) throws IOException {
