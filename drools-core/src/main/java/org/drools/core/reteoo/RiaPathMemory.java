@@ -68,7 +68,7 @@ public class RiaPathMemory extends PathMemory {
     }
 
     private void updateRuleTerminalNodes() {
-        rules = new ArrayList<RuleImpl>();
+        rules = new ArrayList<>();
         for ( ObjectSink osink : getRightInputAdapterNode().getObjectSinkPropagator().getSinks() ) {
             for ( LeftTupleSink ltsink : ((BetaNode)osink).getSinkPropagator().getSinks() )  {
                 findAndAddTN(ltsink, rules );

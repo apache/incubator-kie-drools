@@ -34,7 +34,7 @@ public class PMMLRequestDataBuilder {
     }
 
     public <T> PMMLRequestDataBuilder addParameter(String paramName, T value, Class<T> clazz) {
-        parameters.add(new ParameterInfo<T>(correlationId, paramName, clazz, value));
+        parameters.add(new ParameterInfo<>(correlationId, paramName, clazz, value));
         return this;
     }
 

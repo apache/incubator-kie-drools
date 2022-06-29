@@ -99,7 +99,7 @@ public class ValueType {
     protected JAXBElement<ValueType.List> list;
     protected ValueType.ExtensionElements extensionElements;
     @XmlAnyAttribute
-    private Map<QName, String> otherAttributes = new HashMap<QName, String>();
+    private Map<QName, String> otherAttributes = new HashMap<>();
 
     /**
      * Gets the value of the value property.
@@ -149,7 +149,7 @@ public class ValueType {
      */
     public java.util.List<ValueType.Component> getComponent() {
         if (component == null) {
-            component = new ArrayList<ValueType.Component>();
+            component = new ArrayList<>();
         }
         return this.component;
     }
@@ -401,7 +401,7 @@ public class ValueType {
          */
         public java.util.List<Object> getAny() {
             if (any == null) {
-                any = new ArrayList<Object>();
+                any = new ArrayList<>();
             }
             return this.any;
         }
@@ -476,7 +476,7 @@ public class ValueType {
          */
         public java.util.List<ValueType> getItem() {
             if (item == null) {
-                item = new ArrayList<ValueType>();
+                item = new ArrayList<>();
             }
             return this.item;
         }

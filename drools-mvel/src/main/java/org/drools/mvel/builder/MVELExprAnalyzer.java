@@ -86,7 +86,7 @@ public class MVELExprAnalyzer {
                                                        Class kcontextClass) {
         if ( expr.trim().length() <= 0 ) {
             MVELAnalysisResult result = analyze( (Set<String>) Collections.EMPTY_SET, availableIdentifiers );
-            result.setMvelVariables( new HashMap<String, Class< ? >>() );
+            result.setMvelVariables( new HashMap<>() );
             result.setTypesafe( true );
             return result;
         }
@@ -143,7 +143,7 @@ public class MVELExprAnalyzer {
             return null;
         }
 
-        Set<String> requiredInputs = new HashSet<String>();
+        Set<String> requiredInputs = new HashSet<>();
         requiredInputs.addAll( parserContext1.getInputs().keySet() );
         HashMap<String, Class< ? >> variables = (HashMap<String, Class< ? >>) ((Map) parserContext1.getVariables());
         if ( localTypes != null ) {
@@ -211,7 +211,7 @@ public class MVELExprAnalyzer {
         }
 
         if ( typesafe ) {
-            requiredInputs = new HashSet<String>();
+            requiredInputs = new HashSet<>();
             requiredInputs.addAll( parserContext2.getInputs().keySet() );
             requiredInputs.addAll( variables.keySet() );
             variables = (HashMap<String, Class< ? >>) ((Map) parserContext2.getVariables());
@@ -245,11 +245,11 @@ public class MVELExprAnalyzer {
         MVELAnalysisResult result = new MVELAnalysisResult();
         result.setIdentifiers( identifiers );
 
-        final Set<String> notBound = new HashSet<String>( identifiers );
+        final Set<String> notBound = new HashSet<>( identifiers );
         notBound.remove( "this" );
-        Map<String, Class< ? >> usedDecls = new HashMap<String, Class< ? >>();
-        Map<String, Class< ? >> usedGlobals = new HashMap<String, Class< ? >>();
-        Map<String, EvaluatorWrapper> usedOperators = new HashMap<String, EvaluatorWrapper>();
+        Map<String, Class< ? >> usedDecls = new HashMap<>();
+        Map<String, Class< ? >> usedGlobals = new HashMap<>();
+        Map<String, EvaluatorWrapper> usedOperators = new HashMap<>();
 
         for ( Entry<String, Class< ? >> entry : availableIdentifiers.getDeclrClasses().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {

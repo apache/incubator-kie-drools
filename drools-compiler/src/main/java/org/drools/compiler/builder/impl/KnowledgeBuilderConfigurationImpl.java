@@ -236,8 +236,8 @@ public class KnowledgeBuilderConfigurationImpl
     }
 
     private void buildSeverityMap() {
-        this.severityMap = new HashMap<String, ResultSeverity>();
-        Map<String, String> temp = new HashMap<String, String>();
+        this.severityMap = new HashMap<>();
+        Map<String, String> temp = new HashMap<>();
         this.chainedProperties.mapStartsWith(temp,
                 KBuilderSeverityOption.PROPERTY_NAME,
                 true);

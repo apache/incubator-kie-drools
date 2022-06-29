@@ -36,7 +36,7 @@ public class Redundancy
     implements
     Cause {
 
-    private final List<VerifierComponent> items = new ArrayList<VerifierComponent>( 2 );
+    private final List<VerifierComponent> items = new ArrayList<>( 2 );
 
     private final Collection<Cause>       causes;
 

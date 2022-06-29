@@ -32,7 +32,7 @@ public class TFunctionItem extends TDMNElement implements FunctionItem {
     @Override
     public List<InformationItem> getParameters() {
         if (parameters == null) {
-            parameters = new ArrayList<InformationItem>();
+            parameters = new ArrayList<>();
         }
         return this.parameters;
     }

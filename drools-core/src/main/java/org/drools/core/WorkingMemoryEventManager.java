@@ -17,7 +17,6 @@
 package org.drools.core;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.kie.api.event.kiebase.KieBaseEventManager;
 import org.kie.api.event.rule.AgendaEventListener;

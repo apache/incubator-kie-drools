@@ -42,7 +42,7 @@ public abstract class VariableEntity implements Serializable {
 
     public void addMappedVariables(MappedVariable mappedVariable) {
         if (this.mappedVariables == null) {
-            this.mappedVariables = new HashSet<MappedVariable>();
+            this.mappedVariables = new HashSet<>();
         }
         this.mappedVariables.add(mappedVariable);
     }

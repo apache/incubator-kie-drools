@@ -27,8 +27,7 @@ import org.drools.verifier.core.maps.util.HasKeys;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelectNoMatchesTest {
 
@@ -50,17 +49,17 @@ public class SelectNoMatchesTest {
     public void testAll() throws Exception {
         final Collection<Address> all = select.all();
 
-        assertTrue(all.isEmpty());
+        assertThat(all.isEmpty()).isTrue();
     }
 
     @Test
     public void testFirst() throws Exception {
-        assertNull(select.first());
+        assertThat(select.first()).isNull();
     }
 
     @Test
     public void testLast() throws Exception {
-        assertNull(select.last());
+        assertThat(select.last()).isNull();
     }
 
     private class Address

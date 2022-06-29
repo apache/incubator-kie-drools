@@ -136,7 +136,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
 
         public List<Object> getAny() {
             if (any == null) {
-                any = new ArrayList<Object>();
+                any = new ArrayList<>();
             }
             return this.any;
         }

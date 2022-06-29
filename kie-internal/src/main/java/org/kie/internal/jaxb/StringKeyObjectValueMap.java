@@ -39,7 +39,7 @@ import static org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter.deserializ
 public class StringKeyObjectValueMap implements Map<String, Object> {
 
     @XmlElement(name="entry")
-    public List<StringKeyObjectValueEntry> entries = new ArrayList<StringKeyObjectValueEntry>();
+    public List<StringKeyObjectValueEntry> entries = new ArrayList<>();
 
     public void addEntry(StringKeyObjectValueEntry newEntry) {
        this.entries.add(newEntry);
@@ -132,7 +132,7 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
 
     @Override
     public Set<String> keySet() {
-        Set<String> keySet = new HashSet<String>();
+        Set<String> keySet = new HashSet<>();
         for( StringKeyObjectValueEntry entry : entries ) {
             keySet.add(entry.getKey());
         }
@@ -141,7 +141,7 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
 
     @Override
     public Collection<Object> values() {
-        List<Object> values = new ArrayList<Object>();
+        List<Object> values = new ArrayList<>();
         for( StringKeyObjectValueEntry entry : entries ) {
            Object newVal = deserializeObject(entry.getBytes(), entry.getClassName(), entry.getKey());
            values.add(newVal);
@@ -151,7 +151,7 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
 
     @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet() {
-        Set<java.util.Map.Entry<String, Object>> entrySet = new HashSet<Map.Entry<String,Object>>();
+        Set<java.util.Map.Entry<String, Object>> entrySet = new HashSet<>();
         for( StringKeyObjectValueEntry entry : entries ) {
            Object newVal = deserializeObject(entry.getBytes(), entry.getClassName(), entry.getKey());
            String key = entry.getKey();

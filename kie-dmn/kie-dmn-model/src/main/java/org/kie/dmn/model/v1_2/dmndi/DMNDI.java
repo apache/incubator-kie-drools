@@ -59,7 +59,7 @@ public class DMNDI extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
     @Override
     public List<DMNDiagram> getDMNDiagram() {
         if (dmnDiagram == null) {
-            dmnDiagram = new ArrayList<DMNDiagram>();
+            dmnDiagram = new ArrayList<>();
         }
         return this.dmnDiagram;
     }
@@ -89,7 +89,7 @@ public class DMNDI extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
     @Override
     public List<DMNStyle> getDMNStyle() {
         if (dmnStyle == null) {
-            dmnStyle = new ArrayList<DMNStyle>();
+            dmnStyle = new ArrayList<>();
         }
         return this.dmnStyle;
     }

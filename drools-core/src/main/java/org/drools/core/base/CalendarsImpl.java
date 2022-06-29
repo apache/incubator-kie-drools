@@ -36,7 +36,7 @@ public class CalendarsImpl
     private Map<String, Calendar> map;
 
     public CalendarsImpl() {
-        this.map = new ConcurrentHashMap<String, Calendar>();
+        this.map = new ConcurrentHashMap<>();
     }
 
 

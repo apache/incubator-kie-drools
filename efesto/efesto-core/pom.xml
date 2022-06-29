@@ -15,9 +15,9 @@
   <name>Efesto :: Core</name>
 
   <modules>
-    <module>common-api</module>
-    <module>compilation-manager</module>
-    <module>runtime-manager</module>
+    <module>efesto-common-api</module>
+    <module>efesto-compilation-manager</module>
+    <module>efesto-runtime-manager</module>
   </modules>
 
 

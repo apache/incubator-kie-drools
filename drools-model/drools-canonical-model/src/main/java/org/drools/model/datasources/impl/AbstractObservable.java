@@ -25,7 +25,7 @@ import org.drools.model.datasources.Observable;
 
 public class AbstractObservable implements Observable {
 
-    private final List<DataSourceObserver> observers = new ArrayList<DataSourceObserver>();
+    private final List<DataSourceObserver> observers = new ArrayList<>();
 
     @Override
     public synchronized void addObserver(DataSourceObserver o ) {

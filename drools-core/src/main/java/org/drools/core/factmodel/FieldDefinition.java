@@ -298,7 +298,7 @@ public class FieldDefinition
 
     public void addAnnotation(AnnotationDefinition annotationDefinition) {
         if (this.annotations == null) {
-            this.annotations = new ArrayList<AnnotationDefinition>();
+            this.annotations = new ArrayList<>();
         }
         this.annotations.add(annotationDefinition);
     }
@@ -317,7 +317,7 @@ public class FieldDefinition
 
     public void addMetaData( String key, Object value ) {
         if ( this.metaData == null ) {
-            metaData = new HashMap<String,Object>();
+            metaData = new HashMap<>();
         }
         metaData.put( key, value );
     }

@@ -23,7 +23,6 @@ import java.util.List;
 import org.drools.model.Constraint;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelComponent;
-import org.drools.model.patterns.PatternImpl;
 
 import static java.util.stream.Collectors.toList;
 

@@ -95,26 +95,26 @@ public class TraitRegistryImpl implements Externalizable,
     public void merge( TraitRegistry otherRegistry ) {
         TraitRegistryImpl other = (TraitRegistryImpl) otherRegistry;
         if ( staticTraitTypes == null && other.staticTraitTypes != null ) {
-            staticTraitTypes = new HashMap<String, Set<String>>();
+            staticTraitTypes = new HashMap<>();
             staticTraitTypes.putAll( other.staticTraitTypes );
         }
 
         if ( traits == null ) {
-            traits = new HashMap<String, ClassDefinition>();
+            traits = new HashMap<>();
         }
         if ( other.traits != null ) {
             this.traits.putAll( other.traits );
         }
 
         if ( traitables == null ) {
-            traitables = new HashMap<String, ClassDefinition>();
+            traitables = new HashMap<>();
         }
         if ( other.traitables != null ) {
             this.traitables.putAll( other.traitables );
         }
 
         if ( masks == null ) {
-            masks = new HashMap<String, BitSet>();
+            masks = new HashMap<>();
         }
         if ( other.masks != null ) {
             this.masks.putAll( other.masks );
@@ -130,7 +130,7 @@ public class TraitRegistryImpl implements Externalizable,
     private static HierarchyEncoder<String> mergeHierarchy(TraitRegistryImpl first, TraitRegistryImpl second ) {
         for ( String traitName : second.getHierarchy().getSortedMembers() ) {
             ClassDefinition trait = second.traits.get( traitName );
-            List<String> parentTraits = new ArrayList<String>( );
+            List<String> parentTraits = new ArrayList<>( );
             for ( String candidateIntf : trait.getInterfaces() ) {
                 if ( first.getHierarchy().getCode( candidateIntf ) != null ) {
                     parentTraits.add( candidateIntf );
@@ -172,14 +172,14 @@ public class TraitRegistryImpl implements Externalizable,
 
     public void addTrait( String className, ClassDefinition trait ) {
         if ( traits == null ) {
-            traits = new HashMap<String, ClassDefinition>();
+            traits = new HashMap<>();
         }
         this.traits.put( className, trait );
         getHierarchy().encode( className, getTraitInterfaces( trait ) );
     }
 
     private Collection<String> getTraitInterfaces( ClassDefinition trait ) {
-        List<String> intfs = new ArrayList<String>();
+        List<String> intfs = new ArrayList<>();
         for ( String s : trait.getInterfaces() ) {
             if ( traits.containsKey( s ) ) {
                 intfs.add( s );
@@ -190,13 +190,13 @@ public class TraitRegistryImpl implements Externalizable,
 
     public void addTraitable( ClassDefinition traitable ) {
         if ( traitables == null ) {
-            traitables = new HashMap<String, ClassDefinition>();
+            traitables = new HashMap<>();
         }
         this.traitables.put( traitable.getClassName(), traitable );
         Set<String> staticTraits = detectStaticallyImplementedTraits( traitable );
         if ( ! staticTraits.isEmpty() ) {
             if ( staticTraitTypes == null ) {
-                staticTraitTypes = new HashMap<String, Set<String>>();
+                staticTraitTypes = new HashMap<>();
             }
             staticTraitTypes.put( traitable.getClassName(), staticTraits );
         }
@@ -209,7 +209,7 @@ public class TraitRegistryImpl implements Externalizable,
 
     public BitSet getFieldMask( String trait, String traitable ) {
         if ( masks == null ) {
-            masks = new HashMap<String, BitSet>();
+            masks = new HashMap<>();
         }
         String key = trait + traitable;
         return masks.computeIfAbsent( key, k -> bind( trait, traitable ) );
@@ -275,7 +275,7 @@ public class TraitRegistryImpl implements Externalizable,
     }
 
     protected Set<String> detectStaticallyImplementedTraits( ClassDefinition traitable ) {
-        Set<String> traitInterfaces = new HashSet<String>( 3 );
+        Set<String> traitInterfaces = new HashSet<>( 3 );
         for ( Class<?> intf : ClassUtils.getAllImplementedInterfaceNames( traitable.getDefinedClass() ) ) {
             if ( Thing.class.isAssignableFrom( intf ) || intf.getAnnotation( Trait.class ) != null ) {
                 traitInterfaces.add( intf.getName() );
@@ -331,7 +331,7 @@ public class TraitRegistryImpl implements Externalizable,
                 bitSet.or( getCode( parent ) );
             }
             if ( cache == null ) {
-                cache = new HashMap<String, BitSet>();
+                cache = new HashMap<>();
             }
             cache.put( className, bitSet );
             return bitSet;

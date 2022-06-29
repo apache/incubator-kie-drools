@@ -47,7 +47,7 @@ public class CorrelationKeyXmlAdapter extends XmlAdapter<String, CorrelationKey>
         if( key == null || key.isEmpty() ) {
            return factory.newCorrelationKey(Collections.EMPTY_LIST);
         }
-        List<String> keys = new ArrayList<String>();
+        List<String> keys = new ArrayList<>();
         for( String k : key.split(":") ) {
             keys.add(k);
         }

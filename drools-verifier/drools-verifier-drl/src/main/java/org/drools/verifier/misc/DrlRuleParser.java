@@ -59,7 +59,7 @@ public class DrlRuleParser {
     }
 
     private Collection<String> asList(String[] array) {
-        Collection<String> list = new ArrayList<String>();
+        Collection<String> list = new ArrayList<>();
 
         for ( int i = 0; i < array.length; i++ ) {
             String string = array[i];
@@ -73,7 +73,7 @@ public class DrlRuleParser {
 
     public static List<DrlRuleParser> findRulesDataFromDrl(String drl) {
         final Matcher m = finder.matcher( drl );
-        final List<DrlRuleParser> list = new ArrayList<DrlRuleParser>();
+        final List<DrlRuleParser> list = new ArrayList<>();
 
         while ( m.find() ) {
 
@@ -97,7 +97,7 @@ public class DrlRuleParser {
                                        m.group( 7 ),
                                        comment.description,
                                        comment.metadata,
-                                       new HashMap<String, List<String>>() ) );
+                                       new HashMap<>() ) );
         }
 
         return list;
@@ -123,7 +123,7 @@ public class DrlRuleParser {
 
         if ( text == null ) {
             comment.description = "";
-            comment.metadata = new ArrayList<String>();
+            comment.metadata = new ArrayList<>();
 
             return comment;
         }
@@ -162,7 +162,7 @@ public class DrlRuleParser {
     }
 
     private static List<String> findMetaData(String text) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
 
         while ( text.contains( "@" ) ) {
             int start = text.indexOf( '@' );

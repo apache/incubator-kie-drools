@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.TypeUtil;
 
 public class AnyFunction
         extends BaseFEELFunction {

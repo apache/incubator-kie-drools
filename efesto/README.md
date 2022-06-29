@@ -2,7 +2,7 @@
 -------------------------
 
 This module contains a rewriting of the `drools` framework, that is intended to be used to provide clear separation and composition for each compiler/runtime of the different engines that Drools project contains (Rules engine, DMN engine, PMML engine).
-The first step has been to include `efesto` as self-contained module inside `drools`. When all/most of different use-cases scenarios (rules, decisions, predictions, etc) will be covered, and when a clear compilation/runtime separation will be achieved overall the whole repository, then `efesto` submodules will be moved directly under `drools`.
+The first step has been to include `efesto` as self-contained module inside `drools`.
 
 
 The main focus of this project is on:

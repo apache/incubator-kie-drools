@@ -39,7 +39,7 @@ public class ReTryWorkItemCommand implements ExecutableCommand<Void> {
     private long workItemId;
     
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
-    private Map<String, Object> params = new HashMap<String, Object>();
+    private Map<String, Object> params = new HashMap<>();
     
     public ReTryWorkItemCommand() {
         

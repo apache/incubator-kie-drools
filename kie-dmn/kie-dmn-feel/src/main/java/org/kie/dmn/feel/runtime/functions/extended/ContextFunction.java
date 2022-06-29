@@ -44,7 +44,7 @@ public class ContextFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "entries", "cannot be null"));
         }
 
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
         for (int i = 0; i < entries.size(); i++) {
             final int h_index = i + 1;
             if (entries.get(i) instanceof Map) {

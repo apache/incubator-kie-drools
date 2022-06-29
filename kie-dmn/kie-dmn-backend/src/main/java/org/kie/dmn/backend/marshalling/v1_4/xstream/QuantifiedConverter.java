@@ -17,10 +17,8 @@
 package org.kie.dmn.backend.marshalling.v1_4.xstream;
 
 import org.kie.dmn.model.api.ChildExpression;
-import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Quantified;
 import org.kie.dmn.model.v1_4.TChildExpression;
-import org.kie.dmn.model.v1_4.TQuantified;
 import org.kie.dmn.model.v1_4.TTypedChildExpression;
 
 import com.thoughtworks.xstream.XStream;

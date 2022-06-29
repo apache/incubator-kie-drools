@@ -80,7 +80,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                                       ResourceStore pStore,
                                       ClassLoader pClassLoader,
                                       JavaCompilerSettings pSettings) {
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         JavaCompiler compiler = getJavaCompiler();
 
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
@@ -92,7 +92,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             }
 
             try (MemoryFileManager fileManager = new MemoryFileManager( jFileManager, pClassLoader )) {
-                final List<JavaFileObject> units = new ArrayList<JavaFileObject>();
+                final List<JavaFileObject> units = new ArrayList<>();
                 for (final String sourcePath : pResourcePaths) {
                     units.add( new CompilationUnit( PortablePath.of(sourcePath), pReader ) );
                 }
@@ -297,7 +297,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
     }
 
     private static class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager> {
-        private final List<CompilationOutput> outputs = new ArrayList<CompilationOutput>();
+        private final List<CompilationOutput> outputs = new ArrayList<>();
         private final ClassLoader classLoader;
 
         MemoryFileManager(JavaFileManager fileManager, ClassLoader classLoader) {
@@ -325,11 +325,11 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             }
             List<JavaFileObject> externalClasses = findCompiledClassInPackage(packageName);
             externalClasses.addAll(findClassesInExternalJars(packageName));
-            return externalClasses.isEmpty() ? fileManagerList : new AggregatingIterable<JavaFileObject>(fileManagerList, externalClasses);
+            return externalClasses.isEmpty() ? fileManagerList : new AggregatingIterable<>(fileManagerList, externalClasses);
         }
 
         private List<JavaFileObject> findCompiledClassInPackage(String packageName) {
-            List<JavaFileObject> compiledList = new ArrayList<JavaFileObject>();
+            List<JavaFileObject> compiledList = new ArrayList<>();
             if (classLoader instanceof StoreClassLoader ) {
                 Map<String, byte[]> store = ((StoreClassLoader) classLoader).getStore();
                 if (store != null) {
@@ -350,7 +350,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         private List<JavaFileObject> findClassesInExternalJars(String packageName) {
             try {
                 Enumeration<URL> urlEnumeration = classLoader.getResources(packageName.replace('.', '/'));
-                List<JavaFileObject> result = new ArrayList<JavaFileObject>();
+                List<JavaFileObject> result = new ArrayList<>();
                 while (urlEnumeration.hasMoreElements()) { // one URL for each jar on the classpath that has the given package
                     URL packageFolderURL = urlEnumeration.nextElement();
                     if (!new File(packageFolderURL.getFile()).isDirectory()) {
@@ -390,7 +390,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                     URI uri = URI.create( jarUri + "!/" + name );
                     String binaryName = name.substring( 0, name.length() - 6 ).replace( '/', '.' );
                     if ( result == null ) {
-                        result = new ArrayList<JavaFileObject>();
+                        result = new ArrayList<>();
                     }
                     result.add( new CustomJavaFileObject( binaryName, uri ) );
                 }
@@ -432,7 +432,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         }
 
         public Iterator<T> iterator() {
-            return new AggregatingIterator<T>(i1 == null ? null : i1.iterator(), i2 == null ? null : i2.iterator());
+            return new AggregatingIterator<>(i1 == null ? null : i1.iterator(), i2 == null ? null : i2.iterator());
         }
     }
 

@@ -46,7 +46,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
 
     private static final long NANO_TO_MILLISEC = 1000000;
     
-    protected List<KieRuntimeEventManager> ksessions = new CopyOnWriteArrayList<KieRuntimeEventManager>();
+    protected List<KieRuntimeEventManager> ksessions = new CopyOnWriteArrayList<>();
 
     public AgendaStats agendaStats;
     public ProcessStats processStats;
@@ -158,7 +158,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
     public static class AgendaStats implements org.kie.api.event.rule.AgendaEventListener {
         
         private AgendaStatsData consolidated = new AgendaStatsData();
-        private ConcurrentHashMap<String, AgendaStatsData> ruleStats = new ConcurrentHashMap<String, AgendaStatsData>();
+        private ConcurrentHashMap<String, AgendaStatsData> ruleStats = new ConcurrentHashMap<>();
 
         public AgendaStats() {
         }
@@ -238,7 +238,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
                 this.matchesCreated = new AtomicLong(0);
                 this.matchesCancelled = new AtomicLong(0);
                 this.firingTime = new AtomicLong(0);
-                this.lastReset = new AtomicReference<Date>(new Date());
+                this.lastReset = new AtomicReference<>(new Date());
             }
             
             @Override
@@ -305,7 +305,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
     public static class ProcessStats implements org.kie.api.event.process.ProcessEventListener {
         
         private GlobalProcessStatsData consolidated = new GlobalProcessStatsData();
-        private ConcurrentHashMap<String, ProcessStatsData> processStats = new ConcurrentHashMap<String, ProcessStatsData>();
+        private ConcurrentHashMap<String, ProcessStatsData> processStats = new ConcurrentHashMap<>();
 
         public GlobalProcessStatsData getConsolidatedStats() {
             return this.consolidated;
@@ -389,7 +389,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
             public GlobalProcessStatsData() {
                 this.processInstancesStarted = new AtomicLong(0);
                 this.processInstancesCompleted = new AtomicLong(0);
-                this.lastReset = new AtomicReference<Date>(new Date());
+                this.lastReset = new AtomicReference<>(new Date());
             }
             
             @Override

@@ -44,13 +44,13 @@ public class IndexedTypeHierarchy<T> extends AbstractCodedHierarchyImpl<T> imple
     public IndexedTypeHierarchy() {
         super();
         top = new BitSet();
-        cache = new HashMap<T, HierNode<T>>();
+        cache = new HashMap<>();
     }
 
     public IndexedTypeHierarchy( T topElement, BitSet topKey, T bottomElement, BitSet bottomKey ) {
         setTopCode( topKey );
         setBottomCode( bottomKey );
-        cache = new HashMap<T, HierNode<T>>();
+        cache = new HashMap<>();
         addMember( topElement, topKey );
         addMember( bottomElement, bottomKey );
 

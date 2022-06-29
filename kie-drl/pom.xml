@@ -95,11 +95,6 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <artifactId>drools-model-project-codegen</artifactId>
-        <groupId>org.drools</groupId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-model-compiler</artifactId>
         <version>${project.version}</version>

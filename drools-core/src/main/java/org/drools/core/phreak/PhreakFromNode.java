@@ -88,7 +88,7 @@ public class PhreakFromNode {
 
             if (useLeftMemory) {
                 fm.getBetaMemory().getLeftTupleMemory().add(leftTuple);
-                matches = new LinkedHashMap<Object, RightTuple>();
+                matches = new LinkedHashMap<>();
                 leftTuple.setContextObject( matches );
             }
 
@@ -140,7 +140,7 @@ public class PhreakFromNode {
             PropagationContext propagationContext = leftTuple.getPropagationContext();
 
             final Map<Object, RightTuple> previousMatches = (Map<Object, RightTuple>) leftTuple.getContextObject();
-            final Map<Object, RightTuple> newMatches = new HashMap<Object, RightTuple>();
+            final Map<Object, RightTuple> newMatches = new HashMap<>();
             leftTuple.setContextObject( newMatches );
 
             betaConstraints.updateFromTuple(context, reteEvaluator, leftTuple);

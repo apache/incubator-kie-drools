@@ -263,7 +263,7 @@ public final class ProtobufMessages {
             }
             case 74: {
               if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-                strategy_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex>();
+                strategy_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000004;
               }
               strategy_.add(
@@ -277,7 +277,7 @@ public final class ProtobufMessages {
             }
             case 106: {
               if (!((mutable_bitField0_ & 0x00000010) != 0)) {
-                runtimeClassDefinitions_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef>();
+                runtimeClassDefinitions_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000010;
               }
               runtimeClassDefinitions_.add(
@@ -2052,8 +2052,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Version, org.drools.serialization.protobuf.ProtobufMessages.Version.Builder, org.drools.serialization.protobuf.ProtobufMessages.VersionOrBuilder> 
           getVersionFieldBuilder() {
         if (versionBuilder_ == null) {
-          versionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Version, org.drools.serialization.protobuf.ProtobufMessages.Version.Builder, org.drools.serialization.protobuf.ProtobufMessages.VersionOrBuilder>(
+          versionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getVersion(),
                   getParentForChildren(),
                   isClean());
@@ -2208,8 +2207,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Signature, org.drools.serialization.protobuf.ProtobufMessages.Signature.Builder, org.drools.serialization.protobuf.ProtobufMessages.SignatureOrBuilder> 
           getSignatureFieldBuilder() {
         if (signatureBuilder_ == null) {
-          signatureBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Signature, org.drools.serialization.protobuf.ProtobufMessages.Signature.Builder, org.drools.serialization.protobuf.ProtobufMessages.SignatureOrBuilder>(
+          signatureBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getSignature(),
                   getParentForChildren(),
                   isClean());
@@ -2222,7 +2220,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureStrategyIsMutable() {
         if (!((bitField0_ & 0x00000004) != 0)) {
-          strategy_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex>(strategy_);
+          strategy_ = new java.util.ArrayList<>(strategy_);
           bitField0_ |= 0x00000004;
          }
       }
@@ -2519,8 +2517,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex, org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex.Builder, org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndexOrBuilder> 
           getStrategyFieldBuilder() {
         if (strategyBuilder_ == null) {
-          strategyBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex, org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex.Builder, org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndexOrBuilder>(
+          strategyBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   strategy_,
                   ((bitField0_ & 0x00000004) != 0),
                   getParentForChildren(),
@@ -2592,7 +2589,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureRuntimeClassDefinitionsIsMutable() {
         if (!((bitField0_ & 0x00000010) != 0)) {
-          runtimeClassDefinitions_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef>(runtimeClassDefinitions_);
+          runtimeClassDefinitions_ = new java.util.ArrayList<>(runtimeClassDefinitions_);
           bitField0_ |= 0x00000010;
          }
       }
@@ -2907,8 +2904,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef, org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef.Builder, org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDefOrBuilder> 
           getRuntimeClassDefinitionsFieldBuilder() {
         if (runtimeClassDefinitionsBuilder_ == null) {
-          runtimeClassDefinitionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef, org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef.Builder, org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDefOrBuilder>(
+          runtimeClassDefinitionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   runtimeClassDefinitions_,
                   ((bitField0_ & 0x00000010) != 0),
                   getParentForChildren(),
@@ -6217,8 +6213,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.RuleData, org.drools.serialization.protobuf.ProtobufMessages.RuleData.Builder, org.drools.serialization.protobuf.ProtobufMessages.RuleDataOrBuilder> 
           getRuleDataFieldBuilder() {
         if (ruleDataBuilder_ == null) {
-          ruleDataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.RuleData, org.drools.serialization.protobuf.ProtobufMessages.RuleData.Builder, org.drools.serialization.protobuf.ProtobufMessages.RuleDataOrBuilder>(
+          ruleDataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getRuleData(),
                   getParentForChildren(),
                   isClean());
@@ -6337,8 +6332,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.ProcessData, org.drools.serialization.protobuf.ProtobufMessages.ProcessData.Builder, org.drools.serialization.protobuf.ProtobufMessages.ProcessDataOrBuilder> 
           getProcessDataFieldBuilder() {
         if (processDataBuilder_ == null) {
-          processDataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.ProcessData, org.drools.serialization.protobuf.ProtobufMessages.ProcessData.Builder, org.drools.serialization.protobuf.ProtobufMessages.ProcessDataOrBuilder>(
+          processDataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getProcessData(),
                   getParentForChildren(),
                   isClean());
@@ -6457,8 +6451,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Timers, org.drools.serialization.protobuf.ProtobufMessages.Timers.Builder, org.drools.serialization.protobuf.ProtobufMessages.TimersOrBuilder> 
           getTimersFieldBuilder() {
         if (timersBuilder_ == null) {
-          timersBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Timers, org.drools.serialization.protobuf.ProtobufMessages.Timers.Builder, org.drools.serialization.protobuf.ProtobufMessages.TimersOrBuilder>(
+          timersBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getTimers(),
                   getParentForChildren(),
                   isClean());
@@ -6743,7 +6736,7 @@ public final class ProtobufMessages {
             }
             case 74: {
               if (!((mutable_bitField0_ & 0x00000010) != 0)) {
-                nodeMemory_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory>();
+                nodeMemory_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000010;
               }
               nodeMemory_.add(
@@ -6752,7 +6745,7 @@ public final class ProtobufMessages {
             }
             case 82: {
               if (!((mutable_bitField0_ & 0x00000020) != 0)) {
-                entryPoint_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.EntryPoint>();
+                entryPoint_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000020;
               }
               entryPoint_.add(
@@ -7825,8 +7818,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
           getInitialFactFieldBuilder() {
         if (initialFactBuilder_ == null) {
-          initialFactBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder>(
+          initialFactBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getInitialFact(),
                   getParentForChildren(),
                   isClean());
@@ -7945,8 +7937,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Agenda, org.drools.serialization.protobuf.ProtobufMessages.Agenda.Builder, org.drools.serialization.protobuf.ProtobufMessages.AgendaOrBuilder> 
           getAgendaFieldBuilder() {
         if (agendaBuilder_ == null) {
-          agendaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Agenda, org.drools.serialization.protobuf.ProtobufMessages.Agenda.Builder, org.drools.serialization.protobuf.ProtobufMessages.AgendaOrBuilder>(
+          agendaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getAgenda(),
                   getParentForChildren(),
                   isClean());
@@ -7959,7 +7950,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureNodeMemoryIsMutable() {
         if (!((bitField0_ & 0x00000010) != 0)) {
-          nodeMemory_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory>(nodeMemory_);
+          nodeMemory_ = new java.util.ArrayList<>(nodeMemory_);
           bitField0_ |= 0x00000010;
          }
       }
@@ -8184,8 +8175,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.NodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemoryOrBuilder> 
           getNodeMemoryFieldBuilder() {
         if (nodeMemoryBuilder_ == null) {
-          nodeMemoryBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.NodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemoryOrBuilder>(
+          nodeMemoryBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   nodeMemory_,
                   ((bitField0_ & 0x00000010) != 0),
                   getParentForChildren(),
@@ -8199,7 +8189,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureEntryPointIsMutable() {
         if (!((bitField0_ & 0x00000020) != 0)) {
-          entryPoint_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.EntryPoint>(entryPoint_);
+          entryPoint_ = new java.util.ArrayList<>(entryPoint_);
           bitField0_ |= 0x00000020;
          }
       }
@@ -8424,8 +8414,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.EntryPoint, org.drools.serialization.protobuf.ProtobufMessages.EntryPoint.Builder, org.drools.serialization.protobuf.ProtobufMessages.EntryPointOrBuilder> 
           getEntryPointFieldBuilder() {
         if (entryPointBuilder_ == null) {
-          entryPointBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.EntryPoint, org.drools.serialization.protobuf.ProtobufMessages.EntryPoint.Builder, org.drools.serialization.protobuf.ProtobufMessages.EntryPointOrBuilder>(
+          entryPointBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   entryPoint_,
                   ((bitField0_ & 0x00000020) != 0),
                   getParentForChildren(),
@@ -8545,8 +8534,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.ActionQueue, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueueOrBuilder> 
           getActionQueueFieldBuilder() {
         if (actionQueueBuilder_ == null) {
-          actionQueueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.ActionQueue, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueueOrBuilder>(
+          actionQueueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getActionQueue(),
                   getParentForChildren(),
                   isClean());
@@ -8665,8 +8653,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.Builder, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystemOrBuilder> 
           getOBSOLETETmsFieldBuilder() {
         if (oBSOLETETmsBuilder_ == null) {
-          oBSOLETETmsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.Builder, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystemOrBuilder>(
+          oBSOLETETmsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getOBSOLETETms(),
                   getParentForChildren(),
                   isClean());
@@ -10125,7 +10112,7 @@ public final class ProtobufMessages {
             }
             case 26: {
               if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-                agendaGroup_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup>();
+                agendaGroup_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000004;
               }
               agendaGroup_.add(
@@ -10147,7 +10134,7 @@ public final class ProtobufMessages {
             }
             case 42: {
               if (!((mutable_bitField0_ & 0x00000010) != 0)) {
-                ruleFlowGroup_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup>();
+                ruleFlowGroup_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000010;
               }
               ruleFlowGroup_.add(
@@ -10156,7 +10143,7 @@ public final class ProtobufMessages {
             }
             case 50: {
               if (!((mutable_bitField0_ & 0x00000020) != 0)) {
-                match_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Activation>();
+                match_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000020;
               }
               match_.add(
@@ -10165,7 +10152,7 @@ public final class ProtobufMessages {
             }
             case 58: {
               if (!((mutable_bitField0_ & 0x00000040) != 0)) {
-                ruleActivation_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Activation>();
+                ruleActivation_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000040;
               }
               ruleActivation_.add(
@@ -10417,7 +10404,7 @@ public final class ProtobufMessages {
               }
               case 50: {
                 if (!((mutable_bitField0_ & 0x00000020) != 0)) {
-                  match_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Activation>();
+                  match_ = new java.util.ArrayList<>();
                   mutable_bitField0_ |= 0x00000020;
                 }
                 match_.add(
@@ -10426,7 +10413,7 @@ public final class ProtobufMessages {
               }
               case 58: {
                 if (!((mutable_bitField0_ & 0x00000040) != 0)) {
-                  nodeInstance_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance>();
+                  nodeInstance_ = new java.util.ArrayList<>();
                   mutable_bitField0_ |= 0x00000040;
                 }
                 nodeInstance_.add(
@@ -12387,7 +12374,7 @@ public final class ProtobufMessages {
           java.util.Collections.emptyList();
         private void ensureMatchIsMutable() {
           if (!((bitField0_ & 0x00000020) != 0)) {
-            match_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Activation>(match_);
+            match_ = new java.util.ArrayList<>(match_);
             bitField0_ |= 0x00000020;
            }
         }
@@ -12612,8 +12599,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
             getMatchFieldBuilder() {
           if (matchBuilder_ == null) {
-            matchBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder>(
+            matchBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                     match_,
                     ((bitField0_ & 0x00000020) != 0),
                     getParentForChildren(),
@@ -12627,7 +12613,7 @@ public final class ProtobufMessages {
           java.util.Collections.emptyList();
         private void ensureNodeInstanceIsMutable() {
           if (!((bitField0_ & 0x00000040) != 0)) {
-            nodeInstance_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance>(nodeInstance_);
+            nodeInstance_ = new java.util.ArrayList<>(nodeInstance_);
             bitField0_ |= 0x00000040;
            }
         }
@@ -12852,8 +12838,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder> 
             getNodeInstanceFieldBuilder() {
           if (nodeInstanceBuilder_ == null) {
-            nodeInstanceBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder>(
+            nodeInstanceBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                     nodeInstance_,
                     ((bitField0_ & 0x00000040) != 0),
                     getParentForChildren(),
@@ -13749,7 +13734,7 @@ public final class ProtobufMessages {
               }
               case 34: {
                 if (!((mutable_bitField0_ & 0x00000008) != 0)) {
-                  match_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Activation>();
+                  match_ = new java.util.ArrayList<>();
                   mutable_bitField0_ |= 0x00000008;
                 }
                 match_.add(
@@ -13758,7 +13743,7 @@ public final class ProtobufMessages {
               }
               case 42: {
                 if (!((mutable_bitField0_ & 0x00000010) != 0)) {
-                  nodeInstance_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance>();
+                  nodeInstance_ = new java.util.ArrayList<>();
                   mutable_bitField0_ |= 0x00000010;
                 }
                 nodeInstance_.add(
@@ -15501,7 +15486,7 @@ public final class ProtobufMessages {
           java.util.Collections.emptyList();
         private void ensureMatchIsMutable() {
           if (!((bitField0_ & 0x00000008) != 0)) {
-            match_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Activation>(match_);
+            match_ = new java.util.ArrayList<>(match_);
             bitField0_ |= 0x00000008;
            }
         }
@@ -15726,8 +15711,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
             getMatchFieldBuilder() {
           if (matchBuilder_ == null) {
-            matchBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder>(
+            matchBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                     match_,
                     ((bitField0_ & 0x00000008) != 0),
                     getParentForChildren(),
@@ -15741,7 +15725,7 @@ public final class ProtobufMessages {
           java.util.Collections.emptyList();
         private void ensureNodeInstanceIsMutable() {
           if (!((bitField0_ & 0x00000010) != 0)) {
-            nodeInstance_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance>(nodeInstance_);
+            nodeInstance_ = new java.util.ArrayList<>(nodeInstance_);
             bitField0_ |= 0x00000010;
            }
         }
@@ -15966,8 +15950,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstanceOrBuilder> 
             getNodeInstanceFieldBuilder() {
           if (nodeInstanceBuilder_ == null) {
-            nodeInstanceBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstanceOrBuilder>(
+            nodeInstanceBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                     nodeInstance_,
                     ((bitField0_ & 0x00000010) != 0),
                     getParentForChildren(),
@@ -16957,7 +16940,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureAgendaGroupIsMutable() {
         if (!((bitField0_ & 0x00000004) != 0)) {
-          agendaGroup_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup>(agendaGroup_);
+          agendaGroup_ = new java.util.ArrayList<>(agendaGroup_);
           bitField0_ |= 0x00000004;
          }
       }
@@ -17182,8 +17165,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroupOrBuilder> 
           getAgendaGroupFieldBuilder() {
         if (agendaGroupBuilder_ == null) {
-          agendaGroupBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroupOrBuilder>(
+          agendaGroupBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   agendaGroup_,
                   ((bitField0_ & 0x00000004) != 0),
                   getParentForChildren(),
@@ -17303,8 +17285,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack, org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStackOrBuilder> 
           getFocusStackFieldBuilder() {
         if (focusStackBuilder_ == null) {
-          focusStackBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack, org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStackOrBuilder>(
+          focusStackBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getFocusStack(),
                   getParentForChildren(),
                   isClean());
@@ -17317,7 +17298,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureRuleFlowGroupIsMutable() {
         if (!((bitField0_ & 0x00000010) != 0)) {
-          ruleFlowGroup_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup>(ruleFlowGroup_);
+          ruleFlowGroup_ = new java.util.ArrayList<>(ruleFlowGroup_);
           bitField0_ |= 0x00000010;
          }
       }
@@ -17542,8 +17523,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroupOrBuilder> 
           getRuleFlowGroupFieldBuilder() {
         if (ruleFlowGroupBuilder_ == null) {
-          ruleFlowGroupBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroupOrBuilder>(
+          ruleFlowGroupBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   ruleFlowGroup_,
                   ((bitField0_ & 0x00000010) != 0),
                   getParentForChildren(),
@@ -17557,7 +17537,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureMatchIsMutable() {
         if (!((bitField0_ & 0x00000020) != 0)) {
-          match_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Activation>(match_);
+          match_ = new java.util.ArrayList<>(match_);
           bitField0_ |= 0x00000020;
          }
       }
@@ -17782,8 +17762,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
           getMatchFieldBuilder() {
         if (matchBuilder_ == null) {
-          matchBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder>(
+          matchBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   match_,
                   ((bitField0_ & 0x00000020) != 0),
                   getParentForChildren(),
@@ -17797,7 +17776,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureRuleActivationIsMutable() {
         if (!((bitField0_ & 0x00000040) != 0)) {
-          ruleActivation_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Activation>(ruleActivation_);
+          ruleActivation_ = new java.util.ArrayList<>(ruleActivation_);
           bitField0_ |= 0x00000040;
          }
       }
@@ -18022,8 +18001,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
           getRuleActivationFieldBuilder() {
         if (ruleActivationBuilder_ == null) {
-          ruleActivationBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder>(
+          ruleActivationBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   ruleActivation_,
                   ((bitField0_ & 0x00000040) != 0),
                   getParentForChildren(),
@@ -18510,7 +18488,7 @@ public final class ProtobufMessages {
                 break;
               case 10: {
                 if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                  context_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext>();
+                  context_ = new java.util.ArrayList<>();
                   mutable_bitField0_ |= 0x00000001;
                 }
                 context_.add(
@@ -19210,8 +19188,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> 
               getTupleFieldBuilder() {
             if (tupleBuilder_ == null) {
-              tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                  org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder>(
+              tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                       getTuple(),
                       getParentForChildren(),
                       isClean());
@@ -19330,8 +19307,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
               getResultHandleFieldBuilder() {
             if (resultHandleBuilder_ == null) {
-              resultHandleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                  org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder>(
+              resultHandleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                       getResultHandle(),
                       getParentForChildren(),
                       isClean());
@@ -19778,7 +19754,7 @@ public final class ProtobufMessages {
           java.util.Collections.emptyList();
         private void ensureContextIsMutable() {
           if (!((bitField0_ & 0x00000001) != 0)) {
-            context_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext>(context_);
+            context_ = new java.util.ArrayList<>(context_);
             bitField0_ |= 0x00000001;
            }
         }
@@ -20003,8 +19979,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContextOrBuilder> 
             getContextFieldBuilder() {
           if (contextBuilder_ == null) {
-            contextBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContextOrBuilder>(
+            contextBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                     context_,
                     ((bitField0_ & 0x00000001) != 0),
                     getParentForChildren(),
@@ -20143,7 +20118,7 @@ public final class ProtobufMessages {
                 break;
               case 10: {
                 if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                  context_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext>();
+                  context_ = new java.util.ArrayList<>();
                   mutable_bitField0_ |= 0x00000001;
                 }
                 context_.add(
@@ -20843,8 +20818,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> 
               getTupleFieldBuilder() {
             if (tupleBuilder_ == null) {
-              tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                  org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder>(
+              tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                       getTuple(),
                       getParentForChildren(),
                       isClean());
@@ -20963,8 +20937,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
               getResultHandleFieldBuilder() {
             if (resultHandleBuilder_ == null) {
-              resultHandleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                  org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder>(
+              resultHandleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                       getResultHandle(),
                       getParentForChildren(),
                       isClean());
@@ -21411,7 +21384,7 @@ public final class ProtobufMessages {
           java.util.Collections.emptyList();
         private void ensureContextIsMutable() {
           if (!((bitField0_ & 0x00000001) != 0)) {
-            context_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext>(context_);
+            context_ = new java.util.ArrayList<>(context_);
             bitField0_ |= 0x00000001;
            }
         }
@@ -21636,8 +21609,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContextOrBuilder> 
             getContextFieldBuilder() {
           if (contextBuilder_ == null) {
-            contextBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContextOrBuilder>(
+            contextBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                     context_,
                     ((bitField0_ & 0x00000001) != 0),
                     getParentForChildren(),
@@ -21776,7 +21748,7 @@ public final class ProtobufMessages {
                 break;
               case 10: {
                 if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                  context_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext>();
+                  context_ = new java.util.ArrayList<>();
                   mutable_bitField0_ |= 0x00000001;
                 }
                 context_.add(
@@ -21948,7 +21920,7 @@ public final class ProtobufMessages {
                 }
                 case 18: {
                   if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                    handle_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.FactHandle>();
+                    handle_ = new java.util.ArrayList<>();
                     mutable_bitField0_ |= 0x00000002;
                   }
                   handle_.add(
@@ -21957,7 +21929,7 @@ public final class ProtobufMessages {
                 }
                 case 26: {
                   if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-                    object_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>();
+                    object_ = new java.util.ArrayList<>();
                     mutable_bitField0_ |= 0x00000004;
                   }
                   object_.add(
@@ -23278,8 +23250,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> 
               getTupleFieldBuilder() {
             if (tupleBuilder_ == null) {
-              tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                  org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder>(
+              tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                       getTuple(),
                       getParentForChildren(),
                       isClean());
@@ -23292,7 +23263,7 @@ public final class ProtobufMessages {
             java.util.Collections.emptyList();
           private void ensureHandleIsMutable() {
             if (!((bitField0_ & 0x00000002) != 0)) {
-              handle_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.FactHandle>(handle_);
+              handle_ = new java.util.ArrayList<>(handle_);
               bitField0_ |= 0x00000002;
              }
           }
@@ -23517,8 +23488,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
               getHandleFieldBuilder() {
             if (handleBuilder_ == null) {
-              handleBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                  org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder>(
+              handleBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                       handle_,
                       ((bitField0_ & 0x00000002) != 0),
                       getParentForChildren(),
@@ -23532,7 +23502,7 @@ public final class ProtobufMessages {
             java.util.Collections.emptyList();
           private void ensureObjectIsMutable() {
             if (!((bitField0_ & 0x00000004) != 0)) {
-              object_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject>(object_);
+              object_ = new java.util.ArrayList<>(object_);
               bitField0_ |= 0x00000004;
              }
           }
@@ -23757,8 +23727,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObjectOrBuilder> 
               getObjectFieldBuilder() {
             if (objectBuilder_ == null) {
-              objectBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                  org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObjectOrBuilder>(
+              objectBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                       object_,
                       ((bitField0_ & 0x00000004) != 0),
                       getParentForChildren(),
@@ -24206,7 +24175,7 @@ public final class ProtobufMessages {
           java.util.Collections.emptyList();
         private void ensureContextIsMutable() {
           if (!((bitField0_ & 0x00000001) != 0)) {
-            context_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext>(context_);
+            context_ = new java.util.ArrayList<>(context_);
             bitField0_ |= 0x00000001;
            }
         }
@@ -24431,8 +24400,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContextOrBuilder> 
             getContextFieldBuilder() {
           if (contextBuilder_ == null) {
-            contextBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContextOrBuilder>(
+            contextBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                     context_,
                     ((bitField0_ & 0x00000001) != 0),
                     getParentForChildren(),
@@ -24571,7 +24539,7 @@ public final class ProtobufMessages {
                 break;
               case 10: {
                 if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                  context_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext>();
+                  context_ = new java.util.ArrayList<>();
                   mutable_bitField0_ |= 0x00000001;
                 }
                 context_.add(
@@ -24746,7 +24714,7 @@ public final class ProtobufMessages {
                 }
                 case 26: {
                   if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-                    result_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.FactHandle>();
+                    result_ = new java.util.ArrayList<>();
                     mutable_bitField0_ |= 0x00000004;
                   }
                   result_.add(
@@ -25403,8 +25371,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> 
               getTupleFieldBuilder() {
             if (tupleBuilder_ == null) {
-              tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                  org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder>(
+              tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                       getTuple(),
                       getParentForChildren(),
                       isClean());
@@ -25523,8 +25490,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
               getHandleFieldBuilder() {
             if (handleBuilder_ == null) {
-              handleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                  org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder>(
+              handleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                       getHandle(),
                       getParentForChildren(),
                       isClean());
@@ -25537,7 +25503,7 @@ public final class ProtobufMessages {
             java.util.Collections.emptyList();
           private void ensureResultIsMutable() {
             if (!((bitField0_ & 0x00000004) != 0)) {
-              result_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.FactHandle>(result_);
+              result_ = new java.util.ArrayList<>(result_);
               bitField0_ |= 0x00000004;
              }
           }
@@ -25762,8 +25728,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
               getResultFieldBuilder() {
             if (resultBuilder_ == null) {
-              resultBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                  org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder>(
+              resultBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                       result_,
                       ((bitField0_ & 0x00000004) != 0),
                       getParentForChildren(),
@@ -26211,7 +26176,7 @@ public final class ProtobufMessages {
           java.util.Collections.emptyList();
         private void ensureContextIsMutable() {
           if (!((bitField0_ & 0x00000001) != 0)) {
-            context_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext>(context_);
+            context_ = new java.util.ArrayList<>(context_);
             bitField0_ |= 0x00000001;
            }
         }
@@ -26436,8 +26401,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContextOrBuilder> 
             getContextFieldBuilder() {
           if (contextBuilder_ == null) {
-            contextBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContextOrBuilder>(
+            contextBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                     context_,
                     ((bitField0_ & 0x00000001) != 0),
                     getParentForChildren(),
@@ -27308,8 +27272,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemoryOrBuilder> 
           getAccumulateFieldBuilder() {
         if (accumulateBuilder_ == null) {
-          accumulateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemoryOrBuilder>(
+          accumulateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getAccumulate(),
                   getParentForChildren(),
                   isClean());
@@ -27428,8 +27391,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemoryOrBuilder> 
           getRiaFieldBuilder() {
         if (riaBuilder_ == null) {
-          riaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemoryOrBuilder>(
+          riaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getRia(),
                   getParentForChildren(),
                   isClean());
@@ -27548,8 +27510,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemoryOrBuilder> 
           getFromFieldBuilder() {
         if (fromBuilder_ == null) {
-          fromBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemoryOrBuilder>(
+          fromBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getFrom(),
                   getParentForChildren(),
                   isClean());
@@ -27668,8 +27629,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemoryOrBuilder> 
           getQueryElementFieldBuilder() {
         if (queryElementBuilder_ == null) {
-          queryElementBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemoryOrBuilder>(
+          queryElementBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getQueryElement(),
                   getParentForChildren(),
                   isClean());
@@ -27875,7 +27835,7 @@ public final class ProtobufMessages {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                handle_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.FactHandle>();
+                handle_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000002;
               }
               handle_.add(
@@ -27897,7 +27857,7 @@ public final class ProtobufMessages {
             }
             case 34: {
               if (!((mutable_bitField0_ & 0x00000008) != 0)) {
-                otc_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration>();
+                otc_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000008;
               }
               otc_.add(
@@ -28648,7 +28608,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureHandleIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          handle_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.FactHandle>(handle_);
+          handle_ = new java.util.ArrayList<>(handle_);
           bitField0_ |= 0x00000002;
          }
       }
@@ -28873,8 +28833,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
           getHandleFieldBuilder() {
         if (handleBuilder_ == null) {
-          handleBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder>(
+          handleBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   handle_,
                   ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
@@ -28994,8 +28953,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.Builder, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystemOrBuilder> 
           getTmsFieldBuilder() {
         if (tmsBuilder_ == null) {
-          tmsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.Builder, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystemOrBuilder>(
+          tmsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getTms(),
                   getParentForChildren(),
                   isClean());
@@ -29008,7 +28966,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureOtcIsMutable() {
         if (!((bitField0_ & 0x00000008) != 0)) {
-          otc_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration>(otc_);
+          otc_ = new java.util.ArrayList<>(otc_);
           bitField0_ |= 0x00000008;
          }
       }
@@ -29233,8 +29191,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration, org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration.Builder, org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfigurationOrBuilder> 
           getOtcFieldBuilder() {
         if (otcBuilder_ == null) {
-          otcBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration, org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration.Builder, org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfigurationOrBuilder>(
+          otcBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   otc_,
                   ((bitField0_ & 0x00000008) != 0),
                   getParentForChildren(),
@@ -32542,8 +32499,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> 
           getTupleFieldBuilder() {
         if (tupleBuilder_ == null) {
-          tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder>(
+          tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getTuple(),
                   getParentForChildren(),
                   isClean());
@@ -33231,7 +33187,7 @@ public final class ProtobufMessages {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                object_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.SerializedObject>();
+                object_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000002;
               }
               object_.add(
@@ -33803,7 +33759,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureObjectIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          object_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.SerializedObject>(object_);
+          object_ = new java.util.ArrayList<>(object_);
           bitField0_ |= 0x00000002;
          }
       }
@@ -34028,8 +33984,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.SerializedObject, org.drools.serialization.protobuf.ProtobufMessages.SerializedObject.Builder, org.drools.serialization.protobuf.ProtobufMessages.SerializedObjectOrBuilder> 
           getObjectFieldBuilder() {
         if (objectBuilder_ == null) {
-          objectBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.SerializedObject, org.drools.serialization.protobuf.ProtobufMessages.SerializedObject.Builder, org.drools.serialization.protobuf.ProtobufMessages.SerializedObjectOrBuilder>(
+          objectBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   object_,
                   ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
@@ -34819,7 +34774,7 @@ public final class ProtobufMessages {
               break;
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                key_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.EqualityKey>();
+                key_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000001;
               }
               key_.add(
@@ -34828,7 +34783,7 @@ public final class ProtobufMessages {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                oBSOLETEJustification_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.BeliefSet>();
+                oBSOLETEJustification_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000002;
               }
               oBSOLETEJustification_.add(
@@ -35354,7 +35309,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureKeyIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          key_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.EqualityKey>(key_);
+          key_ = new java.util.ArrayList<>(key_);
           bitField0_ |= 0x00000001;
          }
       }
@@ -35579,8 +35534,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.EqualityKey, org.drools.serialization.protobuf.ProtobufMessages.EqualityKey.Builder, org.drools.serialization.protobuf.ProtobufMessages.EqualityKeyOrBuilder> 
           getKeyFieldBuilder() {
         if (keyBuilder_ == null) {
-          keyBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.EqualityKey, org.drools.serialization.protobuf.ProtobufMessages.EqualityKey.Builder, org.drools.serialization.protobuf.ProtobufMessages.EqualityKeyOrBuilder>(
+          keyBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   key_,
                   ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
@@ -35594,7 +35548,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureOBSOLETEJustificationIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          oBSOLETEJustification_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.BeliefSet>(oBSOLETEJustification_);
+          oBSOLETEJustification_ = new java.util.ArrayList<>(oBSOLETEJustification_);
           bitField0_ |= 0x00000002;
          }
       }
@@ -35819,8 +35773,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.BeliefSet, org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder, org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder> 
           getOBSOLETEJustificationFieldBuilder() {
         if (oBSOLETEJustificationBuilder_ == null) {
-          oBSOLETEJustificationBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.BeliefSet, org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder, org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder>(
+          oBSOLETEJustificationBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   oBSOLETEJustification_,
                   ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
@@ -37540,8 +37493,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.BeliefSet, org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder, org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder> 
           getBeliefSetFieldBuilder() {
         if (beliefSetBuilder_ == null) {
-          beliefSetBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.BeliefSet, org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder, org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder>(
+          beliefSetBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getBeliefSet(),
                   getParentForChildren(),
                   isClean());
@@ -37695,7 +37647,7 @@ public final class ProtobufMessages {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                logicalDependency_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency>();
+                logicalDependency_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000002;
               }
               logicalDependency_.add(
@@ -38210,7 +38162,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureLogicalDependencyIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          logicalDependency_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency>(logicalDependency_);
+          logicalDependency_ = new java.util.ArrayList<>(logicalDependency_);
           bitField0_ |= 0x00000002;
          }
       }
@@ -38435,8 +38387,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency, org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency.Builder, org.drools.serialization.protobuf.ProtobufMessages.LogicalDependencyOrBuilder> 
           getLogicalDependencyFieldBuilder() {
         if (logicalDependencyBuilder_ == null) {
-          logicalDependencyBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency, org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency.Builder, org.drools.serialization.protobuf.ProtobufMessages.LogicalDependencyOrBuilder>(
+          logicalDependencyBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   logicalDependency_,
                   ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
@@ -39342,8 +39293,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
           getActivationFieldBuilder() {
         if (activationBuilder_ == null) {
-          activationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder>(
+          activationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getActivation(),
                   getParentForChildren(),
                   isClean());
@@ -39675,7 +39625,7 @@ public final class ProtobufMessages {
               break;
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                action_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action>();
+                action_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000001;
               }
               action_.add(
@@ -41255,8 +41205,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpireOrBuilder> 
             getBehaviorExpireFieldBuilder() {
           if (behaviorExpireBuilder_ == null) {
-            behaviorExpireBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpireOrBuilder>(
+            behaviorExpireBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getBehaviorExpire(),
                     getParentForChildren(),
                     isClean());
@@ -41375,8 +41324,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallbackOrBuilder> 
             getDeactivateCallbackFieldBuilder() {
           if (deactivateCallbackBuilder_ == null) {
-            deactivateCallbackBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallbackOrBuilder>(
+            deactivateCallbackBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getDeactivateCallback(),
                     getParentForChildren(),
                     isClean());
@@ -41495,8 +41443,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetractOrBuilder> 
             getLogicalRetractFieldBuilder() {
           if (logicalRetractBuilder_ == null) {
-            logicalRetractBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetractOrBuilder>(
+            logicalRetractBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getLogicalRetract(),
                     getParentForChildren(),
                     isClean());
@@ -41615,8 +41562,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.PropagateOrBuilder> 
             getPropagateFieldBuilder() {
           if (propagateBuilder_ == null) {
-            propagateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.PropagateOrBuilder>(
+            propagateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getPropagate(),
                     getParentForChildren(),
                     isClean());
@@ -41735,8 +41681,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.AssertOrBuilder> 
             getAssertFieldBuilder() {
           if (assertBuilder_ == null) {
-            assertBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.AssertOrBuilder>(
+            assertBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getAssert(),
                     getParentForChildren(),
                     isClean());
@@ -41855,8 +41800,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ExpireOrBuilder> 
             getExpireFieldBuilder() {
           if (expireBuilder_ == null) {
-            expireBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ExpireOrBuilder>(
+            expireBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getExpire(),
                     getParentForChildren(),
                     isClean());
@@ -41975,8 +41919,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalOrBuilder> 
             getSignalFieldBuilder() {
           if (signalBuilder_ == null) {
-            signalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalOrBuilder>(
+            signalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getSignal(),
                     getParentForChildren(),
                     isClean());
@@ -42095,8 +42038,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstanceOrBuilder> 
             getSignalProcessInstanceFieldBuilder() {
           if (signalProcessInstanceBuilder_ == null) {
-            signalProcessInstanceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstanceOrBuilder>(
+            signalProcessInstanceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getSignalProcessInstance(),
                     getParentForChildren(),
                     isClean());
@@ -44078,8 +44020,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
             getActivationFieldBuilder() {
           if (activationBuilder_ == null) {
-            activationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder>(
+            activationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getActivation(),
                     getParentForChildren(),
                     isClean());
@@ -45975,8 +45916,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> 
             getTupleFieldBuilder() {
           if (tupleBuilder_ == null) {
-            tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder>(
+            tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getTuple(),
                     getParentForChildren(),
                     isClean());
@@ -48646,7 +48586,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureActionIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          action_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action>(action_);
+          action_ = new java.util.ArrayList<>(action_);
           bitField0_ |= 0x00000001;
          }
       }
@@ -48871,8 +48811,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionOrBuilder> 
           getActionFieldBuilder() {
         if (actionBuilder_ == null) {
-          actionBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionOrBuilder>(
+          actionBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   action_,
                   ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
@@ -49011,7 +48950,7 @@ public final class ProtobufMessages {
               break;
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                timer_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer>();
+                timer_ = new java.util.ArrayList<>();
                 mutable_bitField0_ |= 0x00000001;
               }
               timer_.add(
@@ -50166,8 +50105,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimerOrBuilder> 
             getExpireFieldBuilder() {
           if (expireBuilder_ == null) {
-            expireBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimerOrBuilder>(
+            expireBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getExpire(),
                     getParentForChildren(),
                     isClean());
@@ -50286,8 +50224,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimerOrBuilder> 
             getActivationFieldBuilder() {
           if (activationBuilder_ == null) {
-            activationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimerOrBuilder>(
+            activationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getActivation(),
                     getParentForChildren(),
                     isClean());
@@ -50406,8 +50343,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimerOrBuilder> 
             getBehaviorFieldBuilder() {
           if (behaviorBuilder_ == null) {
-            behaviorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimerOrBuilder>(
+            behaviorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getBehavior(),
                     getParentForChildren(),
                     isClean());
@@ -50526,8 +50462,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimerOrBuilder> 
             getTimerNodeFieldBuilder() {
           if (timerNodeBuilder_ == null) {
-            timerNodeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimerOrBuilder>(
+            timerNodeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getTimerNode(),
                     getParentForChildren(),
                     isClean());
@@ -52234,8 +52169,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
             getActivationFieldBuilder() {
           if (activationBuilder_ == null) {
-            activationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder>(
+            activationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getActivation(),
                     getParentForChildren(),
                     isClean());
@@ -52354,8 +52288,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Trigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder> 
             getTriggerFieldBuilder() {
           if (triggerBuilder_ == null) {
-            triggerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Trigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder>(
+            triggerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getTrigger(),
                     getParentForChildren(),
                     isClean());
@@ -53895,8 +53828,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> 
             getTupleFieldBuilder() {
           if (tupleBuilder_ == null) {
-            tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder>(
+            tupleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getTuple(),
                     getParentForChildren(),
                     isClean());
@@ -54015,8 +53947,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Trigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder> 
             getTriggerFieldBuilder() {
           if (triggerBuilder_ == null) {
-            triggerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Trigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder>(
+            triggerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getTrigger(),
                     getParentForChildren(),
                     isClean());
@@ -54474,7 +54405,7 @@ public final class ProtobufMessages {
         java.util.Collections.emptyList();
       private void ensureTimerIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          timer_ = new java.util.ArrayList<org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer>(timer_);
+          timer_ = new java.util.ArrayList<>(timer_);
           bitField0_ |= 0x00000001;
          }
       }
@@ -54699,8 +54630,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer, org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerOrBuilder> 
           getTimerFieldBuilder() {
         if (timerBuilder_ == null) {
-          timerBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer, org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerOrBuilder>(
+          timerBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<>(
                   timer_,
                   ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
@@ -58946,8 +58876,7 @@ public final class ProtobufMessages {
             org.drools.serialization.protobuf.ProtobufMessages.Trigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder> 
             getTimerTriggerFieldBuilder() {
           if (timerTriggerBuilder_ == null) {
-            timerTriggerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                org.drools.serialization.protobuf.ProtobufMessages.Trigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder>(
+            timerTriggerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                     getTimerTrigger(),
                     getParentForChildren(),
                     isClean());
@@ -59734,8 +59663,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTriggerOrBuilder> 
           getCronFieldBuilder() {
         if (cronBuilder_ == null) {
-          cronBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTriggerOrBuilder>(
+          cronBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getCron(),
                   getParentForChildren(),
                   isClean());
@@ -59854,8 +59782,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTriggerOrBuilder> 
           getIntervalFieldBuilder() {
         if (intervalBuilder_ == null) {
-          intervalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTriggerOrBuilder>(
+          intervalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getInterval(),
                   getParentForChildren(),
                   isClean());
@@ -59974,8 +59901,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTriggerOrBuilder> 
           getPitFieldBuilder() {
         if (pitBuilder_ == null) {
-          pitBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTriggerOrBuilder>(
+          pitBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getPit(),
                   getParentForChildren(),
                   isClean());
@@ -60094,8 +60020,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTriggerOrBuilder> 
           getCmdtFieldBuilder() {
         if (cmdtBuilder_ == null) {
-          cmdtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTriggerOrBuilder>(
+          cmdtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
                   getCmdt(),
                   getParentForChildren(),
                   isClean());

@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -75,7 +75,7 @@ class CompileDrlTest {
     void compileDrlFromFile() {
         String basePath = UUID.randomUUID().toString();
         DrlFileSetResource toProcess = new DrlFileSetResource(drlFiles, basePath);
-        List<IndexFile> retrieved = compilationManager.processResource(toProcess, memoryCompilerClassLoader);
+        Collection<IndexFile> retrieved = compilationManager.processResource(memoryCompilerClassLoader, toProcess);
         assertThat(retrieved).isNotNull().hasSize(1);
     }
 
@@ -83,7 +83,7 @@ class CompileDrlTest {
     void compileDrlFromPackageDescr() {
         String basePath = UUID.randomUUID().toString();
         DrlPackageDescrSetResource toProcess = new DrlPackageDescrSetResource(packageDescrs, basePath);
-        List<IndexFile> retrieved = compilationManager.processResource(toProcess, memoryCompilerClassLoader);
+        Collection<IndexFile> retrieved = compilationManager.processResource(memoryCompilerClassLoader, toProcess);
         assertThat(retrieved).isNotNull().hasSize(1);
     }
 

@@ -110,7 +110,7 @@ public class MVELCompilationUnit
         }
     }
 
-    private static final Map<String, Class< ? >> primitivesMap    = new HashMap<String, Class< ? >>();
+    private static final Map<String, Class< ? >> primitivesMap    = new HashMap<>();
     static {
         primitivesMap.put( "int",
                            int.class );

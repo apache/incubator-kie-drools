@@ -18,7 +18,6 @@ package org.drools.core.phreak;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.TupleSets;
-import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.PathMemory;

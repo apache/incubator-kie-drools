@@ -19,7 +19,7 @@ import java.util.Stack;
 
 public class UpdateContext {
 
-    private Stack<BaseNode> visitedNodes = new Stack<BaseNode>();
+    private Stack<BaseNode> visitedNodes = new Stack<>();
 
     public void startVisitNode(BaseNode baseNode) {
         visitedNodes.push(baseNode);

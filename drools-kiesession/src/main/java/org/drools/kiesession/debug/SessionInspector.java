@@ -44,7 +44,7 @@ public class SessionInspector {
 
     // default initializer
     {
-        this.visitors = new HashMap<Short, NetworkNodeVisitor>();
+        this.visitors = new HashMap<>();
 
         // terminal nodes
         this.visitors.put( NodeTypeEnums.RuleTerminalNode,
@@ -98,7 +98,7 @@ public class SessionInspector {
 
         info.setSession( session );
 
-        Stack<NetworkNode> nodeStack = new Stack<NetworkNode>();
+        Stack<NetworkNode> nodeStack = new Stack<>();
         gatherNodeInfo( session.getKnowledgeBase().getRete(),
                         nodeStack,
                         info );

@@ -93,7 +93,7 @@ public class XmlBifParser {
 
         BayesNetwork graph = new BayesNetwork(name, packageName);
 
-        Map<String, GraphNode<BayesVariable>> map = new HashMap<String, GraphNode<BayesVariable>>();
+        Map<String, GraphNode<BayesVariable>> map = new HashMap<>();
         for (Definition def : bif.getNetwork().getDefinitions()) {
             GraphNode<BayesVariable> node = graph.addNode();
             BayesVariable var = buildVariable(def, bif.getNetwork(), node.getId());

@@ -115,7 +115,7 @@ public abstract class AbstractXStreamConverter implements Converter {
     }
 
     protected List<String> readList(HierarchicalStreamReader reader) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             list.add(reader.getValue());
@@ -129,7 +129,7 @@ public abstract class AbstractXStreamConverter implements Converter {
     }
 
     protected <T> List<T> readObjectList(HierarchicalStreamReader reader, UnmarshallingContext context, Class<? extends T> clazz) {
-        List<T> list = new ArrayList<T>();
+        List<T> list = new ArrayList<>();
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             list.add((T) context.convertAnother(reader.getValue(), clazz));
@@ -143,7 +143,7 @@ public abstract class AbstractXStreamConverter implements Converter {
     }
 
     protected Map<String, String> readMap(HierarchicalStreamReader reader, UnmarshallingContext context, String key, String value) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             map.put(reader.getAttribute(key), reader.getAttribute(value));

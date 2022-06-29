@@ -32,7 +32,7 @@ public class ExternalizableLinkedHashMap<K extends Comparable,T> extends LinkedH
 
     public void writeExternal( ObjectOutput out ) throws IOException {
         out.writeInt( this.size() );
-        List<K> keys = new ArrayList<K>( this.keySet() );
+        List<K> keys = new ArrayList<>( this.keySet() );
         Collections.sort( keys );
         for ( K k : keys ) {
             out.writeObject( k );

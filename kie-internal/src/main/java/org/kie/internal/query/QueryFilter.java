@@ -40,7 +40,7 @@ public class QueryFilter extends QueryContext {
 
     @XmlElement
     @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
-    private Map<String, Object> params = new HashMap<String, Object>();
+    private Map<String, Object> params = new HashMap<>();
 
     public QueryFilter() {
         // default constructor for JAXB

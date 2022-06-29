@@ -41,7 +41,7 @@ public class Rule
     private final Actions actions = new Actions();
     private final Conditions conditions = new Conditions();
     private final UUIDKey uuidKey;
-    private final Map<String, RuleAttribute> ruleAttributes = new HashMap<String, RuleAttribute>();
+    private final Map<String, RuleAttribute> ruleAttributes = new HashMap<>();
     private UpdatableKey<Rule> indexKey;
     private ActivationTime activationTime = null;
 

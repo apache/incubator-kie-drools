@@ -47,7 +47,7 @@ public class Cell extends SetOfNine {
         this.cellRow = row;
         this.cellCol = col;
         this.cellSqr = sqr;
-        this.exCells = new HashSet<Cell>();
+        this.exCells = new HashSet<>();
         this.exCells.addAll(this.cellRow.getCells());
         this.exCells.addAll(this.cellCol.getCells());
         this.exCells.addAll(this.cellSqr.getCells());

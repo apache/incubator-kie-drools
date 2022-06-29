@@ -125,7 +125,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
 
     private Set<String> findResourcesWithMessages( KnowledgeBuilder kBuilder) {
         if ( kBuilder.hasResults( getSeverities() ) ) {
-            Set<String> resourcesWithMessages = new HashSet<String>();
+            Set<String> resourcesWithMessages = new HashSet<>();
             for ( KnowledgeBuilderResult result : kBuilder.getResults( getSeverities() ) ) {
                 resourcesWithMessages.add(result.getResource().getSourcePath());
             }

@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,10 +60,11 @@ class RuntimeDrlTest {
     @SuppressWarnings("raw")
     void evaluateWithKieSessionLocalStaticCompilation() {
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(basePath, "drl"), "");
-                Optional<EfestoOutput> darOutput = runtimeManager.evaluateInput(toEvaluate, memoryCompilerClassLoader);
-        assertThat(darOutput).isNotNull().isPresent();
-        assertThat(darOutput.get()).isInstanceOf(EfestoOutputDrlKieSessionLocal.class);
-        EfestoOutputDrlKieSessionLocal retrieved = (EfestoOutputDrlKieSessionLocal) darOutput.get();
+        Collection<EfestoOutput> darOutput = runtimeManager.evaluateInput(memoryCompilerClassLoader, toEvaluate);
+        assertThat(darOutput).isNotNull().hasSize(1);
+        EfestoOutput retrievedRaw = darOutput.iterator().next();
+        assertThat(retrievedRaw).isInstanceOf(EfestoOutputDrlKieSessionLocal.class);
+        EfestoOutputDrlKieSessionLocal retrieved = (EfestoOutputDrlKieSessionLocal) retrievedRaw;
         assertThat(retrieved.getOutputData()).isNotNull().isInstanceOf(KieSession.class);
     }
 
@@ -72,18 +73,19 @@ class RuntimeDrlTest {
     void evaluateWithKieSessionLocalCompilationOnTheFly() throws IOException {
         String onTheFlyPath = "OnTheFlyPath";
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(onTheFlyPath, "drl"), "");
-        Optional<EfestoOutput> darOutput = runtimeManager.evaluateInput(toEvaluate, memoryCompilerClassLoader);
-        assertThat(darOutput).isNotNull().isNotPresent();
+        Collection<EfestoOutput> darOutput = runtimeManager.evaluateInput(memoryCompilerClassLoader, toEvaluate);
+        assertThat(darOutput).isNotNull().isEmpty();
         Set<File> files = Files.walk(Paths.get("src/test/resources"))
                 .map(Path::toFile)
                 .filter(File::isFile)
                 .collect(Collectors.toSet());
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, onTheFlyPath);
-        compilationManager.processResource(toProcess, memoryCompilerClassLoader);
-        darOutput = runtimeManager.evaluateInput(toEvaluate, memoryCompilerClassLoader);
-        assertThat(darOutput).isNotNull().isPresent();
-        assertThat(darOutput.get()).isInstanceOf(EfestoOutputDrlKieSessionLocal.class);
-        EfestoOutputDrlKieSessionLocal retrieved = (EfestoOutputDrlKieSessionLocal) darOutput.get();
+        compilationManager.processResource(memoryCompilerClassLoader, toProcess);
+        darOutput = runtimeManager.evaluateInput(memoryCompilerClassLoader, toEvaluate);
+        assertThat(darOutput).isNotNull().hasSize(1);
+        EfestoOutput retrievedRaw = darOutput.iterator().next();
+        assertThat(retrievedRaw).isInstanceOf(EfestoOutputDrlKieSessionLocal.class);
+        EfestoOutputDrlKieSessionLocal retrieved = (EfestoOutputDrlKieSessionLocal) retrievedRaw;
         assertThat(retrieved.getOutputData()).isNotNull().isInstanceOf(KieSession.class);
     }
 

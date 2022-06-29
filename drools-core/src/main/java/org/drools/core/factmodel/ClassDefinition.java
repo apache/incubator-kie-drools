@@ -52,7 +52,7 @@ public class ClassDefinition
     private boolean                      abstrakt       = false;
     private Map<String, Object>          metaData;
 
-    protected LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
+    protected LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<>();
 
     private Map<String, AnnotationDefinition> annotations;
 
@@ -257,7 +257,7 @@ public class ClassDefinition
     }
 
     public List<FactField> getFields() {
-        return new ArrayList<FactField>( fields.values() );
+        return new ArrayList<>( fields.values() );
     }
 
     public Object get(Object bean,
@@ -279,7 +279,7 @@ public class ClassDefinition
     }
 
     public Map<String, Object> getAsMap(Object bean) {
-        Map<String, Object> m = new HashMap<String, Object>( fields.size() );
+        Map<String, Object> m = new HashMap<>( fields.size() );
         for (Map.Entry<String, FieldDefinition> ent : this.fields.entrySet()) {
             Object val = ent.getValue().getFieldAccessor().getValue(bean);
             m.put(ent.getKey(),
@@ -299,7 +299,7 @@ public class ClassDefinition
 
     public void addAnnotation(AnnotationDefinition annotationDefinition) {
         if (this.annotations == null) {
-            this.annotations = new HashMap<String, AnnotationDefinition>();
+            this.annotations = new HashMap<>();
         }
         this.annotations.put( annotationDefinition.getName(), annotationDefinition );
     }
@@ -326,14 +326,14 @@ public class ClassDefinition
 
     public void addMetaData( String key, Object value ) {
         if ( this.metaData == null ) {
-            metaData = new HashMap<String,Object>();
+            metaData = new HashMap<>();
         }
         metaData.put( key, value );
     }
 
     public void addModifiedPropsByMethod(Method method, List<String> props) {
         if (modifiedPropsByMethod == null) {
-            modifiedPropsByMethod = new HashMap<String, List<String>>();
+            modifiedPropsByMethod = new HashMap<>();
         }
         String methodName = modifiedPropsByMethodKey(method);
         modifiedPropsByMethod.put(methodName, props);

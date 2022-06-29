@@ -151,7 +151,7 @@ public class OverlapsEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, OverlapsEvaluator>();
+            this.cache = new HashMap<>();
         }
         String key = isNegated + ":" + parameterText;
         OverlapsEvaluator eval = this.cache.get( key );

@@ -200,7 +200,7 @@ public class ClassPathResource extends BaseResource implements InternalResource,
             if ( "file".equals( url.getProtocol() ) ) {
                 File dir = new File( StringUtils.toURI( url.toString() ).getSchemeSpecificPart() );
 
-                List<Resource> resources = new ArrayList<Resource>();
+                List<Resource> resources = new ArrayList<>();
 
                 for ( File file : dir.listFiles() ) {
                     resources.add( new FileSystemResource( file ) );

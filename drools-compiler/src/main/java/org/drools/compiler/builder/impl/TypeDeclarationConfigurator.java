@@ -17,7 +17,6 @@ package org.drools.compiler.builder.impl;
 
 import java.util.Map;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.Dialect;

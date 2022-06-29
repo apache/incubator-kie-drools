@@ -23,7 +23,7 @@ import org.kie.api.builder.model.QualifierModel;
 public class QualifierModelImpl implements QualifierModel {
     private String type;
     private String value;
-    private Map<String, String> arguments = new HashMap<String, String>();
+    private Map<String, String> arguments = new HashMap<>();
 
     public QualifierModelImpl() { }
 

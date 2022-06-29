@@ -102,7 +102,7 @@ public abstract class WorkingMemoryLogger
     ProcessEventListener,
     KieBaseEventListener {
 
-    private List<ILogEventFilter>    filters = new ArrayList<ILogEventFilter>();
+    private List<ILogEventFilter>    filters = new ArrayList<>();
 
     public WorkingMemoryLogger() {
     }

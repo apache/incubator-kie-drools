@@ -48,7 +48,7 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends 
      * {@inheritDoc}
      */
     public PatternDescrBuilder<AccumulateDescrBuilder<P>> pattern( String type ) {
-        PatternDescrBuilder<AccumulateDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<AccumulateDescrBuilder<P>>( this, type );
+        PatternDescrBuilder<AccumulateDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<>( this, type );
         descr.setInputPattern( pattern.getDescr() );
         return pattern;
     }
@@ -57,13 +57,13 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends 
      * {@inheritDoc}
      */
     public PatternDescrBuilder<AccumulateDescrBuilder<P>> pattern() {
-        PatternDescrBuilder<AccumulateDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<AccumulateDescrBuilder<P>>( this );
+        PatternDescrBuilder<AccumulateDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<>( this );
         descr.setInputPattern( pattern.getDescr() );
         return pattern;
     }
 
     public CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> source() {
-        CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> and = new CEDescrBuilderImpl<AccumulateDescrBuilder<P>, AndDescr>( this, new AndDescr() );
+        CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> and = new CEDescrBuilderImpl<>( this, new AndDescr() );
         descr.setInput( and.getDescr() );
         return and;
     }

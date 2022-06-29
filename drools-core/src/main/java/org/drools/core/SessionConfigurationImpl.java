@@ -305,7 +305,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     public Map<String, WorkItemHandler> getWorkItemHandlers() {
 
         if ( this.workItemHandlers == null ) {
-            initWorkItemHandlers(new HashMap<String, Object>());
+            initWorkItemHandlers(new HashMap<>());
         }
         return this.workItemHandlers;
 
@@ -321,7 +321,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     
 
     private void initWorkItemHandlers(Map<String, Object> params) {
-        this.workItemHandlers = new HashMap<String, WorkItemHandler>();
+        this.workItemHandlers = new HashMap<>();
 
         // split on each space
         String locations[] = getPropertyValue( "drools.workItemHandlers", "" ).split( "\\s" );
