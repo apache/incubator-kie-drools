@@ -16,23 +16,27 @@
 
 package org.drools.verifier.incompatibility;
 
-import org.drools.core.base.RuleNameMatchesAgendaFilter;
-import org.drools.core.base.evaluators.Operator;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.drl.parser.impl.Operator;
-import org.drools.verifier.TestBaseOld;
-import org.drools.verifier.VerifierComponentMockFactory;
-import org.drools.verifier.components.*;
-import org.drools.verifier.report.components.Cause;
-import org.junit.Test;
-import org.kie.api.runtime.KieSession;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.base.RuleNameMatchesAgendaFilter;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.verifier.TestBaseOld;
+import org.drools.verifier.VerifierComponentMockFactory;
+import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.ObjectType;
+import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.PatternVariable;
+import org.drools.verifier.components.VariableRestriction;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.report.components.Cause;
+import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
