@@ -32,7 +32,7 @@ import org.kie.api.runtime.ClassObjectFilter;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubsumptantSubPatternsTest {
 
@@ -51,7 +51,7 @@ public class SubsumptantSubPatternsTest {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
         if (!noProblems) {
@@ -70,8 +70,7 @@ public class SubsumptantSubPatternsTest {
                 count++;
             }
         }
-        assertEquals(1,
-                     count);
+        assertThat(count).isEqualTo(1);
 
         verifier.dispose();
     }
@@ -96,10 +95,10 @@ public class SubsumptantSubPatternsTest {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
@@ -110,8 +109,7 @@ public class SubsumptantSubPatternsTest {
                 count++;
             }
         }
-        assertEquals(1,
-                     count);
+        assertThat(count).isEqualTo(1);
 
         verifier.dispose();
     }
@@ -136,10 +134,10 @@ public class SubsumptantSubPatternsTest {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
@@ -150,8 +148,7 @@ public class SubsumptantSubPatternsTest {
                 count++;
             }
         }
-        assertEquals(1,
-                     count);
+        assertThat(count).isEqualTo(1);
 
         verifier.dispose();
     }
@@ -177,10 +174,10 @@ public class SubsumptantSubPatternsTest {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
@@ -191,8 +188,7 @@ public class SubsumptantSubPatternsTest {
                 count++;
             }
         }
-        assertEquals(1,
-                     count);
+        assertThat(count).isEqualTo(1);
 
         verifier.dispose();
     }
@@ -217,10 +213,10 @@ public class SubsumptantSubPatternsTest {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
@@ -231,8 +227,7 @@ public class SubsumptantSubPatternsTest {
                 count++;
             }
         }
-        assertEquals(8,
-                     count);
+        assertThat(count).isEqualTo(8);
 
         verifier.dispose();
     }

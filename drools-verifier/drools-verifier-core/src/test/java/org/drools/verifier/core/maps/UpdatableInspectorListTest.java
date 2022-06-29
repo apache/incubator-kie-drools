@@ -27,7 +27,7 @@ import org.drools.verifier.core.maps.util.HasUUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class UpdatableInspectorListTest {
@@ -65,8 +65,7 @@ public class UpdatableInspectorListTest {
 
         list.update(updates);
 
-        assertEquals(1,
-                     list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -77,12 +76,10 @@ public class UpdatableInspectorListTest {
         updates.add(new Item());
 
         list.update(updates);
-        assertEquals(1,
-                     list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         list.update(updates);
-        assertEquals(1,
-                     list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -93,13 +90,11 @@ public class UpdatableInspectorListTest {
         updates.add(new Item());
 
         list.update(updates);
-        assertEquals(1,
-                     list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         updates.add(new Item());
         list.update(updates);
-        assertEquals(2,
-                     list.size());
+        assertThat(list.size()).isEqualTo(2);
     }
 
     @Test
@@ -112,13 +107,11 @@ public class UpdatableInspectorListTest {
         updates.add(removeMe);
 
         list.update(updates);
-        assertEquals(2,
-                     list.size());
+        assertThat(list.size()).isEqualTo(2);
 
         updates.remove(removeMe);
         list.update(updates);
-        assertEquals(1,
-                     list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     private class Item

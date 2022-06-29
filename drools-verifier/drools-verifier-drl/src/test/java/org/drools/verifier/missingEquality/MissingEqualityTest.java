@@ -16,6 +16,12 @@
 
 package org.drools.verifier.missingEquality;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.components.LiteralRestriction;
@@ -29,10 +35,8 @@ import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import java.util.*;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class MissingEqualityTest extends TestBaseOld {
 
@@ -66,8 +70,8 @@ public class MissingEqualityTest extends TestBaseOld {
             }
         }
 
-        assertTrue(ruleNames.remove("Missing equality 1"));
-        assertTrue(ruleNames.remove("Missing equality 2"));
+        assertThat(ruleNames.remove("Missing equality 1")).isTrue();
+        assertThat(ruleNames.remove("Missing equality 2")).isTrue();
 
         if (!ruleNames.isEmpty()) {
             for (String string : ruleNames) {
@@ -114,7 +118,7 @@ public class MissingEqualityTest extends TestBaseOld {
             }
         }
 
-        assertTrue(ruleNames.remove("Missing equality 5"));
+        assertThat(ruleNames.remove("Missing equality 5")).isTrue();
 
         if (!ruleNames.isEmpty()) {
             for (String string : ruleNames) {
@@ -161,7 +165,7 @@ public class MissingEqualityTest extends TestBaseOld {
             }
         }
 
-        assertTrue(ruleNames.remove("Missing equality 7"));
+        assertThat(ruleNames.remove("Missing equality 7")).isTrue();
 
         if (!ruleNames.isEmpty()) {
             for (String string : ruleNames) {
@@ -208,9 +212,9 @@ public class MissingEqualityTest extends TestBaseOld {
             }
         }
 
-        assertTrue(ruleNames.remove("Missing equality 3"));
-        assertTrue(ruleNames.remove("Missing equality 4"));
-        assertTrue(ruleNames.remove("Missing equality 6"));
+        assertThat(ruleNames.remove("Missing equality 3")).isTrue();
+        assertThat(ruleNames.remove("Missing equality 4")).isTrue();
+        assertThat(ruleNames.remove("Missing equality 6")).isTrue();
 
         if (!ruleNames.isEmpty()) {
             for (String string : ruleNames) {

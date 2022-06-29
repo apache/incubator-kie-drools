@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
@@ -61,8 +61,8 @@ public class BooleanConditionInspectorTest {
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
-        assertEquals(getAssertDescription(a, b, conflictExpected, "conflict"), conflictExpected, a.conflicts(b));
-        assertEquals(getAssertDescription(b, a, conflictExpected, "conflict"), conflictExpected, b.conflicts(a));
+        assertThat(a.conflicts(b)).as(getAssertDescription(a, b, conflictExpected, "conflict")).isEqualTo(conflictExpected);
+        assertThat(b.conflicts(a)).as(getAssertDescription(b, a, conflictExpected, "conflict")).isEqualTo(conflictExpected);
     }
 
     @Test
@@ -70,8 +70,8 @@ public class BooleanConditionInspectorTest {
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
-        assertEquals(getAssertDescription(a, b, !conflictExpected, "be redundant"), !conflictExpected, a.isRedundant(b));
-        assertEquals(getAssertDescription(b, a, !conflictExpected, "be redundant"), !conflictExpected, b.isRedundant(a));
+        assertThat(a.isRedundant(b)).as(getAssertDescription(a, b, !conflictExpected, "be redundant")).isEqualTo(!conflictExpected);
+        assertThat(b.isRedundant(a)).as(getAssertDescription(b, a, !conflictExpected, "be redundant")).isEqualTo(!conflictExpected);
     }
 
     @Test
@@ -79,8 +79,8 @@ public class BooleanConditionInspectorTest {
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
-        assertEquals(getAssertDescription(a, b, !conflictExpected, "overlap"), !conflictExpected, a.overlaps(b));
-        assertEquals(getAssertDescription(b, a, !conflictExpected, "overlap"), !conflictExpected, b.overlaps(a));
+        assertThat(a.overlaps(b)).as(getAssertDescription(a, b, !conflictExpected, "overlap")).isEqualTo(!conflictExpected);
+        assertThat(b.overlaps(a)).as(getAssertDescription(b, a, !conflictExpected, "overlap")).isEqualTo(!conflictExpected);
     }
 
     @Test
@@ -88,8 +88,8 @@ public class BooleanConditionInspectorTest {
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
-        assertEquals(getAssertDescription(a, b, !conflictExpected, "be subsuming"), !conflictExpected, a.subsumes(b));
-        assertEquals(getAssertDescription(b, a, !conflictExpected, "be subsuming"), !conflictExpected, b.subsumes(a));
+        assertThat(a.subsumes(b)).as(getAssertDescription(a, b, !conflictExpected, "be subsuming")).isEqualTo(!conflictExpected);
+        assertThat(b.subsumes(a)).as(getAssertDescription(b, a, !conflictExpected, "be subsuming")).isEqualTo(!conflictExpected);
     }
 
     @Parameters

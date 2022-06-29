@@ -27,7 +27,7 @@ import org.drools.verifier.core.maps.MultiMapFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelectExactMatcherTest {
 
@@ -60,19 +60,17 @@ public class SelectExactMatcherTest {
     public void testAll() throws Exception {
         final Collection<Item> all = select.all();
 
-        assertEquals( 1, all.size() );
+        assertThat(all.size()).isEqualTo(1);
     }
 
     @Test
     public void testFirst() throws Exception {
-        assertEquals( thirteen,
-                      select.first() );
+        assertThat(select.first()).isEqualTo(thirteen);
     }
 
     @Test
     public void testLast() throws Exception {
-        assertEquals( thirteen,
-                      select.last() );
+        assertThat(select.last()).isEqualTo(thirteen);
     }
 
     private class Item {

@@ -25,8 +25,7 @@ import org.drools.verifier.core.maps.util.HasKeys;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -66,26 +65,26 @@ public class RelationResolverSubsumptionTest {
     public void empty() throws
             Exception {
         relationResolver = new RelationResolver(new InspectorList(configuration));
-        assertTrue(relationResolver.subsumes(new InspectorList(configuration)));
+        assertThat(relationResolver.subsumes(new InspectorList(configuration))).isTrue();
     }
 
     @Test
     public void emptyListWithItemsSubsumesEmptyLists() throws
             Exception {
-        assertTrue(relationResolver.subsumes(new InspectorList(configuration)));
+        assertThat(relationResolver.subsumes(new InspectorList(configuration))).isTrue();
     }
 
     @Test
     public void recheck() throws
             Exception {
 
-        assertFalse(relationResolver.subsumes(b));
+        assertThat(relationResolver.subsumes(b)).isFalse();
 
         verify(firstItemInB).subsumes(any());
 
         reset(firstItemInB);
 
-        assertFalse(relationResolver.subsumes(b));
+        assertThat(relationResolver.subsumes(b)).isFalse();
 
         verify(firstItemInB,
                never()).subsumes(any());
@@ -95,14 +94,14 @@ public class RelationResolverSubsumptionTest {
     public void recheckWithUpdate() throws
             Exception {
 
-        assertFalse(relationResolver.subsumes(b));
+        assertThat(relationResolver.subsumes(b)).isFalse();
 
         reset(firstItemInB);
 
         // UPDATE
         blockingItem.setAge(15);
 
-        assertTrue(relationResolver.subsumes(b));
+        assertThat(relationResolver.subsumes(b)).isTrue();
 
         verify(firstItemInB).subsumes(any());
     }
@@ -111,14 +110,14 @@ public class RelationResolverSubsumptionTest {
     public void recheckConflictingItemRemoved() throws
             Exception {
 
-        assertFalse(relationResolver.subsumes(b));
+        assertThat(relationResolver.subsumes(b)).isFalse();
 
         reset(firstItemInB);
 
         // UPDATE
         b.remove(blockingItem);
 
-        assertTrue(relationResolver.subsumes(b));
+        assertThat(relationResolver.subsumes(b)).isTrue();
 
         verify(firstItemInB).subsumes(any());
     }
@@ -127,7 +126,7 @@ public class RelationResolverSubsumptionTest {
     public void recheckOtherListBecomesEmpty() throws
             Exception {
 
-        assertFalse(relationResolver.subsumes(b));
+        assertThat(relationResolver.subsumes(b)).isFalse();
 
         reset(firstItemInB,
               blockingItem);
@@ -135,7 +134,7 @@ public class RelationResolverSubsumptionTest {
         // UPDATE
         b.clear();
 
-        assertTrue(relationResolver.subsumes(b));
+        assertThat(relationResolver.subsumes(b)).isTrue();
 
         verify(firstItemInB,
                never()).subsumes(any());

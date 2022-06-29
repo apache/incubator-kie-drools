@@ -29,7 +29,7 @@ import org.drools.verifier.core.maps.util.HasKeys;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KeyTreeMapMergeTest {
 
@@ -83,10 +83,9 @@ public class KeyTreeMapMergeTest {
                                                           AGE_KEY_DEFINITION);
         empty.merge(otherKeyTreeMap);
 
-        assertEquals(1,
-                     empty.get(nameMatcher.getKeyDefinition())
-                             .allValues()
-                             .size());
+        assertThat(empty.get(nameMatcher.getKeyDefinition())
+                .allValues()
+                .size()).isEqualTo(1);
     }
 
     @Test
@@ -96,9 +95,8 @@ public class KeyTreeMapMergeTest {
 
         final MultiMap<Value, Person, List<Person>> multiMap = treeMap.get(nameMatcher.getKeyDefinition());
 
-        assertEquals(2,
-                     multiMap.allValues()
-                             .size());
+        assertThat(multiMap.allValues()
+                .size()).isEqualTo(2);
     }
 
     @Test
@@ -106,8 +104,7 @@ public class KeyTreeMapMergeTest {
             Exception {
         treeMap.merge(otherKeyTreeMap);
 
-        assertEquals(2,
-                     allPersons(treeMap).size());
+        assertThat(allPersons(treeMap).size()).isEqualTo(2);
     }
 
     @Test
@@ -118,21 +115,15 @@ public class KeyTreeMapMergeTest {
         thirdKeyTreeMap.merge(treeMap);
         thirdKeyTreeMap.merge(otherKeyTreeMap);
 
-        assertEquals(2,
-                     allPersons(thirdKeyTreeMap).size());
-        assertEquals(1,
-                     allPersons(treeMap).size());
-        assertEquals(1,
-                     allPersons(otherKeyTreeMap).size());
+        assertThat(allPersons(thirdKeyTreeMap).size()).isEqualTo(2);
+        assertThat(allPersons(treeMap).size()).isEqualTo(1);
+        assertThat(allPersons(otherKeyTreeMap).size()).isEqualTo(1);
 
         pat.uuidKey.retract();
 
-        assertEquals(1,
-                     allPersons(thirdKeyTreeMap).size());
-        assertEquals(0,
-                     allPersons(treeMap).size());
-        assertEquals(1,
-                     allPersons(otherKeyTreeMap).size());
+        assertThat(allPersons(thirdKeyTreeMap).size()).isEqualTo(1);
+        assertThat(allPersons(treeMap).size()).isEqualTo(0);
+        assertThat(allPersons(otherKeyTreeMap).size()).isEqualTo(1);
     }
 
     private Collection<Person> allPersons(final KeyTreeMap<Person> personKeyTreeMap) {

@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class NestedPatternsTest {
 
@@ -60,8 +59,7 @@ public class NestedPatternsTest {
                 patternCount++;
             }
         }
-        assertEquals(4,
-                patternCount);
+        assertThat(patternCount).isEqualTo(4);
 
         Collection<Pattern> patterns = data.getAll(VerifierComponentType.PATTERN);
 
@@ -70,8 +68,7 @@ public class NestedPatternsTest {
 //        }
 
         assertThat(patterns).isNotNull();
-        assertEquals(4,
-                patterns.size());
+        assertThat(patterns.size()).isEqualTo(4);
 
         Collection<Restriction> restrictions = data.getAll(VerifierComponentType.RESTRICTION);
 
@@ -80,8 +77,7 @@ public class NestedPatternsTest {
 //        }
 
         assertThat(restrictions).isNotNull();
-        assertEquals(3,
-                restrictions.size());
+        assertThat(restrictions.size()).isEqualTo(3);
 
     }
 }

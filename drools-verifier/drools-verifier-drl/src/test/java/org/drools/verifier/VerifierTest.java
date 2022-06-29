@@ -33,10 +33,7 @@ import org.junit.Test;
 import org.kie.api.io.ResourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class VerifierTest {
 
@@ -45,9 +42,8 @@ public class VerifierTest {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
-        assertFalse( vBuilder.hasErrors() );
-        assertEquals( 0,
-                      vBuilder.getErrors().size() );
+        assertThat(vBuilder.hasErrors()).isFalse();
+        assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
         Verifier verifier = vBuilder.newVerifier();
 
@@ -55,22 +51,18 @@ public class VerifierTest {
                                                               Verifier.class ),
                                        ResourceType.DRL );
 
-        assertFalse( verifier.hasErrors() );
-        assertEquals( 0,
-                      verifier.getErrors().size() );
+        assertThat(verifier.hasErrors()).isFalse();
+        assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis();
 
-        assertTrue( works );
+        assertThat(works).isTrue();
 
         VerifierReport result = verifier.getResult();
         assertThat(result).isNotNull();
-        assertEquals( 0,
-                      result.getBySeverity( Severity.ERROR ).size() );
-        assertEquals( 6,
-                      result.getBySeverity( Severity.WARNING ).size() );
-        assertEquals( 1,
-                      result.getBySeverity( Severity.NOTE ).size() );
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(6);
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(1);
 
     }
 
@@ -79,9 +71,8 @@ public class VerifierTest {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
-        assertFalse( vBuilder.hasErrors() );
-        assertEquals( 0,
-                      vBuilder.getErrors().size() );
+        assertThat(vBuilder.hasErrors()).isFalse();
+        assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
         Verifier verifier = vBuilder.newVerifier();
 
@@ -99,27 +90,24 @@ public class VerifierTest {
                                                               Verifier.class ),
                                        ResourceType.DRL );
 
-        assertFalse( verifier.hasErrors() );
-        assertEquals( 0,
-                      verifier.getErrors().size() );
+        assertThat(verifier.hasErrors()).isFalse();
+        assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis();
 
-        assertTrue( works );
+        assertThat(works).isTrue();
 
         VerifierReport result = verifier.getResult();
 
         Collection<ObjectType> objectTypes = result.getVerifierData().getAll( VerifierComponentType.OBJECT_TYPE );
 
         assertThat(objectTypes).isNotNull();
-        assertEquals( 3,
-                      objectTypes.size() );
+        assertThat(objectTypes.size()).isEqualTo(3);
 
         Collection<Field> fields = result.getVerifierData().getAll( VerifierComponentType.FIELD );
 
         assertThat(fields).isNotNull();
-        assertEquals( 10,
-                      fields.size() );
+        assertThat(fields.size()).isEqualTo(10);
 
     }
 
@@ -128,9 +116,8 @@ public class VerifierTest {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
-        assertFalse( vBuilder.hasErrors() );
-        assertEquals( 0,
-                      vBuilder.getErrors().size() );
+        assertThat(vBuilder.hasErrors()).isFalse();
+        assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
         Verifier verifier = vBuilder.newVerifier();
 
@@ -148,13 +135,12 @@ public class VerifierTest {
                                                               Verifier.class ),
                                        ResourceType.DRL );
 
-        assertFalse( verifier.hasErrors() );
-        assertEquals( 0,
-                      verifier.getErrors().size() );
+        assertThat(verifier.hasErrors()).isFalse();
+        assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis();
 
-        assertTrue( works );
+        assertThat(works).isTrue();
 
         VerifierReport result = verifier.getResult();
 
@@ -162,20 +148,17 @@ public class VerifierTest {
 
         for ( ObjectType objectType : objectTypes ) {
             if ( objectType.getName().equals( "VoiceCall" ) ) {
-                assertEquals( 4,
-                              objectType.getMetadata().keySet().size() );
+                assertThat(objectType.getMetadata().keySet().size()).isEqualTo(4);
             }
         }
 
         assertThat(objectTypes).isNotNull();
-        assertEquals( 4,
-                      objectTypes.size() );
+        assertThat(objectTypes.size()).isEqualTo(4);
 
         Collection<Field> fields = result.getVerifierData().getAll( VerifierComponentType.FIELD );
 
         assertThat(fields).isNotNull();
-        assertEquals( 11,
-                      fields.size() );
+        assertThat(fields.size()).isEqualTo(11);
 
     }
 
@@ -187,9 +170,8 @@ public class VerifierTest {
         VerifierConfiguration vConfiguration = vBuilder.newVerifierConfiguration();
 
         // Check that the builder works.
-        assertFalse( vBuilder.hasErrors() );
-        assertEquals( 0,
-                      vBuilder.getErrors().size() );
+        assertThat(vBuilder.hasErrors()).isFalse();
+        assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
         vConfiguration.getVerifyingResources().put( new ClassPathResource( "FindPatterns.drl",
                                                                            Verifier.class ),
@@ -201,9 +183,8 @@ public class VerifierTest {
                                                               Verifier.class ),
                                        ResourceType.DRL );
 
-        assertFalse( verifier.hasErrors() );
-        assertEquals( 0,
-                      verifier.getErrors().size() );
+        assertThat(verifier.hasErrors()).isFalse();
+        assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis();
 
@@ -213,20 +194,16 @@ public class VerifierTest {
             }
             fail( "Could not run verifier" );
         }
-        assertTrue( works );
+        assertThat(works).isTrue();
 
         VerifierReport result = verifier.getResult();
         assertThat(result).isNotNull();
-        assertEquals( 0,
-                      result.getBySeverity( Severity.ERROR ).size() );
-        assertEquals( 0,
-                      result.getBySeverity( Severity.WARNING ).size() );
-        assertEquals( 6,
-                      result.getBySeverity( Severity.NOTE ).size() );
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(6);
 
         for ( VerifierMessageBase m : result.getBySeverity( Severity.NOTE ) ) {
-            assertEquals( "This pattern was found.",
-                          m.getMessage() );
+            assertThat(m.getMessage()).isEqualTo("This pattern was found.");
         }
     }
 }

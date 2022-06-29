@@ -25,7 +25,7 @@ import org.drools.verifier.core.maps.MultiMapFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExactMatcherSearchTest {
 
@@ -49,7 +49,7 @@ public class ExactMatcherSearchTest {
                                                             null ),
                                            map );
         MultiMap<Value, Object, List<Object>> search1 = search.search();
-        assertEquals( "I am null", search1.get( new Value( null ) ).get( 0 ) );
+        assertThat(search1.get(new Value( null )).get(0)).isEqualTo("I am null");
 
     }
 
@@ -61,7 +61,7 @@ public class ExactMatcherSearchTest {
                                                              true ),
                                            map );
         MultiMap<Value, Object, List<Object>> search1 = search.search();
-        assertEquals( "hello", search1.get( new Value( "helloKey" ) ).get( 0 ) );
+        assertThat(search1.get(new Value( "helloKey" )).get(0)).isEqualTo("hello");
 
     }
 }

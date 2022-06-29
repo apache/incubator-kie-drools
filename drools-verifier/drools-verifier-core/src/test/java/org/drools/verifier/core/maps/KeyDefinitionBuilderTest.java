@@ -18,8 +18,7 @@ package org.drools.verifier.core.maps;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KeyDefinitionBuilderTest {
 
@@ -31,7 +30,7 @@ public class KeyDefinitionBuilderTest {
     @Test
     public void testDefaults() throws Exception {
         final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition().withId( "test" ).build();
-        assertFalse( keyDefinition.isUpdatable() );
+        assertThat(keyDefinition.isUpdatable()).isFalse();
     }
 
     @Test
@@ -40,7 +39,7 @@ public class KeyDefinitionBuilderTest {
                                                          .withId( "test" )
                                                          .updatable()
                                                          .build();
-        assertTrue( keyDefinition.isUpdatable() );
+        assertThat(keyDefinition.isUpdatable()).isTrue();
     }
 
 }

@@ -35,8 +35,7 @@ import org.junit.Before;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class TestBase {
 
@@ -77,6 +76,6 @@ public class TestBase {
     protected void assertContainsFields(int amount) {
         Collection<Field> allFields = verifierData.getAll(VerifierComponentType.FIELD);
 
-        assertEquals(amount, allFields.size());
+        assertThat(allFields.size()).isEqualTo(amount);
     }
 }

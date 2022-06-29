@@ -16,9 +16,9 @@
 
 package org.drools.verifier;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RangeCheckCleanTest {
 
@@ -26,7 +26,7 @@ public class RangeCheckCleanTest {
     public void testDummy() {
         // this is needed as eclipse will try to run this and produce a failure
         // if its not here.
-        assertTrue(true);
+        assertThat(true).isTrue();
     }
 //    public void testUselessIntegerGapsLesser() throws Exception {
 //        StatelessSession session = getStatelessSession(this.getClass()

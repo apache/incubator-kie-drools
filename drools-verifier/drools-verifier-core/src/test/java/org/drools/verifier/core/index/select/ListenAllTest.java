@@ -26,8 +26,7 @@ import org.drools.verifier.core.maps.MultiMapFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ListenAllTest {
 
@@ -54,7 +53,7 @@ public class ListenAllTest {
 
     @Test
     public void testEmpty() throws Exception {
-        assertNull( all );
+        assertThat(all).isNull();
     }
 
     @Test
@@ -62,6 +61,6 @@ public class ListenAllTest {
         map.put( new Value( "value" ),
                  "hello" );
 
-        assertTrue( all.contains( "hello" ) );
+        assertThat(all.contains("hello")).isTrue();
     }
 }

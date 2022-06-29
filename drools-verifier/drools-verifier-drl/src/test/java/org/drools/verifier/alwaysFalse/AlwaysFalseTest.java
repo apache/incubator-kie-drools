@@ -35,7 +35,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class AlwaysFalseTest extends TestBaseOld {
 
@@ -134,13 +135,10 @@ public class AlwaysFalseTest extends TestBaseOld {
             }
         }
 
-        assertEquals(1,
-                     result.getBySeverity(Severity.ERROR).size());
-        assertEquals(0,
-                     result.getBySeverity(Severity.WARNING).size());
-        assertEquals(0,
-                     result.getBySeverity(Severity.NOTE).size());
-        assertTrue(works);
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(1);
+        assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(0);
+        assertThat(works).isTrue();
     }
 
     /**
@@ -177,12 +175,9 @@ public class AlwaysFalseTest extends TestBaseOld {
         }
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Pattern that is always false"));
 
-        assertEquals(0,
-                     result.getBySeverity(Severity.ERROR).size());
-        assertEquals(0,
-                     result.getBySeverity(Severity.WARNING).size());
-        assertEquals(0,
-                     result.getBySeverity(Severity.NOTE).size());
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(0);
     }
 
     @Test
@@ -284,13 +279,10 @@ public class AlwaysFalseTest extends TestBaseOld {
             }
         }
 
-        assertEquals(1,
-                     result.getBySeverity(Severity.ERROR).size());
-        assertEquals(0,
-                     result.getBySeverity(Severity.WARNING).size());
-        assertEquals(0,
-                     result.getBySeverity(Severity.NOTE).size());
-        assertTrue(works);
+        assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(1);
+        assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(0);
+        assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(0);
+        assertThat(works).isTrue();
     }
 
     @Test
@@ -303,16 +295,15 @@ public class AlwaysFalseTest extends TestBaseOld {
                 getClass()),
                                       ResourceType.DRL);
 
-        assertFalse(verifier.hasErrors());
+        assertThat(verifier.hasErrors()).isFalse();
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue(noProblems);
+        assertThat(noProblems).isTrue();
 
         Collection<VerifierMessageBase> notes = verifier.getResult().getBySeverity(Severity.ERROR);
 
-        assertEquals(1,
-                     containsMessageType(notes,
-                                         MessageType.ALWAYS_FALSE));
+        assertThat(containsMessageType(notes,
+                MessageType.ALWAYS_FALSE)).isEqualTo(1);
 
         verifier.dispose();
     }
