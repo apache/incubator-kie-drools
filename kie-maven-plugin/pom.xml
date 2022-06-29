@@ -40,8 +40,8 @@
         <configuration>
           <skipInstallation>${skipITs}</skipInstallation>
           <skipInvocation>${skipITs}</skipInvocation>
-          <writeJunitReport>false</writeJunitReport>
-          <junitPackageName></junitPackageName>
+          <writeJunitReport>true</writeJunitReport>
+          <junitPackageName>org.kie.maven.plugin.it</junitPackageName>
           <setupIncludes>
             <setupInclude>kie-maven-plugin-test-kjar-setup/pom.xml</setupInclude>
           </setupIncludes>
