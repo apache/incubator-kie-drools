@@ -42,10 +42,10 @@ import org.drools.model.Query;
 import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
-import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.impl.ModelImpl;
 import org.drools.model.view.ViewItem;
+import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
@@ -91,8 +91,6 @@ import static org.drools.model.PatternDSL.query;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.model.PatternDSL.when;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatternDSLTest {
 
@@ -774,7 +772,7 @@ public class PatternDSLTest {
                 ksession.fireAllRules();
             }
 
-            assertThat(Arrays.asList(2, 1, 2, 1, 2, 1, 2, 1, 2, 1)).isEqualTo(list);
+            assertThat(list).containsExactly(2, 1, 2, 1, 2, 1, 2, 1, 2, 1);
         } finally {
             ksession.dispose();
         }
@@ -806,7 +804,7 @@ public class PatternDSLTest {
         Model model = new ModelImpl().addRule( rule1 ).addRule( rule2 ).addGlobal( var_list );
         KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "ok" );
@@ -815,7 +813,7 @@ public class PatternDSLTest {
         ksession.insert( 1 );
 
         ksession.fireAllRules();
-        assertThat(Arrays.asList("test", 3, "ok", 1)).isEqualTo(list);
+        assertThat(list).containsExactly("test", 3, "ok", 1);
     }
 
     @Test

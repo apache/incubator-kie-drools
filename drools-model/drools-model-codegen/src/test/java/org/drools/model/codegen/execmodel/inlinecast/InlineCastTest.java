@@ -141,9 +141,7 @@ public class InlineCastTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        ksession.fireAllRules();
-
-        assertThat(true).isTrue();
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -159,9 +157,7 @@ public class InlineCastTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        ksession.fireAllRules();
-
-        assertThat(true).isTrue();
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test

@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TypeObjectCoercionTest extends BaseModelTest {
 
@@ -82,13 +82,8 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         // String "ABC" > Integer 5
         ksession.insert(new ObjectHolder(Integer.valueOf(5)));
         ksession.insert(new StringHolder("ABC"));
-        try {
-            int fired = ksession.fireAllRules(); // standard-drl : ClassCastException: java.lang.Integer cannot be cast to java.lang.String
-            System.out.println("fired = " + fired);
-            fail("Should fail with Exception");
-        } catch (Exception e) {
-            assertThat(true).isTrue();
-        }
+        
+        assertThatThrownBy(()->ksession.fireAllRules()).isInstanceOf(RuntimeException.class); // standard-drl : ClassCastException: java.lang.Integer cannot be cast to java.lang.String
     }
 
     @Test
@@ -123,14 +118,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         // String "10" > Object
         ksession.insert(new ObjectHolder(new Object())); // not Comparable
         ksession.insert(new StringHolder("10"));
-        try {
             // in case of standard-drl, MathProcessor.doOperationNonNumeric() throws ClassCastException when the right operand is not comparable to the left operand
             // Caused by ClassCastException: class java.lang.Object cannot be cast to class java.lang.String
-            ksession.fireAllRules();
-            fail("Should fail with RuntimeException");
-        } catch (RuntimeException e) {
-            assertThat(true).isTrue();
-        }    }
+        assertThatThrownBy(()->ksession.fireAllRules()).isInstanceOf(RuntimeException.class);
+        
+    }
 
     private KieSession getKieSessionForJoinStringToObject() {
 
@@ -177,12 +169,8 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.insert(new StringHolder("ABC"));
         ksession.insert(new ObjectHolder(Integer.valueOf(5)));
 
-        try {
-            ksession.fireAllRules(); // standard-drl : Caused by ClassCastException: java.lang.String cannot be cast to java.lang.Integer
-            fail("Should fail with RuntimeException");
-        } catch (RuntimeException e) {
-            assertThat(true).isTrue();
-        }
+       
+        assertThatThrownBy(()->ksession.fireAllRules()).isInstanceOf(RuntimeException.class); // standard-drl : Caused by ClassCastException: java.lang.String cannot be cast to java.lang.Integer
 
     }
 
@@ -255,12 +243,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.insert(new IntegerHolder(Integer.valueOf(5)));
         ksession.insert(new ObjectHolder(new String("ABC")));
 
-        try {
-            ksession.fireAllRules(); // standard-drl : Caused by ClassCastException: java.lang.String cannot be cast to java.lang.Integer
-            fail("Should fail with RuntimeException");
-        } catch (RuntimeException e) {
-            assertThat(true).isTrue();
-        }
+    	assertThatThrownBy(()->ksession.fireAllRules()).isInstanceOf(RuntimeException.class);  // standard-drl : Caused by ClassCastException: java.lang.String cannot be cast to java.lang.Integer
     }
 
     @Test
@@ -319,12 +302,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.insert(new ObjectHolder(new String("ABC")));
         ksession.insert(new IntegerHolder(Integer.valueOf(10)));
 
-        try {
-            ksession.fireAllRules(); // standard-drl : Caused by ClassCastException: java.lang.String cannot be cast to java.lang.Integer
-            fail("Should fail with RuntimeException");
-        } catch (RuntimeException e) {
-            assertThat(true).isTrue();
-        }
+        assertThatThrownBy(()->ksession.fireAllRules()).isInstanceOf(RuntimeException.class); // standard-drl : Caused by ClassCastException: java.lang.String cannot be cast to java.lang.Integer
     }
 
     @Test
@@ -335,14 +313,9 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         // Integer 10 > Object
         ksession.insert(new ObjectHolder(new Object())); // not Comparable
         ksession.insert(new IntegerHolder(Integer.valueOf(10)));
-        try {
             // in case of standard-drl, MathProcessor.doOperationNonNumeric() throws ClassCastException when the right operand is not comparable to the left operand
             // Caused by ClassCastException: class java.lang.Object cannot be cast to class java.lang.Integer 
-            ksession.fireAllRules();
-            fail("Should fail with RuntimeException");
-        } catch (RuntimeException e) {
-            assertThat(true).isTrue();
-        }
+        assertThatThrownBy(()->ksession.fireAllRules()).isInstanceOf(RuntimeException.class); 
     }
 
     public static class ObjectHolder {

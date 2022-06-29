@@ -472,7 +472,7 @@ public class AccumulateTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         // The original DSL test returns a double while the exec model returns an integer
-        assertThat(49).isEqualTo(((Number) results.iterator().next().getValue()).intValue());
+        assertThat(((Number) results.iterator().next().getValue()).intValue()).isEqualTo(49);
     }
 
     @Test
@@ -498,7 +498,7 @@ public class AccumulateTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         // The original DSL test returns a double while the exec model returns an integer
-        assertThat(49).isEqualTo(((Number) results.iterator().next().getValue()).intValue());
+        assertThat(((Number) results.iterator().next().getValue()).intValue()).isEqualTo(49);
     }
 
     @Test

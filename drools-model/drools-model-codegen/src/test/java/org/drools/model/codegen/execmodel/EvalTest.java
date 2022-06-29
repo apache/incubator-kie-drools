@@ -389,7 +389,7 @@ public class EvalTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat("match").isEqualTo(results.iterator().next().getValue().toString());
+        assertThat(results.iterator().next().getValue().toString()).isEqualTo("match");
     }
 
     @Test
@@ -413,7 +413,7 @@ public class EvalTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat("match").isEqualTo(results.iterator().next().getValue().toString());
+        assertThat(results.iterator().next().getValue().toString()).isEqualTo("match");
 
     }
 

@@ -438,7 +438,7 @@ public class RuleAttributesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "ok" );
@@ -447,7 +447,7 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.insert( 1 );
 
         ksession.fireAllRules();
-        assertThat(Arrays.asList("test", 3, "ok", 1)).isEqualTo(list);
+        assertThat(list).isEqualTo(Arrays.asList("test", 3, "ok", 1));
     }
 
     public static final int CONST_SALIENCE = 1;
@@ -471,13 +471,13 @@ public class RuleAttributesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "ok" );
         ksession.insert( 1 );
 
         ksession.fireAllRules();
-        assertThat(Arrays.asList(1, "ok")).isEqualTo(list);
+        assertThat(list).isEqualTo(Arrays.asList(1, "ok"));
     }
 }

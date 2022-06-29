@@ -1080,7 +1080,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(48).isEqualTo(((Number) results.iterator().next().getValue()).intValue());
+        assertThat(((Number) results.iterator().next().getValue()).intValue()).isEqualTo(48);
     }
 
     @Test
@@ -1224,7 +1224,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat(44).isEqualTo(((Number) results.iterator().next().getValue()).intValue());
+        assertThat(((Number) results.iterator().next().getValue()).intValue()).isEqualTo(44);
     }
 
     @Test
@@ -1338,7 +1338,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat("match").isEqualTo(results.iterator().next().getValue().toString());
+        assertThat(results.iterator().next().getValue().toString()).isEqualTo("match");
     }
 
     @Test
@@ -1447,7 +1447,7 @@ public class CompilerTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertThat("type").isEqualTo(results.iterator().next().getValue().toString());
+        assertThat(results.iterator().next().getValue().toString()).isEqualTo("type");
     }
 
     @Test
@@ -1670,8 +1670,8 @@ public class CompilerTest extends BaseModelTest {
         kieSession.insert(john);
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
 
-        assertThat(1).isEqualTo(john.getAge());
-        assertThat("bread").isEqualTo(john.getLikes());
+        assertThat(john.getAge()).isEqualTo(1);
+        assertThat(john.getLikes()).isEqualTo("bread");
     }
 
     public static class Message {
@@ -3052,7 +3052,7 @@ public class CompilerTest extends BaseModelTest {
         me.setMoney(null);
         ksession.insert( me );
         int rulesFired = ksession.fireAllRules();
-        assertThat(1).isEqualTo(rulesFired);
+        assertThat(rulesFired).isEqualTo(1);
     }
 
     @Test
