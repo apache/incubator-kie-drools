@@ -27,11 +27,5 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-model-codegen</artifactId>
       </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-model-project-codegen</artifactId>
-      </dependency>
     </dependencies>
-
-
 </project>
