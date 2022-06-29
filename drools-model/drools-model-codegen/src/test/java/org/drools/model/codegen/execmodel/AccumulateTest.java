@@ -45,7 +45,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import org.apache.commons.math3.util.Pair;
-import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.model.functions.accumulate.GroupKey;
@@ -364,8 +363,8 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        Assertions.assertThat(results).contains(new Result(38.5));
-        Assertions.assertThat(results).contains(new Result(77));
+        assertThat(results).contains(new Result(38.5));
+        assertThat(results).contains(new Result(77));
     }
 
     @Test
@@ -392,8 +391,8 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        Assertions.assertThat(results).contains(new Result(38.5d));
-        Assertions.assertThat(results).contains(new Result(77));
+        assertThat(results).contains(new Result(38.5d));
+        assertThat(results).contains(new Result(77));
     }
 
     @Test
@@ -421,8 +420,8 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        Assertions.assertThat(results).contains(new Result(37));
-        Assertions.assertThat(results).contains(new Result(77));
+        assertThat(results).contains(new Result(37));
+        assertThat(results).contains(new Result(77));
     }
 
     @Test
@@ -447,7 +446,7 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        Assertions.assertThat(results).contains(new Result(43));
+        assertThat(results).contains(new Result(43));
     }
 
     @Test
@@ -582,7 +581,7 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        Assertions.assertThat(results).contains(new Result(1));
+        assertThat(results).contains(new Result(1));
     }
 
     public static class TestFunction implements AccumulateFunction<Serializable> {
@@ -4121,7 +4120,7 @@ public class AccumulateTest extends BaseModelTest {
 
             ksession.fireAllRules();
 
-            Assertions.assertThat(result).containsExactlyInAnyOrder(paul, george);
+            assertThat(result).containsExactlyInAnyOrder(paul, george);
         } catch (Throwable ex) {
             fail("Should not have thrown.", ex);
         }

@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.InternationalAddress;
 import org.drools.model.codegen.execmodel.domain.Person;
@@ -598,8 +597,8 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(mark);
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results).containsOnly(john);
-        Assertions.assertThat(results.iterator().next().getName()).isEqualTo("144");
+        assertThat(results).containsOnly(john);
+        assertThat(results.iterator().next().getName()).isEqualTo("144");
     }
 
     @Test
@@ -633,7 +632,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(mark);
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results).containsExactly(john);
+        assertThat(results).containsExactly(john);
     }
 
     @Test
@@ -667,7 +666,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(mark);
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results).containsExactly(john);
+        assertThat(results).containsExactly(john);
     }
 
     @Test
@@ -1225,7 +1224,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        Assertions.assertThat(results).containsOnly(leonardo);
+        assertThat(results).containsOnly(leonardo);
     }
 
 

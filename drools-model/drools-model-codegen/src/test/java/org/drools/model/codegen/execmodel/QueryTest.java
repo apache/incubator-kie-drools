@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.model.codegen.execmodel.domain.Person;
@@ -469,8 +468,8 @@ public class QueryTest extends BaseModelTest {
         ksession.insert("pull");
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         // when location is changed of what Peter likes, pull query should
@@ -487,8 +486,8 @@ public class QueryTest extends BaseModelTest {
         ksession.delete(tableHandle);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
         listener.clear();
 
         final Person paul = new Person("Paul");
@@ -496,8 +495,8 @@ public class QueryTest extends BaseModelTest {
         ksession.insert(paul);
         ksession.fireAllRules();
 
-        Assertions.assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        Assertions.assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
     }
 
     @Test

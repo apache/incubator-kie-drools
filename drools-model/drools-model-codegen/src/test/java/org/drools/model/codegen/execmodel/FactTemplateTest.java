@@ -17,7 +17,6 @@ package org.drools.model.codegen.execmodel;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -100,7 +99,7 @@ public class FactTemplateTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        Assertions.assertThat(results).contains(new Result("Found a 40 years old Mark"));
+        assertThat(results).contains(new Result("Found a 40 years old Mark"));
 
         mark.set( "age", 41 );
         ksession.update(fh, mark, "age");
@@ -242,7 +241,7 @@ public class FactTemplateTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        Assertions.assertThat(results).contains(new Result("Mario is older than Mark"));
+        assertThat(results).contains(new Result("Mario is older than Mark"));
     }
 
     private boolean hasFactTemplateObjectType( KieSession ksession, String name ) {
@@ -309,7 +308,7 @@ public class FactTemplateTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results.size()).isEqualTo(1);
-        Assertions.assertThat(results).contains(new Result("Found a 40 years old Mark"));
+        assertThat(results).contains(new Result("Found a 40 years old Mark"));
     }
 
     @Test

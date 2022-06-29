@@ -19,7 +19,6 @@ package org.drools.model.codegen.execmodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Child;
 import org.drools.model.codegen.execmodel.domain.Person;
@@ -84,7 +83,7 @@ public class InTest extends BaseModelTest {
         ksession.insert(ben);
         ksession.insert(gustav);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        Assertions.assertThat(results).containsExactly(ben);
+        assertThat(results).containsExactly(ben);
     }
 
     @Test

@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -549,6 +548,6 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(holder);
         ksession.fireAllRules();
 
-        Assertions.assertThat(result).containsExactly(new BigDecimal("0"));
+        assertThat(result).containsExactly(new BigDecimal("0"));
     }
 }
