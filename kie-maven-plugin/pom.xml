@@ -25,12 +25,14 @@
           <goalPrefix>kie</goalPrefix>
         </configuration>
       </plugin>
-       <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration>
           <skipInstallation>${skipITs}</skipInstallation>
           <skipInvocation>${skipITs}</skipInvocation>
+          <writeJunitReport>true</writeJunitReport>
+          <junitPackageName>org.kie.maven.plugin.it</junitPackageName>
           <setupIncludes>
             <setupInclude>kie-maven-plugin-test-kjar-setup/pom.xml</setupInclude>
           </setupIncludes>
