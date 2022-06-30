@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.quarkus.common.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.kie.kogito.quarkus.processes.devservices.DataIndexEventPublisher;
 import org.kie.kogito.quarkus.processes.devservices.DataIndexInMemoryContainer;
@@ -123,6 +124,8 @@ public class KogitoDevServicesProcessor {
 
         if (configuration.devServicesEnabled && isDockerWorking.getAsBoolean()) {
             additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DataIndexEventPublisher.class).build());
+            String port = ConfigProvider.getConfig().getOptionalValue("quarkus.http.port", String.class).orElse("8080");
+            systemProperties.produce(new SystemPropertyBuildItem("kogito.service.url", "http://localhost:" + port));
         }
 
         LOGGER.info("Dev Services for Kogito Data Index using image {}", configuration.imageName);
