@@ -291,7 +291,7 @@ pipeline {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO], "cc @*optaplanner-team*")
+        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
     }

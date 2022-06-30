@@ -120,7 +120,7 @@ pipeline {
 }
 
 void sendNotification() {
-    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO], "cc @*optaplanner-team*")
+    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO])
 }
 
 void checkoutOptaplannerRepo() {

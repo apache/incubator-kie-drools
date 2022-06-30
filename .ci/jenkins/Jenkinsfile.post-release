@@ -131,7 +131,7 @@ pipeline {
 }
 
 void sendNotification() {
-    mailer.sendMarkdownTestSummaryNotification('Post-release', "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO], 'cc @*optaplanner-team*')
+    mailer.sendMarkdownTestSummaryNotification('Post-release', "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO])
 }
 
 //////////////////////////////////////////////////////////////////////////////
