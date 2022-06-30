@@ -106,7 +106,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
         String factoryClassName = getSanitizedClassName(kiePMMLModel.getName()) + "Factory";
         Map<String, String> factorySourceMap = getFactorySourceCode(factoryClassName, packageName,
                                                                     expectedClassModelTypeMap);
-        return new KiePMMLFactoryModel(factoryClassName, packageName,
+        return new KiePMMLFactoryModel(kiePMMLModel.getFileName(), factoryClassName, packageName,
                                        factorySourceMap);
     }
 

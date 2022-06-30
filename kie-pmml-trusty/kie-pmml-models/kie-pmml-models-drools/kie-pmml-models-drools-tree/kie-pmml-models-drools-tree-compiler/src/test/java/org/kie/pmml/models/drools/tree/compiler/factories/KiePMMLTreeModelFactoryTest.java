@@ -54,7 +54,8 @@ import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getFieldTypeM
 
 public class KiePMMLTreeModelFactoryTest {
 
-    private static final String SOURCE_1 = "TreeSample.pmml";
+    private static final String SOURCE_1_NO_PREFIX = "TreeSample";
+    private static final String SOURCE_1 = SOURCE_1_NO_PREFIX + ".pmml";
     private static final String TARGET_FIELD = "whatIdo";
     private static PMML pmml;
     private static TreeModel treeModel;
@@ -119,8 +120,9 @@ public class KiePMMLTreeModelFactoryTest {
                                                         new HashMap<>());
         KiePMMLTreeModelFactory.setConstructor(droolsCompilationDTO, modelTemplate);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
-        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", treeModel.getModelName())));
-        superInvocationExpressionsMap.put(2, new NameExpr(String.format("\"%s\"", treeModel.getAlgorithmName())));
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", SOURCE_1_NO_PREFIX)));
+        superInvocationExpressionsMap.put(1, new NameExpr(String.format("\"%s\"", treeModel.getModelName())));
+        superInvocationExpressionsMap.put(3, new NameExpr(String.format("\"%s\"", treeModel.getAlgorithmName())));
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(treeModel.getMiningFunction().value());
         PMML_MODEL pmmlModel = PMML_MODEL.byName(treeModel.getClass().getSimpleName());
         Map<String, Expression> assignExpressionMap = new HashMap<>();

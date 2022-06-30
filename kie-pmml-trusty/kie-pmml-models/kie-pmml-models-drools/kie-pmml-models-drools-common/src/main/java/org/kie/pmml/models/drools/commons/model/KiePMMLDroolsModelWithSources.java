@@ -44,8 +44,8 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLModelWithSources imple
 
     private final EfestoRedirectOutputPMMLDrl redirectOutput;
 
-    public KiePMMLDroolsModelWithSources(final String modelName,
-                                         final String fileName,
+    public KiePMMLDroolsModelWithSources(final String fileName,
+                                         final String modelName,
                                          final String kmodulePackageName,
                                          final List<MiningField> miningFields,
                                          final List<OutputField> outputFields,
@@ -53,7 +53,7 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLModelWithSources imple
                                          final Map<String, String> sourcesMap,
                                          final String pkgUUID,
                                          final PackageDescr packageDescr) {
-        super(modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap, false);
+        super(fileName, modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap, false);
         this.pkgUUID = pkgUUID;
         this.packageDescr = packageDescr;
         String basePath = fileName + SLASH + modelName;

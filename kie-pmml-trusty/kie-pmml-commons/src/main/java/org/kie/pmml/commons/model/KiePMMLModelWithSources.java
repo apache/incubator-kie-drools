@@ -38,14 +38,15 @@ public class KiePMMLModelWithSources extends KiePMMLModel implements HasSourcesM
     private final Map<String, String> sourcesMap;
     private final boolean isInterpreted;
 
-    public KiePMMLModelWithSources(final String modelName,
+    public KiePMMLModelWithSources(final String fileName,
+                                   final String modelName,
                                    final String kmodulePackageName,
                                    final List<MiningField> miningFields,
                                    final List<OutputField> outputFields,
                                    final List<TargetField> targetFields,
                                    final Map<String, String> sourcesMap,
                                    final boolean isInterpreted) {
-        super(modelName, Collections.emptyList());
+        super(fileName, modelName, Collections.emptyList());
         this.kmodulePackageName = kmodulePackageName;
         this.miningFields = miningFields;
         this.outputFields = outputFields;

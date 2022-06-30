@@ -63,12 +63,12 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
     private KiePMMLComparisonMeasure comparisonMeasure;
     private KiePMMLMissingValueWeights missingValueWeights;
 
-    private KiePMMLClusteringModel(String modelName) {
-        super(modelName, Collections.emptyList());
+    private KiePMMLClusteringModel(String fileName, String modelName) {
+        super(fileName, modelName, Collections.emptyList());
     }
 
-    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
-        return new Builder(name, miningFunction);
+    public static Builder builder(String fileName, String name, MINING_FUNCTION miningFunction) {
+        return new Builder(fileName, name, miningFunction);
     }
 
     public ModelClass getModelClass() {
@@ -157,8 +157,8 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLClusteringModel> {
 
-        private Builder(String name, MINING_FUNCTION miningFunction) {
-            super("Clustering-", PMML_MODEL.CLUSTERING_MODEL, miningFunction, () -> new KiePMMLClusteringModel(name));
+        private Builder(String fileName, String name, MINING_FUNCTION miningFunction) {
+            super("Clustering-", PMML_MODEL.CLUSTERING_MODEL, miningFunction, () -> new KiePMMLClusteringModel(fileName, name));
         }
 
         public Builder withModelClass(ModelClass modelClass) {

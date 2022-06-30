@@ -32,8 +32,8 @@ public class KiePMMLFactoryModel extends KiePMMLModel implements HasSourcesMap {
     private final String kmodulePackageName;
     protected Map<String, String> sourcesMap;
 
-    public KiePMMLFactoryModel(String name, String kmodulePackageName, Map<String, String> sourcesMap) {
-        super(name, Collections.emptyList());
+    public KiePMMLFactoryModel(String fileName, String name, String kmodulePackageName, Map<String, String> sourcesMap) {
+        super(fileName, name, Collections.emptyList());
         this.sourcesMap = sourcesMap;
         this.kmodulePackageName = kmodulePackageName;
     }

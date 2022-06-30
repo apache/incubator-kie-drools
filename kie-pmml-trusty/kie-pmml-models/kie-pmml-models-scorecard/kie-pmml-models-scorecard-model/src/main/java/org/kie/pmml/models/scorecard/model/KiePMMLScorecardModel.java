@@ -40,14 +40,15 @@ public class KiePMMLScorecardModel extends KiePMMLModel {
     protected final REASONCODE_ALGORITHM reasonCodeAlgorithm ;
     protected final Number baselineScore;
 
-    public KiePMMLScorecardModel(final String modelName,
+    public KiePMMLScorecardModel(final String fileName,
+                                 final String modelName,
                                  final List<KiePMMLExtension> extensions,
                                  final KiePMMLCharacteristics characteristics,
                                  final Number initialScore,
                                  final boolean useReasonCodes,
                                  final REASONCODE_ALGORITHM reasonCodeAlgorithm,
                                  final Number baselineScore) {
-        super(modelName, extensions);
+        super(fileName, modelName, extensions);
         this.characteristics = characteristics;
         this.initialScore = initialScore;
         this.useReasonCodes = useReasonCodes;

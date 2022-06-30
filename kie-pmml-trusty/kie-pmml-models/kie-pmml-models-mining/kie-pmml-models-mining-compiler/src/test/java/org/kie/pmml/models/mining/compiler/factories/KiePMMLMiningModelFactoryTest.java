@@ -97,7 +97,8 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         KiePMMLMiningModelFactory.setConstructor(compilationDTO, modelTemplate);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
-        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", MINING_MODEL.getModelName())));
+        superInvocationExpressionsMap.put(0, new NameExpr("\"fileName\""));
+        superInvocationExpressionsMap.put(1, new NameExpr(String.format("\"%s\"", MINING_MODEL.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetFieldName));
         assignExpressionMap.put("miningFunction",

@@ -38,6 +38,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     private static final long serialVersionUID = 759750766311061701L;
 
+    private final String fileName;
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
@@ -49,8 +50,14 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     protected KiePMMLTransformationDictionary transformationDictionary;
     protected KiePMMLLocalTransformations localTransformations;
 
-    protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
+    protected KiePMMLModel(String fileName, String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
+        this.fileName = fileName;
+    }
+
+    @Override
+    public String getFileName() {
+        return fileName;
     }
 
     public PMML_MODEL getPmmlMODEL() {

@@ -29,15 +29,16 @@ import org.kie.pmml.commons.model.KiePMMLModel;
  */
 public class KiePMMLTestingModel extends KiePMMLModel {
 
+
     private static final long serialVersionUID = 9009765353822151536L;
     public static PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.TEST_MODEL;
 
-    public KiePMMLTestingModel(String name, List<KiePMMLExtension> extensions) {
-        super(name, extensions);
+    public KiePMMLTestingModel(String fileName, String name, List<KiePMMLExtension> extensions) {
+        super(fileName,  name, extensions);
     }
 
-    public static Builder builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
-        return new Builder(name, extensions, miningFunction);
+    public static Builder builder(String fileName, String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+        return new Builder(fileName, name, extensions, miningFunction);
     }
 
     @Override
@@ -48,8 +49,8 @@ public class KiePMMLTestingModel extends KiePMMLModel {
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLTestingModel> {
 
-        private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
-            super("TestingModel-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLTestingModel(name, extensions));
+        private Builder(String fileName, String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+            super("TestingModel-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLTestingModel(fileName, name, extensions));
         }
     }
 }

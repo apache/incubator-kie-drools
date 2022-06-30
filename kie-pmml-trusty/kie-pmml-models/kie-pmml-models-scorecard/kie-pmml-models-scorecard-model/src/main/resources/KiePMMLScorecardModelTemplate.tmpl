@@ -21,7 +21,7 @@ import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 public class KiePMMLScorecardModelTemplate extends KiePMMLScorecardModel {
 
     public KiePMMLScorecardModelTemplate() {
-        super(name, Collections.emptyList(), characteristics, initialScore, useReasonCodes, reasonCodeAlgorithm, baselineScore);
+        super(fileName, name, Collections.emptyList(), characteristics, initialScore, useReasonCodes, reasonCodeAlgorithm, baselineScore);
         targetField = targetField;
         pmmlMODEL = null;
         miningFunction = null;

@@ -75,7 +75,7 @@ public class KiePMMLRegressionModelFactory {
                             .orElseThrow(() -> new KiePMMLException("Failed to find expected " +
                                                                             KiePMMLClassificationTable.class.getSimpleName()));
 
-            return KiePMMLRegressionModel.builder(compilationDTO.getModelName(), compilationDTO.getMINING_FUNCTION())
+            return KiePMMLRegressionModel.builder(compilationDTO.getFileName(), compilationDTO.getModelName(), compilationDTO.getMINING_FUNCTION())
                     .withAbstractKiePMMLTable(nestedTable)
                     .withTargetField(compilationDTO.getTargetFieldName())
                     .withMiningFields(compilationDTO.getKieMiningFields())

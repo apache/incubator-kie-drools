@@ -71,6 +71,8 @@ import static org.mockito.Mockito.when;
 
 public class PMMLMiningModelEvaluatorTest {
 
+    private static final String FILE_NAME = "fileName";
+
     private final static List<MULTIPLE_MODEL_METHOD> RAW_OBJECT_METHODS = Arrays.asList(MAJORITY_VOTE,
                                                                                         SELECT_ALL,
                                                                                         SELECT_FIRST,
@@ -102,7 +104,7 @@ public class PMMLMiningModelEvaluatorTest {
         String prediction = "FIRST_VALUE";
         KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(),
                                                                               SELECT_FIRST).build();
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
                                                                            MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
@@ -130,7 +132,7 @@ public class PMMLMiningModelEvaluatorTest {
         String targetField = "TARGET";
         KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(),
                                                                               AVERAGE).build();
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
                                                                            MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
@@ -259,7 +261,7 @@ public class PMMLMiningModelEvaluatorTest {
     @Test
     void validateKiePMMLMiningModel() {
         String name = "NAME";
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
                                                                            MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField("TARGET")
                 .build();
@@ -270,7 +272,7 @@ public class PMMLMiningModelEvaluatorTest {
     void validateNoKiePMMLMiningModel() {
         assertThatExceptionOfType(KiePMMLModelException.class).isThrownBy(() -> {
             String name = "NAME";
-            KiePMMLModel kiePMMLModel = new KiePMMLTestingModel(name, Collections.emptyList());
+            KiePMMLModel kiePMMLModel = new KiePMMLTestingModel(FILE_NAME, name, Collections.emptyList());
             evaluator.validate(kiePMMLModel);
         });
     }
@@ -278,7 +280,7 @@ public class PMMLMiningModelEvaluatorTest {
     @Test
     void validateMiningTargetField() {
         String name = "NAME";
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
                                                                            MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField("TARGET")
                 .build();
@@ -289,7 +291,7 @@ public class PMMLMiningModelEvaluatorTest {
     void validateMiningEmptyTargetField() {
         assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
             String name = "NAME";
-            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
                                                                                MINING_FUNCTION.ASSOCIATION_RULES)
                     .withTargetField("     ")
                     .build();
@@ -301,7 +303,7 @@ public class PMMLMiningModelEvaluatorTest {
     void validateMiningNoTargetField() {
         assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
             String name = "NAME";
-            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
                                                                                MINING_FUNCTION.ASSOCIATION_RULES).build();
             evaluator.validateMining(kiePMMLMiningModel);
         });

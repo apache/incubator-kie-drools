@@ -39,6 +39,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLRuntime;
@@ -131,9 +132,9 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         String pmmlFileName = pmmlFilePath.contains("/") ? pmmlFilePath.substring(pmmlFilePath.lastIndexOf('/') + 1)
                 : pmmlFilePath;
 
-        PMMLRuntime toReturn = PMML_RUNTIME_FACTORY.getPMMLRuntimeFromClasspath(pmmlFileName);
+        PMMLRuntime toReturn = PMML_RUNTIME_FACTORY.getPMMLRuntimeFromClassloader(new KieMemoryCompiler.MemoryCompilerClassLoader(runtimeKB.getRootClassLoader()));
 
-        if (!toReturn.getPMMLModel(model).isPresent()) {
+        if (!toReturn.getPMMLModel(pmmlFileName, model).isPresent()) {
             File pmmlFile = getPMMLFile();
             toReturn = PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);
         }

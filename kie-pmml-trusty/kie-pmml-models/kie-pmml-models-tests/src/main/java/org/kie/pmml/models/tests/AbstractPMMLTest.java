@@ -29,14 +29,14 @@ import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
-import org.kie.pmml.evaluator.utils.PMMLRuntimeFactoryImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.efesto.common.api.utils.FileUtils.getFile;
+import static org.kie.pmml.evaluator.utils.SPIUtils.gePMMLRuntimeFactory;
 
 public class AbstractPMMLTest {
 
-    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = new PMMLRuntimeFactoryImpl();
+    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = gePMMLRuntimeFactory(false);
 
     protected static PMMLRuntime getPMMLRuntime(String fileName) {
         fileName += ".pmml";

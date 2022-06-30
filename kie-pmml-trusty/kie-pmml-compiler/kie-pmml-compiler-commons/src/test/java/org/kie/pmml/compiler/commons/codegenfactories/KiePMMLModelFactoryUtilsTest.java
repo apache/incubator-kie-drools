@@ -153,24 +153,28 @@ public class KiePMMLModelFactoryUtilsTest {
         assertThat(optSuperInvocation).isPresent();
         superInvocation = optSuperInvocation.get();
         assertThat(constructorDeclaration.getName().asString()).isEqualTo("Template"); // as in the original template
-        assertThat(superInvocation.toString()).isEqualTo("super(name, Collections.emptyList(), operator, second);"); // as in
+        assertThat(superInvocation.toString()).isEqualTo("super(fileName, name, Collections.emptyList(), operator, second);"); // as in
         // the original template
         assertThat(clonedCompilationUnit.getClassByName(TEMPLATE_CLASS_NAME)).isPresent();
     }
 
     @Test
-    void setConstructorSuperNameInvocation() {
+    void setKiePMMLConstructorSuperNameInvocation() {
         String generatedClassName = "generatedClassName";
+        String fileName = "fileName";
         String name = "newName";
-        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation(generatedClassName,
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setKiePMMLConstructorSuperNameInvocation(generatedClassName,
                                                                                                                   constructorDeclaration,
+                                                                                                                  fileName,
                                                                                                                   name);
-        commonVerifySuperInvocation(generatedClassName, name);
+        commonVerifySuperInvocation(generatedClassName, fileName, name);
     }
+
 
     @Test
     void setKiePMMLModelConstructor() {
         String generatedClassName = "generatedClassName";
+        String fileName = "fileName";
         String name = "newName";
         List<MiningField> miningFields = IntStream.range(0, 3)
                 .mapToObj(i -> ModelUtils.convertToKieMiningField(getRandomMiningField(),
@@ -185,11 +189,12 @@ public class KiePMMLModelFactoryUtilsTest {
                 .collect(Collectors.toList());
         org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor(generatedClassName,
                                                                                                            constructorDeclaration,
+                                                                                                           fileName,
                                                                                                            name,
                                                                                                            miningFields,
                                                                                                            outputFields,
                                                                                                            targetFields);
-        commonVerifySuperInvocation(generatedClassName, name);
+        commonVerifySuperInvocation(generatedClassName,  fileName, name);
         List<MethodCallExpr> retrieved = getMethodCallExprList(constructorDeclaration.getBody(), miningFields.size(),
                                                                "miningFields",
                                                                "add");
@@ -664,11 +669,12 @@ public class KiePMMLModelFactoryUtilsTest {
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
-    private void commonVerifySuperInvocation(String generatedClassName, String name) {
+    private void commonVerifySuperInvocation(String generatedClassName, String fileName, String name) {
         assertThat(constructorDeclaration.getName().asString()).isEqualTo(generatedClassName); // modified by invocation
-        String expected = String.format("super(\"%s\", Collections.emptyList(), operator, second);", name);
+        String expected = String.format("super(\"%s\", \"%s\", Collections.emptyList(), operator, second);", fileName, name);
         assertThat(superInvocation.toString()).isEqualTo(expected); // modified by invocation
     }
+
 
     /**
      * Return a <code>List&lt;MethodCallExpr&gt;</code> where every element <b>scope' name</b> is <code>scope</code>

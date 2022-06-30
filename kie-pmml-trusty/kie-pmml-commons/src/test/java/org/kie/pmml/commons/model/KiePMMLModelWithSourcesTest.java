@@ -30,6 +30,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 public class KiePMMLModelWithSourcesTest {
 
+    private static final String FILE_NAME = "fileName";
+
     private static final String MODEL_NAME = "MODEL_NAME";
     private static final String PACKAGE_NAME = "PACKAGE_NAME";
     private final static Map<String, String> SOURCES_MAP = new HashMap<>();
@@ -38,7 +40,8 @@ public class KiePMMLModelWithSourcesTest {
 
     @BeforeEach
     public void setup() {
-        kiePMMLModelWithSources = new KiePMMLModelWithSources(MODEL_NAME,
+        kiePMMLModelWithSources = new KiePMMLModelWithSources(FILE_NAME,
+                                                              MODEL_NAME,
                                                               PACKAGE_NAME,
                                                               Collections.emptyList(),
                                                               Collections.emptyList(),

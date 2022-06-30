@@ -226,10 +226,11 @@ public class DroolsModelProviderTest {
         final Scorecard model;
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
 
-        public KiePMMLDroolsModelTest(final List<Field<?>> fields,
+        public KiePMMLDroolsModelTest(final String fileName,
+                                      final List<Field<?>> fields,
                                       TransformationDictionary transformationDictionary, Scorecard model, Map<String,
                 KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-            super(PACKAGE_NAME, Collections.emptyList());
+            super(fileName, PACKAGE_NAME, Collections.emptyList());
             this.dataDictionary = new DataDictionary();
             fields.stream().filter(DataField.class::isInstance).map(DataField.class::cast).forEach(dataDictionary::addDataFields);
             this.transformationDictionary = transformationDictionary;

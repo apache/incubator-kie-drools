@@ -28,8 +28,8 @@ public abstract class KiePMMLTreeModel extends KiePMMLModel {
 
     protected Function<Map<String, Object>, KiePMMLNodeResult> nodeFunction;
 
-    protected KiePMMLTreeModel(String modelName) {
-        super(modelName, Collections.emptyList());
+    protected KiePMMLTreeModel(String fileName, String modelName) {
+        super(fileName, modelName, Collections.emptyList());
     }
 
     @Override

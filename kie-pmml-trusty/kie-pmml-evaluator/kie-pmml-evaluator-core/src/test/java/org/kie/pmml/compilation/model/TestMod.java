@@ -17,7 +17,7 @@ import java.util.List;
 public class TestMod {
 
     public static KiePMMLTestingModel getModel() {
-        KiePMMLTestingModel toReturn = KiePMMLTestingModel.builder("TestMod", Collections.emptyList(), org.kie.pmml.api.enums.MINING_FUNCTION.REGRESSION).withTargetField("fld4").withMiningFields(getCreatedMiningFields()).withOutputFields(getCreatedOutputFields()).withKiePMMLMiningFields(getCreatedKiePMMLMiningFields()).withKiePMMLOutputFields(getCreatedKiePMMLOutputFields()).withKiePMMLTargets(getCreatedKiePMMLTargets()).withKiePMMLTransformationDictionary(getCreatedTransformationDictionary()).withKiePMMLLocalTransformations(getCreatedLocalTransformations()).build();
+        KiePMMLTestingModel toReturn = KiePMMLTestingModel.builder("FileName", "TestMod", Collections.emptyList(), org.kie.pmml.api.enums.MINING_FUNCTION.REGRESSION).withTargetField("fld4").withMiningFields(getCreatedMiningFields()).withOutputFields(getCreatedOutputFields()).withKiePMMLMiningFields(getCreatedKiePMMLMiningFields()).withKiePMMLOutputFields(getCreatedKiePMMLOutputFields()).withKiePMMLTargets(getCreatedKiePMMLTargets()).withKiePMMLTransformationDictionary(getCreatedTransformationDictionary()).withKiePMMLLocalTransformations(getCreatedLocalTransformations()).build();
         return toReturn;
     }
 

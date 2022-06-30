@@ -45,7 +45,8 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
     default KiePMMLModelWithSources getKiePMMLModelWithSources(final CompilationDTO<T> compilationDTO) {
         final Map<String, String> sourcesMap = getSourcesMap(compilationDTO);
         boolean isInterpreted = IsInterpreted.class.isAssignableFrom(getKiePMMLModelClass());
-        return new KiePMMLModelWithSources(compilationDTO.getModelName(),
+        return new KiePMMLModelWithSources(compilationDTO.getFileName(),
+                                           compilationDTO.getModelName(),
                                            compilationDTO.getPackageName(),
                                            compilationDTO.getKieMiningFields(),
                                            compilationDTO.getKieOutputFields(),

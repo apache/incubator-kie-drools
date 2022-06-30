@@ -101,7 +101,7 @@ public class KiePMMLClusteringModelFactory {
             final KiePMMLComparisonMeasure comparisonMeasure = getKiePMMLComparisonMeasure(clusteringModel.getComparisonMeasure());
             final KiePMMLMissingValueWeights missingValueWeights = getKiePMMLMissingValueWeights(clusteringModel.getMissingValueWeights());
 
-            return KiePMMLClusteringModel.builder(compilationDTO.getModelName(), compilationDTO.getMINING_FUNCTION())
+            return KiePMMLClusteringModel.builder(compilationDTO.getFileName(), compilationDTO.getModelName(), compilationDTO.getMINING_FUNCTION())
                     .withModelClass(modelClass)
                     .withClusters(clusters)
                     .withClusteringFields(clusteringFields)

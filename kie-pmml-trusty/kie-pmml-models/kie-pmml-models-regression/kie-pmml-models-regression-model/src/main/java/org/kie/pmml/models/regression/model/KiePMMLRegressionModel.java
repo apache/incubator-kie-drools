@@ -32,12 +32,12 @@ public class KiePMMLRegressionModel extends KiePMMLModel implements IsInterprete
     private static final long serialVersionUID = -6870859552385880008L;
     private AbstractKiePMMLTable regressionTable;
 
-    private KiePMMLRegressionModel(String modelName) {
-        super(modelName, Collections.emptyList());
+    private KiePMMLRegressionModel(String fileName, String modelName) {
+        super(fileName, modelName, Collections.emptyList());
     }
 
-    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
-        return new Builder(name, miningFunction);
+    public static Builder builder(String fileName, String name, MINING_FUNCTION miningFunction) {
+        return new Builder(fileName, name, miningFunction);
     }
 
     @Override
@@ -52,8 +52,9 @@ public class KiePMMLRegressionModel extends KiePMMLModel implements IsInterprete
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLRegressionModel> {
 
-        private Builder(String name, MINING_FUNCTION miningFunction) {
-            super("Regression-", PMML_MODEL.REGRESSION_MODEL, miningFunction, () -> new KiePMMLRegressionModel(name));
+        private Builder(String fileName, String name, MINING_FUNCTION miningFunction) {
+            super("Regression-", PMML_MODEL.REGRESSION_MODEL, miningFunction,
+                  () -> new KiePMMLRegressionModel(fileName, name));
         }
 
         public Builder withAbstractKiePMMLTable(AbstractKiePMMLTable regressionTable) {

@@ -32,7 +32,7 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.testingutility.KiePMMLTestingModel.PMML_MODEL_TYPE;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setKiePMMLConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 
@@ -73,7 +73,7 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
         String modelName = compilationDTO.getModelName();
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        setConstructor(className, constructorDeclaration, modelName);
+        setConstructor(className, constructorDeclaration, compilationDTO.getFileName(), modelName);
         Map<String, String> toReturn = new HashMap<>();
         toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
         return toReturn;
@@ -81,7 +81,8 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
 
     private void setConstructor(final String generatedClassName,
                                 final ConstructorDeclaration constructorDeclaration,
+                                final String fileName,
                                 final String modelName) {
-        setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, modelName);
+        setKiePMMLConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, fileName, modelName);
     }
 }

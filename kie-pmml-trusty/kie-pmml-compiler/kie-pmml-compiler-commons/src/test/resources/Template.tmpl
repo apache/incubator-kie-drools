@@ -13,7 +13,7 @@ public class Template {
 
 
     public Template() {
-        super(name, Collections.emptyList(), operator, second);
+        super(fileName, name, Collections.emptyList(), operator, second);
         targetField = targetField;
         miningFunction = miningFunction;
         pmmlMODEL = null;
@@ -29,7 +29,7 @@ public class Template {
     }
 
     public static KiePMMLModel getModel() {
-        KiePMMLModel toReturn = KiePMMLModel.builder(name, miningFunction)
+        KiePMMLModel toReturn = KiePMMLModel.builder(fileName, name, miningFunction)
                                 .withTargetField(targetField)
                                 .withMiningFields(getCreatedMiningFields())
                                 .withOutputFields(getCreatedOutputFields())

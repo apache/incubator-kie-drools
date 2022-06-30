@@ -34,14 +34,15 @@ public class KiePMMLMiningModelWithSources extends KiePMMLModelWithSources imple
     private static final long serialVersionUID = -1375185422040275122L;
     protected List<KiePMMLModel> nestedModels;
 
-    public KiePMMLMiningModelWithSources(final String modelName,
+    public KiePMMLMiningModelWithSources(final String fileName,
+                                         final String modelName,
                                          final String kmodulePackageName,
                                          final List<MiningField> miningFields,
                                          final List<OutputField> outputFields,
                                          final List<TargetField> targetFields,
                                          final Map<String, String> sourcesMap,
                                          final List<KiePMMLModel> nestedModels) {
-        super(modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap, false);
+        super(fileName, modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap, false);
         this.nestedModels = Collections.unmodifiableList(nestedModels);
     }
 

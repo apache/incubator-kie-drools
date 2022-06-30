@@ -42,12 +42,12 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
     protected boolean scorable = true;
     protected KiePMMLSegmentation segmentation;
 
-    protected KiePMMLMiningModel(String name, List<KiePMMLExtension> extensions) {
-        super(name, extensions);
+    protected KiePMMLMiningModel(String fileName, String name, List<KiePMMLExtension> extensions) {
+        super(fileName,  name, extensions);
     }
 
-    public static Builder builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
-        return new Builder(name, extensions, miningFunction);
+    public static Builder builder(String fileName, String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+        return new Builder(fileName, name, extensions, miningFunction);
     }
 
     @Override
@@ -115,8 +115,8 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLMiningModel> {
 
-        private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
-            super("MiningModel-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLMiningModel(name, extensions));
+        private Builder(String fileName, String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+            super("MiningModel-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLMiningModel(fileName, name, extensions));
         }
 
         public Builder withAlgorithmName(String algorithmName) {

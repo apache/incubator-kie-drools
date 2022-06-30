@@ -108,6 +108,27 @@ public class KiePMMLModelFactoryUtils {
      * @param constructorDeclaration
      * @param name
      */
+    public static void setKiePMMLConstructorSuperNameInvocation(final String generatedClassName,
+                                                         final ConstructorDeclaration constructorDeclaration,
+                                                         final String fileName,
+                                                         final String name) {
+        constructorDeclaration.setName(generatedClassName);
+        final BlockStmt body = constructorDeclaration.getBody();
+        final ExplicitConstructorInvocationStmt superStatement =
+                CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
+                        .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "fileName", String.format("\"%s\"",
+                                                                                                                  fileName));
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "name", String.format("\"%s\"",
+                                                                                                              name));
+    }
+
+    /**
+     * Set the <b>name</b> parameter on <b>super</b> invocation
+     * @param generatedClassName
+     * @param constructorDeclaration
+     * @param name
+     */
     public static void setConstructorSuperNameInvocation(final String generatedClassName,
                                                          final ConstructorDeclaration constructorDeclaration,
                                                          final String name) {
@@ -131,11 +152,12 @@ public class KiePMMLModelFactoryUtils {
      */
     public static void setKiePMMLModelConstructor(final String generatedClassName,
                                                   final ConstructorDeclaration constructorDeclaration,
+                                                  final String fileName,
                                                   final String name,
                                                   final List<MiningField> miningFields,
                                                   final List<OutputField> outputFields,
                                                   final List<TargetField> targetFields) {
-        setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, name);
+        setKiePMMLConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, fileName, name);
         final BlockStmt body = constructorDeclaration.getBody();
         final List<ObjectCreationExpr> miningFieldsObjectCreations = getMiningFieldsObjectCreations(miningFields);
         addListPopulationByObjectCreationExpr(miningFieldsObjectCreations, body, "miningFields");
@@ -306,6 +328,7 @@ public class KiePMMLModelFactoryUtils {
                             final ClassOrInterfaceDeclaration modelTemplate) {
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
+        final String fileName = compilationDTO.getFileName();
         final String name = compilationDTO.getModelName();
         final String generatedClassName = compilationDTO.getSimpleClassName();
         final List<MiningField> miningFields = compilationDTO.getKieMiningFields();
@@ -331,6 +354,7 @@ public class KiePMMLModelFactoryUtils {
         }
         setKiePMMLModelConstructor(generatedClassName,
                                    constructorDeclaration,
+                                   fileName,
                                    name,
                                    miningFields,
                                    outputFields,
@@ -380,6 +404,7 @@ public class KiePMMLModelFactoryUtils {
                                                                       TO_RETURN, staticGetterBody)))
                 .asMethodCallExpr();
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
+        final String fileName = compilationDTO.getFileName();
         final String name = compilationDTO.getModelName();
         final Expression miningFunctionExpression;
         if (compilationDTO.getMINING_FUNCTION() != null) {
@@ -388,8 +413,9 @@ public class KiePMMLModelFactoryUtils {
         } else {
             miningFunctionExpression = new NullLiteralExpr();
         }
-        builder.setArgument(0, new StringLiteralExpr(name));
-        builder.setArgument(1, miningFunctionExpression);
+        builder.setArgument(0, new StringLiteralExpr(fileName));
+        builder.setArgument(1, new StringLiteralExpr(name));
+        builder.setArgument(2, miningFunctionExpression);
 
         String targetFieldName = compilationDTO.getTargetFieldName();
         final Expression targetFieldExpression;

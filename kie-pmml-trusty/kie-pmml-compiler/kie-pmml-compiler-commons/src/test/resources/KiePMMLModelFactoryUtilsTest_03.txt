@@ -1,5 +1,5 @@
 {
-    super("IrisTreeModel", Collections.emptyList(), operator, second);
+    super("TransformationsSample", "IrisTreeModel", Collections.emptyList(), operator, second);
     targetField = "Species";
     miningFunction = org.kie.pmml.api.enums.MINING_FUNCTION.CLASSIFICATION;
     pmmlMODEL = org.kie.pmml.api.enums.PMML_MODEL.TREE_MODEL;

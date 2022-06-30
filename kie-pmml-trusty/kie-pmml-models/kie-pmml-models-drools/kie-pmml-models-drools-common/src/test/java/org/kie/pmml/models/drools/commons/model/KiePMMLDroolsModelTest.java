@@ -33,6 +33,7 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 
 class KiePMMLDroolsModelTest {
 
+    private final static String FILE_NAME = "filename";
     private final static String MODEL_NAME = "MODELNAME";
     private final static String KMODULE_PACKAGE_NAME = getSanitizedPackageName(MODEL_NAME);
     private final static List<KiePMMLExtension> EXTENSIONS = new ArrayList<>();
@@ -40,7 +41,7 @@ class KiePMMLDroolsModelTest {
 
     @BeforeEach
     public void setup() {
-        kiePMMLDroolsModel = new KiePMMLDroolsModelFake(MODEL_NAME, KMODULE_PACKAGE_NAME, EXTENSIONS);
+        kiePMMLDroolsModel = new KiePMMLDroolsModelFake(FILE_NAME, MODEL_NAME, KMODULE_PACKAGE_NAME, EXTENSIONS);
     }
 
     @Test
@@ -53,16 +54,17 @@ class KiePMMLDroolsModelTest {
     @Test
     void evaluateNoKieBase() {
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
-            kiePMMLDroolsModel.evaluate(new HashMap<>(), new PMMLContextImpl(new PMMLRequestData(), "filename", null));
+            kiePMMLDroolsModel.evaluate(new HashMap<>(), new PMMLContextImpl(new PMMLRequestData(), FILE_NAME, null));
         });
     }
 
     private final class KiePMMLDroolsModelFake extends KiePMMLDroolsModel {
 
-        protected KiePMMLDroolsModelFake(String modelName,
+        protected KiePMMLDroolsModelFake(final String fileName,
+                                         String modelName,
                                          String kModulePackageName,
                                          List<KiePMMLExtension> extensions) {
-            super(modelName, extensions);
+            super(fileName, modelName, extensions);
             this.kModulePackageName = kModulePackageName;
         }
 

@@ -56,6 +56,6 @@ public abstract class AbstractKiePMMLMiningModelTest {
     }
 
     public static KiePMMLModel getKiePMMLModel(String modelName) {
-        return new KiePMMLTestingModel(modelName, Collections.emptyList());
+        return new KiePMMLTestingModel("fileName", modelName, Collections.emptyList());
     }
 }

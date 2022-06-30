@@ -90,8 +90,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, compilationDTO.getPackageName());
             String pkgUUID = getPkgUUID("gav", compilationDTO.getPackageName());
             packageDescr.setPreferredPkgUUID(pkgUUID);
-            KiePMMLDroolsModelWithSources toReturn = new KiePMMLDroolsModelWithSources(compilationDTO.getModelName(),
-                                                                                       compilationDTO.getFileName(),
+            KiePMMLDroolsModelWithSources toReturn = new KiePMMLDroolsModelWithSources(compilationDTO.getFileName(),
+                                                                                       compilationDTO.getModelName(),
                                                                                        compilationDTO.getPackageName(),
                                                                                        compilationDTO.getKieMiningFields(),
                                                                                        compilationDTO.getKieOutputFields(),

@@ -77,9 +77,10 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
      */
     protected Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
 
-    protected KiePMMLDroolsModel(final String modelName,
+    protected KiePMMLDroolsModel(final String fileName,
+                                 final String modelName,
                                  final List<KiePMMLExtension> extensions) {
-        super(modelName, extensions);
+        super(fileName, modelName, extensions);
     }
 
     public Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap() {

@@ -119,7 +119,8 @@ public class KiePMMLScorecardModelFactoryTest {
         KiePMMLScorecardModelFactory.setConstructor(droolsCompilationDTO,
                                                     modelTemplate);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
-        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", scorecardModel.getModelName())));
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", SOURCE_BASE)));
+        superInvocationExpressionsMap.put(1, new NameExpr(String.format("\"%s\"", scorecardModel.getModelName())));
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(scorecardModel.getMiningFunction().value());
         PMML_MODEL pmmlModel = PMML_MODEL.byName(scorecardModel.getClass().getSimpleName());
         Map<String, Expression> assignExpressionMap = new HashMap<>();

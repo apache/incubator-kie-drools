@@ -87,12 +87,12 @@ public class KiePMMLScorecardModelFactory {
         ClassOrInterfaceType characteristicsClass = parseClassOrInterfaceType(fullCharacteristicsClassName);
         ObjectCreationExpr characteristicsReference = new ObjectCreationExpr();
         characteristicsReference.setType(characteristicsClass);
-        superStatement.setArgument(2, characteristicsReference);
-        superStatement.setArgument(3, getExpressionForObject(compilationDTO.getInitialScore()));
-        superStatement.setArgument(4, getExpressionForObject(compilationDTO.isUseReasonCodes()));
+        superStatement.setArgument(3, characteristicsReference);
+        superStatement.setArgument(4, getExpressionForObject(compilationDTO.getInitialScore()));
+        superStatement.setArgument(5, getExpressionForObject(compilationDTO.isUseReasonCodes()));
         REASONCODE_ALGORITHM reasoncodeAlgorithm = compilationDTO.getREASONCODE_ALGORITHM();
         NameExpr reasonCodeExpr = new NameExpr(REASONCODE_ALGORITHM.class.getName() + "." + reasoncodeAlgorithm.name());
-        superStatement.setArgument(5, reasonCodeExpr);
-        superStatement.setArgument(6, getExpressionForObject(compilationDTO.getBaselineScore()));
+        superStatement.setArgument(6, reasonCodeExpr);
+        superStatement.setArgument(7, getExpressionForObject(compilationDTO.getBaselineScore()));
     }
 }

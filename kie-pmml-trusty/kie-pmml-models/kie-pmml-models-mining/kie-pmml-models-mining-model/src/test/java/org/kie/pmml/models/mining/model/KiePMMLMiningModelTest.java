@@ -31,6 +31,7 @@ import static org.kie.pmml.models.mining.model.AbstractKiePMMLMiningModelTest.ge
 
 public class KiePMMLMiningModelTest {
 
+    private static final String FILE_NAME = "fileName";
     private static final String MINING_MODEL_NAME = "MINING_MODEL_NAME";
     private static final MINING_FUNCTION MININGFUNCTION = MINING_FUNCTION.REGRESSION;
     private static KiePMMLMiningModel.Builder BUILDER;
@@ -38,7 +39,7 @@ public class KiePMMLMiningModelTest {
 
     @BeforeAll
     public static void setup() {
-        BUILDER = KiePMMLMiningModel.builder(MINING_MODEL_NAME, Collections.emptyList(), MININGFUNCTION);
+        BUILDER = KiePMMLMiningModel.builder(FILE_NAME, MINING_MODEL_NAME, Collections.emptyList(), MININGFUNCTION);
         assertThat(BUILDER).isNotNull();
         KIE_PMML_MINING_MODEL = BUILDER.build();
         assertThat(KIE_PMML_MINING_MODEL).isNotNull();

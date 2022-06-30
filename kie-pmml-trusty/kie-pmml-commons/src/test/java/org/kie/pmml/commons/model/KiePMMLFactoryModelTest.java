@@ -34,7 +34,7 @@ public class KiePMMLFactoryModelTest {
 
     @BeforeEach
     public void setup() {
-        kiePMMLFactoryModel = new KiePMMLFactoryModel("", "", new HashMap<>());
+        kiePMMLFactoryModel = new KiePMMLFactoryModel("", "", "", new HashMap<>());
     }
 
     @Test
