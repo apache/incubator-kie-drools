@@ -29,7 +29,7 @@
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
     <version.io.javaoperatorsdk>3.0.2</version.io.javaoperatorsdk>
     <version.io.quarkiverse.operatorsdk>4.0.0.RC</version.io.quarkiverse.operatorsdk>
-    <version.io.quarkus>2.10.0.Final</version.io.quarkus>
+    <version.io.quarkus>2.10.1.Final</version.io.quarkus>
     <version.io.strimzi>0.28.0</version.io.strimzi>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.9</version.org.apache.commons.text>
