@@ -377,42 +377,12 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                     + "), hoursSpentLimit (" + hoursSpentLimit
                     + ") or daysSpentLimit (" + daysSpentLimit + ").");
         }
-        long timeMillisSpentLimit = 0L;
-        if (millisecondsSpentLimit != null) {
-            if (millisecondsSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination millisecondsSpentLimit (" + millisecondsSpentLimit
-                        + ") cannot be negative.");
-            }
-            timeMillisSpentLimit += millisecondsSpentLimit;
-        }
-        if (secondsSpentLimit != null) {
-            if (secondsSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination secondsSpentLimit (" + secondsSpentLimit
-                        + ") cannot be negative.");
-            }
-            timeMillisSpentLimit += secondsSpentLimit * 1_000L;
-        }
-        if (minutesSpentLimit != null) {
-            if (minutesSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination minutesSpentLimit (" + minutesSpentLimit
-                        + ") cannot be negative.");
-            }
-            timeMillisSpentLimit += minutesSpentLimit * 60_000L;
-        }
-        if (hoursSpentLimit != null) {
-            if (hoursSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination hoursSpentLimit (" + hoursSpentLimit
-                        + ") cannot be negative.");
-            }
-            timeMillisSpentLimit += hoursSpentLimit * 3_600_000L;
-        }
-        if (daysSpentLimit != null) {
-            if (daysSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination daysSpentLimit (" + daysSpentLimit
-                        + ") cannot be negative.");
-            }
-            timeMillisSpentLimit += daysSpentLimit * 86_400_000L;
-        }
+        long timeMillisSpentLimit = 0L
+                + requireNonNegative(millisecondsSpentLimit, "millisecondsSpentLimit")
+                + requireNonNegative(secondsSpentLimit, "secondsSpentLimit") * 1_000L
+                + requireNonNegative(minutesSpentLimit, "minutesSpentLimit") * 60_000L
+                + requireNonNegative(hoursSpentLimit, "hoursSpentLimit") * 3_600_000L
+                + requireNonNegative(daysSpentLimit, "daysSpentLimit") * 86_400_000L;
         return timeMillisSpentLimit;
     }
 
@@ -456,43 +426,12 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                     + "), unimprovedMinutesSpentLimit (" + unimprovedMinutesSpentLimit
                     + "), unimprovedHoursSpentLimit (" + unimprovedHoursSpentLimit + ").");
         }
-        long unimprovedTimeMillisSpentLimit = 0L;
-        if (unimprovedMillisecondsSpentLimit != null) {
-            if (unimprovedMillisecondsSpentLimit < 0L) {
-                throw new IllegalArgumentException(
-                        "The termination unimprovedMillisecondsSpentLimit (" + unimprovedMillisecondsSpentLimit
-                                + ") cannot be negative.");
-            }
-            unimprovedTimeMillisSpentLimit += unimprovedMillisecondsSpentLimit;
-        }
-        if (unimprovedSecondsSpentLimit != null) {
-            if (unimprovedSecondsSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination unimprovedSecondsSpentLimit (" + unimprovedSecondsSpentLimit
-                        + ") cannot be negative.");
-            }
-            unimprovedTimeMillisSpentLimit += unimprovedSecondsSpentLimit * 1000L;
-        }
-        if (unimprovedMinutesSpentLimit != null) {
-            if (unimprovedMinutesSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination unimprovedMinutesSpentLimit (" + unimprovedMinutesSpentLimit
-                        + ") cannot be negative.");
-            }
-            unimprovedTimeMillisSpentLimit += unimprovedMinutesSpentLimit * 60000L;
-        }
-        if (unimprovedHoursSpentLimit != null) {
-            if (unimprovedHoursSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination unimprovedHoursSpentLimit (" + unimprovedHoursSpentLimit
-                        + ") cannot be negative.");
-            }
-            unimprovedTimeMillisSpentLimit += unimprovedHoursSpentLimit * 3600000L;
-        }
-        if (unimprovedDaysSpentLimit != null) {
-            if (unimprovedDaysSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination unimprovedDaysSpentLimit (" + unimprovedDaysSpentLimit
-                        + ") cannot be negative.");
-            }
-            unimprovedTimeMillisSpentLimit += unimprovedDaysSpentLimit * 86400000L;
-        }
+        long unimprovedTimeMillisSpentLimit = 0L
+                + requireNonNegative(unimprovedMillisecondsSpentLimit, "unimprovedMillisecondsSpentLimit")
+                + requireNonNegative(unimprovedSecondsSpentLimit, "unimprovedSecondsSpentLimit") * 1000L
+                + requireNonNegative(unimprovedMinutesSpentLimit, "unimprovedMinutesSpentLimit") * 60_000L
+                + requireNonNegative(unimprovedHoursSpentLimit, "unimprovedHoursSpentLimit") * 3_600_000L
+                + requireNonNegative(unimprovedDaysSpentLimit, "unimprovedDaysSpentLimit") * 86_400_000L;
         return unimprovedTimeMillisSpentLimit;
     }
 
@@ -504,18 +443,8 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     @XmlTransient
     public boolean isConfigured() {
         return terminationClass != null ||
-                spentLimit != null ||
-                millisecondsSpentLimit != null ||
-                secondsSpentLimit != null ||
-                minutesSpentLimit != null ||
-                hoursSpentLimit != null ||
-                daysSpentLimit != null ||
-                unimprovedSpentLimit != null ||
-                unimprovedMillisecondsSpentLimit != null ||
-                unimprovedSecondsSpentLimit != null ||
-                unimprovedMinutesSpentLimit != null ||
-                unimprovedHoursSpentLimit != null ||
-                unimprovedDaysSpentLimit != null ||
+                timeSpentLimitIsSet() ||
+                unimprovedTimeSpentLimitIsSet() ||
                 bestScoreLimit != null ||
                 bestScoreFeasible != null ||
                 stepCountLimit != null ||
@@ -541,34 +470,16 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     @Override
     public TerminationConfig inherit(TerminationConfig inheritedConfig) {
+        if (!timeSpentLimitIsSet()) {
+            inheritTimeSpentLimit(inheritedConfig);
+        }
+        if (!unimprovedTimeSpentLimitIsSet()) {
+            inheritUnimprovedTimeSpentLimit(inheritedConfig);
+        }
         terminationClass = ConfigUtils.inheritOverwritableProperty(terminationClass,
                 inheritedConfig.getTerminationClass());
         terminationCompositionStyle = ConfigUtils.inheritOverwritableProperty(terminationCompositionStyle,
                 inheritedConfig.getTerminationCompositionStyle());
-        spentLimit = ConfigUtils.inheritOverwritableProperty(spentLimit,
-                inheritedConfig.getSpentLimit());
-        millisecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(millisecondsSpentLimit,
-                inheritedConfig.getMillisecondsSpentLimit());
-        secondsSpentLimit = ConfigUtils.inheritOverwritableProperty(secondsSpentLimit,
-                inheritedConfig.getSecondsSpentLimit());
-        minutesSpentLimit = ConfigUtils.inheritOverwritableProperty(minutesSpentLimit,
-                inheritedConfig.getMinutesSpentLimit());
-        hoursSpentLimit = ConfigUtils.inheritOverwritableProperty(hoursSpentLimit,
-                inheritedConfig.getHoursSpentLimit());
-        daysSpentLimit = ConfigUtils.inheritOverwritableProperty(daysSpentLimit,
-                inheritedConfig.getDaysSpentLimit());
-        unimprovedSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedSpentLimit,
-                inheritedConfig.getUnimprovedSpentLimit());
-        unimprovedMillisecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedMillisecondsSpentLimit,
-                inheritedConfig.getUnimprovedMillisecondsSpentLimit());
-        unimprovedSecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedSecondsSpentLimit,
-                inheritedConfig.getUnimprovedSecondsSpentLimit());
-        unimprovedMinutesSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedMinutesSpentLimit,
-                inheritedConfig.getUnimprovedMinutesSpentLimit());
-        unimprovedHoursSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedHoursSpentLimit,
-                inheritedConfig.getUnimprovedHoursSpentLimit());
-        unimprovedDaysSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedDaysSpentLimit,
-                inheritedConfig.getUnimprovedDaysSpentLimit());
         unimprovedScoreDifferenceThreshold = ConfigUtils.inheritOverwritableProperty(unimprovedScoreDifferenceThreshold,
                 inheritedConfig.getUnimprovedScoreDifferenceThreshold());
         bestScoreLimit = ConfigUtils.inheritOverwritableProperty(bestScoreLimit,
@@ -597,6 +508,77 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         if (terminationConfigList != null) {
             terminationConfigList.forEach(tc -> tc.visitReferencedClasses(classVisitor));
         }
+    }
+
+    private TerminationConfig inheritTimeSpentLimit(TerminationConfig parent) {
+        spentLimit = ConfigUtils.inheritOverwritableProperty(spentLimit,
+                parent.getSpentLimit());
+        millisecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(millisecondsSpentLimit,
+                parent.getMillisecondsSpentLimit());
+        secondsSpentLimit = ConfigUtils.inheritOverwritableProperty(secondsSpentLimit,
+                parent.getSecondsSpentLimit());
+        minutesSpentLimit = ConfigUtils.inheritOverwritableProperty(minutesSpentLimit,
+                parent.getMinutesSpentLimit());
+        hoursSpentLimit = ConfigUtils.inheritOverwritableProperty(hoursSpentLimit,
+                parent.getHoursSpentLimit());
+        daysSpentLimit = ConfigUtils.inheritOverwritableProperty(daysSpentLimit,
+                parent.getDaysSpentLimit());
+        return this;
+    }
+
+    private TerminationConfig inheritUnimprovedTimeSpentLimit(TerminationConfig parent) {
+        unimprovedSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedSpentLimit,
+                parent.getUnimprovedSpentLimit());
+        unimprovedMillisecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedMillisecondsSpentLimit,
+                parent.getUnimprovedMillisecondsSpentLimit());
+        unimprovedSecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedSecondsSpentLimit,
+                parent.getUnimprovedSecondsSpentLimit());
+        unimprovedMinutesSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedMinutesSpentLimit,
+                parent.getUnimprovedMinutesSpentLimit());
+        unimprovedHoursSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedHoursSpentLimit,
+                parent.getUnimprovedHoursSpentLimit());
+        unimprovedDaysSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedDaysSpentLimit,
+                parent.getUnimprovedDaysSpentLimit());
+        return this;
+    }
+
+    /**
+     * Assert that the parameter is non-negative and return its value,
+     * converting {@code null} to 0.
+     * 
+     * @param param the parameter to test/convert
+     * @param name the name of the parameter, for use in the exception message
+     * @throws IllegalArgumentException iff param is negative
+     */
+    private Long requireNonNegative(Long param, String name) {
+        if (param == null) {
+            return 0L; // Makes adding a null param a NOP.
+        } else if (param < 0L) {
+            String msg = String.format("The termination %s (%d) cannot be negative.", name, param);
+            throw new IllegalArgumentException(msg);
+        } else {
+            return param;
+        }
+    }
+
+    /** Check whether any ...SpentLimit is non-null. */
+    private boolean timeSpentLimitIsSet() {
+        return getDaysSpentLimit() != null
+                || getHoursSpentLimit() != null
+                || getMinutesSpentLimit() != null
+                || getSecondsSpentLimit() != null
+                || getMillisecondsSpentLimit() != null
+                || getSpentLimit() != null;
+    }
+
+    /** Check whether any unimproved...SpentLimit is non-null. */
+    private boolean unimprovedTimeSpentLimitIsSet() {
+        return getUnimprovedDaysSpentLimit() != null
+                || getUnimprovedHoursSpentLimit() != null
+                || getUnimprovedMinutesSpentLimit() != null
+                || getUnimprovedSecondsSpentLimit() != null
+                || getUnimprovedMillisecondsSpentLimit() != null
+                || getUnimprovedSpentLimit() != null;
     }
 
 }
