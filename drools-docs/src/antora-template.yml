@@ -13,6 +13,6 @@ asciidoc:
     java-version: ${maven.compiler.release}
     maven-version: ${maven.min.version}
     quarkus-version: ${version.io.quarkus}
-start_page: rule-engine/index.adoc
+start_page: getting-started/index.adoc
 nav:
   - modules/ROOT/nav.adoc

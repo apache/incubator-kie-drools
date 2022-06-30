@@ -22,4 +22,3 @@
 
 :RULE_ENGINE: Drools rule engine
 :RULE_ENGINE_CAP: Drools rule engine
-:DECISION_ENGINE: Drools rule engine
