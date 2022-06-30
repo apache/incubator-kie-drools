@@ -384,7 +384,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         List<KogitoWorkItem> workItems = workItemHandler.getWorkItems();
 
         for (KogitoWorkItem workItem : workItems) {
-            String processInstanceId = ((KogitoWorkItemImpl) workItem).getProcessInstanceStringId();
+            String processInstanceId = workItem.getProcessInstanceStringId();
 
             KogitoProcessInstance processInstance = kruntime
                     .getProcessInstance(processInstanceId);

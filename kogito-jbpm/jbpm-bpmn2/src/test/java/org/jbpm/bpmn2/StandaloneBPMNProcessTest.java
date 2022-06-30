@@ -38,6 +38,7 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.util.ProcessCompletedCountDownProcessEventListener;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -309,7 +310,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     @Test
     @Timeout(10)
     public void testEventBasedSplit2() throws Exception {
-        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 2);
+        ProcessCompletedCountDownProcessEventListener countDownListener = new ProcessCompletedCountDownProcessEventListener(2);
         kruntime = createKogitoProcessRuntime("BPMN2-EventBasedSplit2.bpmn2");
 
         kruntime.getProcessEventManager().addEventListener(countDownListener);
@@ -318,26 +319,14 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         // Yes
         KogitoProcessInstance processInstance = kruntime.startProcess("com.sample.test");
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         kruntime.signalEvent("Yes", "YesValue", processInstance.getStringId());
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
 
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         // Timer
         processInstance = kruntime.startProcess("com.sample.test");
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         countDownListener.waitTillCompleted();
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
@@ -459,13 +448,16 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     @Timeout(10)
     public void testTimerBoundaryEvent() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
         kruntime = createKogitoProcessRuntime("BPMN2-TimerBoundaryEventDuration.bpmn2");
 
         kruntime.getProcessEventManager().addEventListener(countDownListener);
+        kruntime.getProcessEventManager().addEventListener(processEventListener);
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         KogitoProcessInstance processInstance = kruntime.startProcess("TimerBoundaryEvent");
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
+        processEventListener.waitTillCompleted();
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
@@ -473,13 +465,16 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     @Timeout(10)
     public void testTimerBoundaryEventInterrupting() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
         kruntime = createKogitoProcessRuntime("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
 
         kruntime.getProcessEventManager().addEventListener(countDownListener);
+        kruntime.getProcessEventManager().addEventListener(processEventListener);
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         KogitoProcessInstance processInstance = kruntime.startProcess("TimerBoundaryEvent");
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
+        processEventListener.waitTillCompleted();
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
@@ -555,15 +550,17 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     @Timeout(10)
     public void testIntermediateCatchEventTimer() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
+        ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
         kruntime = createKogitoProcessRuntime("BPMN2-IntermediateCatchEventTimerDuration.bpmn2");
 
         kruntime.getProcessEventManager().addEventListener(countDownListener);
+        kruntime.getProcessEventManager().addEventListener(processEventListener);
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         KogitoProcessInstance processInstance = kruntime.startProcess("IntermediateCatchEvent");
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         // now wait for 1 second for timer to trigger
         countDownListener.waitTillCompleted();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        processEventListener.waitTillCompleted();
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 

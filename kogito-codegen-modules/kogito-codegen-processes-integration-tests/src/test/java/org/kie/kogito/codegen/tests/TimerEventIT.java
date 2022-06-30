@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.util.ProcessCompletedCountDownProcessEventListener;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
@@ -70,7 +71,9 @@ public class TimerEventIT extends AbstractCodegenIT {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 1);
+        ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(processEventListener);
 
         Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
 
@@ -83,6 +86,7 @@ public class TimerEventIT extends AbstractCodegenIT {
 
         boolean completed = listener.waitTillCompleted(5000);
         assertThat(completed).isTrue();
+        assertThat(processEventListener.waitTillCompleted(5000)).isTrue();
 
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
@@ -167,7 +171,7 @@ public class TimerEventIT extends AbstractCodegenIT {
         Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventDateISOOnTask.bpmn2");
         assertThat(app).isNotNull();
 
-        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        ProcessCompletedCountDownProcessEventListener listener = new ProcessCompletedCountDownProcessEventListener();
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
         Process<? extends Model> p = app.get(Processes.class).processById("TimerBoundaryEvent");
@@ -193,7 +197,7 @@ public class TimerEventIT extends AbstractCodegenIT {
         Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventDurationISO.bpmn2");
         assertThat(app).isNotNull();
 
-        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        ProcessCompletedCountDownProcessEventListener listener = new ProcessCompletedCountDownProcessEventListener();
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
         Process<? extends Model> p = app.get(Processes.class).processById("TimerBoundaryEvent");
