@@ -1,0 +1,261 @@
+properties:
+  dataIndexUrl: http://localhost:8180
+
+  # charts size
+  chartsWidth: 95%
+  chartsHeight: 450px
+
+  cardsHeight: 20
+  cardsWidth: 90%
+
+  workflowId: 6164b616-45d6-4ad9-8d46-8ede7b6957fd
+
+  # cards template
+  cardTemplate: >-
+    >-
+                          <div id="${this}" class="card-pf card-pf-aggregate-status" style="background-color: ${bgColor}; width: ${cardsWidth}; height: ${cardsHeight};">
+                            <h2 style="font-weight: 600; font-size: large" id="${this}Value">${value}</h2>
+                            <p style="font-weight: 400" id="${this}Title"><em id="${this}Icon" class=""></em> ${title}</p>
+                          </div>
+datasets:
+  - uuid: nodes
+    expression: >-
+      $.data.ProcessInstances.(
+          $start := $min(nodes.($toMillis(enter)));
+          $end := $max(nodes.(exit ? $toMillis(exit) : -1)) - $start;
+          $map(nodes, function($n) {
+              [
+                  processId, 
+                  state, 
+                  id,
+                  start,
+                  0,
+                  $end , 
+                  $end / 2, 
+                  $n.type, 
+                  $n.name,
+                  $n.nodeId, 
+                  $toMillis($n.enter),
+                  $toMillis($n.enter) - $start, 
+                  $n.exit ? $toMillis($n.exit) - $start  : -1,
+                  $n.exit ? $toMillis($n.exit) - $toMillis($n.enter) : -1
+              ]
+          });
+      )
+    url: ${dataIndexUrl}/graphql/?query=%7BProcessInstances(where%3A%7Bid%3A%7Bin%3A%20%5B"${workflowId}"%5D%7D%7D)%7BprocessId%20state%20id%20start%20lastUpdate%20nodes%20%7Bid%20nodeId%20name%20type%20enter%20exit%7D%7D%7D%0A
+    columns:
+      - id: workflowId
+        type: label
+      - id: state
+        type: label
+      - id: id
+        type: label
+      - id: workflowStartDate
+        type: date
+      - id: start
+        type: label
+      - id: end
+        type: number
+      - id: middle
+        type: label
+      - id: type
+        type: label
+      - id: name
+        type: label
+      - id: nodeId
+        type: number
+      - id: nodeStartMillis
+        type: number
+      - id: nodeStart
+        type: label
+      - id: nodeEnd
+        type: number
+      - id: duration
+        type: label
+pages:
+  - rows:
+      - columns:
+          - components:
+              - settings:
+                  type: METRIC
+                  general:
+                    title: State
+                    visible: "true"
+                  html:
+                    html: >-
+                        <strong style="font-size: x-large; margin-bottom: 10px">${value} <small style="font-size: small">${workflowId}</small></strong>
+                  columns:
+                    - id: end
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: nodes                   
+                    group:
+                      - groupFunctions:
+                          - source: workflowId
+      - columns:
+          - span: "4"
+            components:
+              - settings:
+                  type: METRIC
+                  general:
+                    title: Start
+                    visible: "true"
+                  html:
+                    html: ${cardTemplate}
+                    javascript: >-                      
+                        document.getElementById(${this}.id + "Icon").className = "fa fa-calendar";
+                      
+                  chart:
+                    height: "${cardsHeight}"
+                  columns:
+                    - id: end
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: nodes
+                    filter:
+                    group:
+                      - groupFunctions:
+                          - source: workflowStartDate
+          - span: "4"
+            components:
+              - settings:
+                  type: METRIC
+                  general:
+                    title: State
+                    visible: "true"
+                  html:
+                    html: ${cardTemplate}
+                    javascript: >-
+                      if ( "${value}" === "ERROR") {
+                        ${this}.style.color = 'red';
+                        document.getElementById(${this}.id + "Icon").className = "pficon-error-circle-o";
+                      }
+                      else if ( "${value}" === "COMPLETED") {
+                        ${this}.style.color = 'blue';
+                        document.getElementById(${this}.id + "Icon").className = "fa fa-check";
+                      } else if ( "${value}" === "ACTIVE") {
+                        ${this}.style.color = 'green';
+                        document.getElementById(${this}.id + "Icon").className = "pficon pficon-on-running";
+                      } else {
+                        document.getElementById(${this}.id + "Icon").className = "";
+                      }
+                  chart:
+                    height: "${cardsHeight}"
+                  columns:
+                    - id: end
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: nodes                  
+                    group:
+                      - groupFunctions:
+                          - source: state
+          - span: "4"
+            components:
+              - settings:
+                  type: METRIC
+                  general:
+                    title: Duration (ms)
+                    visible: "true"
+                  html:
+                    html: ${cardTemplate}
+                    javascript: >-                      
+                        document.getElementById(${this}.id + "Icon").className = "fa fa-clock-o";
+                  chart:
+                    height: "${cardsHeight}"
+                  columns:
+                    - id: end
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: nodes
+                    filter:                                              
+                    group:
+                      - groupFunctions:
+                          - source: end
+      - columns:
+          - components:
+              - settings:
+                  component: echarts
+                  echarts:
+                    option: >-
+                      {
+                          "xAxis":{
+                            "position": "top"
+                          },
+                          "series":[
+                              {
+                                  "itemStyle": {
+                                      "color": "#b8f2c5",
+                                      "opacity": "0.5"
+                                  },                                  
+                                  "emphasis" : {
+                                    "disabled": "true"
+                                  },
+                                  "tooltip": {
+                                    "formatter": "{b}"                                    
+                                  },
+                                  "type":"boxplot",
+                                  "name": "Duration",
+                                  "encode":{
+                                      "x": ["start", "nodeStart", "middle", "nodeEnd", "end"],
+                                      "y": "name"
+
+                                  }
+                              },
+                              {
+                                  "name": "detail",
+                                  "type": "scatter",                                  
+                                  "symbolSize": "0",
+                                  "tooltip": {
+                                    "trigger": "none"                                    
+                                  },
+                                  "label": {
+                                    "show": "true",
+                                    "position": "right",
+                                    "align": "left",
+                                    "verticalAlign": "middle",                                    
+                                    "fontSize": "15",
+                                    "formatter": "{@duration} ms",
+                                    "fontWeight": "bolder"
+                                  },
+                                  "emphasis" : {
+                                    "disabled": "true"
+                                  },
+                                  "itemStyle": {
+                                    "color": "#d00000"
+                                  },
+                                  "encode": {
+                                    "x": "nodeStart",
+                                    "y": "name",
+                                    "label": "Duration",
+                                    "itemName": "Duration"
+                                  }
+                                }
+                          ]
+                      }
+                    yAxis:
+                      type: "category"
+                  external:
+                    width: "${chartsWidth}"
+                    height: "${chartsHeight}"
+                  dataSetLookup:
+                    dataSetUuid: nodes
+                    filter:
+                      - column: name
+                        function: NOT_IN
+                        args:
+                          - EmbeddedStart
+                          - EmbeddedEnd
+                          - Script
+                      - column: type
+                        function: NOT_IN
+                        args:
+                          - Join
+                      - column: nodeEnd
+                        function: NOT_IN
+                        args:
+                          - -1
+                    sort:
+                      - column: nodeStartMillis
+                        order: DESCENDING
+                      - column: nodeId
+                        order: DESCENDING

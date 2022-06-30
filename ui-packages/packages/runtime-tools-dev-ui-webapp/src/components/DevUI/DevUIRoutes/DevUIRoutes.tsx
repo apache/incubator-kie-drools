@@ -26,16 +26,22 @@ import FormDetailPage from '../../pages/FormDetailsPage/FormDetailsPage';
 import { TrustyApp } from '@kogito-apps/trusty';
 import ProcessFormPage from '../../pages/ProcessFormPage/ProcessFormPage';
 import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
+import MonitoringPage from '../../pages/MonitoringPage/MonitoringPage';
 import WorkflowFormPage from '../../pages/WorkflowFormPage/WorkflowFormPage';
 
 interface IOwnProps {
   trustyServiceUrl: string;
+  dataIndexUrl: string;
   navigate: string;
 }
 
 type DevUIRoute = { enabled: () => boolean; node: React.ReactNode };
 
-const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, navigate }) => {
+const DevUIRoutes: React.FC<IOwnProps> = ({
+  trustyServiceUrl,
+  dataIndexUrl,
+  navigate
+}) => {
   const { isProcessEnabled, isTracingEnabled } = useDevUIAppContext();
 
   const defaultPath = useMemo(() => {
@@ -170,10 +176,18 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, navigate }) => {
         )
       },
       {
+        enabled: () => isProcessEnabled,
+        node: (
+          <Route key="10" path="/Monitoring">
+            <MonitoringPage dataIndexUrl={dataIndexUrl} />
+          </Route>
+        )
+      },
+      {
         enabled: () => true,
         node: (
           <Route
-            key="10"
+            key="11"
             path="/NoData"
             render={_props => (
               <NoData
@@ -189,7 +203,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, navigate }) => {
         enabled: () => true,
         node: (
           <Route
-            key="11"
+            key="12"
             path="*"
             render={_props => (
               <PageNotFound

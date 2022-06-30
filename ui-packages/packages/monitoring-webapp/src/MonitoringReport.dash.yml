@@ -1,0 +1,374 @@
+properties:
+  dataIndexUrl: http://localhost:8180
+
+  # seconds
+  refresh: 10
+
+  # charts size
+  chartsWidth: 100%
+  chartsHeight: 280px
+
+  # cards size (change the template for width)
+  cardsHeight: 80
+
+  # cards template
+  cardTemplate: >-
+    >-
+                          <div id="${this}" class="card-pf card-pf-accented card-pf-aggregate-status" style="background-color: ${bgColor}; width: 95%; height:${height}px;">
+                            <h2 style="font-weight: 600;" id="${this}Value">${value}</h2>
+                            <p style="font-weight: 400" id="${this}Title">${title}</p>
+                          </div>
+datasets:
+  - uuid: nodes
+    expression: >-
+      $.data.ProcessInstances.(
+          $map(nodes, function($n){
+              [processId,$n.type, $n.name, $n.exit ? $toMillis($n.exit) - $toMillis($n.enter) : -1]
+          });
+      )
+    url: ${dataIndexUrl}/graphql/?query=%7BProcessInstances%7BprocessId%20nodes%7B%20nodeId%20type%20name%20enter%20exit%20%7D%7D%7D%0A
+    columns:
+      - id: workflowId
+        type: label
+      - id: type
+        type: label
+      - id: name
+        type: label
+      - id: time
+        type: number
+  - uuid: workflows
+    expression: >-
+      $.data.ProcessInstances.[ id, businessKey ? businessKey : "", processId, processName, state, $fromMillis($toMillis(start)), $fromMillis($toMillis(lastUpdate)), end ? $toMillis(end) - $toMillis(start) : -1, error ? error.message : ""]
+    url: ${dataIndexUrl}/graphql/?query=%7BProcessInstances%7Bid%20processId%20businessKey%20processName%20serviceUrl%20state%20start%20end%20lastUpdate%20error%20%7Bmessage%7D%7D%7D%0A
+    columns:
+      - id: id
+        type: LABEL
+      - id: businessKey
+        type: LABEL
+      - id: workflowId
+        type: LABEL
+      - id: workflowName
+        type: LABEL
+      - id: state
+        type: LABEL
+      - id: startDate
+        type: DATE
+      - id: lastUpdate
+        type: DATE
+      - id: duration
+        type: number
+      - id: errorMessage
+        type: LABEL
+pages:
+  - rows:
+      - columns:
+          - span: "11"
+            components:
+              - html: "Filter"
+                properties:
+                  font-weight: bolder
+              - properties:
+                  width: "150px"
+                  margin-bottom: "20px"
+                settings:
+                  type: SELECTOR
+                  refresh:
+                    interval: "${refresh}"
+                  general:
+                    visible: "true"
+                    text: "Filter"
+                  filter:
+                    enabled: "true"
+                    notification: "true"
+                  dataSetLookup:
+                    uuid: workflows
+                    group:
+                      - columnGroup:
+                          source: workflowId
+                        groupFunctions:
+                          - source: workflowId
+                            column: Workflow
+      - properties:
+          margin-left: 30px
+          text-align: center
+        columns:
+          - span: "2"
+            components:
+              - settings:
+                  type: METRIC
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  refresh:
+                    interval: "${refresh}"
+                  general:
+                    title: Workflows
+                    visible: "true"
+                  html:
+                    html: ${cardTemplate}
+                  chart:
+                    height: "${cardsHeight}"
+                  columns:
+                    - id: Total
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: workflows
+                    group:
+                      - groupFunctions:
+                          - source: Total
+                            function: COUNT
+          - span: "2"
+            properties:
+              color: blue
+            components:
+              - settings:
+                  type: METRIC
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  refresh:
+                    interval: "${refresh}"
+                  general:
+                    title: Completed
+                    visible: "true"
+                  html:
+                    html: ${cardTemplate}
+                  chart:
+                    height: "${cardsHeight}"
+                  columns:
+                    - id: Total
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: workflows
+                    filter:
+                      - column: state
+                        function: EQUALS_TO
+                        args:
+                          - COMPLETED
+                    group:
+                      - groupFunctions:
+                          - source: Total
+                            function: COUNT
+          - span: "2"
+            properties:
+              color: green
+            components:
+              - settings:
+                  type: METRIC
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  refresh:
+                    interval: "${refresh}"
+                  general:
+                    title: Active
+                    visible: "true"
+                  html:
+                    html: ${cardTemplate}
+                  chart:
+                    height: "${cardsHeight}"
+                  columns:
+                    - id: Total
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: workflows
+                    filter:
+                      - column: state
+                        function: EQUALS_TO
+                        args:
+                          - ACTIVE
+                    group:
+                      - groupFunctions:
+                          - source: Total
+                            function: COUNT
+          - span: "2"
+            properties:
+              color: orange
+            components:
+              - settings:
+                  type: METRIC
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  refresh:
+                    interval: "${refresh}"
+                  general:
+                    title: Pending
+                    visible: "true"
+                  html:
+                    html: ${cardTemplate}
+                  chart:
+                    height: "${cardsHeight}"
+                  columns:
+                    - id: Total
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: workflows
+                    filter:
+                      - column: state
+                        function: EQUALS_TO
+                        args:
+                          - PENDING
+                    group:
+                      - functions:
+                          - source: Total
+                            function: COUNT
+          - span: "2"
+            properties:
+              color: orange
+            components:
+              - settings:
+                  type: METRIC
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  refresh:
+                    interval: "${refresh}"
+                  general:
+                    title: Aborted
+                    visible: "true"
+                  html:
+                    html: ${cardTemplate}
+                  chart:
+                    height: "${cardsHeight}"
+                  columns:
+                    - id: Total
+                      pattern: "#"
+                  dataSetLookup:
+                    uuid: workflows
+                    filter:
+                      - column: state
+                        function: EQUALS_TO
+                        args:
+                          - ABORTED
+                    group:
+                      - functions:
+                          - source: Total
+                            function: COUNT
+          - span: "2"
+            properties:
+              color: red
+            components:
+              - settings:
+                  type: METRIC
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  refresh:
+                    interval: "${refresh}"
+                  general:
+                    title: Error
+                    visible: "true"
+                  html:
+                    html: ${cardTemplate}
+                  chart:
+                    height: "${cardsHeight}"
+                  columns:
+                    - id: Total
+                      pattern: "#"
+                  dataSetLookup:
+                    dataSetUuid: workflows
+                    filter:
+                      - column: state
+                        function: EQUALS_TO
+                        args:
+                          - ERROR
+                    group:
+                      - groupFunctions:
+                          - source: Total
+                            function: COUNT
+      - columns:
+          - components:
+              - html: "<hr />"
+      - columns:
+          - components:
+              - settings:
+                  component: echarts
+                  echarts:
+                    series:
+                      type: "bar"
+                    title:
+                      text: Functions and States Average Duration
+                    xAxis:
+                      axisLabel:
+                        interval: "0"
+                    yAxis:
+                      name: Time (ms)
+                      nameLocation: middle
+                      nameGap: "35"
+                      nameTextStyle:
+                        fontStyle: italic
+                  external:
+                    width: "${chartsWidth}"
+                    height: "${chartsHeight}"
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  refresh:
+                    interval: "${refresh}"
+                  dataSetLookup:
+                    dataSetUuid: nodes
+                    filter:
+                      - column: name
+                        function: NOT_IN
+                        args:
+                          - EmbeddedStart
+                          - EmbeddedEnd
+                          - Script
+                      - column: type
+                        function: NOT_IN
+                        args:
+                          - Join
+                    sort:
+                      - column: Time (ms)
+                        order: DESCENDING
+                    group:
+                      - columnGroup:
+                          source: name
+                        functions:
+                          - source: name
+                          - source: time
+                            function: AVERAGE
+                            column: Time (ms)
+      - columns:
+          - components:
+              - html: <h3> Workflow List </h3>
+      - columns:
+          - components:
+              - settings:
+                  component: table
+                  external:
+                    width: 100%
+                    height: 500px
+                  refresh:
+                    interval: "${refresh}"
+                  filter:
+                    enabled: "true"
+                    listening: "true"
+                  lookup:
+                    uuid: workflows
+                    sort:
+                      - column: lastUpdate
+                        order: DESCENDING
+                    group:
+                      - columnsGroup:
+                          source: workflowId
+                        functions:
+                          - source: id
+                            column: Instance ID
+                          - source: businessKey
+                            column: Business Key
+                          - source: workflowId
+                            column: ID
+                          - source: workflowName
+                            column: Name
+                          - source: state
+                            column: State
+                          - source: startDate
+                            column: Start Date
+                          - source: lastUpdate
+                            column: Last Update
+                          - source: duration
+                            column: Duration
+                          - source: errorMessage
+                            column: Error Message

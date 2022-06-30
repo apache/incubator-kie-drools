@@ -2167,6 +2167,11 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
+"@dashbuilder-js/dashbuilder-client@^0.20.0":
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/@dashbuilder-js/dashbuilder-client/-/dashbuilder-client-0.20.0.tgz#e0c1caf2f021700447fda9df93d480095832ae82"
+  integrity sha512-dhNGi1/dMm9yh6y/zU5s0Qv8gHyiyg7fp6RSqKm3efAhVd9JCh+jqOuBM/N5lLJNDNo/KctUgOh23E6f5Xujhg==
+
 "@discoveryjs/json-ext@^0.5.0", "@discoveryjs/json-ext@^0.5.3":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"

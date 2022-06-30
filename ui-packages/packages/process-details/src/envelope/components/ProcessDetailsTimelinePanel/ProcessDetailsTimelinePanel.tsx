@@ -39,7 +39,7 @@ import {
   OnRunningIcon,
   OutlinedClockIcon
 } from '@patternfly/react-icons';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import '../styles.css';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
@@ -412,6 +412,24 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
     </Button>
   ];
 
+  const compareNodes = useCallback((nodeA, nodeB) => {
+    if (nodeA?.enter < nodeB?.enter) {
+      return -1;
+    } else if (nodeA?.enter > nodeB?.enter) {
+      return 1;
+    } else if (nodeA?.exit < nodeB?.exit) {
+      return -1;
+    } else if (nodeA?.exit > nodeB?.exit) {
+      return 1;
+    } else if (nodeA?.id < nodeB?.id) {
+      return -1;
+    } else if (nodeA?.id > nodeB?.id) {
+      return 1;
+    }
+
+    return 0;
+  }, []);
+
   return (
     <Card
       {...componentOuiaProps(ouiaId ? ouiaId : data.id, 'timeline', ouiaSafe)}
@@ -434,6 +452,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
               .filter(
                 content => !omittedProcessTimelineEvents?.includes(content.name)
               )
+              .sort(compareNodes)
               .map((content, idx) => {
                 return (
                   <Split

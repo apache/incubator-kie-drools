@@ -1,0 +1,34 @@
+{
+  "name": "@kogito-apps/monitoring-webapp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "license": "Apache-2.0",
+  "files": [
+    "dist/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-apps.git"
+  },
+
+  "scripts": {
+    "copy:dashbuilder": "copyfiles -u 6 \"../../node_modules/@dashbuilder-js/dashbuilder-client/dist/**/*\" ./dist/ && copyfiles -u 1 src/* ./dist/",
+    "build": "rimraf dist && yarn run copy:dashbuilder",
+    "build:prod": "yarn run build"
+  },
+ 
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/react"
+    ]
+  }
+}

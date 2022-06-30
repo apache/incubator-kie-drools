@@ -106,7 +106,11 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       omittedProcessTimelineEvents={omittedProcessTimelineEvents}
       diagramPreviewSize={diagramPreviewSize}
     >
-      <DevUIRoutes navigate={navigate} trustyServiceUrl={trustyServiceUrl} />
+      <DevUIRoutes
+        navigate={navigate}
+        trustyServiceUrl={trustyServiceUrl}
+        dataIndexUrl={dataIndexUrl}
+      />
     </DevUILayout>
   );
 };

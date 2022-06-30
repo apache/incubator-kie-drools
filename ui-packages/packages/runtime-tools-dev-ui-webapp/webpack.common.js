@@ -26,7 +26,8 @@ module.exports = {
     new CopyPlugin({ patterns: [
         { from: "./resources", to: "./resources" },
         { from: "./src/static", to: "./static" },
-        { from: "./src/components/styles.css", to: "./components/styles.css" }
+        { from: "./src/components/styles.css", to: "./components/styles.css" },
+        { from: "../monitoring-webapp/dist/", to: "./monitoring-webapp" }
     ]}),
     new FileManagerPlugin({
       events: {
@@ -34,7 +35,8 @@ module.exports = {
           copy: [
             { source: './dist/*.js', destination: './dist/resources/webapp' },
             { source: './dist/*.map', destination: './dist/resources/webapp' },
-            { source: './dist/fonts', destination: './dist/resources/webapp' }
+            { source: './dist/fonts', destination: './dist/resources/webapp' },
+            { source: './dist/monitoring-webapp', destination: './dist/resources/webapp/monitoring-webapp' }
           ]
         },
       },
@@ -106,6 +108,9 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/process-definition-list/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/process-monitoring/dist/static'
           ),
           path.resolve(
             '../../node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon.ttf'
@@ -192,6 +197,9 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/process-form/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/process-monitoring/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/process-definition-list/dist/static'

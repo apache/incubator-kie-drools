@@ -28,6 +28,39 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for comple
       <Split
         className="kogito-process-details--timeline-item"
         hasGutter={true}
+        key="2f588da5-a323-4111-9017-3093ef9319d1"
+      >
+        <SplitItem>
+          <Tooltip
+            content="Active"
+          >
+            <OnRunningIcon
+              className="kogito-process-details--timeline-status"
+            />
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              Book flight
+              <span />
+              <Text
+                component="small"
+              >
+                Active
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem />
+      </Split>
+      <Split
+        className="kogito-process-details--timeline-item"
+        hasGutter={true}
         key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
       >
         <SplitItem>
@@ -58,39 +91,6 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for comple
                   />
                 </Tooltip>
               </span>
-              <Text
-                component="small"
-              >
-                Active
-              </Text>
-            </Text>
-          </TextContent>
-        </SplitItem>
-        <SplitItem />
-      </Split>
-      <Split
-        className="kogito-process-details--timeline-item"
-        hasGutter={true}
-        key="2f588da5-a323-4111-9017-3093ef9319d1"
-      >
-        <SplitItem>
-          <Tooltip
-            content="Active"
-          >
-            <OnRunningIcon
-              className="kogito-process-details--timeline-status"
-            />
-          </Tooltip>
-        </SplitItem>
-        <SplitItem
-          isFilled={true}
-        >
-          <TextContent>
-            <Text
-              component="p"
-            >
-              Book flight
-              <span />
               <Text
                 component="small"
               >
@@ -173,49 +173,6 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for no ser
       <Split
         className="kogito-process-details--timeline-item"
         hasGutter={true}
-        key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
-      >
-        <SplitItem>
-          <Tooltip
-            content="Something went wrong"
-          >
-            <ErrorCircleOIcon
-              className="kogito-process-details--timeline-status"
-              color="var(--pf-global--danger-color--100)"
-            />
-          </Tooltip>
-        </SplitItem>
-        <SplitItem
-          isFilled={true}
-        >
-          <TextContent>
-            <Text
-              component="p"
-            >
-              End Event 1
-              <span>
-                <Tooltip
-                  content="Human task"
-                >
-                  <UserIcon
-                    className="pf-u-ml-sm"
-                    color="var(--pf-global--icon--Color--light)"
-                  />
-                </Tooltip>
-              </span>
-              <Text
-                component="small"
-              >
-                Active
-              </Text>
-            </Text>
-          </TextContent>
-        </SplitItem>
-        <SplitItem />
-      </Split>
-      <Split
-        className="kogito-process-details--timeline-item"
-        hasGutter={true}
         key="2f588da5-a323-4111-9017-3093ef9319d1"
       >
         <SplitItem>
@@ -268,6 +225,49 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for no ser
               component="p"
             >
               StartProcess
+              <span>
+                <Tooltip
+                  content="Human task"
+                >
+                  <UserIcon
+                    className="pf-u-ml-sm"
+                    color="var(--pf-global--icon--Color--light)"
+                  />
+                </Tooltip>
+              </span>
+              <Text
+                component="small"
+              >
+                Active
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem />
+      </Split>
+      <Split
+        className="kogito-process-details--timeline-item"
+        hasGutter={true}
+        key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
+      >
+        <SplitItem>
+          <Tooltip
+            content="Something went wrong"
+          >
+            <ErrorCircleOIcon
+              className="kogito-process-details--timeline-status"
+              color="var(--pf-global--danger-color--100)"
+            />
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              End Event 1
               <span>
                 <Tooltip
                   content="Human task"
@@ -357,58 +357,6 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for servic
       className="kogito-process-details--timeline"
       hasGutter={true}
     >
-      <Split
-        className="kogito-process-details--timeline-item"
-        hasGutter={true}
-        key="69e0a0f5-2360-4174-a8f8-a892a31fc2f9r25e"
-      >
-        <SplitItem>
-          <Tooltip
-            content="Something went wrong"
-          >
-            <ErrorCircleOIcon
-              className="kogito-process-details--timeline-status"
-              color="var(--pf-global--danger-color--100)"
-            />
-          </Tooltip>
-        </SplitItem>
-        <SplitItem
-          isFilled={true}
-        >
-          <TextContent>
-            <Text
-              component="p"
-            >
-              Confirm travel
-              <span />
-              <Text
-                component="small"
-              >
-                <t
-                  ago={false}
-                  calendar={false}
-                  decimal={false}
-                  element={null}
-                  filter={[Function]}
-                  fromNow={true}
-                  interval={60000}
-                  local={false}
-                  onChange={[Function]}
-                  titleFormat=""
-                  toNow={false}
-                  unit={null}
-                  unix={false}
-                  utc={false}
-                  withTitle={false}
-                >
-                  <Component />
-                </t>
-              </Text>
-            </Text>
-          </TextContent>
-        </SplitItem>
-        <SplitItem />
-      </Split>
       <Split
         className="kogito-process-details--timeline-item"
         hasGutter={true}
@@ -509,7 +457,7 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for servic
             position="right"
             toggle={
               <KebabToggle
-                id="timeline-kebab-toggle-1"
+                id="timeline-kebab-toggle-0"
                 onToggle={[Function]}
               />
             }
@@ -519,14 +467,15 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for servic
       <Split
         className="kogito-process-details--timeline-item"
         hasGutter={true}
-        key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
+        key="69e0a0f5-2360-4174-a8f8-a892a31fc2f9r25e"
       >
         <SplitItem>
           <Tooltip
-            content="Active"
+            content="Something went wrong"
           >
-            <OnRunningIcon
+            <ErrorCircleOIcon
               className="kogito-process-details--timeline-status"
+              color="var(--pf-global--danger-color--100)"
             />
           </Tooltip>
         </SplitItem>
@@ -537,12 +486,30 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for servic
             <Text
               component="p"
             >
-              End Event 1
+              Confirm travel
               <span />
               <Text
                 component="small"
               >
-                Active
+                <t
+                  ago={false}
+                  calendar={false}
+                  decimal={false}
+                  element={null}
+                  filter={[Function]}
+                  fromNow={true}
+                  interval={60000}
+                  local={false}
+                  onChange={[Function]}
+                  titleFormat=""
+                  toNow={false}
+                  unit={null}
+                  unix={false}
+                  utc={false}
+                  withTitle={false}
+                >
+                  <Component />
+                </t>
               </Text>
             </Text>
           </TextContent>
@@ -625,12 +592,45 @@ exports[`ProcessDetailsTimelinePanel component tests Snapshot testing for servic
             position="right"
             toggle={
               <KebabToggle
-                id="timeline-kebab-toggle-3"
+                id="timeline-kebab-toggle-2"
                 onToggle={[Function]}
               />
             }
           />
         </SplitItem>
+      </Split>
+      <Split
+        className="kogito-process-details--timeline-item"
+        hasGutter={true}
+        key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
+      >
+        <SplitItem>
+          <Tooltip
+            content="Active"
+          >
+            <OnRunningIcon
+              className="kogito-process-details--timeline-status"
+            />
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              End Event 1
+              <span />
+              <Text
+                component="small"
+              >
+                Active
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem />
       </Split>
       <Split
         className="kogito-process-details--timeline-item"
@@ -1647,7 +1647,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
               <Split
                 className="kogito-process-details--timeline-item"
                 hasGutter={true}
-                key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
+                key="2f588da5-a323-4111-9017-3093ef9319d1"
               >
                 <div
                   className="pf-l-split pf-m-gutter kogito-process-details--timeline-item"
@@ -1657,7 +1657,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                       className="pf-l-split__item"
                     >
                       <Tooltip
-                        content="Something went wrong"
+                        content="Active"
                       >
                         <Popper
                           appendTo={[Function]}
@@ -1700,7 +1700,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                               <TooltipContent
                                 isLeftAligned={false}
                               >
-                                Something went wrong
+                                Active
                               </TooltipContent>
                             </div>
                           }
@@ -1714,9 +1714,8 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                             }
                           }
                           trigger={
-                            <ErrorCircleOIcon
+                            <OnRunningIcon
                               className="kogito-process-details--timeline-status"
-                              color="var(--pf-global--danger-color--100)"
                             />
                           }
                           zIndex={9999}
@@ -1724,12 +1723,11 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           <FindRefWrapper
                             onFoundRef={[Function]}
                           >
-                            <ErrorCircleOIcon
+                            <OnRunningIcon
                               className="kogito-process-details--timeline-status"
-                              color="var(--pf-global--danger-color--100)"
                             >
                               <MockedIcon />
-                            </ErrorCircleOIcon>
+                            </OnRunningIcon>
                           </FindRefWrapper>
                         </Popper>
                       </Tooltip>
@@ -1755,86 +1753,8 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                               data-ouia-safe={true}
                               data-pf-content={true}
                             >
-                              End Event 1
-                              <span>
-                                <Tooltip
-                                  content="Human task"
-                                >
-                                  <Popper
-                                    appendTo={[Function]}
-                                    distance={15}
-                                    enableFlip={true}
-                                    flipBehavior={
-                                      Array [
-                                        "top",
-                                        "right",
-                                        "bottom",
-                                        "left",
-                                        "top",
-                                        "right",
-                                        "bottom",
-                                      ]
-                                    }
-                                    isVisible={false}
-                                    onBlur={[Function]}
-                                    onDocumentClick={false}
-                                    onDocumentKeyDown={[Function]}
-                                    onFocus={[Function]}
-                                    onMouseEnter={[Function]}
-                                    onMouseLeave={[Function]}
-                                    onTriggerEnter={[Function]}
-                                    placement="top"
-                                    popper={
-                                      <div
-                                        className="pf-c-tooltip"
-                                        id="pf-tooltip-471"
-                                        role="tooltip"
-                                        style={
-                                          Object {
-                                            "maxWidth": null,
-                                            "opacity": 0,
-                                            "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
-                                          }
-                                        }
-                                      >
-                                        <TooltipArrow />
-                                        <TooltipContent
-                                          isLeftAligned={false}
-                                        >
-                                          Human task
-                                        </TooltipContent>
-                                      </div>
-                                    }
-                                    popperMatchesTriggerWidth={false}
-                                    positionModifiers={
-                                      Object {
-                                        "bottom": "pf-m-bottom",
-                                        "left": "pf-m-left",
-                                        "right": "pf-m-right",
-                                        "top": "pf-m-top",
-                                      }
-                                    }
-                                    trigger={
-                                      <UserIcon
-                                        className="pf-u-ml-sm"
-                                        color="var(--pf-global--icon--Color--light)"
-                                      />
-                                    }
-                                    zIndex={9999}
-                                  >
-                                    <FindRefWrapper
-                                      onFoundRef={[Function]}
-                                    >
-                                      <UserIcon
-                                        className="pf-u-ml-sm"
-                                        color="var(--pf-global--icon--Color--light)"
-                                      >
-                                        <MockedIcon />
-                                      </UserIcon>
-                                    </FindRefWrapper>
-                                  </Popper>
-                                </Tooltip>
-                              </span>
+                              Book flight
+                              <span />
                               <Text
                                 component="small"
                               >
@@ -1864,7 +1784,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
               <Split
                 className="kogito-process-details--timeline-item"
                 hasGutter={true}
-                key="2f588da5-a323-4111-9017-3093ef9319d1"
+                key="6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2"
               >
                 <div
                   className="pf-l-split pf-m-gutter kogito-process-details--timeline-item"
@@ -1903,7 +1823,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           popper={
                             <div
                               className="pf-c-tooltip"
-                              id="pf-tooltip-472"
+                              id="pf-tooltip-471"
                               role="tooltip"
                               style={
                                 Object {
@@ -1970,8 +1890,86 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                               data-ouia-safe={true}
                               data-pf-content={true}
                             >
-                              Book flight
-                              <span />
+                              StartProcess
+                              <span>
+                                <Tooltip
+                                  content="Human task"
+                                >
+                                  <Popper
+                                    appendTo={[Function]}
+                                    distance={15}
+                                    enableFlip={true}
+                                    flipBehavior={
+                                      Array [
+                                        "top",
+                                        "right",
+                                        "bottom",
+                                        "left",
+                                        "top",
+                                        "right",
+                                        "bottom",
+                                      ]
+                                    }
+                                    isVisible={false}
+                                    onBlur={[Function]}
+                                    onDocumentClick={false}
+                                    onDocumentKeyDown={[Function]}
+                                    onFocus={[Function]}
+                                    onMouseEnter={[Function]}
+                                    onMouseLeave={[Function]}
+                                    onTriggerEnter={[Function]}
+                                    placement="top"
+                                    popper={
+                                      <div
+                                        className="pf-c-tooltip"
+                                        id="pf-tooltip-472"
+                                        role="tooltip"
+                                        style={
+                                          Object {
+                                            "maxWidth": null,
+                                            "opacity": 0,
+                                            "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
+                                          }
+                                        }
+                                      >
+                                        <TooltipArrow />
+                                        <TooltipContent
+                                          isLeftAligned={false}
+                                        >
+                                          Human task
+                                        </TooltipContent>
+                                      </div>
+                                    }
+                                    popperMatchesTriggerWidth={false}
+                                    positionModifiers={
+                                      Object {
+                                        "bottom": "pf-m-bottom",
+                                        "left": "pf-m-left",
+                                        "right": "pf-m-right",
+                                        "top": "pf-m-top",
+                                      }
+                                    }
+                                    trigger={
+                                      <UserIcon
+                                        className="pf-u-ml-sm"
+                                        color="var(--pf-global--icon--Color--light)"
+                                      />
+                                    }
+                                    zIndex={9999}
+                                  >
+                                    <FindRefWrapper
+                                      onFoundRef={[Function]}
+                                    >
+                                      <UserIcon
+                                        className="pf-u-ml-sm"
+                                        color="var(--pf-global--icon--Color--light)"
+                                      >
+                                        <MockedIcon />
+                                      </UserIcon>
+                                    </FindRefWrapper>
+                                  </Popper>
+                                </Tooltip>
+                              </span>
                               <Text
                                 component="small"
                               >
@@ -2001,7 +1999,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
               <Split
                 className="kogito-process-details--timeline-item"
                 hasGutter={true}
-                key="6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2"
+                key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
               >
                 <div
                   className="pf-l-split pf-m-gutter kogito-process-details--timeline-item"
@@ -2011,7 +2009,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                       className="pf-l-split__item"
                     >
                       <Tooltip
-                        content="Active"
+                        content="Something went wrong"
                       >
                         <Popper
                           appendTo={[Function]}
@@ -2054,7 +2052,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                               <TooltipContent
                                 isLeftAligned={false}
                               >
-                                Active
+                                Something went wrong
                               </TooltipContent>
                             </div>
                           }
@@ -2068,8 +2066,9 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                             }
                           }
                           trigger={
-                            <OnRunningIcon
+                            <ErrorCircleOIcon
                               className="kogito-process-details--timeline-status"
+                              color="var(--pf-global--danger-color--100)"
                             />
                           }
                           zIndex={9999}
@@ -2077,11 +2076,12 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           <FindRefWrapper
                             onFoundRef={[Function]}
                           >
-                            <OnRunningIcon
+                            <ErrorCircleOIcon
                               className="kogito-process-details--timeline-status"
+                              color="var(--pf-global--danger-color--100)"
                             >
                               <MockedIcon />
-                            </OnRunningIcon>
+                            </ErrorCircleOIcon>
                           </FindRefWrapper>
                         </Popper>
                       </Tooltip>
@@ -2107,7 +2107,7 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                               data-ouia-safe={true}
                               data-pf-content={true}
                             >
-                              StartProcess
+                              End Event 1
                               <span>
                                 <Tooltip
                                   content="Human task"

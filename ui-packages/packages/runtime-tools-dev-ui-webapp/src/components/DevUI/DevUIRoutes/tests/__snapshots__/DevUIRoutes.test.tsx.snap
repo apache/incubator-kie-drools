@@ -193,7 +193,7 @@ exports[`DevUIRoutes tests::Process and Tracing enabled Test NoData route 1`] = 
                 "url": "/NoData",
               }
             }
-            key="10"
+            key="11"
             location={
               Object {
                 "hash": "",
@@ -329,7 +329,7 @@ exports[`DevUIRoutes tests::Process and Tracing enabled Test PageNotFound route 
                 "url": "*",
               }
             }
-            key="11"
+            key="12"
             location={
               Object {
                 "hash": "",
@@ -823,7 +823,7 @@ exports[`DevUIRoutes tests::Process and Tracing enabled no data page test 1`] = 
                 "url": "/NoData",
               }
             }
-            key="10"
+            key="11"
             location={
               Object {
                 "hash": "",
@@ -959,7 +959,7 @@ exports[`DevUIRoutes tests::Process and Tracing enabled page not found page test
                 "url": "*",
               }
             }
-            key="11"
+            key="12"
             location={
               Object {
                 "hash": "",
