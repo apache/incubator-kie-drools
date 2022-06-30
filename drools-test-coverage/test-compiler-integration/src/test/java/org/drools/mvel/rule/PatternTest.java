@@ -30,7 +30,7 @@ import org.drools.core.base.ObjectType;
 import org.drools.core.test.model.Cheese;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatternTest {
 
@@ -42,14 +42,12 @@ public class PatternTest {
                                        "foo" );
         final Declaration dec = col.getDeclaration();
         final ReadAccessor ext = dec.getExtractor();
-        assertEquals( Cheese.class,
-                      ext.getExtractToClass() );
+        assertThat(ext.getExtractToClass()).isEqualTo(Cheese.class);
 
         final Cheese stilton = new Cheese( "stilton",
                                            42 );
 
-        assertEquals( stilton,
-                      dec.getValue( null, stilton ) );
+        assertThat(dec.getValue(null, stilton)).isEqualTo(stilton);
 
     }
 
@@ -69,8 +67,7 @@ public class PatternTest {
                                        "foo" );
         final Declaration dec = col.getDeclaration();
         final ReadAccessor ext = dec.getExtractor();
-        assertEquals( Fact.class,
-                      ext.getExtractToClass() );
+        assertThat(ext.getExtractToClass()).isEqualTo(Fact.class);
 
         final Fact stilton = cheese.createFact();
         stilton.set( "name",
@@ -78,8 +75,7 @@ public class PatternTest {
         stilton.set( "price",
                                new Integer( 200 ) );
 
-        assertEquals( stilton,
-                      dec.getValue( null, stilton ) );
+        assertThat(dec.getValue(null, stilton)).isEqualTo(stilton);
     }
 
 }

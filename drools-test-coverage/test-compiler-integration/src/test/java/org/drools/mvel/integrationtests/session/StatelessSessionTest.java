@@ -46,9 +46,7 @@ import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class StatelessSessionTest {
@@ -75,7 +73,7 @@ public class StatelessSessionTest {
 
         session.execute( stilton );
 
-        assertEquals( "stilton", list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo("stilton");
     }
 
     @Test
@@ -87,8 +85,7 @@ public class StatelessSessionTest {
 
         session.execute( Arrays.asList( new Object[]{stilton} ) );
 
-        assertEquals( "stilton",
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo("stilton");
     }
 
     @Test
@@ -102,8 +99,7 @@ public class StatelessSessionTest {
         collection.add( stilton );
         session.execute( collection );
 
-        assertEquals( "stilton",
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo("stilton");
     }
     
     @Test
@@ -127,8 +123,7 @@ public class StatelessSessionTest {
         
         final ExecutionResults result = ( ExecutionResults ) ksession.execute( batch );
         stilton = ( Cheese ) result.getValue( "outStilton" );
-        assertEquals( 30,
-                      stilton.getPrice() );
+        assertThat(stilton.getPrice()).isEqualTo(30);
     }
     
     @Test
@@ -168,21 +163,20 @@ public class StatelessSessionTest {
         cmds.add(  insert );
         
         final ExecutionResults result = ( ExecutionResults ) ksession.execute( CommandFactory.newBatchExecution( cmds ) );
-        
-        assertEquals( 30,
-                      stilton.getPrice() );
-        
-        assertNull( result.getValue( "list1" ) );
+
+        assertThat(stilton.getPrice()).isEqualTo(30);
+
+        assertThat(result.getValue("list1")).isNull();
         
         list2 = ( List ) result.getValue( "list2" );
-        assertEquals( 1, list2.size() );
-        assertSame( stilton, list2.get( 0 ) );
+        assertThat(list2.size()).isEqualTo(1);
+        assertThat(list2.get(0)).isSameAs(stilton);
         
           
         
         list3 = ( List ) result.getValue( "outList3" );
-        assertEquals( 1, list3.size() );
-        assertSame( stilton, list3.get( 0 ) );
+        assertThat(list3.size()).isEqualTo(1);
+        assertThat(list3.get(0)).isSameAs(stilton);
     }
     
     @Test
@@ -234,8 +228,8 @@ public class StatelessSessionTest {
         final ExecutionResults batchResult = (ExecutionResults) ksession.execute( CommandFactory.newBatchExecution( cmds ) );
         
         final org.kie.api.runtime.rule.QueryResults results = ( org.kie.api.runtime.rule.QueryResults) batchResult.getValue( "cheeses" );
-        assertEquals( 3, results.size() );
-        assertEquals( 2, results.getIdentifiers().length );
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.getIdentifiers().length).isEqualTo(2);
         final Set newSet = new HashSet();
         for ( final org.kie.api.runtime.rule.QueryResultsRow result : results ) {
             list = new ArrayList();
@@ -243,7 +237,7 @@ public class StatelessSessionTest {
             list.add( result.get( "cheddar" ));
             newSet.add( list );
         }
-        assertEquals( set, newSet );
+        assertThat(newSet).isEqualTo(set);
     }
 
     @Test
@@ -255,7 +249,7 @@ public class StatelessSessionTest {
         final List list = new ArrayList();
         session.setGlobal("list", list);
         session.execute("not integer");
-        assertEquals("not integer", list.get(0));
+        assertThat(list.get(0)).isEqualTo("not integer");
     }
 
     @Test
@@ -277,8 +271,8 @@ public class StatelessSessionTest {
         final StatelessKieSession ksession = getSession2(ResourceFactory.newByteArrayResource(str.getBytes()));
         ksession.registerChannel("x", channel);
 
-        assertEquals(1, ksession.getChannels().size());
-        assertEquals(channel, ksession.getChannels().get("x"));
+        assertThat(ksession.getChannels().size()).isEqualTo(1);
+        assertThat(ksession.getChannels().get("x")).isEqualTo(channel);
 
         ksession.execute(stilton);
 
@@ -286,8 +280,8 @@ public class StatelessSessionTest {
 
         ksession.unregisterChannel("x");
 
-        assertEquals(0, ksession.getChannels().size());
-        assertNull(ksession.getChannels().get("x"));
+        assertThat(ksession.getChannels().size()).isEqualTo(0);
+        assertThat(ksession.getChannels().get("x")).isNull();
     }
 
     private StatelessKieSession getSession2(final String fileName) throws Exception {

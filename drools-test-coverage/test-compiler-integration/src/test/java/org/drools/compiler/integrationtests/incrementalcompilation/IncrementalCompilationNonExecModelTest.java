@@ -34,7 +34,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Incremental compilation tests which don't work with exec-model. Each test should be fixed by JIRA one-by-one
@@ -126,8 +126,8 @@ public class IncrementalCompilationNonExecModelTest {
         //        }
 
         final IncrementalResults results = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/myPkg/r2.drl").build();
-        assertEquals(0, results.getAddedMessages().size());
-        assertEquals(0, results.getRemovedMessages().size());
+        assertThat(results.getAddedMessages().size()).isEqualTo(0);
+        assertThat(results.getRemovedMessages().size()).isEqualTo(0);
 
         kieContainer.updateToVersion(releaseId2);
 
@@ -140,7 +140,7 @@ public class IncrementalCompilationNonExecModelTest {
         Object fact = factType.newInstance();
         factType.set(fact, "s", "Hello World");
         ksession.insert(fact);
-        assertEquals(expectedfireCount, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(expectedfireCount);
         ksession.dispose();
     }
 }

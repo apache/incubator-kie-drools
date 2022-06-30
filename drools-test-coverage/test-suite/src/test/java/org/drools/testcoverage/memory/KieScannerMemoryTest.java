@@ -41,7 +41,7 @@ import org.kie.test.testcategory.TurtleTestCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Ignore("DROOLS-3628 Ignoring, because it can be useful when run locally, however due to unpredictable GC behaviour, unstable in automation.")
 @Category(TurtleTestCategory.class)
@@ -112,11 +112,9 @@ public class KieScannerMemoryTest {
                     } else {
                         memoryRaiseCount = 0;
                     }
-                    assertFalse(
-                            "Memory raised during " + (acceptedNumberOfMemoryRaises + 1)
-                                    + " consecutive measurements, there is probably some memory leak! "
-                                    + getMemoryMeasurementsString(averageMemoryFootprints),
-                            memoryRaiseCount > acceptedNumberOfMemoryRaises);
+                    assertThat(memoryRaiseCount > acceptedNumberOfMemoryRaises).as("Memory raised during " + (acceptedNumberOfMemoryRaises + 1)
+                            + " consecutive measurements, there is probably some memory leak! "
+                            + getMemoryMeasurementsString(averageMemoryFootprints)).isFalse();
                 }
                 logger.debug("Average memory: " + averageMemory);
                 averageMemoryFootprints.add(averageMemory);

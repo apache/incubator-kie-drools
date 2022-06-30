@@ -37,7 +37,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class WindowTest {
@@ -158,8 +158,8 @@ public class WindowTest {
             event = new TestEvent(null, "time", null);
             entryPoint.insert(event);
 
-            assertEquals(results[i], ksession.getQueryResults("TestTimeWindow")
-                                             .iterator().next().get("$eventCount"));
+            assertThat(ksession.getQueryResults("TestTimeWindow")
+                    .iterator().next().get("$eventCount")).isEqualTo(results[i]);
             clock.advanceTime(100, TimeUnit.MILLISECONDS);
         }
     }
@@ -173,9 +173,8 @@ public class WindowTest {
             event = new TestEvent(null, "length", null);
             entryPoint.insert(event);
 
-            assertEquals((i < 10 ? i : 10),
-                         ((Long) ksession.getQueryResults("TestLengthWindow")
-                                         .iterator().next().get("$eventCount")).intValue());
+            assertThat(((Long) ksession.getQueryResults("TestLengthWindow")
+                    .iterator().next().get("$eventCount")).intValue()).isEqualTo((i < 10 ? i : 10));
         }
     }
 
@@ -189,9 +188,8 @@ public class WindowTest {
             event = new TestEvent(null, "timeDec", null);
             entryPoint.insert(event);
 
-            assertEquals(results[i],
-                         ksession.getQueryResults("TestDeclaredTimeWindow")
-                                 .iterator().next().get("$eventCount"));
+            assertThat(ksession.getQueryResults("TestDeclaredTimeWindow")
+                    .iterator().next().get("$eventCount")).isEqualTo(results[i]);
             clock.advanceTime(10, TimeUnit.MILLISECONDS);
         }
     }
@@ -204,10 +202,9 @@ public class WindowTest {
         for (int i = 1; i <= 10; i++) {
             event = new TestEvent(null, "lengthDec", null);
             entryPoint.insert(event);
-            assertEquals((i < 5 ? i : 5),
-                         ((Long) ksession
-                                 .getQueryResults("TestDeclaredLengthWindow")
-                                 .iterator().next().get("$eventCount")).intValue());
+            assertThat(((Long) ksession
+                    .getQueryResults("TestDeclaredLengthWindow")
+                    .iterator().next().get("$eventCount")).intValue()).isEqualTo((i < 5 ? i : 5));
         }
     }
 
@@ -223,7 +220,7 @@ public class WindowTest {
             event = new TestEvent(null, "timeDec", null);
             entryPoint.insert(event);
             ksession.fireAllRules();
-            assertEquals(results[i], result.get(result.size() - 1).longValue());
+            assertThat(result.get(result.size() - 1).longValue()).isEqualTo(results[i]);
             clock.advanceTime(10, TimeUnit.MILLISECONDS);
         }
     }
@@ -239,8 +236,8 @@ public class WindowTest {
             event = new TestEvent(null, "lengthDec", null);
             entryPoint.insert(event);
             ksession.fireAllRules();
-            assertEquals((i < 5 ? i : 5), result.get(result.size() - 1)
-                                                .longValue());
+            assertThat(result.get(result.size() - 1)
+                    .longValue()).isEqualTo((i < 5 ? i : 5));
         }
     }
 

@@ -35,8 +35,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FireUntilHaltTest {
@@ -75,7 +74,7 @@ public class FireUntilHaltTest {
         final FactHandle fh = kSession.insert(p);
 
         Thread.sleep(100L);
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         kSession.submit(kieSession -> {
             p.setAge(18);
@@ -84,7 +83,7 @@ public class FireUntilHaltTest {
         });
 
         Thread.sleep(100L);
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         kSession.submit(kieSession -> {
             p.setHappy(true);
@@ -92,7 +91,7 @@ public class FireUntilHaltTest {
         });
 
         Thread.sleep(100L);
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         kSession.halt();
         kSession.dispose();
@@ -120,8 +119,8 @@ public class FireUntilHaltTest {
         if (t1.isAlive()) {
             t1.interrupt();
         }
-        assertFalse("T2 should have finished", aliveT2);
-        assertFalse("T1 should have finished", aliveT1);
+        assertThat(aliveT2).as("T2 should have finished").isFalse();
+        assertThat(aliveT1).as("T1 should have finished").isFalse();
     }
 
     @Test
@@ -159,7 +158,7 @@ public class FireUntilHaltTest {
         if (alive) {
             t1.interrupt();
         }
-        assertFalse("Thread should have died!", alive);
-        assertEquals(1, list.size());
+        assertThat(alive).as("Thread should have died!").isFalse();
+        assertThat(list.size()).isEqualTo(1);
     }
 }

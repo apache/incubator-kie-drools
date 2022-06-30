@@ -32,7 +32,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.Row;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DroolsEventListTest {
@@ -95,62 +95,62 @@ public class DroolsEventListTest {
             }
         });
 
-        
-        assertEquals( 3, sorted.size() );
-        assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
-        assertEquals( 2, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
-        assertEquals( 3, ((Cheese)sorted.get( 2 ).get( "stilton" )).getPrice() );
+
+        assertThat(sorted.size()).isEqualTo(3);
+        assertThat(((Cheese) sorted.get(0).get("stilton")).getPrice()).isEqualTo(1);
+        assertThat(((Cheese) sorted.get(1).get("stilton")).getPrice()).isEqualTo(2);
+        assertThat(((Cheese) sorted.get(2).get("stilton")).getPrice()).isEqualTo(3);
 
         // alter the price to remove the last row
         stilton3.setPrice( 4 );
         ksession.update(  s3Fh, stilton3 );
         ksession.fireAllRules();
-        
-        assertEquals( 2, sorted.size() );
-        assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
-        assertEquals( 2, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
+
+        assertThat(sorted.size()).isEqualTo(2);
+        assertThat(((Cheese) sorted.get(0).get("stilton")).getPrice()).isEqualTo(1);
+        assertThat(((Cheese) sorted.get(1).get("stilton")).getPrice()).isEqualTo(2);
 
         // alter the price to put the last row back in
         stilton3.setPrice( 3 );
         ksession.update(  s3Fh, stilton3 );
         ksession.fireAllRules();
 
-        assertEquals( 3, sorted.size() );
-        assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
-        assertEquals( 2, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
-        assertEquals( 3, ((Cheese)sorted.get( 2 ).get( "stilton" )).getPrice() );
+        assertThat(sorted.size()).isEqualTo(3);
+        assertThat(((Cheese) sorted.get(0).get("stilton")).getPrice()).isEqualTo(1);
+        assertThat(((Cheese) sorted.get(1).get("stilton")).getPrice()).isEqualTo(2);
+        assertThat(((Cheese) sorted.get(2).get("stilton")).getPrice()).isEqualTo(3);
         
         // alter the price to remove the middle row
         stilton2.setPrice( 4 );
         ksession.update(  s2Fh, stilton2 );
         ksession.fireAllRules();
 
-        assertEquals( 2, sorted.size() );
-        assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
-        assertEquals( 3, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
+        assertThat(sorted.size()).isEqualTo(2);
+        assertThat(((Cheese) sorted.get(0).get("stilton")).getPrice()).isEqualTo(1);
+        assertThat(((Cheese) sorted.get(1).get("stilton")).getPrice()).isEqualTo(3);
         
         // alter the price to add the previous middle rows to the end
         cheddar2.setPrice( 4 );
         ksession.update(  c2Fh, cheddar2 );
         ksession.fireAllRules();
 
-        assertEquals( 3, sorted.size() );
-        assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
-        assertEquals( 3, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
-        assertEquals( 4, ((Cheese)sorted.get( 2 ).get( "stilton" )).getPrice() );
+        assertThat(sorted.size()).isEqualTo(3);
+        assertThat(((Cheese) sorted.get(0).get("stilton")).getPrice()).isEqualTo(1);
+        assertThat(((Cheese) sorted.get(1).get("stilton")).getPrice()).isEqualTo(3);
+        assertThat(((Cheese) sorted.get(2).get("stilton")).getPrice()).isEqualTo(4);
             
         // Check a standard retract
         ksession.retract( s1Fh );
         ksession.fireAllRules();
 
-        assertEquals( 2, sorted.size() );
-        assertEquals( 3, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
-        assertEquals( 4, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
+        assertThat(sorted.size()).isEqualTo(2);
+        assertThat(((Cheese) sorted.get(0).get("stilton")).getPrice()).isEqualTo(3);
+        assertThat(((Cheese) sorted.get(1).get("stilton")).getPrice()).isEqualTo(4);
 
         // Close the query, we should get removed events for each row
         query.close();
-        
-        assertEquals( 0, sorted.size() );
+
+        assertThat(sorted.size()).isEqualTo(0);
        
     }
 

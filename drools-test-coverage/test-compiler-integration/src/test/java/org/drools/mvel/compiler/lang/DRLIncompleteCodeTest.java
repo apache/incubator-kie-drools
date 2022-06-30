@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class DRLIncompleteCodeTest {
 
@@ -49,13 +48,12 @@ public class DRLIncompleteCodeTest {
         System.out.println(parser.getErrors());
 
         assertThat(descr).isNotNull();
-        assertEquals("a.b.c", descr.getNamespace());
-        assertEquals("a.b.c.*", descr.getImports().get(0)
-                .getTarget());
+        assertThat(descr.getNamespace()).isEqualTo("a.b.c");
+        assertThat(descr.getImports().get(0)
+                .getTarget()).isEqualTo("a.b.c.*");
 
-        assertEquals( Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorSentences().get(2)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorSentences().get(2)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test
@@ -66,9 +64,8 @@ public class DRLIncompleteCodeTest {
         PackageDescr descr = parser.parse(true, input);
 
         assertThat(descr).isNotNull();
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorSentences().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorSentences().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test
@@ -79,13 +76,13 @@ public class DRLIncompleteCodeTest {
         PackageDescr descr = parser.parse(true, input);
 
         assertThat(descr).isNotNull();
-        assertEquals("MyRule", descr.getRules().get(0).getName());
+        assertThat(descr.getRules().get(0).getName()).isEqualTo("MyRule");
 
         assertThat(descr).isNotNull();
-        assertEquals("MyQuery", descr.getRules().get(1).getName());
+        assertThat(descr.getRules().get(1).getName()).isEqualTo("MyQuery");
 
-        assertEquals(Location.LOCATION_RHS, getLastIntegerValue(parser
-                .getEditorSentences().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorSentences().get(0).getContent())).isEqualTo(Location.LOCATION_RHS);
     }
 
     @Test
@@ -97,15 +94,15 @@ public class DRLIncompleteCodeTest {
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
-        assertEquals("a.b.c", descr.getNamespace());
-        assertEquals("a.b.c.*", descr.getImports().get(0)
-                .getTarget());
+        assertThat(descr.getNamespace()).isEqualTo("a.b.c");
+        assertThat(descr.getImports().get(0)
+                .getTarget()).isEqualTo("a.b.c.*");
 
         assertThat(descr).isNotNull();
-        assertEquals("MyRule", descr.getRules().get(0).getName());
+        assertThat(descr.getRules().get(0).getName()).isEqualTo("MyRule");
 
         assertThat(descr).isNotNull();
-        assertEquals("MyQuery", descr.getRules().get(1).getName());
+        assertThat(descr.getRules().get(1).getName()).isEqualTo("MyQuery");
     }
 
     @Test
@@ -154,9 +151,9 @@ public class DRLIncompleteCodeTest {
         PackageDescr descr = parser.parse(true, input);
         System.out.println(parser.getErrors());
 
-        assertEquals("a.b.c", descr.getNamespace());
+        assertThat(descr.getNamespace()).isEqualTo("a.b.c");
         // FIXME: assertEquals(2, descr.getRules().size());
-        assertEquals(true, parser.hasErrors());
+        assertThat(parser.hasErrors()).isEqualTo(true);
     }
 
     @Test @Ignore
@@ -168,12 +165,12 @@ public class DRLIncompleteCodeTest {
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
-        assertEquals("a.b.c", descr.getNamespace());
-        assertEquals("a.b.c.*", descr.getImports().get(0)
-                .getTarget());
+        assertThat(descr.getNamespace()).isEqualTo("a.b.c");
+        assertThat(descr.getImports().get(0)
+                .getTarget()).isEqualTo("a.b.c.*");
 
-        assertEquals(1, descr.getRules().size());
-        assertEquals("MyQuery", descr.getRules().get(0).getName());
+        assertThat(descr.getRules().size()).isEqualTo(1);
+        assertThat(descr.getRules().get(0).getName()).isEqualTo("MyQuery");
     }
 
     @Test @Ignore
@@ -185,11 +182,11 @@ public class DRLIncompleteCodeTest {
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
-        assertEquals("a.b.c", descr.getNamespace());
-        assertEquals("a.b.c.*", descr.getImports().get(0)
-                .getTarget());
+        assertThat(descr.getNamespace()).isEqualTo("a.b.c");
+        assertThat(descr.getImports().get(0)
+                .getTarget()).isEqualTo("a.b.c.*");
 
-        assertEquals(0, descr.getRules().size());
+        assertThat(descr.getRules().size()).isEqualTo(0);
     }
 
     @Test
@@ -201,12 +198,12 @@ public class DRLIncompleteCodeTest {
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr descr = parser.parse(true, input);
 
-        assertEquals("a.b.c", descr.getNamespace());
-        assertEquals("a.b.c.*", descr.getImports().get(0)
-                .getTarget());
+        assertThat(descr.getNamespace()).isEqualTo("a.b.c");
+        assertThat(descr.getImports().get(0)
+                .getTarget()).isEqualTo("a.b.c.*");
 
         assertThat(descr).isNotNull();
-        assertEquals("MyRule", descr.getRules().get(0).getName());
+        assertThat(descr.getRules().get(0).getName()).isEqualTo("MyRule");
     }
 
     @Test
@@ -219,9 +216,9 @@ public class DRLIncompleteCodeTest {
         PackageDescr descr = parser.parse(true, input);
         assertThat(descr).isNotNull();
 
-        assertEquals("a.b.c", descr.getNamespace());
-        assertEquals("a.b.c.*", descr.getImports().get(0)
-                .getTarget());
+        assertThat(descr.getNamespace()).isEqualTo("a.b.c");
+        assertThat(descr.getImports().get(0)
+                .getTarget()).isEqualTo("a.b.c.*");
     }
 
     @Test

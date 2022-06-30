@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ParallelBuildTest {
@@ -76,7 +76,7 @@ public class ParallelBuildTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, sb.toString());
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
 }

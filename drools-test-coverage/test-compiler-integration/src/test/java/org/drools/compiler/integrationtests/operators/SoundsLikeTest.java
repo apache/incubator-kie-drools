@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class SoundsLikeTest {
@@ -117,8 +117,7 @@ public class SoundsLikeTest {
             Stream.of(persons).forEach(person -> ksession.insert(new Person(person)));
 
             final int rules = ksession.fireAllRules();
-            assertEquals(firedRulesCount,
-                         rules);
+            assertThat(rules).isEqualTo(firedRulesCount);
         } finally {
             ksession.dispose();
         }
