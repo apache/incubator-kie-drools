@@ -50,7 +50,11 @@ import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusHumanTaskSe
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusProcessIdFactory;
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStatefulProcessService;
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStraightThroughProcessService;
+import org.kie.kogito.correlation.CompositeCorrelation;
+import org.kie.kogito.correlation.Correlation;
+import org.kie.kogito.correlation.CorrelationInstance;
 import org.kie.kogito.correlation.CorrelationServiceProducer;
+import org.kie.kogito.correlation.SimpleCorrelation;
 import org.kie.kogito.event.process.AttachmentEventBody;
 import org.kie.kogito.event.process.CommentEventBody;
 import org.kie.kogito.event.process.MilestoneEventBody;
@@ -164,7 +168,11 @@ public class ProcessesAssetsProcessor {
                 "org.kie.kogito.event.cloudevents.CloudEventMeta",
                 "org.kie.kogito.event.cloudevents.SpecVersionDeserializer",
                 "org.kie.kogito.event.cloudevents.SpecVersionSerializer",
-                "org.kie.kogito.jobs.api.Job");
+                "org.kie.kogito.jobs.api.Job",
+                CompositeCorrelation.class.getCanonicalName(),
+                SimpleCorrelation.class.getCanonicalName(),
+                Correlation.class.getCanonicalName(),
+                CorrelationInstance.class.getCanonicalName());
     }
 
     @BuildStep
