@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
@@ -80,15 +82,6 @@ public class GeneratedResourceUtils {
 
     public static Optional<IndexFile> getIndexFile(String modelType) {
         IndexFile toSearch = new IndexFile(modelType);
-        File existingFile;
-        try {
-            existingFile = getFileFromFileName(toSearch.getName());
-            toSearch = new IndexFile(existingFile);
-            logger.debug("IndexFile {} exists", toSearch.getName());
-            return Optional.of(toSearch);
-        } catch (KieEfestoCommonException e) {
-            logger.debug("IndexFile {} does not exists.", toSearch.getName());
-            return Optional.empty();
-        }
+        return getFileFromFileName(toSearch.getName()).map(IndexFile::new);
     }
 }
