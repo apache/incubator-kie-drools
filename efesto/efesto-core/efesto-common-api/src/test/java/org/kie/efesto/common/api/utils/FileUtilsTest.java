@@ -15,11 +15,12 @@
  */
 package org.kie.efesto.common.api.utils;
 
-import org.junit.jupiter.api.Test;
-import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
-
 import java.io.File;
 import java.io.InputStream;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -47,18 +48,13 @@ class FileUtilsTest {
 
     @Test
     void getFileFromFileNameExisting() {
-        File retrieved = FileUtils.getFileFromFileName(TEST_FILE);
-        assertThat(retrieved).isNotNull();
+        Optional<File> retrieved = FileUtils.getFileFromFileName(TEST_FILE);
+        assertThat(retrieved).isNotNull().isNotEmpty();
     }
 
     @Test
     void getFileFromFileNameNotExisting() {
-        try {
-            FileUtils.getFileFromFileName(NOT_EXISTING_FILE);
-            fail("Expecting KieEfestoCommonException thrown");
-        } catch (Exception e) {
-            assertThat(e instanceof KieEfestoCommonException).isTrue();
-        }
+        Optional<File> retrieved = FileUtils.getFileFromFileName(NOT_EXISTING_FILE);
+        assertThat(retrieved).isNotNull().isEmpty();
     }
-
 }

@@ -15,7 +15,6 @@
  */
 package org.kie.efesto.compilationmanager.core.utils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
@@ -97,19 +95,10 @@ public class CompilationManagerUtils {
     static IndexFile getIndexFile(EfestoCallableOutput compilationOutput) {
         String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY);
         IndexFile toReturn = new IndexFile(parentPath, compilationOutput.getFri().getModel());
-        File existingFile;
-        try {
-            existingFile = getFileFromFileName(toReturn.getName());
-            toReturn = new IndexFile(existingFile);
-            logger.debug("IndexFile {} already exists", toReturn.getName());
-        } catch (KieEfestoCommonException e) {
-            logger.debug("IndexFile {} does not exists, creating it...", toReturn.getName());
-            createIndexFile(toReturn);
-        }
-        return toReturn;
+        return getFileFromFileName(toReturn.getName()).map(IndexFile::new).orElseGet(() -> createIndexFile(toReturn));
     }
 
-    static void createIndexFile(IndexFile toCreate) {
+    private static IndexFile createIndexFile(IndexFile toCreate) {
         try {
             logger.debug("Writing file {}", toCreate.getPath());
             if (!toCreate.createNewFile()) {
@@ -119,6 +108,7 @@ public class CompilationManagerUtils {
             logger.error("Failed to create {} due to {}", toCreate.getName(), e);
             throw new KieCompilerServiceException("Failed to create " + toCreate.getName(), e);
         }
+        return toCreate;
     }
 
     static void populateIndexFile(IndexFile toPopulate, EfestoCompilationOutput compilationOutput) {

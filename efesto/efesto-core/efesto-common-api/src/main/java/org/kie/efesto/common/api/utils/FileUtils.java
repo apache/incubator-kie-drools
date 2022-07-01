@@ -15,8 +15,6 @@
  */
 package org.kie.efesto.common.api.utils;
 
-import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,8 +22,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 
 public class FileUtils {
 
@@ -94,15 +95,16 @@ public class FileUtils {
         }
     }
 
-    public static File getFileFromFileName(String fileName) {
-        try {
-            URL retrieved = Thread.currentThread().getContextClassLoader().getResource(fileName);
-            return new File(retrieved.getFile());
-        } catch (Exception e) {
-            throw new KieEfestoCommonException(String.format("Failed to find %s due to %s", fileName,
-                    e.getMessage()), e);
-        }
+    public static Optional<File> getFileFromFileName(String fileName) {
+        return getFileFromFileName(fileName, Thread.currentThread().getContextClassLoader());
     }
 
-
+    public static Optional<File> getFileFromFileName(String fileName, ClassLoader classLoader) {
+        URL retrieved = classLoader.getResource(fileName);
+        if (retrieved != null) {
+            return Optional.of(new File(retrieved.getFile()));
+        }
+        File file = new File(fileName);
+        return file.exists() ? Optional.of(file) : Optional.empty();
+    }
 }
