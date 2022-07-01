@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -67,8 +68,8 @@ class KieCompilerServiceDrlTest {
                 .filter(File::isFile)
                 .collect(Collectors.toSet());
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, "BasePath");
-        EfestoCompilationOutput retrieved = kieCompilerService.processResource(toProcess, memoryCompilerClassLoader);
-        assertThat(retrieved).isNotNull();
+        List<EfestoCompilationOutput> retrieved = kieCompilerService.processResource(toProcess, memoryCompilerClassLoader);
+        assertThat(retrieved).isNotNull().hasSize(1);
     }
 
 }

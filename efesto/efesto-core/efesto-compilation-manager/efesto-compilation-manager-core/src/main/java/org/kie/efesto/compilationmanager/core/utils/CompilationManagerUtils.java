@@ -64,15 +64,16 @@ public class CompilationManagerUtils {
             return Collections.emptyList();
         }
         Collection<IndexFile> toPopulate = new ArrayList<>();
-        EfestoCompilationOutput compilationOutput = retrieved.get().processResource(toProcess, memoryCompilerClassLoader);
-        if (compilationOutput instanceof EfestoCallableOutput) {
-            IndexFile indexFile = CompilationManagerUtils.getIndexFile((EfestoCallableOutput) compilationOutput);
-            toPopulate.add(indexFile);
-            populateIndexFile(indexFile, compilationOutput);
-            if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
-                loadClasses( ((EfestoCallableOutputClassesContainer) compilationOutput).getCompiledClassesMap(), memoryCompilerClassLoader );
-            } else if (compilationOutput instanceof EfestoRedirectOutput) {
-                toPopulate.addAll( getIndexFilesWithProcessedResource((EfestoRedirectOutput) compilationOutput, memoryCompilerClassLoader) );
+        for (EfestoCompilationOutput compilationOutput : retrieved.get().processResource(toProcess, memoryCompilerClassLoader)) {
+            if (compilationOutput instanceof EfestoCallableOutput) {
+                IndexFile indexFile = CompilationManagerUtils.getIndexFile((EfestoCallableOutput) compilationOutput);
+                toPopulate.add(indexFile);
+                populateIndexFile(indexFile, compilationOutput);
+                if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
+                    loadClasses(((EfestoCallableOutputClassesContainer) compilationOutput).getCompiledClassesMap(), memoryCompilerClassLoader);
+                } else if (compilationOutput instanceof EfestoRedirectOutput) {
+                    toPopulate.addAll(getIndexFilesWithProcessedResource((EfestoRedirectOutput) compilationOutput, memoryCompilerClassLoader));
+                }
             }
         }
         return toPopulate;

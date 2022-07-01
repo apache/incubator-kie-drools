@@ -15,6 +15,9 @@
  */
 package org.kie.efesto.compilationmanager.core.mocks;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
@@ -25,11 +28,11 @@ public abstract class AbstractMockKieCompilerService implements KieCompilerServi
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends EfestoResource, E extends EfestoCompilationOutput> E processResource(T toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public <T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         if (!canManageResource(toProcess)) {
             throw new KieCompilerServiceException(String.format("Unmanaged resource %s", toProcess.getClass()));
         }
-        return (E) new MockEfestoCallableOutput();
+        return Collections.singletonList( (E) new MockEfestoCallableOutput() );
     }
 
 }

@@ -1,5 +1,8 @@
 package org.kie.drl.engine.compilation.service;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
@@ -19,13 +22,13 @@ public class KieCompilerServicePackDesc implements KieCompilerService {
     }
 
     @Override
-    public <T extends EfestoResource, E extends EfestoCompilationOutput> E processResource(T toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public <T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         if (!canManageResource(toProcess)) {
             throw new KieCompilerServiceException(String.format("%s can not process %s",
                     this.getClass().getName(),
                     toProcess.getClass().getName()));
         }
-        return (E) getDrlCallableClassesContainer((EfestoSetResource<PackageDescr>) toProcess, memoryCompilerClassLoader);
+        return Collections.singletonList( (E) getDrlCallableClassesContainer((EfestoSetResource<PackageDescr>) toProcess, memoryCompilerClassLoader) );
     }
 
 }

@@ -15,6 +15,8 @@
  */
 package org.kie.efesto.compilationmanager.api.service;
 
+import java.util.List;
+
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.memorycompiler.KieMemoryCompiler;
@@ -40,6 +42,6 @@ public interface KieCompilerService {
      * @param memoryCompilerClassLoader
      * @return
      */
-    <T extends EfestoResource, E extends EfestoCompilationOutput> E processResource(T toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
+    <T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
 
 }
