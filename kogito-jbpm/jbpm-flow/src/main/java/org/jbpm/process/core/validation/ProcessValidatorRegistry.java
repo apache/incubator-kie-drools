@@ -20,10 +20,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 public class ProcessValidatorRegistry {
 
@@ -33,7 +33,9 @@ public class ProcessValidatorRegistry {
     private Set<ProcessValidator> additionalValidators = new CopyOnWriteArraySet<ProcessValidator>();
 
     private ProcessValidatorRegistry() {
-        defaultValidators.put(RuleFlowProcess.RULEFLOW_TYPE, RuleFlowProcessValidator.getInstance());
+        defaultValidators.put(KogitoWorkflowProcess.RULEFLOW_TYPE, RuleFlowProcessValidator.getInstance());
+        defaultValidators.put(KogitoWorkflowProcess.BPMN_TYPE, RuleFlowProcessValidator.getInstance());
+        defaultValidators.put(KogitoWorkflowProcess.SW_TYPE, RuleFlowProcessValidator.getInstance());
     }
 
     public static ProcessValidatorRegistry getInstance() {

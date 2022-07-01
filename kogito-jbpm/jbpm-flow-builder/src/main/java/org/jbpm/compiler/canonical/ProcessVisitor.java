@@ -36,27 +36,7 @@ import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
-import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.BoundaryEventNode;
-import org.jbpm.workflow.core.node.CatchLinkNode;
-import org.jbpm.workflow.core.node.CompositeContextNode;
-import org.jbpm.workflow.core.node.DynamicNode;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.EventNode;
-import org.jbpm.workflow.core.node.EventSubProcessNode;
-import org.jbpm.workflow.core.node.FaultNode;
-import org.jbpm.workflow.core.node.ForEachNode;
-import org.jbpm.workflow.core.node.HumanTaskNode;
-import org.jbpm.workflow.core.node.Join;
-import org.jbpm.workflow.core.node.MilestoneNode;
-import org.jbpm.workflow.core.node.RuleSetNode;
-import org.jbpm.workflow.core.node.Split;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.StateNode;
-import org.jbpm.workflow.core.node.SubProcessNode;
-import org.jbpm.workflow.core.node.ThrowLinkNode;
-import org.jbpm.workflow.core.node.TimerNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.core.node.*;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -86,6 +66,7 @@ import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_GLOBAL;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_IMPORTS;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_NAME;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_PACKAGE_NAME;
+import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_TYPE;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VALIDATE;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VERSION;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VISIBILITY;
@@ -154,6 +135,7 @@ public class ProcessVisitor extends AbstractVisitor {
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_PACKAGE_NAME, new StringLiteralExpr(process.getPackageName())))
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_DYNAMIC, new BooleanLiteralExpr(metadata.isDynamic())))
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_VERSION, new StringLiteralExpr(getOrDefault(process.getVersion(), DEFAULT_VERSION))))
+                .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_TYPE, new StringLiteralExpr(getOrDefault(process.getType(), KogitoWorkflowProcess.BPMN_TYPE))))
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_VISIBILITY,
                         new StringLiteralExpr(getOrDefault(((KogitoWorkflowProcess) process).getVisibility(), KogitoWorkflowProcess.PUBLIC_VISIBILITY))));
 

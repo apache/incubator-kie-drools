@@ -68,6 +68,7 @@ public abstract class AbstractMessageProducer<D> {
                 pi.getRootProcessId(),
                 String.valueOf(pi.getState()),
                 null,
+                pi.getProcess().getType(),
                 pi.getReferenceId());
         //setting correlation as extension attributes
         pi.unwrap().correlation()

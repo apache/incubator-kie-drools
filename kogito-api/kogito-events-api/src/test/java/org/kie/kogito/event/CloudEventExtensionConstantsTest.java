@@ -31,6 +31,7 @@ class CloudEventExtensionConstantsTest {
         assertThat(CloudEventExtensionConstants.PMML_FULL_RESULT).matches(nameValidation);
         assertThat(CloudEventExtensionConstants.PMML_MODEL_NAME).matches(nameValidation);
         assertThat(CloudEventExtensionConstants.PROCESS_ID).matches(nameValidation);
+        assertThat(CloudEventExtensionConstants.PROCESS_TYPE).matches(nameValidation);
         assertThat(CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID).matches(nameValidation);
         assertThat(CloudEventExtensionConstants.PROCESS_INSTANCE_ID).matches(nameValidation);
         assertThat(CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION).matches(nameValidation);

@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.acme.travels.Traveller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
@@ -289,6 +290,16 @@ class BasicRestIT {
                 .body("id", not(emptyOrNullString()))
                 .body("inout", is("pepito"))
                 .header("Location", not(emptyOrNullString()));
+    }
 
+    @Test
+    void testWorkflowType() {
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .get("/approvalsdetails")
+                .then()
+                .statusCode(200)
+                .body("type", is(KogitoWorkflowProcess.BPMN_TYPE));
     }
 }

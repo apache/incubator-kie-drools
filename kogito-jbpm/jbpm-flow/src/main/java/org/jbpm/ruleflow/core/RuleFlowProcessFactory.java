@@ -71,6 +71,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
     public static final String METHOD_PACKAGE_NAME = "packageName";
     public static final String METHOD_DYNAMIC = "dynamic";
     public static final String METHOD_VERSION = "version";
+    public static final String METHOD_TYPE = "type";
     public static final String METHOD_VISIBILITY = "visibility";
     public static final String METHOD_VALIDATE = "validate";
     public static final String METHOD_IMPORTS = "imports";
@@ -118,6 +119,11 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
 
     public RuleFlowProcessFactory visibility(String visibility) {
         getRuleFlowProcess().setVisibility(visibility);
+        return this;
+    }
+
+    public RuleFlowProcessFactory type(String type) {
+        getRuleFlowProcess().setType(type);
         return this;
     }
 

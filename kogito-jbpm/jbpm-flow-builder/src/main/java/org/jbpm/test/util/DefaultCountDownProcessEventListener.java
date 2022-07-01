@@ -62,8 +62,6 @@ public class DefaultCountDownProcessEventListener extends DefaultKogitoProcessEv
     }
 
     protected void countDown() {
-
         latch.countDown();
-
     }
 }

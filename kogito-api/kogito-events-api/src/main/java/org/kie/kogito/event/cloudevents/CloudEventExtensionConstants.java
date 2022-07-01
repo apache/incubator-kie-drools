@@ -32,6 +32,7 @@ public final class CloudEventExtensionConstants {
     public static final String PROCESS_REFERENCE_ID = "kogitoprocrefid";
     public static final String PROCESS_INSTANCE_STATE = "kogitoprocist";
     public static final String PROCESS_ID = "kogitoprocid";
+    public static final String PROCESS_TYPE = "kogitoproctype";
     public static final String PROCESS_PARENT_PROCESS_INSTANCE_ID = "kogitoparentprociid";
     public static final String PROCESS_ROOT_PROCESS_INSTANCE_ID = "kogitorootprociid";
     public static final String PROCESS_ROOT_PROCESS_ID = "kogitorootprocid";

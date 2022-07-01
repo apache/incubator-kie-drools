@@ -33,6 +33,7 @@ public class ProcessInstanceDataEvent extends ProcessDataEvent<ProcessInstanceEv
                 metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.STATE_META_DATA),
-                addons);
+                addons,
+                metaData.get(ProcessInstanceEventBody.PROCESS_TYPE_META_DATA));
     }
 }

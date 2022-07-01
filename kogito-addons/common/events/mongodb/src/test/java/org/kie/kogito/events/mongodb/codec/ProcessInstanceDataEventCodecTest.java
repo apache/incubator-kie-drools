@@ -69,6 +69,7 @@ class ProcessInstanceDataEventCodecTest {
         metaData.put(ProcessInstanceEventBody.VERSION_META_DATA, "testKogitoProcessInstanceVersion");
         metaData.put(ProcessInstanceEventBody.ROOT_ID_META_DATA, "testKogitoRootProcessInstanceId");
         metaData.put(ProcessInstanceEventBody.PROCESS_ID_META_DATA, "testKogitoProcessId");
+        metaData.put(ProcessInstanceEventBody.PROCESS_TYPE_META_DATA, "testKogitoProcessType");
         metaData.put(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA, "testKogitoRootProcessId");
         metaData.put(ProcessInstanceEventBody.PARENT_ID_META_DATA, "testKogitoParentProcessInstanceId");
         metaData.put(ProcessInstanceEventBody.STATE_META_DATA, "testKogitoProcessInstanceState");
@@ -79,6 +80,7 @@ class ProcessInstanceDataEventCodecTest {
                 .parentInstanceId("testKogitoParentProcessInstanceId")
                 .rootInstanceId("testKogitoRootProcessInstanceId")
                 .processId("testKogitoProcessId")
+                .processType("testKogitoProcessType")
                 .rootProcessId("testKogitoRootProcessId")
                 .processName("testProcessName")
                 .startDate(new Date())
@@ -158,6 +160,7 @@ class ProcessInstanceDataEventCodecTest {
             assertEquals(event.getKogitoProcessInstanceVersion(), doc.get("kogitoProcessInstanceVersion"));
             assertEquals(event.getKogitoRootProcessInstanceId(), doc.get("kogitoRootProcessinstanceId"));
             assertEquals(event.getKogitoProcessId(), doc.get("kogitoProcessId"));
+            assertEquals(event.getKogitoProcessType(), doc.get("kogitoProcessType"));
             assertEquals(event.getKogitoRootProcessId(), doc.get("kogitoRootProcessId"));
             assertEquals(event.getKogitoAddons(), doc.get("kogitoAddons"));
             assertEquals(event.getKogitoParentProcessInstanceId(), doc.get("kogitoParentProcessinstanceId"));

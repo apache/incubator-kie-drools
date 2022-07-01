@@ -130,6 +130,11 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
     }
 
     @Override
+    public String type() {
+        return get().getType();
+    }
+
+    @Override
     public T createModel() {
         return null;
     }

@@ -52,6 +52,7 @@ public class MessageProducer extends org.kie.kogito.services.event.impl.Abstract
                 pi.getRootProcessId(),
                 String.valueOf(pi.getState()),
                 null,
+                pi.getProcess().getType(),
                 pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty() ? null : pi.getReferenceId()) : eventData);
     }
 }

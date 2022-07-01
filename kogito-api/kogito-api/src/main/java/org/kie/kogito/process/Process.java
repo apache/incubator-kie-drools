@@ -51,6 +51,8 @@ public interface Process<T> {
 
     String version();
 
+    String type();
+
     void activate();
 
     void deactivate();

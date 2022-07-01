@@ -23,6 +23,7 @@ import org.jbpm.compiler.xml.core.SemanticModules;
 import org.jbpm.process.core.impl.XmlProcessDumper;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 public class XmlRuleFlowProcessDumper extends XmlWorkflowProcessDumper implements XmlProcessDumper {
 
@@ -30,7 +31,7 @@ public class XmlRuleFlowProcessDumper extends XmlWorkflowProcessDumper implement
 
     public XmlRuleFlowProcessDumper() {
         super(
-                "RuleFlow",
+                KogitoWorkflowProcess.RULEFLOW_TYPE,
                 "http://drools.org/drools-5.0/process",
                 "drools-processes-5.0.xsd",
                 new ProcessSemanticModule());

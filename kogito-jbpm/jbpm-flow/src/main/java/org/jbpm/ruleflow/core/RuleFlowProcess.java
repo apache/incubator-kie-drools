@@ -43,8 +43,6 @@ import org.kie.kogito.process.validation.ValidationException;
 
 public class RuleFlowProcess extends WorkflowProcessImpl {
 
-    public static final String RULEFLOW_TYPE = "RuleFlow";
-
     private static final long serialVersionUID = 510l;
 
     public RuleFlowProcess() {

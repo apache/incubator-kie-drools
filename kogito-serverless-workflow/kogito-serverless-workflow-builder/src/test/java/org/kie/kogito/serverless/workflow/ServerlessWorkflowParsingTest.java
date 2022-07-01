@@ -62,6 +62,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("function", process.getId());
         assertEquals("test-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -96,6 +97,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("function", process.getId());
         assertEquals("test-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -135,6 +137,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("function", process.getId());
         assertEquals("test-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -177,6 +180,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("function", process.getId());
         assertEquals("test-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -213,6 +217,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("function", process.getId());
         assertEquals("test-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -251,6 +256,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("function", process.getId());
         assertEquals("test-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -289,6 +295,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("function", process.getId());
         assertEquals("test-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -354,6 +361,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("function", process.getId());
         assertEquals("test-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -377,6 +385,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("parallelworkflow", process.getId());
         assertEquals("parallel-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -403,6 +412,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("produceeventontransition", process.getId());
         assertEquals("Produce Event On Transition", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -433,6 +443,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("eventswitchworkflow", process.getId());
         assertEquals("event-switch-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -477,6 +488,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("prchecker", process.getId());
         assertEquals("Github PR Checker Workflow", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -519,6 +531,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("produceeventontransition", process.getId());
         assertEquals("Produce Event On Transition", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -560,6 +573,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("switchworkflow", process.getId());
         assertEquals("switch-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 
@@ -585,6 +599,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertEquals("switchworkflow", process.getId());
         assertEquals("switch-wf", process.getName());
         assertEquals("1.0", process.getVersion());
+        assertEquals("SW", process.getType());
         assertEquals("org.kie.kogito.serverless", process.getPackageName());
         assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
 

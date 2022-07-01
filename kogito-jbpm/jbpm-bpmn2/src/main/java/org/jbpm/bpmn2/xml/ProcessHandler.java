@@ -156,7 +156,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             name = id;
         }
         process.setName(name);
-        process.setType("RuleFlow");
+        process.setType(KogitoWorkflowProcess.BPMN_TYPE);
         if (packageName == null) {
             packageName = "org.drools.bpmn2";
         }

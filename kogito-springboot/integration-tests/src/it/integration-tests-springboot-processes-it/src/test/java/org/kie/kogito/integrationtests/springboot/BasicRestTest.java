@@ -23,6 +23,7 @@ import java.util.UUID;
 import org.acme.travels.Traveller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.integrationtests.UnitOfWorkTestEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -278,4 +279,14 @@ class BasicRestTest extends BaseRestTest {
                 .body("version", is(version));
     }
 
+    @Test
+    void testWorkflowType() {
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/approvalsdetails")
+                .then()
+                .statusCode(200)
+                .body("type", is(KogitoWorkflowProcess.BPMN_TYPE));
+    }
 }

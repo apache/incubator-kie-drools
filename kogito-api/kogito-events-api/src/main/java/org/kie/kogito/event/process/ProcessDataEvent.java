@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.event.process;
 
-import java.util.Objects;
-
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 
@@ -49,7 +47,36 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoBusinessKey;
 
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_TYPE)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    protected String kogitoProcessType;
+
     public ProcessDataEvent() {
+    }
+
+    public ProcessDataEvent(String source,
+            T body,
+            String kogitoProcessInstanceId,
+            String kogitoProcessInstanceVersion,
+            String kogitoParentProcessInstanceId,
+            String kogitoRootProcessInstanceId,
+            String kogitoProcessId,
+            String kogitoRootProcessId,
+            String kogitoProcessInstanceState,
+            String kogitoAddons,
+            String kogitoProcessType) {
+        this(null,
+                source,
+                body,
+                kogitoProcessInstanceId,
+                kogitoProcessInstanceVersion,
+                kogitoParentProcessInstanceId,
+                kogitoRootProcessInstanceId,
+                kogitoProcessId,
+                kogitoRootProcessId,
+                kogitoProcessInstanceState,
+                kogitoAddons,
+                kogitoProcessType);
     }
 
     public ProcessDataEvent(String type,
@@ -62,7 +89,8 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
             String kogitoProcessId,
             String kogitoRootProcessId,
             String kogitoProcessInstanceState,
-            String kogitoAddons) {
+            String kogitoAddons,
+            String kogitoProcessType) {
         this(type,
                 source,
                 body,
@@ -74,6 +102,7 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
                 kogitoRootProcessId,
                 kogitoProcessInstanceState,
                 kogitoAddons,
+                kogitoProcessType,
                 null);
     }
 
@@ -88,6 +117,7 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
             String kogitoRootProcessId,
             String kogitoProcessInstanceState,
             String kogitoAddons,
+            String kogitoProcessType,
             String kogitoReferenceId) {
         super(type,
                 source,
@@ -101,6 +131,7 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
         this.kogitoParentProcessInstanceId = kogitoParentProcessInstanceId;
         this.kogitoProcessInstanceState = kogitoProcessInstanceState;
         this.kogitoReferenceId = kogitoReferenceId;
+        this.kogitoProcessType = kogitoProcessType;
     }
 
     public String getKogitoParentProcessInstanceId() {
@@ -131,6 +162,10 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
         return kogitoProcessInstanceVersion;
     }
 
+    public String getKogitoProcessType() {
+        return kogitoProcessType;
+    }
+
     @Override
     public String toString() {
         return "ProcessDataEvent{" +
@@ -140,25 +175,8 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
                 ", kogitoReferenceId='" + kogitoReferenceId + '\'' +
                 ", kogitoStartFromNode='" + kogitoStartFromNode + '\'' +
                 ", kogitoBusinessKey='" + kogitoBusinessKey + '\'' +
+                ", kogitoProcessType='" + kogitoProcessType + '\'' +
                 "} " + super.toString();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof ProcessDataEvent)) {
-            return false;
-        }
-        ProcessDataEvent<?> that = (ProcessDataEvent<?>) o;
-        return Objects.equals(getKogitoParentProcessInstanceId(), that.getKogitoParentProcessInstanceId()) && Objects.equals(getKogitoProcessInstanceState(), that.getKogitoProcessInstanceState())
-                && Objects.equals(getKogitoReferenceId(), that.getKogitoReferenceId()) && Objects.equals(getKogitoStartFromNode(), that.getKogitoStartFromNode())
-                && Objects.equals(getKogitoBusinessKey(), that.getKogitoBusinessKey());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getKogitoParentProcessInstanceId(), getKogitoProcessInstanceState(), getKogitoReferenceId(), getKogitoStartFromNode(), getKogitoBusinessKey());
-    }
 }

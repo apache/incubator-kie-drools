@@ -29,6 +29,7 @@ public class ProcessInstanceEventBody {
     public static final String PARENT_ID_META_DATA = "kogito.processinstance.parentInstanceId";
     public static final String ROOT_ID_META_DATA = "kogito.processinstance.rootInstanceId";
     public static final String PROCESS_ID_META_DATA = "kogito.processinstance.processId";
+    public static final String PROCESS_TYPE_META_DATA = "kogito.processinstance.processType";
     public static final String ROOT_PROCESS_ID_META_DATA = "kogito.processinstance.rootProcessId";
     public static final String STATE_META_DATA = "kogito.processinstance.state";
 
@@ -37,6 +38,7 @@ public class ProcessInstanceEventBody {
     private String parentInstanceId;
     private String rootInstanceId;
     private String processId;
+    private String processType;
     private String rootProcessId;
     private String processName;
     private Date startDate;
@@ -77,6 +79,10 @@ public class ProcessInstanceEventBody {
 
     public String getProcessId() {
         return processId;
+    }
+
+    public String getProcessType() {
+        return processType;
     }
 
     public String getRootProcessId() {
@@ -134,6 +140,7 @@ public class ProcessInstanceEventBody {
         metadata.put(PARENT_ID_META_DATA, parentInstanceId);
         metadata.put(ROOT_ID_META_DATA, rootInstanceId);
         metadata.put(PROCESS_ID_META_DATA, processId);
+        metadata.put(PROCESS_TYPE_META_DATA, processType);
         metadata.put(ROOT_PROCESS_ID_META_DATA, rootProcessId);
         metadata.put(STATE_META_DATA, String.valueOf(state));
         return metadata;
@@ -147,6 +154,7 @@ public class ProcessInstanceEventBody {
                 ", parentInstanceId='" + parentInstanceId + '\'' +
                 ", rootInstanceId='" + rootInstanceId + '\'' +
                 ", processId='" + processId + '\'' +
+                ", processType='" + processType + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
                 ", processName='" + processName + '\'' +
                 ", startDate=" + startDate +
@@ -220,6 +228,11 @@ public class ProcessInstanceEventBody {
 
         public Builder processId(String processId) {
             instance.processId = processId;
+            return this;
+        }
+
+        public Builder processType(String processType) {
+            instance.processType = processType;
             return this;
         }
 

@@ -20,6 +20,7 @@ import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -258,5 +259,41 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     @JsonIgnore
     public Map<String, Object> getExtensionAttributes() {
         return extensionAttributes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        AbstractDataEvent<?> that = (AbstractDataEvent<?>) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractDataEvent{" +
+                "specVersion=" + specVersion +
+                ", id='" + id + '\'' +
+                ", source=" + source +
+                ", type='" + type + '\'' +
+                ", time=" + time +
+                ", subject='" + subject + '\'' +
+                ", dataContentType='" + dataContentType + '\'' +
+                ", dataSchema=" + dataSchema +
+                ", data=" + data +
+                ", kogitoProcessInstanceId='" + kogitoProcessInstanceId + '\'' +
+                ", kogitoRootProcessInstanceId='" + kogitoRootProcessInstanceId + '\'' +
+                ", kogitoProcessId='" + kogitoProcessId + '\'' +
+                ", kogitoRootProcessId='" + kogitoRootProcessId + '\'' +
+                ", kogitoAddons='" + kogitoAddons + '\'' +
+                ", extensionAttributes=" + extensionAttributes +
+                '}';
     }
 }

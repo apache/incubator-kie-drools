@@ -16,6 +16,7 @@
 package org.kie.kogito.quarkus.workflows;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.http.ContentType;
@@ -34,6 +35,17 @@ class GreetRestIT {
     @Test
     void testGreetUnknownRest() {
         assertIt("greetUnknown", "I'm not familiar with your language,");
+    }
+
+    @Test
+    void testWorkflowType() {
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .get("/greetdetails")
+                .then()
+                .statusCode(200)
+                .body("type", is(KogitoWorkflowProcess.SW_TYPE));
     }
 
     private void assertIt(String flowName, String unknownMessage) {
