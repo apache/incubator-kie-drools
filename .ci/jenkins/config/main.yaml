@@ -4,13 +4,12 @@ ecosystem:
   - name: optaplanner
     regexs:
     - opta.*
-
 git:
   branches:
   - name: main
+  - name: optaplanner-8.24.x
   main_branch:
     default: main
-
 seed:
   config_file:
     git:
@@ -20,6 +19,5 @@ seed:
         credentials_id: kie-ci
       branch: main
     path: .ci/jenkins/config/branch.yaml
-
 jenkins:
   email_creds_id: OPTAPLANNER_CI_EMAIL
