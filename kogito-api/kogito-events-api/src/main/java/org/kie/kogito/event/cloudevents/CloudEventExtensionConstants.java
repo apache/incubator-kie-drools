@@ -28,6 +28,7 @@ public final class CloudEventExtensionConstants {
     public static final String PMML_FULL_RESULT = "kogitopmmlfullresult";
     public static final String PMML_MODEL_NAME = "kogitopmmlmodelname";
     public static final String PROCESS_INSTANCE_ID = "kogitoprocinstanceid";
+    public static final String PROCESS_INSTANCE_VERSION = "kogitoprocversion";
     public static final String PROCESS_REFERENCE_ID = "kogitoprocrefid";
     public static final String PROCESS_INSTANCE_STATE = "kogitoprocist";
     public static final String PROCESS_ID = "kogitoprocid";

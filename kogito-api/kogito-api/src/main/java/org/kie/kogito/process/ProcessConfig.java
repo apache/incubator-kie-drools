@@ -30,4 +30,6 @@ public interface ProcessConfig extends KogitoConfig {
     UnitOfWorkManager unitOfWorkManager();
 
     JobsService jobsService();
+
+    ProcessVersionResolver versionResolver();
 }

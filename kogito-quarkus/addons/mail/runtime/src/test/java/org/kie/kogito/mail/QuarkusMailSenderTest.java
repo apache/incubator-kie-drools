@@ -25,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
 import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
-import org.mockito.Mockito;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.MockMailbox;
@@ -53,7 +52,6 @@ public class QuarkusMailSenderTest {
 
     @Test
     void testMail() {
-        UserTaskDeadlineDataEvent event = Mockito.mock(UserTaskDeadlineDataEvent.class);
         Map<String, Object> notification = new HashMap<>();
         notification.put(MailInfo.SUBJECT_PROPERTY, SUBJECT);
         notification.put(MailInfo.BODY_PROPERTY, TEXT);
@@ -61,7 +59,7 @@ public class QuarkusMailSenderTest {
         notification.put(MailInfo.TO_PROPERTY, TO + ",fulanito@doesnotexist.com");
 
         UserTaskDeadlineEventBody eventData = UserTaskDeadlineEventBody.create("1", notification).build();
-        Mockito.when(event.getData()).thenReturn(eventData);
+        UserTaskDeadlineDataEvent event = new UserTaskDeadlineDataEvent(null, null, null, eventData, null, null, null, null);
         sender.onDeadline(event);
         List<Mail> messages = mailBox.getMessagesSentTo(TO);
         assertEquals(1, messages.size());

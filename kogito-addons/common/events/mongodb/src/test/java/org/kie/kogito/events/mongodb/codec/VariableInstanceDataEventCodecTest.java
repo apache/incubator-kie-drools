@@ -60,8 +60,9 @@ class VariableInstanceDataEventCodecTest {
         String kogitoAddons = "testKogitoAddons";
 
         Map<String, String> metaData = new HashMap<>();
-        metaData.put(ProcessInstanceEventBody.ID_META_DATA, "testKogitoProcessinstanceId");
-        metaData.put(ProcessInstanceEventBody.ROOT_ID_META_DATA, "testKogitoRootProcessinstanceId");
+        metaData.put(ProcessInstanceEventBody.ID_META_DATA, "testKogitoProcessInstanceId");
+        metaData.put(ProcessInstanceEventBody.VERSION_META_DATA, "testKogitoProcessInstanceVersion");
+        metaData.put(ProcessInstanceEventBody.ROOT_ID_META_DATA, "testKogitoRootProcessInstanceId");
         metaData.put(ProcessInstanceEventBody.PROCESS_ID_META_DATA, "testKogitoProcessId");
         metaData.put(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA, "testKogitoRootProcessId");
 
@@ -72,9 +73,9 @@ class VariableInstanceDataEventCodecTest {
                 .changedByNodeType("testChangedByNodeType")
                 .changedByUser("testChangedByUser")
                 .processId("testKogitoProcessId")
-                .processInstanceId("testKogitoProcessinstanceId")
+                .processInstanceId("testKogitoProcessInstanceId")
                 .rootProcessId("testKogitoRootProcessId")
-                .rootProcessInstanceId("testKogitoRootProcessinstanceId")
+                .rootProcessInstanceId("testKogitoRootProcessInstanceId")
                 .variableName("testVariableName")
                 .variablePreviousValue("testVariablePreviousValue")
                 .variableValue("testVariableValue")
@@ -126,8 +127,8 @@ class VariableInstanceDataEventCodecTest {
             assertEquals(event.getSubject(), doc.get("subject"));
             assertEquals(event.getDataContentType(), doc.get("dataContentType"));
             assertEquals(event.getDataSchema(), doc.get("dataSchema"));
-            assertEquals(event.getKogitoProcessinstanceId(), doc.get("kogitoProcessinstanceId"));
-            assertEquals(event.getKogitoRootProcessinstanceId(), doc.get("kogitoRootProcessinstanceId"));
+            assertEquals(event.getKogitoProcessInstanceId(), doc.get("kogitoProcessinstanceId"));
+            assertEquals(event.getKogitoRootProcessInstanceId(), doc.get("kogitoRootProcessinstanceId"));
             assertEquals(event.getKogitoProcessId(), doc.get("kogitoProcessId"));
             assertEquals(event.getKogitoRootProcessId(), doc.get("kogitoRootProcessId"));
             assertEquals(event.getKogitoAddons(), doc.get("kogitoAddons"));

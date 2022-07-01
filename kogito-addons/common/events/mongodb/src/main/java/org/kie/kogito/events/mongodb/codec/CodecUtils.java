@@ -47,8 +47,8 @@ public class CodecUtils {
         doc.put("subject", event.getSubject());
         doc.put("dataContentType", event.getDataContentType());
         doc.put("dataSchema", event.getDataSchema());
-        doc.put("kogitoProcessinstanceId", event.getKogitoProcessinstanceId());
-        doc.put("kogitoRootProcessinstanceId", event.getKogitoRootProcessinstanceId());
+        doc.put("kogitoProcessinstanceId", event.getKogitoProcessInstanceId());
+        doc.put("kogitoRootProcessinstanceId", event.getKogitoRootProcessInstanceId());
         doc.put("kogitoProcessId", event.getKogitoProcessId());
         doc.put("kogitoRootProcessId", event.getKogitoRootProcessId());
         doc.put("kogitoAddons", event.getKogitoAddons());

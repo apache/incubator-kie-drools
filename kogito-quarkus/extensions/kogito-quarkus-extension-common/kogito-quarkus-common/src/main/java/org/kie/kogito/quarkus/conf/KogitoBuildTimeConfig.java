@@ -37,4 +37,10 @@ public class KogitoBuildTimeConfig {
      */
     @ConfigItem(name = "jackson.fail-on-empty-bean", defaultValue = "false")
     public Boolean failOnEmptyBean;
+
+    /**
+     * Strategy to resolve a Process version to use
+     */
+    @ConfigItem(name = "workflow.version-strategy", defaultValue = "workflow")
+    public String versionStrategy;
 }

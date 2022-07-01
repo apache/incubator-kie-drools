@@ -37,6 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimerEventIT extends AbstractCodegenIT {
 
+    private static final int TIME_OUT = 5000;
+
     @Test
     void testIntermediateCycleTimerEvent() throws Exception {
 
@@ -55,7 +57,7 @@ public class TimerEventIT extends AbstractCodegenIT {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
 
-        boolean completed = listener.waitTillCompleted(5000);
+        boolean completed = listener.waitTillCompleted(TIME_OUT);
         assertThat(completed).isTrue();
 
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
@@ -84,9 +86,8 @@ public class TimerEventIT extends AbstractCodegenIT {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
 
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-        assertThat(processEventListener.waitTillCompleted(5000)).isTrue();
+        assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
+        assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
 
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
@@ -98,7 +99,9 @@ public class TimerEventIT extends AbstractCodegenIT {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 1);
+        ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(processEventListener);
 
         Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
 
@@ -111,9 +114,8 @@ public class TimerEventIT extends AbstractCodegenIT {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
 
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-
+        assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
+        assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
@@ -124,7 +126,9 @@ public class TimerEventIT extends AbstractCodegenIT {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(processEventListener);
 
         Process<? extends Model> p = app.get(Processes.class).processById("TimerBoundaryEvent");
 
@@ -135,9 +139,8 @@ public class TimerEventIT extends AbstractCodegenIT {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
 
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-
+        assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
+        assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
@@ -148,7 +151,9 @@ public class TimerEventIT extends AbstractCodegenIT {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(processEventListener);
 
         Process<? extends Model> p = app.get(Processes.class).processById("TimerBoundaryEvent");
 
@@ -159,9 +164,8 @@ public class TimerEventIT extends AbstractCodegenIT {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
 
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-
+        assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
+        assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
@@ -171,8 +175,10 @@ public class TimerEventIT extends AbstractCodegenIT {
         Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventDateISOOnTask.bpmn2");
         assertThat(app).isNotNull();
 
-        ProcessCompletedCountDownProcessEventListener listener = new ProcessCompletedCountDownProcessEventListener();
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(processEventListener);
 
         Process<? extends Model> p = app.get(Processes.class).processById("TimerBoundaryEvent");
 
@@ -185,9 +191,8 @@ public class TimerEventIT extends AbstractCodegenIT {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
 
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-
+        assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
+        assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
@@ -197,8 +202,10 @@ public class TimerEventIT extends AbstractCodegenIT {
         Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventDurationISO.bpmn2");
         assertThat(app).isNotNull();
 
-        ProcessCompletedCountDownProcessEventListener listener = new ProcessCompletedCountDownProcessEventListener();
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(processEventListener);
 
         Process<? extends Model> p = app.get(Processes.class).processById("TimerBoundaryEvent");
 
@@ -209,9 +216,8 @@ public class TimerEventIT extends AbstractCodegenIT {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
 
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-
+        assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
+        assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
@@ -228,7 +234,7 @@ public class TimerEventIT extends AbstractCodegenIT {
         // activate to schedule timers
         p.activate();
 
-        boolean completed = listener.waitTillCompleted(5000);
+        boolean completed = listener.waitTillCompleted(TIME_OUT);
         assertThat(completed).isTrue();
 
         Collection<?> instances = p.instances().values(ProcessInstanceReadMode.MUTABLE);
@@ -257,7 +263,7 @@ public class TimerEventIT extends AbstractCodegenIT {
         // activate to schedule timers
         p.activate();
 
-        boolean completed = listener.waitTillCompleted(5000);
+        boolean completed = listener.waitTillCompleted(TIME_OUT);
         assertThat(completed).isTrue();
 
         Collection<?> instances = p.instances().values(ProcessInstanceReadMode.MUTABLE);

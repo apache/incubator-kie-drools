@@ -33,6 +33,6 @@ public class StringCloudEvent extends ProcessDataEvent<String> {
     }
 
     public StringCloudEvent(String dummyEvent, String type, String source, String referenceId) {
-        super(type, Optional.ofNullable(source).orElse(StringCloudEvent.class.getSimpleName()), dummyEvent, "1", "1", "1", "1", "1", "1", null, referenceId);
+        super(type, Optional.ofNullable(source).orElse(StringCloudEvent.class.getSimpleName()), dummyEvent, "1", "1", "1", "1", "1", "1", "1", null, referenceId);
     }
 }

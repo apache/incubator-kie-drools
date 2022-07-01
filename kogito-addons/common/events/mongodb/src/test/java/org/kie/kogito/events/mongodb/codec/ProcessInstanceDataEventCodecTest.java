@@ -65,17 +65,19 @@ class ProcessInstanceDataEventCodecTest {
         String kogitoAddons = "testKogitoAddons";
 
         Map<String, String> metaData = new HashMap<>();
-        metaData.put(ProcessInstanceEventBody.ID_META_DATA, "testKogitoProcessinstanceId");
-        metaData.put(ProcessInstanceEventBody.ROOT_ID_META_DATA, "testKogitoRootProcessinstanceId");
+        metaData.put(ProcessInstanceEventBody.ID_META_DATA, "testKogitoProcessInstanceId");
+        metaData.put(ProcessInstanceEventBody.VERSION_META_DATA, "testKogitoProcessInstanceVersion");
+        metaData.put(ProcessInstanceEventBody.ROOT_ID_META_DATA, "testKogitoRootProcessInstanceId");
         metaData.put(ProcessInstanceEventBody.PROCESS_ID_META_DATA, "testKogitoProcessId");
         metaData.put(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA, "testKogitoRootProcessId");
-        metaData.put(ProcessInstanceEventBody.PARENT_ID_META_DATA, "testKogitoParentProcessinstanceId");
-        metaData.put(ProcessInstanceEventBody.STATE_META_DATA, "testKogitoProcessinstanceState");
+        metaData.put(ProcessInstanceEventBody.PARENT_ID_META_DATA, "testKogitoParentProcessInstanceId");
+        metaData.put(ProcessInstanceEventBody.STATE_META_DATA, "testKogitoProcessInstanceState");
 
         ProcessInstanceEventBody body = ProcessInstanceEventBody.create()
                 .id("testId")
-                .parentInstanceId("testKogitoParentProcessinstanceId")
-                .rootInstanceId("testKogitoRootProcessinstanceId")
+                .version("testVersion")
+                .parentInstanceId("testKogitoParentProcessInstanceId")
+                .rootInstanceId("testKogitoRootProcessInstanceId")
                 .processId("testKogitoProcessId")
                 .rootProcessId("testKogitoRootProcessId")
                 .processName("testProcessName")
@@ -152,17 +154,19 @@ class ProcessInstanceDataEventCodecTest {
             assertEquals(event.getSubject(), doc.get("subject"));
             assertEquals(event.getDataContentType(), doc.get("dataContentType"));
             assertEquals(event.getDataSchema(), doc.get("dataSchema"));
-            assertEquals(event.getKogitoProcessinstanceId(), doc.get("kogitoProcessinstanceId"));
-            assertEquals(event.getKogitoRootProcessinstanceId(), doc.get("kogitoRootProcessinstanceId"));
+            assertEquals(event.getKogitoProcessInstanceId(), doc.get("kogitoProcessinstanceId"));
+            assertEquals(event.getKogitoProcessInstanceVersion(), doc.get("kogitoProcessInstanceVersion"));
+            assertEquals(event.getKogitoRootProcessInstanceId(), doc.get("kogitoRootProcessinstanceId"));
             assertEquals(event.getKogitoProcessId(), doc.get("kogitoProcessId"));
             assertEquals(event.getKogitoRootProcessId(), doc.get("kogitoRootProcessId"));
             assertEquals(event.getKogitoAddons(), doc.get("kogitoAddons"));
-            assertEquals(event.getKogitoParentProcessinstanceId(), doc.get("kogitoParentProcessinstanceId"));
-            assertEquals(event.getKogitoProcessinstanceState(), doc.get("kogitoProcessinstanceState"));
+            assertEquals(event.getKogitoParentProcessInstanceId(), doc.get("kogitoParentProcessinstanceId"));
+            assertEquals(event.getKogitoProcessInstanceState(), doc.get("kogitoProcessinstanceState"));
             assertEquals(event.getKogitoReferenceId(), doc.get("kogitoReferenceId"));
             assertEquals(event.getKogitoStartFromNode(), doc.get("kogitoStartFromNode"));
 
             assertEquals(event.getData().getId(), ((Document) doc.get("data")).get("id"));
+            assertEquals(event.getData().getVersion(), ((Document) doc.get("data")).get("version"));
             assertEquals(event.getData().getParentInstanceId(), ((Document) doc.get("data")).get("parentInstanceId"));
             assertEquals(event.getData().getRootInstanceId(), ((Document) doc.get("data")).get("rootInstanceId"));
             assertEquals(event.getData().getProcessId(), ((Document) doc.get("data")).get("processId"));

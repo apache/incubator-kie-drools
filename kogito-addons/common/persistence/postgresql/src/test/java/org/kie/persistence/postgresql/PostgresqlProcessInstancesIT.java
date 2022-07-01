@@ -16,6 +16,7 @@
 package org.kie.persistence.postgresql;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.drools.util.io.ClassPathResource;
 import org.junit.jupiter.api.AfterAll;
@@ -30,6 +31,7 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
+import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -37,7 +39,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import io.vertx.pgclient.PgPool;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,7 +57,6 @@ class PostgresqlProcessInstancesIT {
     final static KogitoPostgreSqlContainer container = new KogitoPostgreSqlContainer();
 
     private static PgPool client;
-
     private SecurityPolicy securityPolicy = SecurityPolicy.of(IdentityProviders.of("john"));
 
     @BeforeAll
@@ -66,9 +70,13 @@ class PostgresqlProcessInstancesIT {
         container.stop();
     }
 
+    boolean lock() {
+        return false;
+    }
+
     private BpmnProcess createProcess(String fileName) {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
-        process.setProcessInstancesFactory(new PostgreProcessInstancesFactory(client));
+        process.setProcessInstancesFactory(new PostgreProcessInstancesFactory(client, lock()));
         process.configure();
         process.instances().values(ProcessInstanceReadMode.MUTABLE).forEach(p -> p.abort());
         return process;
@@ -85,7 +93,7 @@ class PostgresqlProcessInstancesIT {
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
-        assertThat(processInstance.description()).isEqualTo("User Task");
+        assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
 
         PostgresqlProcessInstances processInstances = (PostgresqlProcessInstances) process.instances();
         assertThat(processInstances.size()).isOne();
@@ -100,7 +108,7 @@ class PostgresqlProcessInstancesIT {
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");
 
-        assertThat(processInstance.description()).isEqualTo("User Task");
+        assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
 
         assertThat(process.instances().values().iterator().next().workItems(securityPolicy)).hasSize(1);
 
@@ -155,10 +163,97 @@ class PostgresqlProcessInstancesIT {
         assertThat(scriptProcess.instances().findById(utProcessInstance.id())).isEmpty();
     }
 
+    @Test
+    public void testUpdate() {
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        processInstance.start();
+
+        PostgresqlProcessInstances processInstances = (PostgresqlProcessInstances) process.instances();
+        assertThat(processInstances.size()).isOne();
+        Optional<?> foundOne = processInstances.findById(processInstance.id());
+        BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
+        foundOne = processInstances.findById(processInstance.id());
+        BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
+        assertEquals(lock() ? 1L : 0, instanceOne.version());
+        assertEquals(lock() ? 1L : 0, instanceTwo.version());
+        instanceOne.updateVariables(BpmnVariables.create(Collections.singletonMap("s", "test")));
+        try {
+            BpmnVariables testvar = BpmnVariables.create(Collections.singletonMap("ss", "test"));
+            instanceTwo.updateVariables(testvar);
+            if (lock()) {
+                fail("Updating process should have failed");
+            }
+        } catch (RuntimeException e) {
+            assertThat(e.getMessage()).isEqualTo("Process instance with id '" + instanceOne.id() + "' updated or deleted by other request");
+        }
+        foundOne = processInstances.findById(processInstance.id());
+        instanceOne = (BpmnProcessInstance) foundOne.get();
+        assertEquals(lock() ? 2L : 0, instanceOne.version());
+
+        processInstances.remove(processInstance.id());
+        assertThat(processInstances.size()).isZero();
+        assertThat(process.instances().values()).isEmpty();
+
+    }
+
+    @Test
+    public void testRemove() {
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        processInstance.start();
+
+        PostgresqlProcessInstances processInstances = (PostgresqlProcessInstances) process.instances();
+        assertThat(processInstances.size()).isOne();
+        Optional<?> foundOne = processInstances.findById(processInstance.id());
+        BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
+        foundOne = processInstances.findById(processInstance.id());
+        BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
+        assertEquals(lock() ? 1L : 0, instanceOne.version());
+        assertEquals(lock() ? 1L : 0, instanceTwo.version());
+
+        processInstances.remove(instanceOne.id());
+        processInstances.remove(instanceTwo.id());
+        assertThat(processInstances.size()).isZero();
+    }
+
+    @Test
+    void testProcessWithDifferentVersion() {
+        BpmnProcess processV1 = createProcess("BPMN2-UserTask.bpmn2");
+        BpmnProcess processV2 = createProcess("BPMN2-UserTask-v2.bpmn2");
+
+        assertThat(processV1.process().getVersion()).isEqualTo("1.0");
+        assertThat(processV2.process().getVersion()).isEqualTo("2.0");
+
+        ProcessInstance<BpmnVariables> processInstanceV1 = processV1.createInstance(BpmnVariables.create(singletonMap("test", "test")));
+        processInstanceV1.start();
+
+        PostgresqlProcessInstances processInstancesV1 = (PostgresqlProcessInstances) processV1.instances();
+        PostgresqlProcessInstances processInstancesV2 = (PostgresqlProcessInstances) processV2.instances();
+
+        assertThat(processInstancesV1.size()).isOne();
+        assertThat(processInstancesV1.findById(processInstanceV1.id())).isPresent();
+        assertThat(processInstancesV2.size()).isZero();
+
+        ProcessInstance<BpmnVariables> processInstanceV2 = processV2.createInstance(BpmnVariables.create(singletonMap("test", "test")));
+        processInstanceV2.start();
+
+        assertThat(processInstancesV2.size()).isOne();
+        assertThat(processInstancesV2.findById(processInstanceV2.id())).isPresent();
+
+        processInstancesV1.remove(processInstanceV1.id());
+        assertThat(processInstancesV1.size()).isZero();
+        assertThat(processV1.instances().values()).isEmpty();
+
+        assertThat(processInstancesV2.size()).isOne();
+        processInstancesV2.remove(processInstanceV2.id());
+        assertThat(processInstancesV2.size()).isZero();
+    }
+
     private class PostgreProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
-        public PostgreProcessInstancesFactory(PgPool client) {
-            super(client, true, 10000l, false);
+        public PostgreProcessInstancesFactory(PgPool client, boolean lock) {
+            super(client, true, 10000l, lock);
         }
 
         @Override

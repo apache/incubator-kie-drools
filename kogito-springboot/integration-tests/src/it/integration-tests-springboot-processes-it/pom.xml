@@ -30,7 +30,7 @@
 
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-spring-boot-starter</artifactId>
+      <artifactId>kogito-processes-spring-boot-starter</artifactId>
     </dependency>
 
     <dependency>
@@ -149,6 +149,9 @@
           <includes>
             <include>org/kie/kogito/integrationtests/springboot/*</include>
           </includes>
+          <systemPropertyVariables>
+            <project.version>${project.version}</project.version>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>

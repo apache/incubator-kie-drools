@@ -187,6 +187,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .potentialGroups(workItem.getPotentialGroups())
                 .potentialUsers(workItem.getPotentialUsers())
                 .processInstanceId(pi.getStringId())
+                .processInstanceVersion(pi.getProcess().getVersion())
                 .rootProcessInstanceId(pi.getRootProcessInstanceId())
                 .processId(pi.getProcessId())
                 .rootProcessId(pi.getRootProcessId())
@@ -221,6 +222,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
 
         ProcessInstanceEventBody.Builder eventBuilder = ProcessInstanceEventBody.create()
                 .id(pi.getStringId())
+                .version(pi.getProcess().getVersion())
                 .parentInstanceId(pi.getParentProcessInstanceId())
                 .rootInstanceId(pi.getRootProcessInstanceId())
                 .processId(pi.getProcessId())

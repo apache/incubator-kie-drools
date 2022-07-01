@@ -61,8 +61,9 @@ public class ProcessInstanceDataEventCodec implements CollectibleCodec<ProcessIn
     public void encode(BsonWriter bsonWriter, ProcessInstanceDataEvent processInstanceDataEvent, EncoderContext encoderContext) {
         Document doc = new Document();
         encodeDataEvent(doc, processInstanceDataEvent);
-        doc.put("kogitoParentProcessinstanceId", processInstanceDataEvent.getKogitoParentProcessinstanceId());
-        doc.put("kogitoProcessinstanceState", processInstanceDataEvent.getKogitoProcessinstanceState());
+        doc.put("kogitoProcessInstanceVersion", processInstanceDataEvent.getKogitoProcessInstanceVersion());
+        doc.put("kogitoParentProcessinstanceId", processInstanceDataEvent.getKogitoParentProcessInstanceId());
+        doc.put("kogitoProcessinstanceState", processInstanceDataEvent.getKogitoProcessInstanceState());
         doc.put("kogitoReferenceId", processInstanceDataEvent.getKogitoReferenceId());
         doc.put("kogitoStartFromNode", processInstanceDataEvent.getKogitoStartFromNode());
         doc.put("data", encodeData(processInstanceDataEvent.getData()));
@@ -72,6 +73,7 @@ public class ProcessInstanceDataEventCodec implements CollectibleCodec<ProcessIn
     private Document encodeData(ProcessInstanceEventBody data) {
         Document doc = new Document();
         doc.put("id", data.getId());
+        doc.put("version", data.getVersion());
         doc.put("parentInstanceId", data.getParentInstanceId());
         doc.put("rootInstanceId", data.getRootInstanceId());
         doc.put("processId", data.getProcessId());

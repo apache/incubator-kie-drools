@@ -61,6 +61,7 @@ public abstract class AbstractMessageProducer<D> {
                 "",
                 eventPayload,
                 pi.getStringId(),
+                pi.getProcess().getVersion(),
                 pi.getParentProcessInstanceId(),
                 pi.getRootProcessInstanceId(),
                 pi.getProcessId(),

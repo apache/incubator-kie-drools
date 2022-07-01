@@ -28,6 +28,7 @@ import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessEventListenerConfig;
+import org.kie.kogito.process.ProcessVersionResolver;
 import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.services.signal.DefaultSignalManagerHub;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
@@ -43,6 +44,7 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
     private final ProcessEventListenerConfig processEventListenerConfig;
     private final UnitOfWorkManager unitOfWorkManager;
     private final JobsService jobsService;
+    private final ProcessVersionResolver versionResolver;
 
     protected AbstractProcessConfig(
             Iterable<WorkItemHandlerConfig> workItemHandlerConfig,
@@ -52,7 +54,8 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
             Iterable<JobsService> jobsService,
             Iterable<EventPublisher> eventPublishers,
             String kogitoService,
-            Iterable<UnitOfWorkEventListener> unitOfWorkListeners) {
+            Iterable<UnitOfWorkEventListener> unitOfWorkListeners,
+            Iterable<ProcessVersionResolver> versionResolver) {
 
         this.workItemHandlerConfig = orDefault(workItemHandlerConfig, DefaultWorkItemHandlerConfig::new);
         this.processEventListenerConfig = merge(processEventListenerConfigs, processEventListeners);
@@ -60,6 +63,7 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
                 () -> new DefaultUnitOfWorkManager(
                         new CollectingUnitOfWorkFactory()));
         this.jobsService = orDefault(jobsService, () -> null);
+        this.versionResolver = orDefault(versionResolver, () -> null);
 
         eventPublishers.forEach(publisher -> unitOfWorkManager().eventManager().addPublisher(publisher));
         unitOfWorkListeners.forEach(listener -> unitOfWorkManager().register(listener));
@@ -89,6 +93,11 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
     @Override
     public JobsService jobsService() {
         return jobsService;
+    }
+
+    @Override
+    public ProcessVersionResolver versionResolver() {
+        return versionResolver;
     }
 
     public org.kie.kogito.Addons addons() {

@@ -53,7 +53,6 @@ import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStraightThr
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.correlation.Correlation;
 import org.kie.kogito.correlation.CorrelationInstance;
-import org.kie.kogito.correlation.CorrelationServiceProducer;
 import org.kie.kogito.correlation.SimpleCorrelation;
 import org.kie.kogito.event.process.AttachmentEventBody;
 import org.kie.kogito.event.process.CommentEventBody;
@@ -73,6 +72,7 @@ import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoGeneratedClassesBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoGeneratedSourcesBuildItem;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
+import org.kie.kogito.quarkus.processes.KogitoBeanProducer;
 import org.kie.kogito.serialization.process.ObjectMarshallerStrategy;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf;
 import org.kie.kogito.serialization.process.protobuf.KogitoProcessInstanceProtobuf;
@@ -202,7 +202,7 @@ public class ProcessesAssetsProcessor {
                         QuarkusStatefulProcessService.class,
                         QuarkusHumanTaskService.class,
                         QuarkusProcessIdFactory.class,
-                        CorrelationServiceProducer.class)
+                        KogitoBeanProducer.class)
                 .build();
     }
 

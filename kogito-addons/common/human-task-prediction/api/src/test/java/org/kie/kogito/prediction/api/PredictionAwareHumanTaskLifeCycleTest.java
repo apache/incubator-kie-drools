@@ -87,7 +87,7 @@ public class PredictionAwareHumanTaskLifeCycleTest {
 
         CachedWorkItemHandlerConfig wiConfig = new CachedWorkItemHandlerConfig();
         wiConfig.register("Human Task", new HumanTaskWorkItemHandler(new PredictionAwareHumanTaskLifeCycle(predictionService)));
-        config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()), null);
+        config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
     }
 
     @Test

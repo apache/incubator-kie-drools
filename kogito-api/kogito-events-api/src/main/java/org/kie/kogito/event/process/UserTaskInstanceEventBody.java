@@ -50,6 +50,7 @@ public class UserTaskInstanceEventBody {
     private Collection<AttachmentEventBody> attachments;
 
     private String processInstanceId;
+    private String processInstanceVersion;
     private String rootProcessInstanceId;
     private String processId;
     private String rootProcessId;
@@ -126,6 +127,10 @@ public class UserTaskInstanceEventBody {
         return processInstanceId;
     }
 
+    public String getProcessInstanceVersion() {
+        return processInstanceVersion;
+    }
+
     public String getRootProcessInstanceId() {
         return rootProcessInstanceId;
     }
@@ -158,6 +163,7 @@ public class UserTaskInstanceEventBody {
         Map<String, String> metadata = new HashMap<>();
         metadata.put(UT_ID_META_DATA, id);
         metadata.put(ProcessInstanceEventBody.ID_META_DATA, processInstanceId);
+        metadata.put(ProcessInstanceEventBody.VERSION_META_DATA, processInstanceVersion);
         metadata.put(ProcessInstanceEventBody.ROOT_ID_META_DATA, rootProcessInstanceId);
         metadata.put(ProcessInstanceEventBody.PROCESS_ID_META_DATA, processId);
         metadata.put(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA, rootProcessId);
@@ -167,9 +173,31 @@ public class UserTaskInstanceEventBody {
 
     @Override
     public String toString() {
-        return "UserTaskInstanceEventBody [id=" + id + ", taskName=" + taskName + ", taskDescription=" + taskDescription + ", startDate=" + startDate + ", completeDate=" + completeDate + ", state="
-                + state +
-                ", actualOwner=" + actualOwner + "]";
+        return "UserTaskInstanceEventBody{" +
+                "id='" + id + '\'' +
+                ", taskName='" + taskName + '\'' +
+                ", taskDescription='" + taskDescription + '\'' +
+                ", taskPriority='" + taskPriority + '\'' +
+                ", referenceName='" + referenceName + '\'' +
+                ", startDate=" + startDate +
+                ", completeDate=" + completeDate +
+                ", state='" + state + '\'' +
+                ", actualOwner='" + actualOwner + '\'' +
+                ", potentialUsers=" + potentialUsers +
+                ", potentialGroups=" + potentialGroups +
+                ", excludedUsers=" + excludedUsers +
+                ", adminUsers=" + adminUsers +
+                ", adminGroups=" + adminGroups +
+                ", inputs=" + inputs +
+                ", outputs=" + outputs +
+                ", comments=" + comments +
+                ", attachments=" + attachments +
+                ", processInstanceId='" + processInstanceId + '\'' +
+                ", processInstanceVersion='" + processInstanceVersion + '\'' +
+                ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
+                ", processId='" + processId + '\'' +
+                ", rootProcessId='" + rootProcessId + '\'' +
+                '}';
     }
 
     public Builder update() {
@@ -309,6 +337,11 @@ public class UserTaskInstanceEventBody {
 
         public Builder processInstanceId(String processInstanceId) {
             instance.processInstanceId = processInstanceId;
+            return this;
+        }
+
+        public Builder processInstanceVersion(String processInstanceVersion) {
+            instance.processInstanceVersion = processInstanceVersion;
             return this;
         }
 

@@ -45,6 +45,7 @@ public class MessageProducer extends org.kie.kogito.services.event.impl.Abstract
                 "",
                 eventData,
                 pi.getStringId(),
+                pi.getProcess().getVersion(),
                 pi.getParentProcessInstanceId(),
                 pi.getRootProcessInstanceId(),
                 pi.getProcessId(),

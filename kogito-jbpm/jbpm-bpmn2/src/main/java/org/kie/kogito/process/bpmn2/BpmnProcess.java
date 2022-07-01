@@ -118,7 +118,7 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
     }
 
     public static List<BpmnProcess> from(Resource... resource) {
-        return from(new StaticProcessConfig(new DefaultWorkItemHandlerConfig(), new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()), null),
+        return from(new StaticProcessConfig(new DefaultWorkItemHandlerConfig(), new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())),
                 resource);
     }
 

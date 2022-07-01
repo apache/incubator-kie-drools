@@ -36,10 +36,21 @@ public class GreetingResourceIT {
                 .when()
                 .body(Map.of("name", "Paul"))
                 .post("/hello")
-                .peek()
                 .then()
                 .statusCode(200)
                 .body("message", is("Hello Paul"));
+    }
+
+    @Test
+    public void testVersion() {
+        String version = System.getProperty("project.version");
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/hello/version")
+                .then()
+                .statusCode(200)
+                .body("version", is(version));
     }
 
 }

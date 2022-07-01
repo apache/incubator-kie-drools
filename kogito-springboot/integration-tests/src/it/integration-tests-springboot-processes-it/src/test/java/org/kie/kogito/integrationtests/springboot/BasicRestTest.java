@@ -256,13 +256,26 @@ class BasicRestTest extends BaseRestTest {
                 .path("id");
 
         given()
-            .when()
+                .when()
                 .get("/AdHocFragments/{id}/tasks", id)
-            .then()
+                .then()
                 .statusCode(200)
                 .body("$.size()", is(1))
                 .body("[0].name", is("Task"));
 
         assertExpectedUnitOfWorkEvents(1);
     }
+
+    @Test
+    public void testVersion() {
+        String version = System.getProperty("project.version");
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/version")
+                .then()
+                .statusCode(200)
+                .body("version", is(version));
+    }
+
 }

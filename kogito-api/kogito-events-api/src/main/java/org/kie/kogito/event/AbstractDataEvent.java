@@ -90,11 +90,11 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     private T data;
 
     @JsonProperty(CloudEventExtensionConstants.PROCESS_INSTANCE_ID)
-    private String kogitoProcessinstanceId;
+    private String kogitoProcessInstanceId;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID)
-    private String kogitoRootProcessinstanceId;
+    private String kogitoRootProcessInstanceId;
 
     @JsonProperty(CloudEventExtensionConstants.PROCESS_ID)
     private String kogitoProcessId;
@@ -115,8 +115,8 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     public AbstractDataEvent(String type,
             String source,
             T body,
-            String kogitoProcessinstanceId,
-            String kogitoRootProcessinstanceId,
+            String kogitoProcessInstanceId,
+            String kogitoRootProcessInstanceId,
             String kogitoProcessId,
             String kogitoRootProcessId,
             String kogitoAddons) {
@@ -127,8 +127,8 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
         this.time = ZonedDateTime.now().toOffsetDateTime();
         this.data = body;
 
-        this.kogitoProcessinstanceId = kogitoProcessinstanceId;
-        this.kogitoRootProcessinstanceId = kogitoRootProcessinstanceId;
+        this.kogitoProcessInstanceId = kogitoProcessInstanceId;
+        this.kogitoRootProcessInstanceId = kogitoRootProcessInstanceId;
         this.kogitoProcessId = kogitoProcessId;
         this.kogitoRootProcessId = kogitoRootProcessId;
         this.kogitoAddons = kogitoAddons;
@@ -139,15 +139,15 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     public AbstractDataEvent(String type,
             String source,
             T body,
-            String kogitoProcessinstanceId,
-            String kogitoRootProcessinstanceId,
+            String kogitoProcessInstanceId,
+            String kogitoRootProcessInstanceId,
             String kogitoProcessId,
             String kogitoRootProcessId,
             String kogitoAddons,
             String subject,
             String dataContentType,
             String dataSchema) {
-        this(type, source, body, kogitoProcessinstanceId, kogitoRootProcessinstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons);
+        this(type, source, body, kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons);
         this.subject = subject;
         this.dataContentType = dataContentType;
         this.dataSchema = URI.create(dataSchema);
@@ -207,12 +207,12 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
         return subject;
     }
 
-    public String getKogitoProcessinstanceId() {
-        return kogitoProcessinstanceId;
+    public String getKogitoProcessInstanceId() {
+        return kogitoProcessInstanceId;
     }
 
-    public String getKogitoRootProcessinstanceId() {
-        return kogitoRootProcessinstanceId;
+    public String getKogitoRootProcessInstanceId() {
+        return kogitoRootProcessInstanceId;
     }
 
     public String getKogitoProcessId() {

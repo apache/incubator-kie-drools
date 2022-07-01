@@ -82,12 +82,13 @@ class UserTaskInstanceDataEventCodecTest {
         Set<AttachmentEventBody> attachments = Collections.singleton(attachment);
 
         Map<String, String> metaData = new HashMap<>();
-        metaData.put(ProcessInstanceEventBody.ID_META_DATA, "testKogitoProcessinstanceId");
-        metaData.put(ProcessInstanceEventBody.ROOT_ID_META_DATA, "testKogitoRootProcessinstanceId");
+        metaData.put(ProcessInstanceEventBody.ID_META_DATA, "testKogitoProcessInstanceId");
+        metaData.put(ProcessInstanceEventBody.VERSION_META_DATA, "testKogitoProcessInstanceVersion");
+        metaData.put(ProcessInstanceEventBody.ROOT_ID_META_DATA, "testKogitoRootProcessInstanceId");
         metaData.put(ProcessInstanceEventBody.PROCESS_ID_META_DATA, "testKogitoProcessId");
         metaData.put(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA, "testKogitoRootProcessId");
-        metaData.put(UserTaskInstanceEventBody.UT_STATE_META_DATA, "testKogitoUserTaskinstanceState");
-        metaData.put(UserTaskInstanceEventBody.UT_ID_META_DATA, "testKogitoUserTaskinstanceId");
+        metaData.put(UserTaskInstanceEventBody.UT_STATE_META_DATA, "testKogitoUserTaskInstanceState");
+        metaData.put(UserTaskInstanceEventBody.UT_ID_META_DATA, "testKogitoUserTaskInstanceId");
 
         UserTaskInstanceEventBody body = UserTaskInstanceEventBody.create()
                 .id("testId")
@@ -106,8 +107,9 @@ class UserTaskInstanceDataEventCodecTest {
                 .adminGroups(Collections.singleton("testAdminGroups"))
                 .inputs(Collections.singletonMap("testInputsKey", "testInputsValue"))
                 .outputs(Collections.singletonMap("testOutputsKey", "testOutputsValue"))
-                .processInstanceId("testKogitoProcessinstanceId")
-                .rootProcessInstanceId("testKogitoRootProcessinstanceId")
+                .processInstanceId("testKogitoProcessInstanceId")
+                .processInstanceVersion("testKogitoProcessInstanceVersion")
+                .rootProcessInstanceId("testKogitoRootProcessInstanceId")
                 .processId("testKogitoProcessId")
                 .rootProcessId("testKogitoRootProcessId")
                 .comments(comments)
@@ -160,8 +162,8 @@ class UserTaskInstanceDataEventCodecTest {
             assertEquals(event.getSubject(), doc.get("subject"));
             assertEquals(event.getDataContentType(), doc.get("dataContentType"));
             assertEquals(event.getDataSchema(), doc.get("dataSchema"));
-            assertEquals(event.getKogitoProcessinstanceId(), doc.get("kogitoProcessinstanceId"));
-            assertEquals(event.getKogitoRootProcessinstanceId(), doc.get("kogitoRootProcessinstanceId"));
+            assertEquals(event.getKogitoProcessInstanceId(), doc.get("kogitoProcessinstanceId"));
+            assertEquals(event.getKogitoRootProcessInstanceId(), doc.get("kogitoRootProcessinstanceId"));
             assertEquals(event.getKogitoProcessId(), doc.get("kogitoProcessId"));
             assertEquals(event.getKogitoRootProcessId(), doc.get("kogitoRootProcessId"));
             assertEquals(event.getKogitoAddons(), doc.get("kogitoAddons"));

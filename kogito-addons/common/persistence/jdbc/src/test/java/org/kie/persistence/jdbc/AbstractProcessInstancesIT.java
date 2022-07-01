@@ -15,7 +15,6 @@
  */
 package org.kie.persistence.jdbc;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import javax.sql.DataSource;
@@ -32,6 +31,7 @@ import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,11 +72,11 @@ abstract class AbstractProcessInstancesIT {
     void testBasicTaskFlow() {
         var factory = new TestProcessInstancesFactory(getDataSource(), lock());
         BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
-        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(singletonMap("test", "test")));
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
-        assertThat(processInstance.description()).isEqualTo("User Task");
+        assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
 
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
         assertThat(processInstances.size()).isOne();
@@ -86,7 +86,7 @@ abstract class AbstractProcessInstancesIT {
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");
 
-        assertThat(processInstance.description()).isEqualTo("User Task");
+        assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
 
         assertThat(process.instances().values().iterator().next().workItems(securityPolicy)).hasSize(1);
 
@@ -144,9 +144,8 @@ abstract class AbstractProcessInstancesIT {
     void testBasicFlow() {
         var factory = new TestProcessInstancesFactory(getDataSource(), lock());
         BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
-        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections
-                .singletonMap("test",
-                        "test")));
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(singletonMap("test",
+                "test")));
         processInstance.start();
 
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
@@ -177,7 +176,7 @@ abstract class AbstractProcessInstancesIT {
     public void testUpdate() {
         var factory = new TestProcessInstancesFactory(getDataSource(), lock());
         BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
-        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(singletonMap("test", "test")));
         processInstance.start();
 
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
@@ -188,9 +187,9 @@ abstract class AbstractProcessInstancesIT {
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
         assertEquals(lock() ? 1L : 0, instanceOne.version());
         assertEquals(lock() ? 1L : 0, instanceTwo.version());
-        instanceOne.updateVariables(BpmnVariables.create(Collections.singletonMap("s", "test")));
+        instanceOne.updateVariables(BpmnVariables.create(singletonMap("s", "test")));
         try {
-            BpmnVariables testvar = BpmnVariables.create(Collections.singletonMap("ss", "test"));
+            BpmnVariables testvar = BpmnVariables.create(singletonMap("ss", "test"));
             instanceTwo.updateVariables(testvar);
             if (lock()) {
                 fail("Updating process should have failed");
@@ -211,7 +210,7 @@ abstract class AbstractProcessInstancesIT {
     public void testRemove() {
         var factory = new TestProcessInstancesFactory(getDataSource(), lock());
         BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
-        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(singletonMap("test", "test")));
         processInstance.start();
 
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
@@ -226,5 +225,39 @@ abstract class AbstractProcessInstancesIT {
         processInstances.remove(instanceOne.id());
         processInstances.remove(instanceTwo.id());
         assertThat(processInstances.size()).isZero();
+    }
+
+    @Test
+    void testProcessWithDifferentVersion() {
+        var factory = new TestProcessInstancesFactory(getDataSource(), lock());
+        BpmnProcess processV1 = createProcess(factory, "BPMN2-UserTask.bpmn2");
+        BpmnProcess processV2 = createProcess(factory, "BPMN2-UserTask-v2.bpmn2");
+
+        assertThat(processV1.process().getVersion()).isEqualTo("1.0");
+        assertThat(processV2.process().getVersion()).isEqualTo("2.0");
+
+        ProcessInstance<BpmnVariables> processInstanceV1 = processV1.createInstance(BpmnVariables.create(singletonMap("test", "test")));
+        processInstanceV1.start();
+
+        JDBCProcessInstances processInstancesV1 = (JDBCProcessInstances) processV1.instances();
+        JDBCProcessInstances processInstancesV2 = (JDBCProcessInstances) processV2.instances();
+
+        assertThat(processInstancesV1.size()).isOne();
+        assertThat(processInstancesV1.findById(processInstanceV1.id())).isPresent();
+        assertThat(processInstancesV2.size()).isZero();
+
+        ProcessInstance<BpmnVariables> processInstanceV2 = processV2.createInstance(BpmnVariables.create(singletonMap("test", "test")));
+        processInstanceV2.start();
+
+        assertThat(processInstancesV2.size()).isOne();
+        assertThat(processInstancesV2.findById(processInstanceV2.id())).isPresent();
+
+        processInstancesV1.remove(processInstanceV1.id());
+        assertThat(processInstancesV1.size()).isZero();
+        assertThat(processV1.instances().values()).isEmpty();
+
+        assertThat(processInstancesV2.size()).isOne();
+        processInstancesV2.remove(processInstanceV2.id());
+        assertThat(processInstancesV2.size()).isZero();
     }
 }

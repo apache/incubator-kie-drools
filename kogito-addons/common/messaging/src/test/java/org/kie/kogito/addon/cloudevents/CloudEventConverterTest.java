@@ -123,15 +123,6 @@ class CloudEventConverterTest {
 
         private String kogitoStartFromNode;
 
-        public PersonDataEvent(String source, Person body, String kogitoProcessinstanceId, String kogitoParentProcessinstanceId, String kogitoRootProcessinstanceId, String kogitoProcessId,
-                String kogitoRootProcessId, String kogitoProcessinstanceState, String kogitoAddons) {
-            super(source, body, kogitoProcessinstanceId, kogitoParentProcessinstanceId, kogitoRootProcessinstanceId, kogitoProcessId, kogitoRootProcessId, kogitoProcessinstanceState, kogitoAddons);
-        }
-
-        public PersonDataEvent() {
-            super(null, null, null, null, null, null, null, null, null);
-        }
-
         public String getKogitoStartFromNode() {
             return kogitoStartFromNode;
         }

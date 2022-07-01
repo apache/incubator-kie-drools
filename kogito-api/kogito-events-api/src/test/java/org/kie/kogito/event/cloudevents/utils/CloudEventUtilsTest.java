@@ -221,8 +221,10 @@ class CloudEventUtilsTest {
 
     @Test
     void testGetAttribute() {
-        AbstractDataEvent event = new AbstractDataEvent("TestType", "source", null, "kogitoProcessinstanceId", "kogitoRootProcessId", "kogitoProcessId", "kogitoRootProcessId", "kogitoAddons") {
-        };
+        AbstractDataEvent event =
+                new AbstractDataEvent("TestType", "source", null, "kogitoProcessInstanceId", "kogitoRootProcessId", "kogitoProcessId", "kogitoRootProcessId",
+                        "kogitoAddons") {
+                };
         assertThat(CloudEventUtils.getAttribute("type", event)).isEqualTo("TestType");
         assertThat(CloudEventUtils.getAttribute("source", event)).isInstanceOf(URI.class);
         assertThat(CloudEventUtils.getAttribute("data", event)).isNull();

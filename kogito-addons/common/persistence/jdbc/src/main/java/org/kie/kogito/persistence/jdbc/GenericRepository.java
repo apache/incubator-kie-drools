@@ -83,13 +83,14 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    void insertInternal(String processId, UUID id, byte[] payload) {
+    void insertInternal(String processId, String processVersion, UUID id, byte[] payload) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(INSERT)) {
             statement.setString(1, id.toString());
             statement.setBytes(2, payload);
             statement.setString(3, processId);
-            statement.setLong(4, 0L);
+            statement.setString(4, processVersion);
+            statement.setLong(5, 0L);
             statement.executeUpdate();
         } catch (Exception e) {
             throw uncheckedException(e, "Error inserting process instance %s", id);
@@ -97,12 +98,15 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    void updateInternal(String processId, UUID id, byte[] payload) {
+    void updateInternal(String processId, String processVersion, UUID id, byte[] payload) {
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(UPDATE)) {
+                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(UPDATE, processVersion))) {
             statement.setBytes(1, payload);
             statement.setString(2, processId);
             statement.setString(3, id.toString());
+            if (processVersion != null) {
+                statement.setString(4, processVersion);
+            }
             statement.executeUpdate();
         } catch (Exception e) {
             throw uncheckedException(e, "Error updating process instance %s", id);
@@ -110,14 +114,17 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    boolean updateWithLock(String processId, UUID id, byte[] payload, long version) {
+    boolean updateWithLock(String processId, String processVersion, UUID id, byte[] payload, long version) {
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(UPDATE_WITH_LOCK)) {
+                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(UPDATE_WITH_LOCK, processVersion))) {
             statement.setBytes(1, payload);
             statement.setLong(2, version + 1);
             statement.setString(3, processId);
             statement.setString(4, id.toString());
             statement.setLong(5, version);
+            if (processVersion != null) {
+                statement.setString(6, processVersion);
+            }
             int count = statement.executeUpdate();
             return count == 1;
         } catch (Exception e) {
@@ -126,11 +133,14 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    boolean deleteInternal(String processId, UUID id) {
+    boolean deleteInternal(String processId, String processVersion, UUID id) {
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(DELETE)) {
+                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(DELETE, processVersion))) {
             statement.setString(1, processId);
             statement.setString(2, id.toString());
+            if (processVersion != null) {
+                statement.setString(3, processVersion);
+            }
             int count = statement.executeUpdate();
             return count == 1;
         } catch (Exception e) {
@@ -139,12 +149,15 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    Map<String, Object> findByIdInternal(String processId, UUID id) {
+    Map<String, Object> findByIdInternal(String processId, String processVersion, UUID id) {
         Map<String, Object> result = new HashMap<>();
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
+                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(FIND_BY_ID, processVersion))) {
             statement.setString(1, processId);
             statement.setString(2, id.toString());
+            if (processVersion != null) {
+                statement.setString(3, processVersion);
+            }
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     Optional<byte[]> b = Optional.ofNullable(resultSet.getBytes(PAYLOAD));
@@ -162,11 +175,14 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    List<byte[]> findAllInternal(String processId) {
+    List<byte[]> findAllInternal(String processId, String processVersion) {
         List<byte[]> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(FIND_ALL)) {
+                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(FIND_ALL, processVersion))) {
             statement.setString(1, processId);
+            if (processVersion != null) {
+                statement.setString(2, processVersion);
+            }
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     result.add(resultSet.getBytes(PAYLOAD));
@@ -179,10 +195,13 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    Long countInternal(String processId) {
+    Long countInternal(String processId, String processVersion) {
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(COUNT)) {
+                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(COUNT, processVersion))) {
             statement.setString(1, processId);
+            if (processVersion != null) {
+                statement.setString(2, processVersion);
+            }
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getLong("count");
@@ -194,4 +213,7 @@ public class GenericRepository extends Repository {
         return 0l;
     }
 
+    private static String sqlIncludingVersion(String statement, String processVersion) {
+        return statement + (processVersion == null ? PROCESS_VERSION_IS_NULL : PROCESS_VERSION_EQUALS_TO);
+    }
 }

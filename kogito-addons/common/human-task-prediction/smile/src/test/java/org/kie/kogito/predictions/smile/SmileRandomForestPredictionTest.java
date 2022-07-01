@@ -62,7 +62,7 @@ public class SmileRandomForestPredictionTest {
         predictionService = new SmileRandomForest(configuration);
         CachedWorkItemHandlerConfig wiConfig = new CachedWorkItemHandlerConfig();
         wiConfig.register("Human Task", new HumanTaskWorkItemHandler(new PredictionAwareHumanTaskLifeCycle(predictionService)));
-        config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()), null);
+        config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
 
         for (int i = 0; i < 10; i++) {
             predictionService.train(null, Collections.singletonMap("ActorId", "john"), Collections.singletonMap("output", "predicted value"));

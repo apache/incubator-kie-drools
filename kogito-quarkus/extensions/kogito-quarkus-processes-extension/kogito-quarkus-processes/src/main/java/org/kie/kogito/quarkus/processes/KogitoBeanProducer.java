@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.correlation;
+package org.kie.kogito.quarkus.processes;
 
 import javax.enterprise.inject.Produces;
 
+import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.correlation.CorrelationService;
+import org.kie.kogito.process.ProcessVersionResolver;
+import org.kie.kogito.process.version.ProjectVersionProcessVersionResolver;
 import org.kie.kogito.services.event.correlation.DefaultCorrelationService;
 
 import io.quarkus.arc.DefaultBean;
+import io.quarkus.arc.properties.IfBuildProperty;
 
-public class CorrelationServiceProducer {
+public class KogitoBeanProducer {
 
     @DefaultBean
     @Produces
     CorrelationService correlationService() {
         return new DefaultCorrelationService();
+    }
+
+    @Produces
+    @IfBuildProperty(name = "kogito.workflow.version-strategy", stringValue = "project")
+    ProcessVersionResolver projectVersionResolver(ConfigBean configBean) {
+        return new ProjectVersionProcessVersionResolver(configBean.getGav().orElseThrow(() -> new RuntimeException("Unable to use kogito.workflow.version-strategy without a project GAV")));
     }
 }

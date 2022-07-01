@@ -18,6 +18,7 @@ package org.kie.kogito.process.impl;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessEventListenerConfig;
+import org.kie.kogito.process.ProcessVersionResolver;
 import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.services.signal.DefaultSignalManagerHub;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
@@ -32,23 +33,34 @@ public class StaticProcessConfig implements ProcessConfig {
     private final SignalManagerHub signalManager;
     private final UnitOfWorkManager unitOfWorkManager;
     private final JobsService jobsService;
+    private final ProcessVersionResolver versionResolver;
+
+    public StaticProcessConfig(
+            WorkItemHandlerConfig workItemHandlerConfig,
+            ProcessEventListenerConfig processEventListenerConfig,
+            UnitOfWorkManager unitOfWorkManager) {
+        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, null, null);
+    }
 
     public StaticProcessConfig(
             WorkItemHandlerConfig workItemHandlerConfig,
             ProcessEventListenerConfig processEventListenerConfig,
             UnitOfWorkManager unitOfWorkManager,
-            JobsService jobsService) {
+            JobsService jobsService,
+            ProcessVersionResolver versionResolver) {
         this.unitOfWorkManager = unitOfWorkManager;
         this.workItemHandlerConfig = workItemHandlerConfig;
         this.processEventListenerConfig = processEventListenerConfig;
         this.signalManager = new DefaultSignalManagerHub();
         this.jobsService = jobsService;
+        this.versionResolver = versionResolver;
     }
 
     public StaticProcessConfig() {
         this(new DefaultWorkItemHandlerConfig(),
                 new DefaultProcessEventListenerConfig(),
                 new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()),
+                null,
                 null);
     }
 
@@ -75,5 +87,10 @@ public class StaticProcessConfig implements ProcessConfig {
     @Override
     public JobsService jobsService() {
         return jobsService;
+    }
+
+    @Override
+    public ProcessVersionResolver versionResolver() {
+        return versionResolver;
     }
 }

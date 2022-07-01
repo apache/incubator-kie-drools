@@ -25,6 +25,7 @@ import java.util.Set;
 public class ProcessInstanceEventBody {
 
     public static final String ID_META_DATA = "kogito.processinstance.id";
+    public static final String VERSION_META_DATA = "kogito.processinstance.version";
     public static final String PARENT_ID_META_DATA = "kogito.processinstance.parentInstanceId";
     public static final String ROOT_ID_META_DATA = "kogito.processinstance.rootInstanceId";
     public static final String PROCESS_ID_META_DATA = "kogito.processinstance.processId";
@@ -32,6 +33,7 @@ public class ProcessInstanceEventBody {
     public static final String STATE_META_DATA = "kogito.processinstance.state";
 
     private String id;
+    private String version;
     private String parentInstanceId;
     private String rootInstanceId;
     private String processId;
@@ -59,6 +61,10 @@ public class ProcessInstanceEventBody {
 
     public String getId() {
         return id;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     public String getParentInstanceId() {
@@ -124,6 +130,7 @@ public class ProcessInstanceEventBody {
     public Map<String, String> metaData() {
         Map<String, String> metadata = new HashMap<>();
         metadata.put(ID_META_DATA, id);
+        metadata.put(VERSION_META_DATA, version);
         metadata.put(PARENT_ID_META_DATA, parentInstanceId);
         metadata.put(ROOT_ID_META_DATA, rootInstanceId);
         metadata.put(PROCESS_ID_META_DATA, processId);
@@ -134,9 +141,24 @@ public class ProcessInstanceEventBody {
 
     @Override
     public String toString() {
-        return "ProcessInstanceEventBody [id=" + id + ", parentInstanceId=" + parentInstanceId + ", rootInstanceId=" + rootInstanceId + ", processId=" + processId + ", rootProcessId=" + rootProcessId
-                + ", processName=" +
-                processName + ", startDate=" + startDate + ", endDate=" + endDate + ", state=" + state + "]";
+        return "ProcessInstanceEventBody{" +
+                "id='" + id + '\'' +
+                ", version='" + version + '\'' +
+                ", parentInstanceId='" + parentInstanceId + '\'' +
+                ", rootInstanceId='" + rootInstanceId + '\'' +
+                ", processId='" + processId + '\'' +
+                ", rootProcessId='" + rootProcessId + '\'' +
+                ", processName='" + processName + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", state=" + state +
+                ", businessKey='" + businessKey + '\'' +
+                ", nodeInstances=" + nodeInstances +
+                ", variables=" + variables +
+                ", error=" + error +
+                ", roles=" + roles +
+                ", milestones=" + milestones +
+                '}';
     }
 
     @Override
@@ -178,6 +200,11 @@ public class ProcessInstanceEventBody {
 
         public Builder id(String id) {
             instance.id = id;
+            return this;
+        }
+
+        public Builder version(String version) {
+            instance.version = version;
             return this;
         }
 

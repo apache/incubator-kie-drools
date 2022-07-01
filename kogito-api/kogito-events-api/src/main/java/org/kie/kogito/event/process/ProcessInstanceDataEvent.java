@@ -27,6 +27,7 @@ public class ProcessInstanceDataEvent extends ProcessDataEvent<ProcessInstanceEv
                 source,
                 body,
                 metaData.get(ProcessInstanceEventBody.ID_META_DATA),
+                metaData.get(ProcessInstanceEventBody.VERSION_META_DATA),
                 metaData.get(ProcessInstanceEventBody.PARENT_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),

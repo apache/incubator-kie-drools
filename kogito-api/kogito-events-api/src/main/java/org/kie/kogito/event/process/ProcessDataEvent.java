@@ -25,13 +25,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION)
+    private String kogitoProcessInstanceVersion;
+
     @JsonProperty(CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    protected String kogitoParentProcessinstanceId;
+    protected String kogitoParentProcessInstanceId;
 
     @JsonProperty(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_STATE)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    protected String kogitoProcessinstanceState;
+    protected String kogitoProcessInstanceState;
 
     @JsonProperty(CloudEventExtensionConstants.PROCESS_REFERENCE_ID)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -48,46 +52,27 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
     public ProcessDataEvent() {
     }
 
-    public ProcessDataEvent(String source,
-            T body,
-            String kogitoProcessinstanceId,
-            String kogitoParentProcessinstanceId,
-            String kogitoRootProcessinstanceId,
-            String kogitoProcessId,
-            String kogitoRootProcessId,
-            String kogitoProcessinstanceState,
-            String kogitoAddons) {
-        this(null,
-                source,
-                body,
-                kogitoProcessinstanceId,
-                kogitoParentProcessinstanceId,
-                kogitoRootProcessinstanceId,
-                kogitoProcessId,
-                kogitoRootProcessId,
-                kogitoProcessinstanceState,
-                kogitoAddons);
-    }
-
     public ProcessDataEvent(String type,
             String source,
             T body,
-            String kogitoProcessinstanceId,
-            String kogitoParentProcessinstanceId,
-            String kogitoRootProcessinstanceId,
+            String kogitoProcessInstanceId,
+            String kogitoProcessInstanceVersion,
+            String kogitoParentProcessInstanceId,
+            String kogitoRootProcessInstanceId,
             String kogitoProcessId,
             String kogitoRootProcessId,
-            String kogitoProcessinstanceState,
+            String kogitoProcessInstanceState,
             String kogitoAddons) {
         this(type,
                 source,
                 body,
-                kogitoProcessinstanceId,
-                kogitoParentProcessinstanceId,
-                kogitoRootProcessinstanceId,
+                kogitoProcessInstanceId,
+                kogitoProcessInstanceVersion,
+                kogitoParentProcessInstanceId,
+                kogitoRootProcessInstanceId,
                 kogitoProcessId,
                 kogitoRootProcessId,
-                kogitoProcessinstanceState,
+                kogitoProcessInstanceState,
                 kogitoAddons,
                 null);
     }
@@ -95,33 +80,35 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
     public ProcessDataEvent(String type,
             String source,
             T body,
-            String kogitoProcessinstanceId,
-            String kogitoParentProcessinstanceId,
-            String kogitoRootProcessinstanceId,
+            String kogitoProcessInstanceId,
+            String kogitoProcessInstanceVersion,
+            String kogitoParentProcessInstanceId,
+            String kogitoRootProcessInstanceId,
             String kogitoProcessId,
             String kogitoRootProcessId,
-            String kogitoProcessinstanceState,
+            String kogitoProcessInstanceState,
             String kogitoAddons,
             String kogitoReferenceId) {
         super(type,
                 source,
                 body,
-                kogitoProcessinstanceId,
-                kogitoRootProcessinstanceId,
+                kogitoProcessInstanceId,
+                kogitoRootProcessInstanceId,
                 kogitoProcessId,
                 kogitoRootProcessId,
                 kogitoAddons);
-        this.kogitoParentProcessinstanceId = kogitoParentProcessinstanceId;
-        this.kogitoProcessinstanceState = kogitoProcessinstanceState;
+        this.kogitoProcessInstanceVersion = kogitoProcessInstanceVersion;
+        this.kogitoParentProcessInstanceId = kogitoParentProcessInstanceId;
+        this.kogitoProcessInstanceState = kogitoProcessInstanceState;
         this.kogitoReferenceId = kogitoReferenceId;
     }
 
-    public String getKogitoParentProcessinstanceId() {
-        return kogitoParentProcessinstanceId;
+    public String getKogitoParentProcessInstanceId() {
+        return kogitoParentProcessInstanceId;
     }
 
-    public String getKogitoProcessinstanceState() {
-        return kogitoProcessinstanceState;
+    public String getKogitoProcessInstanceState() {
+        return kogitoProcessInstanceState;
     }
 
     public String getKogitoReferenceId() {
@@ -140,18 +127,20 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
         return this.kogitoStartFromNode;
     }
 
+    public String getKogitoProcessInstanceVersion() {
+        return kogitoProcessInstanceVersion;
+    }
+
     @Override
     public String toString() {
-        return "AbstractProcessDataEvent [kogitoParentProcessinstanceId=" + kogitoParentProcessinstanceId +
-                ", kogitoProcessinstanceState=" + kogitoProcessinstanceState + ", kogitoReferenceId=" +
-                kogitoReferenceId + ", kogitoBusinessKey=" +
-                kogitoBusinessKey + ", kogitoStartFromNode=" + kogitoStartFromNode + ", getSource()=" + getSource() +
-                ", getSpecVersion()=" + getSpecVersion() + ", getId()=" + getId() + ", getType()=" + getType() +
-                ", getTime()=" + getTime() + ", getData()=" + getData() + ", getKogitoProcessinstanceId()=" +
-                getKogitoProcessinstanceId() + ", getKogitoRootProcessinstanceId()=" +
-                getKogitoRootProcessinstanceId() + ", getKogitoProcessId()=" + getKogitoProcessId() +
-                ", getKogitoRootProcessId()=" + getKogitoRootProcessId() + ", getKogitoAddons()=" + getKogitoAddons() +
-                "]";
+        return "ProcessDataEvent{" +
+                "kogitoProcessInstanceVersion='" + kogitoProcessInstanceVersion + '\'' +
+                ", kogitoParentProcessInstanceId='" + kogitoParentProcessInstanceId + '\'' +
+                ", kogitoProcessInstanceState='" + kogitoProcessInstanceState + '\'' +
+                ", kogitoReferenceId='" + kogitoReferenceId + '\'' +
+                ", kogitoStartFromNode='" + kogitoStartFromNode + '\'' +
+                ", kogitoBusinessKey='" + kogitoBusinessKey + '\'' +
+                "} " + super.toString();
     }
 
     @Override
@@ -163,13 +152,13 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
             return false;
         }
         ProcessDataEvent<?> that = (ProcessDataEvent<?>) o;
-        return Objects.equals(getKogitoParentProcessinstanceId(), that.getKogitoParentProcessinstanceId()) && Objects.equals(getKogitoProcessinstanceState(), that.getKogitoProcessinstanceState())
+        return Objects.equals(getKogitoParentProcessInstanceId(), that.getKogitoParentProcessInstanceId()) && Objects.equals(getKogitoProcessInstanceState(), that.getKogitoProcessInstanceState())
                 && Objects.equals(getKogitoReferenceId(), that.getKogitoReferenceId()) && Objects.equals(getKogitoStartFromNode(), that.getKogitoStartFromNode())
                 && Objects.equals(getKogitoBusinessKey(), that.getKogitoBusinessKey());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getKogitoParentProcessinstanceId(), getKogitoProcessinstanceState(), getKogitoReferenceId(), getKogitoStartFromNode(), getKogitoBusinessKey());
+        return Objects.hash(getKogitoParentProcessInstanceId(), getKogitoProcessInstanceState(), getKogitoReferenceId(), getKogitoStartFromNode(), getKogitoBusinessKey());
     }
 }

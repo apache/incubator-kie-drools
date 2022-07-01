@@ -71,11 +71,11 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         uow.end();
 
         ProcessInstanceDataEvent processDataEvent = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).map(ProcessInstanceDataEvent.class::cast).findFirst().orElseThrow();
-        assertThat(processDataEvent.getKogitoProcessinstanceId()).isNotNull();
-        assertThat(processDataEvent.getKogitoParentProcessinstanceId()).isNull();
-        assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
+        assertThat(processDataEvent.getKogitoProcessInstanceId()).isNotNull();
+        assertThat(processDataEvent.getKogitoParentProcessInstanceId()).isNull();
+        assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
-        assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
+        assertThat(processDataEvent.getKogitoProcessInstanceState()).isEqualTo("2");
         assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/BusinessRuleTask");
 
         ProcessInstanceEventBody body = assertProcessInstanceEvent(processDataEvent, "BusinessRuleTask", "Default Process", 2);
@@ -155,11 +155,11 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         DataEvent<?> event = events.get(0);
         assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
         ProcessInstanceDataEvent processDataEvent = (ProcessInstanceDataEvent) event;
-        assertThat(processDataEvent.getKogitoProcessinstanceId()).isNotNull();
-        assertThat(processDataEvent.getKogitoParentProcessinstanceId()).isNull();
-        assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
+        assertThat(processDataEvent.getKogitoProcessInstanceId()).isNotNull();
+        assertThat(processDataEvent.getKogitoParentProcessInstanceId()).isNull();
+        assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
-        assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
+        assertThat(processDataEvent.getKogitoProcessInstanceState()).isEqualTo("2");
         assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/BusinessRuleTask");
 
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "BusinessRuleTask", "Default Process", 2);
@@ -176,15 +176,15 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         assertThat(event).isInstanceOf(VariableInstanceDataEvent.class);
 
         VariableInstanceDataEvent variableDataEvent = (VariableInstanceDataEvent) event;
-        assertThat(variableDataEvent.getKogitoProcessinstanceId()).isNotNull();
+        assertThat(variableDataEvent.getKogitoProcessInstanceId()).isNotNull();
         assertThat(variableDataEvent.getKogitoRootProcessId()).isNull();
-        assertThat(variableDataEvent.getKogitoRootProcessinstanceId()).isNull();
+        assertThat(variableDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(variableDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
         // first is event created based on process start so no node associated
         VariableInstanceEventBody variableEventBody = variableDataEvent.getData();
         assertThat(variableEventBody).isNotNull();
         assertThat(variableEventBody.getChangeDate()).isNotNull();
-        assertThat(variableEventBody.getProcessInstanceId()).isEqualTo(variableDataEvent.getKogitoProcessinstanceId());
+        assertThat(variableEventBody.getProcessInstanceId()).isEqualTo(variableDataEvent.getKogitoProcessInstanceId());
         assertThat(variableEventBody.getProcessId()).isEqualTo("BusinessRuleTask");
         assertThat(variableEventBody.getRootProcessId()).isNull();
         assertThat(variableEventBody.getRootProcessInstanceId()).isNull();

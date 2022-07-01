@@ -19,11 +19,11 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.acme.travels.Traveller;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusIntegrationTest
 @QuarkusTestResource(KafkaQuarkusTestResource.class)
@@ -79,40 +79,44 @@ class ProcessEventIT {
     }
 
     @Test
-    void testSaveTask() throws InterruptedException {
+    void testSaveTask() throws Exception {
         Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish");
-        final int count = 7;
-        final CountDownLatch countDownLatch = new CountDownLatch(count);
+        final CountDownLatch countDownLatch = new CountDownLatch(6);
+        final CompletableFuture future = new CompletableFuture();
 
         kafkaClient.consume(Set.of(KOGITO_PROCESSINSTANCES_EVENTS, KOGITO_USERTASKINSTANCES_EVENTS, KOGITO_VARIABLE_EVENTS), s -> {
             LOGGER.info("Received from kafka: {}", s);
             try {
                 ProcessDataEvent event = mapper.readValue(s, ProcessDataEvent.class);
                 LinkedHashMap data = (LinkedHashMap) event.getData();
-                if (data.get("processId") == "handleApprovals") {
+                if ("handleApprovals".equals(data.get("processId"))) {
                     switch (event.getType()) {
                         case "ProcessInstanceEvent":
-                            Assertions.assertEquals("ProcessInstanceEvent", event.getType());
-                            Assertions.assertEquals("/handleApprovals", event.getSource().toString());
-                            Assertions.assertEquals("handleApprovals", data.get("processId"));
+                            assertEquals("ProcessInstanceEvent", event.getType());
+                            assertEquals("/handleApprovals", event.getSource().toString());
+                            assertEquals("handleApprovals", data.get("processId"));
+                            assertEquals("1.0", event.getKogitoProcessInstanceVersion());
                             break;
                         case "UserTaskInstanceEvent":
-                            Assertions.assertEquals("UserTaskInstanceEvent", event.getType());
-                            Assertions.assertEquals("/handleApprovals", event.getSource().toString());
-                            Assertions.assertEquals("handleApprovals", data.get("processId"));
+                            assertEquals("UserTaskInstanceEvent", event.getType());
+                            assertEquals("/handleApprovals", event.getSource().toString());
+                            assertEquals("handleApprovals", data.get("processId"));
+                            assertEquals("1.0", event.getKogitoProcessInstanceVersion());
                             break;
                         case "VariableInstanceEvent":
-                            Assertions.assertEquals("VariableInstanceEvent", event.getType());
-                            Assertions.assertEquals("/handleApprovals", event.getSource().toString());
-                            Assertions.assertEquals("handleApprovals", data.get("processId"));
+                            assertEquals("VariableInstanceEvent", event.getType());
+                            assertEquals("/handleApprovals", event.getSource().toString());
+                            assertEquals("handleApprovals", data.get("processId"));
+                            assertEquals("1.0", event.getKogitoProcessInstanceVersion());
                             break;
                     }
                 }
                 countDownLatch.countDown();
-
-            } catch (Exception e) {
-                LOGGER.error("Error parsing {}", s, e);
-                fail(e);
+                if (countDownLatch.getCount() == 0) {
+                    future.complete(null);
+                }
+            } catch (Throwable e) {
+                future.completeExceptionally(e);
             }
         });
 
@@ -139,7 +143,7 @@ class ProcessEventIT {
 
         Map<String, Object> model = Collections.singletonMap("approved", true);
 
-        Assertions.assertEquals(model, given().contentType(ContentType.JSON)
+        assertEquals(model, given().contentType(ContentType.JSON)
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
@@ -152,7 +156,7 @@ class ProcessEventIT {
                 .extract()
                 .as(Map.class));
 
-        Assertions.assertEquals(true, given().contentType(ContentType.JSON)
+        assertEquals(true, given().contentType(ContentType.JSON)
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
@@ -176,7 +180,6 @@ class ProcessEventIT {
                 .extract()
                 .path("[1].id");
 
-        countDownLatch.await(10, TimeUnit.SECONDS);
-        Assertions.assertEquals(0, countDownLatch.getCount());
+        future.get(10, TimeUnit.SECONDS);
     }
 }
