@@ -15,9 +15,11 @@
  */
 package org.kie.drl.engine.runtime.utils;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.drools.model.Model;
 import org.drools.modelcompiler.KieBaseBuilder;
-//import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.efesto.common.api.model.FRI;
@@ -25,9 +27,6 @@ import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class EfestoKieSessionUtil {
 

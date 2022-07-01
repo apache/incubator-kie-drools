@@ -15,6 +15,11 @@
  */
 package org.kie.efesto.runtimemanager.api.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
@@ -23,11 +28,6 @@ import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
 import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;

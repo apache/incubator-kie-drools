@@ -17,8 +17,9 @@ package org.kie.efesto.runtimemanager.core.service;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
@@ -34,25 +35,18 @@ public class RuntimeManagerImpl implements RuntimeManager {
     private static final Logger logger = LoggerFactory.getLogger(RuntimeManagerImpl.class.getName());
 
     @Override
-    @SuppressWarnings({"unchecked", "raw"})
     public Collection<EfestoOutput> evaluateInput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoInput... toEvaluate) {
-        final Collection<EfestoOutput> toReturn = new LinkedHashSet<>();
-        Arrays.stream(toEvaluate)
-                .forEach(input -> {
-                    Optional<EfestoOutput> output = getOptionalOutput(memoryCompilerClassLoader, input);
-                    output.ifPresent(toReturn::add);
-                });
-        return toReturn;
+        return Arrays.stream(toEvaluate)
+                .flatMap(input -> getOptionalOutput(memoryCompilerClassLoader, input).map(Stream::of).orElse(Stream.empty()))
+                .collect(Collectors.toList());
     }
 
     private Optional<EfestoOutput> getOptionalOutput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoInput input) {
-        Optional<KieRuntimeService> retrieved = getKieRuntimeService(input, false,
-                                                                     memoryCompilerClassLoader);
+        Optional<KieRuntimeService> retrieved = getKieRuntimeService(input, false, memoryCompilerClassLoader);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieRuntimeService for {}", input.getFRI());
             return Optional.empty();
         }
-        return retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input,
-                                                                                      memoryCompilerClassLoader));
+        return retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input, memoryCompilerClassLoader));
     }
 }

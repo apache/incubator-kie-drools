@@ -17,7 +17,7 @@ package org.kie.efesto.compilationmanager.core.service;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
@@ -26,20 +26,17 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.compilationmanager.core.utils.CompilationManagerUtils.populateIndexFilesWithProcessedResource;
+import static org.kie.efesto.compilationmanager.core.utils.CompilationManagerUtils.getIndexFilesWithProcessedResource;
 
 public class CompilationManagerImpl implements CompilationManager {
 
     private static final Logger logger = LoggerFactory.getLogger(CompilationManagerImpl.class.getName());
 
     @Override
-    public Collection<IndexFile> processResource(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader,
-                                                 EfestoResource... toProcess) {
-        final Collection<IndexFile> toReturn = new LinkedHashSet<>();
-        Arrays.stream(toProcess).sequential().forEach(resource -> populateIndexFilesWithProcessedResource(toReturn,
-                                                                                                          resource,
-                                                                                                          memoryCompilerClassLoader));
-        return toReturn;
+    public Collection<IndexFile> processResource(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoResource... toProcess) {
+        return Arrays.stream(toProcess)
+                .flatMap(resource -> getIndexFilesWithProcessedResource(resource, memoryCompilerClassLoader).stream())
+                .collect(Collectors.toList());
     }
 
 }
