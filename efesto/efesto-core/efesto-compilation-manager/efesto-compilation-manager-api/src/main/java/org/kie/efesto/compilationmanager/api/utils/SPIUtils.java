@@ -15,13 +15,20 @@
  */
 package org.kie.efesto.compilationmanager.api.utils;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.ServiceLoader;
+
+import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import static org.kie.efesto.common.api.utils.CollectionUtils.findAtMostOne;
 
 public class SPIUtils {
 
@@ -35,15 +42,15 @@ public class SPIUtils {
 
     public static Optional<KieCompilerService> getKieCompilerService(EfestoResource resource, boolean refresh) {
         logger.debug("getKieCompilerService {} {}", resource, refresh);
-        List<KieCompilerService> retrieved = getKieCompilerServices(refresh);
-        return retrieved.stream().filter(service -> service.canManageResource(resource)).findFirst();
+        return findAtMostOne(getServices(refresh), service -> service.canManageResource(resource),
+                (s1, s2) -> new KieCompilerServiceException("Found more than one compiler services: " + s1 + " and " + s2));
     }
 
     public static List<KieCompilerService> getKieCompilerServices(boolean refresh) {
         logger.debug("getKieCompilerServices {}", refresh);
         List<KieCompilerService> toReturn = new ArrayList<>();
-        Iterator<KieCompilerService> services = getServices(refresh);
-        services.forEachRemaining(toReturn::add);
+        Iterable<KieCompilerService> services = getServices(refresh);
+        services.forEach(toReturn::add);
         logger.debug("toReturn {} {}", toReturn, toReturn.size());
         if (logger.isTraceEnabled()) {
             toReturn.forEach(provider -> logger.trace("{}", provider));
@@ -54,22 +61,22 @@ public class SPIUtils {
     public static Optional<CompilationManager> getCompilationManager(boolean refresh) {
         logger.debug("getCompilationManager {}", refresh);
         List<CompilationManager> toReturn = new ArrayList<>();
-        Iterator<CompilationManager> managers = getManagers(refresh);
-        managers.forEachRemaining(toReturn::add);
+        Iterable<CompilationManager> managers = getManagers(refresh);
+        managers.forEach(toReturn::add);
         return toReturn.stream().findFirst();
     }
 
-    private static Iterator<KieCompilerService> getServices(boolean refresh) {
+    private static Iterable<KieCompilerService> getServices(boolean refresh) {
         if (refresh) {
             kieCompilerServiceLoader.reload();
         }
-        return kieCompilerServiceLoader.iterator();
+        return kieCompilerServiceLoader;
     }
 
-    private static Iterator<CompilationManager> getManagers(boolean refresh) {
+    private static Iterable<CompilationManager> getManagers(boolean refresh) {
         if (refresh) {
             compilationManagerLoader.reload();
         }
-        return compilationManagerLoader.iterator();
+        return compilationManagerLoader;
     }
 }

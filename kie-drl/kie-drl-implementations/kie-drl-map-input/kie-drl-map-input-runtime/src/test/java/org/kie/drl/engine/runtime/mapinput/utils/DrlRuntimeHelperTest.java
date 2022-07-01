@@ -15,18 +15,23 @@
  */
 package org.kie.drl.engine.runtime.mapinput.utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.drl.engine.mapinput.compilation.model.test.Applicant;
 import org.kie.drl.engine.mapinput.compilation.model.test.LoanApplication;
 import org.kie.drl.engine.runtime.mapinput.model.EfestoInputDrlMap;
 import org.kie.drl.engine.runtime.mapinput.model.EfestoOutputDrlMap;
+import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.memorycompiler.KieMemoryCompiler;
-
-import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

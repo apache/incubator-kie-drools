@@ -19,8 +19,6 @@ import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
-import java.util.List;
-
 /**
  * The compilation-related interface to be implemented by engine-plugin.
  * It will be looked for with SPI, so each engine should declare that implementation inside
@@ -42,6 +40,6 @@ public interface KieCompilerService {
      * @param memoryCompilerClassLoader
      * @return
      */
-    <T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
+    <T extends EfestoResource, E extends EfestoCompilationOutput> E processResource(T toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
 
 }

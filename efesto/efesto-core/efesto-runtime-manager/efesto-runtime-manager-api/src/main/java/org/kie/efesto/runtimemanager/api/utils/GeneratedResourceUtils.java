@@ -15,6 +15,10 @@
  */
 package org.kie.efesto.runtimemanager.api.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
@@ -24,11 +28,6 @@ import org.kie.efesto.common.api.model.GeneratedResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
 import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 
@@ -37,13 +36,6 @@ public class GeneratedResourceUtils {
     private static final Logger logger = LoggerFactory.getLogger(GeneratedResourceUtils.class.getName());
 
     private GeneratedResourceUtils() {
-    }
-
-    public static boolean isPresentExecutableOrRedirect(FRI fri, String modelType) {
-        return Stream
-                .of(getGeneratedExecutableResource(fri, modelType),
-                        getGeneratedRedirectResource(fri, modelType))
-                .anyMatch(Optional::isPresent);
     }
 
     public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, String modelType) {
