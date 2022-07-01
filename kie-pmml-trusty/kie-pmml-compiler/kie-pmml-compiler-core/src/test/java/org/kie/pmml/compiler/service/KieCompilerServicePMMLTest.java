@@ -42,7 +42,7 @@ class KieCompilerServicePMMLTest {
 
     @Test
     void canManageResource() {
-        File pmmlFile = getFileFromFileName("LinearRegressionSample.pmml");
+        File pmmlFile = getFileFromFileName("LinearRegressionSample.pmml").orElseThrow(() -> new RuntimeException("Failed to get pmmlFIle"));
         EfestoResource toProcess = new EfestoFileResource(pmmlFile);
         assertThat(kieCompilerService.canManageResource(toProcess)).isTrue();
         toProcess = () -> "EfestoRedirectOutput";
