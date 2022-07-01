@@ -18,10 +18,11 @@ package org.drools.model.codegen.execmodel;
 
 import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.memorycompiler.JavaConfiguration;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NativeCompilerTest extends BaseModelTest {
 
@@ -53,7 +54,7 @@ public class NativeCompilerTest extends BaseModelTest {
             ksession.insert(me);
             ksession.fireAllRules();
 
-            Assert.assertEquals(41, me.getAge());
+            assertThat(me.getAge()).isEqualTo(41);
         } finally {
             JavaDialectConfiguration.setDefaultCompilerType(defaultCompiler);
         }

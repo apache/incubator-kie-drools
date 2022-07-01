@@ -1,10 +1,10 @@
 package org.drools.model.codegen.execmodel.variables;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Collection;
 
 import org.drools.model.codegen.execmodel.BaseModelTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -38,8 +38,8 @@ public class VariablesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        assertEquals(3, results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo(3);
     }
 
     @Test
@@ -69,8 +69,8 @@ public class VariablesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        assertEquals(6, results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo(6);
     }
 
     @Test
@@ -103,8 +103,8 @@ public class VariablesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        assertEquals(10, results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo(10);
     }
 
     @Test
@@ -140,7 +140,7 @@ public class VariablesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        assertEquals(15, results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo(15);
     }
 }

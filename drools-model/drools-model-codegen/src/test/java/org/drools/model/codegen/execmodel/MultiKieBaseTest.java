@@ -23,7 +23,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultiKieBaseTest extends BaseModelTest {
 
@@ -76,23 +76,23 @@ public class MultiKieBaseTest extends BaseModelTest {
 
         KieSession ksession1 = kieContainer.newKieSession("KSession1");
         ksession1.insert("Hello World");
-        assertEquals( 1, ksession1.fireAllRules() );
+        assertThat(ksession1.fireAllRules()).isEqualTo(1);
 
         ksession1.insert("Hi Universe");
-        assertEquals( 1, ksession1.fireAllRules() );
+        assertThat(ksession1.fireAllRules()).isEqualTo(1);
 
         ksession1.insert("Aloha Earth");
-        assertEquals( 0, ksession1.fireAllRules() );
+        assertThat(ksession1.fireAllRules()).isEqualTo(0);
 
         KieSession ksession2 = kieContainer.newKieSession("KSession2");
         ksession2.insert("Hello World");
-        assertEquals( 1, ksession2.fireAllRules() );
+        assertThat(ksession2.fireAllRules()).isEqualTo(1);
 
         ksession2.insert("Hi Universe");
-        assertEquals( 0, ksession2.fireAllRules() );
+        assertThat(ksession2.fireAllRules()).isEqualTo(0);
 
         ksession2.insert("Aloha Earth");
-        assertEquals( 1, ksession2.fireAllRules() );
+        assertThat(ksession2.fireAllRules()).isEqualTo(1);
 
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
         createAndDeployJar( ks, createKieProjectWithPackagesAnd2KieBases(), releaseId2,
@@ -102,8 +102,8 @@ public class MultiKieBaseTest extends BaseModelTest {
         // try to update the container to version 1.1.0
         kieContainer.updateToVersion( releaseId2 );
 
-        assertEquals( 0, ksession1.fireAllRules() );
-        assertEquals( 1, ksession2.fireAllRules() );
+        assertThat(ksession1.fireAllRules()).isEqualTo(0);
+        assertThat(ksession2.fireAllRules()).isEqualTo(1);
     }
 
     private KieModuleModel createKieProjectWithPackagesAnd2KieBases() {
@@ -173,19 +173,19 @@ public class MultiKieBaseTest extends BaseModelTest {
 
         KieSession ks1 = kieContainer.newKieSession("KSession1");
         ks1.insert( "test" );
-        assertEquals( 3, ks1.fireAllRules() ); // no packages -> both drl are included
+        assertThat(ks1.fireAllRules()).isEqualTo(3); // no packages -> both drl are included
 
         KieSession ks2 = kieContainer.newKieSession("KSession2");
         ks2.insert( "test" );
-        assertEquals( 1, ks2.fireAllRules() ); // only rule in org.pkg1 should fire
+        assertThat(ks2.fireAllRules()).isEqualTo(1); // only rule in org.pkg1 should fire
 
         KieSession ks3 = kieContainer.newKieSession("KSession3");
         ks3.insert( "test" );
-        assertEquals( 2, ks3.fireAllRules() ); // only rules in org.pkg2 should fire
+        assertThat(ks3.fireAllRules()).isEqualTo(2); // only rules in org.pkg2 should fire
 
         KieSession ks4 = kieContainer.newKieSession("KSession4");
         ks4.insert( "test" );
-        assertEquals( 0, ks4.fireAllRules() ); // there is no "rules" package and folder is not relevant
+        assertThat(ks4.fireAllRules()).isEqualTo(0); // there is no "rules" package and folder is not relevant
     }
 
     @Test
@@ -215,7 +215,7 @@ public class MultiKieBaseTest extends BaseModelTest {
 
         KieSession ks2 = kieContainer.newKieSession("Kie.Session");
         ks2.insert( "test" );
-        assertEquals( 1, ks2.fireAllRules() ); // only rule in org.pkg1 should fire
+        assertThat(ks2.fireAllRules()).isEqualTo(1); // only rule in org.pkg1 should fire
     }
 
     @Test
@@ -279,14 +279,14 @@ public class MultiKieBaseTest extends BaseModelTest {
 
         KieSession ksessionA = kieContainer.newKieSession("KSessionA");
         ksessionA.insert("Hello World");
-        assertEquals( 2, ksessionA.fireAllRules() );
+        assertThat(ksessionA.fireAllRules()).isEqualTo(2);
         ksessionA.insert("Hi Universe");
-        assertEquals( 1, ksessionA.fireAllRules() );
+        assertThat(ksessionA.fireAllRules()).isEqualTo(1);
 
         KieSession ksessionB = kieContainer.newKieSession("KSessionB");
         ksessionB.insert("Hello World");
-        assertEquals( 1, ksessionB.fireAllRules() );
+        assertThat(ksessionB.fireAllRules()).isEqualTo(1);
         ksessionB.insert("Hi Universe");
-        assertEquals( 2, ksessionB.fireAllRules() );
+        assertThat(ksessionB.fireAllRules()).isEqualTo(2);
     }
 }

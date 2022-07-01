@@ -42,10 +42,10 @@ import org.drools.model.Query;
 import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
-import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.impl.ModelImpl;
 import org.drools.model.view.ViewItem;
+import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
@@ -91,9 +91,6 @@ import static org.drools.model.PatternDSL.query;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.model.PatternDSL.when;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
 public class PatternDSLTest {
 
@@ -133,18 +130,18 @@ public class PatternDSLTest {
         FactHandle marioFH = ksession.insert(mario);
 
         ksession.fireAllRules();
-        assertEquals("Mario is older than Mark", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Mario is older than Mark");
 
         result.setValue( null );
         ksession.delete( marioFH );
         ksession.fireAllRules();
-        assertNull(result.getValue());
+        assertThat(result.getValue()).isNull();
 
         mark.setAge( 34 );
         ksession.update( markFH, mark, "age" );
 
         ksession.fireAllRules();
-        assertEquals("Edson is older than Mark", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Edson is older than Mark");
     }
 
     @Test
@@ -230,7 +227,7 @@ public class PatternDSLTest {
         ksession.insert(new Person("Mario", 40));
         ksession.fireAllRules();
 
-        assertEquals("Mario", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Mario");
     }
 
     @Test
@@ -256,7 +253,7 @@ public class PatternDSLTest {
         ksession.insert(new Person("Mario", 40));
 
         ksession.fireAllRules();
-        assertEquals("Oldest person is Mario", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Oldest person is Mario");
     }
 
     @Test
@@ -286,7 +283,7 @@ public class PatternDSLTest {
         ksession.insert(new Person("Mario", 40));
 
         ksession.fireAllRules();
-        assertEquals("total = 77; average = 38.5", result.getValue());
+        assertThat(result.getValue()).isEqualTo("total = 77; average = 38.5");
     }
 
     @Test
@@ -311,7 +308,7 @@ public class PatternDSLTest {
         ksession.insert(new Person("Mario", 40));
 
         ksession.fireAllRules();
-        assertEquals("total = 4", result.getValue());
+        assertThat(result.getValue()).isEqualTo("total = 4");
     }
 
     @Test
@@ -379,8 +376,8 @@ public class PatternDSLTest {
         ksession.fireAllRules();
 
         Collection<Result> results = (Collection<Result>) ksession.getObjects( new ClassObjectFilter( Result.class ) );
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next().getValue() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
     @Test
@@ -408,8 +405,8 @@ public class PatternDSLTest {
 
         QueryResults results = ksession.getQueryResults( "isRelatedTo1", "A", "B" );
 
-        assertEquals( 1, results.size() );
-        assertEquals( "B", results.iterator().next().get( query1Def.getArg2().getName() ) );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().get(query1Def.getArg2().getName())).isEqualTo("B");
     }
 
     @Test
@@ -466,9 +463,9 @@ public class PatternDSLTest {
 
         QueryResults results = ksession.getQueryResults( "isRelatedTo", "A", "B" );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         String paramName = ((QueryImpl ) ksession.getKieBase().getQuery("defaultpkg", "isRelatedTo" )).getParameters()[1].getIdentifier();
-        assertEquals("B", results.iterator().next().get(paramName));
+        assertThat(results.iterator().next().get(paramName)).isEqualTo("B");
     }
 
     @Test
@@ -506,12 +503,12 @@ public class PatternDSLTest {
         clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -557,9 +554,9 @@ public class PatternDSLTest {
         ksession.fireAllRules();
 
         Collection<String> results = (Collection<String>)result.getValue();
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
 
-        assertEquals( "Found Mark", results.iterator().next() );
+        assertThat(results.iterator().next()).isEqualTo("Found Mark");
     }
 
     @Test
@@ -585,7 +582,7 @@ public class PatternDSLTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -668,8 +665,8 @@ public class PatternDSLTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        assertEquals(77, results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo(77);
     }
 
     @Test
@@ -726,8 +723,8 @@ public class PatternDSLTest {
 
         ksession.insert("darth");
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals(p1, list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo(p1);
 
     }
 
@@ -775,7 +772,7 @@ public class PatternDSLTest {
                 ksession.fireAllRules();
             }
 
-            assertEquals(list, Arrays.asList(2, 1, 2, 1, 2, 1, 2, 1, 2, 1));
+            assertThat(list).containsExactly(2, 1, 2, 1, 2, 1, 2, 1, 2, 1);
         } finally {
             ksession.dispose();
         }
@@ -807,7 +804,7 @@ public class PatternDSLTest {
         Model model = new ModelImpl().addRule( rule1 ).addRule( rule2 ).addGlobal( var_list );
         KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( "ok" );
@@ -816,7 +813,7 @@ public class PatternDSLTest {
         ksession.insert( 1 );
 
         ksession.fireAllRules();
-        assertEquals(list, Arrays.asList("test", 3, "ok", 1));
+        assertThat(list).containsExactly("test", 3, "ok", 1);
     }
 
     @Test
@@ -856,12 +853,12 @@ public class PatternDSLTest {
         clock.advanceTime( 6, TimeUnit.MILLISECONDS );
         ksession.insert( new StockTick( "ACME" ).setTimeField( 6 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         clock.advanceTime( 4, TimeUnit.MILLISECONDS );
         ksession.insert( new StockTick( "ACME" ).setTimeField( 10 ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -910,12 +907,12 @@ public class PatternDSLTest {
         clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -981,7 +978,7 @@ public class PatternDSLTest {
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 9) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -1015,16 +1012,16 @@ public class PatternDSLTest {
         RuleImpl rule     = ( RuleImpl) kbase.getKiePackage("defaultpkg").getRules().toArray()[0];
 
         // Ensure there is only a single root child
-        assertEquals(1, rule.getLhs().getChildren().size());
+        assertThat(rule.getLhs().getChildren().size()).isEqualTo(1);
 
         // The expression must be merged up into the acc pattern
         Pattern p = (Pattern) rule.getLhs().getChildren().get(0);
-        assertSame( Object[].class, ((ClassObjectType) p.getObjectType()).getClassType());
+        assertThat(((ClassObjectType) p.getObjectType()).getClassType()).isEqualTo(Object[].class);
         LambdaConstraint l0 = (LambdaConstraint) p.getConstraints().get(0);
-        assertSame(p1, ((Predicate1.Impl)l0.getEvaluator().getConstraint().getPredicate1()).getLambda());
+        assertThat(((Predicate1.Impl)l0.getEvaluator().getConstraint().getPredicate1()).getLambda()).isSameAs(p1);
 
         LambdaConstraint l1 = (LambdaConstraint) p.getConstraints().get(1);
-        assertSame(p2, ((Predicate1.Impl)l1.getEvaluator().getConstraint().getPredicate1()).getLambda());
+        assertThat(((Predicate1.Impl)l1.getEvaluator().getConstraint().getPredicate1()).getLambda()).isSameAs(p2);
 
         KieSession ksession = kbase.newKieSession();
 
@@ -1035,7 +1032,7 @@ public class PatternDSLTest {
 
         ksession.fireAllRules();
 
-        assertEquals("[42:1]",results.toString());
+        assertThat(results.toString()).isEqualTo("[42:1]");
     }
 
     @Test
@@ -1070,19 +1067,19 @@ public class PatternDSLTest {
         KieBase    kbase    = KieBaseBuilder.createKieBaseFromModel(model);
         RuleImpl   rule     = ( RuleImpl) kbase.getKiePackage("defaultpkg").getRules().toArray()[0];
         // Should only be a single child
-        assertEquals(1, rule.getLhs().getChildren().size());
+        assertThat(rule.getLhs().getChildren().size()).isEqualTo(1);
 
         // Check correct result type and the filter was moved up
         Pattern    p1  = (Pattern) rule.getLhs().getChildren().get(0);
-        assertSame( Long.class, ((ClassObjectType) p1.getObjectType()).getClassType());
+        assertThat(((ClassObjectType) p1.getObjectType()).getClassType()).isEqualTo(Long.class);
         LambdaConstraint l0 = (LambdaConstraint) p1.getConstraints().get(0);
-        assertSame(cp, ((Predicate1.Impl)l0.getEvaluator().getConstraint().getPredicate1()).getLambda());
+        assertThat(((Predicate1.Impl)l0.getEvaluator().getConstraint().getPredicate1()).getLambda()).isSameAs(cp);
 
         // The second acc was sucessfully nested inside
         Accumulate acc = (Accumulate) p1.getSource();
-        assertEquals(1, acc.getNestedElements().size());
+        assertThat(acc.getNestedElements().size()).isEqualTo(1);
         Pattern p2 = (Pattern) acc.getNestedElements().get(0);
-        assertSame( Integer.class, ((ClassObjectType) p2.getObjectType()).getClassType());
+        assertThat(((ClassObjectType) p2.getObjectType()).getClassType()).isEqualTo( Integer.class);
 
         KieSession ksession = kbase.newKieSession();
 
@@ -1093,7 +1090,7 @@ public class PatternDSLTest {
 
         ksession.fireAllRules();
 
-        assertEquals("[1:[1]]",results.toString());
+        assertThat(results.toString()).isEqualTo("[1:[1]]");
     }
 
     @Test
@@ -1130,7 +1127,7 @@ public class PatternDSLTest {
 
         ksession.insert( new Person( "Mark", 42 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static <T> List<T> getObjectsIntoList(KieSession ksession, Class<T> clazz) {
