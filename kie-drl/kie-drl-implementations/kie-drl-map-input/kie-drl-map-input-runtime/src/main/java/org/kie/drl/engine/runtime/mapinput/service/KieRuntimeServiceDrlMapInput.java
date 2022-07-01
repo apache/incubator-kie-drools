@@ -15,19 +15,18 @@
  */
 package org.kie.drl.engine.runtime.mapinput.service;
 
+import java.util.Map;
+import java.util.Optional;
+
+import org.kie.drl.engine.runtime.mapinput.model.EfestoOutputDrlMap;
+import org.kie.drl.engine.runtime.mapinput.utils.DrlRuntimeHelper;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
-import org.kie.drl.engine.runtime.mapinput.model.EfestoInputDrlMap;
-import org.kie.drl.engine.runtime.mapinput.model.EfestoOutputDrlMap;
-import org.kie.drl.engine.runtime.mapinput.utils.DrlRuntimeHelper;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.Optional;
 
 
 public class KieRuntimeServiceDrlMapInput implements KieRuntimeService<EfestoMapInputDTO, Map<String, Object>, AbstractEfestoInput<EfestoMapInputDTO>, EfestoOutputDrlMap> {

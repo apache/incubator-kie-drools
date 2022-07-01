@@ -25,16 +25,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.model.codegen.execmodel.GeneratedFile;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
+import org.drools.model.codegen.execmodel.GeneratedFile;
+import org.drools.model.codegen.project.KogitoPackageSources;
 import org.drools.model.codegen.project.RuleCodegenError;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
-import org.drools.model.codegen.project.KogitoPackageSources;
 import org.kie.api.io.Resource;
 import org.kie.drl.engine.compilation.model.DecisionTableFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlCallableClassesContainer;
@@ -58,7 +58,7 @@ public class DrlCompilerHelper {
     public static DrlCallableClassesContainer getDrlCallableClassesContainer(DecisionTableFileSetResource resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         // TODO {mfusco}
         // There are two possible options
-        // 1) translate the DecisionTableFileSetResource to DrlFileSetResource, and then invoke getDrlCallableClassesContainer(DrlFileSetResource, KieMemoryCompiler.MemoryCompilerClassLoader)
+        // 1) translate the DecisionTableFileSetResource to DrlFileSetResource, and then invoke getDrlCallableClassesContainer(DrlFileSetResource, MemoryCompilerClassLoader)
         // 2) define an "intermediate" resource that contains PackageDescr, and returns it (as it will be done inside PMML)
         throw new KieCompilerServiceException("Not implemented, yet");
     }
@@ -73,11 +73,9 @@ public class DrlCompilerHelper {
 
 
     public static DrlCallableClassesContainer getDrlCallableClassesContainer(DrlFileSetResource resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration =
-                new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration = new KnowledgeBuilderConfigurationImpl();
 
-        DrlResourceHandler drlResourceHandler =
-                new DrlResourceHandler(knowledgeBuilderConfiguration);
+        DrlResourceHandler drlResourceHandler = new DrlResourceHandler(knowledgeBuilderConfiguration);
 
         Map<String, CompositePackageDescr> packages = new HashMap<>();
 
