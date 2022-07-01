@@ -31,13 +31,12 @@ import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.ConsequenceCompilationPhase;
 import org.drools.compiler.builder.impl.processors.EntryPointDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
-import org.drools.compiler.builder.impl.processors.FunctionCompiler;
-import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
+import org.drools.compiler.builder.impl.processors.ImmutableGlobalCompilationPhase;
+import org.drools.compiler.builder.impl.processors.ImmutableRuleCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ImportCompilationPhase;
-import org.drools.compiler.builder.impl.processors.ReteCompiler;
 import org.drools.compiler.builder.impl.processors.RuleAnnotationNormalizer;
-import org.drools.compiler.builder.impl.processors.RuleCompiler;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
+import org.drools.compiler.builder.impl.processors.ImmutableFunctionCompiler;
 import org.drools.compiler.builder.impl.processors.TypeDeclarationAnnotationNormalizer;
 import org.drools.compiler.builder.impl.processors.TypeDeclarationCompilationPhase;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
@@ -119,14 +118,14 @@ public class ExplicitCompilerTest {
                 new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, packageRegistry, null),
                 new WindowDeclarationCompilationPhase(packageRegistry, packageDescr, typeDeclarationContext),
                 new FunctionCompilationPhase(packageRegistry, packageDescr, configuration),
-                new GlobalCompilationPhase(packageRegistry, packageDescr, kBase, globalVariableContext, null),
+                new ImmutableGlobalCompilationPhase(packageRegistry, packageDescr, globalVariableContext),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr),
                 /*         packageRegistry.setDialect(getPackageDialect(packageDescr)) */
                 new RuleValidator(packageRegistry, packageDescr, configuration),
-                new FunctionCompiler(packageDescr, packageRegistry, null, rootClassLoader),
-                new RuleCompiler(packageRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
-                        null, attributesForPackage, resource, typeDeclarationContext),
-                new ReteCompiler(packageRegistry, packageDescr, kBase, null),
+                new ImmutableFunctionCompiler(packageRegistry, packageDescr, rootClassLoader),
+                new ImmutableRuleCompilationPhase(packageRegistry, packageDescr, parallelRulesBuildThreshold,
+                        attributesForPackage, resource, typeDeclarationContext),
+//                new ReteCompiler(packageRegistry, packageDescr, kBase, null), // no-op when kbase==null
                 new ConsequenceCompilationPhase(packageRegistryManager)
         );
 

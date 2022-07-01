@@ -25,7 +25,7 @@ import org.drools.compiler.builder.impl.processors.ConsequenceCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompiler;
 import org.drools.compiler.builder.impl.processors.PackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
-import org.drools.compiler.builder.impl.processors.RuleCompiler;
+import org.drools.compiler.builder.impl.processors.RuleCompilationPhase;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.compiler.DroolsWarning;
@@ -619,8 +619,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         List<CompilationPhase> phases = asList(
                 new RuleValidator(packageRegistry, packageDescr, configuration), // validateUniqueRuleNames
-                new FunctionCompiler(packageDescr, pkgRegistry, assetFilter, rootClassLoader),
-                new RuleCompiler(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
+                new FunctionCompiler(pkgRegistry, packageDescr, assetFilter, rootClassLoader),
+                new RuleCompilationPhase(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
                         assetFilter, packageAttributes, resource, this));
         phases.forEach(CompilationPhase::process);
         phases.forEach(p -> this.results.addAll(p.getResults()));
