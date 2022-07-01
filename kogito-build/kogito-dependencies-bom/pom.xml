@@ -16,8 +16,8 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.10.0.Final</version.io.quarkus>
-    <version.io.quarkus.quarkus-test-maven>2.10.0.Final</version.io.quarkus.quarkus-test-maven>
+    <version.io.quarkus>2.10.1.Final</version.io.quarkus>
+    <version.io.quarkus.quarkus-test-maven>2.10.1.Final</version.io.quarkus.quarkus-test-maven>
     <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
 
     <!-- dependencies versions -->
