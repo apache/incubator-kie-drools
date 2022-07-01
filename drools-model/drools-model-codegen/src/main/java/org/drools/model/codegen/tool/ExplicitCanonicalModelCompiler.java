@@ -18,6 +18,7 @@ import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilation
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
+import org.drools.compiler.builder.impl.processors.ImmutableGlobalCompilationPhase;
 import org.drools.compiler.builder.impl.processors.IteratingPhase;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.builder.impl.processors.SinglePackagePhaseFactory;
@@ -58,7 +59,6 @@ public class ExplicitCanonicalModelCompiler<T extends PackageSources> {
     private final KnowledgeBuilderConfigurationImpl configuration;
     private final BuildResultCollector results;
     private final TypeDeclarationContext typeDeclarationContext;
-    private final InternalKnowledgeBase kBase = null;
     private final GlobalVariableContext globalVariableContext;
     private final PackageSourceManager<T> packageSourceManager;
     private final Function<PackageModel, T> sourceDumpFunction;
@@ -121,7 +121,7 @@ public class ExplicitCanonicalModelCompiler<T extends PackageSources> {
             phases.add(iteratingPhase((reg, acc) -> new WindowDeclarationCompilationPhase(reg, acc, typeDeclarationContext)));
         }
         phases.add(iteratingPhase((reg, acc) -> new FunctionCompilationPhase(reg, acc, configuration)));
-        phases.add(iteratingPhase((reg, acc) -> new GlobalCompilationPhase(reg, acc, kBase, globalVariableContext, acc.getFilter())));
+        phases.add(iteratingPhase((reg, acc) -> new ImmutableGlobalCompilationPhase(reg, acc, globalVariableContext)));
         phases.add(new DeclaredTypeDeregistrationPhase(packages, pkgRegistryManager));
 
         // ---
