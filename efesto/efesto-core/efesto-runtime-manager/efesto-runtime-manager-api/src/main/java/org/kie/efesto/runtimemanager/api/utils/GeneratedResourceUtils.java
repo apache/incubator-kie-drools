@@ -15,7 +15,10 @@
  */
 package org.kie.efesto.runtimemanager.api.utils;
 
-import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
@@ -23,11 +26,6 @@ import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
 import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
@@ -80,15 +78,6 @@ public class GeneratedResourceUtils {
 
     public static Optional<IndexFile> getIndexFile(String modelType) {
         IndexFile toSearch = new IndexFile(modelType);
-        File existingFile;
-        try {
-            existingFile = getFileFromFileName(toSearch.getName());
-            toSearch = new IndexFile(existingFile);
-            logger.debug("IndexFile {} exists", toSearch.getName());
-            return Optional.of(toSearch);
-        } catch (KieEfestoCommonException e) {
-            logger.debug("IndexFile {} does not exists.", toSearch.getName());
-            return Optional.empty();
-        }
+        return getFileFromFileName(toSearch.getName()).map(IndexFile::new);
     }
 }
