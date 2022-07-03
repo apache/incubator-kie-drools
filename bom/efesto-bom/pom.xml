@@ -76,6 +76,26 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>efesto-identifiers-api-application</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>efesto-identifiers-api-decisions</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>efesto-identifiers-api-predictions</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>efesto-identifiers-api-rules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>efesto-compilation-manager-api</artifactId>
         <version>${project.version}</version>
       </dependency>

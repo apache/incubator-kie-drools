@@ -16,6 +16,10 @@
 
   <modules>
     <module>efesto-common-api</module>
+    <module>efesto-identifiers-api-application</module>
+    <module>efesto-identifiers-api-decisions</module>
+    <module>efesto-identifiers-api-predictions</module>
+    <module>efesto-identifiers-api-rules</module>
     <module>efesto-compilation-manager</module>
     <module>efesto-runtime-manager</module>
   </modules>
