@@ -15,6 +15,12 @@
  */
 package org.kie.efesto.runtimemanager.api.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ServiceLoader;
+
+import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
@@ -22,7 +28,7 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import static org.kie.efesto.common.api.utils.CollectionUtils.findAtMostOne;
 
 public class SPIUtils {
 
@@ -35,17 +41,17 @@ public class SPIUtils {
 
     private static final ServiceLoader<KieRuntimeService> kieRuntimeServiceLoader = ServiceLoader.load(KieRuntimeService.class);
 
-    public static Optional<KieRuntimeService> getKieRuntimeService(EfestoInput<?> darInput, boolean refresh, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        logger.debug("getKieRuntimeService {} {}", darInput, refresh);
-        List<KieRuntimeService> retrieved = getKieRuntimeServices(refresh);
-        return retrieved.stream().filter(service -> service.canManageInput(darInput, memoryCompilerClassLoader)).findFirst();
+    public static Optional<KieRuntimeService> getKieRuntimeService(EfestoInput<?> input, boolean refresh, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        logger.debug("getKieRuntimeService {} {}", input, refresh);
+        return findAtMostOne(getKieRuntimeServices(refresh), service -> service.canManageInput(input, memoryCompilerClassLoader),
+                (s1, s2) -> new KieRuntimeServiceException("Found more than one compiler services: " + s1 + " and " + s2));
     }
 
     public static List<KieRuntimeService> getKieRuntimeServices(boolean refresh) {
         logger.debug("getKieRuntimeServices {}", refresh);
         List<KieRuntimeService> toReturn = new ArrayList<>();
-        Iterator<KieRuntimeService> services = getServices(refresh);
-        services.forEachRemaining(toReturn::add);
+        Iterable<KieRuntimeService> services = getServices(refresh);
+        services.forEach(toReturn::add);
         logger.debug("toReturn {} {}", toReturn, toReturn.size());
         if (logger.isTraceEnabled()) {
             toReturn.forEach(provider -> logger.trace("{}", provider));
@@ -56,23 +62,23 @@ public class SPIUtils {
     public static Optional<RuntimeManager> getRuntimeManager(boolean refresh) {
         logger.debug("getRuntimeManager {}", refresh);
         List<RuntimeManager> toReturn = new ArrayList<>();
-        Iterator<RuntimeManager> managers = getManagers(refresh);
-        managers.forEachRemaining(toReturn::add);
+        Iterable<RuntimeManager> managers = getManagers(refresh);
+        managers.forEach(toReturn::add);
         return toReturn.stream().findFirst();
     }
 
 
-    private static Iterator<KieRuntimeService> getServices(boolean refresh) {
+    private static Iterable<KieRuntimeService> getServices(boolean refresh) {
         if (refresh) {
             kieRuntimeServiceLoader.reload();
         }
-        return kieRuntimeServiceLoader.iterator();
+        return kieRuntimeServiceLoader;
     }
 
-    private static Iterator<RuntimeManager> getManagers(boolean refresh) {
+    private static Iterable<RuntimeManager> getManagers(boolean refresh) {
         if (refresh) {
             runtimeManagerLoader.reload();
         }
-        return runtimeManagerLoader.iterator();
+        return runtimeManagerLoader;
     }
 }

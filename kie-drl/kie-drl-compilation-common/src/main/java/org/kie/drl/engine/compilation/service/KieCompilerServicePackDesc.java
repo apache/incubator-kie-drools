@@ -1,16 +1,16 @@
 package org.kie.drl.engine.compilation.service;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.drl.ast.descr.PackageDescr;
+import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
-import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.memorycompiler.KieMemoryCompiler;
-
-import java.util.Collections;
-import java.util.List;
 
 import static org.kie.drl.engine.compilation.utils.DrlCompilerHelper.getDrlCallableClassesContainer;
 
@@ -28,7 +28,7 @@ public class KieCompilerServicePackDesc implements KieCompilerService {
                     this.getClass().getName(),
                     toProcess.getClass().getName()));
         }
-        return (List<E>) Collections.singletonList(getDrlCallableClassesContainer((EfestoSetResource<PackageDescr>) toProcess, memoryCompilerClassLoader));
+        return Collections.singletonList( (E) getDrlCallableClassesContainer((EfestoSetResource<PackageDescr>) toProcess, memoryCompilerClassLoader) );
     }
 
 }

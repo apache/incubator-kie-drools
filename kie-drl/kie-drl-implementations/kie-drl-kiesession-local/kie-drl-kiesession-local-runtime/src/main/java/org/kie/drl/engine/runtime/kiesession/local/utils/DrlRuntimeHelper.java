@@ -15,22 +15,21 @@
  */
 package org.kie.drl.engine.runtime.kiesession.local.utils;
 
+import java.util.Optional;
+
 import org.kie.api.runtime.KieSession;
+import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
+import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
-import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
-import org.kie.drl.engine.runtime.utils.EfestoKieRuntimeDrlUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
+import static org.kie.drl.engine.runtime.utils.EfestoKieSessionUtil.loadKieSession;
 import static org.kie.efesto.common.api.model.FRI.SLASH;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedExecutableResource;
-import static org.kie.drl.engine.runtime.utils.EfestoKieSessionUtil.loadKieSession;
 
 public class DrlRuntimeHelper {
 
