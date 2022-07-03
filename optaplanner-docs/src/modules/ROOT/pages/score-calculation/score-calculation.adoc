@@ -1088,52 +1088,61 @@ These connect the constraint weight with the constraint implementation.
 *For each constraint weight, there must be a constraint implementation with the same package and the same name.*
 
 * The `@ConstraintConfiguration` annotation has a `constraintPackage` property that defaults to the package of the constraint configuration class.
-Most cases with xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation (Deprecated)], need to override that because the DRLs use another package.
-For example, the DRL below uses the package `...conferencescheduling.score`,
-so the constraint configuration above specifies a `constraintPackage`.
-Cases with xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint streams], normally don't need to specify it.
+Cases with xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint streams] normally don't need to specify it.
+Cases with xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation (Deprecated)] may need to override that because the DRLs often use a different package.
 
 * The `@ConstraintWeight` annotation has a `value` which is the constraint name (for example "Speaker conflict").
 It inherits the constraint package from the `@ConstraintConfiguration`,
 but it can override that, for example `@ConstraintWeight(constraintPackage = "...region.france", ...)`
-to use a different constraint package than some of the other weights.
+to use a different constraint package than some other weights.
 
 So every constraint weight ends up with a constraint package and a constraint name.
 Each constraint weight links with a constraint implementation,
-for example in xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation]:
+for example in xref:constraint-streams/constraint-streams.adoc[Constraint Streams]:
 
-[source,options="nowrap"]
+[source,java,options="nowrap"]
 ----
-package ...conferencescheduling.solver;
+public final class ConferenceSchedulingConstraintProvider implements ConstraintProvider {
 
-rule "Speaker conflict"
-    when
-        ...
-    then
-        scoreHolder.penalize(kcontext);
-end
+    @Override
+    public Constraint[] defineConstraints(ConstraintFactory factory) {
+        return new Constraint[] {
+                speakerConflict(factory),
+                themeTrackConflict(factory),
+                contentConflict(factory),
+                ...
+        };
+    }
 
-rule "Theme track conflict"
-    when
-        ...
-    then
-        scoreHolder.penalize(kcontext, ...);
-end
+    protected Constraint speakerConflict(ConstraintFactory factory) {
+        return factory.forEachUniquePair(...)
+                ...
+                .penalizeConfigurable("Speaker conflict", ...);
+    }
 
-rule "Content conflict"
-    when
-        ...
-    then
-        scoreHolder.penalize(kcontext, ...);
-end
+    protected Constraint themeTrackConflict(ConstraintFactory factory) {
+        return factory.forEachUniquePair(...)
+                ...
+                .penalizeConfigurable("Theme track conflict", ...);
+    }
+
+    protected Constraint contentConflict(ConstraintFactory factory) {
+        return factory.forEachUniquePair(...)
+                ...
+                .penalizeConfigurable("Content conflict", ...);
+    }
+
+    ...
+
+}
 ----
 
 Each of the constraint weights defines the score level and score weight of their constraint.
-The constraint implementation calls `reward()` or `penalize()` and the constraint weight is automatically applied.
+The constraint implementation calls `rewardConfigurable()` or `penalizeConfigurable()` and the constraint weight is automatically applied.
 
 If the constraint implementation provides a match weight, that *match weight is multiplied with the constraint weight*.
 For example, the _content conflict_ constraint weight defaults to `100soft`
-and the constraint implementation penalizes each match based on the number of shared content tags:
+and the constraint implementation penalizes each match based on the number of shared content tags and the overlapping duration of the two talks:
 
 [source,java,options="nowrap"]
 ----
@@ -1141,20 +1150,21 @@ and the constraint implementation penalizes each match based on the number of sh
     private HardMediumSoftScore contentConflict = HardMediumSoftScore.ofSoft(100);
 ----
 
-[source,options="nowrap"]
+[source,java,options="nowrap"]
 ----
-rule "Content conflict"
-    when
-        $talk1 : Talk(...)
-        $talk2 : Talk(...)
-    then
-        scoreHolder.penalize(kcontext,
-                $talk2.overlappingContentCount($talk1));
-end
+Constraint contentConflict(ConstraintFactory factory) {
+    return factory.forEachUniquePair(Talk.class,
+        overlapping(t -> t.getTimeslot().getStartDateTime(),
+            t -> t.getTimeslot().getEndDateTime()),
+        filtering((talk1, talk2) -> talk1.overlappingContentCount(talk2) > 0))
+        .penalizeConfigurable("Content conflict",
+                (talk1, talk2) -> talk1.overlappingContentCount(talk2)
+                        * talk1.overlappingDurationInMinutes(talk2));
+}
 ----
 
-So when 2 overlapping talks share only 1 content tag, the score is impacted by `-100soft`.
-But when 2 overlapping talks share 3 content tags, the match weight is `3`, so the score is impacted by `-300soft`.
+So when 2 overlapping talks share only 1 content tag and overlap by 60 minutes, the score is impacted by `-6000soft`.
+But when 2 overlapping talks share 3 content tags, the match weight is 180, so the score is impacted by `-18000soft`.
 
 [[explainingTheScore]]
 == Explaining the score: which constraints are broken?
