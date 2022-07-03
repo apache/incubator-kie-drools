@@ -16,7 +16,11 @@
 package org.drools.model.project.codegen.pkg1
 
 rule three when
-then  end
+  String()
+then
+end
 
 rule four when
-then  end
+  Integer()
+then
+end

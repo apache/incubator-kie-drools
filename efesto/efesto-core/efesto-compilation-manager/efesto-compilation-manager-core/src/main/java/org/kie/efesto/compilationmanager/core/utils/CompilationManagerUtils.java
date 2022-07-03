@@ -16,7 +16,9 @@
 package org.kie.efesto.compilationmanager.core.utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -55,41 +57,26 @@ public class CompilationManagerUtils {
     private CompilationManagerUtils() {
     }
 
-    public static void populateIndexFilesWithProcessedResource(final Collection<IndexFile> toPopulate,
-                                                               EfestoResource toProcess,
-                                                               KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static Collection<IndexFile> getIndexFilesWithProcessedResource(EfestoResource toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
-            return;
+            return Collections.emptyList();
         }
-        Optional<List<EfestoCompilationOutput>> compilationOutputOptional =
-                retrieved.map(service -> service.processResource(toProcess, memoryCompilerClassLoader));
-        compilationOutputOptional.ifPresent(darCompilationOutputs -> {
-            Optional<IndexFile> indexFileOptional = getIndexFileFromCompilationOutputs(darCompilationOutputs);
-            indexFileOptional.ifPresent(indexFile -> {
+        Collection<IndexFile> toPopulate = new ArrayList<>();
+        for (EfestoCompilationOutput compilationOutput : retrieved.get().processResource(toProcess, memoryCompilerClassLoader)) {
+            if (compilationOutput instanceof EfestoCallableOutput) {
+                IndexFile indexFile = CompilationManagerUtils.getIndexFile((EfestoCallableOutput) compilationOutput);
                 toPopulate.add(indexFile);
-                darCompilationOutputs.forEach(darCompilationOutput -> {
-                    populateIndexFile(indexFile, darCompilationOutput);
-                    if (darCompilationOutput instanceof EfestoCallableOutputClassesContainer) {
-                        loadClasses(((EfestoCallableOutputClassesContainer) darCompilationOutput).getCompiledClassesMap(), memoryCompilerClassLoader);
-                    }
-                    if (darCompilationOutput instanceof EfestoRedirectOutput) {
-                        populateIndexFilesWithProcessedResource(toPopulate,
-                                                                (EfestoRedirectOutput) darCompilationOutput,
-                                                                memoryCompilerClassLoader);
-                    }
-                });
-            });
-        });
-    }
-
-    static Optional<IndexFile> getIndexFileFromCompilationOutputs(List<EfestoCompilationOutput> compilationOutputs) {
-        return compilationOutputs.stream()
-                .filter(EfestoCallableOutput.class::isInstance)
-                .map(EfestoCallableOutput.class::cast)
-                .map(CompilationManagerUtils::getIndexFile)
-                .findFirst();
+                populateIndexFile(indexFile, compilationOutput);
+                if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
+                    loadClasses(((EfestoCallableOutputClassesContainer) compilationOutput).getCompiledClassesMap(), memoryCompilerClassLoader);
+                } else if (compilationOutput instanceof EfestoRedirectOutput) {
+                    toPopulate.addAll(getIndexFilesWithProcessedResource((EfestoRedirectOutput) compilationOutput, memoryCompilerClassLoader));
+                }
+            }
+        }
+        return toPopulate;
     }
 
     static IndexFile getIndexFile(EfestoCallableOutput compilationOutput) {
