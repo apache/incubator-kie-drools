@@ -18,7 +18,19 @@ package org.drools.testcoverage.common.util;
 
 import org.junit.Test;
 
-import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_EQUALITY;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_EQUALITY_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_IDENTITY;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_IDENTITY_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.STREAM_IDENTITY;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.STREAM_IDENTITY_ALPHA_NETWORK;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN;
+import static org.drools.testcoverage.common.util.KieBaseTestConfiguration.STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK;
 
 public class TestParametersUtilTest {
 
