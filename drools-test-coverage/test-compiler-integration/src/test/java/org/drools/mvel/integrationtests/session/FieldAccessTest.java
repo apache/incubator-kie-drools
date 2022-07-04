@@ -32,7 +32,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FieldAccessTest {
@@ -91,7 +91,7 @@ public class FieldAccessTest {
 
         ksession.insert(new Primitives());
         final int rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+        assertThat(rules).isEqualTo(1);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class FieldAccessTest {
         ksession.insert(p);
 
         ksession.insert(new Cheese("x"));
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 

@@ -38,7 +38,6 @@ import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
 
 @RunWith(Parameterized.class)
 public class OOPathCastTest {
@@ -105,7 +104,7 @@ public class OOPathCastTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test

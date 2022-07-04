@@ -41,10 +41,7 @@ import org.kie.internal.builder.fluent.KieSessionFluent;
 import org.kie.internal.builder.fluent.Scope;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class BatchRunFluentTest {
@@ -104,7 +101,7 @@ public class BatchRunFluentTest {
 
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.getOutputs().get("outS"));
+        assertThat(requestContext.getOutputs().get("outS")).isEqualTo("h1");
     }
 
     @Test
@@ -120,8 +117,8 @@ public class BatchRunFluentTest {
 
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.getOutputs().get("outS"));
-        assertEquals("h1", requestContext.get("outS"));
+        assertThat(requestContext.getOutputs().get("outS")).isEqualTo("h1");
+        assertThat(requestContext.get("outS")).isEqualTo("h1");
     }
 
     @Test
@@ -138,12 +135,12 @@ public class BatchRunFluentTest {
 
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
-        assertNull(requestContext.getOutputs().get("outS"));
-        assertEquals("h1", requestContext.get("outS"));
+        assertThat(requestContext.getOutputs().get("outS")).isNull();
+        assertThat(requestContext.get("outS")).isEqualTo("h1");
 
         assertThat(requestContext.getOutputs().get("outS1")).isNotNull();
-        assertEquals(requestContext.get("outS1"), requestContext.getOutputs().get("outS1"));
-        assertEquals(requestContext.get("outS"), requestContext.get("outS1"));
+        assertThat(requestContext.getOutputs().get("outS1")).isEqualTo(requestContext.get("outS1"));
+        assertThat(requestContext.get("outS1")).isEqualTo(requestContext.get("outS"));
     }
 
     @Test
@@ -160,7 +157,7 @@ public class BatchRunFluentTest {
         try {
             RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
-            assertEquals("h1", requestContext.get("out1"));
+            assertThat(requestContext.get("out1")).isEqualTo("h1");
             fail("Must throw Exception, as no prior set was called and no name given to out");
         } catch (Exception e) {
 
@@ -193,8 +190,8 @@ public class BatchRunFluentTest {
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertEquals("h1", requestContext.getOutputs().get("outS1"));
-        assertEquals("h2", requestContext.getOutputs().get("outS2"));
+        assertThat(requestContext.getOutputs().get("outS1")).isEqualTo("h1");
+        assertThat(requestContext.getOutputs().get("outS2")).isEqualTo("h2");
     }
 
     @Test
@@ -223,8 +220,8 @@ public class BatchRunFluentTest {
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertEquals("h1", requestContext.getOutputs().get("outS1"));
-        assertEquals("h2", requestContext.getOutputs().get("outS2"));
+        assertThat(requestContext.getOutputs().get("outS1")).isEqualTo("h1");
+        assertThat(requestContext.getOutputs().get("outS2")).isEqualTo("h2");
     }
 
     @Test
@@ -246,7 +243,7 @@ public class BatchRunFluentTest {
 
         runner.execute(f.getExecutable(), requestContext);
 
-        assertNotEquals(conversationId, requestContext.getConversationContext().getName());
+        assertThat(requestContext.getConversationContext().getName()).isNotEqualTo(conversationId);
     }
 
     @Test
@@ -263,11 +260,11 @@ public class BatchRunFluentTest {
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertNull(requestContext.get("outS"));
-        assertNull(requestContext.getOutputs().get("outS1"));
-        assertNull(requestContext.getApplicationContext().get("outS1"));
-        assertNull(requestContext.getConversationContext());
-        assertEquals("h1", requestContext.get("outS1"));
+        assertThat(requestContext.get("outS")).isNull();
+        assertThat(requestContext.getOutputs().get("outS1")).isNull();
+        assertThat(requestContext.getApplicationContext().get("outS1")).isNull();
+        assertThat(requestContext.getConversationContext()).isNull();
+        assertThat(requestContext.get("outS1")).isEqualTo("h1");
     }
 
     @Test
@@ -286,8 +283,8 @@ public class BatchRunFluentTest {
         RequestContext requestContext = runner.execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertEquals(null, requestContext.get("outS"));
-        assertEquals("h1", requestContext.getApplicationContext().get("outS1"));
+        assertThat(requestContext.get("outS")).isEqualTo(null);
+        assertThat(requestContext.getApplicationContext().get("outS1")).isEqualTo("h1");
 
         // Make another request, add to application context, assert old and new values are there.
         f = new ExecutableBuilderImpl();
@@ -300,8 +297,8 @@ public class BatchRunFluentTest {
                 .dispose();
 
         requestContext = (RequestContext) runner.execute(f.getExecutable());
-        assertEquals("h1", requestContext.getApplicationContext().get("outS1"));
-        assertEquals("h2", requestContext.getApplicationContext().get("outS2"));
+        assertThat(requestContext.getApplicationContext().get("outS1")).isEqualTo("h1");
+        assertThat(requestContext.getApplicationContext().get("outS2")).isEqualTo("h2");
     }
 
     @Test
@@ -320,11 +317,11 @@ public class BatchRunFluentTest {
         RequestContext requestContext = (RequestContext) runner.execute(f.getExecutable());
 
         // check that nothing went to the 'out'
-        assertEquals(null, requestContext.get("outS"));
+        assertThat(requestContext.get("outS")).isEqualTo(null);
 
         String conversationId = requestContext.getConversationContext().getName();
 
-        assertEquals("h1", requestContext.getConversationContext().get("outS1"));
+        assertThat(requestContext.getConversationContext().get("outS1")).isEqualTo("h1");
 
         // Make another request, add to conversation context, assert old and new values are there.
         f = new ExecutableBuilderImpl();
@@ -337,8 +334,8 @@ public class BatchRunFluentTest {
                 .dispose();
 
         requestContext = (RequestContext) runner.execute(f.getExecutable());
-        assertEquals("h1", requestContext.getConversationContext().get("outS1"));
-        assertEquals("h2", requestContext.getConversationContext().get("outS2"));
+        assertThat(requestContext.getConversationContext().get("outS1")).isEqualTo("h1");
+        assertThat(requestContext.getConversationContext().get("outS2")).isEqualTo("h2");
 
         // End the conversation, check it's now null
         f = new ExecutableBuilderImpl();
@@ -346,7 +343,7 @@ public class BatchRunFluentTest {
         f.endConversation(conversationId);
 
         requestContext = (RequestContext) runner.execute(f.getExecutable());
-        assertNull(requestContext.getConversationContext());
+        assertThat(requestContext.getConversationContext()).isNull();
     }
 
     @Test
@@ -365,9 +362,9 @@ public class BatchRunFluentTest {
                 .dispose();
         RequestContext requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.get("outS1"));
-        assertEquals("h1", requestContext.getApplicationContext().get("outS1"));
-        assertEquals("h1", requestContext.get("outS1"));
+        assertThat(requestContext.get("outS1")).isEqualTo("h1");
+        assertThat(requestContext.getApplicationContext().get("outS1")).isEqualTo("h1");
+        assertThat(requestContext.get("outS1")).isEqualTo("h1");
 
         // Check that get() will search up to Conversation, thus over-riding Application scope and ignoring Request when it has no value
         f = new ExecutableBuilderImpl();
@@ -381,10 +378,10 @@ public class BatchRunFluentTest {
                 .dispose();
         requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h2", requestContext.get("outS1"));
-        assertEquals("h1", requestContext.getApplicationContext().get("outS1"));
-        assertEquals("h2", requestContext.getConversationContext().get("outS1"));
-        assertEquals("h2", requestContext.get("outS1"));
+        assertThat(requestContext.get("outS1")).isEqualTo("h2");
+        assertThat(requestContext.getApplicationContext().get("outS1")).isEqualTo("h1");
+        assertThat(requestContext.getConversationContext().get("outS1")).isEqualTo("h2");
+        assertThat(requestContext.get("outS1")).isEqualTo("h2");
 
         // Check that get() will search directly to Request, thus over-riding Application and Conversation scoped values
         f = new ExecutableBuilderImpl();
@@ -398,10 +395,10 @@ public class BatchRunFluentTest {
                 .dispose();
         requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h3", requestContext.get("outS1"));
-        assertEquals("h1", requestContext.getApplicationContext().get("outS1"));
-        assertEquals("h2", requestContext.getConversationContext().get("outS1"));
-        assertEquals("h3", requestContext.get("outS1"));
+        assertThat(requestContext.get("outS1")).isEqualTo("h3");
+        assertThat(requestContext.getApplicationContext().get("outS1")).isEqualTo("h1");
+        assertThat(requestContext.getConversationContext().get("outS1")).isEqualTo("h2");
+        assertThat(requestContext.get("outS1")).isEqualTo("h3");
     }
 
     @Test
@@ -428,8 +425,8 @@ public class BatchRunFluentTest {
 
         RequestContext requestContext = runner.execute(f.getExecutable());
 
-        assertEquals(1000l, requestContext.getOutputs().get("timeNow1"));
-        assertEquals(2000l, requestContext.getOutputs().get("timeNow2"));
+        assertThat(requestContext.getOutputs().get("timeNow1")).isEqualTo(1000l);
+        assertThat(requestContext.getOutputs().get("timeNow2")).isEqualTo(2000l);
     }
 
     @Test
@@ -451,7 +448,7 @@ public class BatchRunFluentTest {
 
         RequestContext requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.getOutputs().get("outS1"));
+        assertThat(requestContext.getOutputs().get("outS1")).isEqualTo("h1");
     }
 
     @Test
@@ -470,7 +467,7 @@ public class BatchRunFluentTest {
 
         RequestContext requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.getOutputs().get("outS1"));
+        assertThat(requestContext.getOutputs().get("outS1")).isEqualTo("h1");
     }
 
     @Test
@@ -489,7 +486,7 @@ public class BatchRunFluentTest {
 
         RequestContext requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.getOutputs().get("outS1"));
+        assertThat(requestContext.getOutputs().get("outS1")).isEqualTo("h1");
     }
 
     @Test
@@ -508,7 +505,7 @@ public class BatchRunFluentTest {
 
         RequestContext requestContext = runner.execute(f.getExecutable());
 
-        assertNotEquals("h1", requestContext.getOutputs().get("outS2"));
+        assertThat(requestContext.getOutputs().get("outS2")).isNotEqualTo("h1");
 
         // now set active agenda group
         f = ExecutableBuilder.create();
@@ -524,6 +521,6 @@ public class BatchRunFluentTest {
 
         requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.getOutputs().get("outS2"));
+        assertThat(requestContext.getOutputs().get("outS2")).isEqualTo("h1");
     }
 }

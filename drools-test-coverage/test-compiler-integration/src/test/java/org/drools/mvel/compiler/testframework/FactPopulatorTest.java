@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.mvel2.MVEL;
 
 public class FactPopulatorTest {
@@ -46,9 +46,9 @@ public class FactPopulatorTest {
 
         DumbFact d = (DumbFact) q;
 
-        assertEquals("mike", d.getName());
-        assertEquals(42, d.getAge());
-        assertEquals(new Long(44), d.getNumber());
+        assertThat(d.getName()).isEqualTo("mike");
+        assertThat(d.getAge()).isEqualTo(42);
+        assertThat(d.getNumber()).isEqualTo(new Long(44));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class FactPopulatorTest {
                 put("val", "42");
         }};
 
-        assertTrue(MVEL.evalToBoolean("d.age == val", m));
+        assertThat(MVEL.evalToBoolean("d.age == val", m)).isTrue();
     }
 
 }

@@ -50,9 +50,6 @@ import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -115,14 +112,14 @@ public class StreamsTest {
             assertThat(handle3).isNotNull();
             assertThat(handle4).isNotNull();
 
-            assertTrue(handle1.isEvent());
-            assertTrue(handle2.isEvent());
-            assertTrue(handle3.isEvent());
-            assertTrue(handle4.isEvent());
+            assertThat(handle1.isEvent()).isTrue();
+            assertThat(handle2.isEvent()).isTrue();
+            assertThat(handle3.isEvent()).isTrue();
+            assertThat(handle4.isEvent()).isTrue();
 
             session.fireAllRules();
 
-            assertEquals(0, results.size());
+            assertThat(results.size()).isEqualTo(0);
 
             final StockTick tick5 = new StockTick(5, "DROO", 50, System.currentTimeMillis());
             final StockTick tick6 = new StockTick(6, "ACME", 10, System.currentTimeMillis());
@@ -141,15 +138,15 @@ public class StreamsTest {
             assertThat(handle7).isNotNull();
             assertThat(handle8).isNotNull();
 
-            assertTrue(handle5.isEvent());
-            assertTrue(handle6.isEvent());
-            assertTrue(handle7.isEvent());
-            assertTrue(handle8.isEvent());
+            assertThat(handle5.isEvent()).isTrue();
+            assertThat(handle6.isEvent()).isTrue();
+            assertThat(handle7.isEvent()).isTrue();
+            assertThat(handle8.isEvent()).isTrue();
 
             session.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertSame(tick7, results.get(0));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.get(0)).isSameAs(tick7);
         } finally {
             session.dispose();
         }
@@ -181,15 +178,15 @@ public class StreamsTest {
             assertThat(handle7).isNotNull();
             assertThat(handle8).isNotNull();
 
-            assertTrue(handle5.isEvent());
-            assertTrue(handle6.isEvent());
-            assertTrue(handle7.isEvent());
-            assertTrue(handle8.isEvent());
+            assertThat(handle5.isEvent()).isTrue();
+            assertThat(handle6.isEvent()).isTrue();
+            assertThat(handle7.isEvent()).isTrue();
+            assertThat(handle8.isEvent()).isTrue();
 
             session.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertSame(tick7, results.get(0));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.get(0)).isSameAs(tick7);
         } finally {
             session.dispose();
         }
@@ -245,21 +242,21 @@ public class StreamsTest {
             assertThat(handle7).isNotNull();
             assertThat(handle8).isNotNull();
 
-            assertTrue(handle5.isEvent());
-            assertTrue(handle6.isEvent());
-            assertTrue(handle7.isEvent());
-            assertTrue(handle8.isEvent());
+            assertThat(handle5.isEvent()).isTrue();
+            assertThat(handle6.isEvent()).isTrue();
+            assertThat(handle7.isEvent()).isTrue();
+            assertThat(handle8.isEvent()).isTrue();
 
             session.fireAllRules();
 
-            assertEquals(2, results.size());
-            assertEquals(30, results.get(0).intValue());
-            assertEquals(110, results.get(1).intValue());
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(results.get(0).intValue()).isEqualTo(30);
+            assertThat(results.get(1).intValue()).isEqualTo(110);
 
             // the 3 non-matched facts continue to exist in the entry point
-            assertEquals(3, entry.getObjects().size());
+            assertThat(entry.getObjects().size()).isEqualTo(3);
             // but no fact was inserted into the main session
-            assertEquals(0, session.getObjects().size());
+            assertThat(session.getObjects().size()).isEqualTo(0);
         } finally {
             session.dispose();
         }
@@ -308,7 +305,7 @@ public class StreamsTest {
             ep2.insert(new StockTick(1, "RHT", 10, 1000));
             ep3.insert(new StockTick(1, "RHT", 10, 1000));
             final int rulesFired = ksession.fireAllRules();
-            assertEquals(3, rulesFired);
+            assertThat(rulesFired).isEqualTo(3);
 
             final ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
             verify(ael, times(3)).afterMatchFired(captor.capture());
@@ -344,7 +341,7 @@ public class StreamsTest {
 
             ep1.insert(new StockTick(1, "RHT", 10, 1000));
             final int rulesFired = ksession.fireAllRules();
-            assertEquals(1, rulesFired);
+            assertThat(rulesFired).isEqualTo(1);
 
             final ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
             verify(ael, times(1)).afterMatchFired(captor.capture());
@@ -368,11 +365,11 @@ public class StreamsTest {
             final EntryPoint s3 = session.getEntryPoint("stream3");
             final Collection<? extends EntryPoint> eps = session.getEntryPoints();
 
-            assertEquals(4, eps.size());
-            assertTrue(eps.contains(def));
-            assertTrue(eps.contains(s1));
-            assertTrue(eps.contains(s2));
-            assertTrue(eps.contains(s3));
+            assertThat(eps.size()).isEqualTo(4);
+            assertThat(eps.contains(def)).isTrue();
+            assertThat(eps.contains(s1)).isTrue();
+            assertThat(eps.contains(s2)).isTrue();
+            assertThat(eps.contains(s3)).isTrue();
         } finally {
             session.dispose();
         }
@@ -500,7 +497,7 @@ public class StreamsTest {
         final ObjectType stot = new ClassObjectType(StockTick.class);
         for (final ObjectTypeNode otn : otns) {
             if (otn.getObjectType().isAssignableFrom(stot)) {
-                assertEquals(NEVER_EXPIRES, otn.getExpirationOffset());
+                assertThat(otn.getExpirationOffset()).isEqualTo(NEVER_EXPIRES);
             }
         }
     }

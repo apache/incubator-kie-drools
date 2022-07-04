@@ -35,7 +35,7 @@ import org.kie.api.io.Resource;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class KieBuilderSetImplTest extends CommonTestMethodBase {
@@ -64,8 +64,8 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
 
         final IncrementalResults build = kieBuilderSet.build();
 
-        assertEquals( 0, build.getAddedMessages().size() );
-        assertEquals( 0, build.getRemovedMessages().size() );
+        assertThat(build.getAddedMessages().size()).isEqualTo(0);
+        assertThat(build.getRemovedMessages().size()).isEqualTo(0);
     }
 
     @Test
@@ -83,8 +83,8 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
 
         final IncrementalResults build = kieBuilderSet.build();
 
-        assertEquals(0, build.getAddedMessages().size());
-        assertEquals(0, build.getRemovedMessages().size());
+        assertThat(build.getAddedMessages().size()).isEqualTo(0);
+        assertThat(build.getRemovedMessages().size()).isEqualTo(0);
     }
 
     @Test
@@ -92,13 +92,13 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
         final Resource dummyResource = new KieBuilderSetImpl.DummyResource( "Dummy%20Resource" );
         final Resource testResource = new KieBuilderSetImpl.DummyResource( "Dummy Resource" );
 
-        assertEquals( testResource, dummyResource );
+        assertThat(dummyResource).isEqualTo(testResource);
     }
 
     @Test
     public void testDummyResourceWithWrongEncodedFileName() {
         final Resource dummyResource = new KieBuilderSetImpl.DummyResource("Dummy 100%");
-        assertEquals(dummyResource.getSourcePath(), "Dummy 100%");
+        assertThat("Dummy 100%").isEqualTo(dummyResource.getSourcePath());
     }
 
     private KieBuilderImpl kieBuilder( final KieServices ks,

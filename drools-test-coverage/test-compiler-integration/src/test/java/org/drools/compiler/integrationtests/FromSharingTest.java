@@ -32,7 +32,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FromSharingTest {
@@ -82,7 +82,7 @@ public class FromSharingTest {
             p.setAge(30);
             p.getAddresses().add(a);
             kieSession.insert(p);
-            assertEquals(1, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(1);
         } finally {
             kieSession.dispose();
         }
@@ -215,6 +215,6 @@ public class FromSharingTest {
         final KieSession ksession = kieBase.newKieSession();
 
         ksession.insert(new Person ("John", 20));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

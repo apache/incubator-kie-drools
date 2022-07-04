@@ -26,7 +26,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 
 public class TypeDeclarationMergingTest {
@@ -36,28 +37,28 @@ public class TypeDeclarationMergingTest {
     @Test
     public void testMask() {
         TypeDeclaration tdeclr = new TypeDeclaration(CImpl.class.getName() );
-        assertEquals( 0, tdeclr.getSetMask() );
+        assertThat(tdeclr.getSetMask()).isEqualTo(0);
 
         tdeclr.setRole( Role.Type.EVENT );
-        assertEquals( TypeDeclaration.ROLE_BIT, tdeclr.getSetMask() & TypeDeclaration.ROLE_BIT );
-        assertFalse( TypeDeclaration.TYPESAFE_BIT == ( tdeclr.getSetMask() & TypeDeclaration.TYPESAFE_BIT ) );
-        assertFalse( TypeDeclaration.FORMAT_BIT == ( tdeclr.getSetMask() & TypeDeclaration.FORMAT_BIT ) );
+        assertThat(tdeclr.getSetMask() & TypeDeclaration.ROLE_BIT).isEqualTo(TypeDeclaration.ROLE_BIT);
+        assertThat(TypeDeclaration.TYPESAFE_BIT == (tdeclr.getSetMask() & TypeDeclaration.TYPESAFE_BIT)).isFalse();
+        assertThat(TypeDeclaration.FORMAT_BIT == (tdeclr.getSetMask() & TypeDeclaration.FORMAT_BIT)).isFalse();
         
         tdeclr.setTypesafe( false );
-        assertEquals( TypeDeclaration.ROLE_BIT, tdeclr.getSetMask() & TypeDeclaration.ROLE_BIT );
-        assertEquals( TypeDeclaration.TYPESAFE_BIT, tdeclr.getSetMask() & TypeDeclaration.TYPESAFE_BIT );
-        assertFalse( TypeDeclaration.FORMAT_BIT == ( tdeclr.getSetMask() & TypeDeclaration.FORMAT_BIT ) );
+        assertThat(tdeclr.getSetMask() & TypeDeclaration.ROLE_BIT).isEqualTo(TypeDeclaration.ROLE_BIT);
+        assertThat(tdeclr.getSetMask() & TypeDeclaration.TYPESAFE_BIT).isEqualTo(TypeDeclaration.TYPESAFE_BIT);
+        assertThat(TypeDeclaration.FORMAT_BIT == (tdeclr.getSetMask() & TypeDeclaration.FORMAT_BIT)).isFalse();
         
         tdeclr = new TypeDeclaration(CImpl.class.getName() );
         tdeclr.setTypesafe( true );
-        assertFalse( TypeDeclaration.ROLE_BIT == ( tdeclr.getSetMask() & TypeDeclaration.ROLE_BIT ) );
-        assertEquals( TypeDeclaration.TYPESAFE_BIT, tdeclr.getSetMask() & TypeDeclaration.TYPESAFE_BIT );
-        assertFalse( TypeDeclaration.FORMAT_BIT == ( tdeclr.getSetMask() & TypeDeclaration.FORMAT_BIT ) );
+        assertThat(TypeDeclaration.ROLE_BIT == (tdeclr.getSetMask() & TypeDeclaration.ROLE_BIT)).isFalse();
+        assertThat(tdeclr.getSetMask() & TypeDeclaration.TYPESAFE_BIT).isEqualTo(TypeDeclaration.TYPESAFE_BIT);
+        assertThat(TypeDeclaration.FORMAT_BIT == (tdeclr.getSetMask() & TypeDeclaration.FORMAT_BIT)).isFalse();
         
         tdeclr.setFormat( Format.POJO );
-        assertFalse( TypeDeclaration.ROLE_BIT == ( tdeclr.getSetMask() & TypeDeclaration.ROLE_BIT ) );
-        assertEquals( TypeDeclaration.TYPESAFE_BIT, tdeclr.getSetMask() & TypeDeclaration.TYPESAFE_BIT );
-        assertEquals( TypeDeclaration.FORMAT_BIT, tdeclr.getSetMask() & TypeDeclaration.FORMAT_BIT );
+        assertThat(TypeDeclaration.ROLE_BIT == (tdeclr.getSetMask() & TypeDeclaration.ROLE_BIT)).isFalse();
+        assertThat(tdeclr.getSetMask() & TypeDeclaration.TYPESAFE_BIT).isEqualTo(TypeDeclaration.TYPESAFE_BIT);
+        assertThat(tdeclr.getSetMask() & TypeDeclaration.FORMAT_BIT).isEqualTo(TypeDeclaration.FORMAT_BIT);
     }
     
     @Test
@@ -75,8 +76,8 @@ public class TypeDeclarationMergingTest {
            "end\n";
         KnowledgeBuilderImpl builder = getPackageBuilder( str );
         TypeDeclaration tdecl = builder.getTypeDeclaration( DImpl.class );
-        assertEquals( false, tdecl.isTypesafe() );
-        assertEquals( Role.Type.EVENT, tdecl.getRole() );
+        assertThat(tdecl.isTypesafe()).isEqualTo(false);
+        assertThat(tdecl.getRole()).isEqualTo(Role.Type.EVENT);
     }
     
     @Test
@@ -92,8 +93,8 @@ public class TypeDeclarationMergingTest {
 
         KnowledgeBuilderImpl builder = getPackageBuilder( str );
         TypeDeclaration tdecl = builder.getTypeDeclaration( DImpl.class );
-        assertEquals( true, tdecl.isTypesafe() );
-        assertEquals( Role.Type.EVENT, tdecl.getRole() );
+        assertThat(tdecl.isTypesafe()).isEqualTo(true);
+        assertThat(tdecl.getRole()).isEqualTo(Role.Type.EVENT);
     }    
     
     @Test
@@ -111,8 +112,8 @@ public class TypeDeclarationMergingTest {
 
         KnowledgeBuilderImpl builder = getPackageBuilder( str );
         TypeDeclaration tdecl = builder.getTypeDeclaration( DImpl.class );
-        assertEquals( true, tdecl.isTypesafe() );
-        assertEquals( Role.Type.EVENT, tdecl.getRole() );
+        assertThat(tdecl.isTypesafe()).isEqualTo(true);
+        assertThat(tdecl.getRole()).isEqualTo(Role.Type.EVENT);
     }    
     
     @Test
@@ -130,8 +131,8 @@ public class TypeDeclarationMergingTest {
            "end\n";
         KnowledgeBuilderImpl builder = getPackageBuilder( str );
         TypeDeclaration tdecl = builder.getTypeDeclaration( DImpl.class );
-        assertEquals( false, tdecl.isTypesafe() );
-        assertEquals( Role.Type.EVENT, tdecl.getRole() );
+        assertThat(tdecl.isTypesafe()).isEqualTo(false);
+        assertThat(tdecl.getRole()).isEqualTo(Role.Type.EVENT);
     }
     
     @Test
@@ -149,8 +150,8 @@ public class TypeDeclarationMergingTest {
            "end\n";
         KnowledgeBuilderImpl builder = getPackageBuilder( str );
         TypeDeclaration tdecl = builder.getTypeDeclaration( DImpl.class );
-        assertEquals( false, tdecl.isTypesafe() );
-        assertEquals( Role.Type.EVENT, tdecl.getRole() );
+        assertThat(tdecl.isTypesafe()).isEqualTo(false);
+        assertThat(tdecl.getRole()).isEqualTo(Role.Type.EVENT);
     }    
     
     @Test
@@ -170,8 +171,8 @@ public class TypeDeclarationMergingTest {
            "end\n";
         KnowledgeBuilderImpl builder = getPackageBuilder( str );
         TypeDeclaration tdecl = builder.getTypeDeclaration( DImpl.class );
-        assertEquals( true, tdecl.isTypesafe() );
-        assertEquals( Role.Type.FACT, tdecl.getRole() );
+        assertThat(tdecl.isTypesafe()).isEqualTo(true);
+        assertThat(tdecl.getRole()).isEqualTo(Role.Type.FACT);
     }        
     
     @Test
@@ -187,8 +188,8 @@ public class TypeDeclarationMergingTest {
 
         KnowledgeBuilderImpl builder = getPackageBuilder( str );
         TypeDeclaration tdecl = builder.getTypeDeclaration( DImpl.class );
-        assertEquals( true, tdecl.isTypesafe() );
-        assertEquals( Role.Type.EVENT, tdecl.getRole() );
+        assertThat(tdecl.isTypesafe()).isEqualTo(true);
+        assertThat(tdecl.getRole()).isEqualTo(Role.Type.EVENT);
     }    
     
     @Test
@@ -206,8 +207,8 @@ public class TypeDeclarationMergingTest {
 
         KnowledgeBuilderImpl builder = getPackageBuilder( str );
         TypeDeclaration tdecl = builder.getTypeDeclaration( DImpl.class );
-        assertEquals( true, tdecl.isTypesafe() );
-        assertEquals( Role.Type.EVENT, tdecl.getRole() );
+        assertThat(tdecl.isTypesafe()).isEqualTo(true);
+        assertThat(tdecl.getRole()).isEqualTo(Role.Type.EVENT);
     }     
     
     @Test
@@ -227,8 +228,8 @@ public class TypeDeclarationMergingTest {
            "end\n";
         KnowledgeBuilderImpl builder = getPackageBuilder( str );
         TypeDeclaration tdecl = builder.getTypeDeclaration( DImpl.class );
-        assertEquals( true, tdecl.isTypesafe() );
-        assertEquals( Role.Type.FACT, tdecl.getRole() );
+        assertThat(tdecl.isTypesafe()).isEqualTo(true);
+        assertThat(tdecl.getRole()).isEqualTo(Role.Type.FACT);
     }      
     
     private KnowledgeBuilderImpl getPackageBuilder(String str) {
@@ -269,8 +270,8 @@ public class TypeDeclarationMergingTest {
                 fail( "Check the test, unexpected error message: " + msg );
             }
         }
-        assertFalse( "Check the test, unexpected error message: "
-                + kbuilder.getErrors(), kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).as("Check the test, unexpected error message: "
+                + kbuilder.getErrors()).isFalse();
     }
 
     public static class PositionAnnotatedEvent {

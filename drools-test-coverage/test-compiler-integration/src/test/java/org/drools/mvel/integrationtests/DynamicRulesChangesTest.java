@@ -45,7 +45,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.CommandFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DynamicRulesChangesTest {
@@ -101,7 +101,7 @@ public class DynamicRulesChangesTest {
         }
         for (int i = 0; i < PARALLEL_THREADS; ++i) {
             List<String> events = ecs.take().get();
-            assertEquals(5, events.size());
+            assertThat(events.size()).isEqualTo(5);
         }
     }
 
@@ -119,13 +119,13 @@ public class DynamicRulesChangesTest {
                 ksession.insert(room1);
                 FactHandle fireFact1 = ksession.insert(new Fire(room1));
                 ksession.fireAllRules();
-                assertEquals(1, events.size());
+                assertThat(events.size()).isEqualTo(1);
 
                 // phase 2
                 Sprinkler sprinkler1 = new Sprinkler(room1);
                 ksession.insert(sprinkler1);
                 ksession.fireAllRules();
-                assertEquals(2, events.size());
+                assertThat(events.size()).isEqualTo(2);
 
                 // phase 3
                 ksession.retract(fireFact1);
@@ -165,14 +165,14 @@ public class DynamicRulesChangesTest {
                 cmds.add(CommandFactory.newInsert(fire1, "fire1"));
                 cmds.add(CommandFactory.newFireAllRules());
                 ksession.execute(CommandFactory.newBatchExecution(cmds));
-                assertEquals(1, events.size());
+                assertThat(events.size()).isEqualTo(1);
 
                 // phase 2
                 cmds = new ArrayList<Command>();
                 cmds.add(CommandFactory.newInsert(new Sprinkler(room1), "sprinkler1"));
                 cmds.add(CommandFactory.newFireAllRules());
                 ksession.execute(CommandFactory.newBatchExecution(cmds));
-                assertEquals(2, events.size());
+                assertThat(events.size()).isEqualTo(2);
 
                 // phase 3
                 cmds = new ArrayList<Command>();

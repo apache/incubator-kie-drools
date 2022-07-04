@@ -62,7 +62,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ExplicitCompilerTest {
 

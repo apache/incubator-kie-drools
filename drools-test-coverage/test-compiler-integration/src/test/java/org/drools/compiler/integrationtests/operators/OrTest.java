@@ -40,9 +40,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class OrTest {
@@ -86,20 +84,20 @@ public class OrTest {
             session.fireAllRules();
 
             // just one added
-            assertEquals("got cheese", list.get(0));
-            assertEquals(1, list.size());
+            assertThat(list.get(0)).isEqualTo("got cheese");
+            assertThat(list.size()).isEqualTo(1);
 
             session.delete(h);
             session.fireAllRules();
 
             // still just one
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             session.insert(new Cheese("stilton", 5));
             session.fireAllRules();
 
             // now have one more
-            assertEquals(2, ((List) session.getGlobal("list")).size());
+            assertThat(((List) session.getGlobal("list")).size()).isEqualTo(2);
         } finally {
             session.dispose();
         }
@@ -142,7 +140,7 @@ public class OrTest {
 
             ksession.fireAllRules();
 
-            assertEquals("should have fired once", 1, list.size());
+            assertThat(list.size()).as("should have fired once").isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -177,8 +175,8 @@ public class OrTest {
 
             ksession.fireAllRules();
 
-            assertEquals("should have fired", 2, list.size());
-            assertTrue(list.contains(b.getObject()));
+            assertThat(list.size()).as("should have fired").isEqualTo(2);
+            assertThat(list.contains(b.getObject())).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -233,8 +231,8 @@ public class OrTest {
             ksession.insert(a);
             ksession.insert(b1);
             ksession.fireAllRules();
-            assertEquals(b1, mlist.get(0));
-            assertEquals(b1, jlist.get(0));
+            assertThat(mlist.get(0)).isEqualTo(b1);
+            assertThat(jlist.get(0)).isEqualTo(b1);
         } finally {
             ksession.dispose();
         }
@@ -247,8 +245,8 @@ public class OrTest {
             ksession.insert(b2);
             ksession.insert(p2);
             ksession.fireAllRules();
-            assertEquals(b2, mlist.get(1));
-            assertEquals(b2, jlist.get(1));
+            assertThat(mlist.get(1)).isEqualTo(b2);
+            assertThat(jlist.get(1)).isEqualTo(b2);
         } finally {
             ksession.dispose();
         }
@@ -261,8 +259,8 @@ public class OrTest {
             ksession.insert(b3);
             ksession.insert(p3);
             ksession.fireAllRules();
-            assertEquals(b3, mlist.get(2));
-            assertEquals(b3, jlist.get(2));
+            assertThat(mlist.get(2)).isEqualTo(b3);
+            assertThat(jlist.get(2)).isEqualTo(b3);
         } finally {
             ksession.dispose();
         }
@@ -300,15 +298,15 @@ public class OrTest {
 
             ksession.fireAllRules();
 
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
             final Cheese brie = new Cheese("brie");
             ksession.insert(brie);
 
             ksession.fireAllRules();
 
-            assertEquals(2, list.size());
-            assertTrue(list.contains(hola));
-            assertTrue(list.contains(brie));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.contains(hola)).isTrue();
+            assertThat(list.contains(brie)).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -348,7 +346,7 @@ public class OrTest {
             ksession.insert(item21);
 
             final int rules = ksession.fireAllRules();
-            assertEquals(2, rules);
+            assertThat(rules).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -379,7 +377,7 @@ public class OrTest {
             ksession.insert(new Cheese("brie", 28));
 
             final int fired = ksession.fireAllRules();
-            assertEquals(2, fired);
+            assertThat(fired).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -418,7 +416,7 @@ public class OrTest {
             ksession.insert(asg);
 
             final int rules = ksession.fireAllRules();
-            assertEquals(2, rules);
+            assertThat(rules).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -469,10 +467,10 @@ public class OrTest {
 
             ksession.fireAllRules();
 
-            assertEquals(3, results.size());
-            assertTrue(results.contains(mark));
-            assertTrue(results.contains(bush));
-            assertTrue(results.contains(conan));
+            assertThat(results.size()).isEqualTo(3);
+            assertThat(results.contains(mark)).isTrue();
+            assertThat(results.contains(bush)).isTrue();
+            assertThat(results.contains(conan)).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -499,7 +497,7 @@ public class OrTest {
                 "end\n";
 
         KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl1);
-        assertFalse(kbuilder.getResults().getMessages().isEmpty());
+        assertThat(kbuilder.getResults().getMessages().isEmpty()).isFalse();
 
         final String drl2 = "package org.drools.compiler.integrationtests.operators; \n" +
                 "global java.util.List results\n" +
@@ -520,7 +518,7 @@ public class OrTest {
                 "end\n";
 
         kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl2);
-        assertTrue(kbuilder.getResults().getMessages().isEmpty());
+        assertThat(kbuilder.getResults().getMessages().isEmpty()).isTrue();
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("or-test",
                                                                          kieBaseTestConfiguration,
@@ -542,8 +540,8 @@ public class OrTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertTrue(results.contains(5));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.contains(5)).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -571,7 +569,7 @@ public class OrTest {
             ksession.insert(new Cheese("Stilton", 2));
 
             final int rules = ksession.fireAllRules();
-            assertEquals(2, rules);
+            assertThat(rules).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -629,7 +627,7 @@ public class OrTest {
             ksession.insert(cheese);
 
             ksession.fireAllRules();
-            assertEquals(4, result.size());
+            assertThat(result.size()).isEqualTo(4);
         } finally {
             ksession.dispose();
         }
@@ -667,8 +665,8 @@ public class OrTest {
             ksession.setGlobal( "list", list );
 
             ksession.fireAllRules();
-            assertEquals( 1, list.size() );
-            assertEquals( "Mario", list.get(0) );
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("Mario");
         } finally {
             ksession.dispose();
         }
@@ -701,9 +699,9 @@ public class OrTest {
             ksession.setGlobal( "list", list );
 
             ksession.fireAllRules();
-            assertEquals( 2, list.size() );
-            assertEquals( "Mark", list.get(0) );
-            assertEquals( "Mark", list.get(1) );
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(0)).isEqualTo("Mark");
+            assertThat(list.get(1)).isEqualTo("Mark");
         } finally {
             ksession.dispose();
         }

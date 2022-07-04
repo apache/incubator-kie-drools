@@ -31,7 +31,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarExceptionTest {

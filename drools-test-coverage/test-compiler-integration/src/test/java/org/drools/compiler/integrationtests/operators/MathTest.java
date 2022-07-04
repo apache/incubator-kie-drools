@@ -33,7 +33,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MathTest {
@@ -83,8 +83,8 @@ public class MathTest {
             ksession.insert(jane);
             ksession.fireAllRules();
 
-            assertEquals(jane, ((List) ksession.getGlobal("list")).get(0));
-            assertEquals(peter, ((List) ksession.getGlobal("list")).get(1));
+            assertThat(((List) ksession.getGlobal("list")).get(0)).isEqualTo(jane);
+            assertThat(((List) ksession.getGlobal("list")).get(1)).isEqualTo(peter);
         } finally {
             ksession.dispose();
         }
@@ -170,8 +170,8 @@ public class MathTest {
             ksession.fireAllRules();
 
             // HIGHER
-            assertEquals(1, list.size());
-            assertEquals("HIGHER", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("HIGHER");
 
             guess.setValue(15);
             ksession.update(handle, guess);
@@ -179,8 +179,8 @@ public class MathTest {
             ksession.fireAllRules();
 
             // LOWER
-            assertEquals(2, list.size());
-            assertEquals("LOWER", list.get(1));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(1)).isEqualTo("LOWER");
 
             guess.setValue(10);
             ksession.update(handle, guess);
@@ -188,8 +188,8 @@ public class MathTest {
             ksession.fireAllRules();
 
             // CORRECT
-            assertEquals(3, list.size());
-            assertEquals("CORRECT", list.get(2));
+            assertThat(list.size()).isEqualTo(3);
+            assertThat(list.get(2)).isEqualTo("CORRECT");
         } finally {
             ksession.dispose();
         }
@@ -254,7 +254,7 @@ public class MathTest {
         final KieSession ksession = kbase.newKieSession();
         try {
             final int rules = ksession.fireAllRules();
-            assertEquals(13, rules);
+            assertThat(rules).isEqualTo(13);
         } finally {
             ksession.dispose();
         }
