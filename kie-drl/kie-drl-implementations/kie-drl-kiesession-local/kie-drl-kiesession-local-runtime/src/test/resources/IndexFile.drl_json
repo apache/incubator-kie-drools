@@ -1,0 +1,15 @@
+[
+  {
+    "step-type": "executable",
+    "fri": {
+      "basePath": "/TestingRule",
+      "model": "drl",
+      "fri": "/drl/TestingRule"
+    },
+    "fullClassNames": ["org.kie.drl.engine.kiesession.local.compilation.model.test.Rulesefe9b92fdd254fbabc9e9002be0d51d6"]
+  },
+  {
+    "step-type": "class",
+    "fullClassName": "org.kie.drl.engine.kiesession.local.compilation.model.test.Rulesefe9b92fdd254fbabc9e9002be0d51d6"
+  }
+]

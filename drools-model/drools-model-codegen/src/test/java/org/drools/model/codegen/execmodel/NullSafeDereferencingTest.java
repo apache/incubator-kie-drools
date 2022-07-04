@@ -24,12 +24,10 @@ import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.MysteriousMan;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class NullSafeDereferencingTest extends BaseModelTest {
 
@@ -59,7 +57,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         ksession.insert( new Person( null, 40 ) );
         ksession.fireAllRules();
 
-        Assert.assertEquals( "Found: Mark", result.getValue() );
+        assertThat(result.getValue()).isEqualTo("Found: Mark");
     }
 
     public static class NullUnsafeA {
@@ -154,10 +152,10 @@ public class NullSafeDereferencingTest extends BaseModelTest {
 
             Collection<String> results = getObjectsIntoList(ksession, String.class);
             if (i < 4) {
-                assertEquals(0, results.size());
+                assertThat(results.size()).isEqualTo(0);
             } else if (i == 4) {
                 // iteration #3 has no null-traps
-                assertEquals(1, results.size());
+                assertThat(results.size()).isEqualTo(1);
             }
         }
     }
@@ -180,8 +178,8 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         ksession.fireAllRules();
 
         List<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        Assert.assertEquals("John2", results.get(0).getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0).getValue()).isEqualTo("John2");
     }
 
     @Test
@@ -202,8 +200,8 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         ksession.fireAllRules();
 
         List<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        Assert.assertEquals("John2", results.get(0).getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0).getValue()).isEqualTo("John2");
     }
 
     @Test
@@ -224,8 +222,8 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         ksession.fireAllRules();
 
         List<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        Assert.assertEquals("John2", results.get(0).getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0).getValue()).isEqualTo("John2");
     }
 
     @Test
@@ -246,8 +244,8 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         ksession.fireAllRules();
 
         List<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        Assert.assertEquals("John2", results.get(0).getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0).getValue()).isEqualTo("John2");
     }
 
     @Test
@@ -365,7 +363,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         edson.setAddress(new Address(null));
         ksession.insert(edson);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 

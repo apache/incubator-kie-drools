@@ -30,7 +30,7 @@ import org.kie.api.builder.Results;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for MessageImpl
@@ -72,8 +72,7 @@ public class MessageImplTest {
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         Results results = kieBuilder.getResults();
 
-        assertEquals( 3,
-                      results.getMessages().size() );
+        assertThat(results.getMessages().size()).isEqualTo(3);
     }
 
     @Test
@@ -103,14 +102,13 @@ public class MessageImplTest {
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         Results fullBuildResults = kieBuilder.getResults();
-        assertEquals( 3,
-                      fullBuildResults.getMessages().size() );
+        assertThat(fullBuildResults.getMessages().size()).isEqualTo(3);
 
         kfs.write( "src/main/resources/r2.drl", drl2 );
         IncrementalResults incrementalBuildResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
-        assertEquals( 0, incrementalBuildResults.getAddedMessages().size() );
-        assertEquals( 0, incrementalBuildResults.getRemovedMessages().size() );
+        assertThat(incrementalBuildResults.getAddedMessages().size()).isEqualTo(0);
+        assertThat(incrementalBuildResults.getRemovedMessages().size()).isEqualTo(0);
     }
 
 }

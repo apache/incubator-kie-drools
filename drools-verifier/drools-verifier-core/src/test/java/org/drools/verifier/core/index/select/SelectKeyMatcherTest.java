@@ -26,7 +26,7 @@ import org.drools.verifier.core.maps.MultiMapFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelectKeyMatcherTest {
 
@@ -48,16 +48,16 @@ public class SelectKeyMatcherTest {
     public void testAll() throws Exception {
         final Collection<String> all = select.all();
 
-        assertEquals(2, all.size());
+        assertThat(all.size()).isEqualTo(2);
     }
 
     @Test
     public void testFirst() throws Exception {
-        assertEquals("value1", select.first());
+        assertThat(select.first()).isEqualTo("value1");
     }
 
     @Test
     public void testLast() throws Exception {
-        assertEquals("value2", select.last());
+        assertThat(select.last()).isEqualTo("value2");
     }
 }

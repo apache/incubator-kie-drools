@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
-import org.drools.drl.parser.impl.Operator;
 import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
@@ -38,8 +38,8 @@ import org.drools.verifier.report.components.Cause;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
@@ -95,11 +95,11 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
                                                               (Iterator<Object>)session.getObjects().iterator());
 
-        assertTrue((TestBaseOld.causeMapContains(map,
-                                                 r1,
-                                                 r2) ^ TestBaseOld.causeMapContains(map,
-                                                                                    r2,
-                                                                                    r1)));
+        assertThat((TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1))).isTrue();
 
         if (!map.isEmpty()) {
             fail("More incompatibilities than was expected.");
@@ -158,11 +158,11 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
                                                               (Iterator<Object>)session.getObjects().iterator());
 
-        assertTrue((TestBaseOld.causeMapContains(map,
-                                                 r1,
-                                                 r2) ^ TestBaseOld.causeMapContains(map,
-                                                                                    r2,
-                                                                                    r1)));
+        assertThat((TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1))).isTrue();
 
         if (!map.isEmpty()) {
             fail("More incompatibilities than was expected.");
@@ -221,11 +221,11 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
                                                               (Iterator<Object>)session.getObjects().iterator());
 
-        assertTrue((TestBaseOld.causeMapContains(map,
-                                                 r1,
-                                                 r2) ^ TestBaseOld.causeMapContains(map,
-                                                                                    r2,
-                                                                                    r1)));
+        assertThat((TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1))).isTrue();
 
         if (!map.isEmpty()) {
             fail("More incompatibilities than was expected.");
@@ -299,11 +299,11 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
                                                               (Iterator<Object>)session.getObjects().iterator());
 
-        assertTrue((TestBaseOld.causeMapContains(map,
-                                                 r1,
-                                                 r2) ^ TestBaseOld.causeMapContains(map,
-                                                                                    r2,
-                                                                                    r1)));
+        assertThat((TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1))).isTrue();
 
         if (!map.isEmpty()) {
             fail("More incompatibilities than was expected.");

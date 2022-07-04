@@ -25,8 +25,7 @@ import org.drools.verifier.core.maps.util.HasKeys;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -67,20 +66,20 @@ public class RelationResolverConflictsTest {
             Exception {
 
         relationResolver = new RelationResolver(new InspectorList(configuration));
-        assertFalse(relationResolver.isConflicting(new InspectorList(configuration)));
+        assertThat(relationResolver.isConflicting(new InspectorList(configuration))).isFalse();
     }
 
     @Test
     public void recheck() throws
             Exception {
 
-        assertTrue(relationResolver.isConflicting(b));
+        assertThat(relationResolver.isConflicting(b)).isTrue();
 
         verify(firstItemInA).conflicts(any());
 
         reset(firstItemInA);
 
-        assertTrue(relationResolver.isConflicting(b));
+        assertThat(relationResolver.isConflicting(b)).isTrue();
 
         verify(firstItemInA,
                never()).conflicts(any());
@@ -90,14 +89,14 @@ public class RelationResolverConflictsTest {
     public void recheckWithUpdate() throws
             Exception {
 
-        assertTrue(relationResolver.isConflicting(b));
+        assertThat(relationResolver.isConflicting(b)).isTrue();
 
         reset(firstItemInA);
 
         // UPDATE
         isConflicting.setAge(10);
 
-        assertFalse(relationResolver.isConflicting(b));
+        assertThat(relationResolver.isConflicting(b)).isFalse();
 
         verify(firstItemInA).conflicts(any());
     }
@@ -106,14 +105,14 @@ public class RelationResolverConflictsTest {
     public void recheckConflictingItemRemoved() throws
             Exception {
 
-        assertTrue(relationResolver.isConflicting(b));
+        assertThat(relationResolver.isConflicting(b)).isTrue();
 
         reset(firstItemInA);
 
         // UPDATE
         a.remove(isConflicting);
 
-        assertFalse(relationResolver.isConflicting(b));
+        assertThat(relationResolver.isConflicting(b)).isFalse();
 
         verify(firstItemInA).conflicts(any());
     }
@@ -122,7 +121,7 @@ public class RelationResolverConflictsTest {
     public void recheckOtherListBecomesEmpty() throws
             Exception {
 
-        assertTrue(relationResolver.isConflicting(b));
+        assertThat(relationResolver.isConflicting(b)).isTrue();
 
         reset(firstItemInA,
               isConflicting);
@@ -130,7 +129,7 @@ public class RelationResolverConflictsTest {
         // UPDATE
         b.clear();
 
-        assertFalse(relationResolver.isConflicting(b));
+        assertThat(relationResolver.isConflicting(b)).isFalse();
 
         verify(firstItemInA,
                never()).conflicts(any());

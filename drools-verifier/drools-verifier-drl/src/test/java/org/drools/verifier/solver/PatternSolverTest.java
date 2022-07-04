@@ -22,8 +22,8 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescrType;
@@ -59,10 +59,8 @@ public class PatternSolverTest {
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( 2,
-                      list.get( 0 ).size() );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0).size()).isEqualTo(2);
     }
 
     /**
@@ -94,12 +92,9 @@ public class PatternSolverTest {
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();
-        assertEquals( 2,
-                      list.size() );
-        assertEquals( 1,
-                      list.get( 0 ).size() );
-        assertEquals( 1,
-                      list.get( 1 ).size() );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0).size()).isEqualTo(1);
+        assertThat(list.get(1).size()).isEqualTo(1);
     }
 
     /**
@@ -138,17 +133,14 @@ public class PatternSolverTest {
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
-        assertEquals( 1,
-                      list.get( 0 ).size() );
-        assertTrue( list.get( 0 ).contains( literalRestriction ) );
+        assertThat(list.get(0).size()).isEqualTo(1);
+        assertThat(list.get(0).contains(literalRestriction)).isTrue();
 
-        assertEquals( 2,
-                      list.get( 1 ).size() );
-        assertTrue( list.get( 1 ).contains( literalRestriction2 ) );
-        assertTrue( list.get( 1 ).contains( literalRestriction3 ) );
+        assertThat(list.get(1).size()).isEqualTo(2);
+        assertThat(list.get(1).contains(literalRestriction2)).isTrue();
+        assertThat(list.get(1).contains(literalRestriction3)).isTrue();
     }
 
     /**
@@ -187,18 +179,15 @@ public class PatternSolverTest {
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
-        assertEquals( 2,
-                      list.get( 0 ).size() );
-        assertTrue( list.get( 0 ).contains( literalRestriction ) );
-        assertTrue( list.get( 0 ).contains( literalRestriction2 ) );
+        assertThat(list.get(0).size()).isEqualTo(2);
+        assertThat(list.get(0).contains(literalRestriction)).isTrue();
+        assertThat(list.get(0).contains(literalRestriction2)).isTrue();
 
-        assertEquals( 2,
-                      list.get( 1 ).size() );
-        assertTrue( list.get( 1 ).contains( literalRestriction ) );
-        assertTrue( list.get( 1 ).contains( literalRestriction3 ) );
+        assertThat(list.get(1).size()).isEqualTo(2);
+        assertThat(list.get(1).contains(literalRestriction)).isTrue();
+        assertThat(list.get(1).contains(literalRestriction3)).isTrue();
     }
 
     /**
@@ -246,28 +235,23 @@ public class PatternSolverTest {
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();
-        assertEquals( 4,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
-        assertEquals( 2,
-                      list.get( 0 ).size() );
-        assertTrue( list.get( 0 ).contains( literalRestriction ) );
-        assertTrue( list.get( 0 ).contains( literalRestriction3 ) );
+        assertThat(list.get(0).size()).isEqualTo(2);
+        assertThat(list.get(0).contains(literalRestriction)).isTrue();
+        assertThat(list.get(0).contains(literalRestriction3)).isTrue();
 
-        assertEquals( 2,
-                      list.get( 1 ).size() );
-        assertTrue( list.get( 1 ).contains( literalRestriction ) );
-        assertTrue( list.get( 1 ).contains( literalRestriction4 ) );
+        assertThat(list.get(1).size()).isEqualTo(2);
+        assertThat(list.get(1).contains(literalRestriction)).isTrue();
+        assertThat(list.get(1).contains(literalRestriction4)).isTrue();
 
-        assertEquals( 2,
-                      list.get( 2 ).size() );
-        assertTrue( list.get( 2 ).contains( literalRestriction2 ) );
-        assertTrue( list.get( 2 ).contains( literalRestriction3 ) );
+        assertThat(list.get(2).size()).isEqualTo(2);
+        assertThat(list.get(2).contains(literalRestriction2)).isTrue();
+        assertThat(list.get(2).contains(literalRestriction3)).isTrue();
 
-        assertEquals( 2,
-                      list.get( 3 ).size() );
-        assertTrue( list.get( 3 ).contains( literalRestriction2 ) );
-        assertTrue( list.get( 3 ).contains( literalRestriction4 ) );
+        assertThat(list.get(3).size()).isEqualTo(2);
+        assertThat(list.get(3).contains(literalRestriction2)).isTrue();
+        assertThat(list.get(3).contains(literalRestriction4)).isTrue();
     }
 
     /**
@@ -311,18 +295,15 @@ public class PatternSolverTest {
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
-        assertEquals( 2,
-                      list.get( 0 ).size() );
-        assertTrue( list.get( 0 ).contains( literalRestriction ) );
-        assertTrue( list.get( 0 ).contains( literalRestriction2 ) );
+        assertThat(list.get(0).size()).isEqualTo(2);
+        assertThat(list.get(0).contains(literalRestriction)).isTrue();
+        assertThat(list.get(0).contains(literalRestriction2)).isTrue();
 
-        assertEquals( 2,
-                      list.get( 1 ).size() );
-        assertTrue( list.get( 1 ).contains( literalRestriction3 ) );
-        assertTrue( list.get( 1 ).contains( literalRestriction4 ) );
+        assertThat(list.get(1).size()).isEqualTo(2);
+        assertThat(list.get(1).contains(literalRestriction3)).isTrue();
+        assertThat(list.get(1).contains(literalRestriction4)).isTrue();
     }
 
     /**
@@ -368,21 +349,17 @@ public class PatternSolverTest {
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
-        assertEquals( 2,
-                      list.get( 0 ).size() );
-        assertTrue( list.get( 0 ).contains( literalRestriction ) );
-        assertTrue( list.get( 0 ).contains( literalRestriction2 ) );
+        assertThat(list.get(0).size()).isEqualTo(2);
+        assertThat(list.get(0).contains(literalRestriction)).isTrue();
+        assertThat(list.get(0).contains(literalRestriction2)).isTrue();
 
-        assertEquals( 1,
-                      list.get( 1 ).size() );
-        assertTrue( list.get( 1 ).contains( literalRestriction3 ) );
+        assertThat(list.get(1).size()).isEqualTo(1);
+        assertThat(list.get(1).contains(literalRestriction3)).isTrue();
 
-        assertEquals( 1,
-                      list.get( 2 ).size() );
-        assertTrue( list.get( 2 ).contains( literalRestriction4 ) );
+        assertThat(list.get(2).size()).isEqualTo(1);
+        assertThat(list.get(2).contains(literalRestriction4)).isTrue();
     }
 
     /**
@@ -429,21 +406,18 @@ public class PatternSolverTest {
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
-        assertEquals( 4,
-                      list.get( 0 ).size() );
-        assertTrue( list.get( 0 ).contains( literalRestriction ) );
-        assertTrue( list.get( 0 ).contains( literalRestriction2 ) );
-        assertTrue( list.get( 0 ).contains( literalRestriction3 ) );
-        assertTrue( list.get( 0 ).contains( literalRestriction5 ) );
+        assertThat(list.get(0).size()).isEqualTo(4);
+        assertThat(list.get(0).contains(literalRestriction)).isTrue();
+        assertThat(list.get(0).contains(literalRestriction2)).isTrue();
+        assertThat(list.get(0).contains(literalRestriction3)).isTrue();
+        assertThat(list.get(0).contains(literalRestriction5)).isTrue();
 
-        assertEquals( 4,
-                      list.get( 1 ).size() );
-        assertTrue( list.get( 1 ).contains( literalRestriction ) );
-        assertTrue( list.get( 1 ).contains( literalRestriction2 ) );
-        assertTrue( list.get( 1 ).contains( literalRestriction4 ) );
-        assertTrue( list.get( 1 ).contains( literalRestriction4 ) );
+        assertThat(list.get(1).size()).isEqualTo(4);
+        assertThat(list.get(1).contains(literalRestriction)).isTrue();
+        assertThat(list.get(1).contains(literalRestriction2)).isTrue();
+        assertThat(list.get(1).contains(literalRestriction4)).isTrue();
+        assertThat(list.get(1).contains(literalRestriction4)).isTrue();
     }
 }

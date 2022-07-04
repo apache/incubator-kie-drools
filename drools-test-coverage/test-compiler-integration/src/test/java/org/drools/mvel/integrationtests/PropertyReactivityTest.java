@@ -40,10 +40,8 @@ import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class PropertyReactivityTest {
@@ -77,8 +75,8 @@ public class PropertyReactivityTest {
 
         final Klass2 k2 = new Klass2(0, 0, 0, 0);
         ksession.insert(k2);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(1, k2.getD());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(k2.getD()).isEqualTo(1);
     }
 
     @Test(timeout=10000)
@@ -136,9 +134,9 @@ public class PropertyReactivityTest {
 
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertTrue(list.contains("React"));
-        assertTrue(list.contains("React2"));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("React")).isTrue();
+        assertThat(list.contains("React2")).isTrue();
     }
 
     @PropertyReactive
@@ -321,9 +319,9 @@ public class PropertyReactivityTest {
 
         System.out.println( list );
 
-        assertTrue( list.containsAll( Arrays.asList( "k1@K1", "k1@I1", "k1@I2" ) ) );
-        assertTrue( list.containsAll( Arrays.asList( "k2@K2", "k2@I2" ) ) );
-        assertEquals( 5, list.size() );
+        assertThat(list.containsAll(Arrays.asList("k1@K1", "k1@I1", "k1@I2"))).isTrue();
+        assertThat(list.containsAll(Arrays.asList("k2@K2", "k2@I2"))).isTrue();
+        assertThat(list.size()).isEqualTo(5);
     }
 
     @Test(timeout=10000)
@@ -371,9 +369,9 @@ public class PropertyReactivityTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( "Klass2", list.get(0) );
-        assertEquals( "Klass2", list.get(1) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0)).isEqualTo("Klass2");
+        assertThat(list.get(1)).isEqualTo("Klass2");
     }
 
     @Test(timeout=10000)
@@ -424,9 +422,9 @@ public class PropertyReactivityTest {
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( new BigDecimal( 10 ) ) );
-        assertTrue(list.contains(new BigDecimal(5)));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains(new BigDecimal( 10 ))).isTrue();
+        assertThat(list.contains(new BigDecimal(5))).isTrue();
     }
 
     @Test(timeout=10000)
@@ -518,7 +516,7 @@ public class PropertyReactivityTest {
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( 0, 1, 2, 0, 3, 4, 0, 5, 0 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(0, 1, 2, 0, 3, 4, 0, 5, 0));
 
     }
 
@@ -591,9 +589,9 @@ public class PropertyReactivityTest {
 
         ksession.fireAllRules();
 
-        assertTrue( list.contains( 1 ) );
-        assertTrue( list.contains( 2 ) );
-        assertEquals( 2, list.size() );
+        assertThat(list.contains(1)).isTrue();
+        assertThat(list.contains(2)).isTrue();
+        assertThat(list.size()).isEqualTo(2);
 
     }
 
@@ -644,8 +642,8 @@ public class PropertyReactivityTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( Arrays.asList( "XXX -> Walter" ), list );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).isEqualTo(Arrays.asList("XXX -> Walter"));
     }
 
     /**
@@ -695,8 +693,8 @@ public class PropertyReactivityTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( Arrays.asList( "XXX -> Walter", "Find Heisenberg" ), list );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).isEqualTo(Arrays.asList("XXX -> Walter", "Find Heisenberg"));
     }
 
     /**
@@ -744,8 +742,8 @@ public class PropertyReactivityTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( Arrays.asList( "XXX -> Walter", "Find Heisenberg" ), list );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).isEqualTo(Arrays.asList("XXX -> Walter", "Find Heisenberg"));
     }
 
     /**
@@ -795,8 +793,8 @@ public class PropertyReactivityTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( Arrays.asList( "XXX White" ), list );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).isEqualTo(Arrays.asList("XXX White"));
     }
 
     /**
@@ -845,8 +843,8 @@ public class PropertyReactivityTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( Arrays.asList( "XXX White", "Walter White"  ), list );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).isEqualTo(Arrays.asList("XXX White", "Walter White"  ));
     }
 
     /**
@@ -895,8 +893,8 @@ public class PropertyReactivityTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( Arrays.asList( "XXX White", "Walter White"  ), list );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).isEqualTo(Arrays.asList("XXX White", "Walter White"  ));
     }
 
 
@@ -920,7 +918,7 @@ public class PropertyReactivityTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test(timeout=10000)
@@ -942,7 +940,7 @@ public class PropertyReactivityTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test(timeout=10000)
@@ -983,13 +981,13 @@ public class PropertyReactivityTest {
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
-        assertEquals(4, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(4);
 
-        assertEquals(3, list.size());
+        assertThat(list.size()).isEqualTo(3);
 
-        assertEquals(3, list.get(0));
-        assertEquals(2, list.get(1));
-        assertEquals(1, list.get(2));
+        assertThat(list.get(0)).isEqualTo(3);
+        assertThat(list.get(1)).isEqualTo(2);
+        assertThat(list.get(2)).isEqualTo(1);
     }
 
     @PropertyReactive
@@ -1117,15 +1115,15 @@ public class PropertyReactivityTest {
         ksession.insert(2);
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("1", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("1");
         list.clear();
 
         ksession.insert("3");
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("3", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("3");
     }
 
     @Test
@@ -1150,8 +1148,8 @@ public class PropertyReactivityTest {
 
         final int fired = ksession.fireAllRules(10);
 
-        assertEquals(1, fired);
-        assertEquals("foo", p.getAddress().getStreet());
+        assertThat(fired).isEqualTo(1);
+        assertThat(p.getAddress().getStreet()).isEqualTo("foo");
     }
 
     @Test(timeout = 10000L)
@@ -1184,7 +1182,7 @@ public class PropertyReactivityTest {
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test(timeout = 10000L)
@@ -1217,7 +1215,7 @@ public class PropertyReactivityTest {
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
-        assertEquals(10, list.size());
+        assertThat(list.size()).isEqualTo(10);
     }
 
     @Test(timeout = 10000L)
@@ -1250,7 +1248,7 @@ public class PropertyReactivityTest {
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -1421,15 +1419,15 @@ public class PropertyReactivityTest {
         final Klass bean = new Klass( 1, 2, 3, 4, 5, 6 );
         final FactHandle fh = ksession.insert( bean );
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
         ( (StatefulKnowledgeSessionImpl) ksession ).update( fh, bean, "a", "d" );
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
         ( (StatefulKnowledgeSessionImpl) ksession ).update( fh, bean, "c", "b" );
         ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
     }
 
     @Test
@@ -1445,10 +1443,10 @@ public class PropertyReactivityTest {
 
         final MyFact f = new MyFact();
         final FactHandle fh = ksession.insert(f);
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
         f.setName("hello");
         ksession.update(fh, f, "name");
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public abstract class BaseFact {
@@ -1531,18 +1529,18 @@ public class PropertyReactivityTest {
         final FactHandle fhBusStop = kieSession.insert(busStop);
 
         kieSession.update(fhShuttle, shuttle.setDestination(busStop));
-        assertEquals(0, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(0);
 
         // removing the property name from this update will make the test pass
         kieSession.update(fhBusStop, busStop.setVisitedByCoach(false), "visitedByCoach");
         // LHS is now satisfied, the rule should fire but it doesn't
-        assertEquals(busStop, shuttle.getDestination());
-        assertFalse(busStop.isVisitedByCoach());
-        assertEquals(1, kieSession.fireAllRules()); // change the expected value to 0 to get further
+        assertThat(shuttle.getDestination()).isEqualTo(busStop);
+        assertThat(busStop.isVisitedByCoach()).isFalse();
+        assertThat(kieSession.fireAllRules()).isEqualTo(1); // change the expected value to 0 to get further
 
         // after this update (without any real fact modification) the rule will fire as expected
         kieSession.update(fhBusStop, busStop);
-        assertEquals(1, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -1573,8 +1571,8 @@ public class PropertyReactivityTest {
         final FactHandle fh_mario = ksession.insert(mario);
         ksession.insert(mark);
         final int x = ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("t0", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("t0");
     }
 
     @Test
@@ -1605,8 +1603,8 @@ public class PropertyReactivityTest {
         final FactHandle fh_mario = ksession.insert(mario);
         ksession.insert(mark);
         final int x = ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("t0", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("t0");
     }
 
     @Test
@@ -1637,8 +1635,8 @@ public class PropertyReactivityTest {
         final FactHandle fh_mario = ksession.insert(mario);
         ksession.insert(mark);
         final int x = ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("t0", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("t0");
     }
 
     @Test
@@ -1653,21 +1651,21 @@ public class PropertyReactivityTest {
         session.insert(state);
         session.fireAllRules();
 
-        assertEquals(1, ((List) session.getGlobal("list")).size());
+        assertThat(((List) session.getGlobal("list")).size()).isEqualTo(1);
 
         state.setFlag(true);
-        assertEquals(1, ((List) session.getGlobal("list")).size());
+        assertThat(((List) session.getGlobal("list")).size()).isEqualTo(1);
 
         session.fireAllRules();
         // due to property reactivity the rule shouldn't fire again
-        assertEquals(1, ((List) session.getGlobal("list")).size());
+        assertThat(((List) session.getGlobal("list")).size()).isEqualTo(1);
 
         state.setState("finished");
 
         session.dispose();
 
         // checks that the session removed itself from the bean listeners list
-        assertEquals(0, state.getPropertyChangeListeners().length);
+        assertThat(state.getPropertyChangeListeners().length).isEqualTo(0);
     }
 
     @Test
@@ -1690,7 +1688,7 @@ public class PropertyReactivityTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     @Test
@@ -1714,7 +1712,7 @@ public class PropertyReactivityTest {
             ksession.update( fh, bean, "z" );
             fail("Trying to update not existing property must fail");
         } catch (Exception e) {
-            assertTrue( e.getMessage().contains( Klass.class.getName() ) );
+            assertThat(e.getMessage().contains(Klass.class.getName())).isTrue();
         }
     }
 
@@ -1741,7 +1739,7 @@ public class PropertyReactivityTest {
         ksession.insert( order );
         ksession.fireAllRules();
 
-        assertEquals( 10, order.getPrice() );
+        assertThat(order.getPrice()).isEqualTo(10);
     }
 
     public static class Order {
@@ -1822,7 +1820,7 @@ public class PropertyReactivityTest {
         bean.setValue( 1 );
         ksession.insert( bean );
 
-        assertEquals( 1, ksession.fireAllRules(3) );
+        assertThat(ksession.fireAllRules(3)).isEqualTo(1);
     }
 
     @Test
@@ -1843,7 +1841,7 @@ public class PropertyReactivityTest {
         bean.setValue( 1 );
         ksession.insert( bean );
 
-        assertEquals( 3, ksession.fireAllRules(3) );
+        assertThat(ksession.fireAllRules(3)).isEqualTo(3);
     }
 
     @Test
@@ -1874,6 +1872,6 @@ public class PropertyReactivityTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
         KieSession ksession = kbase.newKieSession();
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 }

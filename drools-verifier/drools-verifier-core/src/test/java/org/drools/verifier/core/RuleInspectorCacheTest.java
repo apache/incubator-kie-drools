@@ -30,8 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RuleInspectorCacheTest {
@@ -66,9 +65,8 @@ public class RuleInspectorCacheTest {
     @Test
     public void testInit() throws
             Exception {
-        assertEquals(7,
-                     cache.all()
-                             .size());
+        assertThat(cache.all()
+                .size()).isEqualTo(7);
     }
 
     @Test
@@ -77,8 +75,7 @@ public class RuleInspectorCacheTest {
         cache.removeRow(3);
 
         final Collection<RuleInspector> all = cache.all();
-        assertEquals(6,
-                     all.size());
+        assertThat(all.size()).isEqualTo(6);
 
         assertContainsRowNumbers(all,
                                  0,
@@ -98,8 +95,7 @@ public class RuleInspectorCacheTest {
         }
 
         for (final int number : numbers) {
-            assertTrue(rowNumbers.toString(),
-                       rowNumbers.contains(number));
+            assertThat(rowNumbers.contains(number)).as(rowNumbers.toString()).isTrue();
         }
     }
 }

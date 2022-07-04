@@ -34,8 +34,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class FunctionsTest {
@@ -67,8 +66,7 @@ public class FunctionsTest {
 
         ksession.fireAllRules();
 
-        assertEquals( new Integer( 5 ),
-                      ((List<Integer>) ksession.getGlobal( "list" )).get( 0 ) );
+        assertThat(((List<Integer>) ksession.getGlobal("list")).get(0)).isEqualTo(new Integer( 5 ));
     }
 
     @Test
@@ -103,8 +101,7 @@ public class FunctionsTest {
 
         ksession.fireAllRules();
 
-        assertEquals( new Integer( 10 ),
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo(new Integer( 10 ));
     }
     
     @Test
@@ -123,11 +120,9 @@ public class FunctionsTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
-        assertEquals( 12,
-                      list.get( 0 ).intValue() );
+        assertThat(list.get(0).intValue()).isEqualTo(12);
     }
 
     @Test
@@ -145,7 +140,6 @@ public class FunctionsTest {
         KieSession ksession = kbase.newKieSession();
 
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 1,
-                      rulesFired );
+        assertThat(rulesFired).isEqualTo(1);
     }
 }

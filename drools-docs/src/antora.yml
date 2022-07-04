@@ -12,6 +12,6 @@ asciidoc:
     drools-version: 8.24.0-SNAPSHOT
     java-version: 8
     maven-version: 3.8.1
-    quarkus-version: 2.9.2.Final
+    quarkus-version: 2.10.0.Final
 nav:
   - modules/ROOT/nav.adoc

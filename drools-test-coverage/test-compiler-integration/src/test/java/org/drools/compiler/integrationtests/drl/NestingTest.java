@@ -40,7 +40,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class NestingTest {
@@ -97,15 +97,15 @@ public class NestingTest {
         final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr desc = parser.parse(new StringReader(drl));
         final List packageAttrs = desc.getAttributes();
-        assertEquals(1, desc.getRules().size());
-        assertEquals(1, packageAttrs.size());
+        assertThat(desc.getRules().size()).isEqualTo(1);
+        assertThat(packageAttrs.size()).isEqualTo(1);
 
         final RuleDescr rule = desc.getRules().get(0);
         final Map<String, AttributeDescr> ruleAttrs = rule.getAttributes();
-        assertEquals(1, ruleAttrs.size());
+        assertThat(ruleAttrs.size()).isEqualTo(1);
 
-        assertEquals("mvel", ruleAttrs.get("dialect").getValue());
-        assertEquals("dialect", ruleAttrs.get("dialect").getName());
+        assertThat(ruleAttrs.get("dialect").getValue()).isEqualTo("mvel");
+        assertThat(ruleAttrs.get("dialect").getName()).isEqualTo("dialect");
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("nesting-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
@@ -150,12 +150,12 @@ public class NestingTest {
 
             ksession.fireAllRules();
 
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(new Cheese(bob.getLikes(), 10));
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

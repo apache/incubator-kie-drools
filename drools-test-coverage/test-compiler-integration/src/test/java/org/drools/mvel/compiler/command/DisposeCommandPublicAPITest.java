@@ -9,11 +9,12 @@ import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DisposeCommandPublicAPITest {
     @Test
@@ -52,7 +53,7 @@ public class DisposeCommandPublicAPITest {
         try {
             session.insert("whatever");
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "Illegal method call. This session was previously disposed.");
+            assertThat("Illegal method call. This session was previously disposed.").isEqualTo(e.getMessage());
 
         }
 

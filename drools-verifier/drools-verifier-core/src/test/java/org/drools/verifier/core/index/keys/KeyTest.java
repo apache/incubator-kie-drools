@@ -18,7 +18,7 @@ package org.drools.verifier.core.index.keys;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KeyTest {
 
@@ -26,6 +26,6 @@ public class KeyTest {
     public void testEqual() throws Exception {
         final Key a = new Key(KeyDefinition.newKeyDefinition().withId("id").build(), 2);
         final Key b = new Key(KeyDefinition.newKeyDefinition().withId("id").build(), 2);
-        assertEquals(0, a.compareTo(b));
+        assertThat(a.compareTo(b)).isEqualTo(0);
     }
 }

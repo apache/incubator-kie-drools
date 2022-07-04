@@ -36,7 +36,7 @@ import org.junit.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SerializedPackageMergeTwoSteps2Test {
 
@@ -86,7 +86,7 @@ public class SerializedPackageMergeTwoSteps2Test {
             ksession.insert(new org.drools.mvel.compiler.Person("John"));
             ksession.fireAllRules();
 
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }

@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.kie.api.io.Resource;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExplicitCanonicalModelCompilerTest {
 
@@ -62,7 +62,7 @@ public class ExplicitCanonicalModelCompilerTest {
             src.collectGeneratedFiles(generatedSources);
         }
 
-        assertEquals(4, generatedSources.size());
+        assertThat(generatedSources.size()).isEqualTo(4);
 
     }
 

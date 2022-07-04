@@ -23,7 +23,7 @@ import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BigIntegerTest extends BaseModelTest {
 
@@ -81,7 +81,7 @@ public class BigIntegerTest extends BaseModelTest {
         ksession.insert(holder);
         int fired = ksession.fireAllRules();
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test
@@ -102,6 +102,6 @@ public class BigIntegerTest extends BaseModelTest {
         ksession.insert(holder);
         ksession.fireAllRules();
 
-        assertEquals(new BigInteger("-10"), holder.getBi1());
+        assertThat(holder.getBi1()).isEqualTo(new BigInteger("-10"));
     }
 }

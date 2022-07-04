@@ -17,7 +17,6 @@ package org.drools.model.codegen.execmodel;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -36,7 +35,6 @@ import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.KieBaseBuilder;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
@@ -44,6 +42,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.declarationOf;
@@ -60,9 +59,6 @@ import static org.drools.model.PrototypeDSL.prototype;
 import static org.drools.model.PrototypeDSL.variable;
 import static org.drools.model.codegen.execmodel.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class FactTemplateTest {
 
@@ -93,26 +89,26 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertTrue( hasFactTemplateObjectType( ksession, "Person" ) );
+        assertThat(hasFactTemplateObjectType(ksession, "Person")).isTrue();
 
         Fact mark = createMapBasedFact(personFact);
         mark.set( "name", "Mark" );
         mark.set( "age", 40 );
 
         FactHandle fh = ksession.insert( mark );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        Assertions.assertThat(results).contains(new Result("Found a 40 years old Mark"));
+        assertThat(results).contains(new Result("Found a 40 years old Mark"));
 
         mark.set( "age", 41 );
         ksession.update(fh, mark, "age");
         // property reactivity should prevent this firing
-        assertEquals( hasFields ? 0 : 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(hasFields ? 0 : 1);
 
         ksession.update(fh, mark, "age", "name");
         // saying to the engine that also name is changed to check if this time the update is processed as it should
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -137,13 +133,13 @@ public class FactTemplateTest {
         Fact unknown = createMapBasedFact(personFact);
         unknown.set( "age", 40 );
         ksession.insert( unknown );
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         Fact mark = createMapBasedFact(personFact);
         mark.set( "name", "Mark" );
         mark.set( "age", 40 );
         ksession.insert( mark );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -170,7 +166,7 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertTrue( hasFactTemplateObjectType( ksession, "Person" ) );
+        assertThat(hasFactTemplateObjectType(ksession, "Person")).isTrue();
 
         Fact mark = createMapBasedFact( personFact );
         mark.set( "name", "Mark" );
@@ -189,18 +185,18 @@ public class FactTemplateTest {
         FactHandle marioFH = ksession.insert(mario);
 
         ksession.fireAllRules();
-        Assert.assertEquals("Mario is older than Mark", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Mario is older than Mark");
 
         result.setValue( null );
         ksession.delete( marioFH );
         ksession.fireAllRules();
-        assertNull(result.getValue());
+        assertThat(result.getValue()).isNull();
 
         mark.set( "age", 34 );
         ksession.update( markFH, mark );
 
         ksession.fireAllRules();
-        Assert.assertEquals("Edson is older than Mark", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Edson is older than Mark");
     }
 
     @Test
@@ -231,7 +227,7 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertTrue( hasFactTemplateObjectType( ksession, "FactPerson" ) );
+        assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
         
         Fact mark = createMapBasedFact( personFact );
         mark.set( "name", "Mark" );
@@ -245,7 +241,7 @@ public class FactTemplateTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        Assertions.assertThat(results).contains(new Result("Mario is older than Mark"));
+        assertThat(results).contains(new Result("Mario is older than Mark"));
     }
 
     private boolean hasFactTemplateObjectType( KieSession ksession, String name ) {
@@ -301,7 +297,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         ObjectTypeNode otn = getFactTemplateObjectTypeNode( ksession, "Person" );
-        assertEquals(3, ((CompositeObjectSinkAdapter) otn.getObjectSinkPropagator()).getHashedSinkMap().size());
+        assertThat(((CompositeObjectSinkAdapter) otn.getObjectSinkPropagator()).getHashedSinkMap().size()).isEqualTo(3);
 
         Fact mark = createMapBasedFact( personFact );
         mark.set( "name", "Mark" );
@@ -311,8 +307,8 @@ public class FactTemplateTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        Assertions.assertThat(results).contains(new Result("Found a 40 years old Mark"));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results).contains(new Result("Found a 40 years old Mark"));
     }
 
     @Test
@@ -356,7 +352,7 @@ public class FactTemplateTest {
         ksession.insert( mario );
 
         ksession.fireAllRules();
-        Assert.assertEquals("total = 77; average = 38.5", result.getValue());
+        assertThat(result.getValue()).isEqualTo("total = 77; average = 38.5");
     }
 
     @Test
@@ -392,9 +388,9 @@ public class FactTemplateTest {
         ksession.insert( customer1 );
         ksession.fireAllRules();
 
-        assertEquals(1, listener.inserts);
-        assertEquals(0, listener.updates);
-        assertEquals(0, listener.deletes);
+        assertThat(listener.inserts).isEqualTo(1);
+        assertThat(listener.updates).isEqualTo(0);
+        assertThat(listener.deletes).isEqualTo(0);
 
         Fact address2 = createMapBasedFact( addressFact );
         address2.set("id", "100002");
@@ -403,16 +399,16 @@ public class FactTemplateTest {
         ksession.insert( address2 );
         ksession.fireAllRules();
 
-        assertEquals(2, listener.inserts);
-        assertEquals(0, listener.updates);
-        assertEquals(0, listener.deletes);
+        assertThat(listener.inserts).isEqualTo(2);
+        assertThat(listener.updates).isEqualTo(0);
+        assertThat(listener.deletes).isEqualTo(0);
 
         ksession.delete( fhA1 );
         ksession.fireAllRules();
 
-        assertEquals(2, listener.inserts);
-        assertEquals(0, listener.updates);
-        assertEquals(1, listener.deletes);
+        assertThat(listener.inserts).isEqualTo(2);
+        assertThat(listener.updates).isEqualTo(0);
+        assertThat(listener.deletes).isEqualTo(1);
     }
 
     private static class MaterializedViewChangedEventListener implements ViewChangedEventListener {

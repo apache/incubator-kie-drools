@@ -30,7 +30,6 @@ import org.kie.util.maven.support.ReleaseIdImpl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.codegen.execmodel.PackageModel.getPkgUUID;
 import static org.drools.util.StringUtils.generateUUID;
-import static org.junit.Assert.assertEquals;
 
 public class ModelBuilderImplTest {
 
@@ -53,7 +52,7 @@ public class ModelBuilderImplTest {
         PackageDescr packageDescr = getPackageDescr(pkgUUID);
         PackageModel retrieved =  modelBuilder.getPackageModel(packageDescr, packageRegistry, internalKnowledgePackage.getName());
         assertThat(retrieved).isNotNull();
-        assertEquals(pkgUUID, retrieved.getPackageUUID());
+        assertThat(retrieved.getPackageUUID()).isEqualTo(pkgUUID);
     }
 
     @Test
@@ -62,7 +61,7 @@ public class ModelBuilderImplTest {
         PackageModel retrieved =  modelBuilder.getPackageModel(packageDescr, packageRegistry, internalKnowledgePackage.getName());
         assertThat(retrieved).isNotNull();
         String expected = getPkgUUID(RELEASE_ID, internalKnowledgePackage.getName());
-        assertEquals(expected, retrieved.getPackageUUID());
+        assertThat(retrieved.getPackageUUID()).isEqualTo(expected);
     }
 
     private PackageDescr getPackageDescr(String pkgUUID) {

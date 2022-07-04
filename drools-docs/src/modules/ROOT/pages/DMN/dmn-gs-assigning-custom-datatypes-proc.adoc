@@ -1,0 +1,22 @@
+[id='dmn-gs-assigning-custom-datatypes-proc']
+= Assigning custom data types to the DRD input and decision nodes
+
+After you create the DMN custom data types, assign them to the appropriate *DMN Input Data* and *DMN Decision* nodes in the traffic violations DRD.
+
+.Prerequisites
+* You have created the traffic violations DMN custom data types in {CENTRAL}.
+
+
+.Procedure
+. Click the *Model* tab on the DMN designer and click the *Properties* image:getting-started/diagram_properties.png[] icon in the upper-right corner of the DMN designer to expose the DRD properties.
+. In the DRD, select the *Driver* input data node and in the *Properties* panel, select `tDriver` from the *Data type* drop-down menu.
+. Select the *Violation* input data node and select `tViolation` from the *Data type* drop-down menu.
+. Select the *Fine* decision node and select `tFine` from the *Data type* drop-down menu.
+. Select the *Should the driver be suspended?* decision node and set the following properties:
++
+* *Data type*: `string`
+* *Question*: `Should the driver be suspended due to points on his driver license?`
+* *Allowed Answers*: `Yes,No`
+. Click *Save*.
+
+You have assigned the custom data types to your DRD's input and decision nodes.

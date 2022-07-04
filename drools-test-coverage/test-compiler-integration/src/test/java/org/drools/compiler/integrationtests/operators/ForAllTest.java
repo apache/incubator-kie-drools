@@ -29,7 +29,6 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -37,7 +36,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ForAllTest {
@@ -166,7 +165,7 @@ public class ForAllTest {
             for (Object obj : objs) {
                 ksession.insert( obj );
             }
-            assertEquals(expectedFires, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(expectedFires);
         } finally {
             ksession.dispose();
         }
@@ -202,7 +201,7 @@ public class ForAllTest {
             ksession.insert(fact);
         }
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -229,11 +228,11 @@ public class ForAllTest {
 
         KieSession ksession1 = kbase.newKieSession();
         ksession1.insert( "A" );
-        assertEquals(1, ksession1.fireAllRules());
+        assertThat(ksession1.fireAllRules()).isEqualTo(1);
 
         KieSession ksession2 = kbase.newKieSession();
         ksession2.insert( "D" );
-        assertEquals(0, ksession2.fireAllRules());
+        assertThat(ksession2.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -252,7 +251,7 @@ public class ForAllTest {
         ksession.insert(new String("bar"));
         ksession.insert(new String("baz"));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -270,7 +269,7 @@ public class ForAllTest {
 
         ksession.insert(new Date(0));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public class Pojo {
@@ -344,7 +343,7 @@ public class ForAllTest {
         ksession.insert(new Pojo(Arrays.asList(3), firing ? 0 : 1, 3));
         ksession.insert(new Pojo(Arrays.asList(2), firing ? 0 : 1, 0));
 
-        Assert.assertEquals(firing ? 1 : 0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(firing ? 1 : 0);
     }
 
     @Test
@@ -406,6 +405,6 @@ public class ForAllTest {
         ft.set(f2, "value", 42);
         ksession.insert(f2);
 
-        Assert.assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 }

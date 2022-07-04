@@ -1,21 +1,32 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.compiler.builder.impl.processors;
 
-import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.RuleBuildError;
-import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.util.StringUtils;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResourceChange;
@@ -36,41 +47,33 @@ import java.util.concurrent.ExecutionException;
 import static org.drools.compiler.rule.builder.RuleBuildContext.descrToRule;
 import static org.drools.util.StringUtils.isEmpty;
 
-public class RuleCompiler extends AbstractPackageCompilationPhase {
+public class ImmutableRuleCompilationPhase extends AbstractPackageCompilationPhase {
 
-    private InternalKnowledgeBase kBase;
     private int parallelRulesBuildThreshold;
-    private final AssetFilter assetFilter;
 
     //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.
     //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
     //The map contains a map of AttributeDescr's keyed on the AttributeDescr's name.
     private final Map<String, AttributeDescr> packageAttributes;
     private final Resource resource;
-    private final TypeDeclarationContext kBuilder;
+    private final TypeDeclarationContext typeDeclarationContext;
 
 
-    public RuleCompiler(
+    public ImmutableRuleCompilationPhase(
             PackageRegistry pkgRegistry,
             PackageDescr packageDescr,
-            InternalKnowledgeBase kBase,
             int parallelRulesBuildThreshold,
-            AssetFilter assetFilter,
             Map<String, AttributeDescr> packageAttributes,
             Resource resource,
-            TypeDeclarationContext kBuilder) {
+            TypeDeclarationContext typeDeclarationContext) {
         super(pkgRegistry, packageDescr);
-        this.kBase = kBase;
         this.parallelRulesBuildThreshold = parallelRulesBuildThreshold;
-        this.assetFilter = assetFilter;
         this.packageAttributes = packageAttributes;
         this.resource = resource;
-        this.kBuilder = kBuilder;
+        this.typeDeclarationContext = typeDeclarationContext;
     }
 
     public void process() {
-        preProcessRules(packageDescr, pkgRegistry);
-
         // ensure that rules are ordered by dependency, so that dependent rules are built later
         SortedRules sortedRules = sortRulesByDependency(packageDescr, pkgRegistry);
 
@@ -82,71 +85,9 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
         }
     }
 
-
-    private void preProcessRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        if (this.kBase == null) {
-            return;
-        }
-
-        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        boolean needsRemoval = false;
-
-        // first, check if any rules no longer exist
-        for (org.kie.api.definition.rule.Rule rule : pkg.getRules()) {
-            if (filterAcceptsRemoval(ResourceChange.Type.RULE, rule.getPackageName(), rule.getName())) {
-                needsRemoval = true;
-                break;
-            }
-        }
-
-        if (!needsRemoval) {
-            for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
-                    if (pkg.getRule(ruleDescr.getName()) != null) {
-                        needsRemoval = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (needsRemoval) {
-            kBase.enqueueModification(() -> {
-                Collection<RuleImpl> rulesToBeRemoved = new HashSet<>();
-
-                for (org.kie.api.definition.rule.Rule rule : pkg.getRules()) {
-                    if (filterAcceptsRemoval(ResourceChange.Type.RULE, rule.getPackageName(), rule.getName())) {
-                        rulesToBeRemoved.add(((RuleImpl) rule));
-                    }
-                }
-
-                rulesToBeRemoved.forEach(pkg::removeRule);
-
-                for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                    if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName())) {
-                        RuleImpl rule = pkg.getRule(ruleDescr.getName());
-                        if (rule != null) {
-                            rulesToBeRemoved.add(rule);
-                        }
-                    }
-                }
-
-                if (!rulesToBeRemoved.isEmpty()) {
-                    rulesToBeRemoved.addAll(findChildrenRulesToBeRemoved(packageDescr, rulesToBeRemoved));
-                    kBase.removeRules(rulesToBeRemoved);
-                }
-            });
-        }
+    protected boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
+        return true;
     }
-
-    private boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
-        return assetFilter == null || !AssetFilter.Action.DO_NOTHING.equals(assetFilter.accept(type, namespace, name));
-    }
-
-    private boolean filterAcceptsRemoval(ResourceChange.Type type, String namespace, String name) {
-        return assetFilter != null && AssetFilter.Action.REMOVE.equals(assetFilter.accept(type, namespace, name));
-    }
-
 
     private SortedRules sortRulesByDependency(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         // Using a topological sorting algorithm
@@ -313,7 +254,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
         }
 
         DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
-        RuleBuildContext context = new RuleBuildContext(kBuilder,
+        RuleBuildContext context = new RuleBuildContext(typeDeclarationContext,
                 ruleDescr,
                 ctr,
                 pkgRegistry.getPackage(),
@@ -323,7 +264,7 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
     }
 
     private void compileRulesLevel(PackageDescr packageDescr, PackageRegistry pkgRegistry, List<RuleDescr> rules) {
-        boolean parallelRulesBuild = this.kBase == null && parallelRulesBuildThreshold != -1 && rules.size() > parallelRulesBuildThreshold;
+        boolean parallelRulesBuild = parallelRulesBuild(rules);
         if (parallelRulesBuild) {
             Map<String, RuleBuildContext> ruleCxts = new ConcurrentHashMap<>();
             try {
@@ -363,32 +304,9 @@ public class RuleCompiler extends AbstractPackageCompilationPhase {
         }
     }
 
-
-    private Collection<RuleImpl> findChildrenRulesToBeRemoved(PackageDescr packageDescr, Collection<RuleImpl> rulesToBeRemoved) {
-        Collection<String> childrenRuleNamesToBeRemoved = new HashSet<>();
-        Collection<RuleImpl> childrenRulesToBeRemoved = new HashSet<>();
-        for (RuleImpl rule : rulesToBeRemoved) {
-            if (rule.hasChildren()) {
-                for (RuleImpl child : rule.getChildren()) {
-                    if (!rulesToBeRemoved.contains(child)) {
-                        // if a rule has a child rule not marked to be removed ...
-                        childrenRulesToBeRemoved.add(child);
-                        childrenRuleNamesToBeRemoved.add(child.getName());
-                        // ... remove the child rule but also add it back to the PackageDescr in order to readd it when also the parent rule will be readded ...
-                        RuleDescr toBeReadded = new RuleDescr(child.getName());
-                        toBeReadded.setNamespace(packageDescr.getNamespace());
-                        packageDescr.addRule(toBeReadded);
-                    }
-                }
-            }
-        }
-        // ... add a filter to the PackageDescr to also consider the readded children rules as updated together with the parent one
-        if (!childrenRuleNamesToBeRemoved.isEmpty()) {
-            ((CompositePackageDescr) packageDescr).addFilter((type, pkgName, assetName) -> childrenRuleNamesToBeRemoved.contains(assetName) ? AssetFilter.Action.UPDATE : AssetFilter.Action.DO_NOTHING);
-        }
-        return childrenRulesToBeRemoved;
+    protected boolean parallelRulesBuild(List<RuleDescr> rules) {
+        return parallelRulesBuildThreshold != -1 && rules.size() > parallelRulesBuildThreshold;
     }
-
 
     private void initRuleDescr(PackageDescr packageDescr, PackageRegistry pkgRegistry, RuleDescr ruleDescr) {
         if (isEmpty(ruleDescr.getNamespace())) {

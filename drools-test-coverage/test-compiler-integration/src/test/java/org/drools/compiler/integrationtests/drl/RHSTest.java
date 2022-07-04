@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class RHSTest {
@@ -87,8 +87,8 @@ public class RHSTest {
             ksession.insert(5);
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
-            assertEquals(10, list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo(10);
         } finally {
             ksession.dispose();
         }
@@ -117,9 +117,9 @@ public class RHSTest {
 
             ksession.insert("hello");
             ksession.fireAllRules();
-            assertEquals(2, list.size());
-            assertEquals("This is an update()", list.get(0));
-            assertEquals("This is an update($fact)", list.get(1));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(0)).isEqualTo("This is an update()");
+            assertThat(list.get(1)).isEqualTo("This is an update($fact)");
         } finally {
             ksession.dispose();
         }

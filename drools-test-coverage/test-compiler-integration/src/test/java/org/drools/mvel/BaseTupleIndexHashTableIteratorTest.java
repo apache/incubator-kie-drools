@@ -34,7 +34,7 @@ import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public abstract class BaseTupleIndexHashTableIteratorTest {
@@ -97,8 +97,8 @@ public abstract class BaseTupleIndexHashTableIteratorTest {
 
     protected void assertTableIndex(List list, int index, int expectedTableIndex, int expectedSizeOfEntries) {
         Object[] entries = (Object[]) list.get(index);
-        assertEquals(expectedTableIndex, entries[0]);
-        assertEquals(expectedSizeOfEntries, entries.length);
+        assertThat(entries[0]).isEqualTo(expectedTableIndex);
+        assertThat(entries.length).isEqualTo(expectedSizeOfEntries);
     }
 
     public static class Foo {

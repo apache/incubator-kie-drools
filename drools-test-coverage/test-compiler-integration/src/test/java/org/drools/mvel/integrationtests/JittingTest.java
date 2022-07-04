@@ -37,7 +37,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class JittingTest {
@@ -69,7 +68,7 @@ public class JittingTest {
 
         ksession.insert(new Person("Mario", 38));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -163,7 +162,7 @@ public class JittingTest {
 
         int fired = ksession.fireAllRules();
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test
@@ -204,7 +203,7 @@ public class JittingTest {
 
         int fired = ksession.fireAllRules();
 
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
     }
 
     @Test
@@ -250,7 +249,7 @@ public class JittingTest {
         person.setStatus("10");
         ksession.insert(person);
 
-        assertEquals(expectedFires, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(expectedFires);
     }
 
     @Test
@@ -330,7 +329,7 @@ public class JittingTest {
             Person person = new Person("John");
             person.setBigDecimal(new BigDecimal(20));
             kieSession.insert(person);
-            assertEquals(1, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(1);
         }
     }
 
