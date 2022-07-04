@@ -73,8 +73,9 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
         return this;
     }
 
-    public void withCustomProperties(Map<String, String> customProperties) {
+    public CustomPhaseConfig withCustomProperties(Map<String, String> customProperties) {
         this.customProperties = customProperties;
+        return this;
     }
 
     public CustomPhaseConfig withCustomPhaseCommandList(List<CustomPhaseCommand> customPhaseCommandList) {
