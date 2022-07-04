@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class PredictorTermRegressionTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "PredictorTermRegression.pmml";
@@ -43,18 +41,17 @@ public class PredictorTermRegressionTest extends AbstractPMMLTest {
     private double y;
     private double z;
 
-    public PredictorTermRegressionTest(double x, double y, double z) {
+    public void initPredictorTermRegressionTest(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {0, 0, 0}, {-1, 2, 3}, {0.5, -2.5, 4}, {3, 1, 2}, {25, 50, 15},
@@ -66,8 +63,10 @@ public class PredictorTermRegressionTest extends AbstractPMMLTest {
         return 2 * x + y + 5 * z * z + 4 * y * z - 2.5 * x * y * z + 5;
     }
 
-    @Test
-    public void testPredictorTermRegression() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testPredictorTermRegression(double x, double y, double z) {
+        initPredictorTermRegressionTest(x, y, z);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);

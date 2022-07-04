@@ -16,7 +16,7 @@
 package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.OutputField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomOutputField;
@@ -25,7 +25,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLOutputFieldInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLOutputField() {
+    void getKiePMMLOutputField() {
         OutputField toConvert = getRandomOutputField();
         KiePMMLOutputField retrieved = KiePMMLOutputFieldInstanceFactory.getKiePMMLOutputField(toConvert);
         commonVerifyKiePMMLOutputField(retrieved, toConvert);

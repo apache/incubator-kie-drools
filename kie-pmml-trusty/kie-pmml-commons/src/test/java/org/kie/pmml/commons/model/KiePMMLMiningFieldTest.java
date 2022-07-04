@@ -21,7 +21,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.CLOSURE;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class KiePMMLMiningFieldTest {
 
     @Test
-    public void isAllowedValueNoLimit() {
+    void isAllowedValueNoLimit() {
         final KiePMMLMiningField kiePMMLMiningField = KiePMMLMiningField
                 .builder("NAME", Collections.emptyList())
                 .build();
@@ -39,7 +39,7 @@ public class KiePMMLMiningFieldTest {
     }
 
     @Test
-    public void isAllowedValueWithAllowedValues() {
+    void isAllowedValueWithAllowedValues() {
         final List<String> allowedValues = getCommonAllowedValues();
         final KiePMMLMiningField kiePMMLMiningField = KiePMMLMiningField
                 .builder("NAME", Collections.emptyList())
@@ -51,7 +51,7 @@ public class KiePMMLMiningFieldTest {
     }
 
     @Test
-    public void isAllowedValueWithIntervals() {
+    void isAllowedValueWithIntervals() {
         final List<KiePMMLInterval> intervals = getCommonIntervals();
         final KiePMMLMiningField kiePMMLMiningField = KiePMMLMiningField
                 .builder("NAME", Collections.emptyList())
@@ -67,7 +67,7 @@ public class KiePMMLMiningFieldTest {
     }
 
     @Test
-    public void isAllowedValueWithAllowedValuesAndIntervals() {
+    void isAllowedValueWithAllowedValuesAndIntervals() {
         final List<String> allowedValues = getCommonAllowedValues();
         final List<KiePMMLInterval> intervals = getCommonIntervals();
         final KiePMMLMiningField kiePMMLMiningField = KiePMMLMiningField

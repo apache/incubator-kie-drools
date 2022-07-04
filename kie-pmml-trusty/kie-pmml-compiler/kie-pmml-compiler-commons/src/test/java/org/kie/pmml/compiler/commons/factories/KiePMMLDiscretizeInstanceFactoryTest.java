@@ -16,7 +16,7 @@
 package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.Discretize;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLDiscretize;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDiscretize;
@@ -25,7 +25,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLDiscretizeInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLDiscretize() {
+    void getKiePMMLDiscretize() {
         Discretize toConvert = getRandomDiscretize();
         KiePMMLDiscretize retrieved = KiePMMLDiscretizeInstanceFactory.getKiePMMLDiscretize(toConvert);
         commonVerifyKiePMMLDiscretize(retrieved, toConvert);

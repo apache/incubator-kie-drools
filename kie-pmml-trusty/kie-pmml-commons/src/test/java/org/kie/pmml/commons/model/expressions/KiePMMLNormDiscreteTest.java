@@ -18,7 +18,7 @@ package org.kie.pmml.commons.model.expressions;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
@@ -28,7 +28,7 @@ import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 public class KiePMMLNormDiscreteTest {
 
     @Test
-    public void evaluateMissingValue() {
+    void evaluateMissingValue() {
         String fieldName = "fieldName";
         String fieldValue = "fieldValue";
         Number mapMissingTo = 1.0;
@@ -40,7 +40,7 @@ public class KiePMMLNormDiscreteTest {
     }
 
     @Test
-    public void evaluateSameValue() {
+    void evaluateSameValue() {
         String fieldName = "fieldName";
         String fieldValue = "fieldValue";
         Number mapMissingTo = null;
@@ -52,7 +52,7 @@ public class KiePMMLNormDiscreteTest {
     }
 
     @Test
-    public void evaluateDifferentValue() {
+    void evaluateDifferentValue() {
         String fieldName = "fieldName";
         String fieldValue = "fieldValue";
         Number mapMissingTo = null;

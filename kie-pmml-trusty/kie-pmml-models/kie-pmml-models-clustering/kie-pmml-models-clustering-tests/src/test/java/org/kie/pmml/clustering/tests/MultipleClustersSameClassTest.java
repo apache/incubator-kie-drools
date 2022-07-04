@@ -7,17 +7,15 @@ import java.util.Map;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.data.Percentage;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MultipleClustersSameClassTest extends AbstractPMMLTest {
 
     private static final double DOUBLE_VALID_PERCENTAGE = 0.99999;
@@ -37,7 +35,7 @@ public class MultipleClustersSameClassTest extends AbstractPMMLTest {
     private String className;
     private double affinity;
 
-    public MultipleClustersSameClassTest(double dimension1, double dimension2, String classId, String className, double affinity) {
+    public void initMultipleClustersSameClassTest(double dimension1, double dimension2, String classId, String className, double affinity) {
         this.dimension1 = dimension1;
         this.dimension2 = dimension2;
         this.classId = classId;
@@ -45,12 +43,11 @@ public class MultipleClustersSameClassTest extends AbstractPMMLTest {
         this.affinity = affinity;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {0.0, 0.0, "1", "classA", 0.0},
@@ -66,8 +63,10 @@ public class MultipleClustersSameClassTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void test() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void test(double dimension1, double dimension2, String classId, String className, double affinity) {
+        initMultipleClustersSameClassTest(dimension1, dimension2, classId, className, affinity);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("Dimension1", dimension1);
         inputData.put("Dimension2", dimension2);

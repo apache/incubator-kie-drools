@@ -25,7 +25,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DiscretizeBin;
 import org.dmg.pmml.Interval;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.CLOSURE;
 import org.kie.pmml.commons.model.expressions.KiePMMLDiscretizeBin;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
@@ -40,7 +40,7 @@ public class KiePMMLDiscretizeBinFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLDiscretizeBinFactoryTest_01.txt";
 
     @Test
-    public void getDiscretizeBinVariableDeclaration() throws IOException {
+    void getDiscretizeBinVariableDeclaration() throws IOException {
         String variableName = "variableName";
         double leftMargin = 45.32;
 
@@ -56,12 +56,12 @@ public class KiePMMLDiscretizeBinFactoryTest {
         discretizeBin.setInterval(interval);
 
         BlockStmt retrieved = KiePMMLDiscretizeBinFactory.getDiscretizeBinVariableDeclaration(variableName,
-                                                                                              discretizeBin);
+                discretizeBin);
         String closureString =
                 CLOSURE.class.getName() + "." + CLOSURE.byName(interval.getClosure().value()).name();
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, leftMargin, closureString,
-                                                                      binValue));
+                binValue));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
         commonValidateCompilationWithImports(retrieved, imports);

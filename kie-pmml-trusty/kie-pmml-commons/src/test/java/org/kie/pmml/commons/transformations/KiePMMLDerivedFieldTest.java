@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -42,15 +42,15 @@ public class KiePMMLDerivedFieldTest {
     private static final Double value2 = 5.0;
 
     @Test
-    public void evaluateFromConstant() {
+    void evaluateFromConstant() {
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //     <Constant>100.0</Constant>
         // </DerivedField>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE,
-                                                                             OP_TYPE.CONTINUOUS,
-                                                                             kiePMMLConstant1)
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLConstant1)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), new ArrayList<>());
         Object retrieved = derivedField.evaluate(processingDTO);
@@ -58,24 +58,24 @@ public class KiePMMLDerivedFieldTest {
     }
 
     @Test
-    public void evaluateFromFieldRef() {
+    void evaluateFromFieldRef() {
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //     <FieldRef field="PARAM_1"/>
         // </DerivedField>
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(PARAM_1, Collections.emptyList(), null);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE,
-                                                                             OP_TYPE.CONTINUOUS,
-                                                                             kiePMMLFieldRef)
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLFieldRef)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
-                                                        Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)));
+                Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)));
         Object retrieved = derivedField.evaluate(processingDTO);
         assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
-    public void evaluateFromApplyWithKiePMMLNameValues() {
+    void evaluateFromApplyWithKiePMMLNameValues() {
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //     <Apply function="/">
         //        <FieldRef>PARAM_1</FieldRef>
@@ -88,9 +88,9 @@ public class KiePMMLDerivedFieldTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE,
-                                                                             OP_TYPE.CONTINUOUS,
-                                                                             kiePMMLApply)
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLApply)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), getKiePMMLNameValues());
         Object retrieved = derivedField.evaluate(processingDTO);
@@ -99,7 +99,7 @@ public class KiePMMLDerivedFieldTest {
     }
 
     @Test
-    public void evaluateFromApplyWithDerivedFields() {
+    void evaluateFromApplyWithDerivedFields() {
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //     <Apply function="/">
         //        <FieldRef>PARAM_1</FieldRef>
@@ -112,9 +112,9 @@ public class KiePMMLDerivedFieldTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE,
-                                                                             OP_TYPE.CONTINUOUS,
-                                                                             kiePMMLApply)
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLApply)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(getDerivedFields(), new ArrayList<>());
         Object retrieved = derivedField.evaluate(processingDTO);

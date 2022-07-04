@@ -29,8 +29,8 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TextIndex;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.expressions.KiePMMLInlineTable;
 import org.kie.pmml.commons.model.expressions.KiePMMLRow;
@@ -51,7 +51,7 @@ public class KiePMMLTextIndexFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLTextIndexFactoryTest_01.txt";
     private static TextIndex TEXTINDEX;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         PMML pmmlModel = KiePMMLUtil.load(getFileInputStream(TRANSFORMATIONS_SAMPLE), TRANSFORMATIONS_SAMPLE);
         DefineFunction definedFunction = pmmlModel.getTransformationDictionary()
@@ -64,18 +64,18 @@ public class KiePMMLTextIndexFactoryTest {
     }
 
     @Test
-    public void getTextIndexVariableDeclaration() throws IOException {
+    void getTextIndexVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLTextIndexFactory.getTextIndexVariableDeclaration(variableName,
-                                                                                      TEXTINDEX);
+                TEXTINDEX);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                                                                      TEXTINDEX.getTextField().getValue()));
+                TEXTINDEX.getTextField().getValue()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, Collectors.class,
-                                               KiePMMLFieldRef.class, KiePMMLInlineTable.class,
-                                               KiePMMLTextIndex.class, KiePMMLTextIndexNormalization.class,
-                                               KiePMMLRow.class, Map.class, Stream.class);
+                KiePMMLFieldRef.class, KiePMMLInlineTable.class,
+                KiePMMLTextIndex.class, KiePMMLTextIndexNormalization.class,
+                KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

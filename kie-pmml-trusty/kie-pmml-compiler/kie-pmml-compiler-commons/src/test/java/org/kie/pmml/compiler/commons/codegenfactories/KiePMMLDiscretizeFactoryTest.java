@@ -28,8 +28,8 @@ import org.dmg.pmml.Discretize;
 import org.dmg.pmml.DiscretizeBin;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Interval;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLDiscretize;
 import org.kie.pmml.commons.model.expressions.KiePMMLDiscretizeBin;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
@@ -52,7 +52,7 @@ public class KiePMMLDiscretizeFactoryTest {
     private static DiscretizeBin discretizeBin2;
     private static List<DiscretizeBin> discretizeBins;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         discretizeBin1 = getDiscretizeBin(getInterval(null, 20, Interval.Closure.OPEN_OPEN), "discretizeBin1");
         discretizeBin2 = getDiscretizeBin(getInterval(21, 30,
@@ -61,7 +61,7 @@ public class KiePMMLDiscretizeFactoryTest {
     }
 
     @Test
-    public void getDiscretizeVariableDeclaration() throws IOException {
+    void getDiscretizeVariableDeclaration() throws IOException {
         String variableName = "variableName";
         Discretize discretize = new Discretize();
         discretize.setField(FieldName.create(NAME));
@@ -71,14 +71,14 @@ public class KiePMMLDiscretizeFactoryTest {
         discretize.addDiscretizeBins(discretizeBins.toArray(new DiscretizeBin[0]));
 
         BlockStmt retrieved = KiePMMLDiscretizeFactory.getDiscretizeVariableDeclaration(variableName,
-                                                                                        discretize);
+                discretize);
         String dataTypeString = getDATA_TYPEString(discretize.getDataType());
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, NAME, MAP_MISSING_TO,
-                                                                      DEFAULTVALUE, dataTypeString));
+                DEFAULTVALUE, dataTypeString));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLDiscretize.class,
-                                               KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
+                KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 

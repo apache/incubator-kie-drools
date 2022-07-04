@@ -31,7 +31,7 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.ParameterField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
@@ -54,7 +54,7 @@ public class KiePMMLDefineFunctionFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLDefineFunctionFactoryTest_01.txt";
 
     @Test
-    public void getDefineFunctionVariableDeclaration() throws IOException {
+    void getDefineFunctionVariableDeclaration() throws IOException {
         ParameterField parameterField1 = new ParameterField(FieldName.create(PARAM_1));
         parameterField1.setDataType(DataType.DOUBLE);
         parameterField1.setOpType(OpType.CONTINUOUS);
@@ -86,28 +86,28 @@ public class KiePMMLDefineFunctionFactoryTest {
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format(text,
-                                          parameterField1.getName().getValue(),
-                                          dataType1,
-                                          opType1,
-                                          parameterField1.getDisplayName(),
-                                          parameterField2.getName().getValue(),
-                                          dataType2,
-                                          opType2,
-                                          parameterField2.getDisplayName(),
-                                          constant.getValue(),
-                                          fieldRef.getField().getValue(),
-                                          apply.getFunction(),
-                                          apply.getInvalidValueTreatment().value(),
-                                          dataType3,
-                                          opType3));
+                        parameterField1.getName().getValue(),
+                        dataType1,
+                        opType1,
+                        parameterField1.getDisplayName(),
+                        parameterField2.getName().getValue(),
+                        dataType2,
+                        opType2,
+                        parameterField2.getDisplayName(),
+                        constant.getValue(),
+                        fieldRef.getField().getValue(),
+                        apply.getFunction(),
+                        apply.getInvalidValueTreatment().value(),
+                        dataType3,
+                        opType3));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLParameterField.class,
-                                               KiePMMLConstant.class,
-                                               KiePMMLFieldRef.class,
-                                               KiePMMLApply.class,
-                                               KiePMMLDefineFunction.class,
-                                               Arrays.class,
-                                               Collections.class);
+                KiePMMLConstant.class,
+                KiePMMLFieldRef.class,
+                KiePMMLApply.class,
+                KiePMMLDefineFunction.class,
+                Arrays.class,
+                Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

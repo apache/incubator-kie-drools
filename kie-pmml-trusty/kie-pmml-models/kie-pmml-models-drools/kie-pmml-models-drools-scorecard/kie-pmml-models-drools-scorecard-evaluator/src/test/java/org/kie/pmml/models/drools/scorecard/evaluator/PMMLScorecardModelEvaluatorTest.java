@@ -24,10 +24,9 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.model.codegen.ExecutableModelProject;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.pmml.PMML4Result;
@@ -49,7 +48,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class PMMLScorecardModelEvaluatorTest {
 
     private static final String SOURCE_1 = "ScorecardSample.pmml";
@@ -72,7 +70,7 @@ public class PMMLScorecardModelEvaluatorTest {
     private boolean validLicense;
     private double expectedResult;
 
-    public PMMLScorecardModelEvaluatorTest(double age, String occupation, String residenceState,
+    public void initPMMLScorecardModelEvaluatorTest(double age, String occupation, String residenceState,
                                            boolean validLicense, double expectedResult) {
         this.age = age;
         this.occupation = occupation;
@@ -81,7 +79,7 @@ public class PMMLScorecardModelEvaluatorTest {
         this.expectedResult = expectedResult;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         evaluator = new PMMLScorecardModelEvaluator();
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
@@ -91,9 +89,9 @@ public class PMMLScorecardModelEvaluatorTest {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final CommonCompilationDTO<Scorecard> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       (Scorecard) pmml.getModels().get(0),
-                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+                        pmml,
+                        (Scorecard) pmml.getModels().get(0),
+                        new HasKnowledgeBuilderMock(knowledgeBuilder));
 
         kiePMMLModel = provider.getKiePMMLModel(compilationDTO);
         kieBase = new KieHelper()
@@ -103,7 +101,6 @@ public class PMMLScorecardModelEvaluatorTest {
         assertThat(kieBase).isNotNull();
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {4.0, "SKYDIVER", "AP", true, -8.655},
@@ -289,13 +286,17 @@ public class PMMLScorecardModelEvaluatorTest {
         });
     }
 
-    @Test
-    public void getPMMLModelType() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void getPMMLModelType(double age, String occupation, String residenceState, boolean validLicense, double expectedResult) {
+        initPMMLScorecardModelEvaluatorTest(age, occupation, residenceState, validLicense, expectedResult);
         assertThat(evaluator.getPMMLModelType()).isEqualTo(PMML_MODEL.SCORECARD_MODEL);
     }
 
-    @Test
-    public void testScorecardSample() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testScorecardSample(double age, String occupation, String residenceState, boolean validLicense, double expectedResult) {
+        initPMMLScorecardModelEvaluatorTest(age, occupation, residenceState, validLicense, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put(AGE, age);
         inputData.put(OCCUPATION, occupation);

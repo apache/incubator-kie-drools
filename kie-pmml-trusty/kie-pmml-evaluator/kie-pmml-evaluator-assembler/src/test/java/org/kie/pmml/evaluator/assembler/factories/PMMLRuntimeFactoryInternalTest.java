@@ -29,7 +29,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.util.io.DescrResource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
@@ -47,19 +47,20 @@ import org.kie.pmml.evaluator.core.service.PMMLRuntimeInternalImpl;
 import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 public class PMMLRuntimeFactoryInternalTest {
 
     @Test
-    public void getPMMLRuntimeFromFile() {
+    void getPMMLRuntimeFromFile() {
         File pmmlFile = getFile("MissingDataRegression.pmml");
         PMMLRuntime retrieved = PMMLRuntimeFactoryInternal.getPMMLRuntime(pmmlFile);
         commonValidatePMMLRuntime(retrieved);
     }
 
     @Test
-    public void testGetPMMLRuntimeFromFileAndReleaseId() {
+    void testGetPMMLRuntimeFromFileAndReleaseId() {
         File pmmlFile = getFile("MiningModel_Mixed.pmml");
         ReleaseId releaseId = new ReleaseIdImpl("org.dummy:dummy-artifact:1-0");
         PMMLRuntime retrieved = PMMLRuntimeFactoryInternal.getPMMLRuntime(pmmlFile, releaseId);
@@ -67,7 +68,7 @@ public class PMMLRuntimeFactoryInternalTest {
     }
 
     @Test
-    public void createKieBaseFromFile() {
+    void createKieBaseFromFile() {
         File pmmlFile = getFile("MissingDataRegression.pmml");
         KieBase retrieved = PMMLRuntimeFactoryInternal.createKieBase(pmmlFile);
         assertThat(retrieved).isNotNull();
@@ -75,7 +76,7 @@ public class PMMLRuntimeFactoryInternalTest {
     }
 
     @Test
-    public void createKieBaseFromKnowledgeBuilder() {
+    void createKieBaseFromKnowledgeBuilder() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         knowledgeBuilder.addPackage(CoreComponentFactory.get().createKnowledgePackage("namespace_1"));
         knowledgeBuilder.addPackage(CoreComponentFactory.get().createKnowledgePackage("namespace_2"));
@@ -90,10 +91,10 @@ public class PMMLRuntimeFactoryInternalTest {
         knowledgeBuilder.getKnowledgePackages()
                 .forEach(kBuilderPackage -> {
                     assertThat(retrieved.getKiePackage(kBuilderPackage.getName())).isNotNull();
-                    ResourceTypePackage knowledgeBuilderResourceTypePackage= ((InternalKnowledgePackage) kBuilderPackage).getResourceTypePackages().get(ResourceType.PMML);
+                    ResourceTypePackage knowledgeBuilderResourceTypePackage = ((InternalKnowledgePackage) kBuilderPackage).getResourceTypePackages().get(ResourceType.PMML);
                     if (((InternalKnowledgePackage) kBuilderPackage).getResourceTypePackages().get(ResourceType.PMML) != null) {
                         InternalKnowledgePackage retrievedKiePackage = (InternalKnowledgePackage) retrieved.getKiePackage(kBuilderPackage.getName());
-                        ResourceTypePackage retrievedResourceTypePackage=  retrievedKiePackage.getResourceTypePackages().get(ResourceType.PMML);
+                        ResourceTypePackage retrievedResourceTypePackage =  retrievedKiePackage.getResourceTypePackages().get(ResourceType.PMML);
                         assertThat(retrievedKiePackage.getResourceTypePackages().get(ResourceType.PMML)).isNotNull();
                         assertThat(retrievedResourceTypePackage).isEqualTo(knowledgeBuilderResourceTypePackage);
                     }
@@ -101,7 +102,7 @@ public class PMMLRuntimeFactoryInternalTest {
     }
 
     @Test
-    public void getPMMLRuntimeFromFileAndKnowledgeBuilder() {
+    void getPMMLRuntimeFromFileAndKnowledgeBuilder() {
         File pmmlFile = getFile("MiningModel_Mixed.pmml");
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         PMMLRuntime retrieved = PMMLRuntimeFactoryInternal.getPMMLRuntime(pmmlFile, knowledgeBuilder);
@@ -109,7 +110,7 @@ public class PMMLRuntimeFactoryInternalTest {
     }
 
     @Test
-    public void createDescrResource() {
+    void createDescrResource() {
         PackageDescr packageDescr = new PackageDescr();
         DescrResource retrieved = PMMLRuntimeFactoryInternal.createDescrResource(packageDescr);
         assertThat(retrieved).isNotNull();
@@ -121,11 +122,11 @@ public class PMMLRuntimeFactoryInternalTest {
     }
 
     @Test
-    public void populateNestedKiePackageList() {
+    void populateNestedKiePackageList() {
         // Setup kiebase
         KiePMMLModel kiePMMLModel = getKiePMMLModelWithNested("FAKE");
         InternalKnowledgePackage pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(kiePMMLModel);
-        List<KiePackage> kiePackages =  ((HasNestedModels)kiePMMLModel)
+        List<KiePackage> kiePackages =  ((HasNestedModels) kiePMMLModel)
                 .getNestedModels()
                 .stream()
                 .map(this::getKnowledgePackageWithPMMLResourceType)
@@ -137,14 +138,14 @@ public class PMMLRuntimeFactoryInternalTest {
         final List<KiePackage> toPopulate = new ArrayList<>();
         PMMLRuntimeFactoryInternal
                 .populateNestedKiePackageList(Collections.singleton(kiePMMLModel),
-                                              toPopulate,
-                                              kieBase);
+                        toPopulate,
+                        kieBase);
         assertThat(toPopulate).isNotEmpty();
         assertThat(toPopulate).hasSameSizeAs(kiePackages);
     }
 
     @Test
-    public void getKiePackageByFullClassNamePresent() {
+    void getKiePackageByFullClassNamePresent() {
         // Setup kiebase
         KiePMMLModel kiePMMLModel = new KiePMMLModelA("FAKE");
         InternalKnowledgePackage pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(kiePMMLModel);
@@ -154,14 +155,16 @@ public class PMMLRuntimeFactoryInternalTest {
         assertThat(PMMLRuntimeFactoryInternal.getKiePackageByFullClassName(kiePMMLModel.getClass().getName(), kieBase)).isNotNull();
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void getKiePackageByFullClassNameNotPresent() {
-        // Setup kiebase
-        InternalKnowledgePackage pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(new KiePMMLModelA("FAKE"));
-        InternalKnowledgeBase kieBase = (InternalKnowledgeBase) new KieHelper().build(ExecutableModelProject.class);
-        kieBase.addPackage(pmmlKnowledgePackage);
-        // Actual test
-        PMMLRuntimeFactoryInternal.getKiePackageByFullClassName(KiePMMLModel.class.getName(), kieBase);
+    @Test
+    void getKiePackageByFullClassNameNotPresent() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            // Setup kiebase
+            InternalKnowledgePackage pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(new KiePMMLModelA("FAKE"));
+            InternalKnowledgeBase kieBase = (InternalKnowledgeBase) new KieHelper().build(ExecutableModelProject.class);
+            kieBase.addPackage(pmmlKnowledgePackage);
+            // Actual test
+            PMMLRuntimeFactoryInternal.getKiePackageByFullClassName(KiePMMLModel.class.getName(), kieBase);
+        });
     }
 
     private void commonValidatePMMLRuntime(PMMLRuntime toValidate) {

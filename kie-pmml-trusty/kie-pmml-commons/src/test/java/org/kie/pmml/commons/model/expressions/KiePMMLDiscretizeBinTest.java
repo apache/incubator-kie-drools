@@ -19,7 +19,7 @@ package org.kie.pmml.commons.model.expressions;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.CLOSURE;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +30,7 @@ public class KiePMMLDiscretizeBinTest {
     private static final String BINVALUE = "binValue";
 
     @Test
-    public void evaluateOpenOpen() {
+    void evaluateOpenOpen() {
         KiePMMLDiscretizeBin kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(null, 20, CLOSURE.OPEN_OPEN));
         Optional<String> retrieved = kiePMMLDiscretizeBin.evaluate(10);
         assertThat(retrieved).isPresent();
@@ -62,7 +62,7 @@ public class KiePMMLDiscretizeBinTest {
     }
 
     @Test
-    public void evaluateOpenClosed() {
+    void evaluateOpenClosed() {
         KiePMMLDiscretizeBin kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(null, 20, CLOSURE.OPEN_CLOSED));
         Optional<String> retrieved = kiePMMLDiscretizeBin.evaluate(10);
         assertThat(retrieved).isPresent();
@@ -96,7 +96,7 @@ public class KiePMMLDiscretizeBinTest {
     }
 
     @Test
-    public void evaluateClosedOpen() {
+    void evaluateClosedOpen() {
         KiePMMLDiscretizeBin kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(null, 20, CLOSURE.CLOSED_OPEN));
         Optional<String> retrieved = kiePMMLDiscretizeBin.evaluate(10);
         assertThat(retrieved).isPresent();
@@ -130,7 +130,7 @@ public class KiePMMLDiscretizeBinTest {
     }
 
     @Test
-    public void evaluateClosedClosed() {
+    void evaluateClosedClosed() {
         KiePMMLDiscretizeBin kiePMMLDiscretizeBin = getKiePMMLDiscretizeBin(new KiePMMLInterval(null, 20, CLOSURE.CLOSED_CLOSED));
         Optional<String> retrieved = kiePMMLDiscretizeBin.evaluate(10);
         assertThat(retrieved).isPresent();

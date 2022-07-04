@@ -34,7 +34,7 @@ import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.TransformationDictionary;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
@@ -57,7 +57,7 @@ public class KiePMMLTransformationDictionaryFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLTransformationDictionaryFactoryTest_01.txt";
 
     @Test
-    public void getKiePMMLTransformationDictionaryVariableDeclaration() throws IOException {
+    void getKiePMMLTransformationDictionaryVariableDeclaration() throws IOException {
         TransformationDictionary transformationDictionary = new TransformationDictionary();
         transformationDictionary.addDefineFunctions(getDefineFunctions());
         transformationDictionary.addDerivedFields(getDerivedFields());
@@ -68,14 +68,14 @@ public class KiePMMLTransformationDictionaryFactoryTest {
         Statement expected = JavaParserUtils.parseBlock(text);
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLParameterField.class,
-                                               KiePMMLConstant.class,
-                                               KiePMMLFieldRef.class,
-                                               KiePMMLApply.class,
-                                               KiePMMLDerivedField.class,
-                                               KiePMMLDefineFunction.class,
-                                               KiePMMLTransformationDictionary.class,
-                                               Arrays.class,
-                                               Collections.class);
+                KiePMMLConstant.class,
+                KiePMMLFieldRef.class,
+                KiePMMLApply.class,
+                KiePMMLDerivedField.class,
+                KiePMMLDefineFunction.class,
+                KiePMMLTransformationDictionary.class,
+                Arrays.class,
+                Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 

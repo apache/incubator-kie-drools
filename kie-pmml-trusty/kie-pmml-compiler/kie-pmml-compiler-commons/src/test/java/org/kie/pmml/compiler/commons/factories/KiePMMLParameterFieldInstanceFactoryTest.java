@@ -16,7 +16,7 @@
 package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.ParameterField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getParameterField;
@@ -25,7 +25,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLParameterFieldInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLParameterField() {
+    void getKiePMMLParameterField() {
         final String fieldName = "fieldName";
         final ParameterField toConvert = getParameterField(fieldName);
         KiePMMLParameterField retrieved = KiePMMLParameterFieldInstanceFactory.getKiePMMLParameterField(toConvert);

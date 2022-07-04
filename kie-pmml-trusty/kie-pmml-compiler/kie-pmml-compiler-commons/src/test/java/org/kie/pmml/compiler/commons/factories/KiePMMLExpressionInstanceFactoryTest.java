@@ -16,7 +16,7 @@
 package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.Expression;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomApply;
@@ -32,7 +32,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLExpressionInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLExpression() {
+    void getKiePMMLExpression() {
         Expression toConvert = getRandomApply();
         KiePMMLExpression retrieved = KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
         commonVerifyKiePMMLExpression(retrieved, toConvert);

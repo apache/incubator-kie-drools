@@ -27,7 +27,7 @@ import org.dmg.pmml.Constant;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.scorecard.ComplexPartialScore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
@@ -46,7 +46,7 @@ public class KiePMMLComplexPartialScoreFactoryTest {
     private static final String TEST_03_SOURCE = "KiePMMLComplexPartialScoreFactoryTest_03.txt";
 
     @Test
-    public void getComplexPartialScoreVariableDeclaration() throws IOException {
+    void getComplexPartialScoreVariableDeclaration() throws IOException {
         final String variableName = "variableName";
         Constant constant = new Constant();
         constant.setValue(value1);
@@ -54,19 +54,19 @@ public class KiePMMLComplexPartialScoreFactoryTest {
         complexPartialScore.setExpression(constant);
         BlockStmt retrieved =
                 KiePMMLComplexPartialScoreFactory.getComplexPartialScoreVariableDeclaration(variableName,
-                                                                                            complexPartialScore);
+                        complexPartialScore);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, constant.getValue(),
-                                                                      variableName));
+                variableName));
         assertThat(retrieved).isEqualTo(expected);
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
-                                               KiePMMLComplexPartialScore.class,
-                                               Collections.class);
+                KiePMMLComplexPartialScore.class,
+                Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
     @Test
-    public void getComplexPartialScoreVariableDeclarationWithFieldRef() throws IOException {
+    void getComplexPartialScoreVariableDeclarationWithFieldRef() throws IOException {
         final String variableName = "variableName";
         FieldRef fieldRef = new FieldRef();
         fieldRef.setField(FieldName.create("FIELD_REF"));
@@ -74,19 +74,19 @@ public class KiePMMLComplexPartialScoreFactoryTest {
         complexPartialScore.setExpression(fieldRef);
         BlockStmt retrieved =
                 KiePMMLComplexPartialScoreFactory.getComplexPartialScoreVariableDeclaration(variableName,
-                                                                                            complexPartialScore);
+                        complexPartialScore);
         String text = getFileContent(TEST_02_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, fieldRef.getField().getValue(),
-                                                                      variableName));
+                variableName));
         assertThat(retrieved).isEqualTo(expected);
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class,
-                                               KiePMMLComplexPartialScore.class,
-                                               Collections.class);
+                KiePMMLComplexPartialScore.class,
+                Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
     @Test
-    public void getComplexPartialScoreVariableDeclarationWithApply() throws IOException {
+    void getComplexPartialScoreVariableDeclarationWithApply() throws IOException {
         final String variableName = "variableName";
         Constant constant = new Constant();
         constant.setValue(value1);
@@ -99,21 +99,21 @@ public class KiePMMLComplexPartialScoreFactoryTest {
         complexPartialScore.setExpression(apply);
         BlockStmt retrieved =
                 KiePMMLComplexPartialScoreFactory.getComplexPartialScoreVariableDeclaration(variableName,
-                                                                                            complexPartialScore);
+                        complexPartialScore);
         String text = getFileContent(TEST_03_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text,
-                                                                      constant.getValue(),
-                                                                      fieldRef.getField().getValue(),
-                                                                      apply.getFunction(),
-                                                                      apply.getInvalidValueTreatment().value(),
-                                                                      variableName));
+                constant.getValue(),
+                fieldRef.getField().getValue(),
+                apply.getFunction(),
+                apply.getInvalidValueTreatment().value(),
+                variableName));
         assertThat(retrieved).isEqualTo(expected);
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
-                                               KiePMMLFieldRef.class,
-                                               KiePMMLApply.class,
-                                               KiePMMLComplexPartialScore.class,
-                                               Arrays.class,
-                                               Collections.class);
+                KiePMMLFieldRef.class,
+                KiePMMLApply.class,
+                KiePMMLComplexPartialScore.class,
+                Arrays.class,
+                Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

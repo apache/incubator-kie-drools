@@ -25,7 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.IN_NOTIN;
 
@@ -36,11 +36,11 @@ public class KiePMMLSimpleSetPredicateTest {
     private final String SIMPLE_SET_PREDICATE_NAME = "SIMPLESETPREDICATENAME";
 
     @Test
-    public void evaluateStringIn() {
+    void evaluateStringIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.IN);
+                IN_NOTIN.IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "NOT");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -51,11 +51,11 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluateStringNotIn() {
+    void evaluateStringNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.NOT_IN);
+                IN_NOTIN.NOT_IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "NOT");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -66,11 +66,11 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluateIntIn() {
+    void evaluateIntIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.IN);
+                IN_NOTIN.IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "234");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -81,11 +81,11 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluateIntNotIn() {
+    void evaluateIntNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.NOT_IN);
+                IN_NOTIN.NOT_IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "234");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -96,11 +96,11 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluateRealIn() {
+    void evaluateRealIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.IN);
+                IN_NOTIN.IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "23.4");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -111,11 +111,11 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluateRealNotIn() {
+    void evaluateRealNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.NOT_IN);
+                IN_NOTIN.NOT_IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "23.4");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -126,61 +126,61 @@ public class KiePMMLSimpleSetPredicateTest {
     }
 
     @Test
-    public void evaluationStringIn() {
+    void evaluationStringIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.IN);
+                IN_NOTIN.IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation("NOT")).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isTrue();
     }
 
     @Test
-    public void evaluationStringNotIn() {
+    void evaluationStringNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.NOT_IN);
+                IN_NOTIN.NOT_IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation("NOT")).isTrue();
     }
 
     @Test
-    public void evaluationIntIn() {
+    void evaluationIntIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.IN);
+                IN_NOTIN.IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation("234")).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isTrue();
     }
 
     @Test
-    public void evaluationIntNotIn() {
+    void evaluationIntNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.NOT_IN);
+                IN_NOTIN.NOT_IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation("234")).isTrue();
     }
 
     @Test
-    public void evaluationRealIn() {
+    void evaluationRealIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.IN);
+                IN_NOTIN.IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation("23.4")).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isTrue();
     }
 
     @Test
-    public void evaluationRealNotIn() {
+    void evaluationRealNotIn() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                                                                                           IN_NOTIN.NOT_IN);
+                IN_NOTIN.NOT_IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation("23.4")).isTrue();
     }

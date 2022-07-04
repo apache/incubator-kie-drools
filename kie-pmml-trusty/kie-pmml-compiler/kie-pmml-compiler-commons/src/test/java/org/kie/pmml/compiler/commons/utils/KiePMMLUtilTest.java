@@ -48,7 +48,7 @@ import org.dmg.pmml.Target;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,21 +70,21 @@ public class KiePMMLUtilTest {
     private static final String MINING_WITH_SAME_NESTED_MODEL_NAMES = "MiningWithSameNestedModelNames.pmml";
 
     @Test
-    public void loadString() throws IOException, JAXBException, SAXException {
+    void loadString() throws IOException, JAXBException, SAXException {
         commonLoadString(NO_MODELNAME_SAMPLE_NAME);
         commonLoadString(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
         commonLoadString(MINING_WITH_SAME_NESTED_MODEL_NAMES);
     }
 
     @Test
-    public void loadFile() throws JAXBException, IOException, SAXException {
+    void loadFile() throws JAXBException, IOException, SAXException {
         commonLoadFile(NO_MODELNAME_SAMPLE_NAME);
         commonLoadFile(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
         commonLoadFile(MINING_WITH_SAME_NESTED_MODEL_NAMES);
     }
 
     @Test
-    public void populateMissingModelName() throws Exception {
+    void populateMissingModelName() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_SAMPLE_NAME);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model toPopulate = pmml.getModels().get(0);
@@ -92,14 +92,14 @@ public class KiePMMLUtilTest {
         KiePMMLUtil.populateMissingModelName(toPopulate, NO_MODELNAME_SAMPLE_NAME, 0);
         assertThat(toPopulate.getModelName()).isNotNull();
         String expected = String.format(MODELNAME_TEMPLATE,
-                                        NO_MODELNAME_SAMPLE_NAME,
-                                        toPopulate.getClass().getSimpleName(),
-                                        0);
+                NO_MODELNAME_SAMPLE_NAME,
+                toPopulate.getClass().getSimpleName(),
+                0);
         assertThat(toPopulate.getModelName()).isEqualTo(expected);
     }
 
     @Test
-    public void populateMissingMiningTargetField() throws Exception {
+    void populateMissingMiningTargetField() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_TARGET_FIELD_SAMPLE);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model toPopulate = pmml.getModels().get(0);
@@ -111,14 +111,14 @@ public class KiePMMLUtilTest {
         assertThat(miningTargetFields).hasSize(1);
         final MiningField targetField = miningTargetFields.get(0);
         assertThat(pmml.getDataDictionary()
-                           .getDataFields()
-                           .stream()
-                           .anyMatch(dataField -> dataField.getName().equals(targetField.getName()))).isTrue();
+                .getDataFields()
+                .stream()
+                .anyMatch(dataField -> dataField.getName().equals(targetField.getName()))).isTrue();
         assertThat(toPopulate.getTargets().getTargets().get(0).getField()).isEqualTo(targetField.getName());
     }
 
     @Test
-    public void populateMissingPredictedOutputFieldTarget() throws Exception {
+    void populateMissingPredictedOutputFieldTarget() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_OUTPUT_FIELD_TARGET_NAME_SAMPLE);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model toPopulate = pmml.getModels().get(0);
@@ -132,19 +132,19 @@ public class KiePMMLUtilTest {
     }
 
     @Test
-    public void getTargetDataField() throws Exception {
+    void getTargetDataField() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_TARGET_FIELD_SAMPLE);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model model = pmml.getModels().get(0);
         Optional<DataField> optionalDataField = KiePMMLUtil.getTargetDataField(model);
         assertThat(optionalDataField).isPresent();
         DataField retrieved = optionalDataField.get();
-        String expected= String.format(TARGETFIELD_TEMPLATE, "golfing");
+        String expected = String.format(TARGETFIELD_TEMPLATE, "golfing");
         assertThat(retrieved.getName().getValue()).isEqualTo(expected);
     }
 
     @Test
-    public void getTargetDataType()  {
+    void getTargetDataType()  {
         MiningFunction miningFunction = MiningFunction.REGRESSION;
         MathContext mathContext = MathContext.DOUBLE;
         DataType retrieved = KiePMMLUtil.getTargetDataType(miningFunction, mathContext);
@@ -159,15 +159,15 @@ public class KiePMMLUtilTest {
         retrieved = KiePMMLUtil.getTargetDataType(miningFunction, mathContext);
         assertThat(retrieved).isEqualTo(DataType.STRING);
         List<MiningFunction> notMappedMiningFunctions = Arrays.asList(MiningFunction.ASSOCIATION_RULES,
-                                                                      MiningFunction.MIXED,
-                                                                      MiningFunction.SEQUENCES,
-                                                                      MiningFunction.TIME_SERIES);
+                MiningFunction.MIXED,
+                MiningFunction.SEQUENCES,
+                MiningFunction.TIME_SERIES);
 
         notMappedMiningFunctions.forEach(minFun -> assertThat(KiePMMLUtil.getTargetDataType(minFun, MathContext.DOUBLE)).isNull());
     }
 
     @Test
-    public void getTargetOpType()  {
+    void getTargetOpType()  {
         MiningFunction miningFunction = MiningFunction.REGRESSION;
         OpType retrieved = KiePMMLUtil.getTargetOpType(miningFunction);
         assertThat(retrieved).isEqualTo(OpType.CONTINUOUS);
@@ -178,15 +178,15 @@ public class KiePMMLUtilTest {
         retrieved = KiePMMLUtil.getTargetOpType(miningFunction);
         assertThat(retrieved).isEqualTo(OpType.CATEGORICAL);
         List<MiningFunction> notMappedMiningFunctions = Arrays.asList(MiningFunction.ASSOCIATION_RULES,
-                                                                      MiningFunction.MIXED,
-                                                                      MiningFunction.SEQUENCES,
-                                                                      MiningFunction.TIME_SERIES);
+                MiningFunction.MIXED,
+                MiningFunction.SEQUENCES,
+                MiningFunction.TIME_SERIES);
 
         notMappedMiningFunctions.forEach(minFun -> assertThat(KiePMMLUtil.getTargetOpType(minFun)).isNull());
     }
 
     @Test
-    public void getTargetMiningField() {
+    void getTargetMiningField() {
         final DataField dataField = new DataField();
         dataField.setName(FieldName.create("FIELD_NAME"));
         final MiningField retrieved = KiePMMLUtil.getTargetMiningField(dataField);
@@ -195,11 +195,11 @@ public class KiePMMLUtilTest {
     }
 
     @Test
-    public void correctTargetFields() {
+    void correctTargetFields() {
         final MiningField miningField = new MiningField(FieldName.create("FIELD_NAME"));
         final Targets targets = new Targets();
         final Target namedTarget = new Target();
-        String targetName ="TARGET_NAME";
+        String targetName = "TARGET_NAME";
         namedTarget.setField(FieldName.create(targetName));
         final Target unnamedTarget = new Target();
         targets.addTargets(namedTarget, unnamedTarget);
@@ -209,7 +209,7 @@ public class KiePMMLUtilTest {
     }
 
     @Test
-    public void populateCorrectMiningModel() throws Exception {
+    void populateCorrectMiningModel() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENT_ID_NOSEGMENT_TARGET_FIELD_SAMPLE);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model retrieved = pmml.getModels().get(0);
@@ -229,7 +229,7 @@ public class KiePMMLUtilTest {
     }
 
     @Test
-    public void populateCorrectSegmentId() throws Exception {
+    void populateCorrectSegmentId() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model retrieved = pmml.getModels().get(0);
@@ -242,13 +242,13 @@ public class KiePMMLUtilTest {
         KiePMMLUtil.populateCorrectSegmentId(toPopulate, modelName, i);
         assertThat(toPopulate.getId()).isNotNull();
         String expected = String.format(SEGMENTID_TEMPLATE,
-                                        modelName,
-                                        i);
+                modelName,
+                i);
         assertThat(toPopulate.getId()).isEqualTo(expected);
     }
 
     @Test
-    public void populateMissingSegmentModelName() throws Exception {
+    void populateMissingSegmentModelName() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model retrieved = pmml.getModels().get(0);
@@ -260,13 +260,13 @@ public class KiePMMLUtilTest {
         KiePMMLUtil.populateMissingSegmentModelName(toPopulate, segmentId);
         assertThat(toPopulate.getModelName()).isNotNull();
         String expected = String.format(SEGMENTMODELNAME_TEMPLATE,
-                                        segmentId,
-                                        toPopulate.getClass().getSimpleName());
+                segmentId,
+                toPopulate.getClass().getSimpleName());
         assertThat(toPopulate.getModelName()).isEqualTo(expected);
     }
 
     @Test
-    public void populateMissingTargetFieldInSegment() throws Exception {
+    void populateMissingTargetFieldInSegment() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENT_ID_NOSEGMENT_TARGET_FIELD_SAMPLE);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model retrieved = pmml.getModels().get(0);
@@ -282,7 +282,7 @@ public class KiePMMLUtilTest {
 
 
     @Test
-    public void populateMissingOutputFieldDataType() {
+    void populateMissingOutputFieldDataType() {
         Random random = new Random();
         List<String> fieldNames = IntStream.range(0, 6)
                 .mapToObj(i -> RandomStringUtils.random(6, true, false))
@@ -343,7 +343,7 @@ public class KiePMMLUtilTest {
     }
 
     @Test
-    public void getSanitizedId() {
+    void getSanitizedId() {
         final String modelName = "MODEL_NAME";
         String id = "2";
         String expected = String.format(SEGMENTID_TEMPLATE, modelName, id);
@@ -360,7 +360,7 @@ public class KiePMMLUtilTest {
     }
 
     @Test
-    public void getMiningTargetFieldsFromMiningSchema() throws Exception {
+    void getMiningTargetFieldsFromMiningSchema() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_SAMPLE_NAME);
         final PMML toPopulate = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model model = toPopulate.getModels().get(0);
@@ -373,7 +373,7 @@ public class KiePMMLUtilTest {
     }
 
     @Test
-    public void getMiningTargetFieldsFromMiningFields() throws Exception {
+    void getMiningTargetFieldsFromMiningFields() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_SAMPLE_NAME);
         final PMML toPopulate = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model model = toPopulate.getModels().get(0);

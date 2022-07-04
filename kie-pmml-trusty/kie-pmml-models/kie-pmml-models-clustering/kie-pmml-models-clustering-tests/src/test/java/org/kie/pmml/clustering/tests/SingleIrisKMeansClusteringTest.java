@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
 
     private static final String MODEL_NAME = "SingleIrisKMeansClustering";
@@ -48,18 +46,17 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
 
     protected PMMLRuntime pmmlRuntime;
 
-    private final double sepalLength;
-    private final double sepalWidth;
-    private final double petalLength;
-    private final double petalWidth;
-    private final double outNormcontinuousField;
-    private final String predictedDisplayValue;
-    private final int predictedEntityId;
-    private final double predictedAffinity;
-    private final String irisClass;
-    private final String modelFileName;
+    private double sepalLength;
+    private double sepalWidth;
+    private double petalLength;
+    private double petalWidth;
+    private double outNormcontinuousField;
+    private String predictedDisplayValue;
+    private int predictedEntityId;
+    private double predictedAffinity;
+    private String irisClass;
+    private String modelFileName;
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {4.4, 3.0, 1.3, 0.2, 4.966666666666667, "cluster_3", 3, 0.570791999999999300, "3", "SingleIrisKMeansClustering.pmml"},
@@ -77,7 +74,7 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
         });
     }
 
-    public SingleIrisKMeansClusteringTest(
+    public void initSingleIrisKMeansClusteringTest(
             double sepalLength, double sepalWidth, double petalLength, double petalWidth, double outNormcontinuousField,
             String predictedDisplayValue, int predictedEntityId, double predictedAffinity, String irisClass, String modelFileName) {
         this.sepalLength = sepalLength;
@@ -92,13 +89,15 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
         this.modelFileName = modelFileName;
     }
 
-    @Before
+    @BeforeEach
     public void setupClass() {
         pmmlRuntime = getPMMLRuntime(modelFileName);
     }
 
-    @Test
-    public void testLogisticRegressionIrisData() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testLogisticRegressionIrisData(double sepalLength, double sepalWidth, double petalLength, double petalWidth, double outNormcontinuousField, String predictedDisplayValue, int predictedEntityId, double predictedAffinity, String irisClass, String modelFileName) throws Exception {
+        initSingleIrisKMeansClusteringTest(sepalLength, sepalWidth, petalLength, petalWidth, outNormcontinuousField, predictedDisplayValue, predictedEntityId, predictedAffinity, irisClass, modelFileName);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("sepal_length", sepalLength);
         inputData.put("sepal_width", sepalWidth);

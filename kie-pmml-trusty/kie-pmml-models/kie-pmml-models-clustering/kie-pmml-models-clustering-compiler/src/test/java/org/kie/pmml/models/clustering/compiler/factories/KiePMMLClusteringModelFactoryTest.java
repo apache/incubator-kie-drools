@@ -46,8 +46,8 @@ import org.dmg.pmml.clustering.Cluster;
 import org.dmg.pmml.clustering.ClusteringField;
 import org.dmg.pmml.clustering.ClusteringModel;
 import org.dmg.pmml.clustering.MissingValueWeights;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -97,7 +97,7 @@ public class KiePMMLClusteringModelFactoryTest {
     private static ClusteringModel clusteringModel;
     private static PMML pmml;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         Set<String> fieldNames = new HashSet<>();
         clusteringFields = new ArrayList<>();
@@ -131,12 +131,12 @@ public class KiePMMLClusteringModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLClusteringModel() {
+    void getKiePMMLClusteringModel() {
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       clusteringModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        clusteringModel,
+                        new HasClassLoaderMock());
         KiePMMLClusteringModel retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -151,18 +151,18 @@ public class KiePMMLClusteringModelFactoryTest {
         assertThat(retrievedClusteringFields).hasSameSizeAs(clusteringModel.getClusteringFields());
         IntStream.range(0, clusteringModel.getClusteringFields().size()).forEach(i -> commonEvaluateKiePMMLClusteringField(retrievedClusteringFields.get(i), clusteringModel.getClusteringFields().get(i)));
         commonEvaluateKiePMMLComparisonMeasure(retrieved.getComparisonMeasure(),
-                                               clusteringModel.getComparisonMeasure());
+                clusteringModel.getComparisonMeasure());
         commonEvaluateKiePMMLMissingValueWeights(retrieved.getMissingValueWeights(),
-                                                 clusteringModel.getMissingValueWeights());
+                clusteringModel.getMissingValueWeights());
     }
 
     @Test
-    public void getKiePMMLClusteringModelSourcesMap() {
+    void getKiePMMLClusteringModelSourcesMap() {
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       clusteringModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        clusteringModel,
+                        new HasClassLoaderMock());
         Map<String, String> retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModelSourcesMap(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -170,7 +170,7 @@ public class KiePMMLClusteringModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLCluster() {
+    void getKiePMMLCluster() {
         Cluster cluster = new Cluster();
         cluster.setId("ID");
         cluster.setName("NAME");
@@ -186,7 +186,7 @@ public class KiePMMLClusteringModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLClusteringField() {
+    void getKiePMMLClusteringField() {
         ClusteringField clusteringField = new ClusteringField();
         final Random random = new Random();
         clusteringField.setField(FieldName.create("TEXT"));
@@ -198,7 +198,7 @@ public class KiePMMLClusteringModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLComparisonMeasure() {
+    void getKiePMMLComparisonMeasure() {
         ComparisonMeasure comparisonMeasure = new ComparisonMeasure();
         getRandomEnum(ComparisonMeasure.Kind.values());
         comparisonMeasure.setKind(getRandomEnum(ComparisonMeasure.Kind.values()));
@@ -214,7 +214,7 @@ public class KiePMMLClusteringModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLMissingValueWeights() {
+    void getKiePMMLMissingValueWeights() {
         assertThat(KiePMMLClusteringModelFactory.getKiePMMLMissingValueWeights(null)).isNull();
         KiePMMLMissingValueWeights retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLMissingValueWeights(new MissingValueWeights());
@@ -234,14 +234,14 @@ public class KiePMMLClusteringModelFactoryTest {
     }
 
     @Test
-    public void setStaticGetter() throws IOException {
+    void setStaticGetter() throws IOException {
 
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       clusteringModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        clusteringModel,
+                        new HasClassLoaderMock());
         String expectedModelClass =
                 KiePMMLClusteringModel.ModelClass.class.getCanonicalName() + "." + clusteringModel.getModelClass().name();
         ComparisonMeasure comparisonMeasure = clusteringModel.getComparisonMeasure();
@@ -255,15 +255,15 @@ public class KiePMMLClusteringModelFactoryTest {
         String expectedTargetField = targetMiningField.getName().getValue();
 
         KiePMMLClusteringModelFactory.setStaticGetter(compilationDTO,
-                                                      modelTemplate);
+                modelTemplate);
 
         MethodDeclaration retrieved = modelTemplate.getMethodsByName(GET_MODEL).get(0);
         String text = String.format(getFileContent(TEST_01_SOURCE),
-                                    expectedModelClass,
-                                    expectedKind,
-                                    expectedAggregateFunction,
-                                    expectedCompareFunction,
-                                    expectedTargetField);
+                expectedModelClass,
+                expectedKind,
+                expectedAggregateFunction,
+                expectedCompareFunction,
+                expectedTargetField);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }

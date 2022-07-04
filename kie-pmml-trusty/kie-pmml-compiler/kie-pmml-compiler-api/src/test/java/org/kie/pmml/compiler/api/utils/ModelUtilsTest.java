@@ -47,7 +47,7 @@ import org.dmg.pmml.Targets;
 import org.dmg.pmml.regression.RegressionModel;
 import org.jpmml.model.inlinetable.InputCell;
 import org.jpmml.model.inlinetable.OutputCell;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
@@ -56,6 +56,7 @@ import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getArray;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getDataField;
@@ -97,7 +98,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getTargetFieldName() {
+    void getTargetFieldName() {
         final String fieldName = "fieldName";
         MiningField.UsageType usageType = MiningField.UsageType.ACTIVE;
         MiningField miningField = getMiningField(fieldName, usageType);
@@ -122,7 +123,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getTargetFieldTypeWithTargetField() {
+    void getTargetFieldTypeWithTargetField() {
         final String fieldName = "fieldName";
         MiningField.UsageType usageType = MiningField.UsageType.PREDICTED;
         MiningField miningField = getMiningField(fieldName, usageType);
@@ -138,23 +139,25 @@ public class ModelUtilsTest {
         assertThat(retrieved).isEqualTo(DATA_TYPE.STRING);
     }
 
-    @Test(expected = Exception.class)
-    public void getTargetFieldTypeWithoutTargetField() {
-        final String fieldName = "fieldName";
-        MiningField.UsageType usageType = MiningField.UsageType.ACTIVE;
-        MiningField miningField = getMiningField(fieldName, usageType);
-        final DataField dataField = getDataField(fieldName, OpType.CATEGORICAL, DataType.STRING);
-        final DataDictionary dataDictionary = new DataDictionary();
-        dataDictionary.addDataFields(dataField);
-        final MiningSchema miningSchema = new MiningSchema();
-        miningSchema.addMiningFields(miningField);
-        final Model model = new RegressionModel();
-        model.setMiningSchema(miningSchema);
-        ModelUtils.getTargetFieldType(getFieldsFromDataDictionary(dataDictionary), model);
+    @Test
+    void getTargetFieldTypeWithoutTargetField() {
+        assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
+            final String fieldName = "fieldName";
+            MiningField.UsageType usageType = MiningField.UsageType.ACTIVE;
+            MiningField miningField = getMiningField(fieldName, usageType);
+            final DataField dataField = getDataField(fieldName, OpType.CATEGORICAL, DataType.STRING);
+            final DataDictionary dataDictionary = new DataDictionary();
+            dataDictionary.addDataFields(dataField);
+            final MiningSchema miningSchema = new MiningSchema();
+            miningSchema.addMiningFields(miningField);
+            final Model model = new RegressionModel();
+            model.setMiningSchema(miningSchema);
+            ModelUtils.getTargetFieldType(getFieldsFromDataDictionary(dataDictionary), model);
+        });
     }
 
     @Test
-    public void getTargetFieldsWithoutTargetFields() {
+    void getTargetFieldsWithoutTargetFields() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -172,7 +175,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getTargetFieldsWithTargetFieldsWithoutOptType() {
+    void getTargetFieldsWithTargetFieldsWithoutOptType() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -190,8 +193,8 @@ public class ModelUtilsTest {
         assertThat(retrieved).hasSameSizeAs(miningSchema.getMiningFields());
         retrieved.forEach(kiePMMLNameOpType -> {
             assertThat(miningSchema.getMiningFields()
-                               .stream()
-                               .anyMatch(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))).isTrue();
+                    .stream()
+                    .anyMatch(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))).isTrue();
             Optional<DataField> optionalDataField = dataDictionary.getDataFields()
                     .stream()
                     .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))
@@ -204,7 +207,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getTargetFieldsWithTargetFieldsWithOptType() {
+    void getTargetFieldsWithTargetFieldsWithOptType() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -233,7 +236,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getTargetFieldsWithTargetFieldsWithTargetsWithoutOptType() {
+    void getTargetFieldsWithTargetFieldsWithTargetsWithoutOptType() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -266,7 +269,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getTargetFieldsWithTargetFieldsWithTargetsWithOptType() {
+    void getTargetFieldsWithTargetFieldsWithTargetsWithOptType() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -299,7 +302,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getTargetFieldsTypeMapWithTargetFieldsWithoutTargets() {
+    void getTargetFieldsTypeMapWithTargetFieldsWithoutTargets() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -307,7 +310,7 @@ public class ModelUtilsTest {
             final DataField dataField = getRandomDataField();
             dataDictionary.addDataFields(dataField);
             final MiningField miningField = getMiningField(dataField.getName().getValue(),
-                                                           MiningField.UsageType.PREDICTED);
+                    MiningField.UsageType.PREDICTED);
             miningSchema.addMiningFields(miningField);
         });
         model.setMiningSchema(miningSchema);
@@ -329,7 +332,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getTargetFieldsTypeMapWithoutTargetFieldsWithoutTargets() {
+    void getTargetFieldsTypeMapWithoutTargetFieldsWithoutTargets() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -337,7 +340,7 @@ public class ModelUtilsTest {
             final DataField dataField = getRandomDataField();
             dataDictionary.addDataFields(dataField);
             final MiningField miningField = getMiningField(dataField.getName().getValue(),
-                                                           MiningField.UsageType.ACTIVE);
+                    MiningField.UsageType.ACTIVE);
             miningSchema.addMiningFields(miningField);
         });
         model.setMiningSchema(miningSchema);
@@ -347,7 +350,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getTargetFieldsWithoutTargetFieldsWithTargets() {
+    void getTargetFieldsWithoutTargetFieldsWithTargets() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -356,7 +359,7 @@ public class ModelUtilsTest {
             final DataField dataField = getRandomDataField();
             dataDictionary.addDataFields(dataField);
             final MiningField miningField = getMiningField(dataField.getName().getValue(),
-                                                           MiningField.UsageType.ACTIVE);
+                    MiningField.UsageType.ACTIVE);
             miningSchema.addMiningFields(miningField);
             final Target targetField = getTarget(dataField.getName().getValue(), null);
             targets.addTargets(targetField);
@@ -369,7 +372,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getOpTypeByDataFields() {
+    void getOpTypeByDataFields() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -379,30 +382,32 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         dataDictionary.getDataFields().forEach(dataField -> {
-                                                   OP_TYPE retrieved = ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
-                                                                                            dataField.getName().getValue());
-                                                   assertThat(retrieved).isNotNull();
-                                                   OP_TYPE expected = OP_TYPE.byName(dataField.getOpType().value());
-                                                    assertThat(retrieved).isEqualTo(expected);
-                                               });
-    }
-
-    @Test(expected = KiePMMLInternalException.class)
-    public void getOpTypeByDataFieldsNotFound() {
-        final Model model = new RegressionModel();
-        final DataDictionary dataDictionary = new DataDictionary();
-        IntStream.range(0, 3).forEach(i -> {
-            String fieldName = "field" +i;
-            final DataField dataField = getRandomDataField();
-            dataField.setName(FieldName.create(fieldName));
-            dataDictionary.addDataFields(dataField);
+            OP_TYPE retrieved = ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
+                    dataField.getName().getValue());
+            assertThat(retrieved).isNotNull();
+            OP_TYPE expected = OP_TYPE.byName(dataField.getOpType().value());
+            assertThat(retrieved).isEqualTo(expected);
         });
-        ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
-                             "NOT_EXISTING");
     }
 
     @Test
-    public void getOpTypeByMiningFields() {
+    void getOpTypeByDataFieldsNotFound() {
+        assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
+            final Model model = new RegressionModel();
+            final DataDictionary dataDictionary = new DataDictionary();
+            IntStream.range(0, 3).forEach(i -> {
+                String fieldName = "field" + i;
+                final DataField dataField = getRandomDataField();
+                dataField.setName(FieldName.create(fieldName));
+                dataDictionary.addDataFields(dataField);
+            });
+            ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
+                    "NOT_EXISTING");
+        });
+    }
+
+    @Test
+    void getOpTypeByMiningFields() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -416,34 +421,36 @@ public class ModelUtilsTest {
         model.setMiningSchema(miningSchema);
         miningSchema.getMiningFields().forEach(miningField -> {
             OP_TYPE retrieved = ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
-                                                     miningField.getName().getValue());
+                    miningField.getName().getValue());
             assertThat(retrieved).isNotNull();
             OP_TYPE expected = OP_TYPE.byName(miningField.getOpType().value());
             assertThat(retrieved).isEqualTo(expected);
         });
     }
 
-    @Test(expected = KiePMMLInternalException.class)
-    public void getOpTypeByMiningFieldsNotFound() {
-        final Model model = new RegressionModel();
-        final DataDictionary dataDictionary = new DataDictionary();
-        final MiningSchema miningSchema = new MiningSchema();
-        IntStream.range(0, 3).forEach(i -> {
-            String fieldName = "field" +i;
-            final DataField dataField = getRandomDataField();
-            dataField.setName(FieldName.create(fieldName));
-            dataDictionary.addDataFields(dataField);
-            final MiningField miningField = getRandomMiningField();
-            miningField.setName(dataField.getName());
-            miningSchema.addMiningFields(miningField);
+    @Test
+    void getOpTypeByMiningFieldsNotFound() {
+        assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
+            final Model model = new RegressionModel();
+            final DataDictionary dataDictionary = new DataDictionary();
+            final MiningSchema miningSchema = new MiningSchema();
+            IntStream.range(0, 3).forEach(i -> {
+                String fieldName = "field" + i;
+                final DataField dataField = getRandomDataField();
+                dataField.setName(FieldName.create(fieldName));
+                dataDictionary.addDataFields(dataField);
+                final MiningField miningField = getRandomMiningField();
+                miningField.setName(dataField.getName());
+                miningSchema.addMiningFields(miningField);
+            });
+            model.setMiningSchema(miningSchema);
+            ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
+                    "NOT_EXISTING");
         });
-        model.setMiningSchema(miningSchema);
-        ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
-                             "NOT_EXISTING");
     }
 
     @Test
-    public void getOpTypeByTargets() {
+    void getOpTypeByTargets() {
         final Model model = new RegressionModel();
         final DataDictionary dataDictionary = new DataDictionary();
         final MiningSchema miningSchema = new MiningSchema();
@@ -463,39 +470,41 @@ public class ModelUtilsTest {
         getFieldsFromDataDictionary(dataDictionary);
         targets.getTargets().forEach(target -> {
             OP_TYPE retrieved = ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
-                                                     target.getField().getValue());
+                    target.getField().getValue());
             assertThat(retrieved).isNotNull();
             OP_TYPE expected = OP_TYPE.byName(target.getOpType().value());
             assertThat(retrieved).isEqualTo(expected);
         });
     }
 
-    @Test(expected = KiePMMLInternalException.class)
-    public void getOpTypeByTargetsNotFound() {
-        final Model model = new RegressionModel();
-        final DataDictionary dataDictionary = new DataDictionary();
-        final MiningSchema miningSchema = new MiningSchema();
-        final Targets targets = new Targets();
-        IntStream.range(0, 3).forEach(i -> {
-            String fieldName = "field" +i;
-            final DataField dataField = getRandomDataField();
-            dataField.setName(FieldName.create(fieldName));
-            dataDictionary.addDataFields(dataField);
-            final MiningField miningField = getRandomMiningField();
-            miningField.setName(dataField.getName());
-            miningSchema.addMiningFields(miningField);
-            final Target targetField = getRandomTarget();
-            targetField.setField(dataField.getName());
-            targets.addTargets(targetField);
+    @Test
+    void getOpTypeByTargetsNotFound() {
+        assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
+            final Model model = new RegressionModel();
+            final DataDictionary dataDictionary = new DataDictionary();
+            final MiningSchema miningSchema = new MiningSchema();
+            final Targets targets = new Targets();
+            IntStream.range(0, 3).forEach(i -> {
+                String fieldName = "field" + i;
+                final DataField dataField = getRandomDataField();
+                dataField.setName(FieldName.create(fieldName));
+                dataDictionary.addDataFields(dataField);
+                final MiningField miningField = getRandomMiningField();
+                miningField.setName(dataField.getName());
+                miningSchema.addMiningFields(miningField);
+                final Target targetField = getRandomTarget();
+                targetField.setField(dataField.getName());
+                targets.addTargets(targetField);
+            });
+            model.setMiningSchema(miningSchema);
+            model.setTargets(targets);
+            ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
+                    "NOT_EXISTING");
         });
-        model.setMiningSchema(miningSchema);
-        model.setTargets(targets);
-        ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
-                             "NOT_EXISTING");
     }
 
     @Test
-    public void getOpTypeFromFields() {
+    void getOpTypeFromFields() {
         Optional<OP_TYPE> opType = ModelUtils.getOpTypeFromFields(null, "vsd");
         assertThat(opType).isNotNull();
         assertThat(opType.isPresent()).isFalse();
@@ -520,7 +529,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getOpTypeFromMiningFields() {
+    void getOpTypeFromMiningFields() {
         Optional<OP_TYPE> opType = ModelUtils.getOpTypeFromMiningFields(null, "vsd");
         assertThat(opType).isNotNull();
         assertThat(opType.isPresent()).isFalse();
@@ -542,7 +551,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getOpTypeFromTargets() {
+    void getOpTypeFromTargets() {
         Optional<OP_TYPE> opType = ModelUtils.getOpTypeFromTargets(null, "vsd");
         assertThat(opType).isNotNull();
         assertThat(opType.isPresent()).isFalse();
@@ -564,7 +573,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getDataTypeFromDerivedFieldsAndDataDictionary() {
+    void getDataTypeFromDerivedFieldsAndDataDictionary() {
         final DataDictionary dataDictionary = new DataDictionary();
         IntStream.range(0, 3).forEach(i -> {
             final DataField dataField = getRandomDataField();
@@ -573,23 +582,23 @@ public class ModelUtilsTest {
         final List<DerivedField> derivedFields = dataDictionary.getDataFields()
                 .stream()
                 .map(dataField -> {
-                         DerivedField toReturn = new DerivedField();
-                         toReturn.setName(FieldName.create("DER_" + dataField.getName().getValue()));
-                         DataType dataType = getRandomDataType();
-                         while (dataType.equals(dataField.getDataType())) {
-                             dataType = getRandomDataType();
-                         }
-                         toReturn.setDataType(dataType);
-                         return toReturn;
-                     })
+                    DerivedField toReturn = new DerivedField();
+                    toReturn.setName(FieldName.create("DER_" + dataField.getName().getValue()));
+                    DataType dataType = getRandomDataType();
+                    while (dataType.equals(dataField.getDataType())) {
+                        dataType = getRandomDataType();
+                    }
+                    toReturn.setDataType(dataType);
+                    return toReturn;
+                })
                 .collect(Collectors.toList());
         final List<Field<?>> fields = new ArrayList<>();
         dataDictionary.getDataFields().stream()
                 .map(Field.class::cast)
                 .forEach(fields::add);
         derivedFields.stream()
-                    .map(Field.class::cast)
-                    .forEach(fields::add);
+                .map(Field.class::cast)
+                .forEach(fields::add);
         dataDictionary.getDataFields().forEach(dataField -> {
             String fieldName = dataField.getName().getValue();
             DataType retrieved = ModelUtils.getDataType(fields, fieldName);
@@ -607,7 +616,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getDataTypeFromDataDictionary() {
+    void getDataTypeFromDataDictionary() {
         final DataDictionary dataDictionary = new DataDictionary();
         IntStream.range(0, 3).forEach(i -> {
             final DataField dataField = getRandomDataField();
@@ -621,20 +630,22 @@ public class ModelUtilsTest {
         });
     }
 
-    @Test(expected = KiePMMLInternalException.class)
-    public void getDataTypeNotFound() {
-        final DataDictionary dataDictionary = new DataDictionary();
-        IntStream.range(0, 3).forEach(i -> {
-            String fieldName = "field" +i;
-            final DataField dataField = getRandomDataField();
-            dataField.setName(FieldName.create(fieldName));
-            dataDictionary.addDataFields(dataField);
+    @Test
+    void getDataTypeNotFound() {
+        assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
+            final DataDictionary dataDictionary = new DataDictionary();
+            IntStream.range(0, 3).forEach(i -> {
+                String fieldName = "field" + i;
+                final DataField dataField = getRandomDataField();
+                dataField.setName(FieldName.create(fieldName));
+                dataDictionary.addDataFields(dataField);
+            });
+            ModelUtils.getDATA_TYPE(getFieldsFromDataDictionary(dataDictionary), "NOT_EXISTING");
         });
-        ModelUtils.getDATA_TYPE(getFieldsFromDataDictionary(dataDictionary), "NOT_EXISTING");
     }
 
     @Test
-    public void getObjectsFromArray() {
+    void getObjectsFromArray() {
         List<String> values = Arrays.asList("32", "11", "43");
         Array array = getArray(Array.Type.INT, values);
         List<Object> retrieved = ModelUtils.getObjectsFromArray(array);
@@ -667,7 +678,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void convertToKieMiningField() {
+    void convertToKieMiningField() {
         final String fieldName = "fieldName";
         final MiningField.UsageType usageType = MiningField.UsageType.ACTIVE;
         final MiningField toConvert = getMiningField(fieldName, usageType);
@@ -685,7 +696,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void convertToKieOutputField() {
+    void convertToKieOutputField() {
         final OutputField toConvert = getRandomOutputField();
         org.kie.pmml.api.models.OutputField retrieved = ModelUtils.convertToKieOutputField(toConvert, null);
         assertThat(retrieved).isNotNull();
@@ -705,7 +716,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getBoxedClassNameByParameterFields() {
+    void getBoxedClassNameByParameterFields() {
         List<ParameterField> parameterFields = getParameterFields();
         parameterFields.forEach(parameterField -> {
             String retrieved = ModelUtils.getBoxedClassName(parameterField);
@@ -714,7 +725,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getBoxedClassNameByDataTypes() {
+    void getBoxedClassNameByDataTypes() {
         List<DataType> dataTypes = getDataTypes();
         dataTypes.forEach(dataType -> {
             String retrieved = ModelUtils.getBoxedClassName(dataType);
@@ -723,7 +734,7 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getRowDataMap() {
+    void getRowDataMap() {
         Row source = getRandomRowWithCells();
         Map<String, Object> retrieved = ModelUtils.getRowDataMap(source);
         InputCell inputCell = source.getContent().stream()

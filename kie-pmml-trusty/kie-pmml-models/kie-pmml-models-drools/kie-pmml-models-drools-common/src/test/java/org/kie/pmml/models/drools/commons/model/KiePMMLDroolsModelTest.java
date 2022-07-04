@@ -20,12 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
 public class KiePMMLDroolsModelTest {
@@ -35,21 +36,23 @@ public class KiePMMLDroolsModelTest {
     private final static List<KiePMMLExtension> EXTENSIONS = new ArrayList<>();
     private KiePMMLDroolsModel kiePMMLDroolsModel;
 
-    @Before
+    @BeforeEach
     public void setup() {
         kiePMMLDroolsModel = new KiePMMLDroolsModelFake(MODEL_NAME, KMODULE_PACKAGE_NAME, EXTENSIONS);
     }
 
     @Test
-    public void constructor() {
+    void constructor() {
         assertThat(kiePMMLDroolsModel.getName()).isEqualTo(MODEL_NAME);
         assertThat(kiePMMLDroolsModel.getExtensions()).isEqualTo(EXTENSIONS);
         assertThat(kiePMMLDroolsModel.getKModulePackageName()).isEqualTo(getSanitizedPackageName(MODEL_NAME));
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void evaluateNoKieBase() {
-        kiePMMLDroolsModel.evaluate("NOT_KIE_BASE", new HashMap<>(), null);
+    @Test
+    void evaluateNoKieBase() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            kiePMMLDroolsModel.evaluate("NOT_KIE_BASE", new HashMap<>(), null);
+        });
     }
 
     private final class KiePMMLDroolsModelFake extends KiePMMLDroolsModel {

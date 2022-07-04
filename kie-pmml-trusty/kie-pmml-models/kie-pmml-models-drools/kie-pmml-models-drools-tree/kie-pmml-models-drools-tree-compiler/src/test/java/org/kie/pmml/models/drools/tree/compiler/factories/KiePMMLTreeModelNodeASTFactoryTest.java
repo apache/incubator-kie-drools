@@ -28,8 +28,8 @@ import org.dmg.pmml.tree.ClassifierNode;
 import org.dmg.pmml.tree.LeafNode;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
@@ -49,7 +49,7 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
     private PMML irisPmml;
     private TreeModel irisModel;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         golfingPmml = TestUtils.loadFromFile(SOURCE_GOLFING);
         assertThat(golfingPmml).isNotNull();
@@ -64,7 +64,7 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
     }
 
     @Test
-    public void declareRulesFromRootGolfingNode() {
+    void declareRulesFromRootGolfingNode() {
         Node rootNode = golfingModel.getNode();
         assertThat(rootNode.getScore()).isEqualTo("will play");
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
@@ -76,7 +76,7 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
     }
 
     @Test
-    public void declareRulesFromRootIrisNode() {
+    void declareRulesFromRootIrisNode() {
         Node rootNode = irisModel.getNode();
         assertThat(rootNode.getScore()).isEqualTo("setosa");
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
@@ -88,7 +88,7 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
     }
 
     @Test
-    public void declareIntermediateRuleFromGolfingNode() {
+    void declareIntermediateRuleFromGolfingNode() {
         Node finalNode = golfingModel.getNode()
                 .getNodes().get(0);
         assertThat(finalNode.getScore()).isEqualTo("will play");
@@ -102,7 +102,7 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
     }
 
     @Test
-    public void declareIntermediateRuleFromIrisNode() {
+    void declareIntermediateRuleFromIrisNode() {
         Node finalNode = irisModel.getNode()
                 .getNodes().get(1);
         assertThat(finalNode.getScore()).isEqualTo("versicolor");
@@ -116,7 +116,7 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
     }
 
     @Test
-    public void isFinalLeaf() {
+    void isFinalLeaf() {
         Node node = new LeafNode();
         DATA_TYPE targetType = DATA_TYPE.STRING;
         KiePMMLTreeModelNodeASTFactory.factory(new HashMap<>(), Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).isFinalLeaf(node);

@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.models.TargetValue;
 import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -38,18 +38,18 @@ public class TargetValueFactoryTest {
     private static final String TEST_01_SOURCE = "TargetValueFactoryTest_01.txt";
 
     @Test
-    public void getTargetValueVariableInitializer() throws IOException {
+    void getTargetValueVariableInitializer() throws IOException {
         TargetValue targetValue = convertToKieTargetValue(getRandomTargetValue());
         ObjectCreationExpr retrieved = TargetValueFactory.getTargetValueVariableInitializer(targetValue);
         String text = getFileContent(TEST_01_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text,
-                                                                            targetValue.getValue(),
-                                                                            targetValue.getDisplayValue(),
-                                                                            targetValue.getPriorProbability(),
-                                                                            targetValue.getDefaultValue()));
+                targetValue.getValue(),
+                targetValue.getDisplayValue(),
+                targetValue.getPriorProbability(),
+                targetValue.getDefaultValue()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLTargetValue.class,
-                                               TargetValue.class);
+                TargetValue.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

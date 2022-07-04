@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLContext;
@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PMMLListenerUtilsTest {
 
     @Test
-    public void stepExecuted() {
+    void stepExecuted() {
         final Map<Integer, PMMLStep> listenerFeedback = new HashMap<>();
         int size = 3;
         PMMLContext pmmlContext = getPMMLContext(size, listenerFeedback);
@@ -45,7 +45,7 @@ public class PMMLListenerUtilsTest {
     }
 
     @Test
-    public void stepNotExecuted() {
+    void stepNotExecuted() {
         PMMLContext pmmlContext = new PMMLContextImpl(new PMMLRequestData());
         AtomicBoolean invoked = new AtomicBoolean(false);
         PMMLListenerUtils.stepExecuted(() -> new PMMLStepTest(invoked), pmmlContext);

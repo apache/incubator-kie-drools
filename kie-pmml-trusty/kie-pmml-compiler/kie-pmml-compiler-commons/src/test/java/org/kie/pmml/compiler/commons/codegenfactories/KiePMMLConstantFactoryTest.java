@@ -24,7 +24,7 @@ import java.util.List;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.Constant;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
@@ -37,7 +37,7 @@ public class KiePMMLConstantFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLConstantFactoryTest_01.txt";
 
     @Test
-    public void getConstantVariableDeclaration() throws IOException {
+    void getConstantVariableDeclaration() throws IOException {
         String variableName = "variableName";
         Object value = 2342.21;
         Constant constant = new Constant();

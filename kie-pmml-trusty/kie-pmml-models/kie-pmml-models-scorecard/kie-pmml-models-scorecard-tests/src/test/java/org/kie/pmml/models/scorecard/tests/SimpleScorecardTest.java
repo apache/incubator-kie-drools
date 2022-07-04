@@ -21,18 +21,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
-@RunWith(Parameterized.class)
 public class SimpleScorecardTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "SimpleScorecard.pmml";
@@ -48,7 +47,7 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
     private String reasonCode1;
     private String reasonCode2;
 
-    public SimpleScorecardTest(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
+    public void initSimpleScorecardTest(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
         this.input1 = input1;
         this.input2 = input2;
         this.score = score;
@@ -56,12 +55,11 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         this.reasonCode2 = reasonCode2;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {5, 5, 25, "Input1ReasonCode", null},
@@ -72,8 +70,10 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testSimpleScorecard() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSimpleScorecard(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
+        initSimpleScorecardTest(input1, input2, score, reasonCode1, reasonCode2);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
@@ -86,16 +86,22 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void testSimpleScorecardWithoutRequired() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("input1", input1);
-        inputData.put("input2", input2);
-        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSimpleScorecardWithoutRequired(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
+        initSimpleScorecardTest(input1, input2, score, reasonCode1, reasonCode2);
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            final Map<String, Object> inputData = new HashMap<>();
+            inputData.put("input1", input1);
+            inputData.put("input2", input2);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        });
     }
 
-    @Test
-    public void testSimpleScorecardConvertible() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSimpleScorecardConvertible(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
+        initSimpleScorecardTest(input1, input2, score, reasonCode1, reasonCode2);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", String.valueOf(input1));
         inputData.put("input2", String.valueOf(input2));
@@ -103,21 +109,29 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         assertThat(evaluate(pmmlRuntime, inputData, MODEL_NAME)).isNotNull();
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void testSimpleScorecardNotConvertible() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("input1", input1);
-        inputData.put("input2", input2);
-        inputData.put("input3", true);
-        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSimpleScorecardNotConvertible(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
+        initSimpleScorecardTest(input1, input2, score, reasonCode1, reasonCode2);
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            final Map<String, Object> inputData = new HashMap<>();
+            inputData.put("input1", input1);
+            inputData.put("input2", input2);
+            inputData.put("input3", true);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        });
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void testSimpleScorecardInvalidValue() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("input1", input1);
-        inputData.put("input2", input2);
-        inputData.put("input3", 4.1);
-        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSimpleScorecardInvalidValue(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
+        initSimpleScorecardTest(input1, input2, score, reasonCode1, reasonCode2);
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            final Map<String, Object> inputData = new HashMap<>();
+            inputData.put("input1", input1);
+            inputData.put("input2", input2);
+            inputData.put("input3", 4.1);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        });
     }
 }

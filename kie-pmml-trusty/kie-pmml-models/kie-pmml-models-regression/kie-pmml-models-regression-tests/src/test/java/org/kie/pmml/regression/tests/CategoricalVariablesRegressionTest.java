@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class CategoricalVariablesRegressionTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "CategoricalVariablesRegression.pmml";
@@ -42,17 +40,16 @@ public class CategoricalVariablesRegressionTest extends AbstractPMMLTest {
     private String x;
     private String y;
 
-    public CategoricalVariablesRegressionTest(String x, String y) {
+    public void initCategoricalVariablesRegressionTest(String x, String y) {
         this.x = x;
         this.y = y;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"red", "classA"}, {"green", "classA"}, {"blue", "classA"}, {"orange", "classA"}, {"yellow", "classA"},
@@ -77,8 +74,10 @@ public class CategoricalVariablesRegressionTest extends AbstractPMMLTest {
         return categoriesMapX.get(x) + categoriesMapY.get(y) - 22.1;
     }
 
-    @Test
-    public void testCategoricalVariablesRegression() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testCategoricalVariablesRegression(String x, String y) {
+        initCategoricalVariablesRegressionTest(x, y);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);

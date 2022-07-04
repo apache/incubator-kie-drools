@@ -36,7 +36,7 @@ import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.ComplexPartialScore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
@@ -66,7 +66,7 @@ public class KiePMMLCharacteristicFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLCharacteristicFactoryTest_01.txt";
 
     @Test
-    public void getAttributeVariableDeclarationWithComplexPartialScore() throws IOException {
+    void getAttributeVariableDeclarationWithComplexPartialScore() throws IOException {
         final String variableName = "variableName";
         Array.Type arrayType = Array.Type.STRING;
         List<String> values1 = getStringObjects(arrayType, 4);
@@ -120,24 +120,24 @@ public class KiePMMLCharacteristicFactoryTest {
         characteristic.setReasonCode(REASON_CODE);
 
         BlockStmt retrieved = KiePMMLCharacteristicFactory.getCharacteristicVariableDeclaration(variableName,
-                                                                                                characteristic,
-                                                                                                getFieldsFromDataDictionary(dataDictionary));
+                characteristic,
+                getFieldsFromDataDictionary(dataDictionary));
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                                                                      valuesString1,
-                                                                      valuesString2,
-                                                                      characteristic.getBaselineScore(),
-                                                                      characteristic.getReasonCode()));
+                valuesString1,
+                valuesString2,
+                characteristic.getBaselineScore(),
+                characteristic.getReasonCode()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLAttribute.class,
-                                               KiePMMLCharacteristic.class,
-                                               KiePMMLComplexPartialScore.class,
-                                               KiePMMLCompoundPredicate.class,
-                                               KiePMMLConstant.class,
-                                               KiePMMLSimplePredicate.class,
-                                               KiePMMLSimpleSetPredicate.class,
-                                               Arrays.class,
-                                               Collections.class);
+                KiePMMLCharacteristic.class,
+                KiePMMLComplexPartialScore.class,
+                KiePMMLCompoundPredicate.class,
+                KiePMMLConstant.class,
+                KiePMMLSimplePredicate.class,
+                KiePMMLSimpleSetPredicate.class,
+                Arrays.class,
+                Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 

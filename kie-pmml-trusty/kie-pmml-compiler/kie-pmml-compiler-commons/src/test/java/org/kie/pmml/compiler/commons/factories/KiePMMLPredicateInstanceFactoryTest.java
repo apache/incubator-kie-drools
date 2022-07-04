@@ -26,7 +26,7 @@ import org.dmg.pmml.Field;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomCompoundPredicate;
@@ -38,7 +38,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLPredicateInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLPredicate() {
+    void getKiePMMLPredicate() {
         List<Field<?>> fields = IntStream.range(0, 3).mapToObj(i -> getRandomDataField()).collect(Collectors.toList());
         SimplePredicate simplePredicate1 = getRandomSimplePredicate((DataField) fields.get(0));
         KiePMMLPredicate retrieved = KiePMMLPredicateInstanceFactory.getKiePMMLPredicate(simplePredicate1, fields);

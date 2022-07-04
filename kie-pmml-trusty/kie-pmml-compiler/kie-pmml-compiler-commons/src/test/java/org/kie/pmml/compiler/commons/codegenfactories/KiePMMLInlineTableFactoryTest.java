@@ -30,8 +30,8 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MapValues;
 import org.dmg.pmml.PMML;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLInlineTable;
 import org.kie.pmml.commons.model.expressions.KiePMMLRow;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -49,7 +49,7 @@ public class KiePMMLInlineTableFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLInlineTableFactoryTest_01.txt";
     private static InlineTable INLINETABLE;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         PMML pmmlModel = KiePMMLUtil.load(getFileInputStream(TRANSFORMATIONS_SAMPLE), TRANSFORMATIONS_SAMPLE);
         DerivedField mapValued = pmmlModel.getTransformationDictionary()
@@ -62,15 +62,15 @@ public class KiePMMLInlineTableFactoryTest {
     }
 
     @Test
-    public void getInlineTableVariableDeclaration() throws IOException {
+    void getInlineTableVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLInlineTableFactory.getInlineTableVariableDeclaration(variableName,
-                                                                                          INLINETABLE);
+                INLINETABLE);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, Collectors.class,
-                                               KiePMMLInlineTable.class, KiePMMLRow.class, Map.class, Stream.class);
+                KiePMMLInlineTable.class, KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

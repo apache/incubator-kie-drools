@@ -25,7 +25,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
@@ -44,7 +44,7 @@ public class KiePMMLMiningFieldFactoryTest {
     private static final String VARIABLE_NAME = "variableName";
 
     @Test
-    public void getMiningFieldVariableDeclarationNoAllowedValuesNoIntervals() throws IOException {
+    void getMiningFieldVariableDeclarationNoAllowedValuesNoIntervals() throws IOException {
         DataField dataField = getRandomDataField();
         dataField.getValues().clear();
         dataField.getIntervals().clear();
@@ -52,75 +52,75 @@ public class KiePMMLMiningFieldFactoryTest {
         miningField.setName(dataField.getName());
         miningField.setUsageType(MiningField.UsageType.TARGET);
         BlockStmt retrieved = KiePMMLMiningFieldFactory.getMiningFieldVariableDeclaration(VARIABLE_NAME, miningField,
-                                                                                          Collections.singletonList(dataField));
+                Collections.singletonList(dataField));
         String dataTypeString =
                 DATA_TYPE.class.getName() + "." + DATA_TYPE.byName(dataField.getDataType().value()).name();
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, VARIABLE_NAME,
-                                                                      miningField.getName().getValue(),
-                                                                      dataTypeString));
+                miningField.getName().getValue(),
+                dataTypeString));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLInterval.class,
-                                               KiePMMLMiningField.class, DATA_TYPE.class);
+                KiePMMLMiningField.class, DATA_TYPE.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
     @Test
-    public void getMiningFieldVariableDeclarationWithAllowedValuesNoIntervals() throws IOException {
+    void getMiningFieldVariableDeclarationWithAllowedValuesNoIntervals() throws IOException {
         DataField dataField = getRandomDataField();
         dataField.getIntervals().clear();
         MiningField miningField = new MiningField();
         miningField.setName(dataField.getName());
         miningField.setUsageType(MiningField.UsageType.TARGET);
         BlockStmt retrieved = KiePMMLMiningFieldFactory.getMiningFieldVariableDeclaration(VARIABLE_NAME, miningField,
-                                                                                          Collections.singletonList(dataField));
+                Collections.singletonList(dataField));
         String dataTypeString =
                 DATA_TYPE.class.getName() + "." + DATA_TYPE.byName(dataField.getDataType().value()).name();
         String text = getFileContent(TEST_02_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, VARIABLE_NAME,
-                                                                      miningField.getName().getValue(),
-                                                                      dataTypeString,
-                                                                      dataField.getValues().get(0).getValue(),
-                                                                      dataField.getValues().get(1).getValue(),
-                                                                      dataField.getValues().get(2).getValue()));
+                miningField.getName().getValue(),
+                dataTypeString,
+                dataField.getValues().get(0).getValue(),
+                dataField.getValues().get(1).getValue(),
+                dataField.getValues().get(2).getValue()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLInterval.class,
-                                               KiePMMLMiningField.class, DATA_TYPE.class);
+                KiePMMLMiningField.class, DATA_TYPE.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
     @Test
-    public void getMiningFieldVariableDeclarationWithAllowedValuesAndIntervals() throws IOException {
+    void getMiningFieldVariableDeclarationWithAllowedValuesAndIntervals() throws IOException {
         DataField dataField = getRandomDataField();
         MiningField miningField = new MiningField();
         miningField.setName(dataField.getName());
         miningField.setUsageType(MiningField.UsageType.TARGET);
         BlockStmt retrieved = KiePMMLMiningFieldFactory.getMiningFieldVariableDeclaration(VARIABLE_NAME, miningField,
-                                                                                          Collections.singletonList(dataField));
+                Collections.singletonList(dataField));
         String dataTypeString =
                 DATA_TYPE.class.getName() + "." + DATA_TYPE.byName(dataField.getDataType().value()).name();
         String text = getFileContent(TEST_03_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, VARIABLE_NAME,
-                                                                      miningField.getName().getValue(),
-                                                                      dataTypeString,
-                                                                      dataField.getValues().get(0).getValue(),
-                                                                      dataField.getValues().get(1).getValue(),
-                                                                      dataField.getValues().get(2).getValue(),
+                miningField.getName().getValue(),
+                dataTypeString,
+                dataField.getValues().get(0).getValue(),
+                dataField.getValues().get(1).getValue(),
+                dataField.getValues().get(2).getValue(),
 
-                                                                      dataField.getIntervals().get(0).getLeftMargin(),
-                                                                      dataField.getIntervals().get(0).getRightMargin(),
-                                                                      dataField.getIntervals().get(0).getClosure().name(),
+                dataField.getIntervals().get(0).getLeftMargin(),
+                dataField.getIntervals().get(0).getRightMargin(),
+                dataField.getIntervals().get(0).getClosure().name(),
 
-                                                                      dataField.getIntervals().get(1).getLeftMargin(),
-                                                                      dataField.getIntervals().get(1).getRightMargin(),
-                                                                      dataField.getIntervals().get(1).getClosure().name(),
+                dataField.getIntervals().get(1).getLeftMargin(),
+                dataField.getIntervals().get(1).getRightMargin(),
+                dataField.getIntervals().get(1).getClosure().name(),
 
-                                                                      dataField.getIntervals().get(2).getLeftMargin(),
-                                                                      dataField.getIntervals().get(2).getRightMargin(),
-                                                                      dataField.getIntervals().get(2).getClosure().name()));
+                dataField.getIntervals().get(2).getLeftMargin(),
+                dataField.getIntervals().get(2).getRightMargin(),
+                dataField.getIntervals().get(2).getClosure().name()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLInterval.class,
-                                               KiePMMLMiningField.class, DATA_TYPE.class);
+                KiePMMLMiningField.class, DATA_TYPE.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

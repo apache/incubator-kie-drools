@@ -24,7 +24,7 @@ import java.util.List;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.False;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
@@ -37,10 +37,10 @@ public class KiePMMLFalsePredicateFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLFalsePredicateFactoryTest_01.txt";
 
     @Test
-    public void getFalsePredicateVariableDeclaration() throws IOException {
+    void getFalsePredicateVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLFalsePredicateFactory.getFalsePredicateVariableDeclaration(variableName,
-                                                                                                new False());
+                new False());
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();

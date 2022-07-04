@@ -16,7 +16,7 @@
 
 package org.kie.pmml.evaluator.assembler.factories;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.pmml.PMMLCommandExecutor;
 import org.kie.pmml.evaluator.assembler.command.PMMLCommandExecutorImpl;
 
@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PMMLCommandExecutorFactoryImplTest {
 
     @Test
-    public void newPMMLCommandExecutor() {
+    void newPMMLCommandExecutor() {
         PMMLCommandExecutorFactoryImpl factory = new PMMLCommandExecutorFactoryImpl();
         PMMLCommandExecutor retrieved = factory.newPMMLCommandExecutor();
         assertThat(retrieved).isNotNull();

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
@@ -62,22 +62,22 @@ public class PostProcessTest {
     private static final Double value2 = 5.0;
 
     @Test
-    public void executeTargets() {
+    void executeTargets() {
         // Build model
         String TARGET_NAME = "TARGET_NAME";
         String FIELD_NAME = "FIELD_NAME";
         TargetField targetField = new TargetField(Collections.emptyList(), null, FIELD_NAME, null, 4.34, null, null,
-                                                  null);
+                null);
         KiePMMLTarget kiePMMLTarget = KiePMMLTarget.builder(TARGET_NAME, Collections.emptyList(), targetField)
                 .build();
         List<KiePMMLTarget> kiePMMLTargets = Arrays.asList(kiePMMLTarget, KiePMMLTarget.builder("NEW_TARGET",
-                                                                                                Collections.emptyList(),
-                                                                                                new TargetField(Collections.emptyList(), null, "NEW_TARGET", null, null, null, null,
-                                                                                                                                          null)).build());
+                Collections.emptyList(),
+                new TargetField(Collections.emptyList(), null, "NEW_TARGET", null, null, null, null,
+                        null)).build());
         KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
-                                                                        MINING_FUNCTION.REGRESSION)
-                        .withKiePMMLTargets(kiePMMLTargets)
-                        .build();
+                MINING_FUNCTION.REGRESSION)
+                .withKiePMMLTargets(kiePMMLTargets)
+                .build();
         // Build PMML4Result
         PMML4Result toModify = new PMML4Result();
         toModify.setResultCode(ResultCode.FAIL.getName());
@@ -95,7 +95,7 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populatePredictedOutputField1() {
+    void populatePredictedOutputField1() {
         KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
                 .withResultFeature(RESULT_FEATURE.PREDICTED_VALUE)
                 .build();
@@ -109,7 +109,7 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populatePredictedOutputField2() {
+    void populatePredictedOutputField2() {
         KiePMMLNameValue kiePMMLNameValue = new KiePMMLNameValue("targetField", 54346.32454);
 
         KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
@@ -128,7 +128,7 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populateTransformedOutputField1() {
+    void populateTransformedOutputField1() {
         KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
@@ -141,7 +141,7 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populateTransformedOutputField2() {
+    void populateTransformedOutputField2() {
         KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("CONSTANT_NAME", Collections.emptyList(), "String", null);
 
         KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
@@ -160,7 +160,7 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populateTransformedOutputFieldWithApplyWithConstants() {
+    void populateTransformedOutputFieldWithApplyWithConstants() {
         //     <Apply function="/">
         //        <Constant>100.0</Constant>
         //        <Constant>5.0</Constant>
@@ -187,15 +187,15 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populateTransformedOutputFieldWithApplyDerivedFieldFromConstant() {
+    void populateTransformedOutputFieldWithApplyDerivedFieldFromConstant() {
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //        <Constant>100.0</Constant>
         // </DerivedField>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE,
-                                                                             OP_TYPE.CONTINUOUS,
-                                                                             kiePMMLConstant1)
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLConstant1)
                 .build();
         //     <Apply function="/">
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
@@ -231,7 +231,7 @@ public class PostProcessTest {
 
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
-                , Collections.emptyList())
+        , Collections.emptyList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel2 = testingModelBuilder(outputField)
@@ -248,25 +248,25 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populateTransformedOutputFieldWithApplyDerivedFieldFromFieldRef() {
+    void populateTransformedOutputFieldWithApplyDerivedFieldFromFieldRef() {
         // <DerivedField name="CUSTOM_REF_FIELD" optype="continuous" dataType="double">
         //        <Constant>100.0</Constant>
         // </DerivedField>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField1 = KiePMMLDerivedField.builder(CUSTOM_REF_FIELD, Collections
-        .emptyList(),
-                                                                              DATA_TYPE.DOUBLE,
-                                                                              OP_TYPE.CONTINUOUS,
-                                                                              kiePMMLConstant1).build();
+                        .emptyList(),
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLConstant1).build();
 
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //        <FieldRef>CUSTOM_REF_FIELD</FieldRef>
         // </DerivedField>
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(CUSTOM_REF_FIELD, Collections.emptyList(), null);
         final KiePMMLDerivedField derivedField2 = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                              DATA_TYPE.DOUBLE,
-                                                                              OP_TYPE.CONTINUOUS,
-                                                                              kiePMMLFieldRef).build();
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLFieldRef).build();
         //     <Apply function="/">
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
         //        <Constant>5.0</Constant>
@@ -301,7 +301,7 @@ public class PostProcessTest {
 
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
-                , Collections.emptyList())
+        , Collections.emptyList())
                 .withDerivedFields(Arrays.asList(derivedField1, derivedField2))
                 .build();
         KiePMMLTestingModel kiePMMLModel2 = testingModelBuilder(outputField)
@@ -318,7 +318,7 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populateTransformedOutputFieldWithApplyDerivedFieldFromApply() {
+    void populateTransformedOutputFieldWithApplyDerivedFieldFromApply() {
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //     <Apply function="+">
         //        <Constant>64.0</Constant>
@@ -331,9 +331,9 @@ public class PostProcessTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                              DATA_TYPE.DOUBLE,
-                                                                              OP_TYPE.CONTINUOUS,
-                                                                              kiePMMLApplyRef).build();
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLApplyRef).build();
         //     <Apply function="/">
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
         //        <Constant>5.0</Constant>
@@ -368,7 +368,7 @@ public class PostProcessTest {
 
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
-                , Collections.emptyList())
+        , Collections.emptyList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel2 = testingModelBuilder(outputField)
@@ -385,17 +385,17 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populateTransformedOutputFieldWithApplyDefineFunctionFromConstant() {
+    void populateTransformedOutputFieldWithApplyDefineFunctionFromConstant() {
         // <DefineFunction name="CUSTOM_FUNCTION" optype="continuous" dataType="double">
         //     <Constant>100.0</Constant>
         // </DefineFunction>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
-        .emptyList(),
-                                                                               DATA_TYPE.DOUBLE,
-                                                                               OP_TYPE.CONTINUOUS,
-                                                                               Collections.emptyList(),
-                                                                               kiePMMLConstant1);
+                        .emptyList(),
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                Collections.emptyList(),
+                kiePMMLConstant1);
         //     <Apply function="CUSTOM_FUNCTION">
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
         //        <Constant>5.0</Constant>
@@ -430,26 +430,26 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populateTransformedOutputFieldWithApplyDefineFunctionFromFieldRef() {
+    void populateTransformedOutputFieldWithApplyDefineFunctionFromFieldRef() {
         // <DerivedField name="CUSTOM_REF_FIELD" optype="continuous" dataType="double">
         //        <Constant>100.0</Constant>
         // </DerivedField>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_REF_FIELD, Collections
-        .emptyList(),
-                                                                              DATA_TYPE.DOUBLE,
-                                                                              OP_TYPE.CONTINUOUS,
-                                                                              kiePMMLConstant1).build();
+                        .emptyList(),
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLConstant1).build();
         // <DefineFunction name="CUSTOM_FUNCTION" optype="continuous" dataType="double">
         //     <FieldRef>CUSTOM_REF_FIELD</FieldRef>
         // </DefineFunction>
         final KiePMMLFieldRef kiePMMLFieldRef1 = new KiePMMLFieldRef(CUSTOM_REF_FIELD, Collections.emptyList(), null);
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
-        .emptyList(),
-                                                                               DATA_TYPE.DOUBLE,
-                                                                               OP_TYPE.CONTINUOUS,
-                                                                               Collections.emptyList(),
-                                                                               kiePMMLFieldRef1);
+                        .emptyList(),
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                Collections.emptyList(),
+                kiePMMLFieldRef1);
         //     <Apply function="CUSTOM_FUNCTION">
         //        <Constant>5.0</Constant>
         //      </Apply>
@@ -483,7 +483,7 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populateTransformedOutputFieldWithApplyDefineFunctionFromApply() {
+    void populateTransformedOutputFieldWithApplyDefineFunctionFromApply() {
         // <DefineFunction name="CUSTOM_FUNCTION" optype="continuous" dataType="double">
         //     <ParameterField name="PARAM_1" />
         //     <Apply function="/">
@@ -492,19 +492,19 @@ public class PostProcessTest {
         //      </Apply>
         // </DefineFunction>
         final KiePMMLParameterField kiePMMLParameterField = KiePMMLParameterField.builder(PARAM_1, Collections
-        .emptyList()).build();
+                .emptyList()).build();
         final KiePMMLFieldRef kiePMMLFieldRef1 = new KiePMMLFieldRef(PARAM_1, Collections.emptyList(), null);
         final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2, null);
         final KiePMMLApply kiePMMLApplyRef = KiePMMLApply.builder("NAMEREF", Collections.emptyList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLConstant2))
                 .build();
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
-        .emptyList(),
-                                                                               DATA_TYPE.DOUBLE,
-                                                                               OP_TYPE.CONTINUOUS,
-                                                                               Collections.singletonList
-                                                                               (kiePMMLParameterField),
-                                                                               kiePMMLApplyRef);
+                        .emptyList(),
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                Collections.singletonList
+                        (kiePMMLParameterField),
+                kiePMMLApplyRef);
         //     <Apply function="CUSTOM_FUNCTION">
         //        <Constant>100.0</Constant>
         //      </Apply>
@@ -532,11 +532,11 @@ public class PostProcessTest {
         PostProcess.populateOutputFields(toUpdate, processingDTO);
         assertThat(toUpdate.getResultVariables()).isNotEmpty();
         assertThat(toUpdate.getResultVariables()).containsKey(OUTPUT_NAME);
-        assertThat(toUpdate.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1/value2);
+        assertThat(toUpdate.getResultVariables().get(OUTPUT_NAME)).isEqualTo(value1 / value2);
     }
 
     @Test
-    public void populateTransformedOutputFieldWithConstant() {
+    void populateTransformedOutputFieldWithConstant() {
         KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), "String", null);
 
         KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
@@ -555,7 +555,7 @@ public class PostProcessTest {
     }
 
     @Test
-    public void populateTransformedOutputFieldWithFieldRef() {
+    void populateTransformedOutputFieldWithFieldRef() {
         final String mapMissingTo = "mapMissingTo";
         final String variableName = "variableName";
         final Object variableValue = 543.65434;

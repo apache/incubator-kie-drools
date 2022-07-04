@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils;
@@ -40,23 +40,23 @@ import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getPredicateA
 public class KiePMMLSimplePredicateASTFactoryTest {
 
     @Test
-    public void declareRuleFromSimplePredicateSurrogateFinalLeaf() {
+    void declareRuleFromSimplePredicateSurrogateFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         SimplePredicate simplePredicate = getSimplePredicate("outlook",
-                                                             "VALUE",
-                                                             SimplePredicate.Operator.LESS_THAN,
-                                                             fieldTypeMap);
+                "VALUE",
+                SimplePredicate.Operator.LESS_THAN,
+                fieldTypeMap);
         String currentRule = "_will play_will play";
         String agendaActivationGroup = "_will play_will play Group";
         String result = "RESULT";
         String parentPath = "parentPath";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simplePredicate,
-                                                                                     Collections.emptyList(),
-                                                                                     rules,
-                                                                                     parentPath,
-                                                                                     currentRule,
-                                                                                     fieldTypeMap);
+                Collections.emptyList(),
+                rules,
+                parentPath,
+                currentRule,
+                fieldTypeMap);
         KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData)
                 .declareRuleFromSimplePredicateSurrogate(agendaActivationGroup, result, true);
         assertThat(rules).hasSize(2);
@@ -64,8 +64,8 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         KiePMMLDroolsRule retrieved = rules.get(0);
         assertThat(retrieved).isNotNull();
         String baseExpectedRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN,
-                                                currentRule,
-                                                fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+                currentRule,
+                fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
         assertThat(retrieved.getName()).isEqualTo(expectedRule);
         assertThat(retrieved.getStatusToSet()).isEqualTo(DONE);
@@ -108,23 +108,23 @@ public class KiePMMLSimplePredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromSimplePredicateSurrogateNotFinalLeaf() {
+    void declareRuleFromSimplePredicateSurrogateNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         SimplePredicate simplePredicate = getSimplePredicate("outlook",
-                                                             "VALUE",
-                                                             SimplePredicate.Operator.LESS_THAN,
-                                                             fieldTypeMap);
+                "VALUE",
+                SimplePredicate.Operator.LESS_THAN,
+                fieldTypeMap);
         String currentRule = "_will play_will play";
         String agendaActivationGroup = "_will play_will play Group";
         String result = "RESULT";
         String parentPath = "parentPath";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simplePredicate,
-                                                                                     Collections.emptyList(),
-                                                                                     rules,
-                                                                                     parentPath,
-                                                                                     currentRule,
-                                                                                     fieldTypeMap);
+                Collections.emptyList(),
+                rules,
+                parentPath,
+                currentRule,
+                fieldTypeMap);
         KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData)
                 .declareRuleFromSimplePredicateSurrogate(agendaActivationGroup, result, false);
         assertThat(rules).hasSize(2);
@@ -132,8 +132,8 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         KiePMMLDroolsRule retrieved = rules.get(0);
         assertThat(retrieved).isNotNull();
         String baseExpectedRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN,
-                                                currentRule,
-                                                fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+                currentRule,
+                fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
         assertThat(retrieved.getName()).isEqualTo(expectedRule);
         assertThat(retrieved.getStatusToSet()).isEqualTo(currentRule);
@@ -175,23 +175,23 @@ public class KiePMMLSimplePredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromSimplePredicateFinalLeaf() {
+    void declareRuleFromSimplePredicateFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         SimplePredicate simplePredicate = getSimplePredicate("outlook",
-                                                             "VALUE",
-                                                             SimplePredicate.Operator.LESS_THAN,
-                                                             fieldTypeMap);
+                "VALUE",
+                SimplePredicate.Operator.LESS_THAN,
+                fieldTypeMap);
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
         String result = "RESULT";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simplePredicate,
-                                                                                     Collections.emptyList(),
-                                                                                     rules,
-                                                                                     parentPath,
-                                                                                     currentRule,
-                                                                                     fieldTypeMap);
+                Collections.emptyList(),
+                rules,
+                parentPath,
+                currentRule,
+                fieldTypeMap);
         KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimplePredicate(result, true);
         assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
@@ -212,23 +212,23 @@ public class KiePMMLSimplePredicateASTFactoryTest {
     }
 
     @Test
-    public void declareIntermediateRuleFromSimplePredicateNotFinalLeaf() {
+    void declareIntermediateRuleFromSimplePredicateNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         SimplePredicate simplePredicate = getSimplePredicate("outlook",
-                                                             "VALUE",
-                                                             SimplePredicate.Operator.LESS_THAN,
-                                                             fieldTypeMap);
+                "VALUE",
+                SimplePredicate.Operator.LESS_THAN,
+                fieldTypeMap);
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
         String result = "RESULT";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simplePredicate,
-                                                                                     Collections.emptyList(),
-                                                                                     rules,
-                                                                                     parentPath,
-                                                                                     currentRule,
-                                                                                     fieldTypeMap);
+                Collections.emptyList(),
+                rules,
+                parentPath,
+                currentRule,
+                fieldTypeMap);
         KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimplePredicate(result, false);
         assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
