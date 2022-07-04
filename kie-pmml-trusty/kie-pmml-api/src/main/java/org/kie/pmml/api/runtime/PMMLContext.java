@@ -28,6 +28,8 @@ public interface PMMLContext extends EfestoContext<PMMLStep, PMMLListener> {
 
     String getFileName();
 
+    String getFileNameNoSuffix();
+
     void addMissingValueReplaced(final String fieldName, final Object missingValueReplaced);
 
     void addCommonTranformation(final String fieldName, final Object commonTranformation);

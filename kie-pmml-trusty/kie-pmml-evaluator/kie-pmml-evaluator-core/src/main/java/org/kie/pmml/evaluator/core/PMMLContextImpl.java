@@ -40,6 +40,8 @@ public class PMMLContextImpl implements PMMLContext {
 
     private final String fileName;
 
+    private final String fileNameNoSuffix;
+
     private final Map<String, Object> map = new ConcurrentHashMap<>();
     private final Map<String, Object> missingValueReplacedMap = new HashMap<>();
     private final Map<String, Object> commonTransformationMap = new HashMap<>();
@@ -59,7 +61,12 @@ public class PMMLContextImpl implements PMMLContext {
                            final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         name = "Context_" + ID_GENERATOR.incrementAndGet();
         set(PMML_REQUEST_DATA, pmmlRequestData);
-        this.fileName = fileName;
+        if (!fileName.endsWith(".pmml")) {
+            this.fileName = fileName + ".pmml";
+        } else {
+            this.fileName = fileName;
+        }
+        this.fileNameNoSuffix = this.fileName.substring(0, this.fileName.lastIndexOf('.'));
         this.memoryCompilerClassLoader = memoryCompilerClassLoader;
     }
 
@@ -79,6 +86,11 @@ public class PMMLContextImpl implements PMMLContext {
     @Override
     public String getFileName() {
         return fileName;
+    }
+
+    @Override
+    public String getFileNameNoSuffix() {
+        return fileNameNoSuffix;
     }
 
     @Override

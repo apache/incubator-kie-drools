@@ -46,7 +46,7 @@ public interface PMMLRuntime {
      * the <code>PMMLModel</code> retrieved, or an <b>empty</b> one if none
      * is registered with the given name.
      */
-    Optional<PMMLModel> getPMMLModel(final String modelName);
+    Optional<PMMLModel> getPMMLModel(final String fileName, final String modelName);
 
     KieMemoryCompiler.MemoryCompilerClassLoader getMemoryClassLoader();
 }

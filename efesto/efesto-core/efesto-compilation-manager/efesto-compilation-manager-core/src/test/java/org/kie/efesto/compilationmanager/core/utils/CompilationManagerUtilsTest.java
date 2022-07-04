@@ -39,15 +39,6 @@ class CompilationManagerUtilsTest {
     private final static Map<String, byte[]> compiledClassMap = IntStream.range(0, 3).boxed().collect(Collectors.toMap(integer -> "class_" + integer, integer -> new byte[0]));
     private final static EfestoCallableOutputClassesContainer finalOutput = getEfestoFinalOutputClassesContainer(fri);
 
-//    @BeforeEach
-//    public void init() {
-//        try {
-//            CompilationManagerUtils.getIndexFile(finalOutput).delete();
-//        } catch (KieEfestoCommonException e) {
-//            // Ignore
-//        }
-//    }
-
     @Test
     void populateIndexFilesWithProcessedResource() {
     }

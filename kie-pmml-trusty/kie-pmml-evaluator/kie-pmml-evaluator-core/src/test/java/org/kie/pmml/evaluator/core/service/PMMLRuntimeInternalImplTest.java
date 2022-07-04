@@ -15,148 +15,48 @@
  */
 package org.kie.pmml.evaluator.core.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.api.models.PMMLModel;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class PMMLRuntimeInternalImplTest {
 
-//    private PMMLContext pmmlContextMock;
-//    private KieBase kieBaseMock = mock(KieBase.class);
-//    private PMML4Result resultMock = mock(PMML4Result.class);
-//    private PMMLModelEvaluator evaluatorMock = mock(PMMLModelEvaluator.class);
-//    private PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinderMock = mock(PMMLModelEvaluatorFinderImpl.class);
-//    private KiePMMLModel modelMock;
-//    private PMMLRuntimeInternalImpl pmmlRuntime;
-//    private static final String MODEL_NAME = "MODEL_NAME";
-//
-//    @Before
-//    public void setup() {
-//        modelMock = getKiePMMLModelMock();
-//        when(resultMock.getResultCode()).thenReturn(OK.getName());
-//        when(resultMock.getResultVariables()).thenReturn(Collections.emptyMap());
-//
-//        when(evaluatorMock.getPMMLModelType()).thenReturn(PMML_MODEL.TEST_MODEL);
-//        when(evaluatorMock.evaluate(any(), any(), any())).thenReturn(resultMock);
-//        List<PMMLModelEvaluator> modelEvaluators = Collections.singletonList(evaluatorMock);
-//        when(pmmlModelExecutorFinderMock.getImplementations(false)).thenReturn(modelEvaluators);
-//
-//        pmmlRuntime = new PMMLRuntimeInternalImpl(pmmlModelExecutorFinderMock);
-//        pmmlContextMock = mock(PMMLContextImpl.class);
-//    }
-//
-//    @Test
-//    public void addPMMLListener() {
-//        try {
-//            pmmlRuntime.evaluate(MODEL_NAME, pmmlContextMock);
-//            verify(pmmlContextMock, never()).addPMMLListener(any());
-//        } catch (KiePMMLException e) {
-//            commonManageException(e);
-//        }
-//        try {
-//            reset(pmmlContextMock);
-//            PMMLListener listener = getPMMLListener(new ArrayList<>());
-//            pmmlRuntime.addPMMLListener(listener);
-//            pmmlRuntime.evaluate(MODEL_NAME, pmmlContextMock);
-//            verify(pmmlContextMock).addPMMLListener(listener);
-//        } catch (KiePMMLException e) {
-//            commonManageException(e);
-//        }
-//    }
-//
-//    @Test
-//    public void removePMMLListener() {
-//        try {
-//            PMMLListener listener = getPMMLListener(new ArrayList<>());
-//            pmmlRuntime.addPMMLListener(listener);
-//            pmmlRuntime.removePMMLListener(listener);
-//            pmmlRuntime.evaluate("MODEL_NAME", pmmlContextMock);
-//            verify(pmmlContextMock, never()).addPMMLListener(listener);
-//        } catch (KiePMMLException e) {
-//            commonManageException(e);
-//        }
-//    }
-//
-//    @Test
-//    public void evaluateWithPmmlRuntimeListeners() {
-//        final PMMLRequestData requestData = getPMMLRequestData();
-//        final List<PMMLStep> pmmlSteps = new ArrayList<>();
-//        final PMMLContext pmmlContext = new PMMLContextImpl(requestData);
-//        pmmlRuntime.addPMMLListener(getPMMLListener(pmmlSteps));
-//        pmmlRuntime.evaluate(modelMock, pmmlContext);
-//        Arrays.stream(PMML_STEP.values()).forEach(pmml_step -> {
-//            Optional<PMMLStep> retrieved =
-//                    pmmlSteps.stream().filter(pmmlStep -> pmml_step.equals(((PMMLRuntimeStep) pmmlStep).getPmmlStep
-//                    ()))
-//                    .findFirst();
-//            assertThat(retrieved).isPresent();
-//            commonValuateStep(retrieved.get(), pmml_step, modelMock, requestData);
-//        });
-//    }
-//
-//    @Test
-//    public void evaluateWithPMMLContextListeners() {
-//        final PMMLRequestData requestData = getPMMLRequestData();
-//        final List<PMMLStep> pmmlSteps = new ArrayList<>();
-//        final PMMLContext pmmlContext = new PMMLContextImpl(requestData,
-//                                                            Collections.singleton(getPMMLListener(pmmlSteps)));
-//        pmmlRuntime.evaluate(modelMock, pmmlContext);
-//        Arrays.stream(PMML_STEP.values()).forEach(pmml_step -> {
-//            Optional<PMMLStep> retrieved =
-//                    pmmlSteps.stream().filter(pmmlStep -> pmml_step.equals(((PMMLRuntimeStep) pmmlStep).getPmmlStep
-//                    ()))
-//                    .findFirst();
-//            assertThat(retrieved).isPresent();
-//            commonValuateStep(retrieved.get(), pmml_step, modelMock, requestData);
-//        });
-//    }
-//
-//    @Test
-//    public void getStep() {
-//        final PMMLRequestData requestData = getPMMLRequestData();
-//        Arrays.stream(PMML_STEP.values()).forEach(pmml_step -> {
-//            PMMLStep retrieved = pmmlRuntime.getStep(pmml_step, modelMock, requestData);
-//            commonValuateStep(retrieved, pmml_step, modelMock, requestData);
-//        });
-//    }
-//
-//    private void commonValuateStep(final PMMLStep toVerify, final PMML_STEP pmmlStep, final KiePMMLModel kiePMMLModel,
-//                                   final PMMLRequestData requestData) {
-//        assertThat(toVerify).isNotNull();
-//        assertThat(toVerify).isInstanceOf(PMMLRuntimeStep.class);
-//        assertThat(((PMMLRuntimeStep) toVerify).getPmmlStep()).isEqualTo(pmmlStep);
-//        Map<String, Object> info = toVerify.getInfo();
-//        assertThat(kiePMMLModel.getName()).isEqualTo(info.get("MODEL"));
-//        assertThat(requestData.getCorrelationId()).isEqualTo(info.get("CORRELATION ID"));
-//        assertThat(requestData.getModelName()).isEqualTo(info.get("REQUEST MODEL"));
-//        requestData.getRequestParams()
-//                .forEach(requestParam ->
-//                                 assertThat(info.get(requestParam.getName())).isEqualTo(requestParam.getValue()));
-//    }
-//
-//    private void commonManageException(KiePMMLException toManage) {
-//        String expectedMessage = String.format("Failed to retrieve model with name %s", MODEL_NAME);
-//        assertThat(toManage.getMessage()).isEqualTo(expectedMessage);
-//    }
-//
-//    private KiePMMLModel getKiePMMLModelMock() {
-//        KiePMMLModel toReturn = mock(KiePMMLModel.class);
-//        String targetFieldName = "targetFieldName";
-//        MiningField miningFieldMock = mock(MiningField.class);
-//        when(miningFieldMock.getName()).thenReturn(targetFieldName);
-//        when(miningFieldMock.getDataType()).thenReturn(DATA_TYPE.FLOAT);
-//        when(toReturn.getName()).thenReturn(MODEL_NAME);
-//        when(toReturn.getMiningFields()).thenReturn(Collections.singletonList(miningFieldMock));
-//        when(toReturn.getTargetField()).thenReturn(targetFieldName);
-//        when(toReturn.getPmmlMODEL()).thenReturn(PMML_MODEL.TEST_MODEL);
-//        return toReturn;
-//    }
-//
-//    private PMMLRequestData getPMMLRequestData() {
-//        final PMMLRequestData toReturn = new PMMLRequestData();
-//        toReturn.setModelName(MODEL_NAME);
-//        toReturn.setCorrelationId("CORRELATION_ID");
-//        IntStream.range(0, 3).forEach(i -> toReturn.addRequestParam("PARAM_" + i, i));
-//        return toReturn;
-//    }
-//
-//    private PMMLListener getPMMLListener(final List<PMMLStep> pmmlSteps) {
-//        return pmmlSteps::add;
-//    }
+    private static PMMLRuntime pmmlRuntime;
+
+    @BeforeAll
+    public static void init() {
+        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        pmmlRuntime = new PMMLRuntimeInternalImpl(memoryCompilerClassLoader);
+    }
+
+    @Test
+    void getPMMLModels() {
+        List<PMMLModel> retrieved = pmmlRuntime.getPMMLModels();
+        assertThat(retrieved).isNotNull().hasSize(1); // defined in IndexFile.pmml_json
+        assertThat(retrieved.get(0)).isInstanceOf(KiePMMLTestingModel.class);
+    }
+
+    @Test
+    void getPMMLModel() {
+        Optional<PMMLModel> retrieved = pmmlRuntime.getPMMLModel("FileName.pmml", "TestMod"); // defined in IndexFile.pmml_json
+        assertThat(retrieved).isNotNull().isPresent();
+        assertThat(retrieved.get()).isInstanceOf(KiePMMLTestingModel.class);
+        retrieved = pmmlRuntime.getPMMLModel("FileName", "TestMod"); // not defined in IndexFile.pmml_json
+        assertThat(retrieved).isNotNull().isPresent();
+        assertThat(retrieved.get()).isInstanceOf(KiePMMLTestingModel.class);
+        retrieved = pmmlRuntime.getPMMLModel("FileNameDiff", "TestMod"); // not defined in IndexFile.pmml_json
+        assertThat(retrieved).isNotNull().isNotPresent();
+        retrieved = pmmlRuntime.getPMMLModel("FileName", "NotTestMod"); // not defined in IndexFile.pmml_json
+        assertThat(retrieved).isNotNull().isNotPresent();
+    }
+
 }

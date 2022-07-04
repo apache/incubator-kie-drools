@@ -37,6 +37,11 @@ public class PMMLContextTest implements PMMLContext {
     }
 
     @Override
+    public String getFileNameNoSuffix() {
+        return null;
+    }
+
+    @Override
     public PMMLRequestData getRequestData() {
         return null;
     }

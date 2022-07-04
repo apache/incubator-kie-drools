@@ -52,7 +52,11 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     protected KiePMMLModel(String fileName, String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
-        this.fileName = fileName;
+        if (!fileName.endsWith(".pmml")) {
+            this.fileName = fileName + ".pmml";
+        } else {
+            this.fileName = fileName;
+        }
     }
 
     @Override

@@ -35,7 +35,7 @@ public class KnowledgeBaseUtils {
 //        return models;
 //    }
 //
-//    public static Optional<KiePMMLModel> getModel(final RuntimePackageContainer runtimePackageContainer, String
+//    public static Optional<KiePMMLModel> getPMMLModel(final RuntimePackageContainer runtimePackageContainer, String
 //    modelName) {
 //        logger.trace("getModels {} {}", runtimePackageContainer, modelName);
 //        return getModels(runtimePackageContainer)

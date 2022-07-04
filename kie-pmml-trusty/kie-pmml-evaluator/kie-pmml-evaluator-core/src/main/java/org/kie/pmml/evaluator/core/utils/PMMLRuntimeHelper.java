@@ -15,10 +15,12 @@
  */
 package org.kie.pmml.evaluator.core.utils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
@@ -30,6 +32,7 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.PMML_STEP;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -44,6 +47,7 @@ import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getAllGeneratedExecutableResource;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedExecutableResource;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrRedirect;
 import static org.kie.pmml.api.enums.PMML_STEP.END;
@@ -89,10 +93,49 @@ public class PMMLRuntimeHelper {
         }
     }
 
+    public static List<PMMLModel> getPMMLModels(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        Collection<GeneratedExecutableResource> finalResources = getAllGeneratedExecutableResource("pmml");
+        return finalResources.stream()
+                .map(finalResource -> loadKiePMMLModelFactory(finalResource, memoryCompilerClassLoader))
+                .flatMap(factory -> factory.getKiePMMLModels().stream())
+                .collect(Collectors.toList());
+
+    }
+
+    public static Optional<PMMLModel> getPMMLModel(String fileName, String modelName, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        logger.trace("getPMMLModel {} {}", fileName, modelName);
+        String fileNameToUse =  ! fileName.endsWith(".pmml") ? fileName + ".pmml": fileName;
+        return getPMMLModels(memoryCompilerClassLoader)
+                .stream()
+                .filter(model -> Objects.equals(fileNameToUse, model.getFileName()) &&  Objects.equals(modelName, model.getName()))
+                .findFirst();
+    }
+
+    public static PMML4Result evaluate(final KiePMMLModel model, final PMMLContext context) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("evaluate {} {}", model, context);
+        }
+        addStep(() -> getStep(START, model, context.getRequestData()), context);
+        final ProcessingDTO processingDTO = preProcess(model, context);
+        addStep(() -> getStep(PRE_EVALUATION, model, context.getRequestData()), context);
+        PMMLModelEvaluator executor = getFromPMMLModelType(model.getPmmlMODEL())
+                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s",
+                                                                      model.getPmmlMODEL())));
+        PMML4Result toReturn = executor.evaluate(model, context);
+        addStep(() -> getStep(POST_EVALUATION, model, context.getRequestData()), context);
+        postProcess(toReturn, model, context, processingDTO);
+        addStep(() -> getStep(END, model, context.getRequestData()), context);
+        return toReturn;
+    }
+
     @SuppressWarnings("unchecked")
     static KiePMMLModelFactory loadKiePMMLModelFactory(FRI fri, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         GeneratedExecutableResource finalResource = getGeneratedExecutableResource(fri, "pmml")
                 .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource for " + fri));
+        return loadKiePMMLModelFactory(finalResource, memoryCompilerClassLoader);
+    }
+
+    static KiePMMLModelFactory loadKiePMMLModelFactory(GeneratedExecutableResource finalResource, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         try {
             String fullKiePMMLModelFactorySourceClassName = finalResource.getFullClassNames().get(0);
             final Class<? extends KiePMMLModelFactory> aClass =
@@ -114,34 +157,16 @@ public class PMMLRuntimeHelper {
             logger.debug("evaluate {}", pmmlContext);
         }
         String modelName = pmmlContext.getRequestData().getModelName();
-        KiePMMLModel toEvaluate = getModel(kiePMMLModels, modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve model with name " + modelName));
+        KiePMMLModel toEvaluate = getPMMLModel(kiePMMLModels, pmmlContext.getFileName(), modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve model with name " + modelName));
         return evaluate(toEvaluate, pmmlContext);
     }
 
-    public static PMML4Result evaluate(final KiePMMLModel model, final PMMLContext context) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("evaluate {} {}", model, context);
-        }
-//        context.getPMMLListeners()
-//        context.getPMMLListeners().forEach(context::addPMMLListener);
-        addStep(() -> getStep(START, model, context.getRequestData()), context);
-        final ProcessingDTO processingDTO = preProcess(model, context);
-        addStep(() -> getStep(PRE_EVALUATION, model, context.getRequestData()), context);
-        PMMLModelEvaluator executor = getFromPMMLModelType(model.getPmmlMODEL())
-                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s",
-                        model.getPmmlMODEL())));
-        PMML4Result toReturn = executor.evaluate(model, context);
-        addStep(() -> getStep(POST_EVALUATION, model, context.getRequestData()), context);
-        postProcess(toReturn, model, context, processingDTO);
-        addStep(() -> getStep(END, model, context.getRequestData()), context);
-        return toReturn;
-    }
-
-    static Optional<KiePMMLModel> getModel(final List<KiePMMLModel> kiePMMLModels, String modelName) {
-        logger.trace("getModel {} {}", kiePMMLModels, modelName);
+    static Optional<KiePMMLModel> getPMMLModel(final List<KiePMMLModel> kiePMMLModels, String fileName, String modelName) {
+        logger.trace("getPMMLModel {} {}", kiePMMLModels, modelName);
+        String fileNameToUse =  ! fileName.endsWith(".pmml") ? fileName + ".pmml": fileName;
         return kiePMMLModels
                 .stream()
-                .filter(model -> Objects.equals(modelName, model.getName()))
+                .filter(model -> Objects.equals(fileNameToUse, model.getFileName()) &&  Objects.equals(modelName, model.getName()))
                 .findFirst();
     }
 

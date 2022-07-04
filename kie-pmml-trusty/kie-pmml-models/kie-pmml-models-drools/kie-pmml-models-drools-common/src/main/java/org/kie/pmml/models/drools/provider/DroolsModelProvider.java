@@ -51,7 +51,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
 //    @Override
 //    public E getKiePMMLModel(final CompilationDTO<T> compilationDTO) {
 //        logger.trace("getKiePMMLModel {} {} {}", compilationDTO.getPackageName(), compilationDTO.getFields(),
-//                compilationDTO.getModel());
+//                compilationDTO.getPMMLModel());
 //        if (!(compilationDTO.getHasClassloader() instanceof HasKnowledgeBuilder)) {
 //            throw new KiePMMLException(String.format(EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE,
 //                    compilationDTO.getHasClassloader().getClass().getName()));
@@ -60,7 +60,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
 //        KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl) hasKnowledgeBuilder.getKnowledgeBuilder();
 //        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
 //        KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(compilationDTO.getFields(),
-//                compilationDTO.getModel(), fieldTypeMap);
+//                compilationDTO.getPMMLModel(), fieldTypeMap);
 //        final DroolsCompilationDTO<T> droolsCompilationDTO =
 //                DroolsCompilationDTO.fromCompilationDTO(compilationDTO, fieldTypeMap);
 //        E toReturn = getKiePMMLDroolsModel(droolsCompilationDTO);
@@ -108,7 +108,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
 //    @Override
 //    public KiePMMLModelWithSources getKiePMMLModelWithSourcesCompiled(final CompilationDTO<T> compilationDTO) {
 //        logger.trace("getKiePMMLModelWithSourcesCompiled {} {} {}", compilationDTO.getPackageName(),
-//                compilationDTO.getFields(), compilationDTO.getModel());
+//                compilationDTO.getFields(), compilationDTO.getPMMLModel());
 //        if (!(compilationDTO.getHasClassloader() instanceof HasKnowledgeBuilder)) {
 //            throw new KiePMMLException(String.format(EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE,
 //                    compilationDTO.getHasClassloader().getClass().getName()));
@@ -118,7 +118,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
 //            KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl) hasKnowledgeBuilder.getKnowledgeBuilder();
 //            final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
 //            KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(compilationDTO.getFields(),
-//                    compilationDTO.getModel(), fieldTypeMap);
+//                    compilationDTO.getPMMLModel(), fieldTypeMap);
 //            final DroolsCompilationDTO<T> droolsCompilationDTO =
 //                    DroolsCompilationDTO.fromCompilationDTO(compilationDTO, fieldTypeMap);
 //            Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(droolsCompilationDTO);

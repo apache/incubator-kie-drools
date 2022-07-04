@@ -16,10 +16,8 @@
 package org.kie.pmml.evaluator.core.service;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.efesto.common.api.model.FRI;
@@ -30,10 +28,10 @@ import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.runtime.PMMLContext;
-import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
+import org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +45,6 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     private static final RuntimeManager runtimeManager = SPIUtils.getRuntimeManager(true).get();
 
     private final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
-    private final Set<PMMLListener> pmmlListeners = new HashSet<>();
 
     public PMMLRuntimeInternalImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         this.memoryCompilerClassLoader = memoryCompilerClassLoader;
@@ -55,7 +52,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
 
     @Override
     public PMML4Result evaluate(String modelName, PMMLContext context) {
-        String basePath = context.getFileName() + SLASH + getSanitizedClassName(modelName);
+        String basePath = context.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
         FRI fri = new FRI(basePath, "pmml");
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
         Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, darInputPMML);
@@ -71,12 +68,12 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
 
     @Override
     public List<PMMLModel> getPMMLModels() {
-        return null;
+        return PMMLRuntimeHelper.getPMMLModels(memoryCompilerClassLoader);
     }
 
     @Override
-    public Optional<PMMLModel> getPMMLModel(String modelName) {
-        return Optional.empty();
+    public Optional<PMMLModel> getPMMLModel(String fileName, String modelName) {
+        return PMMLRuntimeHelper.getPMMLModel(fileName, modelName, memoryCompilerClassLoader);
     }
 
     @Override

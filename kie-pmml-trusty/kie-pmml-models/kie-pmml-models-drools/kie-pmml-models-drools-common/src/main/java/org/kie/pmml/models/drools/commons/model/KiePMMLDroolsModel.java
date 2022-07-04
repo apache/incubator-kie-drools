@@ -106,7 +106,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         EfestoMapInputDTO darMapInputDTO = new EfestoMapInputDTO(inserts, globals, requestData, convertedFieldTypeMap
                 , this.getName(), this.getKModulePackageName());
 
-        String basePath = context.getFileName() + SLASH + this.getName();
+        String basePath = context.getFileNameNoSuffix() + SLASH + this.getName();
         FRI fri = new FRI(basePath, "drl");
         EfestoInput<EfestoMapInputDTO> input = new AbstractEfestoInput<EfestoMapInputDTO>(fri, darMapInputDTO) {
         };

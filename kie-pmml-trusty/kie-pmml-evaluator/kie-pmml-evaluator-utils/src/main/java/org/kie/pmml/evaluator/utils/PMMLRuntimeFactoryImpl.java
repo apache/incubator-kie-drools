@@ -33,13 +33,17 @@ import static org.kie.efesto.common.api.utils.FileUtils.getFile;
  */
 public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
 
-    private static final CompilationManager compilationManager = SPIUtils.getCompilationManager(true).get();
-    private KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+    private static final CompilationManager compilationManager = SPIUtils.getCompilationManager(false).get();
+
+    @Override
+    public PMMLRuntime getPMMLRuntimeFromClassloader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        return new PMMLRuntimeInternalImpl(memoryCompilerClassLoader);
+    }
 
     @Override
     public PMMLRuntime getPMMLRuntimeFromFile(File pmmlFile) {
         EfestoResource<File> darResource = new EfestoFileResource(pmmlFile);
-        memoryCompilerClassLoader =
+        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
         compilationManager.processResource(memoryCompilerClassLoader, darResource);
         return new PMMLRuntimeInternalImpl(memoryCompilerClassLoader);
