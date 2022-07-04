@@ -50,8 +50,9 @@ public class DrlRuntimeHelper {
             kieSession = loadKieSession(toEvaluate.getFRI(), memoryCompilerClassLoader);
         } catch (Exception e) {
             logger.warn("{} can not execute {}",
-                    DrlRuntimeHelper.class.getName(),
-                    toEvaluate.getFRI());
+                        DrlRuntimeHelper.class.getName(),
+                        toEvaluate.getFRI(),
+                        e);
             return Optional.empty();
         }
         if (kieSession == null) {

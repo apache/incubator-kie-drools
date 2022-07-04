@@ -35,6 +35,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
+import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.core.service.CompilationManagerImpl;
@@ -53,12 +54,10 @@ class CompileDrlTest {
 
     @BeforeAll
     static void setUp() throws IOException, DroolsParserException {
+        DrlTestUtils.refreshDrlIndexFile();
         compilationManager = new CompilationManagerImpl();
         memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(CompilationManager.class.getClassLoader());
-        drlFiles = Files.walk(Paths.get("src/test/resources"))
-                .map(Path::toFile)
-                .filter(File::isFile)
-                .collect(Collectors.toSet());
+        drlFiles = DrlTestUtils.collectDrlFiles("src/test/resources/org/drools/model/project/codegen");
         KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration =
                 new KnowledgeBuilderConfigurationImpl();
         DrlResourceHandler drlResourceHandler =
