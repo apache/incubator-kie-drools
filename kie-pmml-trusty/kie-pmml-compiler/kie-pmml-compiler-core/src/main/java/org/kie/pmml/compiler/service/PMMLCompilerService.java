@@ -55,7 +55,7 @@ import static org.kie.efesto.common.api.model.FRI.SLASH;
 import static org.kie.efesto.common.api.utils.FileNameUtils.getFileName;
 import static org.kie.efesto.common.api.utils.FileNameUtils.removeSuffix;
 import static org.kie.efesto.compilationmanager.api.utils.SPIUtils.getCompilationManager;
-
+import static org.kie.pmml.commons.Constants.PMML_STRING;
 
 /**
  * Class meant to <b>compile</b> resources
@@ -96,7 +96,7 @@ public class PMMLCompilerService {
         kiePMMLFactoryModels.forEach(kiePMMLFactoryModel -> {
             String modelName = kiePMMLFactoryModel.getName().substring(0, kiePMMLFactoryModel.getName().lastIndexOf("Factory"));
             String basePath = fileName + SLASH + modelName;
-            FRI fri = new FRI(basePath, "pmml");
+            FRI fri = new FRI(basePath, PMML_STRING);
             String fullResourceClassName = kiePMMLFactoryModel.getSourcesMap().keySet().iterator().next();
             toReturn.add(new EfestoCallableOutputPMMLClassesContainer(fri, fullResourceClassName, compiledClasses));
         });
@@ -114,7 +114,7 @@ public class PMMLCompilerService {
             if (kiePMMLModelWithSources instanceof HasRedirectOutput) {
                 EfestoSetResource redirectResource = ((HasRedirectOutput) kiePMMLModelWithSources).getRedirectOutput();
                 getRedirectCompilation(redirectResource, memoryClassLoader);
-                FRI fri = new FRI(redirectResource.getBasePath(), "pmml");
+                FRI fri = new FRI(redirectResource.getBasePath(), PMML_STRING);
                 darCompilationOutputs.add(new EfestoRedirectOutputPMML(fri, kiePMMLModelWithSources.getName()));
             }
             if (kiePMMLModelWithSources instanceof HasNestedModels) {
@@ -183,7 +183,7 @@ public class PMMLCompilerService {
         if (sourcePath == null || sourcePath.isEmpty()) {
             throw new IllegalArgumentException("Missing required sourcePath in resource " + resource + " -> " + resource.getClass().getName());
         }
-        return StringUtils.getFactoryClassNamePackageName(sourcePath);
+        return StringUtils.getFactoryClassNamePackageName(PMML_STRING, sourcePath);
     }
 
     /**

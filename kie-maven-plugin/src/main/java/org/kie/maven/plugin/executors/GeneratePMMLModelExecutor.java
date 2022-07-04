@@ -50,12 +50,11 @@ import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObj
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.writeClasses;
+import static org.kie.pmml.commons.Constants.PMML_STRING;
 
 public class GeneratePMMLModelExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(GeneratePMMLModelExecutor.class);
-
-    private static final String PMML = "pmml";
 
     private GeneratePMMLModelExecutor() {
     }
@@ -211,7 +210,7 @@ public class GeneratePMMLModelExecutor {
     private static List<EfestoResource> getEfestoResources(File resourceDirectory) throws MojoExecutionException {
         try (Stream<Path> stream = Files
                 .walk(resourceDirectory.toPath(), Integer.MAX_VALUE)
-                .filter(path -> path.toFile().isFile() && path.toString().endsWith(PMML))) {
+                .filter(path -> path.toFile().isFile() && path.toString().endsWith(PMML_STRING))) {
             return stream
                     .map(Path::toFile)
                     .map(EfestoFileResource::new)

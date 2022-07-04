@@ -24,13 +24,14 @@ import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
+import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.compiler.service.PMMLCompilerService.getEfestoCompilationOutputPMML;
 
 public class KieCompilerServicePMML implements KieCompilerService {
 
     @Override
     public <T extends EfestoResource> boolean canManageResource(T toProcess) {
-        return toProcess instanceof EfestoFileResource && ((EfestoFileResource) toProcess).getModelType().equalsIgnoreCase("pmml");
+        return toProcess instanceof EfestoFileResource && ((EfestoFileResource) toProcess).getModelType().equalsIgnoreCase(PMML_STRING);
     }
 
     @Override

@@ -52,6 +52,7 @@ import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.api.enums.ResultCode.OK;
+import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -72,20 +73,20 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void canManage() {
-        FRI fri = new FRI(basePath, "pmml");
+        FRI fri = new FRI(basePath, PMML_STRING);
         AbstractEfestoInput darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME));
         assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isTrue();
         darInputPMML = new AbstractEfestoInput<String>(fri, "") {
         };
         assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isFalse();
-        fri = new FRI("darfoo", "pmml");
+        fri = new FRI("darfoo", PMML_STRING);
         darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME));
         assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isFalse();
     }
 
     @Test
     void execute() {
-        FRI fri = new FRI(basePath, "pmml");
+        FRI fri = new FRI(basePath, PMML_STRING);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME));
         Optional<EfestoOutputPMML> retrieved = PMMLRuntimeHelper.execute(darInputPMML, memoryCompilerClassLoader);
         assertThat(retrieved).isNotNull().isPresent();
@@ -101,7 +102,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void getPMMLModelFromClassLoader() {
-        FRI fri = new FRI(basePath, "pmml");
+        FRI fri = new FRI(basePath, PMML_STRING);
         KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri,
                                                                                             memoryCompilerClassLoader);
         Optional<KiePMMLModel> retrieved = PMMLRuntimeHelper.getPMMLModel(kiePmmlModelFactory.getKiePMMLModels(),
@@ -114,7 +115,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void evaluate() {
-        FRI fri = new FRI(basePath, "pmml");
+        FRI fri = new FRI(basePath, PMML_STRING);
         KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri,
                                                                                             memoryCompilerClassLoader);
         List<KiePMMLModel> kiePMMLModels = kiePmmlModelFactory.getKiePMMLModels();
@@ -126,7 +127,7 @@ class PMMLRuntimeHelperTest {
     @Test
     public void evaluateWithPMMLContextListeners() {
 
-        FRI fri = new FRI(basePath, "pmml");
+        FRI fri = new FRI(basePath, PMML_STRING);
         KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri,
                                                                                             memoryCompilerClassLoader);
         KiePMMLModel kiePMMLModel = kiePmmlModelFactory.getKiePMMLModels().get(0);
@@ -146,7 +147,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void loadKiePMMLModelFactory() {
-        KiePMMLModelFactory retrieved = PMMLRuntimeHelper.loadKiePMMLModelFactory(new FRI(basePath, "pmml"),
+        KiePMMLModelFactory retrieved = PMMLRuntimeHelper.loadKiePMMLModelFactory(new FRI(basePath, PMML_STRING),
                                                                                   memoryCompilerClassLoader);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getKiePMMLModels()).hasSize(1);
@@ -166,7 +167,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void getEfestoOutput() {
-        FRI fri = new FRI(basePath, "pmml");
+        FRI fri = new FRI(basePath, PMML_STRING);
         KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri,
                                                                                             memoryCompilerClassLoader);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME));

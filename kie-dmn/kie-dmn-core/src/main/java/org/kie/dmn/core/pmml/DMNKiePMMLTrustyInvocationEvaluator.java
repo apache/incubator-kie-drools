@@ -56,6 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.model.FRI.SLASH;
+import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
@@ -132,7 +133,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
 
     protected PMML4Result evaluate(String modelName, PMMLContext context) {
         String basePath = context.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
-        FRI fri = new FRI(basePath, "pmml");
+        FRI fri = new FRI(basePath, PMML_STRING);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
         Collection<EfestoOutput<?>> retrieved = evaluateInput(darInputPMML);
         if (retrieved.isEmpty()) {
@@ -182,7 +183,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
             LOG.error(errorMessage);
             throw new KieCompilerServiceException(errorMessage, t);
         }
-        if (retrievedIndexFiles == null || retrievedIndexFiles.isEmpty() || retrievedIndexFiles.stream().noneMatch(indexFile -> indexFile.getModel().equals("pmml"))) {
+        if (retrievedIndexFiles == null || retrievedIndexFiles.isEmpty() || retrievedIndexFiles.stream().noneMatch(indexFile -> indexFile.getModel().equals(PMML_STRING))) {
             String errorMessage = String.format("Failed to create index files for %s@%s: please" +
                                                         " check classpath and dependencies!",
                                                 context.getFileName(),

@@ -56,6 +56,7 @@ import static org.kie.efesto.common.api.model.FRI.SLASH;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedRedirectResource;
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getKieRuntimeService;
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getRuntimeManager;
+import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 import static org.kie.pmml.models.drools.utils.KiePMMLAgendaListenerUtils.getAgendaEventListener;
@@ -165,7 +166,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
     private <S extends EfestoMapInputDTO, U, T extends EfestoInput<S>, E extends EfestoOutput<U>> void evaluatePMML4Result(final PMML4Result pmml4Result, T toEvaluate
             , KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         GeneratedRedirectResource redirectResource =
-                getGeneratedRedirectResource(toEvaluate.getFRI(), "pmml").orElse(null);
+                getGeneratedRedirectResource(toEvaluate.getFRI(), PMML_STRING).orElse(null);
         if (redirectResource == null) {
             logger.warn("{} can not redirect {}", KiePMMLDroolsModel.class.getName(), toEvaluate.getFRI());
             return;

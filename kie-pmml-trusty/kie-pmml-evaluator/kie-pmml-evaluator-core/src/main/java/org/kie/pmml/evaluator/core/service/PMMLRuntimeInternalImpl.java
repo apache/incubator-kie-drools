@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.model.FRI.SLASH;
+import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
@@ -53,13 +54,13 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     @Override
     public PMML4Result evaluate(String modelName, PMMLContext context) {
         String basePath = context.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
-        FRI fri = new FRI(basePath, "pmml");
+        FRI fri = new FRI(basePath, PMML_STRING);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
-        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, darInputPMML);
+        Collection<EfestoOutput<?>> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, darInputPMML);
         if (retrieved.isEmpty()) {
             throw new KieRuntimeServiceException("Failed to retrieve EfestoOutput");
         }
-        EfestoOutput output = retrieved.iterator().next();
+        EfestoOutput<?> output = retrieved.iterator().next();
         if (!(output instanceof EfestoOutputPMML)) {
             throw new KieRuntimeServiceException("Expected EfestoOutputPMML, retrieved " + output.getClass());
         }

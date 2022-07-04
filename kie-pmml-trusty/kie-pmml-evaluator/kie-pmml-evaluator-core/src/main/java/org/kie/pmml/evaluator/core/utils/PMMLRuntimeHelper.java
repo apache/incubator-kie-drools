@@ -55,6 +55,7 @@ import static org.kie.pmml.api.enums.PMML_STEP.END;
 import static org.kie.pmml.api.enums.PMML_STEP.POST_EVALUATION;
 import static org.kie.pmml.api.enums.PMML_STEP.PRE_EVALUATION;
 import static org.kie.pmml.api.enums.PMML_STEP.START;
+import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.evaluator.core.utils.PMMLListenerUtils.stepExecuted;
 import static org.kie.pmml.evaluator.core.utils.PostProcess.postProcess;
@@ -71,7 +72,7 @@ public class PMMLRuntimeHelper {
 
 
     public static boolean canManage(EfestoInput toEvaluate) {
-        return (toEvaluate instanceof EfestoInputPMML) && isPresentExecutableOrRedirect(toEvaluate.getFRI(), "pmml");
+        return (toEvaluate instanceof EfestoInputPMML) && isPresentExecutableOrRedirect(toEvaluate.getFRI(), PMML_STRING);
     }
 
     public static Optional<EfestoOutputPMML> execute(EfestoInputPMML toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
@@ -96,7 +97,7 @@ public class PMMLRuntimeHelper {
     }
 
     public static List<PMMLModel> getPMMLModels(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        Collection<GeneratedExecutableResource> finalResources = getAllGeneratedExecutableResources("pmml");
+        Collection<GeneratedExecutableResource> finalResources = getAllGeneratedExecutableResources(PMML_STRING);
         return finalResources.stream()
                 .map(finalResource -> loadKiePMMLModelFactory(finalResource, memoryCompilerClassLoader))
                 .flatMap(factory -> factory.getKiePMMLModels().stream())
@@ -132,7 +133,7 @@ public class PMMLRuntimeHelper {
 
     @SuppressWarnings("unchecked")
     static KiePMMLModelFactory loadKiePMMLModelFactory(FRI fri, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        GeneratedExecutableResource finalResource = getGeneratedExecutableResource(fri, "pmml")
+        GeneratedExecutableResource finalResource = getGeneratedExecutableResource(fri, PMML_STRING)
                 .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource for " + fri));
         return loadKiePMMLModelFactory(finalResource, memoryCompilerClassLoader);
     }
