@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.runtimemanager.api.model.EfestoContext;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.models.PMMLStep;
 
 public interface PMMLContext extends EfestoContext<PMMLStep, PMMLListener> {
@@ -70,5 +71,5 @@ public interface PMMLContext extends EfestoContext<PMMLStep, PMMLListener> {
     /**
      * @return
      */
-    Object getMemoryClassLoader(); // Using Object to avoid depending on kiememorycompiler
+    KieMemoryCompiler.MemoryCompilerClassLoader getMemoryClassLoader();
 }

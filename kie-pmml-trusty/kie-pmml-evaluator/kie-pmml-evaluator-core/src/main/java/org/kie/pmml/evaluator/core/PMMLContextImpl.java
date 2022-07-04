@@ -263,7 +263,7 @@ public class PMMLContextImpl implements PMMLContext {
     }
 
     @Override
-    public Object getMemoryClassLoader() {
+    public KieMemoryCompiler.MemoryCompilerClassLoader getMemoryClassLoader() {
         return memoryCompilerClassLoader;
     }
 }

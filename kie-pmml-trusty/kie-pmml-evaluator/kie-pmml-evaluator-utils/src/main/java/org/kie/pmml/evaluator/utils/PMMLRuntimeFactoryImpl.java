@@ -36,11 +36,6 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
     private static final CompilationManager compilationManager = SPIUtils.getCompilationManager(false).get();
 
     @Override
-    public PMMLRuntime getPMMLRuntimeFromClassloader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        return new PMMLRuntimeInternalImpl(memoryCompilerClassLoader);
-    }
-
-    @Override
     public PMMLRuntime getPMMLRuntimeFromFile(File pmmlFile) {
         EfestoResource<File> darResource = new EfestoFileResource(pmmlFile);
         KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =

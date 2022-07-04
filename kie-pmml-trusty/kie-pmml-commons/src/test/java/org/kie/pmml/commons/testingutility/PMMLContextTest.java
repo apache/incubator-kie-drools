@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.runtimemanager.api.listener.EfestoListener;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
@@ -167,7 +168,7 @@ public class PMMLContextTest implements PMMLContext {
     }
 
     @Override
-    public Object getMemoryClassLoader() {
+    public KieMemoryCompiler.MemoryCompilerClassLoader getMemoryClassLoader() {
         return null;
     }
 }

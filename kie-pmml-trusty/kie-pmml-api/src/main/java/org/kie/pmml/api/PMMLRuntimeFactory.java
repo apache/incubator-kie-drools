@@ -17,20 +17,9 @@ package org.kie.pmml.api;
 
 import java.io.File;
 
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 
 public interface PMMLRuntimeFactory {
-
-
-    /**
-     * Retrieve a <code>PMMLRuntime</code> built around the given <code><KieMemoryCompiler.MemoryCompilerClassLoader</code>.
-     * To be used for already-compiled resources provided by context (e.g. provided by <b>Maven</b> dependency)
-     * 
-     * @param memoryCompilerClassLoader
-     * @return
-     */
-    PMMLRuntime getPMMLRuntimeFromClassloader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
 
     /**
      * Retrieve a <code>PMMLRuntime</code> bound to the given <code><File</code>
