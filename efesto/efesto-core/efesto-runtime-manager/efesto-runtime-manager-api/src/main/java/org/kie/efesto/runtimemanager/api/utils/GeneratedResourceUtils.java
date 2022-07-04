@@ -80,6 +80,22 @@ public class GeneratedResourceUtils {
         });
     }
 
+    public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(String modelType) {
+        Collection<GeneratedExecutableResource> toReturn = new HashSet<>();
+        getIndexFile(modelType).ifPresent(indexFile -> {
+            try {
+                GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
+                toReturn.addAll(generatedResources.stream()
+                                        .filter(generatedResource -> generatedResource instanceof GeneratedExecutableResource)
+                                        .map(GeneratedExecutableResource.class::cast)
+                                        .collect(Collectors.toSet()));
+            } catch (IOException e) {
+                logger.debug("Failed to read GeneratedClassResource from {}.", indexFile.getName(), e);
+            }
+        });
+        return toReturn;
+    }
+
     public static Collection<GeneratedClassResource> getAllGeneratedClassResources(String modelType) {
         Collection<GeneratedClassResource> toReturn = new HashSet<>();
         getIndexFile(modelType).ifPresent(indexFile -> {

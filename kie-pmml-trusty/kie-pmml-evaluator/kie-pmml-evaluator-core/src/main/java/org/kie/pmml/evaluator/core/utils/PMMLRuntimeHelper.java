@@ -47,7 +47,8 @@ import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getAllGeneratedExecutableResource;
+import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getAllGeneratedClassResources;
+import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getAllGeneratedExecutableResources;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedExecutableResource;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrRedirect;
 import static org.kie.pmml.api.enums.PMML_STEP.END;
@@ -94,7 +95,7 @@ public class PMMLRuntimeHelper {
     }
 
     public static List<PMMLModel> getPMMLModels(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        Collection<GeneratedExecutableResource> finalResources = getAllGeneratedExecutableResource("pmml");
+        Collection<GeneratedExecutableResource> finalResources = getAllGeneratedExecutableResources("pmml");
         return finalResources.stream()
                 .map(finalResource -> loadKiePMMLModelFactory(finalResource, memoryCompilerClassLoader))
                 .flatMap(factory -> factory.getKiePMMLModels().stream())
