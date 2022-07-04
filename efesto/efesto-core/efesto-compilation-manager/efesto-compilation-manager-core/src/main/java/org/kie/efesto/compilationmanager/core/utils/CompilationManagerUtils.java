@@ -52,7 +52,7 @@ import static org.kie.efesto.compilationmanager.api.utils.SPIUtils.getKieCompile
 public class CompilationManagerUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(CompilationManagerUtils.class.getName());
-    public static final String DEFAULT_INDEXFILE_DIRECTORY = "./target/classes";
+    private static final String DEFAULT_INDEXFILE_DIRECTORY = "./target/classes";
 
     private CompilationManagerUtils() {
     }

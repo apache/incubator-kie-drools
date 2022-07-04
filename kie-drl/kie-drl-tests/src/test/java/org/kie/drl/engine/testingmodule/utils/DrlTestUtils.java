@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import org.kie.efesto.common.api.io.IndexFile;
 
-import static org.kie.efesto.compilationmanager.core.utils.CompilationManagerUtils.DEFAULT_INDEXFILE_DIRECTORY;
+import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 
 public class DrlTestUtils {
 
@@ -24,7 +24,8 @@ public class DrlTestUtils {
      */
     public static void refreshDrlIndexFile() {
         IndexFile source = new IndexFile(SRC_MAIN_RESOURCES, "drl");
-        IndexFile target = new IndexFile(DEFAULT_INDEXFILE_DIRECTORY, "drl");
+        String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY);
+        IndexFile target = new IndexFile(parentPath, "drl");
 
         Path sourcePath = source.getAbsoluteFile().toPath();
         Path targetPath = target.getAbsoluteFile().toPath();

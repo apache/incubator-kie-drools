@@ -26,9 +26,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
-import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.drl.engine.testingmodule.runtime.domain.Person;
 import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
+import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
@@ -85,28 +84,5 @@ class RuntimeDrlTest {
         KieSession session = retrieved.getOutputData();
         session.insert("test");
         assertThat(session.fireAllRules()).isEqualTo(3);
-    }
-
-    @Test
-    @SuppressWarnings("raw")
-    void executeSimpleRule() throws IOException {
-        String basePath = "StatelessExecution";
-        Set<File> files = DrlTestUtils.collectDrlFiles("src/test/resources/org/kie/drl/engine/testingmodule/runtime/SimpleExecution.drl");
-        EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, basePath);
-        EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(basePath, "drl"), "");
-        compilationManager.processResource(memoryCompilerClassLoader, toProcess);
-        Collection<EfestoOutput> darOutput = runtimeManager.evaluateInput(memoryCompilerClassLoader, toEvaluate);
-        assertThat(darOutput).isNotNull().hasSize(1);
-        EfestoOutput retrievedRaw = darOutput.iterator().next();
-        assertThat(retrievedRaw).isInstanceOf(EfestoOutputDrlKieSessionLocal.class);
-        EfestoOutputDrlKieSessionLocal retrieved = (EfestoOutputDrlKieSessionLocal) retrievedRaw;
-        assertThat(retrieved.getOutputData()).isNotNull().isInstanceOf(KieSession.class);
-
-        // Use ksession
-        KieSession ksession = retrieved.getOutputData();
-        Person john = new Person("John", 22);
-        ksession.insert(john);
-        ksession.fireAllRules();
-        assertThat(john.isAdult()).isTrue();
     }
 }
