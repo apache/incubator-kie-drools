@@ -33,13 +33,14 @@ import org.kie.pmml.evaluator.utils.SPIUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.efesto.common.api.utils.FileUtils.getFile;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
 public class AbstractPMMLTest {
 
     private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = SPIUtils.getPMMLRuntimeFactory(false);
 
     protected static PMMLRuntime getPMMLRuntime(String fileName) {
-        fileName += ".pmml";
+        fileName += PMML_SUFFIX;
         File pmmlFile = getFile(fileName);
         return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);
     }

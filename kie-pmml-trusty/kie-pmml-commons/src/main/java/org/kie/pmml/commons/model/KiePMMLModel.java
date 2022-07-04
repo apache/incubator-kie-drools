@@ -31,6 +31,8 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
+
 /**
  * KIE representation of PMML model
  */
@@ -52,8 +54,8 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     protected KiePMMLModel(String fileName, String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
-        if (!fileName.endsWith(".pmml")) {
-            this.fileName = fileName + ".pmml";
+        if (!fileName.endsWith(PMML_SUFFIX)) {
+            this.fileName = fileName + PMML_SUFFIX;
         } else {
             this.fileName = fileName;
         }

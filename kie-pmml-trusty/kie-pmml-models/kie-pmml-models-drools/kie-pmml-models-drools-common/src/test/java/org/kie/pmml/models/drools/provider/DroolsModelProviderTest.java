@@ -47,6 +47,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionaryAndTransformationDictionaryAndLocalTransformations;
@@ -54,7 +55,7 @@ import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDict
 public class DroolsModelProviderTest {
 
     private static final String SOURCE_BASE = "SimpleScorecardWithTransformations";
-    private static final String SOURCE_1 = SOURCE_BASE + ".pmml";
+    private static final String SOURCE_1 = SOURCE_BASE + PMML_SUFFIX;
     //  Needed to avoid Mockito usage
     private static final Map<String, String> SOURCE_MAP = new HashMap<>();
     private static PMML pmml;

@@ -59,6 +59,10 @@ public class Constants {
     public static final String AS_LIST = "asList";
     public static final String TO_RETURN = "toReturn";
 
+    public static final String PMML_STRING = "pmml";
+    public static final String PMML_SUFFIX = "." + PMML_STRING;
+
+
     private Constants() {
         // Avoid instantiation
     }

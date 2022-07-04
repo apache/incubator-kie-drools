@@ -44,6 +44,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
@@ -55,7 +56,7 @@ import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getFieldTypeM
 public class KiePMMLTreeModelFactoryTest {
 
     private static final String SOURCE_1_NO_PREFIX = "TreeSample";
-    private static final String SOURCE_1 = SOURCE_1_NO_PREFIX + ".pmml";
+    private static final String SOURCE_1 = SOURCE_1_NO_PREFIX + PMML_SUFFIX;
     private static final String TARGET_FIELD = "whatIdo";
     private static PMML pmml;
     private static TreeModel treeModel;

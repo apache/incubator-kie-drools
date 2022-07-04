@@ -30,6 +30,8 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
 
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
+
 public class PMMLContextImpl implements PMMLContext {
 
     private static final String PMML_REQUEST_DATA = "PMML_REQUEST_DATA";
@@ -61,8 +63,8 @@ public class PMMLContextImpl implements PMMLContext {
                            final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         name = "Context_" + ID_GENERATOR.incrementAndGet();
         set(PMML_REQUEST_DATA, pmmlRequestData);
-        if (!fileName.endsWith(".pmml")) {
-            this.fileName = fileName + ".pmml";
+        if (!fileName.endsWith(PMML_SUFFIX)) {
+            this.fileName = fileName + PMML_SUFFIX;
         } else {
             this.fileName = fileName;
         }

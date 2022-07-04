@@ -55,6 +55,7 @@ import static org.kie.pmml.api.enums.PMML_STEP.END;
 import static org.kie.pmml.api.enums.PMML_STEP.POST_EVALUATION;
 import static org.kie.pmml.api.enums.PMML_STEP.PRE_EVALUATION;
 import static org.kie.pmml.api.enums.PMML_STEP.START;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.evaluator.core.utils.PMMLListenerUtils.stepExecuted;
 import static org.kie.pmml.evaluator.core.utils.PostProcess.postProcess;
 import static org.kie.pmml.evaluator.core.utils.PreProcess.preProcess;
@@ -105,7 +106,7 @@ public class PMMLRuntimeHelper {
 
     public static Optional<PMMLModel> getPMMLModel(String fileName, String modelName, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         logger.trace("getPMMLModel {} {}", fileName, modelName);
-        String fileNameToUse =  ! fileName.endsWith(".pmml") ? fileName + ".pmml": fileName;
+        String fileNameToUse =  ! fileName.endsWith(PMML_SUFFIX) ? fileName + PMML_SUFFIX: fileName;
         return getPMMLModels(memoryCompilerClassLoader)
                 .stream()
                 .filter(model -> Objects.equals(fileNameToUse, model.getFileName()) &&  Objects.equals(modelName, model.getName()))
@@ -164,7 +165,7 @@ public class PMMLRuntimeHelper {
 
     static Optional<KiePMMLModel> getPMMLModel(final List<KiePMMLModel> kiePMMLModels, String fileName, String modelName) {
         logger.trace("getPMMLModel {} {}", kiePMMLModels, modelName);
-        String fileNameToUse =  ! fileName.endsWith(".pmml") ? fileName + ".pmml": fileName;
+        String fileNameToUse =  ! fileName.endsWith(PMML_SUFFIX) ? fileName + PMML_SUFFIX: fileName;
         return kiePMMLModels
                 .stream()
                 .filter(model -> Objects.equals(fileNameToUse, model.getFileName()) &&  Objects.equals(modelName, model.getName()))

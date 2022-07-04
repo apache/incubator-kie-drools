@@ -56,6 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.model.FRI.SLASH;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvocationEvaluator {
@@ -219,7 +220,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
      */
     private File getPMMLFile(String fileName, InputStream inputStream) {
         FileOutputStream outputStream = null;
-        String fileNameToUse = fileName.endsWith(".pmml") ? fileName.replace(".pmml", "") : fileName;
+        String fileNameToUse = fileName.endsWith(PMML_SUFFIX) ? fileName.replace(PMML_SUFFIX, "") : fileName;
         try {
             File tmpFile = File.createTempFile(fileNameToUse, null);
             File toReturn = new File(tmpFile.getParentFile().getAbsolutePath() + File.separator + fileName);

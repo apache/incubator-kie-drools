@@ -38,11 +38,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
 public class PMMLScorecardModelEvaluatorTest {
 
     private static final String SOURCE_BASE = "ScorecardSample";
-    private static final String SOURCE_1 = SOURCE_BASE + ".pmml";
+    private static final String SOURCE_1 = SOURCE_BASE + PMML_SUFFIX;
     private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
     private static final Logger logger = LoggerFactory.getLogger(PMMLScorecardModelEvaluatorTest.class);
     private static final String modelName = "Sample Score";

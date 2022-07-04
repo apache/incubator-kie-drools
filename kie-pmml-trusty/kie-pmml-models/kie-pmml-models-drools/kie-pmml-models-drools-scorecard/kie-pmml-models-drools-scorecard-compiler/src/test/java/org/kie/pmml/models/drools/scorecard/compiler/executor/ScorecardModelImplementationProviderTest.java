@@ -28,13 +28,14 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
 public class ScorecardModelImplementationProviderTest {
 
     private static final ScorecardModelImplementationProvider PROVIDER = new ScorecardModelImplementationProvider();
 
     private static final String SOURCE_BASE = "ScorecardSample";
-    private static final String SOURCE_1 = SOURCE_BASE + ".pmml";
+    private static final String SOURCE_1 = SOURCE_BASE + PMML_SUFFIX;
     private static final String PACKAGE_NAME = "PACKAGE_NAME";
 
     @Test

@@ -45,22 +45,4 @@ public class PackageClassNameUtils {
         String upperCasedInput = input.substring(0, 1).toUpperCase() + input.substring(1);
         return upperCasedInput.replaceAll("[^A-Za-z0-9]", "");
     }
-
-    /**
-     * Returns an array where the first item is the <b>factory class</b> name and the second item is the <b>package</b> name,
-     * built starting from the given <b>sourcePath</b> <code>String</code>
-     *
-     * @param sourcePath
-     * @return
-     */
-    public static String[] getFactoryClassNamePackageName(String sourcePath) {
-        sourcePath = sourcePath.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
-        String fileName = sourcePath.substring(sourcePath.lastIndexOf(FOLDER_SEPARATOR) + 1);
-        fileName = fileName.replace(".pmml", "");
-        String packageName = getSanitizedPackageName(fileName);
-        String factoryClassName = getSanitizedClassName(fileName + "Factory");
-        return new String[]{factoryClassName, packageName};
-    }
-
-
 }

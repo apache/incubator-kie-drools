@@ -76,6 +76,7 @@ import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.efesto.common.api.utils.FileUtils.getFileInputStream;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomCastInteger;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataField;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomMiningField;
@@ -96,7 +97,7 @@ import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileNam
 public class KiePMMLModelFactoryUtilsTest {
 
     private static final String SOURCE_BASE = "TransformationsSample";
-    private static final String SOURCE = SOURCE_BASE + ".pmml";
+    private static final String SOURCE = SOURCE_BASE + PMML_SUFFIX;
     private static final String TEMPLATE_SOURCE = "Template.tmpl";
     private static final String TEMPLATE_CLASS_NAME = "Template";
     private static final String TEST_01_SOURCE = "KiePMMLModelFactoryUtilsTest_01.txt";

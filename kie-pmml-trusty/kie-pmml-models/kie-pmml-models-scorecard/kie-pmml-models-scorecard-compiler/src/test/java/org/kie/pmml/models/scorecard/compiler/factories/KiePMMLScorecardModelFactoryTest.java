@@ -47,6 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLScorecardModelFactory.KIE_PMML_SCORECARD_MODEL_TEMPLATE;
@@ -56,7 +57,7 @@ public class KiePMMLScorecardModelFactoryTest {
 
     private static final String BASIC_COMPLEX_PARTIAL_SCORE_SOURCE_NO_SUFFIX = "BasicComplexPartialScore";
     private static final String BASIC_COMPLEX_PARTIAL_SCORE_SOURCE = BASIC_COMPLEX_PARTIAL_SCORE_SOURCE_NO_SUFFIX +
-            ".pmml";
+            PMML_SUFFIX;
     private static final String PACKAGE_NAME = "packagename";
     private static final String CONTAINER_CLASS_NAME = KiePMMLModelUtils.getGeneratedClassName("Scorecard");
     private static final CompilationUnit scorecardCloneCU =

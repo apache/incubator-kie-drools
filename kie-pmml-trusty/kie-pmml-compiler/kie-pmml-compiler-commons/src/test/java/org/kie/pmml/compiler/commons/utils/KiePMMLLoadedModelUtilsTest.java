@@ -32,6 +32,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 import static org.kie.efesto.common.api.utils.FileUtils.getFileInputStream;
 import static org.kie.pmml.api.enums.OP_TYPE.CATEGORICAL;
 import static org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getOpType;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldName;
@@ -44,7 +45,7 @@ public class KiePMMLLoadedModelUtilsTest {
     private static final String ONE_MINING_TARGET_SOURCE = "OneMiningTargetFieldSample.pmml";
     private static final String MULTIPLE_TARGETS_SOURCE = "MultipleTargetsFieldSample.pmml";
     private static final String NO_MODELNAME_SAMPLE_NAME = "NoModelNameSample";
-    private static final String NO_MODELNAME_SAMPLE = NO_MODELNAME_SAMPLE_NAME + ".pmml";
+    private static final String NO_MODELNAME_SAMPLE = NO_MODELNAME_SAMPLE_NAME + PMML_SUFFIX;
     private static final String WHAT_I_DO_TARGET_FIELD = "whatIdo";
     private static final String CAR_LOCATION_FIELD = "car_location";
     private static final String NUMBER_OF_CLAIMS_FIELD = "number_of_claims";

@@ -29,12 +29,13 @@ import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
 public class TreeModelImplementationProviderTest {
 
     private static final TreeModelImplementationProvider PROVIDER = new TreeModelImplementationProvider();
     private static final String SOURCE_BASE = "TreeSample";
-    private static final String SOURCE_1 = SOURCE_BASE + ".pmml";
+    private static final String SOURCE_1 = SOURCE_BASE + PMML_SUFFIX;
 
     @Test
     void getPMMLModelType() {

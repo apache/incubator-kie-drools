@@ -56,7 +56,7 @@ public class StringUtils {
     public static String[] getFactoryClassNamePackageName(String sourcePath) {
         sourcePath = sourcePath.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
         String fileName = sourcePath.substring(sourcePath.lastIndexOf(FOLDER_SEPARATOR) + 1);
-        fileName = fileName.replace(".pmml", "");
+        fileName = fileName.replace(PMML_SUFFIX, "");
         String packageName = getSanitizedPackageName(fileName);
         String factoryClassName = getSanitizedClassName(fileName + "Factory");
         return new String[]{factoryClassName, packageName};
