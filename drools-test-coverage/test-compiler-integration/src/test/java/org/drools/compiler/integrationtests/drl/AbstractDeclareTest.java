@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractDeclareTest {
     protected final KieBaseTestConfiguration kieBaseTestConfiguration;
@@ -115,15 +115,15 @@ public abstract class AbstractDeclareTest {
 
             ksession.fireAllRules();
             System.out.println(list);
-            assertTrue( list.contains( "hash" ) );
-            assertTrue( list.contains( "equals" ) );
-            assertTrue( list.contains( 7 ) );
+            assertThat(list.contains("hash")).isTrue();
+            assertThat(list.contains("equals")).isTrue();
+            assertThat(list.contains(7)).isTrue();
             // The X instances are considered equal so when using EQUALITY, the second insert doesn't insert anything,
             // therefore, the fire produced by the second insert should be checked just with IDENTITY.
             if (kieBaseTestConfiguration.isIdentity()) {
-                assertTrue( list.contains( "y11" ) );
+                assertThat(list.contains("y11")).isTrue();
             }
-            assertTrue( list.contains( "y22" ) );
+            assertThat(list.contains("y22")).isTrue();
         } finally {
             ksession.dispose();
         }

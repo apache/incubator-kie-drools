@@ -28,7 +28,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class CalendarTest {
@@ -79,7 +79,7 @@ public class CalendarTest {
             ksession.fireAllRules();
             ksession.dispose();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

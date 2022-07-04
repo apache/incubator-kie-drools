@@ -36,7 +36,6 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -63,12 +62,9 @@ import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class TypeDeclarationTest {
@@ -94,7 +90,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     @Test
@@ -130,10 +126,10 @@ public class TypeDeclarationTest {
 
         //No Warnings
         KnowledgeBuilderResults warnings = kbuilder.getResults(ResultSeverity.WARNING);
-        Assert.assertEquals(0, warnings.size());
+        assertThat(warnings.size()).isEqualTo(0);
 
         //just 1 package was created
-        Assert.assertEquals(1, kbuilder.getKnowledgePackages().size());
+        assertThat(kbuilder.getKnowledgePackages().size()).isEqualTo(1);
 
         //Get the Fact Type for org.kie.EventA
         FactType factType = ((KnowledgePackageImpl)kbuilder.getKnowledgePackages().iterator().next()).getFactType("org.kie.EventA");
@@ -150,8 +146,8 @@ public class TypeDeclarationTest {
         //New Annotations must be there too
         TypeDeclaration typeDeclaration = ((KnowledgePackageImpl)kbuilder.getKnowledgePackages().iterator().next()).getTypeDeclaration("EventA");
 
-        assertEquals(Role.Type.EVENT, typeDeclaration.getRole());
-        assertEquals("duration", typeDeclaration.getDurationAttribute());
+        assertThat(typeDeclaration.getRole()).isEqualTo(Role.Type.EVENT);
+        assertThat(typeDeclaration.getDurationAttribute()).isEqualTo("duration");
 
     }
 
@@ -186,10 +182,10 @@ public class TypeDeclarationTest {
 
         //No Warnings
         KnowledgeBuilderResults warnings = kbuilder.getResults(ResultSeverity.WARNING);
-        assertEquals(0, warnings.size());
+        assertThat(warnings.size()).isEqualTo(0);
 
         //just 1 package was created
-        assertEquals(0, kbuilder.getKnowledgePackages().size());
+        assertThat(kbuilder.getKnowledgePackages().size()).isEqualTo(0);
 
         // TODO: Odd behavior with new APIs (an error found for single test method. But no error for running the test class or parameterized)
         // File a JIRA to revisit and write a valid test for new APIs and exec-model
@@ -224,7 +220,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, drlResource, drlResource); // same resource
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     /**
@@ -248,7 +244,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, drlResource1, drlResource2); // different resources
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
 
@@ -446,7 +442,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Two definitions with the same name are not allowed, but it was not detected!", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Two definitions with the same name are not allowed, but it was not detected!").isFalse();
     }
 
 
@@ -484,11 +480,11 @@ public class TypeDeclarationTest {
 
         FactType bean = kBase.getFactType( "org.drools.mvel.compiler.test", "Bean" );
         FactType pers = kBase.getFactType( "org.drools", "Person" );
-        assertEquals( "org.drools.mvel.compiler.test.Bean", bean.getName() );
-        assertEquals( "Bean", bean.getSimpleName() );
-        assertEquals( "org.drools.mvel.compiler.test", bean.getPackageName() );
+        assertThat(bean.getName()).isEqualTo("org.drools.mvel.compiler.test.Bean");
+        assertThat(bean.getSimpleName()).isEqualTo("Bean");
+        assertThat(bean.getPackageName()).isEqualTo("org.drools.mvel.compiler.test");
 
-        assertEquals( 3, bean.getClassAnnotations().size() );
+        assertThat(bean.getClassAnnotations().size()).isEqualTo(3);
         Annotation ann = bean.getClassAnnotations().get( 0 );
         if (!ann.getName().equals("org.drools.mvel.compiler.compiler.TypeDeclarationTest$KlassAnnotation")) {
             ann = bean.getClassAnnotations().get( 1 );
@@ -496,12 +492,12 @@ public class TypeDeclarationTest {
         if (!ann.getName().equals("org.drools.mvel.compiler.compiler.TypeDeclarationTest$KlassAnnotation")) {
             ann = bean.getClassAnnotations().get( 2 );
         }
-        assertEquals( "org.drools.mvel.compiler.compiler.TypeDeclarationTest$KlassAnnotation", ann.getName() );
-        assertEquals( "klass", ann.getPropertyValue( "value" ) );
-        assertEquals( String.class, ann.getPropertyType( "value" ) );
+        assertThat(ann.getName()).isEqualTo("org.drools.mvel.compiler.compiler.TypeDeclarationTest$KlassAnnotation");
+        assertThat(ann.getPropertyValue("value")).isEqualTo("klass");
+        assertThat(ann.getPropertyType("value")).isEqualTo(String.class);
 
-        assertEquals( 2, bean.getMetaData().size() );
-        assertEquals( "event", bean.getMetaData().get( "role" ) );
+        assertThat(bean.getMetaData().size()).isEqualTo(2);
+        assertThat(bean.getMetaData().get("role")).isEqualTo("event");
 
         FactField field = bean.getField( "name" );
         assertThat(field).isNotNull();
@@ -531,7 +527,7 @@ public class TypeDeclarationTest {
         KieSession knowledgeSession = kBase.newKieSession();
         FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
 
-        assertTrue( handle instanceof EventFactHandle );
+        assertThat(handle instanceof EventFactHandle).isTrue();
 
     }
 
@@ -553,7 +549,7 @@ public class TypeDeclarationTest {
         KieSession knowledgeSession = kBase.newKieSession();
         FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
 
-        assertTrue( handle instanceof EventFactHandle );
+        assertThat(handle instanceof EventFactHandle).isTrue();
 
     }
 
@@ -636,7 +632,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
 
         InternalKieModule kieModule = (InternalKieModule)kieBuilder.getKieModule();
         KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl)kieModule.getKnowledgeBuilderForKieBase(KieBaseTestConfiguration.KIE_BASE_MODEL_NAME);
@@ -646,15 +642,15 @@ public class TypeDeclarationTest {
                 Collection<FactType> types = kp.getFactTypes();
                 for ( FactType type : types ) {
                     if ( "org.drools.Pet".equals( type.getName() ) ) {
-                        assertEquals( 4, type.getFields().size() );
+                        assertThat(type.getFields().size()).isEqualTo(4);
                         FactField owners = type.getField( "owners" );
-                        assertTrue( owners != null && owners.getType().getSimpleName().equals( "Owner[]" ) && owners.getType().isArray()  );
+                        assertThat(owners != null && owners.getType().getSimpleName().equals("Owner[]") && owners.getType().isArray()).isTrue();
                         FactField twoDim = type.getField( "twoDimArray" );
-                        assertTrue( twoDim != null && twoDim.getType().getSimpleName().equals( "Foo[][]" ) && twoDim.getType().isArray()  );
+                        assertThat(twoDim != null && twoDim.getType().getSimpleName().equals("Foo[][]") && twoDim.getType().isArray()).isTrue();
                         FactField friends = type.getField( "friends" );
-                        assertTrue( friends != null && friends.getType().getSimpleName().equals( "Pet[]" ) && friends.getType().isArray()  );
+                        assertThat(friends != null && friends.getType().getSimpleName().equals("Pet[]") && friends.getType().isArray()).isTrue();
                         FactField ages = type.getField( "ages" );
-                        assertTrue( ages != null && ages.getType().getSimpleName().equals( "int[]" ) && ages.getType().isArray()  );
+                        assertThat(ages != null && ages.getType().getSimpleName().equals("int[]") && ages.getType().isArray()).isTrue();
                     }
                 }
             }
@@ -674,7 +670,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = build(drl);
 
-        assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+        assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isFalse();
         KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
 
         FactType type = kieBase.getFactType( "org.drools.mvel.compiler", "Person" );
@@ -743,14 +739,14 @@ public class TypeDeclarationTest {
         KieBuilder builder = ks.newKieBuilder( kfs );
         builder.buildAll();
 
-        assertEquals( Collections.emptyList(), builder.getResults().getMessages( Message.Level.ERROR ) );
+        assertThat(builder.getResults().getMessages(Message.Level.ERROR)).isEqualTo(Collections.emptyList());
 
         KieContainer kc = ks.newKieContainer(builder.getKieModule().getReleaseId());
         FactType ft = kc.getKieBase( "rules" ).getFactType( "org.drools.mvel.compiler.test2", "Child" );
 
         assertThat(ft).isNotNull();
         assertThat(ft.getFactClass()).isNotNull();
-        assertEquals( "org.drools.mvel.compiler.test1.Parent", ft.getFactClass().getSuperclass().getName() );
+        assertThat(ft.getFactClass().getSuperclass().getName()).isEqualTo("org.drools.mvel.compiler.test1.Parent");
     }
 
 
@@ -764,7 +760,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = build(drl);
 
-        assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+        assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isFalse();
         KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
 
         FactType factType = kieBase.getFactType("org.test", "Pet");
@@ -789,7 +785,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = build(drl);
 
-        assertFalse(kieBuilder.getResults().hasMessages(Message.Level.ERROR));
+        assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isFalse();
         KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
 
         FactType factType = kieBase.getFactType( "org.test", "Person" );
@@ -804,8 +800,8 @@ public class TypeDeclarationTest {
         ksession.insert(instance);
         ksession.fireAllRules();
 
-        assertEquals( 1, names.size() );
-        assertEquals( "Mark", names.get( 0 ) );
+        assertThat(names.size()).isEqualTo(1);
+        assertThat(names.get(0)).isEqualTo("Mark");
     }
 
     @Test
@@ -824,7 +820,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = build(drl);
 
-        assertFalse(kieBuilder.getResults().hasMessages(Message.Level.ERROR));
+        assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isFalse();
         KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
 
         FactType factType = kieBase.getFactType("org.test", "Person");
@@ -839,8 +835,8 @@ public class TypeDeclarationTest {
         ksession.insert(instance);
         ksession.fireAllRules();
 
-        assertEquals(1, names.size());
-        assertEquals("Mark", names.get(0));
+        assertThat(names.size()).isEqualTo(1);
+        assertThat(names.get(0)).isEqualTo("Mark");
     }
 
     @Test
@@ -860,7 +856,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = build(drl);
 
-        assertTrue( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+        assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isTrue();
     }
 
     @Test
@@ -880,7 +876,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = build(drl);
 
-        assertTrue( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+        assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isTrue();
     }
 
     @Test
@@ -900,7 +896,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = build(drl);
 
-        assertTrue( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+        assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isTrue();
     }
 
     private KieBuilder build(String drl) {
@@ -939,13 +935,13 @@ public class TypeDeclarationTest {
         KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1, str2, str3);
 
         FactType type = kieBase.getFactType( "org.kie1", "Foo" );
-        assertEquals( 2, type.getFields().size() );
+        assertThat(type.getFields().size()).isEqualTo(2);
 
         Object foo = null;
         try {
             foo = type.newInstance();
             type.set( foo, "name", "bar" );
-            assertEquals( "bar", type.get( foo, "name" ) );
+            assertThat(type.get(foo, "name")).isEqualTo("bar");
         } catch ( InstantiationException e ) {
             fail( e.getMessage() );
         } catch ( IllegalAccessException e ) {
@@ -956,9 +952,9 @@ public class TypeDeclarationTest {
         FactHandle handle = session.insert( foo );
         int n = session.fireAllRules( 5 );
 
-        assertTrue( handle instanceof EventFactHandle );
-        assertEquals( 1, n );
-        assertEquals( 99, type.get( foo, "age" ) );
+        assertThat(handle instanceof EventFactHandle).isTrue();
+        assertThat(n).isEqualTo(1);
+        assertThat(type.get(foo, "age")).isEqualTo(99);
     }
 
     public static interface Base {
@@ -1006,8 +1002,8 @@ public class TypeDeclarationTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.containsAll( asList("Supaa", "Subaa") ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(asList("Supaa", "Subaa"))).isTrue();
 
         FactType sup = ks.getKieBase().getFactType( "test", "Sup" );
         FactType sub = ks.getKieBase().getFactType( "test", "Sub" );
@@ -1015,15 +1011,15 @@ public class TypeDeclarationTest {
         try {
             Method m1 = sup.getFactClass().getMethod( "getFld" );
             assertThat(m1).isNotNull();
-            assertEquals( Object.class, m1.getReturnType() );
+            assertThat(m1.getReturnType()).isEqualTo(Object.class);
 
             Method m2 = sub.getFactClass().getMethod( "getFld" );
             assertThat(m2).isNotNull();
-            assertEquals( String.class, m2.getReturnType() );
+            assertThat(m2.getReturnType()).isEqualTo(String.class);
 
-            assertEquals( 0, sub.getFactClass().getFields().length );
-            assertEquals( 0, sub.getFactClass().getDeclaredFields().length );
-            assertEquals( 1, sup.getFactClass().getDeclaredFields().length );
+            assertThat(sub.getFactClass().getFields().length).isEqualTo(0);
+            assertThat(sub.getFactClass().getDeclaredFields().length).isEqualTo(0);
+            assertThat(sup.getFactClass().getDeclaredFields().length).isEqualTo(1);
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( e.getMessage() );
@@ -1049,7 +1045,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     @Test
@@ -1064,7 +1060,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     @Test
@@ -1078,7 +1074,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
 }

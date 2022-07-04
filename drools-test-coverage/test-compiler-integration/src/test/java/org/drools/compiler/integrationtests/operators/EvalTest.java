@@ -42,9 +42,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class EvalTest {
@@ -89,7 +88,7 @@ public class EvalTest {
             ksession.insert(stilton);
             ksession.fireAllRules();
 
-            assertEquals(stilton, ((List) ksession.getGlobal("list")).get(0));
+            assertThat(((List) ksession.getGlobal("list")).get(0)).isEqualTo(stilton);
         } finally {
             ksession.dispose();
         }
@@ -137,8 +136,8 @@ public class EvalTest {
 
             ksession.fireAllRules();
 
-            assertTrue(list.contains("fired1"));
-            assertTrue(list.contains("fired3"));
+            assertThat(list.contains("fired1")).isTrue();
+            assertThat(list.contains("fired3")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -179,7 +178,7 @@ public class EvalTest {
             session.insert(foo);
             session.fireAllRules();
 
-            assertEquals(foo, ((List) session.getGlobal("list")).get(0));
+            assertThat(((List) session.getGlobal("list")).get(0)).isEqualTo(foo);
         } finally {
             session.dispose();
         }
@@ -206,11 +205,11 @@ public class EvalTest {
 
             session.insert(new Person("mark", 50));
             int rules = session.fireAllRules();
-            assertEquals(0, rules);
+            assertThat(rules).isEqualTo(0);
 
             session.insert(new Person("bob", 18));
             rules = session.fireAllRules();
-            assertEquals(1, rules);
+            assertThat(rules).isEqualTo(1);
         } finally {
             session.dispose();
         }
@@ -243,7 +242,7 @@ public class EvalTest {
                 ksession.fireAllRules();
                 fail("Should throw an Exception from the Eval");
             } catch (final Exception e) {
-                assertTrue(e.getCause().getMessage().contains( "this should throw an exception" ));
+                assertThat(e.getCause().getMessage().contains("this should throw an exception")).isTrue();
             }
         } finally {
             ksession.dispose();
@@ -270,11 +269,11 @@ public class EvalTest {
 
             ksession.insert(new Person("mark", 50));
             int rules = ksession.fireAllRules();
-            assertEquals(0, rules);
+            assertThat(rules).isEqualTo(0);
 
             ksession.insert(new Person("bob", 18));
             rules = ksession.fireAllRules();
-            assertEquals(1, rules);
+            assertThat(rules).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -303,14 +302,14 @@ public class EvalTest {
                                                                          drl);
         final KieSession session = kbase.newKieSession();
         try {
-            final List<Person> results = new ArrayList<>();
+            final List<Integer> results = new ArrayList<>();
             session.setGlobal("results", results);
 
             session.insert(10);
             session.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertEquals(10, results.get(0));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.get(0)).isEqualTo(10);
         } finally {
             session.dispose();
         }
@@ -342,8 +341,8 @@ public class EvalTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
-            assertEquals(new BigDecimal(1.5), list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo(new BigDecimal(1.5));
         } finally {
             ksession.dispose();
         }
@@ -416,7 +415,7 @@ public class EvalTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, ((List) ksession.getGlobal("list")).size());
+            assertThat(((List) ksession.getGlobal("list")).size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -484,7 +483,7 @@ public class EvalTest {
 
             ksession.fireAllRules();
 
-            assertEquals("should not have fired", 0, list.size());
+            assertThat(list.size()).as("should not have fired").isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -515,12 +514,12 @@ public class EvalTest {
             final Person p1 = new Person("darth", 25);
             final FactHandle fh = ksession.insert(p1);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             p1.setAge(35);
             ksession.update(fh, p1);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -580,8 +579,8 @@ public class EvalTest {
             ksession.insert(jane);
             ksession.fireAllRules();
 
-            assertEquals(jane, ((List) ksession.getGlobal("list")).get(0));
-            assertEquals(peter, ((List) ksession.getGlobal("list")).get(1));
+            assertThat(((List) ksession.getGlobal("list")).get(0)).isEqualTo(jane);
+            assertThat(((List) ksession.getGlobal("list")).get(1)).isEqualTo(peter);
         } finally {
             ksession.dispose();
         }
@@ -617,7 +616,7 @@ public class EvalTest {
                 if (cause instanceof InvocationTargetException) {
                     cause = ((InvocationTargetException) cause).getTargetException();
                 }
-                assertTrue(cause.getMessage().contains("this should throw an exception"));
+                assertThat(cause.getMessage().contains("this should throw an exception")).isTrue();
             }
         } finally {
             ksession.dispose();

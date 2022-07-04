@@ -24,10 +24,8 @@ import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
@@ -133,17 +131,16 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     @Test
     public void testGetValue() {
-        assertEquals( Collections.EMPTY_LIST,
-                             this.reader.getValue( null,
-                                                   this.bean ) );
-        assertTrue( this.reader.getValue( null,
-                                                 this.bean ) instanceof List );
+        assertThat(this.reader.getValue(null,
+                this.bean)).isEqualTo(Collections.EMPTY_LIST);
+        assertThat(this.reader.getValue(null,
+                this.bean) instanceof List).isTrue();
     }
 
     @Test
     public void testIsNullValue() {
-        assertFalse( this.reader.isNullValue( null,
-                                                     this.bean ) );
+        assertThat(this.reader.isNullValue(null,
+                this.bean)).isFalse();
 
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
@@ -151,8 +148,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
         ReadAccessor nullExtractor = store.getReader( TestBean.class,
                                                               "nullAttr" );
-        assertTrue( nullExtractor.isNullValue( null,
-                                                      this.bean ) );
+        assertThat(nullExtractor.isNullValue(null,
+                this.bean)).isTrue();
 
     }
 }

@@ -30,8 +30,7 @@ import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class VarargsTest {
@@ -54,11 +53,11 @@ public class VarargsTest {
 
         Invoker inv = new Invoker();
         ksession.setGlobal( "invoker", inv );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        assertTrue( inv.isI1()  );
-        assertTrue( inv.isI2()  );
-        assertTrue( inv.isI3()  );
+        assertThat(inv.isI1()).isTrue();
+        assertThat(inv.isI2()).isTrue();
+        assertThat(inv.isI3()).isTrue();
     }
 
     @Test
@@ -69,20 +68,20 @@ public class VarargsTest {
         MySet mySet = new MySet( "one", "two" );
         ksession.insert(mySet);
         int fired = ksession.fireAllRules(20);
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
 
-        assertTrue(mySet.contains("one"));
-        assertTrue( mySet.contains("two") );
-        assertTrue( mySet.contains("three") );
-        assertTrue( mySet.contains("four") );
-        assertTrue( mySet.contains("z") );
+        assertThat(mySet.contains("one")).isTrue();
+        assertThat(mySet.contains("two")).isTrue();
+        assertThat(mySet.contains("three")).isTrue();
+        assertThat(mySet.contains("four")).isTrue();
+        assertThat(mySet.contains("z")).isTrue();
 
         mySet = (MySet) ksession.getGlobal("set");
-        assertTrue( mySet.contains("x") );
-        assertTrue( mySet.contains("y") );
-        assertTrue( mySet.contains("three") );
-        assertTrue( mySet.contains("four") );
-        assertTrue( mySet.contains("z") );     }
+        assertThat(mySet.contains("x")).isTrue();
+        assertThat(mySet.contains("y")).isTrue();
+        assertThat(mySet.contains("three")).isTrue();
+        assertThat(mySet.contains("four")).isTrue();
+        assertThat(mySet.contains("z")).isTrue();     }
 
     public static class Invoker {
         private boolean i1;

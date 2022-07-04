@@ -39,7 +39,7 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DynamicEvalTest {
 
@@ -118,7 +118,7 @@ public class DynamicEvalTest {
         int fired = session.fireAllRules(); // 1
         System.out.println(fired);
         effects = session.getObjects();
-        assertTrue("fired", effects.contains("done"));
+        assertThat(effects.contains("done")).as("fired").isTrue();
 
         // so the above works, let's try it again
         String test2 =
@@ -136,7 +136,7 @@ public class DynamicEvalTest {
         fired = session.fireAllRules(); // 0
         System.out.println(fired);
         effects = session.getObjects();
-        assertTrue("fired", effects.contains("done2")); // fails
+        assertThat(effects.contains("done2")).as("fired").isTrue(); // fails
     }
 
     @Test
@@ -169,7 +169,7 @@ public class DynamicEvalTest {
         int fired = session.fireAllRules(); // 1
         System.out.println(fired);
         effects = session.getObjects();
-        assertTrue("fired", effects.contains("done"));
+        assertThat(effects.contains("done")).as("fired").isTrue();
 
         // so the above works, let's try it again
         String test2 =
@@ -188,7 +188,7 @@ public class DynamicEvalTest {
         fired = session.fireAllRules(); // 0
         System.out.println(fired);
         effects = session.getObjects();
-        assertTrue("fired", effects.contains("done2")); // fails
+        assertThat(effects.contains("done2")).as("fired").isTrue(); // fails
 
         for ( Object o : session.getObjects() ) {
             System.out.println( o );

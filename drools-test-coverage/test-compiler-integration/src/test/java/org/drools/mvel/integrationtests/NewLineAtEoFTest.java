@@ -26,8 +26,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Tests an error appearing when DLR does not contain a new line at the end of
@@ -66,6 +66,6 @@ public class NewLineAtEoFTest {
     @Test
     public void testNewlineAtTheEnd() {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        assertFalse(kieBuilder.getResults().hasMessages(Level.ERROR));
+        assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isFalse();
     }
 }

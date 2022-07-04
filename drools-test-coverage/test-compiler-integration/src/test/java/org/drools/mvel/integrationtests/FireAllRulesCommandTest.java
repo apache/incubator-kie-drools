@@ -33,7 +33,7 @@ import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FireAllRulesCommandTest {
@@ -69,7 +69,7 @@ public class FireAllRulesCommandTest {
         ExecutionResults results = ksession.execute(CommandFactory.newBatchExecution(commands));
         int fired = Integer.parseInt(results.getValue("num-rules-fired").toString());
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class FireAllRulesCommandTest {
         ExecutionResults results = ksession.execute(CommandFactory.newBatchExecution(commands));
         int fired = Integer.parseInt(results.getValue("num-rules-fired").toString());
 
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class FireAllRulesCommandTest {
         ExecutionResults results = ksession.execute(CommandFactory.newBatchExecution(commands));
         int fired = Integer.parseInt(results.getValue("num-rules-fired").toString());
 
-        assertEquals(0, fired);
+        assertThat(fired).isEqualTo(0);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class FireAllRulesCommandTest {
         ExecutionResults results = ksession.execute(CommandFactory.newBatchExecution(commands));
         int fired = Integer.parseInt(results.getValue("num-rules-fired").toString());
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test
@@ -173,7 +173,7 @@ public class FireAllRulesCommandTest {
         ExecutionResults results = ksession.execute(CommandFactory.newBatchExecution(commands));
         int fired = Integer.parseInt(results.getValue("num-rules-fired").toString());
 
-        assertEquals(10, fired);
+        assertThat(fired).isEqualTo(10);
     }
 
     private StatelessKieSession getSession(String drl) {

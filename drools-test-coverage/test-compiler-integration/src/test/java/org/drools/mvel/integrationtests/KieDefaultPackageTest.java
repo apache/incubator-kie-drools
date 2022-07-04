@@ -28,7 +28,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Testing use of default Package.
@@ -70,8 +70,7 @@ public class KieDefaultPackageTest {
         kfs.write( "src/main/resources/drl.drl", drl );
         final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
-        assertEquals( 0,
-                      builder.getResults().getMessages().size() );
+        assertThat(builder.getResults().getMessages().size()).isEqualTo(0);
     }
     
     @Test
@@ -88,8 +87,7 @@ public class KieDefaultPackageTest {
         kfs.write( "src/test/java/org/jbpm/Test.java", javaClass );
         final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
-        assertEquals( 0,
-                      builder.getResults().getMessages().size() );
+        assertThat(builder.getResults().getMessages().size()).isEqualTo(0);
     }
     
 
@@ -119,8 +117,7 @@ public class KieDefaultPackageTest {
         kfs.write( "src/main/resources/drl.drl", drl );
         final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
-        assertEquals( 0,
-                      builder.getResults().getMessages().size() );
+        assertThat(builder.getResults().getMessages().size()).isEqualTo(0);
     }
 
     @Test
@@ -148,8 +145,7 @@ public class KieDefaultPackageTest {
         kfs.write( "src/main/resources/drl.drl", drl );
         final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
-        assertEquals( 0,
-                      builder.getResults().getMessages().size() );
+        assertThat(builder.getResults().getMessages().size()).isEqualTo(0);
     }
 
     @Test
@@ -177,8 +173,7 @@ public class KieDefaultPackageTest {
         kfs.write( "src/main/resources/drl.drl", drl );
         final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
-        assertEquals( 0,
-                      builder.getResults().getMessages().size() );
+        assertThat(builder.getResults().getMessages().size()).isEqualTo(0);
     }
 
     @Test
@@ -207,8 +202,7 @@ public class KieDefaultPackageTest {
         kfs.write( "src/main/resources/drl.drl", drl );
         final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
-        assertEquals( 0,
-                      builder.getResults().getMessages().size() );
+        assertThat(builder.getResults().getMessages().size()).isEqualTo(0);
     }
 
 }

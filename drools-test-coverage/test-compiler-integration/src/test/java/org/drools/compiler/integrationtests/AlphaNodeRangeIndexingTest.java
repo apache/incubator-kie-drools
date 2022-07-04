@@ -51,8 +51,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 @RunWith(Parameterized.class)
 public class AlphaNodeRangeIndexingTest {
@@ -102,11 +100,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
 
         ksession.insert(new Person("Paul", 60));
         fired = ksession.fireAllRules();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
     }
 
     private KieBase createKieBaseWithRangeIndexThresholdValue(String drl, int rangeIndexThresholdValue) {
@@ -128,18 +126,18 @@ public class AlphaNodeRangeIndexingTest {
         CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) objectSinkPropagator;
 
         ObjectSink[] sinks = sinkAdapter.getSinks();
-        assertEquals(sinksLength, sinks.length);
-        assertEquals(sinkAdapterSize, sinkAdapter.size());
+        assertThat(sinks.length).isEqualTo(sinksLength);
+        assertThat(sinkAdapter.size()).isEqualTo(sinkAdapterSize);
         if (rangeIndexableSinksSize == 0) {
-            assertNull(sinkAdapter.getRangeIndexableSinks());
+            assertThat(sinkAdapter.getRangeIndexableSinks()).isNull();
         } else {
-            assertEquals(rangeIndexableSinksSize, sinkAdapter.getRangeIndexableSinks().size());
+            assertThat(sinkAdapter.getRangeIndexableSinks().size()).isEqualTo(rangeIndexableSinksSize);
         }
         if (rangeIndexSize == 0) {
-            assertNull(sinkAdapter.getRangeIndexMap());
+            assertThat(sinkAdapter.getRangeIndexMap()).isNull();
         } else {
             long count = sinkAdapter.getRangeIndexMap().values().stream().flatMap(index -> index.getAllValues().stream()).count();
-            assertEquals(rangeIndexSize, count);
+            assertThat(count).isEqualTo(rangeIndexSize);
         }
     }
 
@@ -174,11 +172,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John", 30));
         int fired = ksession.fireAllRules();
-        assertEquals(0, fired);
+        assertThat(fired).isEqualTo(0);
 
         ksession.insert(new Person("Paul", 40));
         fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test
@@ -214,13 +212,13 @@ public class AlphaNodeRangeIndexingTest {
         o1.setTotal(18.0);
         ksession.insert(o1);
         int fired = ksession.fireAllRules();
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
 
         Order o2 = new Order();
         o2.setTotal(60.0);
         ksession.insert(o2);
         fired = ksession.fireAllRules();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
     }
 
     @Test
@@ -254,11 +252,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John"));
         int fired = ksession.fireAllRules();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
 
         ksession.insert(new Person("Paul"));
         fired = ksession.fireAllRules();
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
     }
 
     @Test
@@ -294,13 +292,13 @@ public class AlphaNodeRangeIndexingTest {
         p1.setBigDecimal(new BigDecimal("18.0"));
         ksession.insert(p1);
         int fired = ksession.fireAllRules();
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
 
         Primitives p2 = new Primitives();
         p2.setBigDecimal(new BigDecimal("60.0"));
         ksession.insert(p2);
         fired = ksession.fireAllRules();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
     }
 
     @Test
@@ -336,13 +334,13 @@ public class AlphaNodeRangeIndexingTest {
         p1.setBigDecimal(new BigDecimal("18.0"));
         ksession.insert(p1);
         int fired = ksession.fireAllRules();
-        assertEquals(4, fired);
+        assertThat(fired).isEqualTo(4);
 
         Primitives p2 = new Primitives();
         p2.setBigDecimal(null);
         ksession.insert(p2);
         fired = ksession.fireAllRules();
-        assertEquals(0, fired); // bigDecimal >= null is false
+        assertThat(fired).isEqualTo(0); // bigDecimal >= null is false
     }
 
     @Test
@@ -376,11 +374,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John"));
         int fired = ksession.fireAllRules();
-        assertEquals(4, fired);
+        assertThat(fired).isEqualTo(4);
 
         ksession.insert(new Person(""));
         fired = ksession.fireAllRules();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
     }
 
     @Test
@@ -432,7 +430,7 @@ public class AlphaNodeRangeIndexingTest {
         o1.setDate(DateUtils.parseDate("01-Oct-2020"));
         ksession.insert(o1);
         int fired = ksession.fireAllRules();
-        assertEquals(4, fired);
+        assertThat(fired).isEqualTo(4);
         assertThat(results).containsOnly("test1", "test2", "test3", "test4");
 
         results.clear();
@@ -440,7 +438,7 @@ public class AlphaNodeRangeIndexingTest {
         o2.setDate(DateUtils.parseDate("31-Dec-2010"));
         ksession.insert(o2);
         fired = ksession.fireAllRules();
-        assertEquals(4, fired);
+        assertThat(fired).isEqualTo(4);
         assertThat(results).containsOnly("test2", "test3", "test4", "test6");
     }
 
@@ -463,11 +461,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
 
         ksession.insert(new Person("Paul", 60));
         fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test
@@ -492,11 +490,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
 
         ksession.insert(new Person("Paul", 60));
         fired = ksession.fireAllRules();
-        assertEquals(0, fired);
+        assertThat(fired).isEqualTo(0);
     }
 
     @Test
@@ -508,11 +506,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession1.insert(new Person("John", 18));
         int fired1 = ksession1.fireAllRules();
-        assertEquals(5, fired1);
+        assertThat(fired1).isEqualTo(5);
 
         ksession1.insert(new Person("Paul", 60));
         fired1 = ksession1.fireAllRules();
-        assertEquals(3, fired1);
+        assertThat(fired1).isEqualTo(3);
         ksession1.dispose();
 
         // remove 2 rules
@@ -530,11 +528,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession2.insert(new Person("John", 18));
         int fired2 = ksession2.fireAllRules();
-        assertEquals(3, fired2);
+        assertThat(fired2).isEqualTo(3);
 
         ksession2.insert(new Person("Paul", 60));
         fired2 = ksession2.fireAllRules();
-        assertEquals(2, fired2);
+        assertThat(fired2).isEqualTo(2);
         ksession2.dispose();
 
         // remove 2 more rules
@@ -547,11 +545,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession3.insert(new Person("John", 18));
         int fired3 = ksession3.fireAllRules();
-        assertEquals(1, fired3);
+        assertThat(fired3).isEqualTo(1);
 
         ksession3.insert(new Person("Paul", 60));
         fired3 = ksession3.fireAllRules();
-        assertEquals(1, fired3);
+        assertThat(fired3).isEqualTo(1);
         ksession3.dispose();
     }
 
@@ -589,12 +587,12 @@ public class AlphaNodeRangeIndexingTest {
         MyComparable abc = new MyComparable("ABC", 1);
         ksession.insert(new MyComparableHolder(abc));
         int fired = ksession.fireAllRules();
-        assertEquals(4, fired);
+        assertThat(fired).isEqualTo(4);
 
         MyComparable jkl = new MyComparable("JKL", 10);
         ksession.insert(new MyComparableHolder(jkl));
         fired = ksession.fireAllRules();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
     }
 
     @Test
@@ -631,13 +629,13 @@ public class AlphaNodeRangeIndexingTest {
         person1.setAddress(new Address("ABC street", 18, "London"));
         ksession.insert(person1);
         int fired = ksession.fireAllRules();
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
 
         Person person2 = new Person("Paul", 60);
         person2.setAddress(new Address("XYZ street", 60, "London"));
         ksession.insert(person2);
         fired = ksession.fireAllRules();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
     }
 
     @Test
@@ -693,22 +691,22 @@ public class AlphaNodeRangeIndexingTest {
         }
         CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) objectSinkPropagator;
         ObjectSink[] sinks = sinkAdapter.getSinks();
-        assertEquals(12, sinks.length);
-        assertEquals(12, sinkAdapter.size());
-        assertNull(sinkAdapter.getRangeIndexableSinks());
+        assertThat(sinks.length).isEqualTo(12);
+        assertThat(sinkAdapter.size()).isEqualTo(12);
+        assertThat(sinkAdapter.getRangeIndexableSinks()).isNull();
         Collection<AlphaRangeIndex> values = sinkAdapter.getRangeIndexMap().values();
-        assertEquals(2, values.size());
+        assertThat(values.size()).isEqualTo(2);
         for (AlphaRangeIndex alphaRangeIndex : values) {
-            assertEquals(6, alphaRangeIndex.size()); // a tree for "age" has 6 nodes. a tree for "name" has 6 nodes
+            assertThat(alphaRangeIndex.size()).isEqualTo(6); // a tree for "age" has 6 nodes. a tree for "name" has 6 nodes
         }
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
-        assertEquals(8, fired);
+        assertThat(fired).isEqualTo(8);
 
         ksession.insert(new Person("Paul", 60));
         fired = ksession.fireAllRules();
-        assertEquals(8, fired);
+        assertThat(fired).isEqualTo(8);
     }
 
     @Test
@@ -744,7 +742,7 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John", 0));
         int fired = ksession.fireAllRules();
-        assertEquals(6, fired);
+        assertThat(fired).isEqualTo(6);
 
     }
 
@@ -813,7 +811,7 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
         ksession.dispose();
 
         // Create a new jar for version 1.1.0
@@ -833,7 +831,7 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("Paul", 18));
         fired = ksession.fireAllRules();
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
         ksession.dispose();
 
         // Create a new jar for version 1.2.0
@@ -853,7 +851,7 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("George", 18));
         fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -909,11 +907,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
 
         ksession.insert(new Person("Paul", 60));
         fired = ksession.fireAllRules();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
     }
 
     @Test
@@ -968,12 +966,12 @@ public class AlphaNodeRangeIndexingTest {
         }
         CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) objectSinkPropagator;
         ObjectSink[] sinks = sinkAdapter.getSinks();
-        assertEquals(7, sinks.length);
-        assertEquals(7, sinkAdapter.size());
-        assertNull(sinkAdapter.getRangeIndexableSinks());
-        assertEquals(3, sinkAdapter.getRangeIndexMap().entrySet().iterator().next().getValue().size());
-        assertEquals(3, sinkAdapter.getHashedSinkMap().size());
-        assertEquals(1, sinkAdapter.getOtherSinks().size());
+        assertThat(sinks.length).isEqualTo(7);
+        assertThat(sinkAdapter.size()).isEqualTo(7);
+        assertThat(sinkAdapter.getRangeIndexableSinks()).isNull();
+        assertThat(sinkAdapter.getRangeIndexMap().entrySet().iterator().next().getValue().size()).isEqualTo(3);
+        assertThat(sinkAdapter.getHashedSinkMap().size()).isEqualTo(3);
+        assertThat(sinkAdapter.getOtherSinks().size()).isEqualTo(1);
 
         List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -1011,11 +1009,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("30"));
         int fired = ksession.fireAllRules();
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
 
         ksession.insert(new Person("10"));
         fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test
@@ -1052,7 +1050,7 @@ public class AlphaNodeRangeIndexingTest {
 
         final KieSession ksession = kbase.newKieSession();
         ksession.insert(new Factor(25.0));
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     public static class Factor {
@@ -1094,11 +1092,11 @@ public class AlphaNodeRangeIndexingTest {
 
             ksession.insert(new Person("John", 18));
             int fired = ksession.fireAllRules();
-            assertEquals(4, fired);
+        assertThat(fired).isEqualTo(4);
 
             ksession.insert(new Person("Paul", 60));
             fired = ksession.fireAllRules();
-            assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
     }
 
     @Test
@@ -1127,11 +1125,11 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
-        assertEquals(4, fired);
+        assertThat(fired).isEqualTo(4);
 
         ksession.insert(new Person("Paul", 60));
         fired = ksession.fireAllRules();
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
     }
 
     public static class StaticUtil {
@@ -1165,10 +1163,10 @@ public class AlphaNodeRangeIndexingTest {
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
-        assertEquals(4, fired);
+        assertThat(fired).isEqualTo(4);
 
         ksession.insert(new Person("Paul", 60));
         fired = ksession.fireAllRules();
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
     }
 }

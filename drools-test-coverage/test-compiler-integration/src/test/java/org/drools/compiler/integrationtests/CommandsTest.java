@@ -32,7 +32,7 @@ import org.kie.api.KieServices;
 import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class CommandsTest {
@@ -63,9 +63,9 @@ public class CommandsTest {
         final KieSession kSession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final KieCommands kieCommands = KieServices.get().getCommands();
-            assertEquals(0L, (long) kSession.execute(kieCommands.newGetSessionTime()));
-            assertEquals(2000L, (long) kSession.execute(kieCommands.newAdvanceSessionTime(2, TimeUnit.SECONDS)));
-            assertEquals(2000L, (long) kSession.execute(kieCommands.newGetSessionTime()));
+            assertThat((long) kSession.execute(kieCommands.newGetSessionTime())).isEqualTo(0L);
+            assertThat((long) kSession.execute(kieCommands.newAdvanceSessionTime(2, TimeUnit.SECONDS))).isEqualTo(2000L);
+            assertThat((long) kSession.execute(kieCommands.newGetSessionTime())).isEqualTo(2000L);
         } finally {
             kSession.dispose();
         }

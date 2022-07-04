@@ -33,8 +33,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class GlobalTest {
@@ -101,10 +100,8 @@ public class GlobalTest {
 
             ksession.fireAllRules();
 
-            assertEquals(2,
-                         matchlist.size());
-            assertEquals(1,
-                         nonmatchlist.size());
+            assertThat(matchlist.size()).isEqualTo(2);
+            assertThat(nonmatchlist.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -127,10 +124,10 @@ public class GlobalTest {
             session1.insert(sample);
             session1.fireAllRules();
             final Map.Entry[] entries1 = ((MapGlobalResolver) session1.getGlobals()).getGlobals();
-            assertEquals(1, entries1.length);
-            assertEquals(entries1[0].getValue(), "Testing 1");
-            assertEquals(1, session1.getGlobals().getGlobalKeys().size());
-            assertTrue(session1.getGlobals().getGlobalKeys().contains("myGlobal"));
+            assertThat(entries1.length).isEqualTo(1);
+            assertThat("Testing 1").isEqualTo(entries1[0].getValue());
+            assertThat(session1.getGlobals().getGlobalKeys().size()).isEqualTo(1);
+            assertThat(session1.getGlobals().getGlobalKeys().contains("myGlobal")).isTrue();
         } finally {
             session1.dispose();
         }
@@ -140,10 +137,10 @@ public class GlobalTest {
         session2.setGlobal("myGlobal", "Testing 2");
         session2.execute(sample);
         final Map.Entry[] entries2 = ((MapGlobalResolver) session2.getGlobals()).getGlobals();
-        assertEquals(1, entries2.length);
-        assertEquals(entries2[0].getValue(), "Testing 2");
-        assertEquals(1, session2.getGlobals().getGlobalKeys().size());
-        assertTrue(session2.getGlobals().getGlobalKeys().contains("myGlobal"));
+        assertThat(entries2.length).isEqualTo(1);
+        assertThat("Testing 2").isEqualTo(entries2[0].getValue());
+        assertThat(session2.getGlobals().getGlobalKeys().size()).isEqualTo(1);
+        assertThat(session2.getGlobals().getGlobalKeys().contains("myGlobal")).isTrue();
     }
 
     @Test
@@ -161,7 +158,7 @@ public class GlobalTest {
         final KieSession ksession = kbase.newKieSession();
         try {
             ksession.setGlobal("b", null);
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }

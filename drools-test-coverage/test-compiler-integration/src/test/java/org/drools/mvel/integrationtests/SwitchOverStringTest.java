@@ -14,8 +14,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class SwitchOverStringTest {
@@ -56,7 +55,7 @@ public class SwitchOverStringTest {
         try {
             KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, FUNCTION_WITH_SWITCH_OVER_STRING);
             List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-            assertTrue(errors.toString(), errors.isEmpty());
+            assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
         } finally {
             System.clearProperty("drools.dialect.java.compiler.lnglevel");
         }
@@ -68,7 +67,7 @@ public class SwitchOverStringTest {
         try {
             KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, FUNCTION_WITH_SWITCH_OVER_STRING);
             List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-            assertFalse("Should have an error", errors.isEmpty());
+            assertThat(errors.isEmpty()).as("Should have an error").isFalse();
             
         } finally {
             System.clearProperty("drools.dialect.java.compiler.lnglevel");

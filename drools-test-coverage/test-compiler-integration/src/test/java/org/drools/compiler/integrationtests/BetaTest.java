@@ -33,7 +33,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class BetaTest {
@@ -81,50 +81,50 @@ public class BetaTest {
             final FirstClass first = new FirstClass("1", "2", "3", "4", "5");
             final FactHandle handle = ksession.insert(first);
             ksession.fireAllRules();
-            assertEquals(1, results.size());
-            assertEquals("NOT", results.get(0));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.get(0)).isEqualTo("NOT");
 
             ksession.insert(new SecondClass());
             ksession.update(handle, first);
             ksession.fireAllRules();
-            assertEquals(2, results.size());
-            assertEquals("NOT", results.get(1));
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(results.get(1)).isEqualTo("NOT");
 
             ksession.update(handle, first);
             ksession.insert(new SecondClass(null, "2", "3", "4", "5"));
             ksession.fireAllRules();
-            assertEquals(3, results.size());
-            assertEquals("NOT", results.get(2));
+            assertThat(results.size()).isEqualTo(3);
+            assertThat(results.get(2)).isEqualTo("NOT");
 
             ksession.update(handle, first);
             ksession.insert(new SecondClass("1", null, "3", "4", "5"));
             ksession.fireAllRules();
-            assertEquals(4, results.size());
-            assertEquals("NOT", results.get(3));
+            assertThat(results.size()).isEqualTo(4);
+            assertThat(results.get(3)).isEqualTo("NOT");
 
             ksession.update(handle, first);
             ksession.insert(new SecondClass("1", "2", null, "4", "5"));
             ksession.fireAllRules();
-            assertEquals(5, results.size());
-            assertEquals("NOT", results.get(4));
+            assertThat(results.size()).isEqualTo(5);
+            assertThat(results.get(4)).isEqualTo("NOT");
 
             ksession.update(handle, first);
             ksession.insert(new SecondClass("1", "2", "3", null, "5"));
             ksession.fireAllRules();
-            assertEquals(6, results.size());
-            assertEquals("NOT", results.get(5));
+            assertThat(results.size()).isEqualTo(6);
+            assertThat(results.get(5)).isEqualTo("NOT");
 
             ksession.update(handle, first);
             ksession.insert(new SecondClass("1", "2", "3", "4", null));
             ksession.fireAllRules();
-            assertEquals(7, results.size());
-            assertEquals("NOT", results.get(6));
+            assertThat(results.size()).isEqualTo(7);
+            assertThat(results.get(6)).isEqualTo("NOT");
 
             ksession.insert(new SecondClass("1", "2", "3", "4", "5"));
             ksession.update(handle, first);
             ksession.fireAllRules();
-            assertEquals(8, results.size());
-            assertEquals("EQUALS", results.get(7));
+            assertThat(results.size()).isEqualTo(8);
+            assertThat(results.get(7)).isEqualTo("EQUALS");
         } finally {
             ksession.dispose();
         }

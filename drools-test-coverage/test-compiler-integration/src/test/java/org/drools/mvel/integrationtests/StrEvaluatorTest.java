@@ -32,8 +32,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class StrEvaluatorTest {
@@ -62,12 +61,12 @@ public class StrEvaluatorTest {
 
             ksession.insert(m);
             ksession.fireAllRules();
-            assertTrue(list.size() == 4);
+            assertThat(list.size() == 4).isTrue();
 
-            assertTrue( list.get(0).equals("Message starts with R1") );
-            assertTrue( list.get(1).equals("Message length is not 17") );
-            assertTrue( list.get(2).equals("Message does not start with R2") );
-            assertTrue( list.get(3).equals("Message does not end with R1") );
+            assertThat(list.get(0).equals("Message starts with R1")).isTrue();
+            assertThat(list.get(1).equals("Message length is not 17")).isTrue();
+            assertThat(list.get(2).equals("Message does not start with R2")).isTrue();
+            assertThat(list.get(3).equals("Message does not end with R1")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -86,12 +85,12 @@ public class StrEvaluatorTest {
 
             ksession.insert(m);
             ksession.fireAllRules();
-            assertTrue(list.size() == 4);
+            assertThat(list.size() == 4).isTrue();
 
-            assertTrue( list.get(0).equals("Message ends with R2") );
-            assertTrue( list.get(1).equals("Message length is not 17") );
-            assertTrue( list.get(2).equals("Message does not start with R2") );
-            assertTrue( list.get(3).equals("Message does not end with R1") );
+            assertThat(list.get(0).equals("Message ends with R2")).isTrue();
+            assertThat(list.get(1).equals("Message length is not 17")).isTrue();
+            assertThat(list.get(2).equals("Message does not start with R2")).isTrue();
+            assertThat(list.get(3).equals("Message does not end with R1")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -110,8 +109,8 @@ public class StrEvaluatorTest {
 
             ksession.insert( m );
             ksession.fireAllRules();
-            assertEquals( 6, list.size() );
-            assertTrue(list.contains( "Message length is 17" ));
+            assertThat(list.size()).isEqualTo(6);
+            assertThat(list.contains("Message length is 17")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -130,8 +129,8 @@ public class StrEvaluatorTest {
 
             ksession.insert(m);
             ksession.fireAllRules();
-            assertTrue( list.size() == 3 );
-            assertTrue( list.get(1).equals("Message does not start with R2" ) );
+            assertThat(list.size() == 3).isTrue();
+            assertThat(list.get(1).equals("Message does not start with R2")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -150,10 +149,10 @@ public class StrEvaluatorTest {
 
             ksession.insert(m);
             ksession.fireAllRules();
-            assertTrue( list.size() == 3 );
-            assertTrue( list.get( 0 ).equals("Message length is not 17" ) );
-            assertTrue( list.get(1).equals("Message does not start with R2") );
-            assertTrue(list.get(2).equals("Message does not end with R1"));
+            assertThat(list.size() == 3).isTrue();
+            assertThat(list.get(0).equals("Message length is not 17")).isTrue();
+            assertThat(list.get(1).equals("Message does not start with R2")).isTrue();
+            assertThat(list.get(2).equals("Message does not end with R1")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -172,11 +171,11 @@ public class StrEvaluatorTest {
 
             ksession.insert(m);
             ksession.fireAllRules();
-            assertTrue(list.size() == 3);
+            assertThat(list.size() == 3).isTrue();
 
-            assertTrue( list.get(0).equals("Message length is not 17") );
-            assertTrue( list.get(1).equals("Message does not start with R2") );
-            assertTrue( list.get(2).equals("Message does not end with R1") );
+            assertThat(list.get(0).equals("Message length is not 17")).isTrue();
+            assertThat(list.get(1).equals("Message does not start with R2")).isTrue();
+            assertThat(list.get(2).equals("Message does not end with R1")).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -201,7 +200,7 @@ public class StrEvaluatorTest {
                 ksession.insert(msg);
             }
 
-            assertEquals("Wrong number of rules fired", 2, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).as("Wrong number of rules fired").isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -222,7 +221,7 @@ public class StrEvaluatorTest {
         try {
             ksession.insert( new Person( "Mark" ) );
 
-            assertEquals("Wrong number of rules fired", 1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).as("Wrong number of rules fired").isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -242,7 +241,7 @@ public class StrEvaluatorTest {
         try {
             ksession.insert( "Mark" );
 
-            assertEquals( "Wrong number of rules fired", 1, ksession.fireAllRules() );
+            assertThat(ksession.fireAllRules()).as("Wrong number of rules fired").isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -271,7 +270,7 @@ public class StrEvaluatorTest {
             map.put( "classHistory[0].class.where(system='http://domain/url/Code').exists()", 1 );
             ksession.insert( new FactMap( map ) );
 
-            assertEquals( "Wrong number of rules fired", 1, ksession.fireAllRules() );
+            assertThat(ksession.fireAllRules()).as("Wrong number of rules fired").isEqualTo(1);
         } finally {
             ksession.dispose();
         }
