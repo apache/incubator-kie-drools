@@ -26,7 +26,7 @@ import org.drools.core.util.asm.TestInterfaceImpl;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaseClassFieldAccessorFactoryTest {
 
@@ -47,15 +47,13 @@ public class BaseClassFieldAccessorFactoryTest {
         InternalReadAccessor ex = factory.getClassFieldReader( TestBean.class,
                                                                "name",
                                                                cachEntry );
-        assertEquals( "michael",
-                      ex.getValue( null,
-                                   new TestBean() ) );
+        assertThat(ex.getValue(null,
+                new TestBean())).isEqualTo("michael");
         ex = factory.getClassFieldReader( TestBean.class,
                                           "age",
                                           cachEntry );
-        assertEquals( 42,
-                      ((Number) ex.getValue( null,
-                                             new TestBean() )).intValue() );
+        assertThat(((Number) ex.getValue(null,
+                new TestBean())).intValue()).isEqualTo(42);
 
     }
 
@@ -63,31 +61,26 @@ public class BaseClassFieldAccessorFactoryTest {
     public void testInterface() throws Exception {
         final InternalReadAccessor ex = store.getReader( TestInterface.class,
                                                          "something" );
-        assertEquals( 1,
-                      ex.getIndex() );
-        assertEquals( "foo",
-                      ex.getValue( null,
-                                   new TestInterfaceImpl() ) );
+        assertThat(ex.getIndex()).isEqualTo(1);
+        assertThat(ex.getValue(null,
+                new TestInterfaceImpl())).isEqualTo("foo");
     }
 
     @Test
     public void testAbstract() throws Exception {
         final InternalReadAccessor ex = store.getReader( TestAbstract.class,
                                                          "something" );
-        assertEquals( 2,
-                      ex.getIndex() );
-        assertEquals( "foo",
-                      ex.getValue( null,
-                                   new TestAbstractImpl() ) );
+        assertThat(ex.getIndex()).isEqualTo(2);
+        assertThat(ex.getValue(null,
+                new TestAbstractImpl())).isEqualTo("foo");
     }
 
     @Test
     public void testInherited() throws Exception {
         final InternalReadAccessor ex = store.getReader( BeanInherit.class,
                                                          "text" );
-        assertEquals( "hola",
-                      ex.getValue( null,
-                                   new BeanInherit() ) );
+        assertThat(ex.getValue(null,
+                new BeanInherit())).isEqualTo("hola");
     }
 
     @Test
@@ -95,9 +88,8 @@ public class BaseClassFieldAccessorFactoryTest {
         final InternalReadAccessor ex = store.getReader( BeanInherit.class,
                                                          "this" );
         final TestBean bean = new TestBean();
-        assertEquals( bean,
-                      ex.getValue( null,
-                                   bean ) );
+        assertThat(ex.getValue(null,
+                bean)).isEqualTo(bean);
     }
 
 }

@@ -31,7 +31,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class NullSafeDereferencingTest {
@@ -68,7 +68,7 @@ public class NullSafeDereferencingTest {
         edson.setAddress(new Address(null));
         ksession.insert(edson);
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
         ksession.dispose();
     }
 
@@ -93,7 +93,7 @@ public class NullSafeDereferencingTest {
         edson.setAddress(new Address(null));
         ksession.insert(edson);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -120,7 +120,7 @@ public class NullSafeDereferencingTest {
         edson.setAddress(new Address(null));
         ksession.insert(edson);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -148,7 +148,7 @@ public class NullSafeDereferencingTest {
         edson.setAddress(new Address(null));
         ksession.insert(edson);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -175,7 +175,7 @@ public class NullSafeDereferencingTest {
         edson.setAddress(new Address(null));
         ksession.insert(edson);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -202,7 +202,7 @@ public class NullSafeDereferencingTest {
         edson.setAddress(new Address(null));
         ksession.insert(edson);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -231,7 +231,7 @@ public class NullSafeDereferencingTest {
         alex.setAddress(new Address("The Main Very Big Street"));
         ksession.insert(alex);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -268,7 +268,7 @@ public class NullSafeDereferencingTest {
         frank.setAddress(new Address("Long Street number 21",null,"12345"));
         ksession.insert(frank);
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
         ksession.dispose();
     }
 
@@ -294,7 +294,7 @@ public class NullSafeDereferencingTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
         ksession.dispose();
     }
 
@@ -335,7 +335,7 @@ public class NullSafeDereferencingTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        assertEquals( 3, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
         ksession.dispose();
     }
 
@@ -363,9 +363,9 @@ public class NullSafeDereferencingTest {
 
       ksession.insert("Main Street");
 
-      assertEquals( 1, ksession.fireAllRules() );
+       assertThat(ksession.fireAllRules()).isEqualTo(1);
       ksession.dispose();
-      assertEquals( Arrays.asList( "123456" ), list );
+       assertThat(list).isEqualTo(Arrays.asList("123456"));
    }
 
 }

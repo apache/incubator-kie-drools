@@ -29,8 +29,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This is a place where minor edge cases which fail with exec-model can be temporarily moved from test-compiler-integration test classes.
@@ -70,9 +69,9 @@ public class EdgeCaseNonExecModelTest {
 
         List<String> results = executeTestWithDRL(str);
 
-        assertEquals(2, results.size());
-        assertTrue(results.contains("cheddar"));
-        assertTrue(results.contains("stilton"));
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains("cheddar")).isTrue();
+        assertThat(results.contains("stilton")).isTrue();
     }
 
     // Moved from NamedConsequencesTest
@@ -95,8 +94,8 @@ public class EdgeCaseNonExecModelTest {
 
         List<String> results = executeTestWithDRL(str);
 
-        assertEquals(1, results.size());
-        assertTrue(results.contains("cheddar"));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.contains("cheddar")).isTrue();
     }
 
     private List<String> executeTestWithDRL(String drl) {

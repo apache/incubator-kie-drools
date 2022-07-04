@@ -28,7 +28,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // DROOLS-6046
 public class ClassLoaderLeakTest {
@@ -144,7 +144,7 @@ public class ClassLoaderLeakTest {
                     cl.getStore().values().stream()
                             .map(b->b.length).reduce(0,Integer::sum)));
 
-            assertTrue( cl.getStore().size() <= oldSize );
+            assertThat(cl.getStore().size() <= oldSize).isTrue();
             oldSize = cl.getStore().size();
 
             kr.removeKieModule(kModule.getReleaseId());

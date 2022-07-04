@@ -40,7 +40,7 @@ import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FailureOnRemovalTest {
@@ -89,8 +89,8 @@ public class FailureOnRemovalTest {
         KieSession ksession = kbase.newKieSession();
         int fired = ksession.fireAllRules();
         ksession.dispose();
-        
-        assertEquals( 1, fired );
+
+        assertThat(fired).isEqualTo(1);
 
         Collection<KiePackage> rule3 = compileRule( RULE_3 );
         kbase.addPackages( rule3 );

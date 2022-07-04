@@ -106,11 +106,7 @@ import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class KnowledgeBuilderTest extends DroolsTestCase {
     
@@ -153,14 +149,14 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertTrue( builder.getErrors().getErrors().length > 0  );
+        assertThat(builder.getErrors().getErrors().length > 0).isTrue();
     }
 
     @Test
     public void testErrorsInParser() throws Exception {
         final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackageFromDrl( new InputStreamReader( this.getClass().getResourceAsStream( "bad_rule.drl" ) ) );
-        assertTrue( builder.hasErrors() );
+        assertThat(builder.hasErrors()).isTrue();
     }
 
     @Test
@@ -207,15 +203,13 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         rule.getConsequence().evaluate( knowledgeHelper,
                                         ((StatefulKnowledgeSessionImpl)workingMemory) );
-        assertEquals( new Integer( 1 ),
-                      map.get( "value" ) );
+        assertThat(map.get("value")).isEqualTo(new Integer( 1 ));
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(2) );" );
         pkg.removeRule( rule );
 
         // Make sure the compiled classes are also removed
-        assertEquals( 0,
-                      ((JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "java" )).getStore().size() );
+        assertThat(((JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData("java")).getStore().size()).isEqualTo(0);
 
         builder.addPackage( packageDescr );
 
@@ -228,8 +222,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         rule.getConsequence().evaluate( knowledgeHelper,
                                         ((StatefulKnowledgeSessionImpl)workingMemory) );
-        assertEquals( new Integer( 2 ),
-                      map.get( "value" ) );
+        assertThat(map.get("value")).isEqualTo(new Integer( 2 ));
 
     }
 
@@ -251,8 +244,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         //check that packageDescr is serializable
         final PackageDescr back = (PackageDescr) SerializationHelper.serializeObject( packageDescr );
         assertThat(back).isNotNull();
-        assertEquals( "p1",
-                      back.getName() );
+        assertThat(back.getName()).isEqualTo("p1");
 
         builder.addPackage( packageDescr );
         InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
@@ -290,8 +282,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         newRule.getConsequence().evaluate( knowledgeHelper,
                                            ((StatefulKnowledgeSessionImpl)workingMemory) );
-        assertEquals( new Integer( 1 ),
-                      map.get( "value" ) );
+        assertThat(map.get("value")).isEqualTo(new Integer( 1 ));
     }
 
     @Test
@@ -321,13 +312,13 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 
         builder.addPackageFromDrl( new StringReader( "package foo \n rule ORB" ) );
-        assertTrue( builder.hasErrors() );
+        assertThat(builder.hasErrors()).isTrue();
 
         builder.resetErrors();
-        assertFalse( builder.hasErrors() );
+        assertThat(builder.hasErrors()).isFalse();
 
         builder.addPackageFromDrl( new StringReader( "package foo \n rule ORB" ) );
-        assertTrue( builder.hasErrors() );
+        assertThat(builder.hasErrors()).isTrue();
     }
 
     @Test
@@ -386,9 +377,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertEquals( "Should not have any errors",
-                      0,
-                      builder.getErrors().getErrors().length );
+        assertThat(builder.getErrors().getErrors().length).as("Should not have any errors").isEqualTo(0);
     }
 
     @Test
@@ -420,10 +409,9 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         final Pattern pattern3 = (Pattern) ((RuleImpl)builder3.getPackage("package3").getRules().iterator().next()).getLhs().getChildren().get( 0 );
         final Constraint returnValue3 = pattern3.getConstraints().get( 0 );
 
-        assertEquals( returnValue1,
-                      returnValue2 );
-        assertFalse( returnValue1.equals( returnValue3 ) );
-        assertFalse( returnValue2.equals( returnValue3 ) );
+        assertThat(returnValue2).isEqualTo(returnValue1);
+        assertThat(returnValue1.equals(returnValue3)).isFalse();
+        assertThat(returnValue2.equals(returnValue3)).isFalse();
     }
 
     @Test
@@ -499,10 +487,9 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         final Pattern pattern3 = (Pattern) ((RuleImpl)builder3.getPackage("package3").getRules().iterator().next()).getLhs().getChildren().get( 0 );
         final PredicateConstraint predicate3 = (PredicateConstraint) pattern3.getConstraints().get( 0 );
 
-        assertEquals( predicate1,
-                      predicate2 );
-        assertFalse( predicate1.equals( predicate3 ) );
-        assertFalse( predicate2.equals( predicate3 ) );
+        assertThat(predicate2).isEqualTo(predicate1);
+        assertThat(predicate1.equals(predicate3)).isFalse();
+        assertThat(predicate2.equals(predicate3)).isFalse();
     }
 
     @Test
@@ -570,10 +557,9 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         builder3.addPackage( packageDescr3 );
         final EvalCondition eval3 = (EvalCondition) ((RuleImpl)builder3.getPackage("package3").getRules().iterator().next()).getLhs().getChildren().get( 0 );
 
-        assertEquals( eval1,
-                      eval2 );
-        assertFalse( eval1.equals( eval3 ) );
-        assertFalse( eval2.equals( eval3 ) );
+        assertThat(eval2).isEqualTo(eval1);
+        assertThat(eval1.equals(eval3)).isFalse();
+        assertThat(eval2.equals(eval3)).isFalse();
     }
 
     @Test
@@ -623,14 +609,13 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                 builder,
                                 "update(stilton);" );
 
-        assertTrue( builder.hasErrors() );
+        assertThat(builder.hasErrors()).isTrue();
 
         builder = new KnowledgeBuilderImpl();
         rule = createRule( new NotDescr(),
                            builder,
                            "" );
-        assertEquals( 0,
-                      builder.getErrors().getErrors().length );
+        assertThat(builder.getErrors().getErrors().length).isEqualTo(0);
 
         final GroupElement lhs = rule.getLhs();
         assertLength( 1,
@@ -650,15 +635,14 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         RuleImpl rule = createRule( new ExistsDescr(),
                                 builder,
                                 "update(stilton);" );
-        
-        assertTrue( builder.hasErrors() );
+
+        assertThat(builder.hasErrors()).isTrue();
 
         builder = new KnowledgeBuilderImpl();
         rule = createRule( new ExistsDescr(),
                            builder,
                            "" );
-        assertEquals( 0,
-                      builder.getErrors().getErrors().length );
+        assertThat(builder.getErrors().getErrors().length).isEqualTo(0);
 
         final GroupElement lhs = rule.getLhs();
         assertLength( 1,
@@ -756,9 +740,9 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         
         builder.addPackage(packageDescr1);
         builder.addPackage(packageDescr2);
-        
-        assertFalse(builder.hasErrors());
-        assertTrue(builder.hasWarnings());
+
+        assertThat(builder.hasErrors()).isFalse();
+        assertThat(builder.hasWarnings()).isTrue();
        
     }
     
@@ -774,9 +758,9 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         
         builder.addPackage(packageDescr1);
         builder.addPackage(packageDescr2);
-        
-        assertTrue(builder.hasErrors());
-        assertFalse(builder.hasWarnings());
+
+        assertThat(builder.hasErrors()).isTrue();
+        assertThat(builder.hasWarnings()).isFalse();
        
     }
     
@@ -793,15 +777,15 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         
         builder.addPackage(packageDescr1);
         builder.addPackage(packageDescr2);
-        
-        assertTrue(builder.hasWarnings());
+
+        assertThat(builder.hasWarnings()).isTrue();
         
         builder.resetWarnings();
-        assertFalse(builder.hasWarnings());
+        assertThat(builder.hasWarnings()).isFalse();
         
         builder.addPackage(packageDescr1);
-        
-        assertTrue(builder.hasWarnings());
+
+        assertThat(builder.hasWarnings()).isTrue();
     }
     
     @Test
@@ -821,12 +805,12 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         
         builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
         builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
-        assertTrue(builder.hasWarnings());
-        assertTrue(builder.hasErrors());
+        assertThat(builder.hasWarnings()).isTrue();
+        assertThat(builder.hasErrors()).isTrue();
         
         builder.resetProblems();
-        assertFalse(builder.hasWarnings());
-        assertFalse(builder.hasErrors());
+        assertThat(builder.hasWarnings()).isFalse();
+        assertThat(builder.hasErrors()).isFalse();
     }
     
     @Test
@@ -846,12 +830,12 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         
         builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
         builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
-        assertTrue(builder.hasWarnings());
-        assertTrue(builder.hasErrors());
+        assertThat(builder.hasWarnings()).isTrue();
+        assertThat(builder.hasErrors()).isTrue();
         
         builder.resetWarnings();
-        assertFalse(builder.hasWarnings());
-        assertTrue(builder.hasErrors());
+        assertThat(builder.hasWarnings()).isFalse();
+        assertThat(builder.hasErrors()).isTrue();
     }
     
     @Test
@@ -860,7 +844,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
         builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
-        assertTrue(builder.hasWarnings());
+        assertThat(builder.hasWarnings()).isTrue();
         
     }
 
@@ -909,10 +893,8 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         assertLength( 2,
                       builder.getErrors().getErrors() );
         final ParserError err = (ParserError) builder.getErrors().getErrors()[0];
-        assertEquals( 42,
-                      err.getRow() );
-        assertEquals( 43,
-                      err.getCol() );
+        assertThat(err.getRow()).isEqualTo(42);
+        assertThat(err.getCol()).isEqualTo(43);
 
     }
 
@@ -994,9 +976,9 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
         JavaForMvelDialectConfiguration javaConf = ( JavaForMvelDialectConfiguration ) conf.getDialectConfiguration( "java" );
         switch( javaConf.getCompiler() ) {
-            case NATIVE : assertSame( NativeJavaCompiler.class, compiler.getClass() );
+            case NATIVE : assertThat(compiler.getClass()).isSameAs(NativeJavaCompiler.class);
                 break;
-            case ECLIPSE: assertSame( EclipseJavaCompiler.class, compiler.getClass() );
+            case ECLIPSE: assertThat(compiler.getClass()).isSameAs(EclipseJavaCompiler.class);
                 break;
             default:
                 fail( "Unrecognized java compiler");
@@ -1013,8 +995,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
         dialect = reg.getDialect( dialectName );
         compiler = (JavaCompiler) compilerField.get( dialect );
-        assertSame( EclipseJavaCompiler.class,
-                    compiler.getClass() );
+        assertThat(compiler.getClass()).isSameAs(EclipseJavaCompiler.class);
     }
 
     @Test
@@ -1031,15 +1012,12 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
             fail( builder.getErrors().toString() );
         }
         InternalKnowledgePackage pkg = builder.getPackage(pkgDescr.getName());
-        assertEquals( 1,
-                      pkg.getTypeDeclarations().size() );
+        assertThat(pkg.getTypeDeclarations().size()).isEqualTo(1);
 
         TypeDeclaration type = pkg.getTypeDeclaration( "StockTick" );
-        assertTrue( type.isTypesafe() );
-        assertEquals( Role.Type.EVENT,
-                      type.getRole() );
-        assertEquals( StockTick.class,
-                      type.getTypeClass() );
+        assertThat(type.isTypesafe()).isTrue();
+        assertThat(type.getRole()).isEqualTo(Role.Type.EVENT);
+        assertThat(type.getTypeClass()).isEqualTo(StockTick.class);
     }
 
     @Test
@@ -1061,17 +1039,13 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         builder.addPackage( pkgDescr );
 
         InternalKnowledgePackage pkg = builder.getPackage(pkgDescr.getName());
-        assertEquals( 1,
-                      pkg.getTypeDeclarations().size() );
+        assertThat(pkg.getTypeDeclarations().size()).isEqualTo(1);
 
         TypeDeclaration type = pkg.getTypeDeclaration( "NewBean" );
-        assertEquals( "NewBean",
-                      type.getTypeName() );
-        assertEquals( Role.Type.FACT,
-                      type.getRole() );
-        assertEquals( "org.drools.mvel.compiler.test.NewBean",
-                      type.getTypeClass().getName() );
-        assertFalse( builder.hasErrors() );
+        assertThat(type.getTypeName()).isEqualTo("NewBean");
+        assertThat(type.getRole()).isEqualTo(Role.Type.FACT);
+        assertThat(type.getTypeClass().getName()).isEqualTo("org.drools.mvel.compiler.test.NewBean");
+        assertThat(builder.hasErrors()).isFalse();
 
         InternalKnowledgePackage bp = builder.getPackage(pkgDescr.getName());
 
@@ -1093,7 +1067,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackage(pkgDescr);
-        assertFalse(builder.hasErrors());
+        assertThat(builder.hasErrors()).isFalse();
 
         InternalKnowledgePackage bp = builder.getPackage(pkgDescr.getName());
 
@@ -1104,7 +1078,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         final Map<String, Object> fieldMetaData = field.getMetaData();
         assertThat(fieldMetaData).as("No field-level custom metadata got compiled").isNotNull();
-        assertTrue("Field metadata does not include expected value", fieldMetaData.containsKey("custom"));
+        assertThat(fieldMetaData.containsKey("custom")).as("Field metadata does not include expected value").isTrue();
     }
 
     @Test
@@ -1240,8 +1214,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
         final RuleImpl rule = pkg.getRule( "rule-1" );
 
-        assertEquals( "rule-1",
-                      rule.getName() );
+        assertThat(rule.getName()).isEqualTo("rule-1");
 
         return rule;
     }
@@ -1282,13 +1255,10 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         assertThat(rule).isNotNull();
 
         final Pattern pattern = (Pattern) rule.getLhs().getChildren().get( 0 );
-        assertEquals( StockTick.class.getName(),
-                      ((ClassObjectType) pattern.getObjectType()).getClassType().getName() );
+        assertThat(((ClassObjectType) pattern.getObjectType()).getClassType().getName()).isEqualTo(StockTick.class.getName());
         final Behavior window = pattern.getBehaviors().get( 0 );
-        assertEquals( Behavior.BehaviorType.TIME_WINDOW,
-                      window.getType() );
-        assertEquals( 60000,
-                      ((SlidingTimeWindow) window).getSize() );
+        assertThat(window.getType()).isEqualTo(Behavior.BehaviorType.TIME_WINDOW);
+        assertThat(((SlidingTimeWindow) window).getSize()).isEqualTo(60000);
     }
     
     @Test
@@ -1307,32 +1277,20 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         builder.addPackageFromDrl( new StringReader( drl ) );
 
         List<FactField> fieldsBean1 = builder.getPackage("foo").getFactType( "foo.Bean1" ).getFields();
-        assertEquals( 2,
-                      fieldsBean1.size() );
-        assertEquals( "age",
-                      fieldsBean1.get( 0 ).getName() );
-        assertEquals( int.class,
-                      fieldsBean1.get( 0 ).getType() );
-        assertEquals( "name",
-                      fieldsBean1.get( 1 ).getName() );
-        assertEquals( String.class,
-                      fieldsBean1.get( 1 ).getType() );
+        assertThat(fieldsBean1.size()).isEqualTo(2);
+        assertThat(fieldsBean1.get(0).getName()).isEqualTo("age");
+        assertThat(fieldsBean1.get(0).getType()).isEqualTo(int.class);
+        assertThat(fieldsBean1.get(1).getName()).isEqualTo("name");
+        assertThat(fieldsBean1.get(1).getType()).isEqualTo(String.class);
 
         List<FactField> fieldsBean2 = builder.getPackage("foo").getFactType( "foo.Bean2" ).getFields();
-        assertEquals( 3,
-                      fieldsBean2.size() );
-        assertEquals( "age",
-                      fieldsBean2.get( 0 ).getName() );
-        assertEquals( int.class,
-                      fieldsBean2.get( 0 ).getType() );
-        assertEquals( "name",
-                      fieldsBean2.get( 1 ).getName() );
-        assertEquals( String.class,
-                      fieldsBean2.get( 1 ).getType() );
-        assertEquals( "cheese",
-                      fieldsBean2.get( 2 ).getName() );
-        assertEquals( String.class,
-                      fieldsBean2.get( 2 ).getType() );
+        assertThat(fieldsBean2.size()).isEqualTo(3);
+        assertThat(fieldsBean2.get(0).getName()).isEqualTo("age");
+        assertThat(fieldsBean2.get(0).getType()).isEqualTo(int.class);
+        assertThat(fieldsBean2.get(1).getName()).isEqualTo("name");
+        assertThat(fieldsBean2.get(1).getType()).isEqualTo(String.class);
+        assertThat(fieldsBean2.get(2).getName()).isEqualTo("cheese");
+        assertThat(fieldsBean2.get(2).getType()).isEqualTo(String.class);
     }
 
     class MockActivation<T extends ModedAssertion<T>>

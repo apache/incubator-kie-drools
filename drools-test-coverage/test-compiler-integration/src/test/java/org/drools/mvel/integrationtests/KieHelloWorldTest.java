@@ -54,10 +54,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * This is a sample class to launch a rule.
@@ -88,8 +85,8 @@ public class KieHelloWorldTest {
         ksession.insert(new Message("Hello World"));
 
         int count = ksession.fireAllRules();
-         
-        assertEquals( 1, count );
+
+        assertThat(count).isEqualTo(1);
     }
 
     @Test
@@ -106,7 +103,7 @@ public class KieHelloWorldTest {
         KieProject kieProject = (( KieContainerImpl ) kcontainer).getKieProject();
         ResultsImpl messages = kieProject.verify();
 
-        assertSame( kieProject.getClassLoader(), kcontainer.getClassLoader() );
+        assertThat(kcontainer.getClassLoader()).isSameAs(kieProject.getClassLoader());
 
         ProjectClassLoader pcl = (( ProjectClassLoader ) kieProject.getClassLoader());
         assertThat(pcl.getStore().get("org/Person.class")).isNotNull();
@@ -129,7 +126,7 @@ public class KieHelloWorldTest {
 
         int count = ksession.fireAllRules();
 
-        assertEquals( 1, count );
+        assertThat(count).isEqualTo(1);
     }
 
     @Test
@@ -148,7 +145,7 @@ public class KieHelloWorldTest {
 
         int count = ksession.fireAllRules();
 
-        assertEquals( 1, count );
+        assertThat(count).isEqualTo(1);
     }
 
     @Test
@@ -166,7 +163,7 @@ public class KieHelloWorldTest {
 
         KieBuilder kb = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
-        assertEquals( 1, kb.getResults().getMessages().size() );
+        assertThat(kb.getResults().getMessages().size()).isEqualTo(1);
     }
 
     @Test
@@ -202,7 +199,7 @@ public class KieHelloWorldTest {
 
         kfs.writeKModuleXML(module.toXML());
         KieBuilder kb = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertEquals( 0, kb.getResults().getMessages().size() );
+        assertThat(kb.getResults().getMessages().size()).isEqualTo(0);
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         FactType factType = ksession.getKieBase().getFactType("org.drools.mvel.integrationtests", "CancelFact");
@@ -211,7 +208,7 @@ public class KieHelloWorldTest {
 
         int count = ksession.fireAllRules();
 
-        assertEquals( 1, count );
+        assertThat(count).isEqualTo(1);
     }
 
     @Test
@@ -231,7 +228,7 @@ public class KieHelloWorldTest {
 
         int count = ksession.fireAllRules();
 
-        assertEquals( 1, count );
+        assertThat(count).isEqualTo(1);
     }
 
     @Test
@@ -258,7 +255,7 @@ public class KieHelloWorldTest {
         KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert( new Message( "Hello World" ) );
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -287,7 +284,7 @@ public class KieHelloWorldTest {
         KieSession ksession = ks.newKieContainer( releaseId ).newKieSession( "KSession1" );
         ksession.insert( new Message( "Hello World" ) );
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -307,9 +304,9 @@ public class KieHelloWorldTest {
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        assertEquals( 1, ksession.fireAllRules() );
-        assertEquals( 1, list.size() );
-        assertEquals( "R1", list.get( 0 ) );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("R1");
     }
 
     @Test
@@ -335,9 +332,9 @@ public class KieHelloWorldTest {
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        assertEquals( 2, ksession.fireAllRules() );
-        assertTrue( list.contains("R1") );
-        assertTrue( list.contains("R2") );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+        assertThat(list.contains("R1")).isTrue();
+        assertThat(list.contains("R2")).isTrue();
     }
 
     public String createDrl(String ruleName) {
@@ -396,31 +393,31 @@ public class KieHelloWorldTest {
 
         KieSession ksession = ks.newKieContainer(latestReleaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         ksession = ks.newKieContainer(latestReleaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hi Universe"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
         ksession = ks.newKieContainer(releaseId1).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession = ks.newKieContainer(releaseId1).newKieSession("KSession1");
         ksession.insert(new Message("Hi Universe"));
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "hello-world", "[1.0,1.2)");
 
         ksession = ks.newKieContainer(releaseId2).newKieSession("KSession1");
         ksession.insert(new Message("Aloha Earth"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession = ks.newKieContainer(releaseId2).newKieSession("KSession1");
         ksession.insert(new Message("Hi Universe"));
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -434,7 +431,7 @@ public class KieHelloWorldTest {
 
         KieSession ksession = ks.newKieContainer(releaseId1).newKieSession((String)null);
         ksession.insert(new Message("Hello World"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     private void buildVersion(KieServices ks, String message, String version) {
@@ -491,27 +488,27 @@ public class KieHelloWorldTest {
 
         KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hi Universe"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Aloha Earth"));
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         ksession = ks.newKieContainer(releaseId).newKieSession("KSession2");
         ksession.insert(new Message("Hello World"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession = ks.newKieContainer(releaseId).newKieSession("KSession2");
         ksession.insert(new Message("Hi Universe"));
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         ksession = ks.newKieContainer(releaseId).newKieSession("KSession2");
         ksession.insert(new Message("Aloha Earth"));
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     private KieModuleModel createKieProjectWithPackagesAnd2KieBases(KieServices ks) {
@@ -578,8 +575,8 @@ public class KieHelloWorldTest {
         ksession.insert( new Message( "Hi Universe" ) );
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( "ok", results.get(0) );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo("ok");
     }
 
     @Test
@@ -598,8 +595,8 @@ public class KieHelloWorldTest {
 
         KieBuilder kb = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
-        assertEquals( 1, kb.getResults().getMessages().size() );
-        assertTrue( kb.getResults().getMessages().get(0).toString().contains( "ABC" ) );
+        assertThat(kb.getResults().getMessages().size()).isEqualTo(1);
+        assertThat(kb.getResults().getMessages().get(0).toString().contains("ABC")).isTrue();
     }
 
     @Test
@@ -629,7 +626,7 @@ public class KieHelloWorldTest {
 
         int count = ksession.fireAllRules();
 
-        assertEquals( 1, count );
+        assertThat(count).isEqualTo(1);
     }
 
     @Test
@@ -645,7 +642,7 @@ public class KieHelloWorldTest {
             kieContainer.verify( "notexistingKB" );
             fail("Verifying a not existing KieBase should throw a RuntimeException");
         } catch (RuntimeException e) {
-            assertTrue( e.getMessage().contains( "notexistingKB" ) );
+            assertThat(e.getMessage().contains("notexistingKB")).isTrue();
         }
     }
 
@@ -725,6 +722,6 @@ public class KieHelloWorldTest {
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 }

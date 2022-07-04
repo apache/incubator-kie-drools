@@ -46,7 +46,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.DecisionTableInputType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests all features which can be used in decision tables.
@@ -608,6 +607,6 @@ public class DecisionTableTest {
         inputObject2.setDate(new Date(0));
         ksession.insert(inputObject2);
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

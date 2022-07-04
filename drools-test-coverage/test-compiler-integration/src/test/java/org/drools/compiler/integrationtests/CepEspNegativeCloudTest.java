@@ -34,8 +34,8 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class CepEspNegativeCloudTest {
@@ -82,7 +82,7 @@ public class CepEspNegativeCloudTest {
 
             ep.insert(new StockTick(1, "RHT", 10, 1000));
             int rulesFired = ksession.fireAllRules();
-            assertEquals(0, rulesFired);
+            assertThat(rulesFired).isEqualTo(0);
 
             final FactType event = kbase.getFactType("org.drools.cloud", "Event");
             final Object e1 = event.newInstance();
@@ -91,13 +91,13 @@ public class CepEspNegativeCloudTest {
 
             ep.insert(e1);
             rulesFired = ksession.fireAllRules();
-            assertEquals(1, rulesFired);
+            assertThat(rulesFired).isEqualTo(1);
 
             // let some time be spent
             Thread.sleep(1000);
 
             // check both events are still in memory as we are running in CLOUD mode
-            assertEquals(2, ep.getFactCount());
+            assertThat(ep.getFactCount()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -156,7 +156,7 @@ public class CepEspNegativeCloudTest {
             clock.advanceTime(10, TimeUnit.SECONDS);
             entryPoint.insert(new CepEspTest.TestEvent("three"));
             final QueryResults results = ksession.getQueryResults("EventsBeforeNineSeconds");
-            assertEquals(1, results.size());
+            assertThat(results.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

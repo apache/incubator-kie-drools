@@ -56,9 +56,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class PatternTest {
@@ -121,12 +118,12 @@ public class PatternTest {
             final Sensor sensor1 = new Sensor(100, 150);
             ksession.insert(sensor1);
             ksession.fireAllRules();
-            assertEquals(0, sensors.size());
+            assertThat(sensors.size()).isEqualTo(0);
 
             final Sensor sensor2 = new Sensor(200, 150);
             ksession.insert(sensor2);
             ksession.fireAllRules();
-            assertEquals(3, sensors.size());
+            assertThat(sensors.size()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -158,7 +155,7 @@ public class PatternTest {
             session.insert(stilton);
             session.fireAllRules();
 
-            assertEquals(5, ((List) session.getGlobal("list")).get(0));
+            assertThat(((List) session.getGlobal("list")).get(0)).isEqualTo(5);
         } finally {
             session.dispose();
         }
@@ -181,7 +178,7 @@ public class PatternTest {
             ksession.insert(2);
 
             final int rules = ksession.fireAllRules();
-            assertEquals(1, rules);
+            assertThat(rules).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -258,7 +255,7 @@ public class PatternTest {
 
             for (final FactHandle fact : ksession.getFactHandles()) {
                 final InternalFactHandle internalFact = (InternalFactHandle) fact;
-                assertTrue(internalFact.getObject() instanceof FactB);
+                assertThat(internalFact.getObject() instanceof FactB).isTrue();
             }
         } finally {
             ksession.dispose();
@@ -288,8 +285,8 @@ public class PatternTest {
 
             ksession.fireAllRules();
 
-            assertEquals("The rule is being incorrectly fired", 35, mussarela.getPrice());
-            assertEquals("Rule is incorrectly being fired", 20, provolone.getPrice());
+            assertThat(mussarela.getPrice()).as("The rule is being incorrectly fired").isEqualTo(35);
+            assertThat(provolone.getPrice()).as("Rule is incorrectly being fired").isEqualTo(20);
         } finally {
             ksession.dispose();
         }
@@ -310,7 +307,7 @@ public class PatternTest {
             ksession.insert(new Person(null));
             ksession.insert(new Person("Mark"));
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -342,8 +339,8 @@ public class PatternTest {
             ksession.fireAllRules();
 
             final List list = (List) ksession.getGlobal("list");
-            assertEquals(1, list.size());
-            assertEquals("5th Avenue", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("5th Avenue");
         } finally {
             ksession.dispose();
         }
@@ -372,7 +369,7 @@ public class PatternTest {
             ksession.insert(fact);
 
             final int rules = ksession.fireAllRules();
-            assertEquals(1, rules);
+            assertThat(rules).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -424,8 +421,8 @@ public class PatternTest {
             ksession.insert(message);
             ksession.insert("boo");
             ksession.fireAllRules();
-            assertTrue(message.isFired());
-            assertEquals(message, ((List) ksession.getGlobal("list")).get(0));
+            assertThat(message.isFired()).isTrue();
+            assertThat(((List) ksession.getGlobal("list")).get(0)).isEqualTo(message);
         } finally {
             ksession.dispose();
         }
@@ -468,7 +465,7 @@ public class PatternTest {
             session.insert(ben);
             session.fireAllRules();
 
-            assertEquals(1, ((List) session.getGlobal("list")).size());
+            assertThat(((List) session.getGlobal("list")).size()).isEqualTo(1);
         } finally {
             session.dispose();
         }
@@ -509,9 +506,9 @@ public class PatternTest {
 
             ksession.fireAllRules();
 
-            assertEquals(2, results.size());
-            assertTrue(results.contains(item1));
-            assertTrue(results.contains(item2));
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(results.contains(item1)).isTrue();
+            assertThat(results.contains(item2)).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -540,7 +537,7 @@ public class PatternTest {
             ksession.insert(new Cheese());
             ksession.fireAllRules();
 
-            assertEquals(0, results.size());
+            assertThat(results.size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -576,7 +573,7 @@ public class PatternTest {
             ksession.insert(cheese);
 
             ksession.fireAllRules();
-            assertEquals(1, results.size());
+            assertThat(results.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -597,11 +594,11 @@ public class PatternTest {
         try {
             ksession.insert(new Person("mark", 50));
             int rules = ksession.fireAllRules();
-            assertEquals(0, rules);
+            assertThat(rules).isEqualTo(0);
 
             ksession.insert(new Person("bob", 18));
             rules = ksession.fireAllRules();
-            assertEquals(1, rules);
+            assertThat(rules).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -637,7 +634,7 @@ public class PatternTest {
             ksession.update(fh1, p1); // creates activation
             ksession.fireAllRules();
 
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -686,29 +683,30 @@ public class PatternTest {
             ksession.fireAllRules();
 
             // selects p1 and p3
+
             if ((( KnowledgeBaseImpl ) kbase).getConfiguration().getAssertBehaviour().equals( RuleBaseConfiguration.AssertBehaviour.IDENTITY )) {
-                assertEquals(2, list.size());
-                assertSame(p1, list.get(0));
-                assertSame(p3, list.get(1));
+                assertThat(list.size()).isEqualTo(2);
+                assertThat(list.get(0)).isSameAs(p1);
+                assertThat(list.get(1)).isSameAs(p3);
 
                 p1.setName("yoda");
                 ksession.update(fh1, p1); // creates activation
 
                 ksession.fireAllRules();
                 // now selects p2 and p3
-                assertEquals(4, list.size());
-                assertSame(p2, list.get(2));
-                assertSame(p3, list.get(3));
+                assertThat(list.size()).isEqualTo(4);
+                assertThat(list.get(2)).isSameAs(p2);
+                assertThat(list.get(3)).isSameAs(p3);
             } else {
                 // Person has equals method based on the Person's name.
                 // There are 3 Darths, so 2 of them are not inserted with EQUALITY.
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
 
                 p1.setName("yoda");
                 ksession.update(fh1, p1);
 
                 ksession.fireAllRules();
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
             }
         } finally {
             ksession.dispose();
@@ -745,9 +743,9 @@ public class PatternTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
-            assertEquals(bob, list.get(0));
+            assertThat(list.get(0)).isEqualTo(bob);
         } finally {
             ksession.dispose();
         }
@@ -779,7 +777,7 @@ public class PatternTest {
             ksession.insert(stilton);
 
             ksession.fireAllRules();
-            assertEquals(1, results.size());
+            assertThat(results.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -813,14 +811,14 @@ public class PatternTest {
             session.insert(bob);
             session.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertEquals(bob, results.get(0));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.get(0)).isEqualTo(bob);
 
             session.insert(foo);
             session.fireAllRules();
 
-            assertEquals(2, results.size());
-            assertEquals(foo, results.get(1));
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(results.get(1)).isEqualTo(foo);
         } finally {
             session.dispose();
         }
@@ -848,7 +846,7 @@ public class PatternTest {
 
             ksession.insert( a );
             ksession.insert( b );
-            assertEquals( 1, ksession.fireAllRules() );
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

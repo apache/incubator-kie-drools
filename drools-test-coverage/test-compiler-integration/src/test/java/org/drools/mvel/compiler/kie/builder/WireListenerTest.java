@@ -40,9 +40,8 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class WireListenerTest {
@@ -77,9 +76,9 @@ public class WireListenerTest {
         KieSession ksession = kieContainer.newKieSession();
         ksession.fireAllRules();
 
-        assertEquals(1, insertEvents.size());
-        assertEquals(1, updateEvents.size());
-        assertEquals(1, retractEvents.size());
+        assertThat(insertEvents.size()).isEqualTo(1);
+        assertThat(updateEvents.size()).isEqualTo(1);
+        assertThat(retractEvents.size()).isEqualTo(1);
     }
 
     private void build(KieServices ks, ReleaseId releaseId) throws IOException {
@@ -95,7 +94,7 @@ public class WireListenerTest {
            .write("src/main/resources/KBase1/rules.drl", createDRL());
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertTrue(kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages().isEmpty()).isTrue();
     }
 
     private String createDRL() {

@@ -30,7 +30,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 20, 2008 Time: 2:36:47 PM To change this template use File |

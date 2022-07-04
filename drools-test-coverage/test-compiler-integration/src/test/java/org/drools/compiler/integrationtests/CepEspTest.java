@@ -97,11 +97,7 @@ import org.kie.api.time.SessionPseudoClock;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -137,8 +133,8 @@ public class CepEspTest extends AbstractCepEspTest {
             msg.setProperties(props);
 
             final EventFactHandle efh = (EventFactHandle) ksession.insert(msg);
-            assertEquals(98, efh.getStartTimestamp());
-            assertEquals(53, efh.getDuration());
+            assertThat(efh.getStartTimestamp()).isEqualTo(98);
+            assertThat(efh.getDuration()).isEqualTo(53);
         } finally {
             ksession.dispose();
         }
@@ -161,8 +157,8 @@ public class CepEspTest extends AbstractCepEspTest {
             msg.setDuration(1000L);
 
             final EventFactHandle efh = (EventFactHandle) ksession.insert(msg);
-            assertEquals(10000, efh.getStartTimestamp());
-            assertEquals(1000, efh.getDuration());
+            assertThat(efh.getStartTimestamp()).isEqualTo(10000);
+            assertThat(efh.getDuration()).isEqualTo(1000);
         } finally {
             ksession.dispose();
         }
@@ -199,14 +195,14 @@ public class CepEspTest extends AbstractCepEspTest {
             assertThat(handle3).isNotNull();
             assertThat(handle4).isNotNull();
 
-            assertTrue(handle1.isEvent());
-            assertTrue(handle2.isEvent());
-            assertTrue(handle3.isEvent());
-            assertTrue(handle4.isEvent());
+            assertThat(handle1.isEvent()).isTrue();
+            assertThat(handle2.isEvent()).isTrue();
+            assertThat(handle3.isEvent()).isTrue();
+            assertThat(handle4.isEvent()).isTrue();
 
             session.fireAllRules();
 
-            assertEquals(2, ((List) session.getGlobal("results")).size());
+            assertThat(((List) session.getGlobal("results")).size()).isEqualTo(2);
         } finally {
             session.dispose();
         }
@@ -256,14 +252,14 @@ public class CepEspTest extends AbstractCepEspTest {
             assertThat(handle3).isNotNull();
             assertThat(handle4).isNotNull();
 
-            assertTrue(handle1.isEvent());
-            assertTrue(handle2.isEvent());
-            assertTrue(handle3.isEvent());
-            assertTrue(handle4.isEvent());
+            assertThat(handle1.isEvent()).isTrue();
+            assertThat(handle2.isEvent()).isTrue();
+            assertThat(handle3.isEvent()).isTrue();
+            assertThat(handle4.isEvent()).isTrue();
 
             session.fireAllRules();
 
-            assertEquals(2, ((List) session.getGlobal("results")).size());
+            assertThat(((List) session.getGlobal("results")).size()).isEqualTo(2);
         } finally {
             session.dispose();
         }
@@ -289,13 +285,13 @@ public class CepEspTest extends AbstractCepEspTest {
             assertThat(handle1).isNotNull();
             assertThat(handle2).isNotNull();
 
-            assertTrue(handle1.isEvent());
-            assertTrue(handle2.isEvent());
+            assertThat(handle1.isEvent()).isTrue();
+            assertThat(handle2.isEvent()).isTrue();
 
             session.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertEquals(tick2, results.get(0));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.get(0)).isEqualTo(tick2);
         } finally {
             session.dispose();
         }
@@ -344,29 +340,29 @@ public class CepEspTest extends AbstractCepEspTest {
             assertThat(handle3).isNotNull();
             assertThat(handle4).isNotNull();
 
-            assertTrue(handle1.isEvent());
-            assertTrue(handle2.isEvent());
-            assertTrue(handle3.isEvent());
-            assertTrue(handle4.isEvent());
+            assertThat(handle1.isEvent()).isTrue();
+            assertThat(handle2.isEvent()).isTrue();
+            assertThat(handle3.isEvent()).isTrue();
+            assertThat(handle4.isEvent()).isTrue();
 
             final EventFactHandle eh1 = (EventFactHandle) handle1;
             final EventFactHandle eh2 = (EventFactHandle) handle2;
             final EventFactHandle eh3 = (EventFactHandle) handle3;
             final EventFactHandle eh4 = (EventFactHandle) handle4;
 
-            assertEquals(tick1.getTime(), eh1.getStartTimestamp());
-            assertEquals(tick2.getTime(), eh2.getStartTimestamp());
-            assertEquals(tick3.getTime(), eh3.getStartTimestamp());
-            assertEquals(tick4.getTime(), eh4.getStartTimestamp());
+            assertThat(eh1.getStartTimestamp()).isEqualTo(tick1.getTime());
+            assertThat(eh2.getStartTimestamp()).isEqualTo(tick2.getTime());
+            assertThat(eh3.getStartTimestamp()).isEqualTo(tick3.getTime());
+            assertThat(eh4.getStartTimestamp()).isEqualTo(tick4.getTime());
 
-            assertEquals(tick1.getDuration(), eh1.getDuration());
-            assertEquals(tick2.getDuration(), eh2.getDuration());
-            assertEquals(tick3.getDuration(), eh3.getDuration());
-            assertEquals(tick4.getDuration(), eh4.getDuration());
+            assertThat(eh1.getDuration()).isEqualTo(tick1.getDuration());
+            assertThat(eh2.getDuration()).isEqualTo(tick2.getDuration());
+            assertThat(eh3.getDuration()).isEqualTo(tick3.getDuration());
+            assertThat(eh4.getDuration()).isEqualTo(tick4.getDuration());
 
             session.fireAllRules();
 
-            assertEquals(2, results.size());
+            assertThat(results.size()).isEqualTo(2);
         } finally {
             session.dispose();
         }
@@ -414,24 +410,24 @@ public class CepEspTest extends AbstractCepEspTest {
             assertThat(handle3).isNotNull();
             assertThat(handle4).isNotNull();
 
-            assertTrue(handle1.isEvent());
-            assertTrue(handle2.isEvent());
-            assertTrue(handle3.isEvent());
-            assertTrue(handle4.isEvent());
+            assertThat(handle1.isEvent()).isTrue();
+            assertThat(handle2.isEvent()).isTrue();
+            assertThat(handle3.isEvent()).isTrue();
+            assertThat(handle4.isEvent()).isTrue();
 
             final EventFactHandle eh1 = (EventFactHandle) handle1;
             final EventFactHandle eh2 = (EventFactHandle) handle2;
             final EventFactHandle eh3 = (EventFactHandle) handle3;
             final EventFactHandle eh4 = (EventFactHandle) handle4;
 
-            assertEquals(tick1.getTime(), eh1.getStartTimestamp());
-            assertEquals(tick2.getTime(), eh2.getStartTimestamp());
-            assertEquals(tick3.getTime(), eh3.getStartTimestamp());
-            assertEquals(tick4.getTime(), eh4.getStartTimestamp());
+            assertThat(eh1.getStartTimestamp()).isEqualTo(tick1.getTime());
+            assertThat(eh2.getStartTimestamp()).isEqualTo(tick2.getTime());
+            assertThat(eh3.getStartTimestamp()).isEqualTo(tick3.getTime());
+            assertThat(eh4.getStartTimestamp()).isEqualTo(tick4.getTime());
 
             session.fireAllRules();
 
-            assertEquals(2, results.size());
+            assertThat(results.size()).isEqualTo(2);
         } finally {
             session.dispose();
         }
@@ -458,8 +454,9 @@ public class CepEspTest extends AbstractCepEspTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         // read in the source
+
         final TypeDeclaration factType = ((KnowledgeBaseImpl) kbase).getTypeDeclaration(StockTick.class);
-        assertEquals(TimeIntervalParser.parse("1h30m")[0], factType.getExpirationOffset());
+        assertThat(factType.getExpirationOffset()).isEqualTo(TimeIntervalParser.parse("1h30m")[0]);
     }
 
     @Test(timeout = 10000)
@@ -507,7 +504,7 @@ public class CepEspTest extends AbstractCepEspTest {
         assertThat(node).isNotNull();
 
         // the expiration policy @expires(10m) should override the temporal operator usage
-        assertEquals(TimeIntervalParser.parse("10m")[0] + 1, node.getExpirationOffset());
+        assertThat(node.getExpirationOffset()).isEqualTo(TimeIntervalParser.parse("10m")[0] + 1);
     }
 
     @Test(timeout = 10000)
@@ -550,9 +547,9 @@ public class CepEspTest extends AbstractCepEspTest {
 //             alternative could run fireUntilHalt()
             ksession.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertTrue(handle1.isExpired());
-            assertFalse(ksession.getFactHandles().contains(handle1));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(handle1.isExpired()).isTrue();
+            assertThat(ksession.getFactHandles().contains(handle1)).isFalse();
         } finally {
             ksession.dispose();
         }
@@ -627,57 +624,57 @@ public class CepEspTest extends AbstractCepEspTest {
             assertThat(handle7).isNotNull();
             assertThat(handle8).isNotNull();
 
-            assertTrue(handle1.isEvent());
-            assertTrue(handle2.isEvent());
-            assertTrue(handle3.isEvent());
-            assertTrue(handle4.isEvent());
-            assertTrue(handle6.isEvent());
-            assertTrue(handle7.isEvent());
-            assertTrue(handle8.isEvent());
+            assertThat(handle1.isEvent()).isTrue();
+            assertThat(handle2.isEvent()).isTrue();
+            assertThat(handle3.isEvent()).isTrue();
+            assertThat(handle4.isEvent()).isTrue();
+            assertThat(handle6.isEvent()).isTrue();
+            assertThat(handle7.isEvent()).isTrue();
+            assertThat(handle8.isEvent()).isTrue();
 
             wm.fireAllRules();
 
-            assertEquals(1, results_coincides.size());
-            assertEquals(tick5, results_coincides.get(0));
+            assertThat(results_coincides.size()).isEqualTo(1);
+            assertThat(results_coincides.get(0)).isEqualTo(tick5);
 
-            assertEquals(1, results_before.size());
-            assertEquals(tick2, results_before.get(0));
+            assertThat(results_before.size()).isEqualTo(1);
+            assertThat(results_before.get(0)).isEqualTo(tick2);
 
-            assertEquals(1, results_after.size());
-            assertEquals(tick3, results_after.get(0));
+            assertThat(results_after.size()).isEqualTo(1);
+            assertThat(results_after.get(0)).isEqualTo(tick3);
 
-            assertEquals(1, results_meets.size());
-            assertEquals(tick3, results_meets.get(0));
+            assertThat(results_meets.size()).isEqualTo(1);
+            assertThat(results_meets.get(0)).isEqualTo(tick3);
 
-            assertEquals(1, results_met_by.size());
-            assertEquals(tick2, results_met_by.get(0));
+            assertThat(results_met_by.size()).isEqualTo(1);
+            assertThat(results_met_by.get(0)).isEqualTo(tick2);
 
-            assertEquals(1, results_met_by.size());
-            assertEquals(tick2, results_met_by.get(0));
+            assertThat(results_met_by.size()).isEqualTo(1);
+            assertThat(results_met_by.get(0)).isEqualTo(tick2);
 
-            assertEquals(1, results_overlaps.size());
-            assertEquals(tick4, results_overlaps.get(0));
+            assertThat(results_overlaps.size()).isEqualTo(1);
+            assertThat(results_overlaps.get(0)).isEqualTo(tick4);
 
-            assertEquals(1, results_overlapped_by.size());
-            assertEquals(tick8, results_overlapped_by.get(0));
+            assertThat(results_overlapped_by.size()).isEqualTo(1);
+            assertThat(results_overlapped_by.get(0)).isEqualTo(tick8);
 
-            assertEquals(1, results_during.size());
-            assertEquals(tick6, results_during.get(0));
+            assertThat(results_during.size()).isEqualTo(1);
+            assertThat(results_during.get(0)).isEqualTo(tick6);
 
-            assertEquals(1, results_includes.size());
-            assertEquals(tick4, results_includes.get(0));
+            assertThat(results_includes.size()).isEqualTo(1);
+            assertThat(results_includes.get(0)).isEqualTo(tick4);
 
-            assertEquals(1, results_starts.size());
-            assertEquals(tick6, results_starts.get(0));
+            assertThat(results_starts.size()).isEqualTo(1);
+            assertThat(results_starts.get(0)).isEqualTo(tick6);
 
-            assertEquals(1, results_started_by.size());
-            assertEquals(tick7, results_started_by.get(0));
+            assertThat(results_started_by.size()).isEqualTo(1);
+            assertThat(results_started_by.get(0)).isEqualTo(tick7);
 
-            assertEquals(1, results_finishes.size());
-            assertEquals(tick8, results_finishes.get(0));
+            assertThat(results_finishes.size()).isEqualTo(1);
+            assertThat(results_finishes.get(0)).isEqualTo(tick8);
 
-            assertEquals(1, results_finished_by.size());
-            assertEquals(tick7, results_finished_by.get(0));
+            assertThat(results_finished_by.size()).isEqualTo(1);
+            assertThat(results_finished_by.get(0)).isEqualTo(tick7);
         } finally {
             wm.dispose();
         }
@@ -720,10 +717,10 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
             final StockTick[] stocks = (StockTick[]) list.get(0);
-            assertSame(tick4, stocks[0]);
-            assertSame(tick2, stocks[1]);
+            assertThat(stocks[0]).isSameAs(tick4);
+            assertThat(stocks[1]).isSameAs(tick2);
         } finally {
             ksession.dispose();
         }
@@ -766,10 +763,10 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
             final StockTick[] stocks = (StockTick[]) list.get(0);
-            assertSame(tick1, stocks[0]);
-            assertSame(tick2, stocks[1]);
+            assertThat(stocks[0]).isSameAs(tick1);
+            assertThat(stocks[1]).isSameAs(tick2);
         } finally {
             ksession.dispose();
         }
@@ -810,10 +807,10 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
             final StockTick[] stocks = (StockTick[]) list.get(0);
-            assertSame(tick4, stocks[0]);
-            assertSame(tick2, stocks[1]);
+            assertThat(stocks[0]).isSameAs(tick4);
+            assertThat(stocks[1]).isSameAs(tick2);
         } finally {
             ksession.dispose();
         }
@@ -851,16 +848,16 @@ public class CepEspTest extends AbstractCepEspTest {
             assertThat(handle1).isNotNull();
             assertThat(handle2).isNotNull();
 
-            assertTrue(handle1.isEvent());
-            assertTrue(handle2.isEvent());
+            assertThat(handle1.isEvent()).isTrue();
+            assertThat(handle2.isEvent()).isTrue();
 
             wm.fireAllRules();
 
-            assertEquals(4, results.size());
-            assertEquals(tick1, results.get(0));
-            assertEquals(tick2, results.get(1));
-            assertEquals(tick1, results.get(2));
-            assertEquals(tick2, results.get(3));
+            assertThat(results.size()).isEqualTo(4);
+            assertThat(results.get(0)).isEqualTo(tick1);
+            assertThat(results.get(1)).isEqualTo(tick2);
+            assertThat(results.get(2)).isEqualTo(tick1);
+            assertThat(results.get(3)).isEqualTo(tick2);
         } finally {
             wm.dispose();
         }
@@ -880,68 +877,68 @@ public class CepEspTest extends AbstractCepEspTest {
 
             clock.advanceTime(5, TimeUnit.SECONDS); // 5 seconds
             final EventFactHandle handle1 = (EventFactHandle) wm.insert(new OrderEvent("1", "customer A", 70));
-            assertEquals(5000, handle1.getStartTimestamp());
-            assertEquals(0, handle1.getDuration());
+            assertThat(handle1.getStartTimestamp()).isEqualTo(5000);
+            assertThat(handle1.getDuration()).isEqualTo(0);
 
             wm.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertEquals(70, ((Number) results.get(0)).intValue());
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(((Number) results.get(0)).intValue()).isEqualTo(70);
 
             // advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
             final EventFactHandle handle2 = (EventFactHandle) wm.insert(new OrderEvent("2", "customer A", 60));
-            assertEquals(15000, handle2.getStartTimestamp());
-            assertEquals(0, handle2.getDuration());
+            assertThat(handle2.getStartTimestamp()).isEqualTo(15000);
+            assertThat(handle2.getDuration()).isEqualTo(0);
 
             wm.fireAllRules();
 
-            assertEquals(2, results.size());
-            assertEquals(65, ((Number) results.get(1)).intValue());
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(((Number) results.get(1)).intValue()).isEqualTo(65);
 
             // advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
             final EventFactHandle handle3 = (EventFactHandle) wm.insert(new OrderEvent("3", "customer A", 50));
-            assertEquals(25000, handle3.getStartTimestamp());
-            assertEquals(0, handle3.getDuration());
+            assertThat(handle3.getStartTimestamp()).isEqualTo(25000);
+            assertThat(handle3.getDuration()).isEqualTo(0);
 
             wm.fireAllRules();
 
-            assertEquals(3, results.size());
-            assertEquals(60, ((Number) results.get(2)).intValue());
+            assertThat(results.size()).isEqualTo(3);
+            assertThat(((Number) results.get(2)).intValue()).isEqualTo(60);
 
             // advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
             final EventFactHandle handle4 = (EventFactHandle) wm.insert(new OrderEvent("4", "customer A", 25));
-            assertEquals(35000, handle4.getStartTimestamp());
-            assertEquals(0, handle4.getDuration());
+            assertThat(handle4.getStartTimestamp()).isEqualTo(35000);
+            assertThat(handle4.getDuration()).isEqualTo(0);
 
             wm.fireAllRules();
 
             // first event should have expired, making average under the rule threshold, so no additional rule fire
-            assertEquals(3, results.size());
+            assertThat(results.size()).isEqualTo(3);
 
             // advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
             final EventFactHandle handle5 = (EventFactHandle) wm.insert(new OrderEvent("5", "customer A", 70));
-            assertEquals(45000, handle5.getStartTimestamp());
-            assertEquals(0, handle5.getDuration());
+            assertThat(handle5.getStartTimestamp()).isEqualTo(45000);
+            assertThat(handle5.getDuration()).isEqualTo(0);
 
             wm.fireAllRules();
 
             // still under the threshold, so no fire
-            assertEquals(3, results.size());
+            assertThat(results.size()).isEqualTo(3);
 
             // advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
             final EventFactHandle handle6 = (EventFactHandle) wm.insert(new OrderEvent("6", "customer A", 115));
-            assertEquals(55000, handle6.getStartTimestamp());
-            assertEquals(0, handle6.getDuration());
+            assertThat(handle6.getStartTimestamp()).isEqualTo(55000);
+            assertThat(handle6.getDuration()).isEqualTo(0);
 
             wm.fireAllRules();
 
-            assertEquals(4, results.size());
-            assertEquals(70, ((Number) results.get(3)).intValue());
+            assertThat(results.size()).isEqualTo(4);
+            assertThat(((Number) results.get(3)).intValue()).isEqualTo(70);
         } finally {
             wm.dispose();
         }
@@ -959,43 +956,43 @@ public class CepEspTest extends AbstractCepEspTest {
             wm.insert(new OrderEvent("1", "customer A", 70));
             wm.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertEquals(70, ((Number) results.get(0)).intValue());
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(((Number) results.get(0)).intValue()).isEqualTo(70);
 
             // assert new data
             wm.insert(new OrderEvent("2", "customer A", 60));
             wm.fireAllRules();
 
-            assertEquals(2, results.size());
-            assertEquals(65, ((Number) results.get(1)).intValue());
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(((Number) results.get(1)).intValue()).isEqualTo(65);
 
             // assert new data
             wm.insert(new OrderEvent("3", "customer A", 50));
             wm.fireAllRules();
 
-            assertEquals(3, results.size());
-            assertEquals(60, ((Number) results.get(2)).intValue());
+            assertThat(results.size()).isEqualTo(3);
+            assertThat(((Number) results.get(2)).intValue()).isEqualTo(60);
 
             // assert new data
             wm.insert(new OrderEvent("4", "customer A", 25));
             wm.fireAllRules();
 
             // first event should have expired, making average under the rule threshold, so no additional rule fire
-            assertEquals(3, results.size());
+            assertThat(results.size()).isEqualTo(3);
 
             // assert new data
             wm.insert(new OrderEvent("5", "customer A", 70));
             wm.fireAllRules();
 
             // still under the threshold, so no fire
-            assertEquals(3, results.size());
+            assertThat(results.size()).isEqualTo(3);
 
             // assert new data
             wm.insert(new OrderEvent("6", "customer A", 115));
             wm.fireAllRules();
 
-            assertEquals(4, results.size());
-            assertEquals(70, ((Number) results.get(3)).intValue());
+            assertThat(results.size()).isEqualTo(4);
+            assertThat(((Number) results.get(3)).intValue()).isEqualTo(70);
         } finally {
             wm.dispose();
         }
@@ -1023,7 +1020,7 @@ public class CepEspTest extends AbstractCepEspTest {
         final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final RuleImpl rule = (RuleImpl) kbase.getRule("org.drools.compiler", "Delaying Not");
-            assertEquals(10000, ((DurationTimer) rule.getTimer()).getDuration());
+            assertThat(((DurationTimer) rule.getTimer()).getDuration()).isEqualTo(10000);
 
             final List results = new ArrayList();
 
@@ -1038,14 +1035,14 @@ public class CepEspTest extends AbstractCepEspTest {
             wm.fireAllRules();
 
             // should not fire, because it must wait 10 seconds
-            assertEquals(0, results.size());
+            assertThat(results.size()).isEqualTo(0);
 
             clock.advanceTime(5, TimeUnit.SECONDS);
             wm.insert(new StockTick(1, "DROO", 80, clock.getCurrentTime()));
             wm.fireAllRules();
 
             // should still not fire, because it must wait 5 more seconds, and st2 has lower price (80)
-            assertEquals(0, results.size());
+            assertThat(results.size()).isEqualTo(0);
             // assert new data
             wm.fireAllRules();
 
@@ -1054,9 +1051,9 @@ public class CepEspTest extends AbstractCepEspTest {
             wm.fireAllRules();
 
             // should fire, because waited for 10 seconds and no other event arrived with a price increase
-            assertEquals(1, results.size());
+            assertThat(results.size()).isEqualTo(1);
 
-            assertEquals(st1O, results.get(0));
+            assertThat(results.get(0)).isEqualTo(st1O);
         } finally {
             wm.dispose();
         }
@@ -1088,22 +1085,22 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertEquals(60, ((Number) results.get(0)).intValue());
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(((Number) results.get(0)).intValue()).isEqualTo(60);
 
             // assert new data
             ksession.insert(new OrderEvent("5", "customer A", 10));
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
 
-            assertEquals(1, results.size());
+            assertThat(results.size()).isEqualTo(1);
 
             ksession.insert(new OrderEvent("6", "customer A", 90));
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
 
-            assertEquals(2, results.size());
-            assertEquals(50, ((Number) results.get(1)).intValue());
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(((Number) results.get(1)).intValue()).isEqualTo(50);
         } finally {
             ksession.dispose();
         }
@@ -1129,7 +1126,7 @@ public class CepEspTest extends AbstractCepEspTest {
         try {
             // rule X should not be delayed as the delay would be infinite
             final int rules = ksession.fireAllRules();
-            assertEquals( 2, rules );
+            assertThat(rules).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -1164,7 +1161,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
             // rule X should not be delayed as the delay would be infinite
             final int rules = ksession.fireAllRules();
-            assertEquals( 2, rules );
+            assertThat(rules).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -1187,18 +1184,18 @@ public class CepEspTest extends AbstractCepEspTest {
             final StockTick tick3 = new StockTick(3, "ACME", 10, 10100);
             final StockTick tick4 = new StockTick(4, "DROO", 50, 11000);
 
-            assertEquals(0, ((InternalWorkingMemory) session).getIdleTime());
+            assertThat(((InternalWorkingMemory) session).getIdleTime()).isEqualTo(0);
             final InternalFactHandle handle1 = (InternalFactHandle) session.insert(tick1);
             clock.advanceTime(10, TimeUnit.SECONDS);
-            assertEquals(10000, ((InternalWorkingMemory) session).getIdleTime());
+            assertThat(((InternalWorkingMemory) session).getIdleTime()).isEqualTo(10000);
             final InternalFactHandle handle2 = (InternalFactHandle) session.insert(tick2);
-            assertEquals(0, ((InternalWorkingMemory) session).getIdleTime());
+            assertThat(((InternalWorkingMemory) session).getIdleTime()).isEqualTo(0);
             clock.advanceTime(15, TimeUnit.SECONDS);
-            assertEquals(15000, ((InternalWorkingMemory) session).getIdleTime());
+            assertThat(((InternalWorkingMemory) session).getIdleTime()).isEqualTo(15000);
             clock.advanceTime(15, TimeUnit.SECONDS);
-            assertEquals(30000, ((InternalWorkingMemory) session).getIdleTime());
+            assertThat(((InternalWorkingMemory) session).getIdleTime()).isEqualTo(30000);
             final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
-            assertEquals(0, ((InternalWorkingMemory) session).getIdleTime());
+            assertThat(((InternalWorkingMemory) session).getIdleTime()).isEqualTo(0);
             clock.advanceTime(20, TimeUnit.SECONDS);
             final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
             clock.advanceTime(10, TimeUnit.SECONDS);
@@ -1208,16 +1205,16 @@ public class CepEspTest extends AbstractCepEspTest {
             assertThat(handle3).isNotNull();
             assertThat(handle4).isNotNull();
 
-            assertTrue(handle1.isEvent());
-            assertTrue(handle2.isEvent());
-            assertTrue(handle3.isEvent());
-            assertTrue(handle4.isEvent());
+            assertThat(handle1.isEvent()).isTrue();
+            assertThat(handle2.isEvent()).isTrue();
+            assertThat(handle3.isEvent()).isTrue();
+            assertThat(handle4.isEvent()).isTrue();
 
-            assertEquals(10000, ((InternalWorkingMemory) session).getIdleTime());
+            assertThat(((InternalWorkingMemory) session).getIdleTime()).isEqualTo(10000);
             session.fireAllRules();
-            assertEquals(0, ((InternalWorkingMemory) session).getIdleTime());
+            assertThat(((InternalWorkingMemory) session).getIdleTime()).isEqualTo(0);
 
-            assertEquals(2, ((List) session.getGlobal("results")).size());
+            assertThat(((List) session.getGlobal("results")).size()).isEqualTo(2);
         } finally {
             session.dispose();
         }
@@ -1246,42 +1243,42 @@ public class CepEspTest extends AbstractCepEspTest {
                 clock.advanceTime(5, TimeUnit.SECONDS); // 5 seconds
 
                 // there is no next job, so returns -1
-                assertEquals(-1, wm.getTimeToNextJob());
+                assertThat(wm.getTimeToNextJob()).isEqualTo(-1);
                 wm.insert(new OrderEvent("1", "customer A", 70));
                 wm.fireAllRules();
-                assertEquals(0, wm.getIdleTime());
+                assertThat(wm.getIdleTime()).isEqualTo(0);
                 // now, there is a next job in 30 seconds: expire the event
-                assertEquals(30000, wm.getTimeToNextJob());
+                assertThat(wm.getTimeToNextJob()).isEqualTo(30000);
 
                 wm.fireAllRules();
-                assertEquals(1, results.size());
-                assertEquals(70, ((Number) results.get(0)).intValue());
+                assertThat(results.size()).isEqualTo(1);
+                assertThat(((Number) results.get(0)).intValue()).isEqualTo(70);
 
                 // advance clock and assert new data
                 clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
                 // next job is in 20 seconds: expire the event
-                assertEquals(20000, wm.getTimeToNextJob());
+                assertThat(wm.getTimeToNextJob()).isEqualTo(20000);
 
                 wm.insert(new OrderEvent("2", "customer A", 60));
                 wm.fireAllRules();
 
-                assertEquals(2, results.size());
-                assertEquals(65, ((Number) results.get(1)).intValue());
+                assertThat(results.size()).isEqualTo(2);
+                assertThat(((Number) results.get(1)).intValue()).isEqualTo(65);
 
                 // advance clock and assert new data
                 clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
                 // next job is in 10 seconds: expire the event
-                assertEquals(10000, wm.getTimeToNextJob());
+                assertThat(wm.getTimeToNextJob()).isEqualTo(10000);
 
                 wm.insert(new OrderEvent("3", "customer A", 50));
                 wm.fireAllRules();
-                assertEquals(3, results.size());
-                assertEquals(60, ((Number) results.get(2)).intValue());
+                assertThat(results.size()).isEqualTo(3);
+                assertThat(((Number) results.get(2)).intValue()).isEqualTo(60);
 
                 // advance clock and assert new data
                 clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
                 // advancing clock time will cause events to expire
-                assertEquals(0, wm.getIdleTime());
+                assertThat(wm.getIdleTime()).isEqualTo(0);
                 // next job is in 10 seconds: expire another event
                 //assertEquals( 10000, iwm.getTimeToNextJob());
 
@@ -1289,19 +1286,19 @@ public class CepEspTest extends AbstractCepEspTest {
                 wm.fireAllRules();
 
                 // first event should have expired, making average under the rule threshold, so no additional rule fire
-                assertEquals(3, results.size());
+                assertThat(results.size()).isEqualTo(3);
 
                 // advance clock and assert new data
                 clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
 
                 wm.insert(new OrderEvent("5", "customer A", 70));
-                assertEquals(0, wm.getIdleTime());
+                assertThat(wm.getIdleTime()).isEqualTo(0);
 
                 //        wm  = SerializationHelper.serializeObject(wm);
                 wm.fireAllRules();
 
                 // still under the threshold, so no fire
-                assertEquals(3, results.size());
+                assertThat(results.size()).isEqualTo(3);
             } finally {
                 logger.writeToDisk();
             }
@@ -1336,30 +1333,30 @@ public class CepEspTest extends AbstractCepEspTest {
 
                 ksession.fireAllRules();
 
-                assertEquals(1, timeResults.size());
-                assertEquals(1, timeResults.get(0).intValue());
-                assertEquals(1, lengthResults.size());
-                assertEquals(1, lengthResults.get(0).intValue());
+                assertThat(timeResults.size()).isEqualTo(1);
+                assertThat(timeResults.get(0).intValue()).isEqualTo(1);
+                assertThat(lengthResults.size()).isEqualTo(1);
+                assertThat(lengthResults.get(0).intValue()).isEqualTo(1);
 
                 // Second interaction: advance clock and assert new data
                 clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
                 ksession.insert(new OrderEvent("2", "customer A", 60));
                 ksession.fireAllRules();
 
-                assertEquals(2, timeResults.size());
-                assertEquals(2, timeResults.get(1).intValue());
-                assertEquals(2, lengthResults.size());
-                assertEquals(2, lengthResults.get(1).intValue());
+                assertThat(timeResults.size()).isEqualTo(2);
+                assertThat(timeResults.get(1).intValue()).isEqualTo(2);
+                assertThat(lengthResults.size()).isEqualTo(2);
+                assertThat(lengthResults.get(1).intValue()).isEqualTo(2);
 
                 // Third interaction: advance clock and assert new data
                 clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
                 ksession.insert(new OrderEvent("3", "customer A", 50));
                 ksession.fireAllRules();
 
-                assertEquals(3, timeResults.size());
-                assertEquals(3, timeResults.get(2).intValue());
-                assertEquals(3, lengthResults.size());
-                assertEquals(3, lengthResults.get(2).intValue());
+                assertThat(timeResults.size()).isEqualTo(3);
+                assertThat(timeResults.get(2).intValue()).isEqualTo(3);
+                assertThat(lengthResults.size()).isEqualTo(3);
+                assertThat(lengthResults.get(2).intValue()).isEqualTo(3);
 
                 // Fourth interaction: advance clock and assert new data
                 clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
@@ -1367,20 +1364,20 @@ public class CepEspTest extends AbstractCepEspTest {
                 ksession.fireAllRules();
 
                 // first event should have expired now
-                assertEquals(4, timeResults.size());
-                assertEquals(3, timeResults.get(3).intValue());
-                assertEquals(4, lengthResults.size());
-                assertEquals(3, lengthResults.get(3).intValue());
+                assertThat(timeResults.size()).isEqualTo(4);
+                assertThat(timeResults.get(3).intValue()).isEqualTo(3);
+                assertThat(lengthResults.size()).isEqualTo(4);
+                assertThat(lengthResults.get(3).intValue()).isEqualTo(3);
 
                 // Fifth interaction: advance clock and assert new data
                 clock.advanceTime(5, TimeUnit.SECONDS); // 10 seconds
                 ksession.insert(new OrderEvent("5", "customer A", 70));
                 ksession.fireAllRules();
 
-                assertEquals(5, timeResults.size());
-                assertEquals(4, timeResults.get(4).intValue());
-                assertEquals(5, lengthResults.size());
-                assertEquals(3, lengthResults.get(4).intValue());
+                assertThat(timeResults.size()).isEqualTo(5);
+                assertThat(timeResults.get(4).intValue()).isEqualTo(4);
+                assertThat(lengthResults.size()).isEqualTo(5);
+                assertThat(lengthResults.get(4).intValue()).isEqualTo(3);
             } finally {
                 logger.writeToDisk();
             }
@@ -1475,10 +1472,10 @@ public class CepEspTest extends AbstractCepEspTest {
             final InternalFactHandle handle3 = (InternalFactHandle) session.insert(tick3);
             final InternalFactHandle handle4 = (InternalFactHandle) session.insert(tick4);
 
-            assertTrue(handle1.isEvent());
-            assertTrue(handle2.isEvent());
-            assertTrue(handle3.isEvent());
-            assertTrue(handle4.isEvent());
+            assertThat(handle1.isEvent()).isTrue();
+            assertThat(handle2.isEvent()).isTrue();
+            assertThat(handle3.isEvent()).isTrue();
+            assertThat(handle4.isEvent()).isTrue();
         } finally {
             session.dispose();
         }
@@ -1595,7 +1592,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ep.insert(new StockTick(3, "B", 10, clock.getCurrentTime()));
             clock.advanceTime(8, TimeUnit.SECONDS);
-            assertEquals(3, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -1710,7 +1707,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new StockTick(4, "ACME", 10, 1000));
             clock.advanceTime(5, TimeUnit.SECONDS);
             final int rulesFired = ksession.fireAllRules();
-            assertEquals(4, rulesFired);
+            assertThat(rulesFired).isEqualTo(4);
 
             final ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
             verify(ael, times(4)).afterMatchFired(captor.capture());
@@ -1765,7 +1762,7 @@ public class CepEspTest extends AbstractCepEspTest {
             // sleep for 1 sec
             Thread.sleep(1000);
             final int rulesFired = ksession.fireAllRules();
-            assertEquals(4, rulesFired);
+            assertThat(rulesFired).isEqualTo(4);
 
             final ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
             verify(ael, times(4)).afterMatchFired(captor.capture());
@@ -1817,7 +1814,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new StockTick(2, "ACME", 0, 0, 20));
             ksession.fireAllRules();
 
-            assertEquals(1, resultsAfter.size());
+            assertThat(resultsAfter.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -2009,23 +2006,23 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.insert(new StockTick(seq++, "AAA", 10.0, 10L));
             ksession.fireAllRules();
-            assertEquals(list, Collections.singletonList(1));
+            assertThat(Collections.singletonList(1)).isEqualTo(list);
 
             ksession.insert(new StockTick(seq++, "AAA", 15.0, 10L));
             ksession.fireAllRules();
-            assertEquals(list, Arrays.asList(1, 2));
+            assertThat(Arrays.asList(1, 2)).isEqualTo(list);
 
             ksession.insert(new StockTick(seq++, "CCC", 10.0, 10L));
             ksession.fireAllRules();
-            assertEquals(list, Arrays.asList(1, 2, 1));
+            assertThat(Arrays.asList(1, 2, 1)).isEqualTo(list);
 
             ksession.insert(new StockTick(seq++, "DDD", 13.0, 20L));
             ksession.fireAllRules();
-            assertEquals(list, Arrays.asList(1, 2, 1, 1));
+            assertThat(Arrays.asList(1, 2, 1, 1)).isEqualTo(list);
 
             ksession.insert(new StockTick(seq, "AAA", 11.0, 20L));
             ksession.fireAllRules();
-            assertEquals(list, Arrays.asList(1, 2, 1, 1, 3));
+            assertThat(Arrays.asList(1, 2, 1, 1, 3)).isEqualTo(list);
 
             // NPE Here
             ksession.fireAllRules();
@@ -2080,20 +2077,20 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new OrderEvent("1", "customer A", 70));
             ksession.fireAllRules();
             System.out.println(lengthResults);
-            assertTrue(lengthResults.contains(70.0));
+            assertThat(lengthResults.contains(70.0)).isTrue();
 
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
             ksession.insert(new OrderEvent("2", "customer A", 60));
             ksession.fireAllRules();
             System.out.println(lengthResults);
-            assertTrue(lengthResults.contains(65.0));
+            assertThat(lengthResults.contains(65.0)).isTrue();
 
             // Third interaction: advance clock and assert new data
             clock.advanceTime(10, TimeUnit.SECONDS); // 10 seconds
             ksession.insert(new OrderEvent("3", "customer A", 50));
             ksession.fireAllRules();
             System.out.println(lengthResults);
-            assertTrue(lengthResults.contains(60.0));
+            assertThat(lengthResults.contains(60.0)).isTrue();
 
             // Fourth interaction: advance clock and assert new data
             clock.advanceTime(60, TimeUnit.SECONDS); // 60 seconds
@@ -2166,19 +2163,19 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(tick5);
 
             ksession.fireAllRules();
-            assertTrue(timeResults.isEmpty());
+            assertThat(timeResults.isEmpty()).isTrue();
 
             clock.advanceTime(0, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertTrue(timeResults.isEmpty());
+            assertThat(timeResults.isEmpty()).isTrue();
 
             clock.advanceTime(3, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertTrue(timeResults.isEmpty());
+            assertThat(timeResults.isEmpty()).isTrue();
 
             clock.advanceTime(10, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertTrue(timeResults.isEmpty());
+            assertThat(timeResults.isEmpty()).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -2233,7 +2230,7 @@ public class CepEspTest extends AbstractCepEspTest {
             Thread.sleep(1000);
 
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -2304,9 +2301,9 @@ public class CepEspTest extends AbstractCepEspTest {
             entryPoint.update(handle, event2);
 
             // make sure the event is in the entry-point
-            assertFalse(entryPoint.getObjects().contains(event));
-            assertTrue(entryPoint.getObjects().contains(event2));
-            assertEquals(entryPoint.getObject(handle), event2);
+            assertThat(entryPoint.getObjects().contains(event)).isFalse();
+            assertThat(entryPoint.getObjects().contains(event2)).isTrue();
+            assertThat(event2).isEqualTo(entryPoint.getObject(handle));
         } finally {
             kieSession.dispose();
         }
@@ -2361,7 +2358,7 @@ public class CepEspTest extends AbstractCepEspTest {
             final ArrayList<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -2467,11 +2464,11 @@ public class CepEspTest extends AbstractCepEspTest {
             clock.advanceTime(1000, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
-            assertFalse(list.isEmpty());
-            assertEquals(1, list.size());
+            assertThat(list.isEmpty()).isFalse();
+            assertThat(list.size()).isEqualTo(1);
             final Long time = (Long) list.get(0);
 
-            assertTrue(time > 1000 && time < 1500);
+            assertThat(time > 1000 && time < 1500).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -2524,11 +2521,11 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new Event(3, 0, clock.getCurrentTime()));
             ksession.fireAllRules();
 
-            assertFalse(list.isEmpty());
-            assertEquals(1, list.size());
+            assertThat(list.isEmpty()).isFalse();
+            assertThat(list.size()).isEqualTo(1);
             final long time = (Long) list.get(0);
 
-            assertEquals(1300, time);
+            assertThat(time).isEqualTo(1300);
         } finally {
             ksession.dispose();
         }
@@ -2562,8 +2559,8 @@ public class CepEspTest extends AbstractCepEspTest {
             final SimpleFact fact = new SimpleFact("id1");
             ksession.insert(fact);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertEquals("OK", fact.getStatus());
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(fact.getStatus()).isEqualTo("OK");
         } finally {
             ksession.dispose();
         }
@@ -2609,7 +2606,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new SimpleFact("id3"));
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -2652,11 +2649,11 @@ public class CepEspTest extends AbstractCepEspTest {
                 ksession.insert(new SimpleFact("id" + i));
             }
             ksession.fireAllRules();
-            assertEquals("all events should be in WM", 4, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).as("all events should be in WM").isEqualTo(4);
 
             ksession.insert(new SimpleFact("last"));
             ksession.fireAllRules();
-            assertEquals("only one event should be still in WM", 1, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).as("only one event should be still in WM").isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -2784,9 +2781,9 @@ public class CepEspTest extends AbstractCepEspTest {
                 fail(t.getMessage());
             }
 
-            assertEquals(eventLimit, myTotal);
-            assertEquals(eventLimit, list.size());
-            assertEquals(0, session.getEntryPoint("ep01").getObjects().size());
+            assertThat(myTotal).isEqualTo(eventLimit);
+            assertThat(list.size()).isEqualTo(eventLimit);
+            assertThat(session.getEntryPoint("ep01").getObjects().size()).isEqualTo(0);
         } finally {
             session.halt();
             session.dispose();
@@ -2840,15 +2837,15 @@ public class CepEspTest extends AbstractCepEspTest {
 
             QueryResults results = ksession.getQueryResults("EventsBeforeNineSeconds");
 
-            assertEquals(0, results.size());
+            assertThat(results.size()).isEqualTo(0);
 
             results = ksession.getQueryResults("EventsBeforeNineteenSeconds");
 
-            assertEquals(0, results.size());
+            assertThat(results.size()).isEqualTo(0);
 
             results = ksession.getQueryResults("EventsBeforeHundredSeconds");
 
-            assertEquals(1, results.size());
+            assertThat(results.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -2900,7 +2897,7 @@ public class CepEspTest extends AbstractCepEspTest {
             final ArrayList list = new ArrayList(1);
             ks.setGlobal("list", list);
             ks.fireAllRules();
-            assertEquals(Collections.singletonList(1), list);
+            assertThat(list).isEqualTo(Collections.singletonList(1));
         } finally {
             ks.dispose();
         }
@@ -2956,8 +2953,8 @@ public class CepEspTest extends AbstractCepEspTest {
             ks.insert(new StockTick(3, "BBB", 1.0, 0));
             ks.fireAllRules();
 
-            assertEquals(2, list.size());
-            assertEquals(Arrays.asList(2L, 3L), list);
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list).isEqualTo(Arrays.asList(2L, 3L));
         } finally {
             ks.dispose();
         }
@@ -3040,8 +3037,8 @@ public class CepEspTest extends AbstractCepEspTest {
             ks.insert(new StockTick(3, "BBB", 3.0, 0));
             ks.fireAllRules();
 
-            assertEquals(2, list.size());
-            assertEquals(Arrays.asList(2.0, 5.0), list);
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list).isEqualTo(Arrays.asList(2.0, 5.0));
         } finally {
             ks.dispose();
         }
@@ -3123,8 +3120,8 @@ public class CepEspTest extends AbstractCepEspTest {
             ks.insert(new StockTick(3, "BBB", 1.0, 0));
             ks.fireAllRules();
 
-            assertEquals(1, list.size());
-            assertEquals(Collections.singletonList(3L), list);
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list).isEqualTo(Collections.singletonList(3L));
         } finally {
             ks.dispose();
         }
@@ -3183,7 +3180,7 @@ public class CepEspTest extends AbstractCepEspTest {
             clock.advanceTime(100 * 40, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
-            assertEquals(Arrays.asList(1L, 2L, 3L, 3L, 3L, 3L, -1), list);
+            assertThat(list).isEqualTo(Arrays.asList(1L, 2L, 3L, 3L, 3L, 3L, -1));
         } finally {
             ksession.dispose();
         }
@@ -3235,7 +3232,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.fireAllRules();
 
-            assertEquals(Arrays.asList(3L, 1L), list);
+            assertThat(list).isEqualTo(Arrays.asList(3L, 1L));
         } finally {
             ksession.dispose();
         }
@@ -3340,18 +3337,18 @@ public class CepEspTest extends AbstractCepEspTest {
                 System.out.println(list);
                 switch (j) {
                     case 0:
-                        assertEquals(Arrays.asList("r6:1", "r5:1", "r3:1", "r2:1"), list);
+                        assertThat(list).isEqualTo(Arrays.asList("r6:1", "r5:1", "r3:1", "r2:1"));
                         break;
                     case 1:
-                        assertEquals(Arrays.asList("r6:2", "r5:1", "r3:2", "r2:1"), list);
+                        assertThat(list).isEqualTo(Arrays.asList("r6:2", "r5:1", "r3:2", "r2:1"));
                         break;
                     case 2:
                     case 3:
                     case 4:
-                        assertEquals(Arrays.asList("r6:3", "r5:1", "r3:3", "r2:1"), list);
+                        assertThat(list).isEqualTo(Arrays.asList("r6:3", "r5:1", "r3:3", "r2:1"));
                         break;
                     default:
-                        fail();
+                        fail("Unexpected condition");
                 }
                 list.clear();
             }
@@ -3416,7 +3413,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert("go");
             ksession.fireAllRules();
 
-            assertEquals(Arrays.asList(1L, 2L, 1L), list);
+            assertThat(list).isEqualTo(Arrays.asList(1L, 2L, 1L));
         } finally {
             ksession.dispose();
         }
@@ -3568,7 +3565,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -3614,7 +3611,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.fireAllRules();
 
             // The event should still be there...
-            assertEquals(1, ksession.getObjects().size());
+            assertThat(ksession.getObjects().size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -3746,7 +3743,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(event);
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -3785,7 +3782,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(event2);
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -3838,7 +3835,7 @@ public class CepEspTest extends AbstractCepEspTest {
                 ksession.fireAllRules();
             }
 
-            assertEquals(list, Arrays.asList(2, 1, 2, 1, 2, 1, 2, 1, 2, 1));
+            assertThat(Arrays.asList(2, 1, 2, 1, 2, 1, 2, 1, 2, 1)).isEqualTo(list);
         } finally {
             ksession.dispose();
         }
@@ -3880,7 +3877,7 @@ public class CepEspTest extends AbstractCepEspTest {
             event.setDateEvt(System.currentTimeMillis() - (2 * 60 * 60 * 1000));
             ksession.insert(event);
             ksession.fireAllRules();
-            assertEquals("code2", event.getCode());
+            assertThat(event.getCode()).isEqualTo("code2");
         } finally {
             ksession.dispose();
         }
@@ -3979,11 +3976,11 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert("Peter");
             ksession.fireAllRules();
 
-            assertTrue(list.contains(0));
-            assertTrue(list.contains(1));
-            assertTrue(list.contains(2));
-            assertFalse(list.contains(-1));
-            assertFalse(list.contains(-2));
+            assertThat(list.contains(0)).isTrue();
+            assertThat(list.contains(1)).isTrue();
+            assertThat(list.contains(2)).isTrue();
+            assertThat(list.contains(-1)).isFalse();
+            assertThat(list.contains(-2)).isFalse();
         } finally {
             ksession.dispose();
         }
@@ -4029,13 +4026,13 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.insert("John");
             ksession.fireAllRules();
-            assertTrue(list.isEmpty());
+            assertThat(list.isEmpty()).isTrue();
 
             ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(1000, TimeUnit.MILLISECONDS);
 
             ksession.fireAllRules();
-            assertTrue(list.contains(-2));
-            assertTrue(list.contains(0));
+            assertThat(list.contains(-2)).isTrue();
+            assertThat(list.contains(0)).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -4116,13 +4113,13 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.insert("Alice");
             ksession.fireAllRules();
-            assertTrue(list.isEmpty());
+            assertThat(list.isEmpty()).isTrue();
 
             ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(150, TimeUnit.MILLISECONDS);
 
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertEquals(1, (int) list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat((int) list.get(0)).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -4173,15 +4170,15 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.insert("Alice");
             ksession.fireAllRules();
-            assertTrue(list.isEmpty());
+            assertThat(list.isEmpty()).isTrue();
 
             ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(150, TimeUnit.MILLISECONDS);
 
             ksession.fireAllRules();
-            assertEquals(3, list.size());
-            assertTrue(list.contains(0));
-            assertTrue(list.contains(1));
-            assertTrue(list.contains(2));
+            assertThat(list.size()).isEqualTo(3);
+            assertThat(list.contains(0)).isTrue();
+            assertThat(list.contains(1)).isTrue();
+            assertThat(list.contains(2)).isTrue();
         } finally {
             ksession.dispose();
         }
@@ -4208,8 +4205,8 @@ public class CepEspTest extends AbstractCepEspTest {
             ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(1, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertEquals(0, ksession.getObjects().size());
-            assertEquals(0, ((NamedEntryPoint) ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId())).getTruthMaintenanceSystem().getEqualityKeyMap().size());
+            assertThat(ksession.getObjects().size()).isEqualTo(0);
+            assertThat(((NamedEntryPoint) ksession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId())).getTruthMaintenanceSystem().getEqualityKeyMap().size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -4317,12 +4314,12 @@ public class CepEspTest extends AbstractCepEspTest {
             final DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert("goodbye");
 
             FactHandle key = DefaultFactHandle.createFromExternalFormat(helloHandle.toExternalForm());
-            assertTrue("FactHandle not deserialized as EventFactHandle", key instanceof EventFactHandle);
-            assertEquals("hello", ksession.getObject(key));
+            assertThat(key instanceof EventFactHandle).as("FactHandle not deserialized as EventFactHandle").isTrue();
+            assertThat(ksession.getObject(key)).isEqualTo("hello");
 
             key = DefaultFactHandle.createFromExternalFormat(goodbyeHandle.toExternalForm());
-            assertTrue("FactHandle not deserialized as EventFactHandle", key instanceof EventFactHandle);
-            assertEquals("goodbye", ksession.getObject(key));
+            assertThat(key instanceof EventFactHandle).as("FactHandle not deserialized as EventFactHandle").isTrue();
+            assertThat(ksession.getObject(key)).isEqualTo("goodbye");
         } finally {
             ksession.dispose();
         }
@@ -4345,16 +4342,16 @@ public class CepEspTest extends AbstractCepEspTest {
         final KieSession ksession = kbase.newKieSession();
         try {
             ksession.insert("test");
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
             TimeUtil.sleepMillis(2L);
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
             while (ksession.getObjects().size() != 0) {
                 TimeUtil.sleepMillis(30L);
                 // Expire action is put into propagation queue by timer job, so there
                 // can be a race condition where it puts it there right after previous fireAllRules
                 // flushes the queue. So there needs to be another flush -> another fireAllRules
                 // to flush the queue.
-                assertEquals(0, ksession.fireAllRules());
+                assertThat(ksession.fireAllRules()).isEqualTo(0);
             }
         } finally {
             ksession.dispose();
@@ -4390,8 +4387,8 @@ public class CepEspTest extends AbstractCepEspTest {
             clock.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertTrue(handle1.isExpired());
-            assertFalse(ksession.getFactHandles().contains(handle1));
+            assertThat(handle1.isExpired()).isTrue();
+            assertThat(ksession.getFactHandles().contains(handle1)).isFalse();
         } finally {
             ksession.dispose();
         }
@@ -4426,8 +4423,8 @@ public class CepEspTest extends AbstractCepEspTest {
             clock.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertTrue(handle1.isExpired());
-            assertFalse(ksession.getFactHandles().contains(handle1));
+            assertThat(handle1.isExpired()).isTrue();
+            assertThat(ksession.getFactHandles().contains(handle1)).isFalse();
         } finally {
             ksession.dispose();
         }
@@ -4460,8 +4457,8 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new StockTick(3, "JBPM", 50));
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
-            assertEquals("JBPM", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("JBPM");
 
             try {
                 ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
@@ -4474,7 +4471,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -4513,8 +4510,8 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new StockTick(3, "JBPM", 50));
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
-            assertEquals("JBPM", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("JBPM");
 
             try {
                 ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
@@ -4527,7 +4524,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -4570,8 +4567,8 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            assertEquals("JBPM", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("JBPM");
         } finally {
             ksession.dispose();
         }
@@ -4604,13 +4601,13 @@ public class CepEspTest extends AbstractCepEspTest {
 
             clock.advanceTime(15, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertFalse(handle1.isExpired());
-            assertEquals(1, ksession.getObjects().size());
+            assertThat(handle1.isExpired()).isFalse();
+            assertThat(ksession.getObjects().size()).isEqualTo(1);
 
             clock.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertTrue(handle1.isExpired());
-            assertEquals(0, ksession.getObjects().size());
+            assertThat(handle1.isExpired()).isTrue();
+            assertThat(ksession.getObjects().size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -4643,8 +4640,8 @@ public class CepEspTest extends AbstractCepEspTest {
 
             clock.advanceTime(15, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertFalse(handle1.isExpired());
-            assertEquals(1, ksession.getObjects().size());
+            assertThat(handle1.isExpired()).isFalse();
+            assertThat(ksession.getObjects().size()).isEqualTo(1);
 
             try {
                 ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
@@ -4656,7 +4653,7 @@ public class CepEspTest extends AbstractCepEspTest {
             clock = ksession.getSessionClock();
             clock.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(0, ksession.getObjects().size());
+            assertThat(ksession.getObjects().size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -4702,7 +4699,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(event1);
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -4750,13 +4747,13 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.fireAllRules();
 
             //Session should only contain the fact we just inserted.
-            assertEquals(1, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(1);
 
             clock.advanceTime(60000, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
             //We've disabled expiration, so fact should still be in WorkingMemory.
-            assertEquals(1, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -4803,12 +4800,12 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(event3);
 
             ksession.fireAllRules(); // Nothing Happens
-            assertEquals(1, counter.get());
+            assertThat(counter.get()).isEqualTo(1);
 
             sessionClock.advanceTime(10000, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
-            assertEquals(0, counter.get());
+            assertThat(counter.get()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -4850,13 +4847,13 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new MyEvent(15));
 
             ksession.fireAllRules();
-            assertEquals(0, counter.get());
+            assertThat(counter.get()).isEqualTo(0);
 
             sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
             ksession.insert(1);
             ksession.fireAllRules(); // MyEvent is expired
 
-            assertEquals(1, counter.get());
+            assertThat(counter.get()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -4896,13 +4893,13 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new MyEvent(15));
 
             ksession.fireAllRules();
-            assertEquals(0, counter.get());
+            assertThat(counter.get()).isEqualTo(0);
 
             sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
             ksession.insert(1);
             ksession.fireAllRules(); // MyEvent is expired
 
-            assertEquals(1, counter.get());
+            assertThat(counter.get()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -4943,13 +4940,13 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new MyEvent(15));
 
             ksession.fireAllRules();
-            assertEquals(0, counter.get());
+            assertThat(counter.get()).isEqualTo(0);
 
             sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
             ksession.delete(iFh);
             ksession.fireAllRules(); // MyEvent is expired
 
-            assertEquals(1, counter.get());
+            assertThat(counter.get()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -4978,14 +4975,14 @@ public class CepEspTest extends AbstractCepEspTest {
             sessionClock.setStartupTime(0);
 
             ksession.insert(new MyEvent(0));
-            assertEquals(1L, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(1L);
 
             ksession.fireAllRules();
-            assertEquals(2L, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(2L);
 
             sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(0L, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(0L);
         } finally {
             ksession.dispose();
         }
@@ -5094,7 +5091,7 @@ public class CepEspTest extends AbstractCepEspTest {
             for (final Object o : session.getFactHandles()) {
                 if (o instanceof EventFactHandle) {
                     final EventFactHandle eventFactHandle = (EventFactHandle) o;
-                    assertFalse(eventFactHandle.isExpired());
+                    assertThat(eventFactHandle.isExpired()).isFalse();
                 }
             }
         } finally {
@@ -5143,12 +5140,12 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(event3);
 
             ksession.fireAllRules(); // Nothing Happens
-            assertEquals(1, counter.get());
+            assertThat(counter.get()).isEqualTo(1);
 
             sessionClock.advanceTime(10, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
-            assertEquals(0, counter.get());
+            assertThat(counter.get()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -5210,14 +5207,14 @@ public class CepEspTest extends AbstractCepEspTest {
             final FactHandle fhB = kieSession.insert("B");
             final FactHandle fh1 = kieSession.insert(1);
 
-            assertEquals(0, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(0);
 
             kieSession.delete(fh1);
             kieSession.update(fhA, "A");
             kieSession.update(fhB, "B");
             kieSession.insert(2);
 
-            assertEquals(0, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(0);
         } finally {
             kieSession.dispose();
         }
@@ -5256,8 +5253,8 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(new AtomicBoolean(false));
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
-            assertEquals("R2", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("R2");
         } finally {
             ksession.dispose();
         }
@@ -5284,13 +5281,13 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert("test");
             ksession.insert(1);
 
-            assertEquals(2, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(2);
 
             ksession.fireAllRules();
             sessionClock.advanceTime(11, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertEquals(0, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -5316,13 +5313,13 @@ public class CepEspTest extends AbstractCepEspTest {
 
             ksession.insert(1);
 
-            assertEquals(1, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(1);
 
             ksession.fireAllRules();
             sessionClock.advanceTime(11, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertEquals(0, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -5377,16 +5374,16 @@ public class CepEspTest extends AbstractCepEspTest {
             kieSession.getAgenda().getAgendaGroup("rf-grp0").setFocus();
             kieSession.fireAllRules(); // OK nothing happens
 
-            assertEquals(2, kieSession.getFactCount());
+            assertThat(kieSession.getFactCount()).isEqualTo(2);
 
             sessionClock.advanceTime(145, TimeUnit.HOURS);
             kieSession.getAgenda().getAgendaGroup("rf-grp0").setFocus();
             kieSession.fireAllRules();
 
-            assertEquals("Expiration occured => no more fact in WM", 0, kieSession.getFactCount());
+            assertThat(kieSession.getFactCount()).as("Expiration occured => no more fact in WM").isEqualTo(0);
 
-            assertEquals("RG_1 should fire once", 1, list.stream().filter(r -> r.equals("RG_1")).count());
-            assertEquals("RG_2 should fire once", 1, list.stream().filter(r -> r.equals("RG_2")).count());
+            assertThat(list.stream().filter(r -> r.equals("RG_1")).count()).as("RG_1 should fire once").isEqualTo(1);
+            assertThat(list.stream().filter(r -> r.equals("RG_2")).count()).as("RG_2 should fire once").isEqualTo(1);
         } finally {
             kieSession.dispose();
         }
@@ -5409,12 +5406,12 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert("test");
 
             ksession.fireAllRules();
-            assertEquals(1, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(1);
 
             sessionClock.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
-            assertEquals(0, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -5437,7 +5434,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.fireAllRules();
             sessionClock.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(0, ksession.getFactCount());
+            assertThat(ksession.getFactCount()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -5587,8 +5584,8 @@ public class CepEspTest extends AbstractCepEspTest {
                 ksession2.dispose();
             }
 
-            assertEquals(1, list.size());
-            assertEquals("Fired EventA at 2010-01-01 03:02:00", list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo("Fired EventA at 2010-01-01 03:02:00");
         } finally {
             ksession.dispose();
         }
@@ -5662,11 +5659,11 @@ public class CepEspTest extends AbstractCepEspTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
 
             ((SessionPseudoClock) ksession.getSessionClock()).advanceTime(200, TimeUnit.MILLISECONDS);
 
-            assertEquals(1, ksession.fireAllRules(10));
+            assertThat(ksession.fireAllRules(10)).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -5695,7 +5692,7 @@ public class CepEspTest extends AbstractCepEspTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -5730,11 +5727,11 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.insert(1);
             clock.advanceTime(2, TimeUnit.HOURS);
             ksession.insert(2L);
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
 
             clock.advanceTime(2, TimeUnit.HOURS); // Should expire first event
             ksession.insert(1L);
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         } finally {
             ksession.dispose();
@@ -5773,11 +5770,11 @@ public class CepEspTest extends AbstractCepEspTest {
         ksession.delete(fh3);
         ksession.fireAllRules();
 
-        assertEquals(2, ksession.getObjects().size());
+        assertThat(ksession.getObjects().size()).isEqualTo(2);
 
         clock.advanceTime( 30, TimeUnit.SECONDS );
         ksession.fireAllRules();
 
-        assertEquals(0, ksession.getObjects().size());
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
     }
 }

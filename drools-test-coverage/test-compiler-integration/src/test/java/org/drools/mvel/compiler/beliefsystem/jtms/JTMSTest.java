@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.NamedEntryPoint;
@@ -46,10 +45,8 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class JTMSTest {
@@ -150,32 +147,32 @@ public class JTMSTest {
 
         FactHandle fhGo1 = kSession.insert( "go1" );
         kSession.fireAllRules();
-        assertTrue( list.contains( "-neg" ) );
-        
-        assertEquals( 1, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
-        assertEquals( 1, getNegativeObjects(kSession).size() );
+        assertThat(list.contains("-neg")).isTrue();
+
+        assertThat(kSession.getEntryPoint("DEFAULT").getObjects().size()).isEqualTo(1); //just go1
+        assertThat(getNegativeObjects(kSession).size()).isEqualTo(1);
         
         FactHandle fhGo2 = kSession.insert( "go2" );
         kSession.fireAllRules();
-        assertTrue( list.contains( "-neg" ) );
-        assertTrue( list.contains( "+pos" ) );
-        
-        assertEquals( 3, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //go1, go2, pos
-        assertEquals( 1, getNegativeObjects(kSession).size() );
+        assertThat(list.contains("-neg")).isTrue();
+        assertThat(list.contains("+pos")).isTrue();
+
+        assertThat(kSession.getEntryPoint("DEFAULT").getObjects().size()).isEqualTo(3); //go1, go2, pos
+        assertThat(getNegativeObjects(kSession).size()).isEqualTo(1);
         
         kSession.retract( fhGo1 );
         kSession.fireAllRules();
-        assertFalse( list.contains( "-neg" ) );
-        assertTrue( list.contains( "+pos" ) ); 
-        assertEquals( 2, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //go2, pos
-        assertEquals( 0, getNegativeObjects(kSession).size() );
+        assertThat(list.contains("-neg")).isFalse();
+        assertThat(list.contains("+pos")).isTrue();
+        assertThat(kSession.getEntryPoint("DEFAULT").getObjects().size()).isEqualTo(2); //go2, pos
+        assertThat(getNegativeObjects(kSession).size()).isEqualTo(0);
 
         kSession.retract( fhGo2 );
         kSession.fireAllRules();
-        assertFalse( list.contains( "-neg" ) );
-        assertFalse( list.contains( "+pos" ) ); 
-        assertEquals( 0, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() );
-        assertEquals( 0, getNegativeObjects(kSession).size() );
+        assertThat(list.contains("-neg")).isFalse();
+        assertThat(list.contains("+pos")).isFalse();
+        assertThat(kSession.getEntryPoint("DEFAULT").getObjects().size()).isEqualTo(0);
+        assertThat(getNegativeObjects(kSession).size()).isEqualTo(0);
     }
 
     @Test(timeout = 10000 )
@@ -255,15 +252,15 @@ public class JTMSTest {
 
         kSession.fireAllRules();
         System.out.println( list );
-        assertTrue(list.contains("+xxx"));
+        assertThat(list.contains("+xxx")).isTrue();
 
         FactHandle fhGo4 = kSession.insert( "go4" );
         kSession.fireAllRules();
-        assertTrue( list.isEmpty());
+        assertThat(list.isEmpty()).isTrue();
 
         kSession.delete(fhGo4);
         kSession.fireAllRules();
-        assertTrue( list.contains( "+xxx" ) );
+        assertThat(list.contains("+xxx")).isTrue();
     }
     
     @Test(timeout = 10000 )
@@ -316,27 +313,27 @@ public class JTMSTest {
         kSession.fireAllRules();
         
         NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "DEFAULT" );
-        assertEquals( 4, ep.getObjects().size() ); //just go1, go2, go3, Person(darth)
+        assertThat(ep.getObjects().size()).isEqualTo(4); //just go1, go2, go3, Person(darth)
         
         int count = 0;
         for ( Object object : ep.getObjects() ) {
             if ( object instanceof Person ) {
-                assertEquals( new Integer(1), ((Person)object).getNotInEqualTestObject() );
+                assertThat(((Person) object).getNotInEqualTestObject()).isEqualTo(new Integer(1));
                 count++;
             }
         }
-        assertEquals( 1, count );
+        assertThat(count).isEqualTo(1);
         
         ObjectHashMap equalityMap =  ep.getTruthMaintenanceSystem().getEqualityKeyMap();
-        assertEquals( 1, equalityMap.size() ); // Only Person type is logical
+        assertThat(equalityMap.size()).isEqualTo(1); // Only Person type is logical
         org.drools.core.util.Iterator it = equalityMap.iterator();
         EqualityKey key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
             key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
-              
-        assertEquals( 3, key.getBeliefSet().size() );        
-        assertEquals( new Integer(1), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
+
+        assertThat(key.getBeliefSet().size()).isEqualTo(3);
+        assertThat(((Person) key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject()).isEqualTo(new Integer(1));
         
         kSession.retract( fhGo1 );
         kSession.fireAllRules();
@@ -345,9 +342,9 @@ public class JTMSTest {
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
             key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
-              
-        assertEquals( 2, key.getBeliefSet().size() );        
-        assertEquals( new Integer(3), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
+
+        assertThat(key.getBeliefSet().size()).isEqualTo(2);
+        assertThat(((Person) key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject()).isEqualTo(new Integer(3));
         
         kSession.retract( fhGo3 );
         kSession.fireAllRules();
@@ -356,9 +353,9 @@ public class JTMSTest {
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
             key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
-              
-        assertEquals( 1, key.getBeliefSet().size() );        
-        assertEquals( new Integer(2), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
+
+        assertThat(key.getBeliefSet().size()).isEqualTo(1);
+        assertThat(((Person) key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject()).isEqualTo(new Integer(2));
     }    
     
     @Test(timeout = 10000 )
@@ -413,28 +410,28 @@ public class JTMSTest {
         kSession.fireAllRules();
         
         NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "DEFAULT" );
-        assertEquals( 3, ep.getObjects().size() ); //just go1, go2, go3
-        assertEquals( 1, getNegativeObjects(kSession).size() );  // Person(darth)
+        assertThat(ep.getObjects().size()).isEqualTo(3); //just go1, go2, go3
+        assertThat(getNegativeObjects(kSession).size()).isEqualTo(1);  // Person(darth)
         
         int count = 0;
         for ( Object object : getNegativeObjects(kSession) ) {
             if ( object instanceof Person ) {
-                assertEquals( new Integer(1), ((Person)object).getNotInEqualTestObject() );
+                assertThat(((Person) object).getNotInEqualTestObject()).isEqualTo(new Integer(1));
                 count++;
             }
         }
-        assertEquals( 1, count );
+        assertThat(count).isEqualTo(1);
         
         ObjectHashMap equalityMap =  ep.getTruthMaintenanceSystem().getEqualityKeyMap();
-        assertEquals( 1, equalityMap.size() ); // Only Person type is logical
+        assertThat(equalityMap.size()).isEqualTo(1); // Only Person type is logical
         org.drools.core.util.Iterator it = equalityMap.iterator();
         EqualityKey key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
             key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
-              
-        assertEquals( 3, key.getBeliefSet().size() );        
-        assertEquals( new Integer(1), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getFactHandle().getObject()).getNotInEqualTestObject() );
+
+        assertThat(key.getBeliefSet().size()).isEqualTo(3);
+        assertThat(((Person) key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject()).isEqualTo(new Integer(1));
         
         kSession.retract( fhGo1 );
         kSession.fireAllRules();
@@ -444,8 +441,8 @@ public class JTMSTest {
             key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
 
-        assertEquals( 2, key.getBeliefSet().size() );        
-        assertEquals( new Integer(3), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getFactHandle().getObject()).getNotInEqualTestObject() );
+        assertThat(key.getBeliefSet().size()).isEqualTo(2);
+        assertThat(((Person) key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject()).isEqualTo(new Integer(3));
 
         kSession.retract( fhGo3 );
         kSession.fireAllRules();
@@ -455,8 +452,8 @@ public class JTMSTest {
             key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
 
-        assertEquals( 1, key.getBeliefSet().size() );        
-        assertEquals( new Integer(2), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getFactHandle().getObject()).getNotInEqualTestObject() );
+        assertThat(key.getBeliefSet().size()).isEqualTo(1);
+        assertThat(((Person) key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject()).isEqualTo(new Integer(2));
     }
     
     @Test(timeout = 10000 )
@@ -512,30 +509,31 @@ public class JTMSTest {
 
         FactHandle fhGo1 = kSession.insert( "go1" );
         kSession.fireAllRules();
-        assertTrue( list.contains( "-neg" ) );        
-        
-        assertEquals( 1, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
-        assertEquals( 1, getNegativeObjects(kSession).size() );
+        assertThat(list.contains("-neg")).isTrue();
+
+        assertThat(kSession.getEntryPoint("DEFAULT").getObjects().size()).isEqualTo(1); //just go1
+        assertThat(getNegativeObjects(kSession).size()).isEqualTo(1);
         
         NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "DEFAULT" );
+
         ObjectHashMap equalityMap =  ep.getTruthMaintenanceSystem().getEqualityKeyMap();
-        assertEquals( 2, equalityMap.size() ); // go1, neg are two different strings.
+        assertThat(equalityMap.size()).isEqualTo(2); // go1, neg are two different strings.
         org.drools.core.util.Iterator it = equalityMap.iterator();
         EqualityKey key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( "neg") ) {
             key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
-        
-        assertEquals( 3, key.getBeliefSet().size() );
+
+        assertThat(key.getBeliefSet().size()).isEqualTo(3);
 
         ep.getTruthMaintenanceSystem().delete( key.getLogicalFactHandle() );
 
-        assertEquals( 0, key.getBeliefSet().size() );     
+        assertThat(key.getBeliefSet().size()).isEqualTo(0);
 
-        assertEquals( 1, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
-        assertEquals( 0, getNegativeObjects(kSession).size() );
-        assertEquals( 0, key.getBeliefSet().size() );
-        assertEquals( 1, ep.getTruthMaintenanceSystem().getEqualityKeyMap().size() );
+        assertThat(kSession.getEntryPoint("DEFAULT").getObjects().size()).isEqualTo(1); //just go1
+        assertThat(getNegativeObjects(kSession).size()).isEqualTo(0);
+        assertThat(key.getBeliefSet().size()).isEqualTo(0);
+        assertThat(ep.getTruthMaintenanceSystem().getEqualityKeyMap().size()).isEqualTo(1);
     }  
     
     @Test(timeout = 10000 )
@@ -575,56 +573,56 @@ public class JTMSTest {
         try {
             kSession.fireAllRules();
 
-            assertEquals( 4, kSession.getFactCount() );
-            assertEquals( 0, list.size() );
+            assertThat(kSession.getFactCount()).isEqualTo(4);
+            assertThat(list.size()).isEqualTo(0);
 
             kSession.retract( a );
             kSession.fireAllRules();
 
-            assertEquals( 3, kSession.getFactCount() );
-            assertEquals( 0, list.size() );
+            assertThat(kSession.getFactCount()).isEqualTo(3);
+            assertThat(list.size()).isEqualTo(0);
 
             kSession.retract( b );
             kSession.fireAllRules();
 
-            assertEquals( 2, kSession.getFactCount() );
-            assertEquals(1, getNegativeObjects(kSession).size());
-            assertEquals( 1, list.size() );
+            assertThat(kSession.getFactCount()).isEqualTo(2);
+            assertThat(getNegativeObjects(kSession).size()).isEqualTo(1);
+            assertThat(list.size()).isEqualTo(1);
 
             a = kSession.insert( "a" );
             kSession.fireAllRules();
 
-            assertEquals( 3, kSession.getFactCount());
-            assertEquals( 0, getNegativeObjects(kSession).size() );
-            assertEquals( 1, list.size() );
+            assertThat(kSession.getFactCount()).isEqualTo(3);
+            assertThat(getNegativeObjects(kSession).size()).isEqualTo(0);
+            assertThat(list.size()).isEqualTo(1);
 
             kSession.retract( c );
             kSession.fireAllRules();
 
-            assertEquals( 2, kSession.getFactCount() );
-            assertEquals( 0, getNegativeObjects(kSession).size() );
-            assertEquals( 1, list.size() );
+            assertThat(kSession.getFactCount()).isEqualTo(2);
+            assertThat(getNegativeObjects(kSession).size()).isEqualTo(0);
+            assertThat(list.size()).isEqualTo(1);
 
             kSession.retract( d );
             kSession.fireAllRules();
 
-            assertEquals( 2, kSession.getFactCount() );
-            assertEquals( 0, getNegativeObjects(kSession).size() );
-            assertEquals( 2, list.size() );
+            assertThat(kSession.getFactCount()).isEqualTo(2);
+            assertThat(getNegativeObjects(kSession).size()).isEqualTo(0);
+            assertThat(list.size()).isEqualTo(2);
 
             kSession.retract( a );
             kSession.fireAllRules();
 
-            assertEquals( 0, kSession.getFactCount() );
-            assertEquals( 0, getNegativeObjects(kSession).size() );
-            assertEquals( 2, list.size() );
+            assertThat(kSession.getFactCount()).isEqualTo(0);
+            assertThat(getNegativeObjects(kSession).size()).isEqualTo(0);
+            assertThat(list.size()).isEqualTo(2);
 
             c = kSession.insert( "c" );
             kSession.fireAllRules();
 
-            assertEquals( 1, kSession.getFactCount() );
-            assertEquals( 1, getNegativeObjects(kSession).size() );
-            assertEquals( 3, list.size() );
+            assertThat(kSession.getFactCount()).isEqualTo(1);
+            assertThat(getNegativeObjects(kSession).size()).isEqualTo(1);
+            assertThat(list.size()).isEqualTo(3);
 
 
         } catch ( Exception e ) {
@@ -677,10 +675,10 @@ public class JTMSTest {
         FactHandle handle1 = session.insert( 10 );
         FactHandle handle2 = session.insert( 20 );
 
-        assertEquals( 4, session.fireAllRules() );
+        assertThat(session.fireAllRules()).isEqualTo(4);
 
         session.delete( handle1 );
-        assertEquals( 0, session.fireAllRules() );
+        assertThat(session.fireAllRules()).isEqualTo(0);
     }
 
 }

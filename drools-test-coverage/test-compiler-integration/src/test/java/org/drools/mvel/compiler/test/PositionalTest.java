@@ -27,9 +27,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class PositionalTest {
@@ -72,8 +70,8 @@ public class PositionalTest {
         kSession.insert( new Man( "john", 19, 85.2 ) );
         kSession.fireAllRules();
 
-        assertTrue( list.contains( 84.2 ) );
-        assertFalse( list.contains( 85.2 ) );
+        assertThat(list.contains(84.2)).isTrue();
+        assertThat(list.contains(85.2)).isFalse();
     }
 
 
@@ -102,6 +100,6 @@ public class PositionalTest {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 }

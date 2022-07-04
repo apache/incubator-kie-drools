@@ -48,9 +48,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DeclarativeAgendaTest {
@@ -99,10 +97,9 @@ public class DeclarativeAgendaTest {
         ksession.insert( "go1" );
         ksession.fireAllRules();
 
-        assertEquals( 2,
-                      list.size() );
-        assertTrue( list.contains("rule1:go1") );
-        assertTrue( list.contains("rule2:go1") );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("rule1:go1")).isTrue();
+        assertThat(list.contains("rule2:go1")).isTrue();
 
         ksession.dispose();
     }
@@ -151,22 +148,20 @@ public class DeclarativeAgendaTest {
         ksession.insert( "go1" );
         FactHandle go2 = ksession.insert( "go2" );        
         ksession.fireAllRules();
-        
-        assertEquals( 3,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go2" ) );
-        assertTrue( list.contains( "rule2:go2" ) );
-        assertTrue( list.contains( "rule3:go2" ) );
+
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains("rule1:go2")).isTrue();
+        assertThat(list.contains("rule2:go2")).isTrue();
+        assertThat(list.contains("rule3:go2")).isTrue();
 
         list.clear();
         ksession.retract( go2 );
         ksession.fireAllRules();
 
-        assertEquals( 3,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go1" ) );
-        assertTrue( list.contains( "rule2:go1" ) );
-        assertTrue( list.contains( "rule3:go1" ) );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains("rule1:go1")).isTrue();
+        assertThat(list.contains("rule2:go1")).isTrue();
+        assertThat(list.contains("rule3:go1")).isTrue();
 
         ksession.dispose();
     }
@@ -183,18 +178,16 @@ public class DeclarativeAgendaTest {
         FactHandle go1 = ksession.insert( "go1" );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go2" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go2")).isTrue();
 
         list.clear();
 
         ksession.retract( go2 );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go1" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go1")).isTrue();
     }
 
     @Test(timeout=10000)
@@ -206,24 +199,21 @@ public class DeclarativeAgendaTest {
                             list );
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         FactHandle go1 = ksession.insert( "go1" );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go2" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go2")).isTrue();
 
         list.clear();
 
         ksession.retract( go2 );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go1" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go1")).isTrue();
     }
 
     @Test(timeout=10000)
@@ -237,18 +227,16 @@ public class DeclarativeAgendaTest {
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go2" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go2")).isTrue();
 
         list.clear();
 
         ksession.retract( go2 );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go1" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go1")).isTrue();
     }
 
     @Test(timeout=10000)
@@ -262,27 +250,24 @@ public class DeclarativeAgendaTest {
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go2" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go2")).isTrue();
 
         list.clear();
 
         ksession.update( go2,
                          "go2" );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go2" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go2")).isTrue();
 
         list.clear();
 
         ksession.retract( go2 );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go1" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go1")).isTrue();
     }
 
     @Test(timeout=10000)
@@ -295,18 +280,16 @@ public class DeclarativeAgendaTest {
         FactHandle go1 = ksession.insert( "go1" );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go1" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go1")).isTrue();
 
         list.clear();
 
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go2" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go2")).isTrue();
 
         list.clear();
 
@@ -314,18 +297,16 @@ public class DeclarativeAgendaTest {
                          "go1" );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go2" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go2")).isTrue();
 
         list.clear();
 
         ksession.retract( go2 );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "rule1:go1" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("rule1:go1")).isTrue();
     }
 
     public KieSession getStatefulKnowledgeSession() {
@@ -412,30 +393,26 @@ public class DeclarativeAgendaTest {
         FactHandle go3 = ksession.insert( "go3" );
 
         ksession.fireAllRules();
-        assertEquals( 3,
-                      list.size() );
-        assertTrue( list.contains( "rule0:go1" ) );
-        assertTrue( list.contains( "rule0:go2" ) );
-        assertTrue( list.contains( "rule0:go3" ) );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains("rule0:go1")).isTrue();
+        assertThat(list.contains("rule0:go2")).isTrue();
+        assertThat(list.contains("rule0:go3")).isTrue();
 
         list.clear();
 
         ksession.retract( go3 );
         ksession.fireAllRules();
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         ksession.retract( go2 );
         ksession.fireAllRules();
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         ksession.retract( go1 );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
-        assertTrue( list.contains( "rule0:go0" ) );
+        assertThat(list.contains("rule0:go0")).isTrue();
         ksession.dispose();
     }
 
@@ -503,26 +480,24 @@ public class DeclarativeAgendaTest {
         FactHandle go3 = ksession.insert( "go3" );
 
         ksession.fireAllRules();
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
         System.out.println( list );
-        assertTrue( list.contains( "blockerAllSalesRules1:rule0:go1" ) );
-        assertTrue( list.contains( "blockerAllSalesRules2:rule0:go2" ) );
-        assertTrue( list.contains( "blockerAllSalesRules3:rule0:go3" ) );
+        assertThat(list.contains("blockerAllSalesRules1:rule0:go1")).isTrue();
+        assertThat(list.contains("blockerAllSalesRules2:rule0:go2")).isTrue();
+        assertThat(list.contains("blockerAllSalesRules3:rule0:go3")).isTrue();
 
         list.clear();
 
         FactHandle go4 = ksession.insert( "go4" );
         ksession.fireAllRules();
         System.out.println( list );
-        assertEquals( 5,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(5);
 
-        assertTrue( list.contains( "unblockAll:rule0:go4" ) );
-        assertTrue( list.contains( "rule0:go0" ) );
-        assertTrue( list.contains( "blockerAllSalesRules1:rule0:go1" ) );
-        assertTrue( list.contains( "blockerAllSalesRules2:rule0:go2" ) );
-        assertTrue( list.contains( "blockerAllSalesRules3:rule0:go3" ) );
+        assertThat(list.contains("unblockAll:rule0:go4")).isTrue();
+        assertThat(list.contains("rule0:go0")).isTrue();
+        assertThat(list.contains("blockerAllSalesRules1:rule0:go1")).isTrue();
+        assertThat(list.contains("blockerAllSalesRules2:rule0:go2")).isTrue();
+        assertThat(list.contains("blockerAllSalesRules3:rule0:go3")).isTrue();
     }
 
     @Test(timeout=10000)
@@ -576,11 +551,10 @@ public class DeclarativeAgendaTest {
         FactHandle rule2 = ksession.insert( "rule2" );
 
         ksession.fireAllRules();
-        assertEquals( 3,
-                      list.size() );
-        assertTrue( list.contains( "rule0" ) );
-        assertTrue( list.contains( "rule1" ) );
-        assertTrue( list.contains( "rule2" ) );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains("rule0")).isTrue();
+        assertThat(list.contains("rule1")).isTrue();
+        assertThat(list.contains("rule2")).isTrue();
 
         list.clear();
 
@@ -597,12 +571,11 @@ public class DeclarativeAgendaTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 4,
-                      list.size() );
-        assertTrue( list.contains( "block:rule0" ) );
-        assertTrue( list.contains( "rule1" ) );
-        assertTrue( list.contains( "rule2" ) );
-        assertFalse( list.contains( "rule0" ) );
+        assertThat(list.size()).isEqualTo(4);
+        assertThat(list.contains("block:rule0")).isTrue();
+        assertThat(list.contains("rule1")).isTrue();
+        assertThat(list.contains("rule2")).isTrue();
+        assertThat(list.contains("rule0")).isFalse();
 
         list.clear();
 
@@ -614,13 +587,12 @@ public class DeclarativeAgendaTest {
                          "rule2" );
         
         ksession.fireAllRules();
-        
-        assertEquals( 3,
-                      list.size() );
-        assertTrue( list.contains( "block:rule0" ) );
-        assertTrue( list.contains( "rule1" ) );
-        assertTrue( list.contains( "rule2" ) );
-        assertFalse( list.contains( "rule0" ) );
+
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains("block:rule0")).isTrue();
+        assertThat(list.contains("rule1")).isTrue();
+        assertThat(list.contains("rule2")).isTrue();
+        assertThat(list.contains("rule0")).isFalse();
 
         list.clear();
         
@@ -632,10 +604,9 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
 
         System.out.println( list );
-        assertEquals( 2,
-                      list.size() );
-        assertTrue( list.contains( "rule0" ) );
-        assertTrue( list.contains( "block:rule1" ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("rule0")).isTrue();
+        assertThat(list.contains("block:rule1")).isTrue();
 
         list.clear();
 
@@ -647,13 +618,12 @@ public class DeclarativeAgendaTest {
                          "rule2" );
         
         ksession.fireAllRules();
-        
-        assertEquals( 3,
-                      list.size() );
-        assertTrue( list.contains( "block:rule1" ) );
-        assertTrue( list.contains( "rule0" ) );
-        assertTrue( list.contains( "rule2" ) );
-        assertFalse( list.contains( "rule1" ) );
+
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains("block:rule1")).isTrue();
+        assertThat(list.contains("rule0")).isTrue();
+        assertThat(list.contains("rule2")).isTrue();
+        assertThat(list.contains("rule1")).isFalse();
 
         list.clear();
 
@@ -663,10 +633,9 @@ public class DeclarativeAgendaTest {
                          l );
         ksession.fireAllRules();
 
-        assertEquals( 2,
-                      list.size() );
-        assertTrue( list.contains( "rule1" ) );
-        assertTrue( list.contains( "block:rule2" ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("rule1")).isTrue();
+        assertThat(list.contains("block:rule2")).isTrue();
     }
 
     @Test(timeout=10000)
@@ -736,13 +705,10 @@ public class DeclarativeAgendaTest {
         ksession.insert( "go1" );
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
-        assertEquals( 1,
-                      cancelled.size() );
-        assertEquals( "rule1",
-                      ((MatchCancelledEvent) cancelled.get( 0 )).getMatch().getRule().getName() );
+        assertThat(cancelled.size()).isEqualTo(1);
+        assertThat(((MatchCancelledEvent) cancelled.get(0)).getMatch().getRule().getName()).isEqualTo("rule1");
         ksession.dispose();
     }
 
@@ -792,12 +758,11 @@ public class DeclarativeAgendaTest {
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
         System.out.println( list );
-        assertTrue( list.contains( "1:2" ) );
-        assertTrue( list.contains( "rule1:go1" ) );
-        assertTrue( list.contains( "rule2:go1" ) );
+        assertThat(list.contains("1:2")).isTrue();
+        assertThat(list.contains("rule1:go1")).isTrue();
+        assertThat(list.contains("rule2:go1")).isTrue();
 
         ksession.dispose();
     }
@@ -838,7 +803,7 @@ public class DeclarativeAgendaTest {
         ksession.insert("fireRules");
         ksession.fireAllRules();
         System.out.println(list);
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         ksession.dispose();
     }
@@ -881,13 +846,13 @@ public class DeclarativeAgendaTest {
         FactHandle fireRules = ksession.insert("fireRules");
         FactHandle fireCancelRule = ksession.insert("fireCancelRule");
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         ksession.update(fireRules, "fireRules");
         ksession.update(fireCancelRule, "fireCancelRule");
         ksession.fireAllRules();
-        
-        assertEquals(2, list.size());
+
+        assertThat(list.size()).isEqualTo(2);
 
         ksession.dispose();
     }
@@ -942,7 +907,7 @@ public class DeclarativeAgendaTest {
         kfs.writeKModuleXML(kmodule.toXML());
         kfs.write("src/main/resources/block_rule.drl", drl);
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
 
@@ -957,16 +922,16 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
         String[] expected = { "startAgenda", "sales", "salesBlocker" };
 
-        assertEquals(expected.length, list.size());
+        assertThat(list.size()).isEqualTo(expected.length);
         for (int i = 0; i < list.size(); i++) {
-            assertEquals(expected[i], list.get(i));
+            assertThat(list.get(i)).isEqualTo(expected[i]);
         }
 
         // second run
         ksession.delete(fireBlockerRule);
         list.clear();
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         ksession.dispose();
         list.clear();
@@ -1070,7 +1035,7 @@ public class DeclarativeAgendaTest {
 
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( 21.0, 42.0, 70.0 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(21.0, 42.0, 70.0));
 
         ksession.dispose();
     }

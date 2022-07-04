@@ -39,7 +39,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class NodePositionInPathTest {
@@ -83,56 +83,56 @@ public class NodePositionInPathTest {
             }
         }
 
-        assertEquals(0, liaNode.getPathIndex());
+        assertThat(liaNode.getPathIndex()).isEqualTo(0);
 
         LeftTupleSink[] liaSinks = liaNode.getSinkPropagator().getSinks();
         BetaNode join1 = (BetaNode)liaSinks[0];
-        assertEquals(1, join1.getPathIndex());
+        assertThat(join1.getPathIndex()).isEqualTo(1);
 
         ExistsNode ex1 = (ExistsNode)liaSinks[1];
-        assertEquals(1, ex1.getPathIndex());
+        assertThat(ex1.getPathIndex()).isEqualTo(1);
         BetaNode join2 = (BetaNode)ex1.getSinkPropagator().getSinks()[0];
-        assertEquals(2, join2.getPathIndex());
+        assertThat(join2.getPathIndex()).isEqualTo(2);
         RuleTerminalNode rtn1 = (RuleTerminalNode)join2.getSinkPropagator().getSinks()[0];
-        assertEquals(3, rtn1.getPathIndex());
+        assertThat(rtn1.getPathIndex()).isEqualTo(3);
 
         ExistsNode ex2 = (ExistsNode)liaSinks[2];
-        assertEquals(1, ex2.getPathIndex());
+        assertThat(ex2.getPathIndex()).isEqualTo(1);
         RuleTerminalNode rtn2 = (RuleTerminalNode)ex2.getSinkPropagator().getSinks()[0];
-        assertEquals(2, rtn2.getPathIndex());
+        assertThat(rtn2.getPathIndex()).isEqualTo(2);
 
         BetaNode join3 = (BetaNode) join1.getSinkPropagator().getSinks()[0];
-        assertEquals(2, join3.getPathIndex());
+        assertThat(join3.getPathIndex()).isEqualTo(2);
         RightInputAdapterNode ria1 = (RightInputAdapterNode) join3.getSinkPropagator().getSinks()[0];
-        assertEquals(3, ria1.getPathIndex());
+        assertThat(ria1.getPathIndex()).isEqualTo(3);
 
         BetaNode join4 = (BetaNode) join1.getSinkPropagator().getSinks()[1];
-        assertEquals(2, join4.getPathIndex());
+        assertThat(join4.getPathIndex()).isEqualTo(2);
         RightInputAdapterNode ria2 = (RightInputAdapterNode) join4.getSinkPropagator().getSinks()[0];
-        assertEquals(3, ria2.getPathIndex());
+        assertThat(ria2.getPathIndex()).isEqualTo(3);
 
         LeftTupleNode[] rtn1PathNodes = rtn1.getPathNodes();
-        assertEquals( 4, rtn1PathNodes.length );
+        assertThat(rtn1PathNodes.length).isEqualTo(4);
         checkNodePosition(rtn1PathNodes, liaNode);
         checkNodePosition(rtn1PathNodes, ex1);
         checkNodePosition(rtn1PathNodes, join2);
         checkNodePosition(rtn1PathNodes, rtn1);
 
         LeftTupleNode[] rtn2PathNodes = rtn2.getPathNodes();
-        assertEquals( 3, rtn2PathNodes.length );
+        assertThat(rtn2PathNodes.length).isEqualTo(3);
         checkNodePosition(rtn2PathNodes, liaNode);
         checkNodePosition(rtn2PathNodes, ex2);
         checkNodePosition(rtn2PathNodes, rtn2);
 
         LeftTupleNode[] ria1PathNodes = ria1.getPathNodes();
-        assertEquals( 4, ria1PathNodes.length );
+        assertThat(ria1PathNodes.length).isEqualTo(4);
         checkNodePosition(ria1PathNodes, liaNode);
         checkNodePosition(ria1PathNodes, join1);
         checkNodePosition(ria1PathNodes, join3);
         checkNodePosition(ria1PathNodes, ria1);
 
         LeftTupleNode[] ria2PathNodes = ria2.getPathNodes();
-        assertEquals( 4, ria2PathNodes.length );
+        assertThat(ria2PathNodes.length).isEqualTo(4);
         checkNodePosition(ria2PathNodes, liaNode);
         checkNodePosition(ria2PathNodes, join1);
         checkNodePosition(ria2PathNodes, join4);
@@ -140,6 +140,6 @@ public class NodePositionInPathTest {
     }
 
     private void checkNodePosition(LeftTupleNode[] pathNodes, LeftTupleNode node) {
-        assertEquals( node, pathNodes[node.getPathIndex()]);
+        assertThat(pathNodes[node.getPathIndex()]).isEqualTo(node);
     }
 }

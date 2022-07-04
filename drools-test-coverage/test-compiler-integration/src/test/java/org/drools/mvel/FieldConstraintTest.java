@@ -46,8 +46,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FieldConstraintTest {
@@ -102,8 +101,8 @@ public class FieldConstraintTest {
         final InternalFactHandle cheddarHandle = (InternalFactHandle) ksession.insert( cheddar );
 
         // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle,
-                                          ksession ) );
+        assertThat(constraint.isAllowed(cheddarHandle,
+                ksession)).isTrue();
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
@@ -111,8 +110,8 @@ public class FieldConstraintTest {
         final InternalFactHandle stiltonHandle = (InternalFactHandle) ksession.insert( stilton );
 
         // check constraint
-        assertFalse( constraint.isAllowed( stiltonHandle,
-                                           ksession ) );
+        assertThat(constraint.isAllowed(stiltonHandle,
+                ksession)).isFalse();
     }
 
     /**
@@ -140,8 +139,8 @@ public class FieldConstraintTest {
         final InternalFactHandle cheddarHandle = (InternalFactHandle) ksession.insert( cheddar );
 
         // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle,
-                                          ksession ) );
+        assertThat(constraint.isAllowed(cheddarHandle,
+                ksession)).isTrue();
 
         final Cheese stilton = new Cheese( "stilton",
                                            10 );
@@ -149,8 +148,8 @@ public class FieldConstraintTest {
         final InternalFactHandle stiltonHandle = (InternalFactHandle) ksession.insert( stilton );
 
         // check constraint
-        assertFalse(constraint.isAllowed(stiltonHandle,
-                                         ksession));
+        assertThat(constraint.isAllowed(stiltonHandle,
+                ksession)).isFalse();
     }
 
     /**
@@ -243,7 +242,7 @@ public class FieldConstraintTest {
         final PredicateContextEntry context = (PredicateContextEntry) constraint1.createContextEntry();
         context.updateFromTuple(ksession,
                 tuple);
-        assertTrue( constraint1.isAllowedCachedLeft( context,
-                                                     f1 ) );
+        assertThat(constraint1.isAllowedCachedLeft(context,
+                f1)).isTrue();
     }
 }

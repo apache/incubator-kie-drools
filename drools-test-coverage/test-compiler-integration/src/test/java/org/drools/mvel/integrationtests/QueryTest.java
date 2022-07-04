@@ -74,11 +74,6 @@ import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class QueryTest {
@@ -107,24 +102,24 @@ public class QueryTest {
 
         FlatQueryResults flatResults = new FlatQueryResults(results);
 
-        assertEquals( "Query results size", results.size(), flatResults.size() );
-        assertEquals( "Query results identifiers", results.getIdentifiers().length, flatResults.getIdentifiers().length );
+        assertThat(flatResults.size()).as("Query results size").isEqualTo(results.size());
+        assertThat(flatResults.getIdentifiers().length).as("Query results identifiers").isEqualTo(results.getIdentifiers().length);
         Set<String> resultIds = new TreeSet<String>(Arrays.asList(results.getIdentifiers()));
         Set<String> flatIds = new TreeSet<String>(Arrays.asList(flatResults.getIdentifiers()));
-        assertArrayEquals("Flat query results identifiers", resultIds.toArray(), flatIds.toArray() );
+        assertThat(resultIds.toArray()).as("Flat query results identifiers").isEqualTo(flatIds.toArray());
 
         FlatQueryResults copyFlatResults = roundTrip(flatResults);
         String [] identifiers = results.getIdentifiers();
         Iterator<QueryResultsRow> copyFlatIter = copyFlatResults.iterator();
         for( int i = 0; i < results.size(); ++i ) {
             QueryResultsRow row = results.get(i);
-            assertTrue( "Round-tripped flat query results contain less rows than original query results", copyFlatIter.hasNext());
+            assertThat(copyFlatIter.hasNext()).as("Round-tripped flat query results contain less rows than original query results").isTrue();
             QueryResultsRow copyRow = copyFlatIter.next();
             for( String id : identifiers ) {
                 Object obj = row.get(id);
                 if( obj != null ) {
                     Object copyObj = copyRow.get(id);
-                    assertTrue( "Flat query result [" + i + "] does not contain result: '" + id + "': " + obj + "/" + copyObj, obj != null && obj.equals(copyObj));
+                    assertThat(obj != null && obj.equals(copyObj)).as("Flat query result [" + i + "] does not contain result: '" + id + "': " + obj + "/" + copyObj).isTrue();
                 }
                 FactHandle fh = row.getFactHandle(id);
                 FactHandle copyFh = copyRow.getFactHandle(id);
@@ -134,15 +129,14 @@ public class QueryTest {
                     fhStr = fhStr.substring(0, fhStr.lastIndexOf(":"));
                     String copyFhStr = copyFh.toExternalForm();
                     copyFhStr = copyFhStr.substring(0, copyFhStr.lastIndexOf(":"));
-                    assertEquals( "Unequal fact handles for fact handle '" + ((InternalFactHandle) fh).getId() + "':",
-                                  fhStr, copyFhStr );
+                    assertThat(copyFhStr).as("Unequal fact handles for fact handle '" + ((InternalFactHandle) fh).getId() + "':").isEqualTo(fhStr);
                 }
             }
         }
 
         // check identifiers
         Set<String> copyFlatIds = new TreeSet<String>(Arrays.asList(copyFlatResults.getIdentifiers()));
-        assertArrayEquals("Flat query results identifiers", flatIds.toArray(), copyFlatIds.toArray() );
+        assertThat(copyFlatIds.toArray() ).as("Flat query results identifiers").isEqualTo(flatIds.toArray());
         return copyFlatResults;
     }
 
@@ -184,9 +178,8 @@ public class QueryTest {
         session.fireAllRules();
 
         QueryResults results = getQueryResults(session, "assertedobjquery" );
-        assertEquals( 1,
-                      results.size() );
-        assertEquals(new InsertedObject("value1" ), results.iterator().next().get("assertedobj") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject("value1" ));
     }
 
     @Test
@@ -202,29 +195,22 @@ public class QueryTest {
 
         QueryResults results = getQueryResults( session, queryName, arguments );
 
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
         InsertedObject value = new InsertedObject( "value1" );
-        assertEquals( value,
-                      results.iterator().next().get("assertedobj") );
+        assertThat(results.iterator().next().get("assertedobj")).isEqualTo(value);
 
         results = getQueryResults( session, "assertedobjquery", new String[]{"value3"}  );
 
-        assertEquals( 0,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(0);
 
         results = getQueryResults( session, "assertedobjquery2", new String[]{null, "value2"}  );
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( new InsertedObject( "value2" ),
-                      results.iterator().next().get( "assertedobj" ));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject( "value2" ));
 
         results = getQueryResults(session, "assertedobjquery2", new String[]{"value3", "value2"}  );
 
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( new InsertedObject( "value2" ),
-                      results.iterator().next().get( "assertedobj" ));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject( "value2" ));
     }
 
     @Test
@@ -272,8 +258,8 @@ public class QueryTest {
         session.insert( cheddar3 );
 
         org.kie.api.runtime.rule.QueryResults results = getQueryResults(session, "cheeses" );
-        assertEquals( 3, results.size() );
-        assertEquals( 2, results.getIdentifiers().length );
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.getIdentifiers().length).isEqualTo(2);
 
         Set newSet = new HashSet();
         for ( org.kie.api.runtime.rule.QueryResultsRow result : results ) {
@@ -282,8 +268,7 @@ public class QueryTest {
             list.add( result.get( "cheddar" ) );
             newSet.add( list );
         }
-        assertEquals( set,
-                      newSet );
+        assertThat(newSet).isEqualTo(set);
 
         FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) session).getQueryResults( "cheeses" ) );
 
@@ -294,8 +279,7 @@ public class QueryTest {
             list.add( result.get( "cheddar" ) );
             newSet.add( list );
         }
-        assertEquals( set,
-                      newSet );
+        assertThat(newSet).isEqualTo(set);
     }
 
     @Test
@@ -319,12 +303,10 @@ public class QueryTest {
         session.insert( per2 );
 
         QueryResults results = getQueryResults( session, "find stinky cheeses" );
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         results = getQueryResults( session, "find pensioners" );
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test
@@ -350,8 +332,7 @@ public class QueryTest {
         session.fireAllRules();
 
         QueryResults results = session.getQueryResults( "2 persons with the same status" );
-        assertEquals( 2,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(2);
 
         // europe=[ 1, 2 ], america=[ 3 ]
         p3.setStatus( "america" );
@@ -359,8 +340,7 @@ public class QueryTest {
                               p3 );
         session.fireAllRules();
         results = session.getQueryResults(  "2 persons with the same status" );
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         // europe=[ 1 ], america=[ 2, 3 ]
         p2.setStatus( "america" );
@@ -368,8 +348,7 @@ public class QueryTest {
                               p2 );
         session.fireAllRules();
         results = session.getQueryResults( "2 persons with the same status" );
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         // europe=[ ], america=[ 1, 2, 3 ]
         p1.setStatus( "america" );
@@ -377,8 +356,7 @@ public class QueryTest {
                               p1 );
         session.fireAllRules();
         results = getQueryResults( session, "2 persons with the same status" );
-        assertEquals( 2,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(2);
 
         // europe=[ 2 ], america=[ 1, 3 ]
         p2.setStatus( "europe" );
@@ -386,8 +364,7 @@ public class QueryTest {
                               p2 );
         session.fireAllRules();
         results = getQueryResults( session, "2 persons with the same status" );
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         // europe=[ 1, 2 ], america=[ 3 ]
         p1.setStatus( "europe" );
@@ -395,8 +372,7 @@ public class QueryTest {
                               p1 );
         session.fireAllRules();
         results = session.getQueryResults( "2 persons with the same status" );
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         // europe=[ 1, 2, 3 ], america=[ ]
         p3.setStatus( "europe" );
@@ -404,8 +380,7 @@ public class QueryTest {
                               p3 );
         session.fireAllRules();
         results = session.getQueryResults( "2 persons with the same status" );
-        assertEquals( 2,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(2);
     }
 
     @Test
@@ -415,14 +390,12 @@ public class QueryTest {
         session.fireAllRules();
 
         QueryResults results = getQueryResults( session, "collect objects" );
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         final QueryResultsRow row = results.iterator().next();
         final List list = (List) row.get( "$list" );
 
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
     }
 
     @Test
@@ -466,7 +439,7 @@ public class QueryTest {
         ObjectType key = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode droolsQueryNode = obnodes.get( key );
         Iterator<InternalFactHandle> it = ((ObjectTypeNodeMemory) sessionImpl.getNodeMemory( droolsQueryNode )).iterator();
-        assertFalse( it.hasNext() );
+        assertThat(it.hasNext()).isFalse();
     }
 
     @Test
@@ -500,64 +473,57 @@ public class QueryTest {
         ksession.insert( p4 );
 
         QueryResults results = getQueryResults(ksession, "peeps", new Object[]{Variable.v, Variable.v, Variable.v} );
-        assertEquals( 4, results.size() );
+        assertThat(results.size()).isEqualTo(4);
         List names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertEquals( 4,
-                      names.size() );
-        assertTrue( names.contains( "luke" ) );
-        assertTrue( names.contains( "yoda" ) );
-        assertTrue( names.contains( "bobba" ) );
-        assertTrue( names.contains( "darth" ) );
+        assertThat(names.size()).isEqualTo(4);
+        assertThat(names.contains("luke")).isTrue();
+        assertThat(names.contains("yoda")).isTrue();
+        assertThat(names.contains("bobba")).isTrue();
+        assertThat(names.contains("darth")).isTrue();
 
         results = getQueryResults(ksession, "peeps", new Object[]{Variable.v, Variable.v, 300} );
-        assertEquals( 3, results.size() );
+        assertThat(results.size()).isEqualTo(3);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertEquals( 3,
-                      names.size() );
-        assertTrue( names.contains( "luke" ) );
-        assertTrue( names.contains( "yoda" ) );
-        assertTrue( names.contains( "bobba" ) );
+        assertThat(names.size()).isEqualTo(3);
+        assertThat(names.contains("luke")).isTrue();
+        assertThat(names.contains("yoda")).isTrue();
+        assertThat(names.contains("bobba")).isTrue();
 
         results = getQueryResults(ksession, "peeps", new Object[]{Variable.v, "stilton", 300} );
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertEquals( 1,
-                      names.size() );
-        assertTrue( names.contains( "yoda" ) );
+        assertThat(names.size()).isEqualTo(1);
+        assertThat(names.contains("yoda")).isTrue();
 
         results = ksession.getQueryResults( "peeps",
                                             new Object[]{Variable.v, "stilton", Variable.v} );
-        assertEquals( 2,
-                          results.size() );
+        assertThat(results.size()).isEqualTo(2);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertEquals( 2,
-                      names.size() );
-        assertTrue( names.contains( "yoda" ) );
-        assertTrue( names.contains( "darth" ) );
+        assertThat(names.size()).isEqualTo(2);
+        assertThat(names.contains("yoda")).isTrue();
+        assertThat(names.contains("darth")).isTrue();
 
         results = ksession.getQueryResults( "peeps",
                                             new Object[]{"darth", Variable.v, Variable.v} );
-        assertEquals( 1,
-                          results.size() );
+        assertThat(results.size()).isEqualTo(1);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertEquals( 1,
-                      names.size() );
-        assertTrue( names.contains( "darth" ) );
+        assertThat(names.size()).isEqualTo(1);
+        assertThat(names.contains("darth")).isTrue();
     }
 
     @Test
@@ -592,30 +558,26 @@ public class QueryTest {
 
         org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
                                                                                  new Object[]{Variable.v, Variable.v, Variable.v, Variable.v} );
-        assertEquals( 4,
-                          results.size() );
+        assertThat(results.size()).isEqualTo(4);
         List names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertEquals( 4,
-                      names.size() );
-        assertTrue( names.contains( "luke" ) );
-        assertTrue( names.contains( "yoda" ) );
-        assertTrue( names.contains( "bobba" ) );
-        assertTrue( names.contains( "darth" ) );
+        assertThat(names.size()).isEqualTo(4);
+        assertThat(names.contains("luke")).isTrue();
+        assertThat(names.contains("yoda")).isTrue();
+        assertThat(names.contains("bobba")).isTrue();
+        assertThat(names.contains("darth")).isTrue();
 
         results = ksession.getQueryResults( "peeps",
                                             new Object[]{p1, Variable.v, Variable.v, Variable.v} );
-        assertEquals( 1,
-                          results.size() );
+        assertThat(results.size()).isEqualTo(1);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertEquals( 1,
-                      names.size() );
-        assertTrue( names.contains( "darth" ) );
+        assertThat(names.size()).isEqualTo(1);
+        assertThat(names.contains("darth")).isTrue();
     }
 
     @Test
@@ -644,23 +606,21 @@ public class QueryTest {
         ksession.insert( p2 );
 
         QueryResults results = getQueryResults( ksession, "peeps", new Object[]{Variable.v, Variable.v, Variable.v} );
-        assertEquals( 2,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(2);
         List names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertTrue( names.contains( "yoda" ) );
-        assertTrue( names.contains( "darth" ) );
+        assertThat(names.contains("yoda")).isTrue();
+        assertThat(names.contains("darth")).isTrue();
 
         results = getQueryResults( ksession, "peeps", new Object[]{Variable.v, Variable.v, "s1"} );
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertTrue( names.contains( "darth" ) );
+        assertThat(names.contains("darth")).isTrue();
     }
 
     @Test
@@ -743,34 +703,22 @@ public class QueryTest {
         ksession.fireAllRules();
 
         // Assert that on opening we have three rows added
-        assertEquals( 3,
-                      added.size() );
-        assertEquals( 0,
-                      removed.size() );
-        assertEquals( 0,
-                      updated.size() );
+        assertThat(added.size()).isEqualTo(3);
+        assertThat(removed.size()).isEqualTo(0);
+        assertThat(updated.size()).isEqualTo(0);
 
         // Assert that the identifiers where retrievable
-        assertSame( stilton1,
-                    added.get( 2 )[0] );
-        assertSame( cheddar1,
-                    added.get( 2 )[1] );
-        assertEquals( 1,
-                      added.get( 2 )[2] );
-        assertEquals( 1,
-                      added.get( 2 )[3] );
-        assertEquals( "stilton",
-                      added.get( 2 )[4] );
-        assertEquals( "cheddar",
-                      added.get( 2 )[5] );
+        assertThat(added.get(2)[0]).isSameAs(stilton1);
+        assertThat(added.get(2)[1]).isSameAs(cheddar1);
+        assertThat(added.get(2)[2]).isEqualTo(1);
+        assertThat(added.get(2)[3]).isEqualTo(1);
+        assertThat(added.get(2)[4]).isEqualTo("stilton");
+        assertThat(added.get(2)[5]).isEqualTo("cheddar");
 
         // And that we have correct values from those rows
-        assertEquals( 3,
-                      added.get( 0 )[3] );
-        assertEquals( 2,
-                      added.get( 1 )[3] );
-        assertEquals( 1,
-                      added.get( 2 )[3] );
+        assertThat(added.get(0)[3]).isEqualTo(3);
+        assertThat(added.get(1)[3]).isEqualTo(2);
+        assertThat(added.get(2)[3]).isEqualTo(1);
 
         // Do an update that causes a match to become untrue, thus triggering a removed
         cheddar3.setPrice( 4 );
@@ -778,15 +726,11 @@ public class QueryTest {
                          cheddar3 );
         ksession.fireAllRules();
 
-        assertEquals( 3,
-                      added.size() );
-        assertEquals( 1,
-                      removed.size() );
-        assertEquals( 0,
-                      updated.size() );
+        assertThat(added.size()).isEqualTo(3);
+        assertThat(removed.size()).isEqualTo(1);
+        assertThat(updated.size()).isEqualTo(0);
 
-        assertEquals( 4,
-                      removed.get( 0 )[3] );
+        assertThat(removed.get(0)[3]).isEqualTo(4);
 
         // Now make that partial true again, and thus another added
         cheddar3.setPrice( 3 );
@@ -794,15 +738,11 @@ public class QueryTest {
                          cheddar3 );
         ksession.fireAllRules();
 
-        assertEquals( 4,
-                      added.size() );
-        assertEquals( 1,
-                      removed.size() );
-        assertEquals( 0,
-                      updated.size() );
+        assertThat(added.size()).isEqualTo(4);
+        assertThat(removed.size()).isEqualTo(1);
+        assertThat(updated.size()).isEqualTo(0);
 
-        assertEquals( 3,
-                      added.get( 3 )[3] );
+        assertThat(added.get(3)[3]).isEqualTo(3);
 
         // check a standard update
         cheddar3.setOldPrice( 0 );
@@ -810,56 +750,40 @@ public class QueryTest {
                          cheddar3 );
         ksession.fireAllRules();
 
-        assertEquals( 4,
-                      added.size() );
-        assertEquals( 1,
-                      removed.size() );
-        assertEquals( 1,
-                      updated.size() );
+        assertThat(added.size()).isEqualTo(4);
+        assertThat(removed.size()).isEqualTo(1);
+        assertThat(updated.size()).isEqualTo(1);
 
-        assertEquals( 3,
-                      updated.get( 0 )[3] );
+        assertThat(updated.get(0)[3]).isEqualTo(3);
 
         // Check a standard retract
         ksession.retract( s1Fh );
         ksession.fireAllRules();
 
-        assertEquals( 4,
-                      added.size() );
-        assertEquals( 2,
-                      removed.size() );
-        assertEquals( 1,
-                      updated.size() );
+        assertThat(added.size()).isEqualTo(4);
+        assertThat(removed.size()).isEqualTo(2);
+        assertThat(updated.size()).isEqualTo(1);
 
-        assertEquals( 1,
-                      removed.get( 1 )[3] );
+        assertThat(removed.get(1)[3]).isEqualTo(1);
 
         // Close the query, we should get removed events for each row
         query.close();
 
         ksession.fireAllRules();
 
-        assertEquals( 4,
-                      added.size() );
-        assertEquals( 4,
-                      removed.size() );
-        assertEquals( 1,
-                      updated.size() );
+        assertThat(added.size()).isEqualTo(4);
+        assertThat(removed.size()).isEqualTo(4);
+        assertThat(updated.size()).isEqualTo(1);
 
-        assertEquals( 2,
-                      removed.get( 3 )[3] );
-        assertEquals( 3,
-                      removed.get( 2 )[3] );
+        assertThat(removed.get(3)[3]).isEqualTo(2);
+        assertThat(removed.get(2)[3]).isEqualTo(3);
 
         // Check that updates no longer have any impact.
         ksession.update( c3Fh,
                          cheddar3 );
-        assertEquals( 4,
-                      added.size() );
-        assertEquals( 4,
-                      removed.size() );
-        assertEquals( 1,
-                      updated.size() );
+        assertThat(added.size()).isEqualTo(4);
+        assertThat(removed.size()).isEqualTo(4);
+        assertThat(updated.size()).isEqualTo(1);
     }
 
     @Test
@@ -898,8 +822,7 @@ public class QueryTest {
                 cheeses.add( (Cheese) row.get( "$cheese" ) );
             }
 
-            assertEquals( 5000,
-                          cheeses.size() );
+            assertThat(cheeses.size()).isEqualTo(5000);
         }
     }
 
@@ -929,10 +852,8 @@ public class QueryTest {
         ksession.insert( do2 );
 
         org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults( "queryWithEval" );
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( do2,
-                      results.iterator().next().get( "$do" ) );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().get("$do")).isEqualTo(do2);
 
         ksession.dispose();
     }
@@ -952,7 +873,7 @@ public class QueryTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertEquals(2, errors.size());
+        assertThat(errors.size()).isEqualTo(2);
     }
 
     @Test
@@ -970,7 +891,7 @@ public class QueryTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertEquals(1, errors.size());
+        assertThat(errors.size()).isEqualTo(1);
     }
 
     @Test
@@ -989,7 +910,7 @@ public class QueryTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertEquals(1, errors.size());
+        assertThat(errors.size()).isEqualTo(1);
     }
 
 
@@ -1035,7 +956,7 @@ public class QueryTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        assertEquals( Arrays.asList( "Hello World" ), list );
+        assertThat(list).isEqualTo(Arrays.asList("Hello World"));
     }
 
 
@@ -1075,7 +996,7 @@ public class QueryTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        assertEquals( Arrays.asList( "aa", "bb" ), list );
+        assertThat(list).isEqualTo(Arrays.asList("aa", "bb"));
     }
 
     @Test
@@ -1109,7 +1030,7 @@ public class QueryTest {
         ks.insert( "Hello" );
         ks.fireAllRules();
 
-        assertEquals( Arrays.asList( "Bye" ), list );
+        assertThat(list).isEqualTo(Arrays.asList("Bye"));
     }
 
     @Test
@@ -1144,9 +1065,9 @@ public class QueryTest {
         ksession.insert(new Person("Mario"));
         ksession.fireAllRules();
 
-        assertEquals(2, personsWithA.size());
+        assertThat(personsWithA.size()).isEqualTo(2);
         for (Person p : personsWithA) {
-            assertTrue( p.getName().equals( "Mark" ) || p.getName().equals( "Mario" ) );
+            assertThat(p.getName().equals("Mark") || p.getName().equals("Mario")).isTrue();
         }
     }
 
@@ -1185,9 +1106,9 @@ public class QueryTest {
         ksession.fireAllRules();
 
         System.out.println(list);
-        assertEquals(2, list.size());
+        assertThat(list.size()).isEqualTo(2);
         for (Person p : list) {
-            assertTrue( p.getName().equals( "Mark" ) || p.getName().equals( "Edson" ) );
+            assertThat(p.getName().equals("Mark") || p.getName().equals("Edson")).isTrue();
         }
     }
 
@@ -1212,7 +1133,7 @@ public class QueryTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -1306,59 +1227,59 @@ public class QueryTest {
         ksession.fireAllRules();
 
         // Assert that on opening we have three rows added
-        assertEquals( 3, added.size() );
-        assertEquals( 0, removed.size() );
-        assertEquals( 0, updated.size() );
+        assertThat(added.size()).isEqualTo(3);
+        assertThat(removed.size()).isEqualTo(0);
+        assertThat(updated.size()).isEqualTo(0);
 
         // Do an update that causes a match to become untrue, thus triggering a removed
         cheddar3.setPrice( 4 );
         ksession.update( c3Fh, cheddar3 );
         ksession.fireAllRules();
 
-        assertEquals( 3, added.size() );
-        assertEquals( 1, removed.size() );
-        assertEquals( 0, updated.size() );
+        assertThat(added.size()).isEqualTo(3);
+        assertThat(removed.size()).isEqualTo(1);
+        assertThat(updated.size()).isEqualTo(0);
 
         // Now make that partial true again, and thus another added
         cheddar3.setPrice( 3 );
         ksession.update( c3Fh, cheddar3 );
         ksession.fireAllRules();
 
-        assertEquals( 4, added.size() );
-        assertEquals( 1, removed.size() );
-        assertEquals( 0, updated.size() );
+        assertThat(added.size()).isEqualTo(4);
+        assertThat(removed.size()).isEqualTo(1);
+        assertThat(updated.size()).isEqualTo(0);
 
         // check a standard update
         cheddar3.setOldPrice( 0 );
         ksession.update( c3Fh, cheddar3 );
         ksession.fireAllRules();
 
-        assertEquals( 4, added.size() );
-        assertEquals( 1, removed.size() );
-        assertEquals( 1, updated.size() );
+        assertThat(added.size()).isEqualTo(4);
+        assertThat(removed.size()).isEqualTo(1);
+        assertThat(updated.size()).isEqualTo(1);
 
         // Check a standard retract
         ksession.retract( s1Fh );
         ksession.fireAllRules();
 
-        assertEquals( 4, added.size() );
-        assertEquals( 2, removed.size() );
-        assertEquals( 1, updated.size() );
+        assertThat(added.size()).isEqualTo(4);
+        assertThat(removed.size()).isEqualTo(2);
+        assertThat(updated.size()).isEqualTo(1);
 
         // Close the query, we should get removed events for each row
         query.close();
 
         ksession.fireAllRules();
 
-        assertEquals( 4, added.size() );
-        assertEquals( 4, removed.size() );
-        assertEquals( 1, updated.size() );
+        assertThat(added.size()).isEqualTo(4);
+        assertThat(removed.size()).isEqualTo(4);
+        assertThat(updated.size()).isEqualTo(1);
 
         // Check that updates no longer have any impact.
         ksession.update( c3Fh, cheddar3 );
-        assertEquals( 4, added.size() );
-        assertEquals( 4, removed.size() );
-        assertEquals( 1, updated.size() );
+        assertThat(added.size()).isEqualTo(4);
+        assertThat(removed.size()).isEqualTo(4);
+        assertThat(updated.size()).isEqualTo(1);
     }
 
     public static class Question {}
@@ -1389,17 +1310,17 @@ public class QueryTest {
         Question question = new Question();
         ksession.insert( question );
         QueryResults results = ksession.getQueryResults("QuestionsKnowledge");
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         QueryResultsRow row = results.iterator().next();
-        assertSame( question, row.get( "$question" ) );
+        assertThat(row.get("$question")).isSameAs(question);
 
         QuestionVisible questionVisible = new QuestionVisible( question );
         ksession.insert( questionVisible );
         results = ksession.getQueryResults("QuestionsKnowledge");
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         row = results.iterator().next();
-        assertSame( question, row.get( "$question" ) );
-        assertSame( questionVisible, row.get( "$visible" ) );
+        assertThat(row.get("$question")).isSameAs(question);
+        assertThat(row.get("$visible")).isSameAs(questionVisible);
     }
 
     @Test

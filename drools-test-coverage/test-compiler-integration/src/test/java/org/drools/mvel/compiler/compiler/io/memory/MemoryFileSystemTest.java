@@ -21,7 +21,7 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemoryFileSystemTest {
 
@@ -36,13 +36,13 @@ public class MemoryFileSystemTest {
     public void testGetEnglishFileName() throws Exception {
         final File file = memoryFileSystem.getFile( "path/path/File.java" );
 
-        assertEquals( "File.java", file.getName() );
+        assertThat(file.getName()).isEqualTo("File.java");
     }
 
     @Test
     public void testGetJapaneseFileName() throws Exception {
         final File file = memoryFileSystem.getFile( "path/path/%E3%81%82%E3%81%84%E3%81%86%E3%81%88%E3%81%8A.java" );
 
-        assertEquals( "%E3%81%82%E3%81%84%E3%81%86%E3%81%88%E3%81%8A.java", file.getName() );
+        assertThat(file.getName()).isEqualTo("%E3%81%82%E3%81%84%E3%81%86%E3%81%88%E3%81%8A.java");
     }
 }

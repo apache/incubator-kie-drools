@@ -40,7 +40,6 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,8 +59,7 @@ import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarWithPseudoTimeTest {
@@ -112,7 +110,7 @@ public class TimerAndCalendarWithPseudoTimeTest {
                 ksession.fireAllRules();
             }
 
-            assertEquals(5, list.size());
+            assertThat(list.size()).isEqualTo(5);
         } finally {
             ksession.dispose();
         }
@@ -151,27 +149,27 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(20, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(15, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(3, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -204,16 +202,16 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(35, TimeUnit.SECONDS);
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(10, TimeUnit.SECONDS);
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(10, TimeUnit.SECONDS);
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -246,16 +244,16 @@ public class TimerAndCalendarWithPseudoTimeTest {
             final FactHandle fh = ksession.insert(10000L);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(17, TimeUnit.SECONDS);
             ksession.update(fh, 5000L);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -330,23 +328,23 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(30, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(30, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -384,24 +382,24 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.setGlobal("list", list);
             ksession.insert("o1");
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(10, TimeUnit.SECONDS);
             ksession.insert("o2");
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             ksession.getCalendars().set("cal1", calFalse);
             timeService.advanceTime(10, TimeUnit.SECONDS);
             ksession.insert("o3");
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             ksession.getCalendars().set("cal1", calTrue);
             timeService.advanceTime(30, TimeUnit.SECONDS);
             ksession.insert("o4");
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -464,26 +462,26 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.setGlobal("list", list);
             ksession.insert("o1");
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             ksession.getCalendars().set("cal2", calFalse);
             timeService.advanceTime(10, TimeUnit.SECONDS);
             ksession.insert("o2");
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             ksession.getCalendars().set("cal1", calFalse);
             timeService.advanceTime(10, TimeUnit.SECONDS);
             ksession.insert("o3");
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             ksession.getCalendars().set("cal1", calTrue);
             ksession.getCalendars().set("cal2", calTrue);
             timeService.advanceTime(30, TimeUnit.SECONDS);
             ksession.insert("o4");
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -545,27 +543,27 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.fireAllRules();
             timeService.advanceTime(20, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(4, list.size());
+            assertThat(list.size()).isEqualTo(4);
         } finally {
             ksession.dispose();
         }
@@ -627,27 +625,27 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.fireAllRules();
             timeService.advanceTime(20, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(4, list.size());
+            assertThat(list.size()).isEqualTo(4);
         } finally {
             ksession.dispose();
         }
@@ -684,27 +682,27 @@ public class TimerAndCalendarWithPseudoTimeTest {
 
             timeService.advanceTime(date.getTime(), TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(oneDay, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 3
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(oneDay, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 5
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
 
             timeService.advanceTime(oneDay, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -741,27 +739,27 @@ public class TimerAndCalendarWithPseudoTimeTest {
 
             timeService.advanceTime(date.getTime(), TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(oneDay, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 3
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(oneDay, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 5
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
 
             timeService.advanceTime(oneDay, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -803,27 +801,27 @@ public class TimerAndCalendarWithPseudoTimeTest {
 
                 timeService.advanceTime(date.getTime(), TimeUnit.MILLISECONDS);
                 ksession.fireAllRules();
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 3
                 ksession.fireAllRules();
-                assertEquals(1, list.size());
+                assertThat(list.size()).isEqualTo(1);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(2, list.size());
+                assertThat(list.size()).isEqualTo(2);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 5
                 ksession.fireAllRules();
-                assertEquals(3, list.size());
+                assertThat(list.size()).isEqualTo(3);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(3, list.size());
+                assertThat(list.size()).isEqualTo(3);
             } finally {
                 ksession.dispose();
             }
@@ -869,27 +867,27 @@ public class TimerAndCalendarWithPseudoTimeTest {
 
                 timeService.advanceTime(date.getTime(), TimeUnit.MILLISECONDS);
                 ksession.fireAllRules();
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 3
                 ksession.fireAllRules();
-                assertEquals(1, list.size());
+                assertThat(list.size()).isEqualTo(1);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(2, list.size());
+                assertThat(list.size()).isEqualTo(2);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 5
                 ksession.fireAllRules();
-                assertEquals(3, list.size());
+                assertThat(list.size()).isEqualTo(3);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(4, list.size());
+                assertThat(list.size()).isEqualTo(4);
             } finally {
                 ksession.dispose();
             }
@@ -936,27 +934,27 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(20, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(15, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(3, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -1001,7 +999,7 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -1065,27 +1063,27 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.setGlobal("list", list);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(20, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(20, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(20, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(40, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
 
             // simulate a pause in the use of the engine by advancing the system clock
             timeService.setStartupTime(DateUtils.parseDate("3-MAR-2010").getTime());
@@ -1093,23 +1091,23 @@ public class TimerAndCalendarWithPseudoTimeTest {
 
             timeService.advanceTime(20, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size()); // fires once to recover from missing activation
+            assertThat(list.size()).isEqualTo(1); // fires once to recover from missing activation
 
             timeService.advanceTime(20, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(20, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
             timeService.advanceTime(40, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(3, list.size());
+            assertThat(list.size()).isEqualTo(3);
 
             timeService.advanceTime(60, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(4, list.size());
+            assertThat(list.size()).isEqualTo(4);
         } finally {
             ksession.dispose();
         }
@@ -1150,35 +1148,35 @@ public class TimerAndCalendarWithPseudoTimeTest {
             ksession.insert(fact3);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(300, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            Assert.assertEquals(fact1, list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo(fact1);
 
             timeService.advanceTime(300, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
-            Assert.assertEquals(fact1, list.get(1));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(1)).isEqualTo(fact1);
 
             timeService.advanceTime(300, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size()); // did not change, repeat-limit kicked in
+            assertThat(list.size()).isEqualTo(2); // did not change, repeat-limit kicked in
 
             timeService.advanceTime(300, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(3, list.size());
-            Assert.assertEquals(fact3, list.get(2));
+            assertThat(list.size()).isEqualTo(3);
+            assertThat(list.get(2)).isEqualTo(fact3);
 
             timeService.advanceTime(1000, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(4, list.size());
-            Assert.assertEquals(fact3, list.get(3));
+            assertThat(list.size()).isEqualTo(4);
+            assertThat(list.get(3)).isEqualTo(fact3);
 
             timeService.advanceTime(1000, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(4, list.size()); // did not change, repeat-limit kicked in
+            assertThat(list.size()).isEqualTo(4); // did not change, repeat-limit kicked in
         } finally {
             ksession.dispose();
         }
@@ -1208,22 +1206,22 @@ public class TimerAndCalendarWithPseudoTimeTest {
             final FactHandle fh = ksession.insert(fact1);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(1100, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            Assert.assertEquals(fact1, list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo(fact1);
 
             timeService.advanceTime(1100, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
-            Assert.assertEquals(fact1, list.get(1));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(1)).isEqualTo(fact1);
 
             timeService.advanceTime(400, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(3, list.size());
-            Assert.assertEquals(fact1, list.get(2));
+            assertThat(list.size()).isEqualTo(3);
+            assertThat(list.get(2)).isEqualTo(fact1);
             list.clear();
 
             // the activation state of the rule is not changed so the timer isn't reset
@@ -1238,21 +1236,21 @@ public class TimerAndCalendarWithPseudoTimeTest {
             //  we only need to increment another 1950
             timeService.advanceTime(1950, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
-            Assert.assertEquals(fact1, list.get(0));
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0)).isEqualTo(fact1);
             list.clear();
 
             timeService.advanceTime(1000, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(700, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(300, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -1318,7 +1316,7 @@ public class TimerAndCalendarWithPseudoTimeTest {
 
             FactHandle handle = ksession.insert("go1");
             ksession.fireAllRules();
-            assertEquals(asList(0L, 1L, 1L), list);
+            assertThat(list).isEqualTo(asList(0L, 1L, 1L));
             list.clear();
             ksession.delete(handle);
 
@@ -1326,7 +1324,7 @@ public class TimerAndCalendarWithPseudoTimeTest {
 
             handle = ksession.insert("go2");
             ksession.fireAllRules();
-            assertEquals(asList(0L, 0L, 1L), list);
+            assertThat(list).isEqualTo(asList(0L, 0L, 1L));
             list.clear();
             ksession.delete(handle);
 
@@ -1334,7 +1332,7 @@ public class TimerAndCalendarWithPseudoTimeTest {
 
             handle = ksession.insert("go3");
             ksession.fireAllRules();
-            assertEquals(asList(0L, 0L, 0L), list);
+            assertThat(list).isEqualTo(asList(0L, 0L, 0L));
             list.clear();
             ksession.delete(handle);
         } finally {

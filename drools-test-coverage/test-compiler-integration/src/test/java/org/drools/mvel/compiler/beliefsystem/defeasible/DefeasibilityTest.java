@@ -46,11 +46,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class DefeasibilityTest {
@@ -106,13 +103,13 @@ public class DefeasibilityTest {
 
 
     private void checkStatus( EqualityKey key, int support, DefeasibilityStatus status ) {
-        assertEquals( EqualityKey.JUSTIFIED, key.getStatus() );
+        assertThat(key.getStatus()).isEqualTo(EqualityKey.JUSTIFIED);
         BeliefSet set = key.getBeliefSet();
-        assertTrue( set instanceof DefeasibleBeliefSet );
+        assertThat(set instanceof DefeasibleBeliefSet).isTrue();
         DefeasibleBeliefSet dfs = ( DefeasibleBeliefSet ) set;
 
-        assertEquals( support, dfs.size() );
-        assertEquals( status, dfs.getStatus() );
+        assertThat(dfs.size()).isEqualTo(support);
+        assertThat(dfs.getStatus()).isEqualTo(status);
     }
 
 
@@ -143,7 +140,7 @@ public class DefeasibilityTest {
             }
         }
 
-        assertEquals( 5, kSession.getObjects().size() );
+        assertThat(kSession.getObjects().size()).isEqualTo(5);
     }
 
 
@@ -174,7 +171,7 @@ public class DefeasibilityTest {
             }
         }
 
-        assertEquals( 5, kSession.getObjects().size() );
+        assertThat(kSession.getObjects().size()).isEqualTo(5);
 
     }
 
@@ -203,7 +200,7 @@ public class DefeasibilityTest {
             }
         }
 
-        assertEquals( 3, kSession.getObjects().size() );
+        assertThat(kSession.getObjects().size()).isEqualTo(3);
     }
 
     @Test(timeout = 10000 )
@@ -233,8 +230,8 @@ public class DefeasibilityTest {
         for ( Object o : kSession.getObjects() ) {
             System.out.println( o );
         }
-        assertEquals( 0, list.size() );
-        assertEquals( 1, kSession.getFactCount() );
+        assertThat(list.size()).isEqualTo(0);
+        assertThat(kSession.getFactCount()).isEqualTo(1);
     }
 
 
@@ -264,7 +261,7 @@ public class DefeasibilityTest {
         for ( Object o : kSession.getObjects() ) {
             System.out.println( o );
         }
-        assertEquals( 2, kSession.getObjects().size() );
+        assertThat(kSession.getObjects().size()).isEqualTo(2);
 
 
         kSession.fireAllRules();
@@ -388,9 +385,9 @@ public class DefeasibilityTest {
             }
         }
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "Stage1" ) );
-        assertEquals( 3, kSession.getObjects().size() );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("Stage1")).isTrue();
+        assertThat(kSession.getObjects().size()).isEqualTo(3);
 
         for ( Object o : kSession.getObjects() ) {
             System.out.println( o );
@@ -416,10 +413,10 @@ public class DefeasibilityTest {
             System.out.println( o );
         }
 
-        assertEquals( 5, kSession.getObjects().size() ); // A, A, B, X, GO
-        assertEquals( 3, list.size() );
-        assertTrue( list.contains( "Stage1" ) );
-        assertTrue( list.contains( "Stage2" ) );
+        assertThat(kSession.getObjects().size()).isEqualTo(5); // A, A, B, X, GO
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains("Stage1")).isTrue();
+        assertThat(list.contains("Stage2")).isTrue();
 
         kSession.retract( h );
         kSession.fireAllRules();
@@ -428,7 +425,7 @@ public class DefeasibilityTest {
             System.out.println( o );
         }
 
-        assertEquals( 3, kSession.getObjects().size() ); // A, A, B, X, GO
+        assertThat(kSession.getObjects().size()).isEqualTo(3); // A, A, B, X, GO
 
         keys = tms.getEqualityKeyMap();
         iter = keys.iterator();
@@ -487,11 +484,11 @@ public class DefeasibilityTest {
             }
         }
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( -44 ) );
-        assertTrue( ! list.contains( -35 ) );
-        assertEquals( 2, kSession.getFactCount() );
-        assertEquals( 1, getNegativeObjects(kSession).size() );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains(-44)).isTrue();
+        assertThat(!list.contains(-35)).isTrue();
+        assertThat(kSession.getFactCount()).isEqualTo(2);
+        assertThat(getNegativeObjects(kSession).size()).isEqualTo(1);
     }
 
 
@@ -523,10 +520,10 @@ public class DefeasibilityTest {
             }
         }
 
-        assertEquals( 2, kSession.getObjects().size() );
-        assertEquals( 1, getNegativeObjects(kSession).size() );
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "-1" ) );
+        assertThat(kSession.getObjects().size()).isEqualTo(2);
+        assertThat(getNegativeObjects(kSession).size()).isEqualTo(1);
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("-1")).isTrue();
 
     }
 
@@ -566,10 +563,10 @@ public class DefeasibilityTest {
         FactHandle handle1 = session.insert( 10 );
         FactHandle handle2 = session.insert( 20 );
 
-        assertEquals( 4, session.fireAllRules() );
+        assertThat(session.fireAllRules()).isEqualTo(4);
 
         session.delete( handle1 );
-        assertEquals( 0, session.fireAllRules() );
+        assertThat(session.fireAllRules()).isEqualTo(0);
     }
 
 
@@ -638,36 +635,36 @@ public class DefeasibilityTest {
 
         session.fireAllRules();
 
-        assertEquals( 1, posList.size() );
-        assertEquals( 1, negList.size() );
+        assertThat(posList.size()).isEqualTo(1);
+        assertThat(negList.size()).isEqualTo(1);
 
         Object posBar = posList.get( 0 );
         InternalFactHandle posHandle = (InternalFactHandle) session.getFactHandle( posBar );
-        DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) posHandle.getEqualityKey().getBeliefSet();
-        assertEquals( 1, dbs.size() );
-        assertFalse( dbs.isNegated() );
-        assertTrue( dbs.isDecided() );
-        assertTrue( dbs.isPositive() );
 
-        assertSame( posHandle, dbs.getFactHandle() );
-        assertFalse(posHandle.isNegated());
-        assertTrue(  dbs.isDefeasiblyPosProveable());
-        assertTrue( session.getObjects().contains( posBar ) );
+        DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) posHandle.getEqualityKey().getBeliefSet();
+        assertThat(dbs.size()).isEqualTo(1);
+        assertThat(dbs.isNegated()).isFalse();
+        assertThat(dbs.isDecided()).isTrue();
+        assertThat(dbs.isPositive()).isTrue();
+        assertThat(dbs.getFactHandle()).isSameAs(posHandle);
+        assertThat(posHandle.isNegated()).isFalse();
+        assertThat(dbs.isDefeasiblyPosProveable()).isTrue();
+        assertThat(session.getObjects().contains(posBar)).isTrue();
 
         Object negBar = negList.get( 0 );
 
         InternalFactHandle negHandle = (InternalFactHandle) getNegativeHandles(session).get(0);
         dbs = (DefeasibleBeliefSet) negHandle.getEqualityKey().getBeliefSet();
-        assertEquals( 1, dbs.size() );
-        assertFalse( dbs.isPositive() );
-        assertTrue( dbs.isDecided() );
-        assertTrue( dbs.isNegated() );
+        assertThat(dbs.size()).isEqualTo(1);
+        assertThat(dbs.isPositive()).isFalse();
+        assertThat(dbs.isDecided()).isTrue();
+        assertThat(dbs.isNegated()).isTrue();
 
-        assertSame( negHandle, dbs.getFactHandle() );
-        assertTrue( negHandle.isNegated());
+        assertThat(dbs.getFactHandle()).isSameAs(negHandle);
+        assertThat(negHandle.isNegated()).isTrue();
 
-        assertTrue(  dbs.isDefeasiblyNegProveable() );
-        assertTrue( session.getObjects().contains( negBar ) );
+        assertThat(dbs.isDefeasiblyNegProveable()).isTrue();
+        assertThat(session.getObjects().contains(negBar)).isTrue();
 
     }
 
@@ -734,8 +731,8 @@ public class DefeasibilityTest {
 
         session.fireAllRules();
 
-        assertEquals( 2, posList.size() );
-        assertEquals( 1, negList.size() );
+        assertThat(posList.size()).isEqualTo(2);
+        assertThat(negList.size()).isEqualTo(1);
 
     }
 
@@ -780,7 +777,7 @@ public class DefeasibilityTest {
         session.insert( 10 );
 
         session.fireAllRules();
-        assertEquals( 1, posList.size() );
+        assertThat(posList.size()).isEqualTo(1);
     }
 
 
@@ -837,8 +834,8 @@ public class DefeasibilityTest {
                 InternalFactHandle handle = (InternalFactHandle) session.getFactHandle( o );
                 DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) handle.getEqualityKey().getBeliefSet();
 
-                assertEquals( 3, dbs.size() );
-                assertTrue( dbs.isConflicting() );
+                assertThat(dbs.size()).isEqualTo(3);
+                assertThat(dbs.isConflicting()).isTrue();
             }
         }
 
@@ -862,12 +859,12 @@ public class DefeasibilityTest {
         FactHandle h = session.insert( "foo" );
 
         session.fireAllRules();
-        assertEquals( 1, session.getObjects().size() );
+        assertThat(session.getObjects().size()).isEqualTo(1);
 
         session.delete( h );
 
         session.fireAllRules();
-        assertEquals( 0, session.getObjects().size() );
+        assertThat(session.getObjects().size()).isEqualTo(0);
     }
 
 

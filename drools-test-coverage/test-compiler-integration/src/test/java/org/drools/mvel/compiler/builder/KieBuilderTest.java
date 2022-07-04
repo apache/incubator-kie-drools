@@ -48,9 +48,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class KieBuilderTest {
 
@@ -146,12 +144,12 @@ public class KieBuilderTest {
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
 
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
         if ("org.kie.test1.Message".equals(list.get(0).getClass().getName())) {
-            assertEquals( "org.kie.test2.Message", list.get(1).getClass().getName() );
+            assertThat(list.get(1).getClass().getName()).isEqualTo("org.kie.test2.Message");
         } else {
-            assertEquals( "org.kie.test2.Message", list.get(0).getClass().getName() );
-            assertEquals( "org.kie.test1.Message", list.get(1).getClass().getName() );
+            assertThat(list.get(0).getClass().getName()).isEqualTo("org.kie.test2.Message");
+            assertThat(list.get(1).getClass().getName()).isEqualTo("org.kie.test1.Message");
         }
     }
 
@@ -182,7 +180,7 @@ public class KieBuilderTest {
 
         kfs.writeKModuleXML( module.toXML() );
         KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 2, kb.getResults().getMessages().size() );
+        assertThat(kb.getResults().getMessages().size()).isEqualTo(2);
     }
 
     @Test
@@ -274,7 +272,7 @@ public class KieBuilderTest {
           
         KieBuilder kieBuilder = createKieBuilder( kfs );
         kieBuilder.buildAll();
-        assertTrue( kieBuilder.getResults().hasMessages( Level.ERROR ) );
+        assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }   
     
     @Test
@@ -293,7 +291,7 @@ public class KieBuilderTest {
           
         KieBuilder kieBuilder = createKieBuilder(kfs);
         kieBuilder.buildAll();
-        assertTrue ( kieBuilder.getResults().hasMessages(Level.ERROR) );
+        assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }     
     
     @Test
@@ -312,7 +310,7 @@ public class KieBuilderTest {
         
         KieBuilder kieBuilder = createKieBuilder(kfs);
         kieBuilder.buildAll();
-        assertTrue( kieBuilder.getResults().hasMessages( Level.ERROR ) );
+        assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
     @Test
@@ -351,8 +349,7 @@ public class KieBuilderTest {
         }
         reader1.close();
 
-        assertEquals( pom,
-                      readPom1 );
+        assertThat(readPom1).isEqualTo(pom);
 
         //Read pom.xml from second KieBuilder's KieModule
         InternalKieModule kieModule2 = (InternalKieModule) ( (KieBuilderImpl) kieBuilder2 ).getKieModuleIgnoringErrors();
@@ -363,8 +360,7 @@ public class KieBuilderTest {
         }
         reader1.close();
 
-        assertEquals( pom,
-                      readPom2 );
+        assertThat(readPom2).isEqualTo(pom);
     }
 
     public KieModuleModel createKieProject(String namespace) {
@@ -434,8 +430,8 @@ public class KieBuilderTest {
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( "org.kie.test.Message", list.get(0).getClass().getName() );       
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0).getClass().getName()).isEqualTo("org.kie.test.Message");       
     }
     
     public String getRule(String namespace,

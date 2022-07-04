@@ -44,7 +44,6 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 /**
  * This is a sample class to launch a rule.
@@ -101,7 +100,7 @@ public class KieCompilationCacheTest {
         ksession.insert(x);
 
         int count = ksession.fireAllRules();
-        assertEquals( 1, count );
+        assertThat(count).isEqualTo(1);
     }
 
     @Test
@@ -153,27 +152,27 @@ public class KieCompilationCacheTest {
         
         KieSession ksession = ks.newKieContainer( km.getReleaseId() ).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession = ks.newKieContainer(km.getReleaseId()).newKieSession("KSession1");
         ksession.insert(new Message("Hi Universe"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession = ks.newKieContainer(km.getReleaseId()).newKieSession("KSession1");
         ksession.insert(new Message("Aloha Earth"));
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         ksession = ks.newKieContainer(km.getReleaseId()).newKieSession("KSession2");
         ksession.insert(new Message("Hello World"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession = ks.newKieContainer(km.getReleaseId()).newKieSession("KSession2");
         ksession.insert(new Message("Hi Universe"));
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         ksession = ks.newKieContainer(km.getReleaseId()).newKieSession("KSession2");
         ksession.insert(new Message("Aloha Earth"));
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -210,7 +209,7 @@ public class KieCompilationCacheTest {
         
         KieSession ksession = ks.newKieContainer( km.getReleaseId() ).newKieSession("KSession1");
         ksession.insert(new String("Hello World"));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     private KieModuleModel createKieProjectWithPackagesAnd2KieBases(KieServices ks) {

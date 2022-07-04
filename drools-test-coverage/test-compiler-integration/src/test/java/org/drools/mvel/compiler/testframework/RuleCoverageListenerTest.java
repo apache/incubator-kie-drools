@@ -38,9 +38,7 @@ import org.drools.core.util.LinkedList;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleCoverageListenerTest {
 
@@ -52,39 +50,31 @@ public class RuleCoverageListenerTest {
         rules.add( "rule3" );
 
         RuleCoverageListener ls = new RuleCoverageListener( rules );
-        assertEquals( 3,
-                      ls.getRules().size() );
-        assertEquals( 0,
-                      ls.getPercentCovered() );
+        assertThat(ls.getRules().size()).isEqualTo(3);
+        assertThat(ls.getPercentCovered()).isEqualTo(0);
 
         ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule1"), null, null));
-        assertEquals( 2,
-                      ls.getRules().size() );
-        assertTrue( ls.getRules().contains( "rule2" ) );
-        assertTrue( ls.getRules().contains( "rule3" ) );
-        assertFalse( ls.getRules().contains( "rule1" ) );
-        assertEquals( 33,
-                      ls.getPercentCovered() );
+        assertThat(ls.getRules().size()).isEqualTo(2);
+        assertThat(ls.getRules().contains("rule2")).isTrue();
+        assertThat(ls.getRules().contains("rule3")).isTrue();
+        assertThat(ls.getRules().contains("rule1")).isFalse();
+        assertThat(ls.getPercentCovered()).isEqualTo(33);
 
         ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule2"), null, null));
-        assertEquals( 1,
-                      ls.getRules().size() );
-        assertFalse( ls.getRules().contains( "rule2" ) );
-        assertFalse( ls.getRules().contains( "rule1" ) );
-        assertTrue( ls.getRules().contains( "rule3" ) );
+        assertThat(ls.getRules().size()).isEqualTo(1);
+        assertThat(ls.getRules().contains("rule2")).isFalse();
+        assertThat(ls.getRules().contains("rule1")).isFalse();
+        assertThat(ls.getRules().contains("rule3")).isTrue();
 
-        assertEquals( 66,
-                      ls.getPercentCovered() );
+        assertThat(ls.getPercentCovered()).isEqualTo(66);
 
         ls.afterMatchFired( new AfterActivationFiredEventImpl( new MockActivation( "rule3" ), null , null));
-        assertEquals( 0,
-                      ls.getRules().size() );
-        assertFalse( ls.getRules().contains( "rule2" ) );
-        assertFalse( ls.getRules().contains( "rule1" ) );
-        assertFalse( ls.getRules().contains( "rule3" ) );
+        assertThat(ls.getRules().size()).isEqualTo(0);
+        assertThat(ls.getRules().contains("rule2")).isFalse();
+        assertThat(ls.getRules().contains("rule1")).isFalse();
+        assertThat(ls.getRules().contains("rule3")).isFalse();
 
-        assertEquals( 100,
-                      ls.getPercentCovered() );
+        assertThat(ls.getPercentCovered()).isEqualTo(100);
 
     }
 

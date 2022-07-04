@@ -40,9 +40,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarWithRealTimeTest {
@@ -95,11 +94,11 @@ public class TimerAndCalendarWithRealTimeTest {
 
         ksession.fireAllRules();
         // now check for update
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         awaitUntilRulesThatFiredAre(1);
         // now check for update
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test(timeout = 10000)
@@ -132,12 +131,12 @@ public class TimerAndCalendarWithRealTimeTest {
         ksession.fireAllRules();
 
         // now check for update
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         awaitUntilRulesThatFiredAre(1);
 
         // now check for update
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test(timeout = 10000)
@@ -175,12 +174,12 @@ public class TimerAndCalendarWithRealTimeTest {
         ksession.fireAllRules();
 
         // now check for update
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         awaitUntilRulesThatFiredAre(1);
 
         // now check for update
-        assertEquals(2, list.size());
+        assertThat(list.size()).isEqualTo(2);
     }
 
     @Test(timeout = 10000)
@@ -195,7 +194,7 @@ public class TimerAndCalendarWithRealTimeTest {
 
         awaitUntilRulesThatFiredAre(2);
         // now check that rule "wrap A" fired once, creating one B
-        assertEquals(2, ksession.getFactCount());
+        assertThat(ksession.getFactCount()).isEqualTo(2);
     }
 
     @Test(timeout = 10000)
@@ -267,7 +266,7 @@ public class TimerAndCalendarWithRealTimeTest {
 
         long end = System.currentTimeMillis();
 
-        assertTrue(end - start >= 1000);
+        assertThat(end - start >= 1000).isTrue();
     }
 
     private void awaitUntilRulesThatFiredAre(int rulesToFire) throws InterruptedException {

@@ -23,9 +23,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ConsequenceOffsetTest {
     
@@ -34,10 +33,10 @@ public class ConsequenceOffsetTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffset.drl" )), ResourceType.DRL);
 
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
 
         int offset = -1;
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
         for (final RuleDescr rule : ((KnowledgeBuilderImpl)kbuilder).getPackageDescrs("com.sample").get(0).getRules()) {
             if (rule.getName().equals("test")) {
                 offset = rule.getConsequenceOffset();
@@ -48,14 +47,14 @@ public class ConsequenceOffsetTest {
         kbuilder.add(ResourceFactory.newInputStreamResource(ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffset2.drl" )), ResourceType.DRL);
         kbuilder.add(ResourceFactory.newInputStreamResource(ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffset.drl" )), ResourceType.DRL);
 
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
         for (final RuleDescr rule : ((KnowledgeBuilderImpl)kbuilder).getPackageDescrs("com.sample").get(0).getRules()) {
             if (rule.getName().equals("test")) {
-                assertEquals(offset, rule.getConsequenceOffset());
+                assertThat(rule.getConsequenceOffset()).isEqualTo(offset);
                 return;
             }
         }
-        fail();
+        fail("Unexpected point in test");
     }
     
     @Test
@@ -63,7 +62,7 @@ public class ConsequenceOffsetTest {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffsetImports.drl" )), ResourceType.DRL);
 
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
     }
     
 }
