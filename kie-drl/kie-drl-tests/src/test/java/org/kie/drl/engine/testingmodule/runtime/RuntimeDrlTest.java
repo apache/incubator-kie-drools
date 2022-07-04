@@ -17,12 +17,8 @@ package org.kie.drl.engine.testingmodule.runtime;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,6 +26,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
+import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
@@ -52,6 +49,7 @@ class RuntimeDrlTest {
 
     @BeforeAll
     static void setUp() {
+        DrlTestUtils.refreshDrlIndexFile();
         runtimeManager = new RuntimeManagerImpl();
         compilationManager = new CompilationManagerImpl();
         memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
@@ -71,10 +69,7 @@ class RuntimeDrlTest {
     @Test
     void evaluateWithKieSessionLocalCompilationOnTheFly() throws IOException {
         String onTheFlyPath = "OnTheFlyPath";
-        Set<File> files = Files.walk(Paths.get("src/test/resources"))
-                .map(Path::toFile)
-                .filter(File::isFile)
-                .collect(Collectors.toSet());
+        Set<File> files = DrlTestUtils.collectDrlFiles("src/test/resources/org/drools/model/project/codegen");
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, onTheFlyPath);
         Collection<IndexFile> indexFiles = compilationManager.processResource(memoryCompilerClassLoader, toProcess);
 
@@ -90,5 +85,4 @@ class RuntimeDrlTest {
         session.insert("test");
         assertThat(session.fireAllRules()).isEqualTo(3);
     }
-
 }
