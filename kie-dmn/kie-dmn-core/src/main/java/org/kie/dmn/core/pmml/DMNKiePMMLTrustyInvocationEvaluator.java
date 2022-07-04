@@ -134,7 +134,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         String basePath = context.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
         FRI fri = new FRI(basePath, "pmml");
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
-        Collection<EfestoOutput> retrieved = evaluateInput(darInputPMML);
+        Collection<EfestoOutput<?>> retrieved = evaluateInput(darInputPMML);
         if (retrieved.isEmpty()) {
             LOG.warn("Failed to get a result for {}@{}: trying to invoke compilation....", context.getFileName(),
                      context.getRequestData().getModelName());
@@ -152,7 +152,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         return (PMML4Result) retrieved.iterator().next().getOutputData();
     }
 
-    protected Collection<EfestoOutput> evaluateInput(EfestoInputPMML darInputPMML) {
+    protected Collection<EfestoOutput<?>> evaluateInput(EfestoInputPMML darInputPMML) {
         PMMLContext context = darInputPMML.getInputData();
         try {
             return runtimeManager.evaluateInput((KieMemoryCompiler.MemoryCompilerClassLoader) context.getMemoryClassLoader(), darInputPMML);

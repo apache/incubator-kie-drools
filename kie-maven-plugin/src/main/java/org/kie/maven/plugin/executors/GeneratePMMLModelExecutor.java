@@ -209,7 +209,6 @@ public class GeneratePMMLModelExecutor {
     }
 
     private static List<EfestoResource> getEfestoResources(File resourceDirectory) throws MojoExecutionException {
-        final List<EfestoResource> toReturn = new ArrayList<>();
         try (Stream<Path> stream = Files
                 .walk(resourceDirectory.toPath(), Integer.MAX_VALUE)
                 .filter(path -> path.toFile().isFile() && path.toString().endsWith(PMML))) {

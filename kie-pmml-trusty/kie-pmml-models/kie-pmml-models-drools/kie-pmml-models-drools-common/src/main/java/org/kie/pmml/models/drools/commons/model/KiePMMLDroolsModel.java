@@ -115,7 +115,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         if (!runtimeManager.isPresent()) {
             throw new KieRuntimeServiceException("Cannot find RuntimeManager");
         }
-        Collection<EfestoOutput> output = runtimeManager.get().evaluateInput((KieMemoryCompiler.MemoryCompilerClassLoader) context.getMemoryClassLoader(), input);
+        Collection<EfestoOutput<?>> output = runtimeManager.get().evaluateInput((KieMemoryCompiler.MemoryCompilerClassLoader) context.getMemoryClassLoader(), input);
         // TODO manage for different kind of retrieved output
         if (output.isEmpty()) {
             throw new KiePMMLException("Failed to retrieve value for " + this.getName());
@@ -161,7 +161,8 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         return Objects.hash(kiePMMLOutputFields, fieldTypeMap);
     }
 
-    private void evaluatePMML4Result(final PMML4Result pmml4Result, AbstractEfestoInput<EfestoMapInputDTO> toEvaluate
+    @SuppressWarnings("unchecked")
+    private <S extends EfestoMapInputDTO, U, T extends EfestoInput<S>, E extends EfestoOutput<U>> void evaluatePMML4Result(final PMML4Result pmml4Result, T toEvaluate
             , KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         GeneratedRedirectResource redirectResource =
                 getGeneratedRedirectResource(toEvaluate.getFRI(), "pmml").orElse(null);
@@ -170,12 +171,12 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
             return;
         }
         FRI targetFri = new FRI(redirectResource.getFri().getBasePath(), redirectResource.getTarget());
-        EfestoInput<EfestoMapInputDTO> redirectInput = new AbstractEfestoInput<EfestoMapInputDTO>(targetFri,
-                                                                                                  toEvaluate.getInputData()) {
+        T redirectInput = (T) new AbstractEfestoInput<EfestoMapInputDTO>(targetFri,
+                                                                         toEvaluate.getInputData()) {
 
         };
 
-        Optional<KieRuntimeService> targetService = getKieRuntimeService(redirectInput, true,
+        Optional<KieRuntimeService<S, U, T, E>> targetService = getKieRuntimeService(redirectInput, true,
                                                                          memoryCompilerClassLoader);
         if (!targetService.isPresent()) {
             logger.warn("Cannot find KieRuntimeService for {}", toEvaluate.getFRI());

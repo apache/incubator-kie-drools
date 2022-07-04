@@ -35,14 +35,14 @@ public class RuntimeManagerImpl implements RuntimeManager {
     private static final Logger logger = LoggerFactory.getLogger(RuntimeManagerImpl.class.getName());
 
     @Override
-    public Collection<EfestoOutput> evaluateInput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoInput... toEvaluate) {
+    public Collection<EfestoOutput<?>> evaluateInput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoInput<?>... toEvaluate) {
         return Arrays.stream(toEvaluate)
                 .flatMap(input -> getOptionalOutput(memoryCompilerClassLoader, input).map(Stream::of).orElse(Stream.empty()))
                 .collect(Collectors.toList());
     }
 
-    private Optional<EfestoOutput> getOptionalOutput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoInput input) {
-        Optional<KieRuntimeService> retrieved = getKieRuntimeService(input, false, memoryCompilerClassLoader);
+    private <S, U, T extends EfestoInput<S>, E extends EfestoOutput<U>> Optional<E> getOptionalOutput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, T input) {
+        Optional<KieRuntimeService<S,U,T,E>> retrieved = getKieRuntimeService(input, false, memoryCompilerClassLoader);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieRuntimeService for {}", input.getFRI());
             return Optional.empty();
