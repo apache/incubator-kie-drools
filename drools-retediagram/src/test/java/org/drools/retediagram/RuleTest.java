@@ -24,8 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import org.drools.core.reteoo.ReteDumper;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.retediagram.ReteDiagram.Layout;
 import org.drools.retediagram.model.Measurement;
@@ -41,6 +39,8 @@ import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleTest extends CommonTestMethodBase {
 	static final Logger LOG = LoggerFactory.getLogger(RuleTest.class);
