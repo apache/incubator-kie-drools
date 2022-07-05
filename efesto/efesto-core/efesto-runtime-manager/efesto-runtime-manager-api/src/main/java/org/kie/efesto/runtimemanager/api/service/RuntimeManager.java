@@ -29,7 +29,7 @@ public interface RuntimeManager {
      * @param memoryCompilerClassLoader
      * @return
      */
-    Collection<EfestoOutput> evaluateInput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader,
-                                           EfestoInput... toEvaluate);
+    Collection<EfestoOutput<?>> evaluateInput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader,
+                                           EfestoInput<?>... toEvaluate);
 
 }
