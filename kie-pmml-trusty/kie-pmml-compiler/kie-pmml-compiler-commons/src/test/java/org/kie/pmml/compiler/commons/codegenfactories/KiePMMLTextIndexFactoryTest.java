@@ -67,15 +67,15 @@ public class KiePMMLTextIndexFactoryTest {
     void getTextIndexVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLTextIndexFactory.getTextIndexVariableDeclaration(variableName,
-                TEXTINDEX);
+                                                                                      TEXTINDEX);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                TEXTINDEX.getTextField().getValue()));
+                                                                      TEXTINDEX.getTextField().getValue()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, Collectors.class,
-                KiePMMLFieldRef.class, KiePMMLInlineTable.class,
-                KiePMMLTextIndex.class, KiePMMLTextIndexNormalization.class,
-                KiePMMLRow.class, Map.class, Stream.class);
+                                               KiePMMLFieldRef.class, KiePMMLInlineTable.class,
+                                               KiePMMLTextIndex.class, KiePMMLTextIndexNormalization.class,
+                                               KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

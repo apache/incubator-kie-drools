@@ -49,23 +49,24 @@ public class KiePMMLNormContinuousFactoryTest {
         NormContinuous normContinuous = getRandomNormContinuous();
         List<LinearNorm> linearNorms = normContinuous.getLinearNorms();
 
-        BlockStmt retrieved = KiePMMLNormContinuousFactory.getNormContinuousVariableDeclaration(variableName,
-                normContinuous);
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLNormContinuousFactory.getNormContinuousVariableDeclaration(variableName,
+                                                                                                                                               normContinuous);
         String outlierString =
                 OUTLIER_TREATMENT_METHOD.class.getName() + "." + OUTLIER_TREATMENT_METHOD.byName(normContinuous.getOutliers().value()).name();
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                normContinuous.getField().getValue(),
-                linearNorms.get(0).getOrig(),
-                linearNorms.get(0).getNorm(),
-                linearNorms.get(1).getOrig(),
-                linearNorms.get(1).getNorm(),
-                linearNorms.get(2).getOrig(),
-                linearNorms.get(2).getNorm(),
-                outlierString, normContinuous.getMapMissingTo()));
+                                                                      normContinuous.getField().getValue(),
+                                                                      linearNorms.get(0).getOrig(),
+                                                                      linearNorms.get(0).getNorm(),
+                                                                      linearNorms.get(1).getOrig(),
+                                                                      linearNorms.get(1).getNorm(),
+                                                                      linearNorms.get(2).getOrig(),
+                                                                      linearNorms.get(2).getNorm(),
+                                                                      outlierString, normContinuous.getMapMissingTo()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLLinearNorm.class,
-                KiePMMLNormContinuous.class, OUTLIER_TREATMENT_METHOD.class);
+                                               KiePMMLNormContinuous.class, OUTLIER_TREATMENT_METHOD.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
@@ -76,8 +77,8 @@ public class KiePMMLNormContinuousFactoryTest {
         Expression retrieved = KiePMMLNormContinuousFactory.getNewKiePMMLLinearNormExpression(linearNorm, name);
         String text = getFileContent(TEST_02_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text, name,
-                linearNorm.getOrig(),
-                linearNorm.getNorm()));
+                                                                            linearNorm.getOrig(),
+                                                                            linearNorm.getNorm()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 }

@@ -34,7 +34,7 @@ public class KiePMMLFactoryModelTest {
 
     @BeforeEach
     public void setup() {
-        kiePMMLFactoryModel = new KiePMMLFactoryModel("", "", new HashMap<>());
+        kiePMMLFactoryModel = new KiePMMLFactoryModel("",  "", new HashMap<>());
     }
 
     @Test
@@ -55,12 +55,10 @@ public class KiePMMLFactoryModelTest {
         assertThat(retrieved.get("KEY")).isEqualTo("VALUE");
     }
 
-
     @Test
     void evaluate() {
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             kiePMMLFactoryModel.evaluate("", Collections.emptyMap(), new PMMLContextTest());
         });
     }
-
 }

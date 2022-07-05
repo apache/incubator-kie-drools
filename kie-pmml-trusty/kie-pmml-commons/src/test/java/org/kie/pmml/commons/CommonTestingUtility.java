@@ -37,17 +37,19 @@ public class CommonTestingUtility {
     }
 
     public static ProcessingDTO getProcessingDTO(List<KiePMMLDerivedField> derivedFields, List<KiePMMLNameValue> kiePMMLNameValues) {
-        return new ProcessingDTO(Collections.emptyList(), derivedFields, Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(),  Collections.emptyList());
+        return new ProcessingDTO(Collections.emptyList(), derivedFields, Collections.emptyList(),
+                                 Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(),
+                                 Collections.emptyList());
     }
 
     public static ProcessingDTO getProcessingDTO(List<KiePMMLOutputField> outputFields,
-                                           List<KiePMMLNameValue> kiePMMLNameValues, List<String> reasonCodes) {
+                                                 List<KiePMMLNameValue> kiePMMLNameValues, List<String> reasonCodes) {
         return new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), outputFields,
                                  Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(), reasonCodes);
     }
 
     public static ProcessingDTO getProcessingDTO(List<KiePMMLDefineFunction> defineFunctions, List<KiePMMLDerivedField> derivedFields, List<KiePMMLNameValue> kiePMMLNameValues, List<MiningField> miningFields) {
-        return new ProcessingDTO(defineFunctions, derivedFields, Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, miningFields,  Collections.emptyList());
+        return new ProcessingDTO(defineFunctions, derivedFields, Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, miningFields, Collections.emptyList());
     }
 
 }

@@ -31,7 +31,7 @@ public class KiePMMLDerivedFieldInstanceFactoryTest {
         final String fieldName = "fieldName";
         final DerivedField toConvert = getDerivedField(fieldName);
         KiePMMLDerivedField retrieved = KiePMMLDerivedFieldInstanceFactory.getKiePMMLDerivedField(toConvert,
-                Collections.emptyList());
+                                                                                                  Collections.emptyList());
         commonVerifyKiePMMLDerivedField(retrieved, toConvert);
     }
 }

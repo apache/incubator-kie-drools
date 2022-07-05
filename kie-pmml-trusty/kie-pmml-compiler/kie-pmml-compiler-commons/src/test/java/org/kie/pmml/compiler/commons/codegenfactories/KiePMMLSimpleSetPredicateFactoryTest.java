@@ -53,7 +53,7 @@ public class KiePMMLSimpleSetPredicateFactoryTest {
         Array.Type arrayType = Array.Type.STRING;
         List<String> values = getStringObjects(arrayType, 4);
         SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate(values, arrayType,
-                SimpleSetPredicate.BooleanOperator.IS_IN);
+                                                                      SimpleSetPredicate.BooleanOperator.IS_IN);
         String arrayTypeString =
                 ARRAY_TYPE.class.getName() + "." + ARRAY_TYPE.byName(simpleSetPredicate.getArray().getType().value());
         String booleanOperatorString =
@@ -69,13 +69,13 @@ public class KiePMMLSimpleSetPredicateFactoryTest {
         DataDictionary dataDictionary = new DataDictionary();
         dataDictionary.addDataFields(dataField);
         BlockStmt retrieved = KiePMMLSimpleSetPredicateFactory.getSimpleSetPredicateVariableDeclaration(variableName,
-                simpleSetPredicate);
+                                                                                                        simpleSetPredicate);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                simpleSetPredicate.getField().getValue(),
-                arrayTypeString,
-                booleanOperatorString,
-                valuesString));
+                                                                      simpleSetPredicate.getField().getValue(),
+                                                                      arrayTypeString,
+                                                                      booleanOperatorString,
+                                                                      valuesString));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLSimpleSetPredicate.class, Arrays.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);

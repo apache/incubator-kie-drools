@@ -71,14 +71,14 @@ public class KiePMMLDiscretizeFactoryTest {
         discretize.addDiscretizeBins(discretizeBins.toArray(new DiscretizeBin[0]));
 
         BlockStmt retrieved = KiePMMLDiscretizeFactory.getDiscretizeVariableDeclaration(variableName,
-                discretize);
+                                                                                        discretize);
         String dataTypeString = getDATA_TYPEString(discretize.getDataType());
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, NAME, MAP_MISSING_TO,
-                DEFAULTVALUE, dataTypeString));
+                                                                      DEFAULTVALUE, dataTypeString));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLDiscretize.class,
-                KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
+                                               KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 

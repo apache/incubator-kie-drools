@@ -45,7 +45,8 @@ public class KiePMMLNormDiscreteTest {
         String fieldValue = "fieldValue";
         Number mapMissingTo = null;
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
-        ProcessingDTO processingDTO = getProcessingDTO(Collections.singletonList(new KiePMMLNameValue(fieldName, fieldValue)));
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.singletonList(new KiePMMLNameValue(fieldName,
+                                                                                                      fieldValue)));
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isEqualTo(1.0);
@@ -57,7 +58,8 @@ public class KiePMMLNormDiscreteTest {
         String fieldValue = "fieldValue";
         Number mapMissingTo = null;
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
-        ProcessingDTO processingDTO = getProcessingDTO(Collections.singletonList(new KiePMMLNameValue(fieldName, "anotherValue")));
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.singletonList(new KiePMMLNameValue(fieldName,
+                                                                                                      "anotherValue")));
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isEqualTo(0.0);

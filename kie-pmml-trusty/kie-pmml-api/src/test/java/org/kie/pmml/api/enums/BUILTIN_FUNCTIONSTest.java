@@ -68,8 +68,8 @@ public class BUILTIN_FUNCTIONSTest {
         supportedBuiltinFunctions.forEach(builtinFunction -> {
             try {
                 builtinFunction.getValue(input, new MiningField(null, null, null, null,
-                        null,
-                        null, null, null, null, null));
+                                                                null,
+                                                                null, null, null, null, null));
                 fail("Expecting IllegalArgumentException");
             } catch (Exception e) {
                 assertThat(e).isInstanceOf(IllegalArgumentException.class);

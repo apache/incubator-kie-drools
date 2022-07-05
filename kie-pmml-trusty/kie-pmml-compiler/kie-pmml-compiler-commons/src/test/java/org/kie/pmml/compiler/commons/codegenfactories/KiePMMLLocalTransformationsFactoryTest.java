@@ -60,11 +60,11 @@ public class KiePMMLLocalTransformationsFactoryTest {
         Statement expected = JavaParserUtils.parseBlock(text);
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
-                KiePMMLApply.class,
-                KiePMMLDerivedField.class,
-                KiePMMLLocalTransformations.class,
-                Arrays.class,
-                Collections.class);
+                                               KiePMMLApply.class,
+                                               KiePMMLDerivedField.class,
+                                               KiePMMLLocalTransformations.class,
+                                               Arrays.class,
+                                               Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 

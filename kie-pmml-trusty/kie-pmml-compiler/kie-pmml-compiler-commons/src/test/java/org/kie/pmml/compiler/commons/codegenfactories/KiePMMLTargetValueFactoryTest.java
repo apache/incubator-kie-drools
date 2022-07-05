@@ -44,10 +44,10 @@ public class KiePMMLTargetValueFactoryTest {
         MethodCallExpr retrieved = KiePMMLTargetValueFactory.getKiePMMLTargetValueVariableInitializer(targetValue);
         String text = getFileContent(TEST_01_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text, targetValue.getName(),
-                targetValue.getValue(),
-                targetValue.getDisplayValue(),
-                targetValue.getPriorProbability(),
-                targetValue.getDefaultValue()));
+                                                                            targetValue.getValue(),
+                                                                            targetValue.getDisplayValue(),
+                                                                            targetValue.getPriorProbability(),
+                                                                            targetValue.getDefaultValue()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLTargetValue.class, TargetValue.class);
         commonValidateCompilationWithImports(retrieved, imports);

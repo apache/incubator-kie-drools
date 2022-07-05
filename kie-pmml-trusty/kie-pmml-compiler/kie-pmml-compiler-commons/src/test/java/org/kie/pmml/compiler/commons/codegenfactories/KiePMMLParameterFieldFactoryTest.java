@@ -52,12 +52,12 @@ public class KiePMMLParameterFieldFactoryTest {
         String opType = getOP_TYPEString(parameterField.getOpType());
 
         BlockStmt retrieved = KiePMMLParameterFieldFactory.getParameterFieldVariableDeclaration(variableName,
-                parameterField);
+                                                                                                parameterField);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                dataType,
-                opType,
-                parameterField.getDisplayName()));
+                                                                      dataType,
+                                                                      opType,
+                                                                      parameterField.getDisplayName()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLParameterField.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);

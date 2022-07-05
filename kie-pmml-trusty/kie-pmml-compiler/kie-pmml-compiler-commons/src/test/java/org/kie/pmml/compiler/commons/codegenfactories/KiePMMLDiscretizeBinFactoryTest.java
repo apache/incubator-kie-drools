@@ -56,12 +56,12 @@ public class KiePMMLDiscretizeBinFactoryTest {
         discretizeBin.setInterval(interval);
 
         BlockStmt retrieved = KiePMMLDiscretizeBinFactory.getDiscretizeBinVariableDeclaration(variableName,
-                discretizeBin);
+                                                                                              discretizeBin);
         String closureString =
                 CLOSURE.class.getName() + "." + CLOSURE.byName(interval.getClosure().value()).name();
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, leftMargin, closureString,
-                binValue));
+                                                                      binValue));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
         commonValidateCompilationWithImports(retrieved, imports);

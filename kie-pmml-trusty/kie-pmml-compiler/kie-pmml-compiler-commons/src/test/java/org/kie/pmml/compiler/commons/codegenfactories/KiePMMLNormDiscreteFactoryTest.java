@@ -50,7 +50,7 @@ public class KiePMMLNormDiscreteFactoryTest {
         normDiscrete.setMapMissingTo(mapMissingTo);
 
         BlockStmt retrieved = KiePMMLNormDiscreteFactory.getNormDiscreteVariableDeclaration(variableName,
-                normDiscrete);
+                                                                                            normDiscrete);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, fieldName, fieldValue, mapMissingTo));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();

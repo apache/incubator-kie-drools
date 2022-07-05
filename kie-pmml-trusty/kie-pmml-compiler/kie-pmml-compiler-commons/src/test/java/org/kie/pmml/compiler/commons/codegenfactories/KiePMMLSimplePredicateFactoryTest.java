@@ -59,9 +59,9 @@ public class KiePMMLSimplePredicateFactoryTest {
         BlockStmt retrieved = KiePMMLSimplePredicateFactory.getSimplePredicateVariableDeclaration(variableName, simplePredicate, getFieldsFromDataDictionary(dataDictionary));
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                simplePredicate.getField().getValue(),
-                operatorString,
-                simplePredicate.getValue()));
+                                                                      simplePredicate.getField().getValue(),
+                                                                      operatorString,
+                                                                      simplePredicate.getValue()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLSimplePredicate.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);

@@ -53,7 +53,7 @@ public class DateFunctionsTest {
         LocalDateTime inputDateLocalDateTime = LocalDateTime.of(1960, 1, 1, 0, 0, 0);
         logger.debug("inputDateLocalDateTime {}", inputDateLocalDateTime);
         Date inputDate = java.util.Date.from(inputDateLocalDateTime.atZone(ZoneId.systemDefault())
-                .toInstant());
+                                                     .toInstant());
         logger.debug("Input date");
         logger.debug("{}", inputDate);
         logger.debug("{}", inputDate.getTime());
@@ -64,15 +64,13 @@ public class DateFunctionsTest {
         inputDateLocalDateTime = LocalDateTime.of(2003, 4, 1, 0, 0, 0);
         logger.debug("inputDateLocalDateTime {}", inputDateLocalDateTime);
         inputDate = java.util.Date.from(inputDateLocalDateTime.atZone(ZoneId.systemDefault())
-                .toInstant());
+                                                     .toInstant());
         logger.debug("Input date");
         logger.debug("{}", inputDate);
         logger.debug("{}", inputDate.getTime());
         Object[] input2 = {inputDate, 1960};
         retrieved = DateFunctions.DATE_DAYS_SINCE_YEAR.getValue(input2);
         assertThat(retrieved).isEqualTo(15796);
-
-
     }
 
     @Test

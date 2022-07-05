@@ -66,7 +66,7 @@ public class KiePMMLCompoundPredicateFactoryTest {
         Array.Type arrayType = Array.Type.STRING;
         List<String> values = getStringObjects(arrayType, 4);
         SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate(values, arrayType,
-                SimpleSetPredicate.BooleanOperator.IS_IN);
+                                                                      SimpleSetPredicate.BooleanOperator.IS_IN);
         CompoundPredicate compoundPredicate = new CompoundPredicate();
         compoundPredicate.setBooleanOperator(CompoundPredicate.BooleanOperator.AND);
         compoundPredicate.getPredicates().add(0, simplePredicate1);
@@ -93,14 +93,14 @@ public class KiePMMLCompoundPredicateFactoryTest {
 
         final List<Field<?>> fields = getFieldsFromDataDictionary(dataDictionary);
         BlockStmt retrieved = KiePMMLCompoundPredicateFactory.getCompoundPredicateVariableDeclaration(variableName,
-                compoundPredicate, fields);
+                                                                                                      compoundPredicate, fields);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                valuesString,
-                booleanOperatorString));
+                                                                      valuesString,
+                                                                      booleanOperatorString));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLCompoundPredicate.class, KiePMMLSimplePredicate.class,
-                KiePMMLSimpleSetPredicate.class, Arrays.class, Collections.class);
+                                               KiePMMLSimpleSetPredicate.class, Arrays.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

@@ -40,10 +40,10 @@ public class KiePMMLFalsePredicateFactoryTest {
     void getFalsePredicateVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLFalsePredicateFactory.getFalsePredicateVariableDeclaration(variableName,
-                new False());
+                                                                                                new False());
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
-        assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLFalsePredicate.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }

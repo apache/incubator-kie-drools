@@ -43,13 +43,13 @@ public class TargetValueFactoryTest {
         ObjectCreationExpr retrieved = TargetValueFactory.getTargetValueVariableInitializer(targetValue);
         String text = getFileContent(TEST_01_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text,
-                targetValue.getValue(),
-                targetValue.getDisplayValue(),
-                targetValue.getPriorProbability(),
-                targetValue.getDefaultValue()));
+                                                                            targetValue.getValue(),
+                                                                            targetValue.getDisplayValue(),
+                                                                            targetValue.getPriorProbability(),
+                                                                            targetValue.getDefaultValue()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLTargetValue.class,
-                TargetValue.class);
+                                               TargetValue.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

@@ -66,13 +66,13 @@ public class KiePMMLMapValuesFactoryTest {
     void getMapValuesVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLMapValuesFactory.getMapValuesVariableDeclaration(variableName,
-                MAPVALUES);
+                                                                                      MAPVALUES);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, Collectors.class,
-                KiePMMLFieldColumnPair.class, KiePMMLInlineTable.class,
-                KiePMMLMapValues.class, KiePMMLRow.class, Map.class, Stream.class);
+                                               KiePMMLFieldColumnPair.class, KiePMMLInlineTable.class,
+                                               KiePMMLMapValues.class, KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

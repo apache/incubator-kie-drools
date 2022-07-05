@@ -68,13 +68,13 @@ public class KiePMMLTextIndexNormalizationFactoryTest {
         String variableName = "variableName";
         BlockStmt retrieved =
                 KiePMMLTextIndexNormalizationFactory.getTextIndexNormalizationVariableDeclaration(variableName,
-                        TEXTINDEXNORMALIZATION);
+                                                                                                  TEXTINDEXNORMALIZATION);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, Collectors.class,
-                KiePMMLInlineTable.class, KiePMMLTextIndexNormalization.class,
-                KiePMMLRow.class, Map.class, Stream.class);
+                                               KiePMMLInlineTable.class, KiePMMLTextIndexNormalization.class,
+                                               KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

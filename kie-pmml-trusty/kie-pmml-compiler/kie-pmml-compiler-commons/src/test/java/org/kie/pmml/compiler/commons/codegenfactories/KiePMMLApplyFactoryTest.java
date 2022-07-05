@@ -65,14 +65,15 @@ public class KiePMMLApplyFactoryTest {
         Constant constant2 = new Constant();
         constant2.setValue(value2);
         apply.addExpressions(constant1, constant2);
-        BlockStmt retrieved = KiePMMLApplyFactory.getApplyVariableDeclaration(variableName, apply);
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory.getApplyVariableDeclaration(variableName, apply);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, value1, value2, variableName, function,
-                defaultValue, mapMissingTo,
-                invalidValueTreatmentMethod.value()));
-        assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();
+                                                                      defaultValue, mapMissingTo,
+                                                                      invalidValueTreatmentMethod.value()));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class, KiePMMLApply.class, Collections.class,
-                Arrays.class);
+                                               Arrays.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
@@ -92,14 +93,15 @@ public class KiePMMLApplyFactoryTest {
         FieldRef fieldRef2 = new FieldRef();
         fieldRef2.setField(FieldName.create(PARAM_2));
         apply.addExpressions(fieldRef1, fieldRef2);
-        BlockStmt retrieved = KiePMMLApplyFactory.getApplyVariableDeclaration(variableName, apply);
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory.getApplyVariableDeclaration(variableName, apply);
         String text = getFileContent(TEST_02_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, PARAM_1, PARAM_2, variableName, function,
-                defaultValue, mapMissingTo,
-                invalidValueTreatmentMethod.value()));
-        assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();
+                                                                      defaultValue, mapMissingTo,
+                                                                      invalidValueTreatmentMethod.value()));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, KiePMMLApply.class, Collections.class,
-                Arrays.class);
+                                               Arrays.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
@@ -127,13 +129,13 @@ public class KiePMMLApplyFactoryTest {
         BlockStmt retrieved = KiePMMLApplyFactory.getApplyVariableDeclaration(variableName, apply);
         String text = getFileContent(TEST_03_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, PARAM_1, PARAM_2,
-                defaultValue, mapMissingTo,
-                nestedInvalidValueTreatmentMethod.value(),
-                variableName,
-                invalidValueTreatmentMethod.value()));
-        assertThat(JavaParserUtils.equalsNode(expected,  retrieved)).isTrue();
+                                                                      defaultValue, mapMissingTo,
+                                                                      nestedInvalidValueTreatmentMethod.value(),
+                                                                      variableName,
+                                                                      invalidValueTreatmentMethod.value()));
+        assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, KiePMMLApply.class, Collections.class,
-                Arrays.class);
+                                               Arrays.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

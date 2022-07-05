@@ -436,5 +436,4 @@ public class ArithmeticFunctionsTest {
             ArithmeticFunctions.MODULO.getValue(input);
         });
     }
-
 }

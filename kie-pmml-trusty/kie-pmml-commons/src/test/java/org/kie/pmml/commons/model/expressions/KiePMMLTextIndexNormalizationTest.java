@@ -35,8 +35,10 @@ public class KiePMMLTextIndexNormalizationTest {
         columnValues.put("stem", "foo");
         columnValues.put("regex", "true");
         KiePMMLRow row = new KiePMMLRow(columnValues);
-        KiePMMLInlineTable inlineTable = new KiePMMLInlineTable("inlineTable", Collections.emptyList(), Collections.singletonList(row));
-        KiePMMLTextIndexNormalization indexNormalization = KiePMMLTextIndexNormalization.builder("indexNormalization", Collections.emptyList())
+        KiePMMLInlineTable inlineTable = new KiePMMLInlineTable("inlineTable", Collections.emptyList(),
+                                                                Collections.singletonList(row));
+        KiePMMLTextIndexNormalization indexNormalization = KiePMMLTextIndexNormalization.builder("indexNormalization"
+                        , Collections.emptyList())
                 .withKiePMMLInlineTable(inlineTable)
                 .withIsCaseSensitive(false)
                 .build();

@@ -50,7 +50,7 @@ public class KiePMMLOutputFieldTest {
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
                 "val-" + i, i)).collect(Collectors.toList());
         Optional<Object> retrieved = KiePMMLOutputField.getValueFromKiePMMLNameValuesByVariableName(variableName,
-                kiePMMLNameValues);
+                                                                                                    kiePMMLNameValues);
         assertThat(retrieved).isNotPresent();
         final Object variableValue = 243.94;
         kiePMMLNameValues.add(new KiePMMLNameValue(variableName, variableValue));
@@ -64,7 +64,7 @@ public class KiePMMLOutputFieldTest {
         final String variableName = "variableName";
         final Map<String, Object> resultsVariables = new HashMap<>();
         Optional<Object> retrieved = KiePMMLOutputField.getValueFromPMMLResultByVariableName(variableName,
-                resultsVariables);
+                                                                                             resultsVariables);
         assertThat(retrieved).isNotPresent();
         final Object variableValue = 243.94;
         resultsVariables.put(variableName, variableValue);
@@ -83,12 +83,12 @@ public class KiePMMLOutputFieldTest {
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
                 "val-" + i, i)).collect(Collectors.toList());
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
-                kiePMMLNameValues, Collections.emptyList());
+                                                       kiePMMLNameValues, Collections.emptyList());
         assertThat(kiePMMLOutputField.evaluate(processingDTO)).isNull();
         final Object variableValue = 243.94;
         kiePMMLNameValues.add(new KiePMMLNameValue(variableName, variableValue));
         processingDTO = getProcessingDTO(Collections.emptyList(),
-                kiePMMLNameValues, Collections.emptyList());
+                                         kiePMMLNameValues, Collections.emptyList());
         Object retrieved = kiePMMLOutputField.evaluate(processingDTO);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isEqualTo(variableValue);
@@ -101,7 +101,7 @@ public class KiePMMLOutputFieldTest {
                 .withRank(4)
                 .build();
         final List<String> reasonCodes = IntStream.range(0, 3).mapToObj(i ->
-                "reasonCode-" + i)
+                                                                                "reasonCode-" + i)
                 .collect(Collectors.toList());
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), reasonCodes);
         assertThat(kiePMMLOutputField.evaluate(processingDTO)).isNull();
@@ -124,7 +124,7 @@ public class KiePMMLOutputFieldTest {
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), new ArrayList<>(),
-                Collections.emptyList());
+                                                       Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
         assertThat(retrieved).isEqualTo(value1);
     }
@@ -140,8 +140,8 @@ public class KiePMMLOutputFieldTest {
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
-                Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)),
-                Collections.emptyList());
+                                                       Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)),
+                                                       Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
         assertThat(retrieved).isEqualTo(value1);
     }
@@ -164,7 +164,7 @@ public class KiePMMLOutputFieldTest {
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), getKiePMMLNameValues(),
-                Collections.emptyList());
+                                                       Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
         Object expected = value1 / value2;
         assertThat(retrieved).isEqualTo(expected);

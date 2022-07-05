@@ -65,18 +65,19 @@ public class KiePMMLDerivedFieldFactoryTest {
         derivedField.setExpression(constant);
         String dataType = getDATA_TYPEString(derivedField.getDataType());
         String opType = getOP_TYPEString(derivedField.getOpType());
-        BlockStmt retrieved = KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format(text, constant.getValue(),
-                        variableName,
-                        derivedField.getName().getValue(),
-                        dataType,
-                        opType));
+                                          variableName,
+                                          derivedField.getName().getValue(),
+                                          dataType,
+                                          opType));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
-                KiePMMLDerivedField.class,
-                Collections.class);
+                                               KiePMMLDerivedField.class,
+                                               Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
@@ -92,18 +93,19 @@ public class KiePMMLDerivedFieldFactoryTest {
         derivedField.setExpression(fieldRef);
         String dataType = getDATA_TYPEString(derivedField.getDataType());
         String opType = getOP_TYPEString(derivedField.getOpType());
-        BlockStmt retrieved = KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
         String text = getFileContent(TEST_02_SOURCE);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format(text, fieldRef.getField().getValue(),
-                        variableName,
-                        derivedField.getName().getValue(),
-                        dataType,
-                        opType));
+                                          variableName,
+                                          derivedField.getName().getValue(),
+                                          dataType,
+                                          opType));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class,
-                KiePMMLDerivedField.class,
-                Collections.class);
+                                               KiePMMLDerivedField.class,
+                                               Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
@@ -128,21 +130,21 @@ public class KiePMMLDerivedFieldFactoryTest {
         String text = getFileContent(TEST_03_SOURCE);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format(text,
-                        constant.getValue(),
-                        fieldRef.getField().getValue(),
-                        apply.getFunction(),
-                        apply.getInvalidValueTreatment().value(),
-                        variableName,
-                        derivedField.getName().getValue(),
-                        dataType,
-                        opType));
+                                          constant.getValue(),
+                                          fieldRef.getField().getValue(),
+                                          apply.getFunction(),
+                                          apply.getInvalidValueTreatment().value(),
+                                          variableName,
+                                          derivedField.getName().getValue(),
+                                          dataType,
+                                          opType));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
-                KiePMMLFieldRef.class,
-                KiePMMLApply.class,
-                KiePMMLDerivedField.class,
-                Arrays.class,
-                Collections.class);
+                                               KiePMMLFieldRef.class,
+                                               KiePMMLApply.class,
+                                               KiePMMLDerivedField.class,
+                                               Arrays.class,
+                                               Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

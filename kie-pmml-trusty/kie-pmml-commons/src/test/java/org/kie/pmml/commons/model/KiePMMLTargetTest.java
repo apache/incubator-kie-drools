@@ -33,7 +33,7 @@ public class KiePMMLTargetTest {
     void modifyPrediction() {
         Object object = "STRING";
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
-                null);
+                                                  null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();
         assertThat(kiePMMLTarget.modifyPrediction(object)).isEqualTo(object);
         object = 4.33;
@@ -50,7 +50,7 @@ public class KiePMMLTargetTest {
     @Test
     void applyMin() {
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
-                null);
+                                                  null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();
         assertThat(kiePMMLTarget.applyMin(4.33)).isCloseTo(4.33, Offset.offset(0.0));
         targetField = new TargetField(Collections.emptyList(), null, "string", null, 4.34, null, null, null);
@@ -62,7 +62,7 @@ public class KiePMMLTargetTest {
     @Test
     void applyMax() {
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
-                null);
+                                                  null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();
         assertThat(kiePMMLTarget.applyMax(4.33)).isCloseTo(4.33, Offset.offset(0.0));
         targetField = new TargetField(Collections.emptyList(), null, "string", null, null, 4.34, null, null);
@@ -74,7 +74,7 @@ public class KiePMMLTargetTest {
     @Test
     void applyRescaleFactor() {
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
-                null);
+                                                  null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();
         assertThat(kiePMMLTarget.applyRescaleFactor(4.0)).isCloseTo(4.0, Offset.offset(0.0));
         targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null, 2.0);
@@ -85,7 +85,7 @@ public class KiePMMLTargetTest {
     @Test
     void applyRescaleConstant() {
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
-                null);
+                                                  null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();
         assertThat(kiePMMLTarget.applyRescaleConstant(6.0)).isCloseTo(6.0, Offset.offset(0.0));
         targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, 2.0, null);
@@ -96,11 +96,11 @@ public class KiePMMLTargetTest {
     @Test
     void applyCastInteger() {
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
-                null);
+                                                  null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();
         assertThat((double) kiePMMLTarget.applyCastInteger(2.718)).isCloseTo(2.718, Offset.offset(0.0));
         targetField = new TargetField(Collections.emptyList(), null, "string", CAST_INTEGER.ROUND, null, null, null,
-                null);
+                                      null);
         kiePMMLTarget = getBuilder(targetField).build();
         assertThat((double) kiePMMLTarget.applyCastInteger(2.718)).isCloseTo(3.0, Offset.offset(0.0));
     }

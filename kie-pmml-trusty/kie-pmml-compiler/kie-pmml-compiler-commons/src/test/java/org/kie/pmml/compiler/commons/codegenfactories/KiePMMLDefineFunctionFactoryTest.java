@@ -86,28 +86,28 @@ public class KiePMMLDefineFunctionFactoryTest {
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format(text,
-                        parameterField1.getName().getValue(),
-                        dataType1,
-                        opType1,
-                        parameterField1.getDisplayName(),
-                        parameterField2.getName().getValue(),
-                        dataType2,
-                        opType2,
-                        parameterField2.getDisplayName(),
-                        constant.getValue(),
-                        fieldRef.getField().getValue(),
-                        apply.getFunction(),
-                        apply.getInvalidValueTreatment().value(),
-                        dataType3,
-                        opType3));
+                                          parameterField1.getName().getValue(),
+                                          dataType1,
+                                          opType1,
+                                          parameterField1.getDisplayName(),
+                                          parameterField2.getName().getValue(),
+                                          dataType2,
+                                          opType2,
+                                          parameterField2.getDisplayName(),
+                                          constant.getValue(),
+                                          fieldRef.getField().getValue(),
+                                          apply.getFunction(),
+                                          apply.getInvalidValueTreatment().value(),
+                                          dataType3,
+                                          opType3));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLParameterField.class,
-                KiePMMLConstant.class,
-                KiePMMLFieldRef.class,
-                KiePMMLApply.class,
-                KiePMMLDefineFunction.class,
-                Arrays.class,
-                Collections.class);
+                                               KiePMMLConstant.class,
+                                               KiePMMLFieldRef.class,
+                                               KiePMMLApply.class,
+                                               KiePMMLDefineFunction.class,
+                                               Arrays.class,
+                                               Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

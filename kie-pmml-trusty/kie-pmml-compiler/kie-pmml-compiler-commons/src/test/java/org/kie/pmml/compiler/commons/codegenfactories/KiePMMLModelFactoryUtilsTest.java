@@ -158,7 +158,7 @@ public class KiePMMLModelFactoryUtilsTest {
     }
 
     @Test
-    void setConstructorSuperNameInvocation() {
+    void setKiePMMLConstructorSuperNameInvocation() {
         String generatedClassName = "generatedClassName";
         String name = "newName";
         KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation(generatedClassName,
@@ -173,11 +173,11 @@ public class KiePMMLModelFactoryUtilsTest {
         String name = "newName";
         List<MiningField> miningFields = IntStream.range(0, 3)
                 .mapToObj(i -> ModelUtils.convertToKieMiningField(getRandomMiningField(),
-                        getRandomDataField()))
+                                                                  getRandomDataField()))
                 .collect(Collectors.toList());
         List<OutputField> outputFields = IntStream.range(0, 2)
                 .mapToObj(i -> ModelUtils.convertToKieOutputField(getRandomOutputField(),
-                        getRandomDataField()))
+                                                                  getRandomDataField()))
                 .collect(Collectors.toList());
         List<TargetField> targetFields = IntStream.range(0, 2)
                 .mapToObj(i -> ModelUtils.convertToKieTargetField(getRandomTarget()))
@@ -190,20 +190,20 @@ public class KiePMMLModelFactoryUtilsTest {
                 targetFields);
         commonVerifySuperInvocation(generatedClassName, name);
         List<MethodCallExpr> retrieved = getMethodCallExprList(constructorDeclaration.getBody(), miningFields.size(),
-                "miningFields",
-                "add");
+                                                               "miningFields",
+                                                               "add");
         MethodCallExpr addMethodCall = retrieved.get(0);
         NodeList<Expression> arguments = addMethodCall.getArguments();
         commonVerifyMiningFieldsObjectCreation(arguments, miningFields);
 
         retrieved = getMethodCallExprList(constructorDeclaration.getBody(), outputFields.size(), "outputFields",
-                "add");
+                                          "add");
         addMethodCall = retrieved.get(0);
         arguments = addMethodCall.getArguments();
         commonVerifyOutputFieldsObjectCreation(arguments, outputFields);
 
         retrieved = getMethodCallExprList(constructorDeclaration.getBody(), outputFields.size(), "kiePMMLTargets",
-                "add");
+                                          "add");
         addMethodCall = retrieved.get(0);
         arguments = addMethodCall.getArguments();
         commonVerifyKiePMMLTargetFieldsMethodCallExpr(arguments, targetFields);
@@ -272,8 +272,8 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void addGetCreatedKiePMMLOutputFieldsMethod() throws IOException {
         ClassOrInterfaceDeclaration modelTemplate = new ClassOrInterfaceDeclaration();
-        KiePMMLModelFactoryUtils.addGetCreatedKiePMMLOutputFieldsMethod(modelTemplate,
-                model.getOutput().getOutputFields());
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.addGetCreatedKiePMMLOutputFieldsMethod(modelTemplate,
+                                                                                                                       model.getOutput().getOutputFields());
         final MethodDeclaration retrieved = modelTemplate.getMethodsByName(GET_CREATED_KIEPMMLOUTPUTFIELDS).get(0);
         String text = getFileContent(TEST_11_SOURCE);
         BlockStmt expected = JavaParserUtils.parseBlock(text);
@@ -282,8 +282,8 @@ public class KiePMMLModelFactoryUtilsTest {
 
     @Test
     void populateGetCreatedKiePMMLOutputFieldsMethod() throws IOException {
-        KiePMMLModelFactoryUtils.populateGetCreatedKiePMMLOutputFieldsMethod(classOrInterfaceDeclaration,
-                model.getOutput().getOutputFields());
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateGetCreatedKiePMMLOutputFieldsMethod(classOrInterfaceDeclaration,
+                                                                                                                            model.getOutput().getOutputFields());
         final MethodDeclaration retrieved =
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_KIEPMMLOUTPUTFIELDS).get(0);
         String text = getFileContent(TEST_11_SOURCE);
@@ -295,13 +295,13 @@ public class KiePMMLModelFactoryUtilsTest {
     void populateGetCreatedKiePMMLTargetsMethod() throws IOException {
         Random random = new Random();
         List<TargetField> kiePMMLTargets = IntStream.range(0, 3).mapToObj(i -> new TargetField(Collections.emptyList(),
-                OP_TYPE.byName(getRandomOpType().value()),
-                "Target-" + i,
-                CAST_INTEGER.byName(getRandomCastInteger().value()),
-                (double) random.nextInt(20),
-                (double) random.nextInt(60) + 20,
-                (double) random.nextInt(100) / 100,
-                (double) random.nextInt(100) / 100
+                                                                                               OP_TYPE.byName(getRandomOpType().value()),
+                                                                                               "Target-" + i,
+                                                                                               CAST_INTEGER.byName(getRandomCastInteger().value()),
+                                                                                               (double) random.nextInt(20),
+                                                                                               (double) random.nextInt(60) + 20,
+                                                                                               (double) random.nextInt(100) / 100,
+                                                                                               (double) random.nextInt(100) / 100
         )).collect(Collectors.toList());
 
         String opType0 = OP_TYPE.class.getCanonicalName() + "." + kiePMMLTargets.get(0).getOpType().toString();
@@ -314,33 +314,33 @@ public class KiePMMLModelFactoryUtilsTest {
         String castInteger2 =
                 CAST_INTEGER.class.getCanonicalName() + "." + kiePMMLTargets.get(2).getCastInteger().toString();
 
-        KiePMMLModelFactoryUtils.populateGetCreatedKiePMMLTargetsMethod(classOrInterfaceDeclaration,
-                kiePMMLTargets);
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateGetCreatedKiePMMLTargetsMethod(classOrInterfaceDeclaration,
+                                                                                                                       kiePMMLTargets);
         final MethodDeclaration retrieved =
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_KIEPMMLTARGETS).get(0);
         String text = getFileContent(TEST_10_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(String.format(text,
-                kiePMMLTargets.get(0).getName(),
-                opType0,
-                castInteger0,
-                kiePMMLTargets.get(0).getMin(),
-                kiePMMLTargets.get(0).getMax(),
-                kiePMMLTargets.get(0).getRescaleConstant(),
-                kiePMMLTargets.get(0).getRescaleFactor(),
-                kiePMMLTargets.get(1).getName(),
-                opType1,
-                castInteger1,
-                kiePMMLTargets.get(1).getMin(),
-                kiePMMLTargets.get(1).getMax(),
-                kiePMMLTargets.get(1).getRescaleConstant(),
-                kiePMMLTargets.get(1).getRescaleFactor(),
-                kiePMMLTargets.get(2).getName(),
-                opType2,
-                castInteger2,
-                kiePMMLTargets.get(2).getMin(),
-                kiePMMLTargets.get(2).getMax(),
-                kiePMMLTargets.get(2).getRescaleConstant(),
-                kiePMMLTargets.get(2).getRescaleFactor()));
+                                                                               kiePMMLTargets.get(0).getName(),
+                                                                               opType0,
+                                                                               castInteger0,
+                                                                               kiePMMLTargets.get(0).getMin(),
+                                                                               kiePMMLTargets.get(0).getMax(),
+                                                                               kiePMMLTargets.get(0).getRescaleConstant(),
+                                                                               kiePMMLTargets.get(0).getRescaleFactor(),
+                                                                               kiePMMLTargets.get(1).getName(),
+                                                                               opType1,
+                                                                               castInteger1,
+                                                                               kiePMMLTargets.get(1).getMin(),
+                                                                               kiePMMLTargets.get(1).getMax(),
+                                                                               kiePMMLTargets.get(1).getRescaleConstant(),
+                                                                               kiePMMLTargets.get(1).getRescaleFactor(),
+                                                                               kiePMMLTargets.get(2).getName(),
+                                                                               opType2,
+                                                                               castInteger2,
+                                                                               kiePMMLTargets.get(2).getMin(),
+                                                                               kiePMMLTargets.get(2).getMax(),
+                                                                               kiePMMLTargets.get(2).getRescaleConstant(),
+                                                                               kiePMMLTargets.get(2).getRescaleFactor()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
@@ -370,9 +370,9 @@ public class KiePMMLModelFactoryUtilsTest {
     void addTransformationsInClassOrInterfaceDeclaration() throws IOException {
         assertThat(classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary")).isEmpty();
         assertThat(classOrInterfaceDeclaration.getMethodsByName("createLocalTransformations")).isEmpty();
-        KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration(classOrInterfaceDeclaration,
-                pmmlModel.getTransformationDictionary(),
-                model.getLocalTransformations());
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration(classOrInterfaceDeclaration,
+                                                                                                                                pmmlModel.getTransformationDictionary(),
+                                                                                                                                model.getLocalTransformations());
         assertThat(classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary")).hasSize(1);
         assertThat(classOrInterfaceDeclaration.getMethodsByName("createLocalTransformations")).hasSize(1);
         String text = getFileContent(TEST_01_SOURCE);
@@ -416,9 +416,9 @@ public class KiePMMLModelFactoryUtilsTest {
     void getMiningFieldsObjectCreations() {
         List<MiningField> miningFields = IntStream.range(0, 3)
                 .mapToObj(i -> ModelUtils.convertToKieMiningField(getRandomMiningField(),
-                        getRandomDataField()))
+                                                                  getRandomDataField()))
                 .collect(Collectors.toList());
-        List retrieved = KiePMMLModelFactoryUtils.getMiningFieldsObjectCreations(miningFields);
+        List retrieved = org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.getMiningFieldsObjectCreations(miningFields);
         commonVerifyMiningFieldsObjectCreation(retrieved, miningFields);
     }
 
@@ -431,7 +431,8 @@ public class KiePMMLModelFactoryUtilsTest {
                     return new Interval(leftMargin, rightMargin);
                 })
                 .collect(Collectors.toList());
-        Expression retrieved = KiePMMLModelFactoryUtils.createIntervalsExpression(intervals);
+        Expression retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.createIntervalsExpression(intervals);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isInstanceOf(MethodCallExpr.class);
         MethodCallExpr mtdExp = (MethodCallExpr) retrieved;
@@ -456,7 +457,8 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void getObjectCreationExprFromInterval() {
         Interval interval = new Interval(null, -14);
-        ObjectCreationExpr retrieved = KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
+        ObjectCreationExpr retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getType().asString()).isEqualTo(Interval.class.getCanonicalName());
         NodeList<Expression> arguments = retrieved.getArguments();
@@ -464,7 +466,8 @@ public class KiePMMLModelFactoryUtilsTest {
         assertThat(arguments.get(0)).isInstanceOf(NullLiteralExpr.class);
         assertThat(arguments.get(1).asNameExpr().toString()).isEqualTo(String.valueOf(interval.getRightMargin()));
         interval = new Interval(-13, 10);
-        retrieved = KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
+        retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getType().asString()).isEqualTo(Interval.class.getCanonicalName());
         arguments = retrieved.getArguments();
@@ -472,7 +475,8 @@ public class KiePMMLModelFactoryUtilsTest {
         assertThat(arguments.get(0).asNameExpr().toString()).isEqualTo(String.valueOf(interval.getLeftMargin()));
         assertThat(arguments.get(1).asNameExpr().toString()).isEqualTo(String.valueOf(interval.getRightMargin()));
         interval = new Interval(-13, null);
-        retrieved = KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
+        retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.getObjectCreationExprFromInterval(interval);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getType().asString()).isEqualTo(Interval.class.getCanonicalName());
         arguments = retrieved.getArguments();
@@ -485,9 +489,9 @@ public class KiePMMLModelFactoryUtilsTest {
     void getOutputFieldsObjectCreations() {
         List<OutputField> outputFields = IntStream.range(0, 2)
                 .mapToObj(i -> ModelUtils.convertToKieOutputField(getRandomOutputField(),
-                        getRandomDataField()))
+                                                                  getRandomDataField()))
                 .collect(Collectors.toList());
-        List retrieved = KiePMMLModelFactoryUtils.getOutputFieldsObjectCreations(outputFields);
+        List retrieved = org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.getOutputFieldsObjectCreations(outputFields);
         commonVerifyOutputFieldsObjectCreation(retrieved, outputFields);
     }
 
@@ -495,9 +499,9 @@ public class KiePMMLModelFactoryUtilsTest {
     void populateTransformationsInConstructor() throws IOException {
         final String createTransformationDictionary = "createTransformationDictionary";
         final String createLocalTransformations = "createLocalTransformations";
-        KiePMMLModelFactoryUtils.populateTransformationsInConstructor(constructorDeclaration,
-                createTransformationDictionary,
-                createLocalTransformations);
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateTransformationsInConstructor(constructorDeclaration,
+                                                                                                                     createTransformationDictionary,
+                                                                                                                     createLocalTransformations);
         String text = getFileContent(TEST_07_SOURCE);
         BlockStmt expected = JavaParserUtils.parseConstructorBlock(text);
         assertThat(JavaParserUtils.equalsNode(expected, constructorDeclaration.getBody())).isTrue();
@@ -506,12 +510,12 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void commonPopulateGetCreatedKiePMMLMiningFieldsMethod() throws IOException {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                pmmlModel,
-                model,
-                new HasClassLoaderMock());
+                                                                                                     pmmlModel,
+                                                                                                     model,
+                                                                                                     new HasClassLoaderMock());
         final MethodDeclaration methodDeclaration = new MethodDeclaration();
-        KiePMMLModelFactoryUtils.commonPopulateGetCreatedKiePMMLMiningFieldsMethod(methodDeclaration,
-                compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.commonPopulateGetCreatedKiePMMLMiningFieldsMethod(methodDeclaration,
+                                                                                                                                  compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
         String text = getFileContent(TEST_06_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
         assertThat(JavaParserUtils.equalsNode(expected, methodDeclaration)).isTrue();
@@ -520,12 +524,12 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void commonPopulateGetCreatedKiePMMLOutputFieldsMethod() throws IOException {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                pmmlModel,
-                model,
-                new HasClassLoaderMock());
+                                                                                                     pmmlModel,
+                                                                                                     model,
+                                                                                                     new HasClassLoaderMock());
         final MethodDeclaration methodDeclaration = new MethodDeclaration();
         KiePMMLModelFactoryUtils.commonPopulateGetCreatedKiePMMLOutputFieldsMethod(methodDeclaration,
-                compilationDTO.getOutput().getOutputFields());
+                                                                                   compilationDTO.getOutput().getOutputFields());
         String text = getFileContent(TEST_05_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
         assertThat(JavaParserUtils.equalsNode(expected, methodDeclaration)).isTrue();
@@ -664,6 +668,7 @@ public class KiePMMLModelFactoryUtilsTest {
         assertThat(superInvocation.toString()).isEqualTo(expected); // modified by invocation
     }
 
+
     /**
      * Return a <code>List&lt;MethodCallExpr&gt;</code> where every element <b>scope' name</b> is <code>scope</code>
      * and every element <b>name</b> is <code>method</code>
@@ -690,6 +695,7 @@ public class KiePMMLModelFactoryUtilsTest {
     /**
      * Verify the <b>scope' name</b> scope of the given <code>MethodCallExpr</code> is <code>scope</code>
      * and the <b>name</b> of the given <code>MethodCallExpr</code> is <code>method</code>
+     *
      * @param methodCallExpr
      * @param scope
      * @param method

@@ -48,9 +48,9 @@ public class KiePMMLDerivedFieldTest {
         // </DerivedField>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                DATA_TYPE.DOUBLE,
-                OP_TYPE.CONTINUOUS,
-                kiePMMLConstant1)
+                                                                             DATA_TYPE.DOUBLE,
+                                                                             OP_TYPE.CONTINUOUS,
+                                                                             kiePMMLConstant1)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), new ArrayList<>());
         Object retrieved = derivedField.evaluate(processingDTO);
@@ -64,12 +64,12 @@ public class KiePMMLDerivedFieldTest {
         // </DerivedField>
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(PARAM_1, Collections.emptyList(), null);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                DATA_TYPE.DOUBLE,
-                OP_TYPE.CONTINUOUS,
-                kiePMMLFieldRef)
+                                                                             DATA_TYPE.DOUBLE,
+                                                                             OP_TYPE.CONTINUOUS,
+                                                                             kiePMMLFieldRef)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
-                Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)));
+                                                       Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)));
         Object retrieved = derivedField.evaluate(processingDTO);
         assertThat(retrieved).isEqualTo(value1);
     }
@@ -88,9 +88,9 @@ public class KiePMMLDerivedFieldTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                DATA_TYPE.DOUBLE,
-                OP_TYPE.CONTINUOUS,
-                kiePMMLApply)
+                                                                             DATA_TYPE.DOUBLE,
+                                                                             OP_TYPE.CONTINUOUS,
+                                                                             kiePMMLApply)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), getKiePMMLNameValues());
         Object retrieved = derivedField.evaluate(processingDTO);
@@ -112,9 +112,9 @@ public class KiePMMLDerivedFieldTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                DATA_TYPE.DOUBLE,
-                OP_TYPE.CONTINUOUS,
-                kiePMMLApply)
+                                                                             DATA_TYPE.DOUBLE,
+                                                                             OP_TYPE.CONTINUOUS,
+                                                                             kiePMMLApply)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(getDerivedFields(), new ArrayList<>());
         Object retrieved = derivedField.evaluate(processingDTO);

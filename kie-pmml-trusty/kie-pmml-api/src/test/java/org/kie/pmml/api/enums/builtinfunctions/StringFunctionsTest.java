@@ -300,6 +300,4 @@ public class StringFunctionsTest {
             StringFunctions.FORMAT_DATE_TIME.getValue(input);
         });
     }
-
-
 }

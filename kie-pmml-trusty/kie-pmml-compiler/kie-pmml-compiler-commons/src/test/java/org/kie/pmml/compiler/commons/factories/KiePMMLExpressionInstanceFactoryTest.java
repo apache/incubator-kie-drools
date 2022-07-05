@@ -34,25 +34,30 @@ public class KiePMMLExpressionInstanceFactoryTest {
     @Test
     void getKiePMMLExpression() {
         Expression toConvert = getRandomApply();
-        KiePMMLExpression retrieved = KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
+        KiePMMLExpression retrieved =
+                org.kie.pmml.compiler.commons.factories.KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
         commonVerifyKiePMMLExpression(retrieved, toConvert);
         toConvert = getRandomConstant();
-        retrieved = KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
+        retrieved =
+                org.kie.pmml.compiler.commons.factories.KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
         commonVerifyKiePMMLExpression(retrieved, toConvert);
         toConvert = getRandomDiscretize();
-        retrieved = KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
+        retrieved =
+                org.kie.pmml.compiler.commons.factories.KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
         commonVerifyKiePMMLExpression(retrieved, toConvert);
         toConvert = getRandomFieldRef();
-        retrieved = KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
+        retrieved =
+                org.kie.pmml.compiler.commons.factories.KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
         commonVerifyKiePMMLExpression(retrieved, toConvert);
         toConvert = getRandomMapValues();
-        retrieved = KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
+        retrieved =
+                org.kie.pmml.compiler.commons.factories.KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
         commonVerifyKiePMMLExpression(retrieved, toConvert);
         toConvert = getRandomNormContinuous();
-        retrieved = KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
+        retrieved = org.kie.pmml.compiler.commons.factories.KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
         commonVerifyKiePMMLExpression(retrieved, toConvert);
         toConvert = getRandomNormDiscrete();
-        retrieved = KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
+        retrieved = org.kie.pmml.compiler.commons.factories.KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);
         commonVerifyKiePMMLExpression(retrieved, toConvert);
         toConvert = getRandomTextIndex();
         retrieved = KiePMMLExpressionInstanceFactory.getKiePMMLExpression(toConvert);

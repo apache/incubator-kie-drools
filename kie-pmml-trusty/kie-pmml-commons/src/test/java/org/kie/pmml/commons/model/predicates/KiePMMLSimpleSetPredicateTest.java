@@ -40,7 +40,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.IN);
+                                                                                           IN_NOTIN.IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "NOT");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -55,7 +55,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.NOT_IN);
+                                                                                           IN_NOTIN.NOT_IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "NOT");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -70,7 +70,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.IN);
+                                                                                           IN_NOTIN.IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "234");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -85,7 +85,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.NOT_IN);
+                                                                                           IN_NOTIN.NOT_IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "234");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -100,7 +100,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.IN);
+                                                                                           IN_NOTIN.IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "23.4");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -115,7 +115,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.NOT_IN);
+                                                                                           IN_NOTIN.NOT_IN);
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("FAKE", "23.4");
         assertThat(kiePMMLSimpleSetPredicate.evaluate(inputData)).isFalse();
@@ -130,7 +130,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.IN);
+                                                                                           IN_NOTIN.IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation("NOT")).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isTrue();
     }
@@ -140,7 +140,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.NOT_IN);
+                                                                                           IN_NOTIN.NOT_IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation("NOT")).isTrue();
     }
@@ -150,7 +150,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.IN);
+                                                                                           IN_NOTIN.IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation("234")).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isTrue();
     }
@@ -160,7 +160,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.INT;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.NOT_IN);
+                                                                                           IN_NOTIN.NOT_IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation("234")).isTrue();
     }
@@ -170,7 +170,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.IN);
+                                                                                           IN_NOTIN.IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation("23.4")).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isTrue();
     }
@@ -180,7 +180,7 @@ public class KiePMMLSimpleSetPredicateTest {
         ARRAY_TYPE arrayType = ARRAY_TYPE.REAL;
         List<Object> values = getObjects(arrayType, 1);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicate = getKiePMMLSimpleSetPredicate(values, arrayType,
-                IN_NOTIN.NOT_IN);
+                                                                                           IN_NOTIN.NOT_IN);
         assertThat(kiePMMLSimpleSetPredicate.evaluation(values.get(0))).isFalse();
         assertThat(kiePMMLSimpleSetPredicate.evaluation("23.4")).isTrue();
     }
@@ -197,17 +197,17 @@ public class KiePMMLSimpleSetPredicateTest {
 
     private List<Object> getObjects(ARRAY_TYPE arrayType, int size) {
         return IntStream.range(0, size).mapToObj(index -> {
-            switch (arrayType) {
-                case INT:
-                    return new Random().nextInt(40);
-                case REAL:
-                    return new Random().nextDouble();
-                case STRING:
-                    return UUID.randomUUID().toString();
-                default:
-                    return null;
-            }
-        })
+                    switch (arrayType) {
+                        case INT:
+                            return new Random().nextInt(40);
+                        case REAL:
+                            return new Random().nextDouble();
+                        case STRING:
+                            return UUID.randomUUID().toString();
+                        default:
+                            return null;
+                    }
+                })
                 .collect(Collectors.toList());
     }
 }

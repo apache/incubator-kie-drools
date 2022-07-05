@@ -58,8 +58,8 @@ public class KiePMMLDiscretizeTest {
         kiePMMLDiscretizeBin5 = getKiePMMLDiscretizeBin("kiePMMLDiscretizeBin5", new KiePMMLInterval(51, null,
                                                                                                      CLOSURE.CLOSED_CLOSED), "kiePMMLDiscretizeBin5");
         discretizeBins = Arrays.asList(kiePMMLDiscretizeBin1, kiePMMLDiscretizeBin2,
-                                                                  kiePMMLDiscretizeBin3, kiePMMLDiscretizeBin4,
-                                                                  kiePMMLDiscretizeBin5);
+                                       kiePMMLDiscretizeBin3, kiePMMLDiscretizeBin4,
+                                       kiePMMLDiscretizeBin5);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class KiePMMLDiscretizeTest {
         assertThat(retrieved).isPresent();
         assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin5.getBinValue());
     }
-    
+
     private KiePMMLDiscretize getKiePMMLDiscretize(String mapMissingTo, String defaultValue) {
         Collections.shuffle(discretizeBins);
         return new KiePMMLDiscretize(NAME, Collections.emptyList(), discretizeBins, mapMissingTo, defaultValue, DATATYPE);

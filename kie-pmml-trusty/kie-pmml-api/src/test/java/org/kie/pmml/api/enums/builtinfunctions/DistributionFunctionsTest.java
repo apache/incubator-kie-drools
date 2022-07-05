@@ -224,6 +224,4 @@ public class DistributionFunctionsTest {
             DistributionFunctions.STD_NORMAL_IDF.getValue(input);
         });
     }
-
-
 }

@@ -48,7 +48,7 @@ public class KiePMMLIntervalFactoryTest {
         interval.setClosure(Interval.Closure.CLOSED_OPEN);
 
         BlockStmt retrieved = KiePMMLIntervalFactory.getIntervalVariableDeclaration(variableName,
-                interval);
+                                                                                    interval);
         String closureString =
                 CLOSURE.class.getName() + "." + CLOSURE.byName(interval.getClosure().value()).name();
         String text = getFileContent(TEST_01_SOURCE);

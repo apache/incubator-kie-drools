@@ -72,8 +72,9 @@ public class KiePMMLRowFactoryTest {
     @Test
     void getMappedValueRowVariableDeclaration() throws IOException {
         String variableName = "variableName";
-        BlockStmt retrieved = KiePMMLRowFactory.getRowVariableDeclaration(variableName,
-                MAPVALUED_ROW);
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLRowFactory.getRowVariableDeclaration(variableName,
+                                                                                                                         MAPVALUED_ROW);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
@@ -85,7 +86,7 @@ public class KiePMMLRowFactoryTest {
     void getDataEncodedRowVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLRowFactory.getRowVariableDeclaration(variableName,
-                DATAENCODED_ROW);
+                                                                          DATAENCODED_ROW);
         String text = getFileContent(TEST_02_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();

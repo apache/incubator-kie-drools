@@ -68,14 +68,14 @@ public class KiePMMLTransformationDictionaryFactoryTest {
         Statement expected = JavaParserUtils.parseBlock(text);
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLParameterField.class,
-                KiePMMLConstant.class,
-                KiePMMLFieldRef.class,
-                KiePMMLApply.class,
-                KiePMMLDerivedField.class,
-                KiePMMLDefineFunction.class,
-                KiePMMLTransformationDictionary.class,
-                Arrays.class,
-                Collections.class);
+                                               KiePMMLConstant.class,
+                                               KiePMMLFieldRef.class,
+                                               KiePMMLApply.class,
+                                               KiePMMLDerivedField.class,
+                                               KiePMMLDefineFunction.class,
+                                               KiePMMLTransformationDictionary.class,
+                                               Arrays.class,
+                                               Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 

@@ -32,7 +32,7 @@ public class KiePMMLRowTest {
     private static final String REGEX_FIELD = "regexField";
 
     static {
-        COLUMN_VALUES =  IntStream.range(0,4)
+        COLUMN_VALUES = IntStream.range(0, 4)
                 .boxed()
                 .collect(Collectors.toMap(i -> "KEY-" + i,
                                           integer -> integer));
@@ -64,14 +64,16 @@ public class KiePMMLRowTest {
     @Test
     void evaluateKeyFoundNotMatchingRegex() {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
-        Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("KEY-1", "[435345]"), "KEY-0", REGEX_FIELD);
+        Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("KEY-1", "[435345]"), "KEY-0",
+                                                         REGEX_FIELD);
         assertThat(retrieved).isNotPresent();
     }
 
     @Test
     void evaluateKeyFoundMatchingRegex() {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
-        Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("KEY-1", "[0-9]"), "KEY-0", REGEX_FIELD);
+        Optional<Object> retrieved = kiePMMLRow.evaluate(Collections.singletonMap("KEY-1", "[0-9]"), "KEY-0",
+                                                         REGEX_FIELD);
         assertThat(retrieved).isPresent();
         assertThat(retrieved.get()).isEqualTo(COLUMN_VALUES.get("KEY-0"));
     }
@@ -81,7 +83,7 @@ public class KiePMMLRowTest {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
         Map<String, Object> columnPairsMap = IntStream.range(0, 3).boxed()
                 .collect(Collectors.toMap(i -> "KEY-" + i,
-                        integer -> integer));
+                                          integer -> integer));
         columnPairsMap.put("NOT-KEY", 4);
         Optional<Object> retrieved = kiePMMLRow.evaluate(columnPairsMap, "KEY-0", null);
         assertThat(retrieved).isNotPresent();
@@ -107,7 +109,7 @@ public class KiePMMLRowTest {
         KiePMMLRow kiePMMLRow = new KiePMMLRow(COLUMN_VALUES);
         Map<String, Object> columnPairsMap = IntStream.range(0, 3).boxed()
                 .collect(Collectors.toMap(i -> "KEY-" + i,
-                        integer -> integer));
+                                          integer -> integer));
         Optional<Object> retrieved = kiePMMLRow.evaluate(columnPairsMap, "KEY-0", null);
         assertThat(retrieved).isPresent();
         assertThat(retrieved.get()).isEqualTo(COLUMN_VALUES.get("KEY-0"));

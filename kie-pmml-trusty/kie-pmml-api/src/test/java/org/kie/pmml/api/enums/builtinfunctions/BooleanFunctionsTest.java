@@ -79,7 +79,7 @@ public class BooleanFunctionsTest {
                     invalidValueTreatmentMethod,
                     null,
                     Arrays.asList(new Interval(20, 29),
-                            new Interval(41, 50)));
+                                  new Interval(41, 50)));
             boolean expected = INVALID_VALUE_TREATMENT_METHOD.AS_MISSING.equals(invalidValueTreatmentMethod);
             assertThat(BooleanFunctions.IS_MISSING.getValue(input2, referredByFieldRef)).isEqualTo(expected);
         }
