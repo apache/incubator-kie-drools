@@ -39,8 +39,8 @@ The following example DRL rule determines the age limit in a loan application de
 ----
 rule "Underage"
   when
-    /applicant[ applicantName : name, age < 21 ]
-    $application : /loanApplication[ applicant == applicantName ]
+    /applicants[ applicantName : name, age < 21 ]
+    $application : /loanApplications[ applicant == applicantName ]
   then
     $application.setApproved( false );
     $application.setExplanation( "Underage" );
@@ -110,16 +110,16 @@ declare Person
 end
 
 declare MortgageRules extends RuleUnitData
-  person: DataStream<Person> = DataSource.createStream()
+  persons: DataStream<Person> = DataSource.createStream()
 end
 
 rule "Using a rule unit with a declared type"
   when
-    $p : /person[ name == "James" ]
+    $p : /persons[ name == "James" ]
   then   // Insert Mark, who is a customer of James.
     Person mark = new Person();
     mark.setName( "Mark" );
-    person.append( mark );
+    persons.append( mark );
 end
 ----
 
@@ -147,16 +147,16 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStream;
 
 declare MortgageRules extends RuleUnitData
-  person: DataStream<Person> = DataSource.createStream()
+  persons: DataStream<Person> = DataSource.createStream()
 end
 
 rule "Using a rule unit with a declared type"
   when
-    $p : /person[ name == "James" ]
+    $p : /persons[ name == "James" ]
   then   // Insert Mark, who is a customer of James.
     Person mark = new Person();
     mark.setName( "Mark" );
-    person.append( mark );
+    persons.append( mark );
 end
 ----
 
@@ -203,13 +203,13 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStream;
 
 declare MonitoringService extends RuleUnitData
-  temperature: DataStream<Temperature> = DataSource.createStream()
+  temperatures: DataStream<Temperature> = DataSource.createStream()
   alertData: DataStream<Alert> = DataSource.createStream()
 end
 
 rule "tooHot"
 when
-    $temp : /temperature[value >= 80]
+    $temp : /temperatures[value >= 80]
 then
     alertData.append(new Alert("HIGH", "Temperature exceeds threshold: " + temp.value));
 end
@@ -228,9 +228,9 @@ Data sources are typed sources of data that rule units can subscribe to for upda
 .Example DataStream data source definition
 [source,java]
 ----
-DataStream<Temperature> temperature = DataSource.createStream();
+DataStream<Temperature> temperatures = DataSource.createStream();
 // Append value and notify all subscribers
-temperature.append(new Temperature(100));
+temperatures.append(new Temperature(100));
 ----
 
 * `DataStore`: A writable storage option for adding or removing data and then notifying all subscribers that mutable data has been modified. Rules can pattern-match against incoming values and update or remove available values.
@@ -239,15 +239,15 @@ For users familiar with {PRODUCT_DROOLS}, this option is equivalent to a typed v
 .Example DataStore data source definition
 [source,java]
 ----
-DataStore<Temperature> temperature = DataSource.createStore();
+DataStore<Temperature> temperatures = DataSource.createStore();
 Temperature temp = new Temperature(100);
 // Add value `t` and notify all subscribers
-DataHandle t = temperature.add(temp);
+DataHandle t = temperatures.add(temp);
 temp.setValue(50);
 // Notify all subscribers that the value referenced by `t` has changed
-temperature.update(t, temp);
+temperatures.update(t, temp);
 // Remove value referenced by `t` and notify all subscribers
-temperature.remove(t);
+temperatures.remove(t);
 ----
 
 * `SingletonStore`: A writable storage option for setting or clearing a single element and then notifying all subscribers that the element has been modified. Rules can pattern-match against the value and update or clear available values.
@@ -315,7 +315,7 @@ package com.acme;
 public class Alert {
     private final String severity
     private final String message;
-    public Temperature(String severity, String message) {
+    public Alert(String severity, String message) {
         this.severity = severity;
         this.message = message;
     }
@@ -333,9 +333,9 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStream;
 
 public class MonitoringService implements RuleUnitData {
-    private DataStream<Temperature> temperature = DataSource.createStream();
+    private DataStream<Temperature> temperatures = DataSource.createStream();
     private DataStream<Alert> alertData = DataSource.createStream();
-    public DataStream<Temperature> getTemperature() { return temperature; }
+    public DataStream<Temperature> getTemperatures() { return temperatures; }
     public DataStream<Alert> getAlertData() { return alertData; }
 }
 ----
@@ -350,7 +350,7 @@ unit MonitoringService;
 
 rule "tooHot"
   when
-    $temp : /temperature[value >= 80]
+    $temp : /temperatures[value >= 80]
   then
     alertData.append(new Alert("HIGH", "Temperature exceeds threshold: " + temp.value));
 end
@@ -418,7 +418,7 @@ Declarations in DRL files define new fact types or metadata for fact types to be
 [role="_abstract"]
 A declaration of a new fact does not require any metadata, but must include a list of attributes or fields. If a type declaration does not include identifying attributes, the {RULE_ENGINE} searches for an existing fact class in the classpath and raises an error if the class is missing.
 
-For example, the following DRL file contains a declaration of a new fact type `Person` from a `person` data source and uses no metadata:
+For example, the following DRL file contains a declaration of a new fact type `Person` from a `persons` data source and uses no metadata:
 
 .Example declaration of a new fact type with a rule
 [source]
@@ -431,11 +431,11 @@ end
 
 rule "Using a declared type"
   when
-    $p : /person[ name == "James" ]
+    $p : /persons[ name == "James" ]
   then   // Insert Mark, who is a customer of James.
     Person mark = new Person();
     mark.setName( "Mark" );
-    person.append( mark );
+    persons.append( mark );
 end
 ----
 
@@ -482,18 +482,18 @@ public class Person implements Serializable {
 }
 ----
 
-You can then use the generated class in your rules like any other fact, as illustrated in the previous rule example with the `Person` type declaration from a `person` data source:
+You can then use the generated class in your rules like any other fact, as illustrated in the previous rule example with the `Person` type declaration from a `persons` data source:
 
 .Example rule that uses the declared Person fact type
 [source]
 ----
 rule "Using a declared type"
   when
-    $p : /person[ name == "James" ]
+    $p : /persons[ name == "James" ]
   then   // Insert Mark, who is a customer of James.
     Person mark = new Person();
     mark.setName( "Mark" );
-    person.append( mark );
+    persons.append( mark );
 end
 ----
 
@@ -516,7 +516,7 @@ end
 
 rule "Using a declared Enum"
   when
-    $emp : /employee[ dayOff == DaysOfWeek.MONDAY ]
+    $emp : /employees[ dayOff == DaysOfWeek.MONDAY ]
   then
     ...
 end
@@ -1313,12 +1313,12 @@ OOPSegment = ID ["#" ID] ["[" ( Number | Constraints ) "]"]
 
 An _OOPath expression_ of a pattern in a DRL rule condition is the segment to be matched by the {RULE_ENGINE}. An OOPath expression can potentially match each fact that is inserted into the working memory of the {RULE_ENGINE}. It can also contain constraints to further define the facts to be matched.
 
-In the simplest form, with no constraints, an OOPath expression matches a fact in the given data source. In the following example with a `DataSource<Person>` named `person`, the expression matches against all `Person` objects in the data source of the {RULE_ENGINE}:
+In the simplest form, with no constraints, an OOPath expression matches a fact in the given data source. In the following example with a `DataSource<Person>` named `persons`, the expression matches against all `Person` objects in the data source of the {RULE_ENGINE}:
 
 .Example expression for a single fact type
 [source]
 ----
-/person
+/persons
 ----
 
 Patterns can also refer to superclasses or even interfaces, potentially matching facts from many different classes. For example, the following pattern matches all `Student` subtypes of the `Person` object:
@@ -1326,7 +1326,7 @@ Patterns can also refer to superclasses or even interfaces, potentially matching
 .Example pattern for subtypes
 [source]
 ----
-/person # Student
+/persons # Student
 ----
 
 Square brackets in a pattern enclose the constraints, such as the following constraint on the person's age:
@@ -1334,7 +1334,7 @@ Square brackets in a pattern enclose the constraints, such as the following cons
 .Example pattern with a constraint
 [source]
 ----
-/person[ age == 50 ]
+/persons[ age == 50 ]
 ----
 
 A _constraint_ is an expression that returns `true` or `false`. Constraints in DRL are essentially Java expressions with some enhancements, such as property access, and some differences, such as `equals()` and `!equals()` semantics for `==` and `!=` (instead of the usual `same` and `not same` semantics).
@@ -1344,11 +1344,11 @@ Any JavaBeans property can be accessed directly from pattern constraints. A Java
 .DRL constraint syntax with JavaBeans properties
 [source]
 ----
-/person[ age == 50 ]
+/persons[ age == 50 ]
 
 // This is equivalent to the following getter format:
 
-/person[ getAge() == 50 ]
+/persons[ getAge() == 50 ]
 ----
 
 {PRODUCT} uses the standard JDK `Introspector` class to achieve this mapping and follows the standard JavaBeans specification. For optimal {RULE_ENGINE} performance, use the property access format, such as `age`, instead of using getters explicitly, such as `getAge()`.
@@ -1383,11 +1383,11 @@ However, if the getter of a property cannot be found, the compiler uses the prop
 .Fallback method if object is not found
 [source]
 ----
-/person[ age == 50 ]
+/persons[ age == 50 ]
 
 // If `Person.getAge()` does not exist, the compiler uses the following syntax:
 
-/person[ age() == 50 ]
+/persons[ age() == 50 ]
 ----
 
 You can also nest access properties in patterns, as shown in the following example. Nested properties are indexed by the {RULE_ENGINE}.
@@ -1396,11 +1396,11 @@ You can also nest access properties in patterns, as shown in the following examp
 .Example pattern with nested property access
 [source]
 ----
-/person[ address.houseNumber == 50 ]
+/persons[ address.houseNumber == 50 ]
 
 // This is equivalent to the following expression:
 
-/person[ getAddress().getHouseNumber() == 50 ]
+/persons[ getAddress().getHouseNumber() == 50 ]
 ----
 
 // FIXME: revisit this in the future
@@ -1411,7 +1411,7 @@ You can use any Java expression that returns a `boolean` value as a constraint i
 .Example pattern with a constraint using property access and Java expression
 [source]
 ----
-/person[ age == 50 ]
+/persons[ age == 50 ]
 ----
 
 You can change the evaluation priority by using parentheses, as in any logical or mathematical expression:
@@ -1419,7 +1419,7 @@ You can change the evaluation priority by using parentheses, as in any logical o
 .Example evaluation order of constraints
 [source]
 ----
-/person[ age > 100 && ( age % 10 == 0 ) ]
+/persons[ age > 100 && ( age % 10 == 0 ) ]
 ----
 
 You can also reuse Java methods in constraints, as shown in the following example:
@@ -1427,7 +1427,7 @@ You can also reuse Java methods in constraints, as shown in the following exampl
 .Example constraints with reused Java methods
 [source]
 ----
-/person[ Math.round( weight / ( height * height ) ) < 25.0 ]
+/persons[ Math.round( weight / ( height * height ) ) < 25.0 ]
 ----
 
 [WARNING]
@@ -1438,27 +1438,27 @@ For example, do not use a pattern constraint in the following ways:
 
 [source]
 ----
-/person[ incrementAndGetAge() == 10 ] // Do not do this.
+/persons[ incrementAndGetAge() == 10 ] // Do not do this.
 ----
 
 [source]
 ----
-/person[ System.currentTimeMillis() % 1000 == 0 ] // Do not do this.
+/persons[ System.currentTimeMillis() % 1000 == 0 ] // Do not do this.
 ----
 ====
 
 Standard Java operator precedence applies to constraint operators in DRL, and DRL operators follow standard Java semantics except for the `==` and `!=` operators.
 
-The `==` operator uses null-safe `equals()` semantics instead of the usual `same` semantics. For example, the pattern `/person[ firstName == "John" ]` is similar to `java.util.Objects.equals(person.getFirstName(), "John")`, and because `"John"` is not null, the pattern is also similar to `"John".equals(person.getFirstName())`.
+The `==` operator uses null-safe `equals()` semantics instead of the usual `same` semantics. For example, the pattern `/persons[ firstName == "John" ]` is similar to `java.util.Objects.equals(person.getFirstName(), "John")`, and because `"John"` is not null, the pattern is also similar to `"John".equals(person.getFirstName())`.
 
-The `!=` operator uses null-safe `!equals()` semantics instead of the usual `not same` semantics. For example, the pattern `/person[ firstName != "John" ]` is similar to `!java.util.Objects.equals(person.getFirstName(), "John")`.
+The `!=` operator uses null-safe `!equals()` semantics instead of the usual `not same` semantics. For example, the pattern `/persons[ firstName != "John" ]` is similar to `!java.util.Objects.equals(person.getFirstName(), "John")`.
 
 If the field and the value of a constraint are of different types, the {RULE_ENGINE} uses type coercion to resolve the conflict and reduce compilation errors. For instance, if `"ten"` is provided as a string in a numeric evaluator, a compilation error occurs, whereas `"10"` is coerced to a numeric 10. In coercion, the field type always takes precedence over the value type:
 
 .Example constraint with a value that is coerced
 [source]
 ----
-/person[ age == "10" ] // "10" is coerced to 10
+/persons[ age == "10" ] // "10" is coerced to 10
 ----
 
 For groups of constraints, you can use a delimiting comma `,` to use implicit `and` connective semantics:
@@ -1467,10 +1467,10 @@ For groups of constraints, you can use a delimiting comma `,` to use implicit `a
 [source]
 ----
 // Person is at least 50 years old and weighs at least 80 kilograms:
-/person[ age > 50, weight > 80 ]
+/persons[ age > 50, weight > 80 ]
 
 // Person is at least 50 years old, weighs at least 80 kilograms, and is taller than 2 meters:
-/person[ age > 50, weight > 80, height > 2 ]
+/persons[ age > 50, weight > 80, height > 2 ]
 ----
 
 NOTE: Although the `&&` and `,` operators have the same semantics, they are resolved with different priorities. The `&&` operator precedes the `||` operator, and both the `&&` and `||` operators together precede the `,` operator. Use the comma operator at the top-level constraint for optimal {RULE_ENGINE} performance and human readability.
@@ -1481,10 +1481,10 @@ You cannot embed a comma operator in a composite constraint expression, such as 
 [source]
 ----
 // Do not use the following format:
-/person[ ( age > 50, weight > 80 ) || height > 2 ]
+/persons[ ( age > 50, weight > 80 ) || height > 2 ]
 
 // Use the following format instead:
-/person[ ( age > 50 && weight > 80 ) || height > 2 ]
+/persons[ ( age > 50 && weight > 80 ) || height > 2 ]
 ----
 
 === Bound variables in patterns and constraints
@@ -1500,7 +1500,7 @@ For example, the following DRL rule uses the variable `$p` for an OOPath express
 ----
 rule "simple rule"
   when
-    $p : /person
+    $p : /persons
   then
     System.out.println( "Person " + p );
 end
@@ -1511,9 +1511,9 @@ Similarly, you can also bind variables to nested properties, as shown in the fol
 [source]
 ----
 // Two persons of the same age:
-/person[ firstAge : age ]  // Binding
+/persons[ firstAge : age ]  // Binding
 and
-/person[ age == firstAge ] // Constraint expression
+/persons[ age == firstAge ] // Constraint expression
 ----
 
 [NOTE]
@@ -1523,10 +1523,10 @@ Ensure that you separate constraint bindings and constraint expressions for clea
 [source]
 ----
 // Do not use the following format:
-/person[ age : age * 2 < 100 ]
+/persons[ age : age * 2 < 100 ]
 
 // Use the following format instead:
-/person[ age * 2 < 100, $age : age ]
+/persons[ age * 2 < 100, $age : age ]
 ----
 ====
 
@@ -1553,7 +1553,7 @@ In some cases, you might need to access multiple properties of a nested object, 
 .Example pattern to access multiple properties
 [source]
 ----
-/person[ name == "mark", address.city == "london", address.country == "uk" ]
+/persons[ name == "mark", address.city == "london", address.country == "uk" ]
 ----
 
 You can group these property accessors to nested objects for more readable rules, as shown in the following example:
@@ -1561,7 +1561,7 @@ You can group these property accessors to nested objects for more readable rules
 .Example pattern with grouped constraints
 [source]
 ----
-/person[ name == "mark"]/address[ city == "london", country == "uk" ]
+/persons[ name == "mark"]/address[ city == "london", country == "uk" ]
 ----
 
 When you work with nested objects, you can use the syntax `__TYPE__#__SUB_TYPE__` to cast to a subtype and make the getters from the parent type available to the subtype. You can use either the object name or fully qualified class name, and you can cast to one or multiple subtypes, as shown in the following examples:
@@ -1570,13 +1570,13 @@ When you work with nested objects, you can use the syntax `__TYPE__#__SUB_TYPE__
 [source]
 ----
 // Inline casting with subtype name:
-/person[ name == "mark"]/address#LongAddress[ country == "uk" ]
+/persons[ name == "mark"]/address#LongAddress[ country == "uk" ]
 
 // Inline casting with fully qualified class name:
-/person[ name == "mark"]/address#org.domain.LongAddress[ country == "uk" ]
+/persons[ name == "mark"]/address#org.domain.LongAddress[ country == "uk" ]
 
 // Multiple inline casts:
-/person[ name == "mark" ]/address#LongAddress/country#DetailedCountry[ population > 10000000 ]
+/persons[ name == "mark" ]/address#LongAddress/country#DetailedCountry[ population > 10000000 ]
 ----
 
 These example patterns cast `Address` to `LongAddress`, and additionally to `DetailedCountry` in the last example, making the parent getters available to the subtypes in each case.
@@ -1598,7 +1598,7 @@ By default, the {RULE_ENGINE} supports the date format `dd-mmm-yyyy`. You can cu
 .Example pattern with a date literal restriction
 [source]
 ----
-/person[ bornBefore < "27-Oct-2009" ]
+/persons[ bornBefore < "27-Oct-2009" ]
 ----
 
 === Auto-boxing and primitive types
@@ -1728,23 +1728,23 @@ Use the `/` operator to group property accessors to nested objects, and use the 
 [source]
 ----
 // Ungrouped property accessors:
-/person[ name == "mark", address.city == "london", address.country == "uk" ]
+/persons[ name == "mark", address.city == "london", address.country == "uk" ]
 
 // Grouped property accessors:
-/person[ name == "mark"]/address[ city == "london", country == "uk" ]
+/persons[ name == "mark"]/address[ city == "london", country == "uk" ]
 ----
 
 .Example constraints with inline casting to a subtype
 [source]
 ----
 // Inline casting with subtype name:
-/person[ name == "mark", address#LongAddress.country == "uk" ]
+/persons[ name == "mark", address#LongAddress.country == "uk" ]
 
 // Inline casting with fully qualified class name:
-/person[ name == "mark", address#org.domain.LongAddress.country == "uk" ]
+/persons[ name == "mark", address#org.domain.LongAddress.country == "uk" ]
 
 // Multiple inline casts:
-/person[ name == "mark", address#LongAddress.country#DetailedCountry.population > 10000000 ]
+/persons[ name == "mark", address#LongAddress.country#DetailedCountry.population > 10000000 ]
 ----
 --
 
@@ -1755,11 +1755,11 @@ Use this operator to dereference a property in a null-safe way. The value to the
 .Example constraint with null-safe dereferencing
 [source]
 ----
-/person[ $streetName : address!.street ]
+/persons[ $streetName : address!.street ]
 
 // This is internally rewritten in the following way:
 
-/person[ address != null, $streetName : address.street ]
+/persons[ address != null, $streetName : address.street ]
 ----
 --
 
@@ -1771,10 +1771,10 @@ Use this operator to access a `List` value by index or a `Map` value by key.
 [source]
 ----
 // The following format is the same as `childList(0).getAge() == 18`:
-/person[childList[0].age == 18]
+/persons[childList[0].age == 18]
 
 // The following format is the same as `credentialMap.get("jdoe").isValid()`:
-/person[credentialMap["jdoe"].valid]
+/persons[credentialMap["jdoe"].valid]
 ----
 --
 
@@ -1785,9 +1785,9 @@ Use these operators on properties with natural ordering. For example, for `Date`
 .Example constraints with `before` operator
 [source]
 ----
-/person[ birthDate < $otherBirthDate ]
+/persons[ birthDate < $otherBirthDate ]
 
-/person[ firstName < $otherFirstName ]
+/persons[ firstName < $otherFirstName ]
 ----
 --
 
@@ -1798,7 +1798,7 @@ Use these operators as `equals()` and `!equals()` methods in constraints, instea
 .Example constraint with null-safe equality
 [source]
 ----
-/person[ firstName == "John" ]
+/persons[ firstName == "John" ]
 
 // This is similar to the following formats:
 
@@ -1809,7 +1809,7 @@ java.util.Objects.equals(person.getFirstName(), "John")
 .Example constraint with null-safe not equality
 [source]
 ----
-/person[ firstName != "John" ]
+/persons[ firstName != "John" ]
 
 // This is similar to the following format:
 
@@ -1825,13 +1825,13 @@ Use these operators to create an abbreviated combined relation condition that ad
 [source]
 ----
 // Simple abbreviated combined relation condition using a single `&&`:
-/person[age > 30 && < 40]
+/persons[age > 30 && < 40]
 
 // Complex abbreviated combined relation using groupings:
-/person[age ((> 30 && < 40) || (> 20 && < 25))]
+/persons[age ((> 30 && < 40) || (> 20 && < 25))]
 
 // Mixing abbreviated combined relation with constraint connectives:
-/person[age > 30 && < 40 || location == "london"]
+/persons[age > 30 && < 40 || location == "london"]
 ----
 
 .Abbreviated combined relation condition
@@ -1848,9 +1848,9 @@ Use these operators to indicate that a field matches or does not match a specifi
 .Example constraint to match or not match a regular expression
 [source]
 ----
-/person[ country matches "(USA)?\\S*UK" ]
+/persons[ country matches "(USA)?\\S*UK" ]
 
-/person[ country not matches "(USA)?\\S*UK" ]
+/persons[ country not matches "(USA)?\\S*UK" ]
 ----
 --
 
@@ -1877,15 +1877,15 @@ Use these operators to verify whether a field that is an `Array` or a `Collectio
 [source]
 ----
 // Sting literal with a specified field:
-/person[ fullName contains "Jr" ]
+/persons[ fullName contains "Jr" ]
 
-/person[ fullName not contains "Jr" ]
+/persons[ fullName not contains "Jr" ]
 
 
 // String literal with a variable:
-/person[ fullName contains $var ]
+/persons[ fullName contains $var ]
 
-/person[ fullName not contains $var ]
+/persons[ fullName not contains $var ]
 ----
 
 NOTE: For backward compatibility, the `excludes` operator is a supported synonym for `not contains`.
@@ -1913,7 +1913,7 @@ Use this operator to verify whether a word has almost the same sound, using Engl
 [source]
 ----
 // Match firstName "Jon" or "John":
-/person[ firstName soundslike "John" ]
+/persons[ firstName soundslike "John" ]
 ----
 --
 
@@ -1925,13 +1925,13 @@ Use this operator to verify whether a field that is a `String` starts with or en
 [source]
 ----
 // Verify what the String starts with:
-/message[ routingValue str[startsWith] "R1" ]
+/messages[ routingValue str[startsWith] "R1" ]
 
 // Verify what the String ends with:
-/message[ routingValue str[endsWith] "R2" ]
+/messages[ routingValue str[endsWith] "R2" ]
 
 // Verify the length of the String:
-/message[ routingValue str[length] 17 ]
+/messages[ routingValue str[length] 17 ]
 ----
 --
 
@@ -1945,11 +1945,11 @@ image::language-reference/compoundValueRestriction.png[align="center"]
 .Example constraints with `in` and `notin`
 [source]
 ----
-/person[ $color : favoriteColor ]
-/color[ type in ( "red", "blue", $color ) ]
+/persons[ $color : favoriteColor ]
+/colors[ type in ( "red", "blue", $color ) ]
 
-/person[ $color : favoriteColor ]
-/color[ type notin ( "red", "blue", $color ) ]
+/persons[ $color : favoriteColor ]
+/colors[ type notin ( "red", "blue", $color ) ]
 ----
 --
 
@@ -2049,17 +2049,17 @@ image::language-reference/prefixAnd.png[align="center"]
 [source]
 ----
 //Infix `and`:
-colorType: /color/type and /person[ favoriteColor == colorType ]
+colorType: /colors/type and /persons[ favoriteColor == colorType ]
 
 //Infix `and` with grouping:
-(colorType: /color/type and (/person[ favoriteColor == colorType ] or /person[ favoriteColor == colorType ])
+(colorType: /colors/type and (/persons[ favoriteColor == colorType ] or /persons[ favoriteColor == colorType ])
 
 // Prefix `and`:
-(and colorType: /color/type /person[ favoriteColor == colorType ])
+(and colorType: /colors/type /persons[ favoriteColor == colorType ])
 
 // Default implicit `and`:
-colorType: /color/type
-/person[ favoriteColor == colorType ]
+colorType: /colors/type
+/persons[ favoriteColor == colorType ]
 ----
 
 [NOTE]
@@ -2070,7 +2070,7 @@ Do not use a leading declaration binding with the `and` keyword (as you can with
 [source]
 ----
 // Causes compile error:
-$person : (/person[ name == "Romeo" ] and /person[ name == "Juliet"])
+$person : (/persons[ name == "Romeo" ] and /persons[ name == "Juliet"])
 ----
 ====
 --
@@ -2090,22 +2090,22 @@ image::language-reference/prefixOr.png[align="center"]
 [source]
 ----
 //Infix `or`:
-colorType: /color/type or /person[ favoriteColor == colorType]
+colorType: /colors/type or /persons[ favoriteColor == colorType]
 
 //Infix `or` with grouping:
-colorType: /color/type or (/person[ favoriteColor == colorType] and /person[ favoriteColor == colorType])
+colorType: /colors/type or (/persons[ favoriteColor == colorType] and /persons[ favoriteColor == colorType])
 
 // Prefix `or`:
-(or colorType: /color/type /person[ favoriteColor == colorType])
+(or colorType: /colors/type /persons[ favoriteColor == colorType])
 ----
 
 .Example patterns with `or` and pattern binding
 [source]
 ----
-pensioner : ( /person[ sex == "f", age > 60 ] or /person[ sex == "m", age > 65 ] )
+pensioner : ( /persons[ sex == "f", age > 60 ] or /persons[ sex == "m", age > 65 ] )
 
-(or pensioner : /person[ sex == "f", age > 60 ]
-    pensioner : /person[ sex == "m", age > 65 ])
+(or pensioner : /persons[ sex == "f", age > 60 ]
+    pensioner : /persons[ sex == "m", age > 65 ])
 ----
 
 The behavior of the `or` condition element is different from the connective `||` operator for constraints and restrictions in field constraints. The {RULE_ENGINE} does not directly interpret the `or` element but uses logical transformations to rewrite a rule with `or` as a number of sub-rules. This process ultimately results in a rule that has a single `or` as the root node and one sub-rule for each of its condition elements. Each sub-rule is activated and executed like any normal rule, with no special behavior or interaction between the sub-rules.
@@ -2123,12 +2123,12 @@ image::language-reference/exists.png[align="center"]
 .Example patterns with `exists`
 [source]
 ----
-exists /person[ firstName == "John"]
+exists /persons[ firstName == "John"]
 
-exists (/person[ firstName == "John", age == 42 ])
+exists (/persons[ firstName == "John", age == 42 ])
 
-exists (/person[ firstName == "John" ] and
-        /person[ lastName == "Doe" ])
+exists (/persons[ firstName == "John" ] and
+        /persons[ lastName == "Doe" ])
 ----
 --
 
@@ -2142,12 +2142,12 @@ image::language-reference/not.png[align="center"]
 .Example patterns with `not`
 [source]
 ----
-not /person[ firstName == "John"]
+not /persons[ firstName == "John"]
 
-not (/person[ firstName == "John", age == 42 )]
+not (/persons[ firstName == "John", age == 42 )]
 
-not (/person[ firstName == "John" ] and
-     /person[ lastName == "Doe" ])
+not (/persons[ firstName == "John" ] and
+     /persons[ lastName == "Doe" ])
 ----
 --
 
@@ -2163,8 +2163,8 @@ image::language-reference/forall.png[align="center"]
 ----
 rule "All full-time employees have red ID badges"
   when
-    forall( $emp : /employee[ type == "fulltime" ]
-                   /employee[ this == $emp, badgeColor = "red" ] )
+    forall( $emp : /employees[ type == "fulltime" ]
+                   /employees[ this == $emp, badgeColor = "red" ] )
   then
     // True, all full-time employees have red ID badges.
 end
@@ -2179,7 +2179,7 @@ To state that all facts of a given type in the working memory of the {RULE_ENGIN
 ----
 rule "All full-time employees have red ID badges"
   when
-    forall( /employee[ badgeColor = "red" ] )
+    forall( /employees[ badgeColor = "red" ] )
   then
     // True, all full-time employees have red ID badges.
 end
@@ -2192,7 +2192,7 @@ You can use `forall` constructs with multiple patterns or nest them with other c
 ----
 rule "All employees have health and dental care programs"
   when
-    forall( $emp : /employee
+    forall( $emp : /employees
             /healthCare[ employee == $emp ]
             /dentalCare[ employee == $emp ]
           )
@@ -2206,7 +2206,7 @@ end
 ----
 rule "Not all employees have health and dental care"
   when
-    not ( forall( $emp : /employee
+    not ( forall( $emp : /employees
             /healthCare[ employee == $emp ]
             /dentalCare[ employee == $emp ] )
         )
@@ -2253,8 +2253,8 @@ In the following example rule, `min`, `max`, and `average` are `accumulate` func
 ----
 rule "Raise alarm"
   when
-    s : /sensor
-    accumulate( /reading( sensor == $s, $temp : temperature );
+    s : /sensors
+    accumulate( /readings( sensor == $s, $temp : temperature );
                 $min : min( $temp ),
                 $max : max( $temp ),
                 $avg : average( $temp );
@@ -2271,8 +2271,8 @@ The following example rule uses the `average` function with `accumulate` to calc
 ----
 rule "Average profit"
   when
-    $order : /order
-    accumulate( /orderItem( order == $order, $cost : cost, $price : price );
+    $order : /orders
+    accumulate( /orderItems( order == $order, $cost : cost, $price : price );
                 $avgProfit : average( 1 - $cost / $price ) )
   then
     // Average profit for `$order` is `$avgProfit`.
@@ -2385,8 +2385,8 @@ import accumulate AverageAccumulateFunction.AverageData average
 
 rule "Average profit"
   when
-    $order : /order
-    accumulate( /orderItem[ order == $order, $cost : cost, $price : price ];
+    $order : /orders
+    accumulate( /orderItems[ order == $order, $cost : cost, $price : price ];
                 $avgProfit : average( 1 - $cost / $price ) )
   then
     // Average profit for `$order` is `$avgProfit`.
@@ -2597,7 +2597,7 @@ image::language-reference/WhenPart.png[align="center"]
 == Rule actions in DRL
 
 [role="_abstract"]
-The `then` part of the rule (also known as the _Right Hand Side (RHS)_ of the rule) contains the actions to be performed when the conditional part of the rule has been met. Rule actions are typically determined by one or more _data sources_ that you define as part of your DRL rule unit. For example, if a bank requires loan applicants to have over 21 years of age (with a rule condition `/applicant[ applicantName : name, age < 21 ]`) and a loan applicant is under 21 years old, the `then` action of an `"Underage"` rule would be `setApproved( false )` based on a defined data source, declining the loan because the applicant is under age.
+The `then` part of the rule (also known as the _Right Hand Side (RHS)_ of the rule) contains the actions to be performed when the conditional part of the rule has been met. Rule actions are typically determined by one or more _data sources_ that you define as part of your DRL rule unit. For example, if a bank requires loan applicants to have over 21 years of age (with a rule condition `/applicants[ applicantName : name, age < 21 ]`) and a loan applicant is under 21 years old, the `then` action of an `"Underage"` rule would be `setApproved( false )` based on a defined data source, declining the loan because the applicant is under age.
 
 The main purpose of rule actions is to to insert, delete, or modify data in the working memory of the {RULE_ENGINE}. Effective rule actions are small, declarative, and readable. If you need to use imperative or conditional code in rule actions, then divide the rule into multiple smaller and more declarative rules.
 
@@ -2606,8 +2606,8 @@ The main purpose of rule actions is to to insert, delete, or modify data in the 
 ----
 rule "Underage"
   when
-    /applicant[ applicantName : name, age < 21 ]
-    $application : /loanApplication[ applicant == applicantName ]
+    /applicants[ applicantName : name, age < 21 ]
+    $application : /loanApplications[ applicant == applicantName ]
   then
     $application.setApproved( false );
     $application.setExplanation( "Underage" );
@@ -2735,8 +2735,8 @@ DRL supports single-line comments prefixed with a double forward slash `//` and 
 rule "Underage"
   // This is a single-line comment.
   when
-    /applicant[ applicantName : name, age < 21 ]  // This is an in-line comment
-    $application : /loanApplication[ applicant == applicantName ]
+    /applicants[ applicantName : name, age < 21 ]  // This is an in-line comment
+    $application : /loanApplications[ applicant == applicantName ]
   then
     /* This is a multi-line comment
     in the rule actions. */
@@ -2776,8 +2776,8 @@ Indicates that the parser reached a decision point but could not identify an alt
 ----
 1: rule "simple rule"
 2:   when
-3:     exists /person
-4:     exits /student  // Must be `exists`
+3:     exists /persons
+4:     exits /students  // Must be `exists`
 5:   then
 6: end
 ----
@@ -2813,7 +2813,7 @@ In this example, the parser encountered the keyword `when` but expected the rule
 ----
 1: rule "simple rule"
 2:   when
-3:     /student[ name == "Andy ]  // Must be `"Andy"`
+3:     /students[ name == "Andy ]  // Must be `"Andy"`
 4:   then
 5: end
 ----
@@ -2837,7 +2837,7 @@ Indicates that the parser expected a particular symbol that is missing at the cu
 ----
 1: rule "simple rule"
 2:   when
-3:     $p : /person[
+3:     $p : /persons[
         // Must be a complete rule statement
 ----
 
@@ -2856,7 +2856,7 @@ NOTE: A line and column value of `0:-1` means the parser reached the end of the 
 2:
 3: rule "Wrong syntax"
 4:   when
-5:     not /car[ ( type == "tesla", price == 10000 ) || ( type == "kia", price == 1000 ) ]
+5:     not /cars[ ( type == "tesla", price == 10000 ) || ( type == "kia", price == 1000 ) ]
        // Must use `&&` operators instead of commas `,`
 6:   then
 7:     System.out.println("OK");
@@ -2890,7 +2890,7 @@ Indicates that a validating semantic predicate evaluated to `false`. These seman
  7:
  8: rule "test something"
  9:   when
-10:     $p: /person[ name=="Michael" ]
+10:     $p: /persons[ name=="Michael" ]
 11:   then
 12:     $p.name = "other";
 13:     System.out.println(p.name);
@@ -2907,27 +2907,6 @@ The `Some text` line is invalid because it does not begin with or is not a part 
 
 NOTE: This error is similar to `102: mismatched input`, but usually involves DRL keywords.
 
---
-
-104: trailing semi-colon not allowed::
-Indicates that an `eval()` clause in a rule condition uses a semicolon `;` but must not use one.
-+
---
-.Example rule with `eval()` and trailing semicolon
-[source]
-----
-1: rule "simple rule"
-2:   when
-3:     eval( abc(); )  // Must not use semicolon `;`
-4:   then
-5: end
-----
-
-.Error message
-[source]
-----
-[ERR 104] Line 3:4 trailing semi-colon not allowed in rule "simple rule"
-----
 --
 
 105: did not match anything::
@@ -3032,7 +3011,7 @@ import org.acme.Person;
 
 rule isAdult
 	when
-		$person: /person[ age > 18 ]
+		$person: /persons[ age > 18 ]
 	then
     modify($person) {
     	setAdult(true)
@@ -3257,7 +3236,7 @@ Example: a rule to apply a 10% discount on orders over $100 could be written in 
 ----
 rule "Apply 10% discount to orders over US$ 100,00"
 when
-    $order : /order
+    $order : /orders
     $total : Number( doubleValue > 100 )
              from accumulate( OrderItem( order == $order, $value : value ),
                               sum( $value ) )
@@ -3408,39 +3387,6 @@ end
 ----
 --
 
-`eval`::
-The conditional element `eval` is essentially a catch-all which allows any semantic code (that returns a primitive boolean) to be executed.
-This code can refer to variables that were bound in the conditions of the rule and functions in the rule package.
-Overuse of `eval` reduces the declarativeness of your rules and can result in a poorly performing {RULE_ENGINE}.
-While `eval` can be used anywhere in the patterns, it is typically added as the last conditional element in the conditions of a rule.
-+
---
-.Eval
-image::language-reference/eval.png[align="center"]
-
-Instances of `eval` cannot be indexed and thus are not as efficient as Field Constraints.
-However this makes them ideal for being used when functions return values that change over time, which is not allowed within Field Constraints.
-
-For those who are familiar with {PRODUCT} 2.x lineage, the old {PRODUCT} parameter and condition tags are equivalent to binding a variable to an appropriate type, and then using it in an `eval` node.
-
-[source]
-----
-p1 : Parameter()
-p2 : Parameter()
-eval( p1.getList().containsKey( p2.getItem() ) )
-----
-
-{empty}
-
-[source]
-----
-p1 : Parameter()
-p2 : Parameter()
-// call function isValid in the LHS
-eval( isValid( p1, p2 ) )
-----
---
-
 [id="proc-drl-rules-central-create_{context}"]
 == Creating DRL rules for your {PRODUCT} project
 
@@ -3483,31 +3429,31 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStream;
 
 declare MortgageRules extends RuleUnitData
-  bankruptcy: DataStore<Bankruptcy> = DataSource.createStore()
-  applicant: DataStore<Applicant> = DataSource.createStore()
-  application: DataStore<LoanApplication> = DataSource.createStore()
+  bankruptcies: DataStore<Bankruptcy> = DataSource.createStore()
+  applicants: DataStore<Applicant> = DataSource.createStore()
+  loanApplications: DataStore<LoanApplication> = DataSource.createStore()
 end
 
 rule "Bankruptcy history"
 	salience 10
 	when
-    $a : /loanApplication[ applicantName: applicant ]
-    exists (/bankruptcy[ name == applicantName, yearOfOccurrence > 1990 || amountOwed > 100000 ])
+    $a : /loanApplications[ applicantName: applicant ]
+    exists (/bankruptcies[ name == applicantName, yearOfOccurrence > 1990 || amountOwed > 100000 ])
 	then
 		$a.setApproved( false );
 		$a.setExplanation( "has been bankrupt" );
-		loanApplication.remove( $a );
+		loanApplications.remove( $a );
 end
 
 rule "Underage"
 	salience 15
 	when
-    /applicant[ applicantName : name, age < 21 ]
-    $application : /loanApplication[ applicant == applicantName ]
+    /applicants[ applicantName : name, age < 21 ]
+    $application : /loanApplications[ applicant == applicantName ]
 	then
 		$application.setApproved( false );
 		$application.setExplanation( "Underage" );
-		loanApplication.remove( $a );
+		loanApplications.remove( $a );
 end
 ----
 
@@ -3562,9 +3508,9 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 
 declare MortgageRules extends RuleUnitData
-  bankruptcy: DataStore<Bankruptcy> = DataSource.createStore()
-  applicant: DataStore<Applicant> = DataSource.createStore()
-  application: DataStore<LoanApplication> = DataSource.createStore()
+  bankruptcies: DataStore<Bankruptcy> = DataSource.createStore()
+  applicants: DataStore<Applicant> = DataSource.createStore()
+  loanApplications: DataStore<LoanApplication> = DataSource.createStore()
 end
 ...
 ----
@@ -3588,31 +3534,31 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStream;
 
 declare MortgageRules extends RuleUnitData
-  bankruptcy: DataStore<Bankruptcy> = DataSource.createStore()
-  applicant: DataStore<Applicant> = DataSource.createStore()
-  application: DataStore<LoanApplication> = DataSource.createStore()
+  bankruptcies: DataStore<Bankruptcy> = DataSource.createStore()
+  applicants: DataStore<Applicant> = DataSource.createStore()
+  loanApplications: DataStore<LoanApplication> = DataSource.createStore()
 end
 
 rule "Bankruptcy history"
 	salience 10
 	when
-    $a : /loanApplication[ applicantName: applicant ]
-    exists (/bankruptcy[ name == applicantName, yearOfOccurrence > 1990 || amountOwed > 100000 ])
+    $a : /loanApplications[ applicantName: applicant ]
+    exists (/bankruptcies[ name == applicantName, yearOfOccurrence > 1990 || amountOwed > 100000 ])
 	then
 		$a.setApproved( false );
 		$a.setExplanation( "has been bankrupt" );
-		loanApplication.remove( $a );
+		loanApplications.remove( $a );
 end
 
 rule "Underage"
 	salience 15
 	when
-    /applicant[ applicantName : name, age < 21 ]
-    $application : /loanApplication[ applicant == applicantName ]
+    /applicants[ applicantName : name, age < 21 ]
+    $application : /loanApplications[ applicant == applicantName ]
 	then
 		$application.setApproved( false );
 		$application.setExplanation( "Underage" );
-		loanApplication.remove( $a );
+		loanApplications.remove( $a );
 end
 ----
 
