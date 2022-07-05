@@ -15,11 +15,6 @@
  */
 package org.kie.efesto.runtimemanager.api.listener;
 
-public interface EfestoListener<T extends EfestoStep> {
+public interface EfestoListener {
 
-    /**
-     * Method invoked when an <code>EfestoStep</code> is executed
-     * @param step
-     */
-    void stepExecuted(T step);
 }

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.common.utils.StringUtils;
+import org.kie.efesto.common.utils.PackageClassNameUtils;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
@@ -183,7 +183,7 @@ public class PMMLCompilerService {
         if (sourcePath == null || sourcePath.isEmpty()) {
             throw new IllegalArgumentException("Missing required sourcePath in resource " + resource + " -> " + resource.getClass().getName());
         }
-        return StringUtils.getFactoryClassNamePackageName(PMML_STRING, sourcePath);
+        return PackageClassNameUtils.getFactoryClassNamePackageName(PMML_STRING, sourcePath);
     }
 
     /**

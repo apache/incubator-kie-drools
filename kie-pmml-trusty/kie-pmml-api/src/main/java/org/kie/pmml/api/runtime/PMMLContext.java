@@ -23,7 +23,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.models.PMMLStep;
 
-public interface PMMLContext extends EfestoContext<PMMLStep, PMMLListener> {
+public interface PMMLContext extends EfestoContext<PMMLListener> {
 
     PMMLRequestData getRequestData();
 

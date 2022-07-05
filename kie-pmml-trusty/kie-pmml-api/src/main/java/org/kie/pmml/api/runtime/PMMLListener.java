@@ -18,6 +18,14 @@ package org.kie.pmml.api.runtime;
 import org.kie.efesto.runtimemanager.api.listener.EfestoListener;
 import org.kie.pmml.api.models.PMMLStep;
 
-public interface PMMLListener extends EfestoListener<PMMLStep> {
+public interface PMMLListener extends EfestoListener {
+
+
+
+    /**
+     * Method invoked when an <code>    void stepExecuted(PMMLStep step);</code> is executed
+     * @param step
+     */
+    void stepExecuted(PMMLStep step);
 
 }

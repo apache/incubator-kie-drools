@@ -16,6 +16,7 @@
 package org.kie.efesto.runtimemanager.api.utils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -52,8 +53,8 @@ public class SPIUtils {
     public static <S, U, T extends EfestoInput<S>, E extends EfestoOutput<U>> List<KieRuntimeService<S, U, T, E>> getKieRuntimeServices(boolean refresh) {
         logger.debug("getKieRuntimeServices {}", refresh);
         List<KieRuntimeService<S, U, T, E>> toReturn = new ArrayList<>();
-        Iterable<KieRuntimeService<S, U, T, E>> services = getServices(refresh);
-        services.forEach(toReturn::add);
+        Iterator<KieRuntimeService> services = getServices(refresh);
+        services.forEachRemaining(toReturn::add);
         logger.debug("toReturn {} {}", toReturn, toReturn.size());
         if (logger.isTraceEnabled()) {
             toReturn.forEach(provider -> logger.trace("{}", provider));
@@ -70,11 +71,11 @@ public class SPIUtils {
     }
 
     @SuppressWarnings({"raw", "unchecked"})
-    private static <S, U, T extends EfestoInput<S>, E extends EfestoOutput<U>> Iterable<KieRuntimeService<S, U, T, E>> getServices(boolean refresh) {
+    private static <S, U, T extends EfestoInput<S>, E extends EfestoOutput<U>> Iterator<KieRuntimeService> getServices(boolean refresh) {
         if (refresh) {
             kieRuntimeServiceLoader.reload();
         }
-        return (Iterable<KieRuntimeService<S, U, T, E>>) kieRuntimeServiceLoader.iterator();
+        return kieRuntimeServiceLoader.iterator();
     }
 
     private static Iterable<RuntimeManager> getManagers(boolean refresh) {
