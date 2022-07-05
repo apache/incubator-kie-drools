@@ -18,22 +18,21 @@ package org.drools.scenariosimulation.backend.runner.model;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValueWrapperTest {
 
     @Test
     public void orElse() {
-        assertEquals((Integer) 1, ValueWrapper.of(1).orElse(3));
-        assertEquals(3, ValueWrapper.errorWithValidValue(null, null).orElse(3));
-        assertNull(ValueWrapper.of(null).orElse(3));
+        assertThat(ValueWrapper.of(1).orElse(3)).isEqualTo((Integer) 1);
+        assertThat(ValueWrapper.errorWithValidValue(null, null).orElse(3)).isEqualTo(3);
+        assertThat(ValueWrapper.of(null).orElse(3)).isNull();
     }
 
     @Test
     public void orElseGet() {
-        assertEquals((Integer) 1, ValueWrapper.of(1).orElseGet(() -> 3));
-        assertEquals(3, ValueWrapper.errorWithValidValue(null, null).orElseGet(() -> 3));
-        assertNull(ValueWrapper.of(null).orElseGet(() -> 3));
+        assertThat(ValueWrapper.of(1).orElseGet(() -> 3)).isEqualTo((Integer) 1);
+        assertThat(ValueWrapper.errorWithValidValue(null, null).orElseGet(() -> 3)).isEqualTo(3);
+        assertThat(ValueWrapper.of(null).orElseGet(() -> 3)).isNull();
     }
 }

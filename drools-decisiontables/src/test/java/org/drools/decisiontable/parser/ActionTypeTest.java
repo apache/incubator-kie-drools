@@ -18,11 +18,10 @@ package org.drools.decisiontable.parser;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
+import org.drools.decisiontable.parser.ActionType.Code;
 import org.junit.Test;
-import org.drools.decisiontable.parser.ActionType;
-import static org.drools.decisiontable.parser.ActionType.Code;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ActionTypeTest {
 
