@@ -56,6 +56,7 @@ pipeline {
         stage('Build optaplanner') {
             steps {
                 script {
+                    maven.mvnCompareDependencies(getBasicMavenCommand(optaplannerRepo), 'io.quarkus:quarkus-bom:999-SNAPSHOT', ':optaplanner-build-parent', true, true)
                     getMavenCommand(optaplannerRepo)
                         .withProperty('maven.test.failure.ignore', true)
                         .run('clean install')
@@ -126,13 +127,17 @@ void checkoutQuarkusRepo() {
     }
 }
 
-MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
-    def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
+MavenCommand getBasicMavenCommand(String directory) {
+    return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId('kogito_release_settings')
+                .inDirectory(directory)
+}
+
+MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
+    def mvnCmd = getBasicMavenCommand(directory)
                 // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
                 // https://github.com/quarkusio/quarkus/issues/23205
                 .withProperty('quarkus.bootstrap.effective-model-builder', true)
-                .inDirectory(directory)
     if (addQuarkusVersion) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
     }
