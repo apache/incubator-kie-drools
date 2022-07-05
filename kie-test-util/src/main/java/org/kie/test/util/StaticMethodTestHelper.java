@@ -16,8 +16,6 @@
 package org.kie.test.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -61,13 +59,12 @@ public class StaticMethodTestHelper {
             codeLocStr = codeLocUrl.toURI().toString();
             if( codeLocStr.endsWith(".jar") ) {
                 Matcher jarLocMatcher = jarLocRegex.matcher(codeLocStr);
-                assertTrue( "Regex for code (jar) location did not match location!",
-                        jarLocMatcher.matches() && jarLocMatcher.groupCount() >= 2);
+                assertThat(jarLocMatcher.matches() && jarLocMatcher.groupCount() >= 2).as("Regex for code (jar) location did not match location!").isTrue();
                 projVersionStr = jarLocMatcher.group(1);
             } else {
                 codeLocStr = codeLocStr.replace("target/classes/", "pom.xml");
                 File pomFile = new File(new URI(codeLocStr));
-                assertTrue( codeLocStr + " does not exist!", pomFile.exists() );
+                assertThat(pomFile.exists()).as(codeLocStr + " does not exist!").isTrue();
                 Reader reader = null;
                 try {
                     reader = new FileReader(pomFile);
