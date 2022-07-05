@@ -21,8 +21,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,7 +34,7 @@ public class DATA_TYPETest {
     private Map<DATA_TYPE, Object> unconvertedValues;
     private Map<DATA_TYPE, Object> convertedValues;
 
-    @Before
+    @BeforeEach
     public void setup() {
         unconvertedValues = new HashMap<>();
         unconvertedValues.put(DATA_TYPE.STRING, "_string_");
@@ -75,7 +75,7 @@ public class DATA_TYPETest {
     }
 
     @Test
-    public void getActualValue() {
+    void getActualValue() {
         unconvertedValues.forEach((dataType, o) -> assertThat(dataType.getActualValue(o)).isEqualTo(o));
         convertedValues.forEach((dataType, o) -> {
             switch (dataType) {

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.data.Offset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -57,7 +57,7 @@ public class KiePMMLAggregateFunctionTest {
     }
 
     @Test
-    public void testNames() {
+    void testNames() {
         assertThat(enumByName(KiePMMLAggregateFunction.class, "euclidean")).isEqualTo(EUCLIDEAN);
         assertThat(enumByName(KiePMMLAggregateFunction.class, "squaredEuclidean")).isEqualTo(SQUARED_EUCLIDEAN);
         assertThat(enumByName(KiePMMLAggregateFunction.class, "chebychev")).isEqualTo(CHEBYCHEV);
@@ -70,7 +70,7 @@ public class KiePMMLAggregateFunctionTest {
     }
 
     @Test
-    public void testApply() {
+    void testApply() {
         assertThat(EUCLIDEAN.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
                 .isEqualTo(euclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST), DOUBLE_OFFSET);
         assertThat(SQUARED_EUCLIDEAN.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
@@ -92,12 +92,12 @@ public class KiePMMLAggregateFunctionTest {
     }
 
     @Test
-    public void testEuclidean() {
+    void testEuclidean() {
         assertThat(euclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST)).isEqualTo(5.0, DOUBLE_OFFSET);
     }
 
     @Test
-    public void testSquaredEuclidean() {
+    void testSquaredEuclidean() {
         assertThat(squaredEuclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST)).isEqualTo(25.0, DOUBLE_OFFSET);
     }
 

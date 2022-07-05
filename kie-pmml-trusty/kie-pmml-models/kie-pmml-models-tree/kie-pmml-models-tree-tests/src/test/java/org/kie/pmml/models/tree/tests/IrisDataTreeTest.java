@@ -6,17 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.data.Percentage;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class IrisDataTreeTest extends AbstractPMMLTest {
 
     private static final Percentage TOLERANCE_PERCENTAGE = Percentage.withPercentage(0.000001);
@@ -37,7 +35,7 @@ public class IrisDataTreeTest extends AbstractPMMLTest {
     private double probabilityVersicolor;
     private double probabilityVirginica;
 
-    public IrisDataTreeTest(double sepalLength, double sepalWidth, double petalLength,
+    public void initIrisDataTreeTest(double sepalLength, double sepalWidth, double petalLength,
                             double petalWidth,
                             String expectedResult,
                             double probabilitySetosa,
@@ -53,12 +51,11 @@ public class IrisDataTreeTest extends AbstractPMMLTest {
         this.probabilityVirginica = probabilityVirginica;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {6.9, 3.1, 5.1, 2.3, "virginica", 0.0, 0.021739130434782608, 0.9782608695652174},
@@ -69,8 +66,10 @@ public class IrisDataTreeTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testIrisTree() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testIrisTree(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String expectedResult, double probabilitySetosa, double probabilityVersicolor, double probabilityVirginica) {
+        initIrisDataTreeTest(sepalLength, sepalWidth, petalLength, petalWidth, expectedResult, probabilitySetosa, probabilityVersicolor, probabilityVirginica);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("Sepal.Length", sepalLength);
         inputData.put("Sepal.Width", sepalWidth);

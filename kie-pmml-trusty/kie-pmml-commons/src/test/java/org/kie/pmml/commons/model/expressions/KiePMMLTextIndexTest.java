@@ -27,7 +27,7 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.assertj.core.data.Offset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.COUNT_HITS;
 import org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -59,7 +59,7 @@ public class KiePMMLTextIndexTest {
     private static final String FIELD_NAME = "FIELD_NAME";
 
     @Test
-    public void evaluateNoTextIndex0Normalizations() {
+    void evaluateNoTextIndex0Normalizations() {
         // <Constant>brown fox</Constant>
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0, null);
         List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, TEXT_0));
@@ -88,7 +88,7 @@ public class KiePMMLTextIndexTest {
     }
 
     @Test
-    public void evaluateTextIndex0Normalizations() {
+    void evaluateTextIndex0Normalizations() {
         // <Constant>brown fox</Constant>
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0, null);
         List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME,
@@ -118,7 +118,7 @@ public class KiePMMLTextIndexTest {
     }
 
     @Test
-    public void evaluateTextIndex1Normalizations() {
+    void evaluateTextIndex1Normalizations() {
         // <TextIndexNormalization inField="string" outField="stem" regexField="regex">
         //        <InlineTable>
         //          <row>
@@ -156,7 +156,7 @@ public class KiePMMLTextIndexTest {
         KiePMMLInlineTable inlineTable0 = new KiePMMLInlineTable("inlineTable0", Collections.emptyList(),
                                                                  Arrays.asList(row0_0, row0_1, row0_2));
         KiePMMLTextIndexNormalization indexNormalization0 = KiePMMLTextIndexNormalization.builder(
-                "indexNormalization0", Collections.emptyList())
+                        "indexNormalization0", Collections.emptyList())
                 .withInField("string")
                 .withOutField("stem")
                 .withRegexField("regex")
@@ -180,7 +180,7 @@ public class KiePMMLTextIndexTest {
         KiePMMLInlineTable inlineTable1 = new KiePMMLInlineTable("inlineTable1", Collections.emptyList(),
                                                                  Collections.singletonList(row1_0));
         KiePMMLTextIndexNormalization indexNormalization1 = KiePMMLTextIndexNormalization.builder(
-                "indexNormalization1", Collections.emptyList())
+                        "indexNormalization1", Collections.emptyList())
                 .withInField("re")
                 .withOutField("feature")
                 .withRegexField("regex")
@@ -199,7 +199,7 @@ public class KiePMMLTextIndexTest {
                 .build();
 
         List<KiePMMLNameValue> kiePMMLNameValues = Arrays.asList(new KiePMMLNameValue("term",
-                                                                                                  TERM_1),
+                                                                                      TERM_1),
                                                                  new KiePMMLNameValue("reviewText",
                                                                                       NOT_NORMALIZED_TEXT_1));
         ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
@@ -207,7 +207,7 @@ public class KiePMMLTextIndexTest {
     }
 
     @Test
-    public void evaluateRawTokenize() {
+    void evaluateRawTokenize() {
         LevenshteinDistance levenshteinDistance = new LevenshteinDistance(2);
         double frequency = 3.0;
         double logarithmic = Math.log10(1 + frequency);
@@ -220,16 +220,16 @@ public class KiePMMLTextIndexTest {
         expectedResults.put(LOGARITHMIC, logarithmic);
         expectedResults.put(AUGMENTED_NORMALIZED_TERM_FREQUENCY, augmentedNormalizedTermFrequency);
         expectedResults.forEach((localTermWeights, expected) -> {
-			double evaluateRaw = KiePMMLTextIndex.evaluateRaw(true,
-															  true,
+            double evaluateRaw = KiePMMLTextIndex.evaluateRaw(true,
+                                                              true,
                                                               TERM_0,
                                                               TEXT_0,
                                                               "\\s+",
                                                               localTermWeights,
                                                               COUNT_HITS.ALL_HITS,
                                                               levenshteinDistance);
-			assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
-		});
+            assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
+        });
         //---
         maxFrequency = 3;
         augmentedNormalizedTermFrequency = 0.5 * (1 + (frequency / (double) maxFrequency)); // cast
@@ -240,16 +240,16 @@ public class KiePMMLTextIndexTest {
         expectedResults.put(LOGARITHMIC, logarithmic);
         expectedResults.put(AUGMENTED_NORMALIZED_TERM_FREQUENCY, augmentedNormalizedTermFrequency);
         expectedResults.forEach((localTermWeights, expected) -> {
-			double evaluateRaw = KiePMMLTextIndex.evaluateRaw(false,
-			                              true,
-			                              TERM_0,
-			                              TEXT_0,
-			                              "\\s+",
-			                              localTermWeights,
-			                              COUNT_HITS.ALL_HITS,
-			                              levenshteinDistance);
-			assertThat(evaluateRaw).isCloseTo(expected,  Offset.offset(0.0000001));
-		});
+            double evaluateRaw = KiePMMLTextIndex.evaluateRaw(false,
+                                                              true,
+                                                              TERM_0,
+                                                              TEXT_0,
+                                                              "\\s+",
+                                                              localTermWeights,
+                                                              COUNT_HITS.ALL_HITS,
+                                                              levenshteinDistance);
+            assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
+        });
         //---
         frequency = 4.0;
         logarithmic = Math.log10(1 + frequency);
@@ -261,20 +261,20 @@ public class KiePMMLTextIndexTest {
         expectedResults.put(LOGARITHMIC, logarithmic);
         expectedResults.put(AUGMENTED_NORMALIZED_TERM_FREQUENCY, augmentedNormalizedTermFrequency);
         expectedResults.forEach((localTermWeights, expected) -> {
-			double evaluateRaw = KiePMMLTextIndex.evaluateRaw(false,
-			                              true,
-			                              TERM_0,
-			                              TEXT_0,
-			                              "[\\s\\-]",
-			                              localTermWeights,
-			                              COUNT_HITS.ALL_HITS,
-			                              levenshteinDistance);
-			assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
-		});
+            double evaluateRaw = KiePMMLTextIndex.evaluateRaw(false,
+                                                              true,
+                                                              TERM_0,
+                                                              TEXT_0,
+                                                              "[\\s\\-]",
+                                                              localTermWeights,
+                                                              COUNT_HITS.ALL_HITS,
+                                                              levenshteinDistance);
+            assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
+        });
     }
 
     @Test
-    public void evaluateRawNoTokenize() {
+    void evaluateRawNoTokenize() {
         LevenshteinDistance levenshteinDistance = new LevenshteinDistance(2);
         Map<LOCAL_TERM_WEIGHTS, Double> expectedResults = new HashMap<>();
         double frequency = 3.0;
@@ -287,16 +287,16 @@ public class KiePMMLTextIndexTest {
         expectedResults.put(LOGARITHMIC, logarithmic);
         expectedResults.put(AUGMENTED_NORMALIZED_TERM_FREQUENCY, augmentedNormalizedTermFrequency);
         expectedResults.forEach((localTermWeights, expected) -> {
-			double evaluateRaw = KiePMMLTextIndex.evaluateRaw(true,
-			                              false,
-			                              TERM_0,
-			                              TEXT_0,
-			                              "\\s+",
-			                              localTermWeights,
-			                              COUNT_HITS.ALL_HITS,
-			                              levenshteinDistance);
-			assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
-		});
+            double evaluateRaw = KiePMMLTextIndex.evaluateRaw(true,
+                                                              false,
+                                                              TERM_0,
+                                                              TEXT_0,
+                                                              "\\s+",
+                                                              localTermWeights,
+                                                              COUNT_HITS.ALL_HITS,
+                                                              levenshteinDistance);
+            assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
+        });
         //---
         maxFrequency = 3;
         augmentedNormalizedTermFrequency = 0.5 * (1 + (frequency / (double) maxFrequency)); // cast
@@ -307,16 +307,16 @@ public class KiePMMLTextIndexTest {
         expectedResults.put(LOGARITHMIC, logarithmic);
         expectedResults.put(AUGMENTED_NORMALIZED_TERM_FREQUENCY, augmentedNormalizedTermFrequency);
         expectedResults.forEach((localTermWeights, expected) -> {
-			double evaluateRaw = KiePMMLTextIndex.evaluateRaw(false,
-			                              false,
-			                              TERM_0,
-			                              TEXT_0,
-			                              "\\s+",
-			                              localTermWeights,
-			                              COUNT_HITS.ALL_HITS,
-			                              levenshteinDistance);
-			assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
-		});
+            double evaluateRaw = KiePMMLTextIndex.evaluateRaw(false,
+                                                              false,
+                                                              TERM_0,
+                                                              TEXT_0,
+                                                              "\\s+",
+                                                              localTermWeights,
+                                                              COUNT_HITS.ALL_HITS,
+                                                              levenshteinDistance);
+            assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
+        });
         //---
         frequency = 3.0;
         logarithmic = Math.log10(1 + frequency);
@@ -328,20 +328,20 @@ public class KiePMMLTextIndexTest {
         expectedResults.put(LOGARITHMIC, logarithmic);
         expectedResults.put(AUGMENTED_NORMALIZED_TERM_FREQUENCY, augmentedNormalizedTermFrequency);
         expectedResults.forEach((localTermWeights, expected) -> {
-			double evaluateRaw = KiePMMLTextIndex.evaluateRaw(false,
-			                              false,
-			                              TERM_0,
-			                              TEXT_0,
-			                              "[\\s\\-]",
-			                              localTermWeights,
-			                              COUNT_HITS.ALL_HITS,
-			                              levenshteinDistance);
-			assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
-		});
+            double evaluateRaw = KiePMMLTextIndex.evaluateRaw(false,
+                                                              false,
+                                                              TERM_0,
+                                                              TEXT_0,
+                                                              "[\\s\\-]",
+                                                              localTermWeights,
+                                                              COUNT_HITS.ALL_HITS,
+                                                              levenshteinDistance);
+            assertThat(evaluateRaw).isCloseTo(expected, Offset.offset(0.0000001));
+        });
     }
 
     @Test
-    public void evaluateAugmentedNormalizedTermFrequency() {
+    void evaluateAugmentedNormalizedTermFrequency() {
         Map<Integer, String> source = new HashMap<>();
         int maxFrequency = 23;
         source.put(maxFrequency, "aword");
@@ -359,7 +359,7 @@ public class KiePMMLTextIndexTest {
     }
 
     @Test
-    public void evaluateLevenshteinDistanceAllHits() {
+    void evaluateLevenshteinDistanceAllHits() {
         String wordSeparatorCharacterRE = "\\s+"; // brown-foxy does not match
         Pattern pattern = Pattern.compile(wordSeparatorCharacterRE);
         List<String> terms = KiePMMLTextIndex.splitText(TERM_0, pattern);
@@ -384,7 +384,7 @@ public class KiePMMLTextIndexTest {
     }
 
     @Test
-    public void evaluateLevenshteinDistanceBestHits() {
+    void evaluateLevenshteinDistanceBestHits() {
         String wordSeparatorCharacterRE = "\\s+"; // brown-foxy does not match
         Pattern pattern = Pattern.compile(wordSeparatorCharacterRE);
         List<String> terms = KiePMMLTextIndex.splitText("The", pattern);
@@ -409,7 +409,7 @@ public class KiePMMLTextIndexTest {
     }
 
     @Test
-    public void evaluateLevenshteinDistanceSplitText() {
+    void evaluateLevenshteinDistanceSplitText() {
         String toSearch = "brown fox";
         String toScan = "brown fox";
         LevenshteinDistance levenshteinDistance = new LevenshteinDistance(0);
@@ -435,7 +435,7 @@ public class KiePMMLTextIndexTest {
     }
 
     @Test
-    public void splitText() {
+    void splitText() {
         final Pattern unwantedPattern = Pattern.compile("[^a-zA-Z0-9 ]");
         final Pattern wantedPattern = Pattern.compile("[a-zA-Z0-9]");
         Pattern pattern = Pattern.compile("\\s+");
@@ -468,7 +468,7 @@ public class KiePMMLTextIndexTest {
         KiePMMLInlineTable inlineTable1 = new KiePMMLInlineTable("inlineTable1", Collections.emptyList(),
                                                                  Arrays.asList(row0, row1));
         KiePMMLTextIndexNormalization indexNormalization1 = KiePMMLTextIndexNormalization.builder(
-                "indexNormalization1", Collections.emptyList())
+                        "indexNormalization1", Collections.emptyList())
                 .withKiePMMLInlineTable(inlineTable1)
                 .withRecursive(true)
                 .build();
@@ -480,7 +480,7 @@ public class KiePMMLTextIndexTest {
         KiePMMLInlineTable inlineTable2 = new KiePMMLInlineTable("inlineTable2", Collections.emptyList(),
                                                                  Collections.singletonList(row2));
         KiePMMLTextIndexNormalization indexNormalization2 = KiePMMLTextIndexNormalization.builder(
-                "indexNormalization2", Collections.emptyList())
+                        "indexNormalization2", Collections.emptyList())
                 .withKiePMMLInlineTable(inlineTable2)
                 .withRecursive(true)
                 .build();

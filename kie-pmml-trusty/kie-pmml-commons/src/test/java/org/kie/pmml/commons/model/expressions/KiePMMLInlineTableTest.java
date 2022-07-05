@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,14 +44,15 @@ public class KiePMMLInlineTableTest {
     }
 
     @Test
-    public void evaluateKeyNotFound() {
+    void evaluateKeyNotFound() {
         KiePMMLInlineTable kiePMMLInlineTable = new KiePMMLInlineTable("name", Collections.emptyList(), ROWS);
-        Optional<Object> retrieved = kiePMMLInlineTable.evaluate(Collections.singletonMap("NOT-KEY", 0), "KEY-0-0", null);
+        Optional<Object> retrieved = kiePMMLInlineTable.evaluate(Collections.singletonMap("NOT-KEY", 0), "KEY-0-0",
+                                                                 null);
         assertThat(retrieved).isNotPresent();
     }
 
     @Test
-    public void evaluateKeyFoundNotMatching() {
+    void evaluateKeyFoundNotMatching() {
         KiePMMLInlineTable kiePMMLInlineTable = new KiePMMLInlineTable("name", Collections.emptyList(), ROWS);
         Optional<Object> retrieved = kiePMMLInlineTable.evaluate(Collections.singletonMap("KEY-1-1", 435345), "KEY-0" +
                 "-0", null);
@@ -59,15 +60,16 @@ public class KiePMMLInlineTableTest {
     }
 
     @Test
-    public void evaluateKeyFoundMatching() {
+    void evaluateKeyFoundMatching() {
         KiePMMLInlineTable kiePMMLInlineTable = new KiePMMLInlineTable("name", Collections.emptyList(), ROWS);
-        Optional<Object> retrieved = kiePMMLInlineTable.evaluate(Collections.singletonMap("KEY-1-1", "VALUE-1-1"), "KEY-1-2", null);
+        Optional<Object> retrieved = kiePMMLInlineTable.evaluate(Collections.singletonMap("KEY-1-1", "VALUE-1-1"),
+                                                                 "KEY-1-2", null);
         assertThat(retrieved).isPresent();
         assertThat(retrieved.get()).isEqualTo("VALUE-1-2");
     }
 
     @Test
-    public void evaluateKeyFoundMultipleNotMatching() {
+    void evaluateKeyFoundMultipleNotMatching() {
         KiePMMLInlineTable kiePMMLInlineTable = new KiePMMLInlineTable("name", Collections.emptyList(), ROWS);
         Map<String, Object> columnPairsMap = IntStream.range(0, 2).boxed()
                 .collect(Collectors.toMap(i -> "KEY-1-" + i,
@@ -78,7 +80,7 @@ public class KiePMMLInlineTableTest {
     }
 
     @Test
-    public void evaluateKeyFoundMultipleMatching() {
+    void evaluateKeyFoundMultipleMatching() {
         KiePMMLInlineTable kiePMMLInlineTable = new KiePMMLInlineTable("name", Collections.emptyList(), ROWS);
         Map<String, Object> columnPairsMap = IntStream.range(0, 3).boxed()
                 .collect(Collectors.toMap(i -> "KEY-1-" + i,

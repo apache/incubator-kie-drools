@@ -51,6 +51,10 @@
           <groupId>ch.qos.logback</groupId>
           <artifactId>logback-core</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>

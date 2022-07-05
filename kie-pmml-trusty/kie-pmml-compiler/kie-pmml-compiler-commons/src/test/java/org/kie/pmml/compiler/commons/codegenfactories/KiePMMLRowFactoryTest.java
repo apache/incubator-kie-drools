@@ -29,8 +29,8 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.MapValues;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Row;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLRow;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
@@ -50,7 +50,7 @@ public class KiePMMLRowFactoryTest {
     private static Row MAPVALUED_ROW;
     private static Row DATAENCODED_ROW;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         PMML pmmlModel = KiePMMLUtil.load(getFileInputStream(TRANSFORMATIONS_SAMPLE), TRANSFORMATIONS_SAMPLE);
         DerivedField mapValued = pmmlModel.getTransformationDictionary()
@@ -70,10 +70,11 @@ public class KiePMMLRowFactoryTest {
     }
 
     @Test
-    public void getMappedValueRowVariableDeclaration() throws IOException {
+    void getMappedValueRowVariableDeclaration() throws IOException {
         String variableName = "variableName";
-        BlockStmt retrieved = KiePMMLRowFactory.getRowVariableDeclaration(variableName,
-                                                                          MAPVALUED_ROW);
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLRowFactory.getRowVariableDeclaration(variableName,
+                                                                                                                         MAPVALUED_ROW);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
@@ -82,7 +83,7 @@ public class KiePMMLRowFactoryTest {
     }
 
     @Test
-    public void getDataEncodedRowVariableDeclaration() throws IOException {
+    void getDataEncodedRowVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLRowFactory.getRowVariableDeclaration(variableName,
                                                                           DATAENCODED_ROW);

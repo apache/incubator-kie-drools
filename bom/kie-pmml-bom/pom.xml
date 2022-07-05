@@ -473,6 +473,12 @@
         <artifactId>kie-pmml-models-tests</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-tests</artifactId>
+        <classifier>tests</classifier>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Regression -->
       <dependency>
         <groupId>org.kie</groupId>

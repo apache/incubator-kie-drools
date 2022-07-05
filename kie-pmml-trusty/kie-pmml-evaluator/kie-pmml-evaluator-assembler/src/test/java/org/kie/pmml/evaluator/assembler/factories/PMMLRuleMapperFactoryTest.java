@@ -16,14 +16,14 @@
 
 package org.kie.pmml.evaluator.assembler.factories;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PMMLRuleMapperFactoryTest {
 
     @Test
-    public void getPredictionRuleMapperSourceWithoutPackage() {
+    void getPredictionRuleMapperSourceWithoutPackage() {
         final String fullRuleName = "FULL_RULE_NAME";
         String retrieved = PMMLRuleMapperFactory.getPMMLRuleMapperSource(fullRuleName);
         assertThat(retrieved).isNotNull();
@@ -32,7 +32,7 @@ public class PMMLRuleMapperFactoryTest {
     }
 
     @Test
-    public void getPredictionRuleMapperSourceWithPackage() {
+    void getPredictionRuleMapperSourceWithPackage() {
         final String packageName = "PACKAGE";
         final String ruleName = "RULE_NAME";
         final String fullRuleName = packageName + "." + ruleName;

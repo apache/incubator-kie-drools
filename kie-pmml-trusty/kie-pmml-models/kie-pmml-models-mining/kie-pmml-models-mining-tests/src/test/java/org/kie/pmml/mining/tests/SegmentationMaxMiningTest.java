@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SegmentationMaxMiningTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "segmentationMaxMining.pmml";
@@ -43,18 +41,17 @@ public class SegmentationMaxMiningTest extends AbstractPMMLTest {
     private double y;
     private double result;
 
-    public SegmentationMaxMiningTest(double x, double y, double result) {
+    public void initSegmentationMaxMiningTest(double x, double y, double result) {
         this.x = x;
         this.y = y;
         this.result = result;
     }
 
-    @Before
+    @BeforeEach
     public void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {0, 0, 50},
@@ -65,8 +62,10 @@ public class SegmentationMaxMiningTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testSegmentationMedianMiningTest() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSegmentationMedianMiningTest(double x, double y, double result) {
+        initSegmentationMaxMiningTest(x, y, result);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);

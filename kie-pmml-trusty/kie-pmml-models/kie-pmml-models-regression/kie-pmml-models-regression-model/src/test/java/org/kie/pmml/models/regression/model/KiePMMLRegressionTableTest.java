@@ -22,16 +22,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
 import org.kie.pmml.api.runtime.PMMLContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(Parameterized.class)
 public class KiePMMLRegressionTableTest {
 
     private static final String TARGET_FIELD = "TARGET_FIELD";
@@ -41,14 +39,14 @@ public class KiePMMLRegressionTableTest {
     private static final String SECOND_CATEGORICAL_INPUT = "SECOND_CATEGORICAL_INPUT";
     private static final SerializableFunction<Double, Double> FIRST_NUMERIC_FUNCTION = aDouble -> 1 / aDouble;
     private static final SerializableFunction<Double, Double> SECOND_NUMERIC_FUNCTION = aDouble -> 1 - aDouble;
-    private final KiePMMLRegressionTable regressionTable;
-    private final SerializableFunction<String, Double> firstCategoricalFunction;
-    private final SerializableFunction<String, Double> secondCategoricalFunction;
-    private final double firstNumericalInput;
-    private final double secondNumericalInput;
-    private final double expectedResult;
+    private KiePMMLRegressionTable regressionTable;
+    private SerializableFunction<String, Double> firstCategoricalFunction;
+    private SerializableFunction<String, Double> secondCategoricalFunction;
+    private double firstNumericalInput;
+    private double secondNumericalInput;
+    private double expectedResult;
 
-    public KiePMMLRegressionTableTest(double firstNumericalInput,
+    public void initKiePMMLRegressionTableTest(double firstNumericalInput,
                                       double secondNumericalInput,
                                       double firstCategoricalResult,
                                       double secondCategoricalResult,
@@ -61,7 +59,6 @@ public class KiePMMLRegressionTableTest {
         regressionTable = getKiePMMLRegressionTable();
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {36.2, 11.2, 24.5, 13.2, 27.527624309392266},
@@ -70,8 +67,10 @@ public class KiePMMLRegressionTableTest {
         });
     }
 
-    @Test
-    public void evaluateRegression() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void evaluateRegression(double firstNumericalInput, double secondNumericalInput, double firstCategoricalResult, double secondCategoricalResult, double expectedResult) {
+        initKiePMMLRegressionTableTest(firstNumericalInput, secondNumericalInput, firstCategoricalResult, secondCategoricalResult, expectedResult);
         Map<String, Object> input = new HashMap<>();
         input.put(FIRST_NUMERIC_INPUT, firstNumericalInput);
         input.put(SECOND_NUMERIC_INPUT, secondNumericalInput);

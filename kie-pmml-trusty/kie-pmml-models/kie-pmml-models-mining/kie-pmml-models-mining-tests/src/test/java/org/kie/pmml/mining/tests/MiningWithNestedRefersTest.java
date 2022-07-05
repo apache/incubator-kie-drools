@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MiningWithNestedRefersTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "MiningWithNestedRefers.pmml";
@@ -56,7 +54,7 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
     private double pVersicolor;
     private double pVirginica;
 
-    public MiningWithNestedRefersTest(float sLen,
+    public void initMiningWithNestedRefersTest(float sLen,
                                       float sWid,
                                       float pLen,
                                       float pWid,
@@ -74,12 +72,11 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
 //                {6.9f, 3.1f, 5.1f, 2.3f, 0.04871813890555572, 0.04509596950852268, 0.9061858915859216, "virginica"},
@@ -90,8 +87,10 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testMiningWithNestedRefers() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testMiningWithNestedRefers(float sLen, float sWid, float pLen, float pWid, double pSetosa, double pVersicolor, double pVirginica, String expectedResult) throws Exception {
+        initMiningWithNestedRefersTest(sLen, sWid, pLen, pWid, pSetosa, pVersicolor, pVirginica, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put(S_LEN, sLen);
         inputData.put(S_WID, sWid);

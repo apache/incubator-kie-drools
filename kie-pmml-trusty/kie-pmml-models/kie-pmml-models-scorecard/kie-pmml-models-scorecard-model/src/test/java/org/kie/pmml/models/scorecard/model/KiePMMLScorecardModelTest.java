@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
@@ -44,16 +44,16 @@ public class KiePMMLScorecardModelTest {
     private static final Double value2 = 5.0;
 
     @Test
-    public void evaluate() {
+    void evaluate() {
         Double initialScore = 25.23;
         PMMLContextTest pmmlContextTest = new PMMLContextTest();
         KiePMMLScorecardModel kiePMMLScorecardModel = new KiePMMLScorecardModel(MODEL_NAME,
-                                                                                Collections.emptyList(),
-                                                                                getKiePMMLCharacteristics(),
-                                                                                initialScore,
-                                                                                true,
-                                                                                REASONCODE_ALGORITHM.POINTS_BELOW,
-                                                                                0);
+                Collections.emptyList(),
+                getKiePMMLCharacteristics(),
+                initialScore,
+                true,
+                REASONCODE_ALGORITHM.POINTS_BELOW,
+                0);
         Object retrieved = kiePMMLScorecardModel.evaluate(null, Collections.emptyMap(), pmmlContextTest);
         assertThat(retrieved).isNotNull();
 

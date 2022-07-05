@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.enums.CLOSURE;
@@ -50,6 +50,7 @@ import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class PreProcessTest {
 
@@ -62,13 +63,13 @@ public class PreProcessTest {
     private static final Double value2 = 5.0;
 
     @Test
-    public void convertInputDataConvertibles() {
+    void convertInputDataConvertibles() {
         List<KiePMMLMiningField> miningFields = IntStream.range(0, 3).mapToObj(i -> {
-                    DATA_TYPE dataType = DATA_TYPE.values()[i];
-                    return KiePMMLMiningField.builder("FIELD-" + i, null)
-                            .withDataType(dataType)
-                            .build();
-                })
+            DATA_TYPE dataType = DATA_TYPE.values()[i];
+            return KiePMMLMiningField.builder("FIELD-" + i, null)
+                    .withDataType(dataType)
+                    .build();
+        })
                 .collect(Collectors.toList());
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
         pmmlRequestData.addRequestParam("FIELD-0", 123);
@@ -84,25 +85,27 @@ public class PreProcessTest {
         assertThat(mappedRequestParams.get("FIELD-2").getValue()).isEqualTo(1.23f);
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void convertInputDataNotConvertibles() {
-        List<KiePMMLMiningField> miningFields = IntStream.range(0, 3).mapToObj(i -> {
-                    DATA_TYPE dataType = DATA_TYPE.values()[i];
-                    new MiningField("FIELD-" + i, null, null, dataType, null, null, null, null, null, null);
-                    return KiePMMLMiningField.builder("FIELD-" + i, null)
-                            .withDataType(dataType)
-                            .build();
-                })
-                .collect(Collectors.toList());
-        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
-        pmmlRequestData.addRequestParam("FIELD-0", 123);
-        pmmlRequestData.addRequestParam("FIELD-1", true);
-        pmmlRequestData.addRequestParam("FIELD-2", "123");
-        PreProcess.convertInputData(miningFields, pmmlRequestData);
+    @Test
+    void convertInputDataNotConvertibles() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            List<KiePMMLMiningField> miningFields = IntStream.range(0, 3).mapToObj(i -> {
+                DATA_TYPE dataType = DATA_TYPE.values()[i];
+                new MiningField("FIELD-" + i, null, null, dataType, null, null, null, null, null, null);
+                return KiePMMLMiningField.builder("FIELD-" + i, null)
+                        .withDataType(dataType)
+                        .build();
+            })
+                    .collect(Collectors.toList());
+            PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+            pmmlRequestData.addRequestParam("FIELD-0", 123);
+            pmmlRequestData.addRequestParam("FIELD-1", true);
+            pmmlRequestData.addRequestParam("FIELD-2", "123");
+            PreProcess.convertInputData(miningFields, pmmlRequestData);
+        });
     }
 
     @Test
-    public void verifyFixInvalidValuesNotInvalid() {
+    void verifyFixInvalidValuesNotInvalid() {
         KiePMMLMiningField miningField0 = KiePMMLMiningField.builder("FIELD-0", null)
                 .withDataType(DATA_TYPE.STRING)
                 .withAllowedValues(Arrays.asList("123", "124", "125"))
@@ -112,7 +115,7 @@ public class PreProcessTest {
                 .withAllowedValues(Arrays.asList("1.23", "12.4", "1.25"))
                 .build();
         List<KiePMMLInterval> intervals = Arrays.asList(new KiePMMLInterval(0.0, 12.4, CLOSURE.CLOSED_CLOSED),
-                                                        new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
+                new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
         KiePMMLMiningField miningField2 = KiePMMLMiningField.builder("FIELD-2", null)
                 .withDataType(DATA_TYPE.DOUBLE)
                 .withIntervals(intervals)
@@ -131,36 +134,38 @@ public class PreProcessTest {
         PreProcess.verifyFixInvalidValues(miningFields, pmmlRequestData);
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void verifyFixInvalidValuesInvalidReturnInvalid() {
-        KiePMMLMiningField miningField0 = KiePMMLMiningField.builder("FIELD-0", null)
-                .withDataType(DATA_TYPE.STRING)
-                .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID)
-                .withAllowedValues(Arrays.asList("123", "124", "125"))
-                .build();
-        KiePMMLMiningField miningField1 = KiePMMLMiningField.builder("FIELD-1", null)
-                .withDataType(DATA_TYPE.DOUBLE)
-                .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID)
-                .withAllowedValues(Arrays.asList("1.23", "12.4", "1.25"))
-                .build();
-        List<KiePMMLInterval> intervals = Arrays.asList(new KiePMMLInterval(0.0, 12.4, CLOSURE.CLOSED_CLOSED),
-                                                        new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
-        KiePMMLMiningField miningField2 = KiePMMLMiningField.builder("FIELD-2", null)
-                .withDataType(DATA_TYPE.DOUBLE)
-                .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID)
-                .withIntervals(intervals)
-                .build();
-        List<KiePMMLMiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
+    @Test
+    void verifyFixInvalidValuesInvalidReturnInvalid() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            KiePMMLMiningField miningField0 = KiePMMLMiningField.builder("FIELD-0", null)
+                    .withDataType(DATA_TYPE.STRING)
+                    .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID)
+                    .withAllowedValues(Arrays.asList("123", "124", "125"))
+                    .build();
+            KiePMMLMiningField miningField1 = KiePMMLMiningField.builder("FIELD-1", null)
+                    .withDataType(DATA_TYPE.DOUBLE)
+                    .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID)
+                    .withAllowedValues(Arrays.asList("1.23", "12.4", "1.25"))
+                    .build();
+            List<KiePMMLInterval> intervals = Arrays.asList(new KiePMMLInterval(0.0, 12.4, CLOSURE.CLOSED_CLOSED),
+                    new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
+            KiePMMLMiningField miningField2 = KiePMMLMiningField.builder("FIELD-2", null)
+                    .withDataType(DATA_TYPE.DOUBLE)
+                    .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID)
+                    .withIntervals(intervals)
+                    .build();
+            List<KiePMMLMiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
 
-        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
-        pmmlRequestData.addRequestParam("FIELD-0", "122");
-        pmmlRequestData.addRequestParam("FIELD-1", 12.5);
-        pmmlRequestData.addRequestParam("FIELD-2", 14.6);
-        PreProcess.verifyFixInvalidValues(miningFields, pmmlRequestData);
+            PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+            pmmlRequestData.addRequestParam("FIELD-0", "122");
+            pmmlRequestData.addRequestParam("FIELD-1", 12.5);
+            pmmlRequestData.addRequestParam("FIELD-2", 14.6);
+            PreProcess.verifyFixInvalidValues(miningFields, pmmlRequestData);
+        });
     }
 
     @Test
-    public void verifyFixInvalidValuesInvalidAsMissing() {
+    void verifyFixInvalidValuesInvalidAsMissing() {
         KiePMMLMiningField miningField0 = KiePMMLMiningField.builder("FIELD-0", null)
                 .withDataType(DATA_TYPE.STRING)
                 .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_MISSING)
@@ -172,7 +177,7 @@ public class PreProcessTest {
                 .withAllowedValues(Arrays.asList("1.23", "12.4", "1.25"))
                 .build();
         List<KiePMMLInterval> intervals = Arrays.asList(new KiePMMLInterval(0.0, 12.4, CLOSURE.CLOSED_CLOSED),
-                                                        new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
+                new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
         KiePMMLMiningField miningField2 = KiePMMLMiningField.builder("FIELD-2", null)
                 .withDataType(DATA_TYPE.DOUBLE)
                 .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_MISSING)
@@ -189,7 +194,7 @@ public class PreProcessTest {
     }
 
     @Test
-    public void verifyFixInvalidValuesInvalidAsValueWithReplacement() {
+    void verifyFixInvalidValuesInvalidAsValueWithReplacement() {
         KiePMMLMiningField miningField0 = KiePMMLMiningField.builder("FIELD-0", null)
                 .withDataType(DATA_TYPE.STRING)
                 .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
@@ -203,7 +208,7 @@ public class PreProcessTest {
                 .withAllowedValues(Arrays.asList("1.23", "12.4", "1.25"))
                 .build();
         List<KiePMMLInterval> intervals = Arrays.asList(new KiePMMLInterval(0.0, 12.4, CLOSURE.CLOSED_CLOSED),
-                                                        new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
+                new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
         KiePMMLMiningField miningField2 = KiePMMLMiningField.builder("FIELD-2", null)
                 .withDataType(DATA_TYPE.DOUBLE)
                 .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
@@ -222,36 +227,38 @@ public class PreProcessTest {
         assertThat(mappedRequestParams.get("FIELD-2").getValue()).isEqualTo(12.3);
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void verifyFixInvalidValuesInvalidAsValueWithoutReplacement() {
-        KiePMMLMiningField miningField0 = KiePMMLMiningField.builder("FIELD-0", null)
-                .withDataType(DATA_TYPE.STRING)
-                .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
-                .withAllowedValues(Arrays.asList("123", "124", "125"))
-                .build();
-        KiePMMLMiningField miningField1 = KiePMMLMiningField.builder("FIELD-1", null)
-                .withDataType(DATA_TYPE.DOUBLE)
-                .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
-                .withAllowedValues(Arrays.asList("1.23", "12.4", "1.25"))
-                .build();
-        List<KiePMMLInterval> intervals = Arrays.asList(new KiePMMLInterval(0.0, 12.4, CLOSURE.CLOSED_CLOSED),
-                                                        new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
-        KiePMMLMiningField miningField2 = KiePMMLMiningField.builder("FIELD-2", null)
-                .withDataType(DATA_TYPE.DOUBLE)
-                .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
-                .withIntervals(intervals)
-                .build();
-        List<KiePMMLMiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
+    @Test
+    void verifyFixInvalidValuesInvalidAsValueWithoutReplacement() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            KiePMMLMiningField miningField0 = KiePMMLMiningField.builder("FIELD-0", null)
+                    .withDataType(DATA_TYPE.STRING)
+                    .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
+                    .withAllowedValues(Arrays.asList("123", "124", "125"))
+                    .build();
+            KiePMMLMiningField miningField1 = KiePMMLMiningField.builder("FIELD-1", null)
+                    .withDataType(DATA_TYPE.DOUBLE)
+                    .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
+                    .withAllowedValues(Arrays.asList("1.23", "12.4", "1.25"))
+                    .build();
+            List<KiePMMLInterval> intervals = Arrays.asList(new KiePMMLInterval(0.0, 12.4, CLOSURE.CLOSED_CLOSED),
+                    new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
+            KiePMMLMiningField miningField2 = KiePMMLMiningField.builder("FIELD-2", null)
+                    .withDataType(DATA_TYPE.DOUBLE)
+                    .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
+                    .withIntervals(intervals)
+                    .build();
+            List<KiePMMLMiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
 
-        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
-        pmmlRequestData.addRequestParam("FIELD-0", "122");
-        pmmlRequestData.addRequestParam("FIELD-1", 12.5);
-        pmmlRequestData.addRequestParam("FIELD-2", 14.6);
-        PreProcess.verifyFixInvalidValues(miningFields, pmmlRequestData);
+            PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+            pmmlRequestData.addRequestParam("FIELD-0", "122");
+            pmmlRequestData.addRequestParam("FIELD-1", 12.5);
+            pmmlRequestData.addRequestParam("FIELD-2", 14.6);
+            PreProcess.verifyFixInvalidValues(miningFields, pmmlRequestData);
+        });
     }
 
     @Test
-    public void verifyFixInvalidValuesInvalidAsIs() {
+    void verifyFixInvalidValuesInvalidAsIs() {
         KiePMMLMiningField miningField0 = KiePMMLMiningField.builder("FIELD-0", null)
                 .withDataType(DATA_TYPE.STRING)
                 .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_IS)
@@ -265,7 +272,7 @@ public class PreProcessTest {
                 .withAllowedValues(Arrays.asList("1.23", "12.4", "1.25"))
                 .build();
         List<KiePMMLInterval> intervals = Arrays.asList(new KiePMMLInterval(0.0, 12.4, CLOSURE.CLOSED_CLOSED),
-                                                        new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
+                new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
         KiePMMLMiningField miningField2 = KiePMMLMiningField.builder("FIELD-2", null)
                 .withDataType(DATA_TYPE.DOUBLE)
                 .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_IS)
@@ -285,14 +292,14 @@ public class PreProcessTest {
     }
 
     @Test
-    public void verifyAddMissingValuesNotMissingReturnInvalid() {
+    void verifyAddMissingValuesNotMissingReturnInvalid() {
         List<KiePMMLMiningField> miningFields = IntStream.range(0, 3).mapToObj(i -> {
-                    DATA_TYPE dataType = DATA_TYPE.values()[i];
-                    return KiePMMLMiningField.builder("FIELD-" + i, null)
-                            .withDataType(dataType)
-                            .withMissingValueTreatmentMethod(MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID)
-                            .build();
-                })
+            DATA_TYPE dataType = DATA_TYPE.values()[i];
+            return KiePMMLMiningField.builder("FIELD-" + i, null)
+                    .withDataType(dataType)
+                    .withMissingValueTreatmentMethod(MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID)
+                    .build();
+        })
                 .collect(Collectors.toList());
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
         pmmlRequestData.addRequestParam("FIELD-0", "123");
@@ -302,21 +309,21 @@ public class PreProcessTest {
     }
 
     @Test
-    public void verifyAddMissingValuesNotMissingNotReturnInvalidNotReplacement() {
+    void verifyAddMissingValuesNotMissingNotReturnInvalidNotReplacement() {
         List<KiePMMLMiningField> miningFields = IntStream.range(0, 3).mapToObj(i -> {
-                    DATA_TYPE dataType = DATA_TYPE.values()[i];
-                    return KiePMMLMiningField.builder("FIELD-" + i, null)
-                            .withDataType(dataType)
-                            .withMissingValueTreatmentMethod(MISSING_VALUE_TREATMENT_METHOD.AS_IS)
-                            .build();
-                })
+            DATA_TYPE dataType = DATA_TYPE.values()[i];
+            return KiePMMLMiningField.builder("FIELD-" + i, null)
+                    .withDataType(dataType)
+                    .withMissingValueTreatmentMethod(MISSING_VALUE_TREATMENT_METHOD.AS_IS)
+                    .build();
+        })
                 .collect(Collectors.toList());
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
         PreProcess.verifyAddMissingValues(miningFields, pmmlRequestData);
     }
 
     @Test
-    public void verifyAddMissingValuesNotMissingNotReturnInvalidReplacement() {
+    void verifyAddMissingValuesNotMissingNotReturnInvalidReplacement() {
         KiePMMLMiningField miningField0 = KiePMMLMiningField.builder("FIELD-0", null)
                 .withDataType(DATA_TYPE.STRING)
                 .withMissingValueTreatmentMethod(MISSING_VALUE_TREATMENT_METHOD.AS_IS)
@@ -330,7 +337,7 @@ public class PreProcessTest {
                 .withAllowedValues(Arrays.asList("1.23", "12.4", "1.25"))
                 .build();
         List<KiePMMLInterval> intervals = Arrays.asList(new KiePMMLInterval(0.0, 12.4, CLOSURE.CLOSED_CLOSED),
-                                                        new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
+                new KiePMMLInterval(12.6, 14.5, CLOSURE.OPEN_CLOSED));
         KiePMMLMiningField miningField2 = KiePMMLMiningField.builder("FIELD-2", null)
                 .withDataType(DATA_TYPE.FLOAT)
                 .withMissingValueTreatmentMethod(MISSING_VALUE_TREATMENT_METHOD.AS_IS)
@@ -349,23 +356,25 @@ public class PreProcessTest {
         assertThat(mappedRequestParams.get("FIELD-2").getValue()).isEqualTo(12.9f);
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void verifyAddMissingValuesMissingReturnInvalid() {
-        List<KiePMMLMiningField> miningFields = IntStream.range(0, 3).mapToObj(i -> {
-                    DATA_TYPE dataType = DATA_TYPE.values()[i];
+    @Test
+    void verifyAddMissingValuesMissingReturnInvalid() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            List<KiePMMLMiningField> miningFields = IntStream.range(0, 3).mapToObj(i -> {
+                DATA_TYPE dataType = DATA_TYPE.values()[i];
 
-                    return KiePMMLMiningField.builder("FIELD-" + i, null)
-                            .withDataType(dataType)
-                            .withMissingValueTreatmentMethod(MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID)
-                            .build();
-                })
-                .collect(Collectors.toList());
-        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
-        PreProcess.verifyAddMissingValues(miningFields, pmmlRequestData);
+                return KiePMMLMiningField.builder("FIELD-" + i, null)
+                        .withDataType(dataType)
+                        .withMissingValueTreatmentMethod(MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID)
+                        .build();
+            })
+                    .collect(Collectors.toList());
+            PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+            PreProcess.verifyAddMissingValues(miningFields, pmmlRequestData);
+        });
     }
 
     @Test
-    public void executeTransformations() {
+    void executeTransformations() {
         // <DefineFunction name="CUSTOM_FUNCTION" optype="continuous" dataType="double">
         //     <ParameterField name="PARAM_1" />
         //     <ParameterField name="PARAM_2" />
@@ -375,20 +384,20 @@ public class PreProcessTest {
         //      </Apply>
         // </DefineFunction>
         final KiePMMLParameterField kiePMMLParameterField1 = KiePMMLParameterField.builder(PARAM_1,
-                                                                                           Collections.emptyList()).build();
+                Collections.emptyList()).build();
         final KiePMMLParameterField kiePMMLParameterField2 = KiePMMLParameterField.builder(PARAM_2,
-                                                                                           Collections.emptyList()).build();
+                Collections.emptyList()).build();
         final KiePMMLFieldRef kiePMMLFieldRef1 = new KiePMMLFieldRef(PARAM_1, Collections.emptyList(), null);
         final KiePMMLFieldRef kiePMMLFieldRef2 = new KiePMMLFieldRef(PARAM_2, Collections.emptyList(), null);
         final KiePMMLApply kiePMMLApplyRef = KiePMMLApply.builder("NAMEREF", Collections.emptyList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                                                               DATA_TYPE.DOUBLE,
-                                                                               OP_TYPE.CONTINUOUS,
-                                                                               Arrays.asList(kiePMMLParameterField1,
-                                                                                             kiePMMLParameterField2),
-                                                                               kiePMMLApplyRef);
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                Arrays.asList(kiePMMLParameterField1,
+                        kiePMMLParameterField2),
+                kiePMMLApplyRef);
 
         // <DerivedField name="CUSTOM_REF_FIELD" optype="continuous" dataType="double">
         //     <Apply function="CUSTOM_FUNCTION">
@@ -402,12 +411,12 @@ public class PreProcessTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef3, kiePMMLConstant1))
                 .build();
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_REF_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE,
-                                                                             OP_TYPE.CONTINUOUS,
-                                                                             kiePMMLApply).build();
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLApply).build();
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                        "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", Collections.emptyList())
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
@@ -440,7 +449,7 @@ public class PreProcessTest {
     }
 
     @Test
-    public void manageInvalidValuesNotReturnInvalid() {
+    void manageInvalidValuesNotReturnInvalid() {
         final ParameterInfo parameterInfo = new ParameterInfo();
         // AS_MISSING
         KiePMMLMiningField miningField = KiePMMLMiningField.builder("FIELD", null)
@@ -473,34 +482,38 @@ public class PreProcessTest {
         assertThat(parameterInfo.getType()).isEqualTo(String.class);
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void manageInvalidValuesAsValueNoReplacement() {
-        final ParameterInfo parameterInfo = new ParameterInfo();
-        // AS_VALUE without replacement
-        KiePMMLMiningField miningField = KiePMMLMiningField.builder("FIELD", null)
-                .withDataType(DATA_TYPE.STRING)
-                .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
-                .build();
-        List<ParameterInfo> toRemove = new ArrayList<>();
-        assertThat(parameterInfo.getValue()).isNull();
-        assertThat(parameterInfo.getType()).isNull();
-        PreProcess.manageInvalidValues(miningField, parameterInfo, toRemove);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void manageInvalidValuesReturnInvalid() {
-        final ParameterInfo parameterInfo = new ParameterInfo();
-        // RETURN_INVALID
-        KiePMMLMiningField miningField = KiePMMLMiningField.builder("FIELD", null)
-                .withDataType(DATA_TYPE.STRING)
-                .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID)
-                .build();
-        List<ParameterInfo> toRemove = new ArrayList<>();
-        PreProcess.manageInvalidValues(miningField, parameterInfo, toRemove);
+    @Test
+    void manageInvalidValuesAsValueNoReplacement() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            final ParameterInfo parameterInfo = new ParameterInfo();
+            // AS_VALUE without replacement
+            KiePMMLMiningField miningField = KiePMMLMiningField.builder("FIELD", null)
+                    .withDataType(DATA_TYPE.STRING)
+                    .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.AS_VALUE)
+                    .build();
+            List<ParameterInfo> toRemove = new ArrayList<>();
+            assertThat(parameterInfo.getValue()).isNull();
+            assertThat(parameterInfo.getType()).isNull();
+            PreProcess.manageInvalidValues(miningField, parameterInfo, toRemove);
+        });
     }
 
     @Test
-    public void manageMissingValuesNotReturnInvalid() {
+    void manageInvalidValuesReturnInvalid() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            final ParameterInfo parameterInfo = new ParameterInfo();
+            // RETURN_INVALID
+            KiePMMLMiningField miningField = KiePMMLMiningField.builder("FIELD", null)
+                    .withDataType(DATA_TYPE.STRING)
+                    .withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID)
+                    .build();
+            List<ParameterInfo> toRemove = new ArrayList<>();
+            PreProcess.manageInvalidValues(miningField, parameterInfo, toRemove);
+        });
+    }
+
+    @Test
+    void manageMissingValuesNotReturnInvalid() {
         List<MISSING_VALUE_TREATMENT_METHOD> missingValueTreatmentMethods =
                 Arrays.stream(MISSING_VALUE_TREATMENT_METHOD.values())
                         .filter(treatmentMethod -> !treatmentMethod.equals(MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID))
@@ -529,12 +542,14 @@ public class PreProcessTest {
         });
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void manageMissingValuesReturnInvalid() {
-        KiePMMLMiningField miningField = KiePMMLMiningField.builder("FIELD", null)
-                .withDataType(DATA_TYPE.STRING)
-                .withMissingValueTreatmentMethod(MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID)
-                .build();
-        PreProcess.manageMissingValues(miningField, new PMMLRequestData());
+    @Test
+    void manageMissingValuesReturnInvalid() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            KiePMMLMiningField miningField = KiePMMLMiningField.builder("FIELD", null)
+                    .withDataType(DATA_TYPE.STRING)
+                    .withMissingValueTreatmentMethod(MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID)
+                    .build();
+            PreProcess.manageMissingValues(miningField, new PMMLRequestData());
+        });
     }
 }

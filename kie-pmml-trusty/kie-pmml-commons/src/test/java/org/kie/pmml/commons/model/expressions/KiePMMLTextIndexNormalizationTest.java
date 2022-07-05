@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.model.expressions.KiePMMLTextIndex.DEFAULT_TOKENIZER;
@@ -29,14 +29,16 @@ import static org.kie.pmml.commons.model.expressions.KiePMMLTextIndex.DEFAULT_TO
 public class KiePMMLTextIndexNormalizationTest {
 
     @Test
-    public void replaceSingleRow() {
+    void replaceSingleRow() {
         Map<String, Object> columnValues = new HashMap<>();
         columnValues.put("string", "interfaces?");
         columnValues.put("stem", "foo");
         columnValues.put("regex", "true");
         KiePMMLRow row = new KiePMMLRow(columnValues);
-        KiePMMLInlineTable inlineTable = new KiePMMLInlineTable("inlineTable", Collections.emptyList(), Collections.singletonList(row));
-        KiePMMLTextIndexNormalization indexNormalization = KiePMMLTextIndexNormalization.builder("indexNormalization", Collections.emptyList())
+        KiePMMLInlineTable inlineTable = new KiePMMLInlineTable("inlineTable", Collections.emptyList(),
+                                                                Collections.singletonList(row));
+        KiePMMLTextIndexNormalization indexNormalization = KiePMMLTextIndexNormalization.builder("indexNormalization"
+                        , Collections.emptyList())
                 .withKiePMMLInlineTable(inlineTable)
                 .withIsCaseSensitive(false)
                 .build();
@@ -59,7 +61,7 @@ public class KiePMMLTextIndexNormalizationTest {
     }
 
     @Test
-    public void replaceMultipleRows() {
+    void replaceMultipleRows() {
         Map<String, Object> columnValues1 = new HashMap<>();
         columnValues1.put("string", "interfaces?");
         columnValues1.put("stem", "foo");
@@ -81,7 +83,7 @@ public class KiePMMLTextIndexNormalizationTest {
     }
 
     @Test
-    public void replaceMultipleRowsRecursive() {
+    void replaceMultipleRowsRecursive() {
         Map<String, Object> columnValues0 = new HashMap<>();
         columnValues0.put("string", "be");
         columnValues0.put("stem", "final");

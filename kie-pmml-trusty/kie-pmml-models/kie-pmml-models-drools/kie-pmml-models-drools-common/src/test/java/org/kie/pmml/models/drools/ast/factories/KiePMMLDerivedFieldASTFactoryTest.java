@@ -26,8 +26,8 @@ import java.util.stream.IntStream;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -40,7 +40,7 @@ public class KiePMMLDerivedFieldASTFactoryTest {
     private Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
     private KiePMMLDerivedFieldASTFactory fieldASTFactory;
 
-    @Before
+    @BeforeEach
     public void setup() {
         fieldTypeMap = new HashMap<>();
         fieldASTFactory = KiePMMLDerivedFieldASTFactory.factory(fieldTypeMap);
@@ -48,7 +48,7 @@ public class KiePMMLDerivedFieldASTFactoryTest {
     }
 
     @Test
-    public void declareTypes() {
+    void declareTypes() {
         List<DerivedField> derivedFields = IntStream.range(0, 5)
                 .mapToObj(value -> getDerivedField("FieldName-" + value))
                 .collect(Collectors.toList());
@@ -60,7 +60,7 @@ public class KiePMMLDerivedFieldASTFactoryTest {
     }
 
     @Test
-    public void declareType() {
+    void declareType() {
         DerivedField derivedField = getDerivedField("FieldName");
         KiePMMLDroolsType retrieved = fieldASTFactory.declareType(derivedField);
         commonValidateKiePMMLDroolsType(retrieved, derivedField);

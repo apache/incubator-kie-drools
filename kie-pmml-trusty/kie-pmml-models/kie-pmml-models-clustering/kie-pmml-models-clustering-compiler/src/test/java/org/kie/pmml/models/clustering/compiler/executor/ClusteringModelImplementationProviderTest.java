@@ -21,7 +21,7 @@ import java.util.Map;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.clustering.ClusteringModel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
@@ -50,20 +50,20 @@ public class ClusteringModelImplementationProviderTest {
     }
 
     @Test
-    public void getPMMLModelType() {
+    void getPMMLModelType() {
         assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.CLUSTERING_MODEL);
     }
 
     @Test
-    public void getKiePMMLModel() throws Exception {
+    void getKiePMMLModel() throws Exception {
         PMML pmml = TestUtils.loadFromFile(SOURCE_FILE);
         ClusteringModel model = getModel(pmml);
 
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       model,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        model,
+                        new HasClassLoaderMock());
         KiePMMLClusteringModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
 
         assertThat(retrieved).isNotNull();
@@ -71,14 +71,14 @@ public class ClusteringModelImplementationProviderTest {
     }
 
     @Test
-    public void getKiePMMLModelWithSources() throws Exception {
+    void getKiePMMLModelWithSources() throws Exception {
         PMML pmml = TestUtils.loadFromFile(SOURCE_FILE);
         ClusteringModel model = getModel(pmml);
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       model,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        model,
+                        new HasClassLoaderMock());
         KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
 
         assertThat(retrieved).isNotNull();

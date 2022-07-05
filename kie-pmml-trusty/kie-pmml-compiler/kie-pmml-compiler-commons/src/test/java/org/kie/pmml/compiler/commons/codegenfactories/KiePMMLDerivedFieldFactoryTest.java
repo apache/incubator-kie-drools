@@ -30,7 +30,7 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
@@ -54,7 +54,7 @@ public class KiePMMLDerivedFieldFactoryTest {
     private static final String TEST_03_SOURCE = "KiePMMLDerivedFieldFactoryTest_03.txt";
 
     @Test
-    public void getDerivedFieldVariableDeclarationWithConstant() throws IOException {
+    void getDerivedFieldVariableDeclarationWithConstant() throws IOException {
         final String variableName = "variableName";
         Constant constant = new Constant();
         constant.setValue(value1);
@@ -65,7 +65,8 @@ public class KiePMMLDerivedFieldFactoryTest {
         derivedField.setExpression(constant);
         String dataType = getDATA_TYPEString(derivedField.getDataType());
         String opType = getOP_TYPEString(derivedField.getOpType());
-        BlockStmt retrieved = KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format(text, constant.getValue(),
@@ -81,7 +82,7 @@ public class KiePMMLDerivedFieldFactoryTest {
     }
 
     @Test
-    public void getDerivedFieldVariableDeclarationWithFieldRef() throws IOException {
+    void getDerivedFieldVariableDeclarationWithFieldRef() throws IOException {
         final String variableName = "variableName";
         FieldRef fieldRef = new FieldRef();
         fieldRef.setField(FieldName.create("FIELD_REF"));
@@ -92,7 +93,8 @@ public class KiePMMLDerivedFieldFactoryTest {
         derivedField.setExpression(fieldRef);
         String dataType = getDATA_TYPEString(derivedField.getDataType());
         String opType = getOP_TYPEString(derivedField.getOpType());
-        BlockStmt retrieved = KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
         String text = getFileContent(TEST_02_SOURCE);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format(text, fieldRef.getField().getValue(),
@@ -108,7 +110,7 @@ public class KiePMMLDerivedFieldFactoryTest {
     }
 
     @Test
-    public void getDerivedFieldVariableDeclarationWithApply() throws IOException {
+    void getDerivedFieldVariableDeclarationWithApply() throws IOException {
         final String variableName = "variableName";
         Constant constant = new Constant();
         constant.setValue(value1);

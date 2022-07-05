@@ -54,10 +54,6 @@
       <artifactId>kie-pmml-evaluator-assembler</artifactId>
     </dependency>
     <!-- Kie dep -->
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-kie-internal</artifactId>
-    </dependency>
     <!-- Drools -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -129,5 +125,25 @@
       <artifactId>kie-pmml-models-clustering-evaluator</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.openrewrite.maven</groupId>
+        <artifactId>rewrite-maven-plugin</artifactId>
+        <configuration>
+          <skipMavenParsing>true</skipMavenParsing>
+        </configuration>
+        <executions>
+          <execution>
+            <id>disable</id>
+            <phase/>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
 
 </project>

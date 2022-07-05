@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.models.MiningField;
@@ -32,6 +32,7 @@ import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLApplyTest {
@@ -45,31 +46,36 @@ public class KiePMMLApplyTest {
     private static final Double value2 = 5.0;
     private static final Object expected = value1 / value2;
 
-    @Test(expected = IllegalArgumentException.class)
-    public void evaluateUnknownFunction() {
-        // <Apply function="UNKNOWN">
-        //      <Constant>33.0</Constant>
-        //      <Constant>27.0</Constant>
-        // </Apply>
-        String name = "name";
-        String function = "UNKNOWN";
-        String defaultValue = null;
-        String mapMissingTo = null;
-        String invalidTreatmentValue = null;
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value1, null);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value2, null);
-        KiePMMLApply kiePMMLApply = KiePMMLApply.builder(name, Collections.emptyList(), function)
-                .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
-                .withDefaultValue(defaultValue)
-                .withMapMissingTo(mapMissingTo)
-                .withInvalidValueTreatmentMethod(invalidTreatmentValue)
-                .build();
-        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-        kiePMMLApply.evaluate(processingDTO);
+    @Test
+    void evaluateUnknownFunction() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            // <Apply function="UNKNOWN">
+            //      <Constant>33.0</Constant>
+            //      <Constant>27.0</Constant>
+            // </Apply>
+            String name = "name";
+            String function = "UNKNOWN";
+            String defaultValue = null;
+            String mapMissingTo = null;
+            String invalidTreatmentValue = null;
+            final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value1,
+                                                                         null);
+            final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value2,
+                                                                         null);
+            KiePMMLApply kiePMMLApply = KiePMMLApply.builder(name, Collections.emptyList(), function)
+                    .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
+                    .withDefaultValue(defaultValue)
+                    .withMapMissingTo(mapMissingTo)
+                    .withInvalidValueTreatmentMethod(invalidTreatmentValue)
+                    .build();
+            ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(),
+                                                           Collections.emptyList(), Collections.emptyList());
+            kiePMMLApply.evaluate(processingDTO);
+        });
     }
 
     @Test
-    public void evaluateFromBuiltIn() {
+    void evaluateFromBuiltIn() {
         // <Apply function="/">
         //      <Constant>33.0</Constant>
         //      <Constant>27.0</Constant>
@@ -79,7 +85,8 @@ public class KiePMMLApplyTest {
         KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
-        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(),
+                                                       Collections.emptyList(), Collections.emptyList());
         Object retrieved = kiePMMLApply.evaluate(processingDTO);
         assertThat(retrieved).isEqualTo(expected);
         //
@@ -126,14 +133,15 @@ public class KiePMMLApplyTest {
                 .withKiePMMLExpressions(Collections.singletonList(kiePMMLFieldRef))
                 .build();
         kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, value2));
-        processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, Collections.singletonList(getReferredByFieldRef(FIELD_NAME)));
+        processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues,
+                                         Collections.singletonList(getReferredByFieldRef(FIELD_NAME)));
         retrieved = kiePMMLApply.evaluate(processingDTO);
         assertThat(retrieved).isInstanceOf(Boolean.class);
         assertThat((boolean) retrieved).isFalse();
     }
 
     @Test
-    public void evaluateFromDefineFunction() {
+    void evaluateFromDefineFunction() {
         Double valueA = 33.0;
         Double valueB = 27.0;
         // <Apply function="CUSTOM_FUNCTION">

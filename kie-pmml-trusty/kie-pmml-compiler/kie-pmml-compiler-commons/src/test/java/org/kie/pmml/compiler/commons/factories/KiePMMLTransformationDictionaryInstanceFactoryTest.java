@@ -22,7 +22,7 @@ import java.util.Optional;
 import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.TransformationDictionary;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
@@ -35,11 +35,11 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLTransformationDictionaryInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLTransformationDictionary() {
+    void getKiePMMLTransformationDictionary() {
         final TransformationDictionary toConvert = getRandomTransformationDictionary();
         KiePMMLTransformationDictionary retrieved =
                 KiePMMLTransformationDictionaryInstanceFactory.getKiePMMLTransformationDictionary(toConvert,
-                                                                                                                                      Collections.emptyList());
+                        Collections.emptyList());
         assertThat(retrieved).isNotNull();
 
         List<DerivedField> derivedFields = toConvert.getDerivedFields();

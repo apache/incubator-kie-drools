@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.dmg.pmml.LinearNorm;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLLinearNorm;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomLinearNorm;
@@ -29,7 +29,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLLinearNormInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLLinearNorms() {
+    void getKiePMMLLinearNorms() {
         List<LinearNorm> toConvert =
                 IntStream.range(0, 3).mapToObj(i -> getRandomLinearNorm()).collect(Collectors.toList());
         List<KiePMMLLinearNorm> retrieved = KiePMMLLinearNormInstanceFactory.getKiePMMLLinearNorms(toConvert);
@@ -37,7 +37,7 @@ public class KiePMMLLinearNormInstanceFactoryTest {
     }
 
     @Test
-    public void getKiePMMLLinearNorm() {
+    void getKiePMMLLinearNorm() {
         final LinearNorm toConvert = getRandomLinearNorm();
         final KiePMMLLinearNorm retrieved = KiePMMLLinearNormInstanceFactory.getKiePMMLLinearNorm(toConvert);
         commonVerifyKiePMMLLinearNorm(retrieved, toConvert);

@@ -51,8 +51,8 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -94,7 +94,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
     private static MethodDeclaration STATIC_GETTER_METHOD;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         COMPILATION_UNIT = getFromFileName(KIE_PMML_REGRESSION_TABLE_TEMPLATE_JAVA);
         MODEL_TEMPLATE = COMPILATION_UNIT.getClassByName(KIE_PMML_REGRESSION_TABLE_TEMPLATE).get();
@@ -102,7 +102,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getRegressionTables() {
+    void getRegressionTables() {
         regressionTable = getRegressionTable(3.5, "professional");
         RegressionTable regressionTable2 = getRegressionTable(3.9, "hobby");
         RegressionModel regressionModel = new RegressionModel();
@@ -126,13 +126,13 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  regressionModel.getRegressionTables(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        regressionModel.getRegressionTables(),
+                        regressionModel.getNormalizationMethod());
 
         Map<String, KiePMMLRegressionTable> retrieved =
                 KiePMMLRegressionTableFactory.getRegressionTables(compilationDTO);
@@ -145,7 +145,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getRegressionTable() {
+    void getRegressionTable() {
         regressionTable = getRegressionTable(3.5, "professional");
         RegressionModel regressionModel = new RegressionModel();
         regressionModel.setNormalizationMethod(RegressionModel.NormalizationMethod.CAUCHIT);
@@ -168,21 +168,21 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  new ArrayList<>(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        new ArrayList<>(),
+                        regressionModel.getNormalizationMethod());
         KiePMMLRegressionTable retrieved = KiePMMLRegressionTableFactory.getRegressionTable(regressionTable,
-                                                                                            compilationDTO);
+                compilationDTO);
         assertThat(retrieved).isNotNull();
         commonEvaluateRegressionTable(retrieved, regressionTable);
     }
 
     @Test
-    public void getRegressionTableBuilders() {
+    void getRegressionTableBuilders() {
         regressionTable = getRegressionTable(3.5, "professional");
         RegressionModel regressionModel = new RegressionModel();
         regressionModel.setNormalizationMethod(RegressionModel.NormalizationMethod.CAUCHIT);
@@ -205,13 +205,13 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  new ArrayList<>(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        new ArrayList<>(),
+                        regressionModel.getNormalizationMethod());
 
         Map<String, KiePMMLTableSourceCategory> retrieved =
                 KiePMMLRegressionTableFactory.getRegressionTableBuilders(compilationDTO);
@@ -220,7 +220,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getRegressionTableBuilder() {
+    void getRegressionTableBuilder() {
         regressionTable = getRegressionTable(3.5, "professional");
         RegressionModel regressionModel = new RegressionModel();
         regressionModel.setNormalizationMethod(RegressionModel.NormalizationMethod.CAUCHIT);
@@ -243,15 +243,15 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  new ArrayList<>(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        new ArrayList<>(),
+                        regressionModel.getNormalizationMethod());
         Map.Entry<String, String> retrieved = KiePMMLRegressionTableFactory.getRegressionTableBuilder(regressionTable
-                , compilationDTO);
+        , compilationDTO);
         assertThat(retrieved).isNotNull();
         Map<String, String> sources = new HashMap<>();
         sources.put(retrieved.getKey(), retrieved.getValue());
@@ -259,7 +259,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getNumericPredictorsMap() {
+    void getNumericPredictorsMap() {
         final List<NumericPredictor> numericPredictors = IntStream.range(0, 3).mapToObj(index -> {
             String predictorName = "predictorName-" + index;
             double coefficient = 1.23 * index;
@@ -271,39 +271,39 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getNumericPredictorEntryWithExponent() {
+    void getNumericPredictorEntryWithExponent() {
         String predictorName = "predictorName";
         int exponent = 2;
         double coefficient = 1.23;
         NumericPredictor numericPredictor = PMMLModelTestUtils.getNumericPredictor(predictorName, exponent,
-                                                                                   coefficient);
+                coefficient);
         SerializableFunction<Double, Double> retrieved =
                 KiePMMLRegressionTableFactory.getNumericPredictorEntry(numericPredictor);
         assertThat(retrieved).isNotNull();
     }
 
     @Test
-    public void getNumericPredictorEntryWithoutExponent() {
+    void getNumericPredictorEntryWithoutExponent() {
         String predictorName = "predictorName";
         int exponent = 1;
         double coefficient = 1.23;
         NumericPredictor numericPredictor = PMMLModelTestUtils.getNumericPredictor(predictorName, exponent,
-                                                                                   coefficient);
+                coefficient);
         SerializableFunction<Double, Double> retrieved =
                 KiePMMLRegressionTableFactory.getNumericPredictorEntry(numericPredictor);
         assertThat(retrieved).isNotNull();
     }
 
     @Test
-    public void getCategoricalPredictorsMap() {
+    void getCategoricalPredictorsMap() {
         final List<CategoricalPredictor> categoricalPredictors = IntStream.range(0, 3).mapToObj(index ->
-                                                                                                        IntStream.range(0,
-                                                                                                                        3).mapToObj(i -> {
-                                                                                                                    String predictorName = "predictorName-" + index;
-                                                                                                                    double coefficient = 1.23 * i;
-                                                                                                                    return PMMLModelTestUtils.getCategoricalPredictor(predictorName, i, coefficient);
-                                                                                                                })
-                                                                                                                .collect(Collectors.toList())).reduce((categoricalPredictors1, categoricalPredictors2) -> {
+                IntStream.range(0,
+                        3).mapToObj(i -> {
+                    String predictorName = "predictorName-" + index;
+                    double coefficient = 1.23 * i;
+                    return PMMLModelTestUtils.getCategoricalPredictor(predictorName, i, coefficient);
+                })
+                        .collect(Collectors.toList())).reduce((categoricalPredictors1, categoricalPredictors2) -> {
             List<CategoricalPredictor> toReturn = new ArrayList<>();
             toReturn.addAll(categoricalPredictors1);
             toReturn.addAll(categoricalPredictors2);
@@ -318,7 +318,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getGroupedCategoricalPredictorMap() {
+    void getGroupedCategoricalPredictorMap() {
         final List<CategoricalPredictor> categoricalPredictors = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             String predictorName = "predictorName-" + i;
@@ -330,21 +330,21 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSameSizeAs(categoricalPredictors);
         categoricalPredictors.forEach(categoricalPredictor ->
-                                      {
-                                          String key = categoricalPredictor.getValue().toString();
-                                          assertThat(retrieved).containsKey(key);
-                                          assertThat(retrieved.get(key)).isCloseTo(categoricalPredictor.getCoefficient().doubleValue(), Offset.offset(0.0));
-                                      });
+        {
+            String key = categoricalPredictor.getValue().toString();
+            assertThat(retrieved).containsKey(key);
+            assertThat(retrieved.get(key)).isCloseTo(categoricalPredictor.getCoefficient().doubleValue(), Offset.offset(0.0));
+        });
     }
 
     @Test
-    public void getPredictorTermsMap() {
+    void getPredictorTermsMap() {
         final List<PredictorTerm> predictorTerms = IntStream.range(0, 3).mapToObj(index -> {
             String predictorName = "predictorName-" + index;
             double coefficient = 1.23 * index;
             String fieldRef = "fieldRef-" + index;
             return PMMLModelTestUtils.getPredictorTerm(predictorName, coefficient,
-                                                       Collections.singletonList(fieldRef));
+                    Collections.singletonList(fieldRef));
         }).collect(Collectors.toList());
         Map<String, SerializableFunction<Map<String, Object>, Double>> retrieved =
                 KiePMMLRegressionTableFactory.getPredictorTermsMap(predictorTerms);
@@ -356,31 +356,31 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getPredictorTermSerializableFunction() {
+    void getPredictorTermSerializableFunction() {
         String predictorName = "predictorName";
         double coefficient = 23.12;
         String fieldRef = "fieldRef";
         PredictorTerm predictorTerm = PMMLModelTestUtils.getPredictorTerm(predictorName, coefficient,
-                                                                          Collections.singletonList(fieldRef));
+                Collections.singletonList(fieldRef));
         SerializableFunction<Map<String, Object>, Double> retrieved =
                 KiePMMLRegressionTableFactory.getPredictorTermSerializableFunction(predictorTerm);
         assertThat(retrieved).isNotNull();
     }
 
     @Test
-    public void getResultUpdaterUnsupportedFunction() {
+    void getResultUpdaterUnsupportedFunction() {
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
-                                                          assertThat(KiePMMLRegressionTableFactory.getResultUpdaterFunction(normalizationMethod)).isNull());
+                assertThat(KiePMMLRegressionTableFactory.getResultUpdaterFunction(normalizationMethod)).isNull());
     }
 
     @Test
-    public void getResultUpdaterSupportedFunction() {
+    void getResultUpdaterSupportedFunction() {
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
-                                                        assertThat(KiePMMLRegressionTableFactory.getResultUpdaterFunction(normalizationMethod)).isNotNull());
+                assertThat(KiePMMLRegressionTableFactory.getResultUpdaterFunction(normalizationMethod)).isNotNull());
     }
 
     @Test
-    public void setStaticGetter() throws IOException {
+    void setStaticGetter() throws IOException {
         regressionTable = getRegressionTable(3.5, "professional");
         RegressionModel regressionModel = new RegressionModel();
         regressionModel.setNormalizationMethod(RegressionModel.NormalizationMethod.CAUCHIT);
@@ -404,42 +404,42 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         String variableName = "variableName";
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  new ArrayList<>(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        new ArrayList<>(),
+                        regressionModel.getNormalizationMethod());
 
         final MethodDeclaration staticGetterMethod = STATIC_GETTER_METHOD.clone();
         KiePMMLRegressionTableFactory.setStaticGetter(regressionTable,
-                                                      compilationDTO,
-                                                      staticGetterMethod,
-                                                      variableName);
+                compilationDTO,
+                staticGetterMethod,
+                variableName);
         String text = getFileContent(TEST_06_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
         assertThat(staticGetterMethod.toString()).isEqualTo(expected.toString());
         assertThat(JavaParserUtils.equalsNode(expected, staticGetterMethod)).isTrue();
         List<Class<?>> imports = Arrays.asList(AtomicReference.class,
-                                               Collections.class,
-                                               Arrays.class,
-                                               List.class,
-                                               Map.class,
-                                               KiePMMLRegressionTable.class,
-                                               SerializableFunction.class);
+                Collections.class,
+                Arrays.class,
+                List.class,
+                Map.class,
+                KiePMMLRegressionTable.class,
+                SerializableFunction.class);
         commonValidateCompilationWithImports(staticGetterMethod, imports);
     }
 
     @Test
-    public void getResultUpdaterExpressionWithSupportedMethods() {
+    void getResultUpdaterExpressionWithSupportedMethods() {
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             Expression retrieved =
                     KiePMMLRegressionTableFactory.getResultUpdaterExpression(normalizationMethod);
             try {
                 String text = getFileContent(TEST_03_SOURCE);
                 Expression expected = JavaParserUtils.parseExpression(String.format(text,
-                                                                                    normalizationMethod.name()));
+                        normalizationMethod.name()));
                 assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
             } catch (IOException e) {
                 fail(e.getMessage());
@@ -448,7 +448,7 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getResultUpdaterExpression() {
+    void getResultUpdaterExpression() {
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             Expression retrieved =
                     KiePMMLRegressionTableFactory.getResultUpdaterExpression(normalizationMethod);
@@ -457,17 +457,17 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getResultUpdaterSupportedExpression() throws IOException {
+    void getResultUpdaterSupportedExpression() throws IOException {
         MethodReferenceExpr retrieved =
                 KiePMMLRegressionTableFactory.getResultUpdaterSupportedExpression(RegressionModel.NormalizationMethod.CAUCHIT);
         String text = getFileContent(TEST_03_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text,
-                                                                            RegressionModel.NormalizationMethod.CAUCHIT.name()));
+                RegressionModel.NormalizationMethod.CAUCHIT.name()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
     @Test
-    public void getNumericPredictorsExpressions() {
+    void getNumericPredictorsExpressions() {
         final List<NumericPredictor> numericPredictors = IntStream.range(0, 3).mapToObj(index -> {
             String predictorName = "predictorName-" + index;
             double coefficient = 1.23 * index;
@@ -479,12 +479,12 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getNumericPredictorExpressionWithExponent() throws IOException {
+    void getNumericPredictorExpressionWithExponent() throws IOException {
         String predictorName = "predictorName";
         int exponent = 2;
         double coefficient = 1.23;
         NumericPredictor numericPredictor = PMMLModelTestUtils.getNumericPredictor(predictorName, exponent,
-                                                                                   coefficient);
+                coefficient);
         CastExpr retrieved = KiePMMLRegressionTableFactory.getNumericPredictorExpression(numericPredictor);
         String text = getFileContent(TEST_01_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text, coefficient, exponent));
@@ -492,12 +492,12 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getNumericPredictorExpressionWithoutExponent() throws IOException {
+    void getNumericPredictorExpressionWithoutExponent() throws IOException {
         String predictorName = "predictorName";
         int exponent = 1;
         double coefficient = 1.23;
         NumericPredictor numericPredictor = PMMLModelTestUtils.getNumericPredictor(predictorName, exponent,
-                                                                                   coefficient);
+                coefficient);
         CastExpr retrieved = KiePMMLRegressionTableFactory.getNumericPredictorExpression(numericPredictor);
         String text = getFileContent(TEST_02_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text, coefficient));
@@ -505,15 +505,15 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getCategoricalPredictorsExpressions() {
+    void getCategoricalPredictorsExpressions() {
         final List<CategoricalPredictor> categoricalPredictors = IntStream.range(0, 3).mapToObj(index ->
-                                                                                                        IntStream.range(0,
-                                                                                                                        3).mapToObj(i -> {
-                                                                                                                    String predictorName = "predictorName-" + index;
-                                                                                                                    double coefficient = 1.23 * i;
-                                                                                                                    return PMMLModelTestUtils.getCategoricalPredictor(predictorName, i, coefficient);
-                                                                                                                })
-                                                                                                                .collect(Collectors.toList())).reduce((categoricalPredictors1, categoricalPredictors2) -> {
+                IntStream.range(0,
+                        3).mapToObj(i -> {
+                    String predictorName = "predictorName-" + index;
+                    double coefficient = 1.23 * i;
+                    return PMMLModelTestUtils.getCategoricalPredictor(predictorName, i, coefficient);
+                })
+                        .collect(Collectors.toList())).reduce((categoricalPredictors1, categoricalPredictors2) -> {
             List<CategoricalPredictor> toReturn = new ArrayList<>();
             toReturn.addAll(categoricalPredictors1);
             toReturn.addAll(categoricalPredictors2);
@@ -522,18 +522,18 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         final BlockStmt body = new BlockStmt();
         Map<String, Expression> retrieved =
                 KiePMMLRegressionTableFactory.getCategoricalPredictorsExpressions(categoricalPredictors,
-                                                                                  body,
-                                                                                  "variableName");
+                        body,
+                        "variableName");
         assertThat(retrieved).hasSize(3);
         final Map<String, List<CategoricalPredictor>> groupedCollectors = categoricalPredictors.stream()
                 .collect(groupingBy(categoricalPredictor -> categoricalPredictor.getField().getValue()));
 
         groupedCollectors.values().forEach(categoricalPredictors12 -> commonEvaluateCategoryPredictors(body,
-                                                                                                       categoricalPredictors12, "variableName"));
+                categoricalPredictors12, "variableName"));
     }
 
     @Test
-    public void populateWithGroupedCategoricalPredictorMap() throws IOException {
+    void populateWithGroupedCategoricalPredictorMap() throws IOException {
         final List<CategoricalPredictor> categoricalPredictors = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             String predictorName = "predictorName-" + i;
@@ -543,22 +543,22 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         final BlockStmt toPopulate = new BlockStmt();
         final String categoricalPredictorMapName = "categoricalPredictorMapName";
         KiePMMLRegressionTableFactory.populateWithGroupedCategoricalPredictorMap(categoricalPredictors,
-                                                                                 toPopulate,
-                                                                                 categoricalPredictorMapName);
+                toPopulate,
+                categoricalPredictorMapName);
         String text = getFileContent(TEST_04_SOURCE);
         BlockStmt expected = JavaParserUtils.parseBlock(String.format(text,
-                                                                      categoricalPredictorMapName,
-                                                                      categoricalPredictors.get(0).getValue(),
-                                                                      categoricalPredictors.get(0).getCoefficient(),
-                                                                      categoricalPredictors.get(1).getValue(),
-                                                                      categoricalPredictors.get(1).getCoefficient(),
-                                                                      categoricalPredictors.get(2).getValue(),
-                                                                      categoricalPredictors.get(2).getCoefficient()));
+                categoricalPredictorMapName,
+                categoricalPredictors.get(0).getValue(),
+                categoricalPredictors.get(0).getCoefficient(),
+                categoricalPredictors.get(1).getValue(),
+                categoricalPredictors.get(1).getCoefficient(),
+                categoricalPredictors.get(2).getValue(),
+                categoricalPredictors.get(2).getCoefficient()));
         assertThat(JavaParserUtils.equalsNode(expected, toPopulate)).isTrue();
     }
 
     @Test
-    public void getCategoricalPredictorExpression() throws IOException {
+    void getCategoricalPredictorExpression() throws IOException {
         final String categoricalPredictorMapName = "categoricalPredictorMapName";
         CastExpr retrieved =
                 KiePMMLRegressionTableFactory.getCategoricalPredictorExpression(categoricalPredictorMapName);
@@ -568,13 +568,13 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getPredictorTermFunctions() {
+    void getPredictorTermFunctions() {
         final List<PredictorTerm> predictorTerms = IntStream.range(0, 3).mapToObj(index -> {
             String predictorName = "predictorName-" + index;
             double coefficient = 1.23 * index;
             String fieldRef = "fieldRef-" + index;
             return PMMLModelTestUtils.getPredictorTerm(predictorName, coefficient,
-                                                       Collections.singletonList(fieldRef));
+                    Collections.singletonList(fieldRef));
         }).collect(Collectors.toList());
         Map<String, Expression> retrieved =
                 KiePMMLRegressionTableFactory.getPredictorTermFunctions(predictorTerms);
@@ -586,12 +586,12 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void getPredictorTermFunction() throws IOException {
+    void getPredictorTermFunction() throws IOException {
         String predictorName = "predictorName";
         double coefficient = 23.12;
         String fieldRef = "fieldRef";
         PredictorTerm predictorTerm = PMMLModelTestUtils.getPredictorTerm(predictorName, coefficient,
-                                                                          Collections.singletonList(fieldRef));
+                Collections.singletonList(fieldRef));
         LambdaExpr retrieved = KiePMMLRegressionTableFactory.getPredictorTermFunction(predictorTerm);
 
         String text = getFileContent(TEST_07_SOURCE);
@@ -600,10 +600,10 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
     }
 
     @Test
-    public void populateOutputFieldsMap() {
+    void populateOutputFieldsMap() {
         final List<KiePMMLOutputField> outputFields = new ArrayList<>();
         KiePMMLOutputField predictedOutputField = getOutputField("KOF-TARGET", RESULT_FEATURE.PREDICTED_VALUE,
-                                                                 "TARGET");
+                "TARGET");
         outputFields.add(predictedOutputField);
         final List<KiePMMLOutputField> probabilityOutputFields = IntStream.range(0, 2)
                 .mapToObj(index -> getOutputField("KOF-PROB-" + index, RESULT_FEATURE.PROBABILITY, "PROB-" + index))
