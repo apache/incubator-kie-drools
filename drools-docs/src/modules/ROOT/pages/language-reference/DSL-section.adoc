@@ -246,7 +246,7 @@ But do not exaggerate: authors using the DSL should still be able to identify DS
 A DSL file is a text file in a line-oriented format.
 Its entries are used for transforming a DSLR file into a file according to DRL syntax.
 
-* A line starting with "#" or "//" (with or without preceding white space) is treated as a comment. A comment line starting with "#/" is scanned for words requesting a debug option, see below.
+* A line starting with "\#" or "//" (with or without preceding white space) is treated as a comment. A comment line starting with "#/" is scanned for words requesting a debug option, see below.
 * Any line starting with an opening bracket ("[") is assumed to be the first line of a DSL entry definition.
 * Any other line is appended to the preceding DSL entry definition, with the line end replaced by a space.
 

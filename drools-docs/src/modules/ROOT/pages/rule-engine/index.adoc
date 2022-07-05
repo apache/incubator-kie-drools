@@ -45,8 +45,6 @@ include::cep-events-con.adoc[leveloffset=+2]
 
 include::cep-events-proc.adoc[leveloffset=+2]
 
-include::../language-reference/drl-declarations-metadata-tags-ref.adoc[leveloffset=+2]
-
 include::cep-modes-con.adoc[leveloffset=+2]
 
 include::cep-negative-patterns.adoc[leveloffset=+3]
