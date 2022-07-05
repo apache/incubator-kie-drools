@@ -82,8 +82,8 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
             resolver = ArtifactResolver.getResolverFor( internalKModule.getPomModel() );
         }
 
-        List<URL> urls = new ArrayList<URL>();
-        List<ReleaseId> unresolvedDeps = new ArrayList<ReleaseId>();
+        List<URL> urls = new ArrayList<>();
+        List<ReleaseId> unresolvedDeps = new ArrayList<>();
 
         for (ReleaseId rid : jarDependencies) {
             try {

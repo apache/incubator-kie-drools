@@ -43,7 +43,7 @@ public class MapBackedClassLoader extends ClassLoader {
 
     public MapBackedClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
-        this.store = new HashMap<String, byte[]>();
+        this.store = new HashMap<>();
     }
 
     public MapBackedClassLoader(final ClassLoader parentClassLoader,

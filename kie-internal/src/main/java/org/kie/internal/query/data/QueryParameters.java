@@ -76,7 +76,7 @@ public class QueryParameters {
 
     public Map<String, List<? extends Object>> getUnionParameters() {
         if( unionParameters == null ) {
-            unionParameters = new HashMap<String, List<? extends Object>>();
+            unionParameters = new HashMap<>();
         }
         return unionParameters;
     }
@@ -88,7 +88,7 @@ public class QueryParameters {
 
     public Map<String, List<? extends Object>> getIntersectParameters() {
         if( intersectParameters == null ) {
-            intersectParameters = new HashMap<String, List<? extends Object>>();
+            intersectParameters = new HashMap<>();
         }
         return intersectParameters;
     }
@@ -99,7 +99,7 @@ public class QueryParameters {
 
     public Map<String, List<String>> getUnionRegexParameters() {
         if( unionRegexParameters == null ) {
-           unionRegexParameters = new HashMap<String, List<String>>();
+           unionRegexParameters = new HashMap<>();
         }
         return unionRegexParameters;
     }
@@ -110,7 +110,7 @@ public class QueryParameters {
 
     public Map<String, List<String>> getIntersectRegexParameters() {
         if( intersectRegexParameters == null ) {
-           intersectRegexParameters = new HashMap<String, List<String>>();
+           intersectRegexParameters = new HashMap<>();
         }
         return intersectRegexParameters;
     }
@@ -121,7 +121,7 @@ public class QueryParameters {
 
     public Map<String, List<? extends Object>> getUnionRangeParameters() {
         if( unionRangeParameters == null ) {
-           unionRangeParameters = new HashMap<String, List<? extends Object>>();
+           unionRangeParameters = new HashMap<>();
         }
         return unionRangeParameters;
     }
@@ -132,7 +132,7 @@ public class QueryParameters {
 
     public Map<String, List<? extends Object>> getIntersectRangeParameters() {
         if( intersectRangeParameters == null ) {
-           intersectRangeParameters = new HashMap<String, List<? extends Object>>();
+           intersectRangeParameters = new HashMap<>();
         }
         return intersectRangeParameters;
     }
@@ -170,13 +170,13 @@ public class QueryParameters {
             if( union ) {
                 listParams = (List<T>) getUnionRegexParameters().get(listId);
                 if( listParams == null ) {
-                    stringListParams = new ArrayList<String>(size);
+                    stringListParams = new ArrayList<>(size);
                     getUnionRegexParameters().put(listId, stringListParams);
                 }
             } else {
                 listParams = (List<T>) getIntersectParameters().get(listId);
                 if( listParams == null ) {
-                    stringListParams = new ArrayList<String>(size);
+                    stringListParams = new ArrayList<>(size);
                     getIntersectRegexParameters().put(listId, stringListParams);
                 }
             }
@@ -203,13 +203,13 @@ public class QueryParameters {
             if( union ) {
                 listParams = (List<T>) getUnionParameters().get(listId);
                 if( listParams == null ) {
-                    listParams = new ArrayList<T>(size);
+                    listParams = new ArrayList<>(size);
                     getUnionParameters().put(listId, listParams);
                 }
             } else {
                 listParams = (List<T>) getIntersectParameters().get(listId);
                 if( listParams == null ) {
-                    listParams = new ArrayList<T>(size);
+                    listParams = new ArrayList<>(size);
                     getIntersectParameters().put(listId, listParams);
                 }
             }
@@ -278,17 +278,17 @@ public class QueryParameters {
        this.like = queryParameters.like;
        this.range = queryParameters.range;
        this.intersectParameters = queryParameters.intersectParameters == null ? null :
-               new HashMap<String, List<? extends Object>>(queryParameters.intersectParameters);
+               new HashMap<>(queryParameters.intersectParameters);
        this.unionParameters = queryParameters.unionParameters == null ? null :
-               new HashMap<String, List<? extends Object>>(queryParameters.unionParameters);
+               new HashMap<>(queryParameters.unionParameters);
        this.intersectRangeParameters = queryParameters.intersectRangeParameters == null ? null :
-               new HashMap<String, List<? extends Object>>(queryParameters.intersectRangeParameters);
+               new HashMap<>(queryParameters.intersectRangeParameters);
        this.unionRangeParameters = queryParameters.unionRangeParameters == null ? null :
-               new HashMap<String, List<? extends Object>>(queryParameters.unionRangeParameters);
+               new HashMap<>(queryParameters.unionRangeParameters);
        this.intersectRegexParameters = queryParameters.intersectRegexParameters == null ? null :
-               new HashMap<String, List<String>>(queryParameters.intersectRegexParameters);
+               new HashMap<>(queryParameters.intersectRegexParameters);
        this.unionRegexParameters = queryParameters.unionRegexParameters == null ? null :
-               new HashMap<String, List<String>>(queryParameters.unionRegexParameters);
+               new HashMap<>(queryParameters.unionRegexParameters);
     }
 
 

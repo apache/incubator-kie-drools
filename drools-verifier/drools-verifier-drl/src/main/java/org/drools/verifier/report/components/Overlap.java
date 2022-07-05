@@ -35,7 +35,7 @@ public class Overlap
     implements
     Cause {
 
-    private final List<Cause> items = new ArrayList<Cause>( 2 );
+    private final List<Cause> items = new ArrayList<>( 2 );
 
     public Overlap(VerifierComponent first,
                    VerifierComponent second) {

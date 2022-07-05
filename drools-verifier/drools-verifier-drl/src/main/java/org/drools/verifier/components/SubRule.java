@@ -34,7 +34,7 @@ public class SubRule extends RuleComponent
     Possibility {
     private static final long  serialVersionUID = 510l;
 
-    private Set<RuleComponent> items            = new HashSet<RuleComponent>();
+    private Set<RuleComponent> items            = new HashSet<>();
 
     private final VerifierRule rule;
 

@@ -28,7 +28,7 @@ import org.kie.dmn.api.core.DMNMetadata;
 public class DMNContextImpl implements DMNContext {
     private static final String DEFAULT_IDENT = "    ";
 
-    private Map<String, Object> entries    = new LinkedHashMap<String, Object>();
+    private Map<String, Object> entries    = new LinkedHashMap<>();
     private Deque<ScopeReference> stack    = new LinkedList<>();
     private DMNMetadata metadata;
 

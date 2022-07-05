@@ -58,7 +58,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
 
     public void addDurationTimer( final DurationTimer durationTimer ) {
         if ( this.durations == null ) {
-            this.durations = new ArrayList<DurationTimer>();
+            this.durations = new ArrayList<>();
         }
         this.durations.add( durationTimer );
     }

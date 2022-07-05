@@ -41,7 +41,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
 
     private AtomicInteger     notExpiredPartitions;
 
-    private final transient LinkedList<JobHandle> jobs = new LinkedList<JobHandle>();
+    private final transient LinkedList<JobHandle> jobs = new LinkedList<>();
 
     // ----------------------------------------------------------------------
     // Constructors

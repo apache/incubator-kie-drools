@@ -56,7 +56,7 @@ public class TDefinitions extends TNamedElement implements Definitions {
     @Override
     public List<Import> getImport() {
         if (_import == null) {
-            _import = new ArrayList<Import>();
+            _import = new ArrayList<>();
         }
         return this._import;
     }
@@ -64,7 +64,7 @@ public class TDefinitions extends TNamedElement implements Definitions {
     @Override
     public List<ItemDefinition> getItemDefinition() {
         if (itemDefinition == null) {
-            itemDefinition = new ArrayList<ItemDefinition>();
+            itemDefinition = new ArrayList<>();
         }
         return this.itemDefinition;
     }
@@ -72,7 +72,7 @@ public class TDefinitions extends TNamedElement implements Definitions {
     @Override
     public List<DRGElement> getDrgElement() {
         if (drgElement == null) {
-            drgElement = new ArrayList<DRGElement>();
+            drgElement = new ArrayList<>();
         }
         return this.drgElement;
     }
@@ -80,7 +80,7 @@ public class TDefinitions extends TNamedElement implements Definitions {
     @Override
     public List<Artifact> getArtifact() {
         if (artifact == null) {
-            artifact = new ArrayList<Artifact>();
+            artifact = new ArrayList<>();
         }
         return this.artifact;
     }
@@ -88,7 +88,7 @@ public class TDefinitions extends TNamedElement implements Definitions {
     @Override
     public List<ElementCollection> getElementCollection() {
         if (elementCollection == null) {
-            elementCollection = new ArrayList<ElementCollection>();
+            elementCollection = new ArrayList<>();
         }
         return this.elementCollection;
     }
@@ -96,7 +96,7 @@ public class TDefinitions extends TNamedElement implements Definitions {
     @Override
     public List<BusinessContextElement> getBusinessContextElement() {
         if (businessContextElement == null) {
-            businessContextElement = new ArrayList<BusinessContextElement>();
+            businessContextElement = new ArrayList<>();
         }
         return this.businessContextElement;
     }

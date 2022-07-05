@@ -141,7 +141,7 @@ public class CoincidesEvaluatorDefinition
                                   final Target left,
                                   final Target right) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, CoincidesEvaluator>();
+            this.cache = new HashMap<>();
         }
         String key = left + ":" + right + ":" + isNegated + ":" + parameterText;
         CoincidesEvaluator eval = this.cache.get( key );

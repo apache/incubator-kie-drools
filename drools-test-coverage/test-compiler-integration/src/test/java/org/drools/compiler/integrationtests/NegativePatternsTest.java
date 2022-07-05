@@ -39,7 +39,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests negative patterns with or without additional constraints and events are
@@ -137,34 +137,34 @@ public class NegativePatternsTest {
 
         // no rules should be fired in the beginning
         advanceTime(LONG_SLEEP_TIME);
-        assertEquals(count, firedRulesListener.ruleFiredCount("SingleAbsence"));
+        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
 
         // after firing the rule will wait for 18ms
         ksession.fireAllRules();
-        assertEquals(count, firedRulesListener.ruleFiredCount("SingleAbsence"));
+        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
         count++;
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertEquals(count, firedRulesListener.ruleFiredCount("SingleAbsence"));
+        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
 
         final FactHandle event = entryPoint.insert(new TestEvent(0, "EventA"));
         ksession.fireAllRules();
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertEquals(count, firedRulesListener.ruleFiredCount("SingleAbsence"));
+        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
 
         entryPoint.delete(event);
         ksession.fireAllRules();
         count++;
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertEquals(count, firedRulesListener.ruleFiredCount("SingleAbsence"));
+        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
 
         // rule was already fired and no changes were made to working memory
         ksession.fireAllRules();
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertEquals(count, firedRulesListener.ruleFiredCount("SingleAbsence"));
+        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
     }
 
     @Test
@@ -193,7 +193,7 @@ public class NegativePatternsTest {
         }
 
         ksession.fireAllRules();
-        assertEquals(count, firedRulesListener.ruleFiredCount("SingleConstrained"));
+        assertThat(firedRulesListener.ruleFiredCount("SingleConstrained")).isEqualTo(count);
     }
 
     @Test
@@ -209,7 +209,7 @@ public class NegativePatternsTest {
             advanceTime(SHORT_SLEEP_TIME);
             ksession.fireAllRules();
         }
-        assertEquals(count, firedRulesListener.ruleFiredCount("MultipleEvents"));
+        assertThat(firedRulesListener.ruleFiredCount("MultipleEvents")).isEqualTo(count);
 
         entryPoint.insert(new TestEvent(count, "EventA"));
         final FactHandle handle = entryPoint.insert(new TestEvent(-1, "EventB"));
@@ -232,7 +232,7 @@ public class NegativePatternsTest {
         }
 
         ksession.fireAllRules();
-        assertEquals(count, firedRulesListener.ruleFiredCount("MultipleEvents"));
+        assertThat(firedRulesListener.ruleFiredCount("MultipleEvents")).isEqualTo(count);
     }
 
     @Test
@@ -246,7 +246,7 @@ public class NegativePatternsTest {
         ksession.fireAllRules();
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertEquals(count, firedRulesListener.ruleFiredCount("MultipleEntryPoints"));
+        assertThat(firedRulesListener.ruleFiredCount("MultipleEntryPoints")).isEqualTo(count);
 
         FactHandle handle;
         for (int i = 0; i < LOOPS; i++) {
@@ -273,7 +273,7 @@ public class NegativePatternsTest {
         }
 
         ksession.fireAllRules();
-        assertEquals(count, firedRulesListener.ruleFiredCount("MultipleEntryPoints"));
+        assertThat(firedRulesListener.ruleFiredCount("MultipleEntryPoints")).isEqualTo(count);
     }
 
     private void advanceTime(final long amount) {

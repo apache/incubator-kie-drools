@@ -25,8 +25,7 @@ import org.junit.Test;
 import org.kie.api.builder.KieFileSystem;
 import org.drools.util.PortablePath;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieFileSystemImplTest {
 
@@ -43,8 +42,8 @@ public class KieFileSystemImplTest {
         MemoryFileSystem clonedMfs = ( (KieFileSystemImpl) clonedKieFileSystem ).getMfs();
         Collection<PortablePath> clonedFileNames = clonedMfs.getFilePaths();
 
-        assertTrue( kieFileSystem != clonedKieFileSystem );
-        assertTrue( kieFileSystem.getMfs() != clonedMfs );
-        assertEquals( kieFileSystem.getMfs().getFilePaths(), clonedFileNames );
+        assertThat(kieFileSystem != clonedKieFileSystem).isTrue();
+        assertThat(kieFileSystem.getMfs() != clonedMfs).isTrue();
+        assertThat(clonedFileNames).isEqualTo(kieFileSystem.getMfs().getFilePaths());
     }
 }

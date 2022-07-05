@@ -1,4 +1,4 @@
-package org.kie.pmml.compiler.commons.factories;/*
+/*
  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@ package org.kie.pmml.compiler.commons.factories;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.pmml.compiler.commons.factories;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;

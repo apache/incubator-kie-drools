@@ -44,8 +44,8 @@ public class QueryDescr extends RuleDescr {
     
     public void addParameter( String type, String variable ) {
         if( parameterTypes == Collections.EMPTY_LIST ) {
-            this.parameterTypes = new ArrayList<String>();
-            this.parameterNames = new ArrayList<String>();
+            this.parameterTypes = new ArrayList<>();
+            this.parameterNames = new ArrayList<>();
         }
         this.parameterTypes.add( type );
         this.parameterNames.add( variable );

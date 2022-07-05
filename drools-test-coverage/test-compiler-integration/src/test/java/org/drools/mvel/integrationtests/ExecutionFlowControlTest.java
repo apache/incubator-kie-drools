@@ -49,8 +49,7 @@ import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ExecutionFlowControlTest {
@@ -78,13 +77,10 @@ public class ExecutionFlowControlTest {
 
         ksession.fireAllRules();
 
-        assertEquals( "Three rules should have been fired", 3, list.size() );
-        assertEquals( "Rule 4 should have been fired first", "Rule 4",
-                      list.get( 0 ) );
-        assertEquals( "Rule 2 should have been fired second", "Rule 2",
-                      list.get( 1 ) );
-        assertEquals( "Rule 3 should have been fired third", "Rule 3",
-                      list.get( 2 ) );
+        assertThat(list.size()).as("Three rules should have been fired").isEqualTo(3);
+        assertThat(list.get(0)).as("Rule 4 should have been fired first").isEqualTo("Rule 4");
+        assertThat(list.get(1)).as("Rule 2 should have been fired second").isEqualTo("Rule 2");
+        assertThat(list.get(2)).as("Rule 3 should have been fired third").isEqualTo("Rule 3");
     }
 
     @Test
@@ -104,11 +100,9 @@ public class ExecutionFlowControlTest {
 
         ksession.fireAllRules();
 
-        assertEquals( "Two rules should have been fired", 2, list.size() );
-        assertEquals( "Rule 3 should have been fired first", "Rule 3",
-                      list.get( 0 ) );
-        assertEquals( "Rule 2 should have been fired second", "Rule 2",
-                      list.get( 1 ) );
+        assertThat(list.size()).as("Two rules should have been fired").isEqualTo(2);
+        assertThat(list.get(0)).as("Rule 3 should have been fired first").isEqualTo("Rule 3");
+        assertThat(list.get(1)).as("Rule 2 should have been fired second").isEqualTo("Rule 2");
     }
     
     @Test
@@ -153,11 +147,11 @@ public class ExecutionFlowControlTest {
         
         ksession.fireAllRules();
         System.out.println( list );
-        
-        assertEquals( 3, list.size() );
-        assertEquals( fact2, list.get( 0 ) );
-        assertEquals( fact3, list.get( 1 ) );
-        assertEquals( fact1, list.get( 2 ) );     
+
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.get(0)).isEqualTo(fact2);
+        assertThat(list.get(1)).isEqualTo(fact3);
+        assertThat(list.get(2)).isEqualTo(fact1);     
     }
 
     @Test
@@ -186,7 +180,7 @@ public class ExecutionFlowControlTest {
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        assertEquals( "b", list.get( 2 ) );
+        assertThat(list.get(2)).isEqualTo("b");
     }
 
     @Test
@@ -244,16 +238,16 @@ public class ExecutionFlowControlTest {
         ksession.insert( "e" );
         ksession.fireAllRules();
 
-        assertEquals( 9, list.size() );
-        assertEquals( "a", list.get( 0 ) );
-        assertEquals( "b", list.get( 1 ) );
-        assertEquals( "c", list.get( 2 ) );
-        assertEquals( "a", list.get( 3 ) );
-        assertEquals( "b", list.get( 4 ) );
-        assertEquals( "d", list.get( 5 ) );
-        assertEquals( "a", list.get( 6 ) );
-        assertEquals( "b", list.get( 7 ) );
-        assertEquals( "e", list.get( 8 ) );
+        assertThat(list.size()).isEqualTo(9);
+        assertThat(list.get(0)).isEqualTo("a");
+        assertThat(list.get(1)).isEqualTo("b");
+        assertThat(list.get(2)).isEqualTo("c");
+        assertThat(list.get(3)).isEqualTo("a");
+        assertThat(list.get(4)).isEqualTo("b");
+        assertThat(list.get(5)).isEqualTo("d");
+        assertThat(list.get(6)).isEqualTo("a");
+        assertThat(list.get(7)).isEqualTo("b");
+        assertThat(list.get(8)).isEqualTo("e");
     }
 
 
@@ -300,10 +294,10 @@ public class ExecutionFlowControlTest {
         ksession.insert( fact3 );
         
         ksession.fireAllRules();
-        
-        assertEquals( 2, list.size() );
-        assertEquals( fact2, list.get( 0 ) );
-        assertEquals( fact3, list.get( 1 ) );   
+
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0)).isEqualTo(fact2);
+        assertThat(list.get(1)).isEqualTo(fact3);   
     }    
 
     @Test
@@ -319,8 +313,7 @@ public class ExecutionFlowControlTest {
 
         ksession.fireAllRules();
 
-        assertEquals( "Should not loop  and thus size should be 1", 1,
-                      list.size() );
+        assertThat(list.size()).as("Should not loop  and thus size should be 1").isEqualTo(1);
 
     }
 
@@ -338,9 +331,8 @@ public class ExecutionFlowControlTest {
 
         ksession.fireAllRules();
 
-        assertEquals( "Should not loop  and thus size should be 1", 1,
-                      list.size() );
-        assertEquals( 50, brie.getPrice() );
+        assertThat(list.size()).as("Should not loop  and thus size should be 1").isEqualTo(1);
+        assertThat(brie.getPrice()).isEqualTo(50);
 
     }
 
@@ -359,23 +351,23 @@ public class ExecutionFlowControlTest {
         ((InternalWorkingMemory)ksession).flushPropagations();
         InternalAgenda agenda = ((InternalAgenda) ksession.getAgenda());
         final InternalAgendaGroup group1 = agenda.getAgendaGroupsManager().getAgendaGroup( "group1" );
-        assertEquals( 1, group1.size() );
+        assertThat(group1.size()).isEqualTo(1);
 
         ksession.getAgenda().getAgendaGroup("group1").setFocus( );
         // AgendaqGroup "group1" is now active, so should not receive activations
         final Cheese brie10 = new Cheese( "brie", 10 );
         ksession.insert( brie10 );
-        assertEquals( 1, group1.size() );
+        assertThat(group1.size()).isEqualTo(1);
 
         final Cheese cheddar20 = new Cheese( "cheddar", 20 );
         ksession.insert( cheddar20 );
         final InternalAgendaGroup group2 = agenda.getAgendaGroupsManager().getAgendaGroup( "group1" );
-        assertEquals( 1, group2.size() );
+        assertThat(group2.size()).isEqualTo(1);
 
         agenda.getAgendaGroupsManager().setFocus(group2);
         final Cheese cheddar17 = new Cheese( "cheddar", 17 );
         ksession.insert( cheddar17 );
-        assertEquals( 1, group2.size() );
+        assertThat(group2.size()).isEqualTo(1);
     }
 
     @Test
@@ -401,14 +393,14 @@ public class ExecutionFlowControlTest {
         ksession.insert( "hello3" );
 
         ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
         ksession.insert( "hello4" );
         ksession.insert( "hello5" );
         ksession.insert( "hello6" );
 
         ksession.fireAllRules();
-        assertEquals( 6, list.size() );
+        assertThat(list.size()).isEqualTo(6);
     }
 
     @Test
@@ -435,7 +427,7 @@ public class ExecutionFlowControlTest {
         ksession.insert( "hello3" );
 
         ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         // because we have halted, the next 3 will be ignored, but it will still
         // fire the remaing 3rd activation from previous asserts
@@ -444,7 +436,7 @@ public class ExecutionFlowControlTest {
         ksession.insert( "hello6" );
 
         ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+        assertThat(list.size()).isEqualTo(3);
     }
 
     @Test
@@ -477,34 +469,34 @@ public class ExecutionFlowControlTest {
         final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
         final InternalAgendaGroup group1 = agenda.getAgendaGroupsManager().getAgendaGroup( "group1" );
         agenda.getAgendaGroupsManager().setFocus( group1 );
-        assertEquals( 1, group1.size() );
+        assertThat(group1.size()).isEqualTo(1);
         RuleAgendaItem ruleItem1 = (RuleAgendaItem) group1.getActivations()[0];
         ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
-        assertEquals(3, ruleItem1.getRuleExecutor().getLeftTupleList().size());
+        assertThat(ruleItem1.getRuleExecutor().getLeftTupleList().size()).isEqualTo(3);
 
         agenda.fireNextItem( null, 0, 0 );
-        assertEquals( 1, group1.size() );
-        assertEquals( 2, ruleItem1.getRuleExecutor().getLeftTupleList().size() );
+        assertThat(group1.size()).isEqualTo(1);
+        assertThat(ruleItem1.getRuleExecutor().getLeftTupleList().size()).isEqualTo(2);
 
         ksession.update( brieHandle, brie );
-        assertEquals( 1, group1.size() );
+        assertThat(group1.size()).isEqualTo(1);
         ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
-        assertEquals(2, ruleItem1.getRuleExecutor().getLeftTupleList().size());
+        assertThat(ruleItem1.getRuleExecutor().getLeftTupleList().size()).isEqualTo(2);
 
         InternalAgendaGroup group2 = agenda.getAgendaGroupsManager().getAgendaGroup( "group2" );
         agenda.getAgendaGroupsManager().setFocus( group2);
-        assertEquals( 1, group2.size() );
+        assertThat(group2.size()).isEqualTo(1);
         RuleAgendaItem ruleItem2 = (RuleAgendaItem) group2.getActivations()[0];
         ruleItem2.getRuleExecutor().evaluateNetwork(wm.getAgenda());
-        assertEquals(3, ruleItem2.getRuleExecutor().getLeftTupleList().size());
+        assertThat(ruleItem2.getRuleExecutor().getLeftTupleList().size()).isEqualTo(3);
 
         agenda.fireNextItem( null, 0, 0 );
-        assertEquals( 1, group2.size() );
-        assertEquals( 2, ruleItem2.getRuleExecutor().getLeftTupleList().size() );
+        assertThat(group2.size()).isEqualTo(1);
+        assertThat(ruleItem2.getRuleExecutor().getLeftTupleList().size()).isEqualTo(2);
 
         ksession.update( brieHandle, brie );
-        assertEquals( 1, group2.size() );
-        assertEquals( 2, ruleItem2.getRuleExecutor().getLeftTupleList().size() );
+        assertThat(group2.size()).isEqualTo(1);
+        assertThat(ruleItem2.getRuleExecutor().getLeftTupleList().size()).isEqualTo(2);
     }
 
     @Test
@@ -558,13 +550,13 @@ public class ExecutionFlowControlTest {
 
          // now, start playing
         int fired = ksession.fireAllRules( 100 );
-        assertEquals( 0, fired );
+        assertThat(fired).isEqualTo(0);
 
         ksession.getAgenda().getAgendaGroup("calculate").setFocus();
         fired = ksession.fireAllRules( 100 );
         // logger.writeToDisk();
-        assertEquals( 0, fired );
-        assertEquals("MAIN", ((InternalAgenda) ksession.getAgenda()).getFocusName());
+        assertThat(fired).isEqualTo(0);
+        assertThat(((InternalAgenda) ksession.getAgenda()).getFocusName()).isEqualTo("MAIN");
 
         // on the fifth day God created the birds and sea creatures
         cells[0][0].setState( Cell.LIVE );
@@ -576,7 +568,7 @@ public class ExecutionFlowControlTest {
         // logger.writeToDisk();
         int[][] expected = new int[][]{{0, 1, 0}, {1, 1, 0}, {0, 0, 0}};
         assertEqualsMatrix( size, cells, expected );
-        assertEquals( "MAIN", ((InternalAgenda)ksession.getAgenda()).getFocusName() );
+        assertThat(((InternalAgenda) ksession.getAgenda()).getFocusName()).isEqualTo("MAIN");
 
         // on the sixth day God created the animals that walk over the land and
         // the Man
@@ -588,13 +580,13 @@ public class ExecutionFlowControlTest {
 
         expected = new int[][]{{1, 2, 1}, {2, 1, 1}, {1, 1, 1}};
         assertEqualsMatrix( size, cells, expected );
-        assertEquals( "MAIN", ((InternalAgenda)ksession.getAgenda()).getFocusName()  );
+        assertThat(((InternalAgenda) ksession.getAgenda()).getFocusName()).isEqualTo("MAIN");
 
         ksession.getAgenda().getAgendaGroup("birth").setFocus();
         ksession.fireAllRules( 100 );
         expected = new int[][]{{1, 2, 1}, {2, 1, 1}, {1, 1, 1}};
         assertEqualsMatrix( size, cells, expected );
-        assertEquals( "MAIN", ((InternalAgenda)ksession.getAgenda()).getFocusName()  );
+        assertThat(((InternalAgenda) ksession.getAgenda()).getFocusName()).isEqualTo("MAIN");
 
         System.out.println( "--------" );
         ksession.getAgenda().getAgendaGroup("calculate").setFocus();
@@ -604,7 +596,7 @@ public class ExecutionFlowControlTest {
 
         expected = new int[][]{{3, 3, 2}, {3, 3, 2}, {2, 2, 1}};
         assertEqualsMatrix( size, cells, expected );
-        assertEquals( "MAIN", ((InternalAgenda)ksession.getAgenda()).getFocusName()  );
+        assertThat(((InternalAgenda) ksession.getAgenda()).getFocusName()).isEqualTo("MAIN");
         System.out.println( "--------" );
 
         // on the seventh day, while God rested, man start killing them all
@@ -615,7 +607,7 @@ public class ExecutionFlowControlTest {
 
         expected = new int[][]{{3, 2, 2}, {2, 2, 2}, {2, 2, 1}};
         assertEqualsMatrix( size, cells, expected );
-        assertEquals( "MAIN", ((InternalAgenda)ksession.getAgenda()).getFocusName()  );
+        assertThat(((InternalAgenda) ksession.getAgenda()).getFocusName()).isEqualTo("MAIN");
 
     }
 
@@ -636,8 +628,7 @@ public class ExecutionFlowControlTest {
                                     int[][] expected) {
         for ( int row = 0; row < size; row++ ) {
             for ( int col = 0; col < size; col++ ) {
-                assertEquals( "Wrong value at " + row + "," + col + ": ",
-                              expected[row][col], cells[row][col].getValue() );
+                assertThat(cells[row][col].getValue()).as("Wrong value at " + row + "," + col + ": ").isEqualTo(expected[row][col]);
             }
         }
     }
@@ -655,21 +646,21 @@ public class ExecutionFlowControlTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 7, list.size() );
+        assertThat(list.size()).isEqualTo(7);
 
-        assertEquals( "group3", list.get( 0 ) );
-        assertEquals( "group4", list.get( 1 ) );
-        assertEquals( "group3", list.get( 2 ) );
-        assertEquals( "MAIN", list.get( 3 ) );
-        assertEquals( "group1", list.get( 4 ) );
-        assertEquals( "group1", list.get( 5 ) );
-        assertEquals( "MAIN", list.get( 6 ) );
+        assertThat(list.get(0)).isEqualTo("group3");
+        assertThat(list.get(1)).isEqualTo("group4");
+        assertThat(list.get(2)).isEqualTo("group3");
+        assertThat(list.get(3)).isEqualTo("MAIN");
+        assertThat(list.get(4)).isEqualTo("group1");
+        assertThat(list.get(5)).isEqualTo("group1");
+        assertThat(list.get(6)).isEqualTo("MAIN");
 
         ksession.getAgenda().getAgendaGroup( "group2" ).setFocus();
         ksession.fireAllRules();
 
-        assertEquals( 8, list.size() );
-        assertEquals( "group2", list.get( 7 ) );
+        assertThat(list.size()).isEqualTo(8);
+        assertThat(list.get(7)).isEqualTo("group2");
     }
 
     @Test
@@ -686,9 +677,9 @@ public class ExecutionFlowControlTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( "rule0", list.get( 0 ) );
-        assertEquals( "rule2", list.get( 1 ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0)).isEqualTo("rule0");
+        assertThat(list.get(1)).isEqualTo("rule2");
     }
     
     public static class Holder {
@@ -760,8 +751,8 @@ public class ExecutionFlowControlTest {
         System.out.println( "Holds: " + inrec.getValue() );
         ksession.insert( inrec );
         ksession.fireAllRules();
-        assertEquals( 1, ksession.getFactHandles().size() );
-        assertEquals( "setting 1", inrec.getOutcome() );
+        assertThat(ksession.getFactHandles().size()).isEqualTo(1);
+        assertThat(inrec.getOutcome()).isEqualTo("setting 1");
 
         ksession.dispose();
         ksession = kbase.newKieSession();
@@ -769,8 +760,8 @@ public class ExecutionFlowControlTest {
         System.out.println( "Holds: " + inrec.getValue() );
         ksession.insert( inrec );
         ksession.fireAllRules();
-        assertEquals( 1, ksession.getFactHandles().size() );
-        assertEquals( "setting null", inrec.getOutcome() );
+        assertThat(ksession.getFactHandles().size()).isEqualTo(1);
+        assertThat(inrec.getOutcome()).isEqualTo("setting null");
 
         ksession.dispose();
         ksession = kbase.newKieSession();
@@ -778,8 +769,8 @@ public class ExecutionFlowControlTest {
         System.out.println( "Holds: " + inrec.getValue() );
         ksession.insert( inrec );
         ksession.fireAllRules(); // appropriate rule is not fired!
-        assertEquals( 1, ksession.getFactHandles().size() );
-        assertEquals( "setting 0", inrec.getOutcome() );
+        assertThat(ksession.getFactHandles().size()).isEqualTo(1);
+        assertThat(inrec.getOutcome()).isEqualTo("setting 0");
     }
 
     @Test
@@ -791,7 +782,7 @@ public class ExecutionFlowControlTest {
         ksession.insert( new Cheese( "stilton", 15 ) );
 
         ksession.fireAllRules();
-        assertEquals(0, ksession.getObjects().size());
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
     }
 
     @Test
@@ -807,7 +798,7 @@ public class ExecutionFlowControlTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 14, cheese.getPrice() );
+        assertThat(cheese.getPrice()).isEqualTo(14);
     }
 
     @Test
@@ -850,15 +841,15 @@ public class ExecutionFlowControlTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 3, created.size() );
-        assertEquals( 0, cancelled.size() );
+        assertThat(created.size()).isEqualTo(3);
+        assertThat(cancelled.size()).isEqualTo(0);
 
         // simulate a modify inside a consequence
         ksession.update( stiltonHandle, stilton );
 
         // with true modify, no reactivations should be triggered
-        assertEquals( 3, created.size() );
-        assertEquals( 0, cancelled.size() );
+        assertThat(created.size()).isEqualTo(3);
+        assertThat(cancelled.size()).isEqualTo(0);
     }
 
     @Test
@@ -871,12 +862,12 @@ public class ExecutionFlowControlTest {
 
         ksession.insert( "Test" );
         ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("Group1");
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -892,13 +883,13 @@ public class ExecutionFlowControlTest {
 
         ksession.insert( "Test" );
         ksession.fireAllRules();
-        assertEquals( 0, list.size() );
-        assertEquals(2, ((InternalRuleFlowGroup) ksession.getAgenda().getRuleFlowGroup("Group1")).size());
+        assertThat(list.size()).isEqualTo(0);
+        assertThat(((InternalRuleFlowGroup) ksession.getAgenda().getRuleFlowGroup("Group1")).size()).isEqualTo(2);
 
         ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("Group1");
         ksession.fireAllRules();
 
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
     }
 
     @Test(timeout=10000)
@@ -925,7 +916,7 @@ public class ExecutionFlowControlTest {
         new Thread(ksession::fireUntilHalt).start();
         try {
             ksession.insert( "Test" );
-            assertEquals( 0, list.size() );
+            assertThat(list.size()).isEqualTo(0);
 
             ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup("Group1");
 
@@ -935,7 +926,7 @@ public class ExecutionFlowControlTest {
                 }
             }
 
-            assertEquals( 1, list.size() );
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.halt();
             ksession.dispose();
@@ -957,7 +948,7 @@ public class ExecutionFlowControlTest {
         final Message message = new Message( "hola" );
         ksession.insert( message );
         ksession.fireAllRules();
-        assertFalse( message.isFired() );
+        assertThat(message.isFired()).isFalse();
     }
 
     @Test
@@ -989,7 +980,7 @@ public class ExecutionFlowControlTest {
 
         ksession.update( fh, p ); // normally NPE thrown here, for BUG
         
-        assertEquals( 36, p.getAge() );
+        assertThat(p.getAge()).isEqualTo(36);
     }
 
 
@@ -1028,7 +1019,7 @@ public class ExecutionFlowControlTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        ArrayList<String> ruleList = new ArrayList<String>();
+        List<Integer> ruleList = new ArrayList<>();
         ksession.setGlobal("ruleList", ruleList);
 
         ksession.insert(new String("r1"));
@@ -1041,21 +1032,21 @@ public class ExecutionFlowControlTest {
         ksession.insert(new String("r4"));
         ksession.getAgenda().getAgendaGroup("g1").setFocus();
 
-        assertEquals( 8, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(8);
 
 
-        assertEquals( 8, ruleList.size() );
-        assertEquals( 1, ruleList.get(0));
-        assertEquals( 1, ruleList.get(1));
-        assertEquals( 2, ruleList.get(2));
+        assertThat(ruleList.size()).isEqualTo(8);
+        assertThat(ruleList.get(0)).isEqualTo(1);
+        assertThat(ruleList.get(1)).isEqualTo(1);
+        assertThat(ruleList.get(2)).isEqualTo(2);
 
-        assertEquals( 4, ruleList.get(3));
-        assertEquals( 4, ruleList.get(4));
+        assertThat(ruleList.get(3)).isEqualTo(4);
+        assertThat(ruleList.get(4)).isEqualTo(4);
 
-        assertEquals( 2, ruleList.get(5));
+        assertThat(ruleList.get(5)).isEqualTo(2);
 
-        assertEquals( 3, ruleList.get(6));
-        assertEquals( 3, ruleList.get(7));
+        assertThat(ruleList.get(6)).isEqualTo(3);
+        assertThat(ruleList.get(7)).isEqualTo(3);
     }
 
     @Test
@@ -1092,6 +1083,6 @@ public class ExecutionFlowControlTest {
         ksession.insert( 3L );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 }

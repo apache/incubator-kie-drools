@@ -30,7 +30,7 @@ public class VerifierRule extends PackageComponent
     implements
     Cause {
 
-    private Map<String, String>       attributes      = new HashMap<String, String>();
+    private Map<String, String>       attributes      = new HashMap<>();
 
     private String                    consequencePath;
     private ConsequenceType           consequenceType;
@@ -40,19 +40,19 @@ public class VerifierRule extends PackageComponent
 
     private String                    name;
 
-    private Collection<String>        header          = new ArrayList<String>();
+    private Collection<String>        header          = new ArrayList<>();
 
-    private Collection<String>        lhsRows         = new ArrayList<String>();
+    private Collection<String>        lhsRows         = new ArrayList<>();
 
-    private Collection<String>        rhsRows         = new ArrayList<String>();
+    private Collection<String>        rhsRows         = new ArrayList<>();
 
     private String                    description;
 
-    private Map<String, Map<String,String>>       metadata        = new HashMap<String, Map<String,String>>();
+    private Map<String, Map<String,String>>       metadata        = new HashMap<>();
 
-    private Collection<String>        commentMetadata = new ArrayList<String>();
+    private Collection<String>        commentMetadata = new ArrayList<>();
 
-    private Map<String, List<String>> otherInfo       = new HashMap<String, List<String>>();
+    private Map<String, List<String>> otherInfo       = new HashMap<>();
 
     private int                       offset          = 0;
     private final Map<String, Object> namedConsequences;

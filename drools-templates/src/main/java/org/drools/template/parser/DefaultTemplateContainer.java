@@ -34,11 +34,11 @@ import java.util.Map;
 public class DefaultTemplateContainer implements TemplateContainer {
     private String header;
 
-    private Map<String, Column> columnMap = new HashMap<String, Column>();
+    private Map<String, Column> columnMap = new HashMap<>();
 
-    private List<Column> columns = new ArrayList<Column>();
+    private List<Column> columns = new ArrayList<>();
 
-    private Map<String, RuleTemplate> templates = new HashMap<String, RuleTemplate>();
+    private Map<String, RuleTemplate> templates = new HashMap<>();
 
     private boolean replaceOptionals;
 

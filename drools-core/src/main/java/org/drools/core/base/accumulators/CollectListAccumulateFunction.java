@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,7 +58,7 @@ public class CollectListAccumulateFunction extends AbstractAccumulateFunction<Co
     public static class CollectListData
         implements
         Externalizable {
-        public List< Object > list = new ArrayList<Object>();
+        public List< Object > list = new ArrayList<>();
 
         public CollectListData() {
         }

@@ -2,7 +2,6 @@
 
     package org.drools.compiler.rule.builder.dialect.java.parser;
     import java.util.Iterator;
-    import java.util.Queue;
     import java.util.LinkedList;
     import java.util.Stack;
     import java.util.Set;
@@ -20,7 +19,6 @@ import org.antlr.runtime.*;
 import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
 
 /** A Java 1.5 grammar for ANTLR v3 derived from the spec

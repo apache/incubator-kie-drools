@@ -266,7 +266,7 @@ public class ReteDiagram {
             this.to = to;
         }
         public static <F, T> Vertex<F, T> of(F from, T to) {
-            return new Vertex<F, T>(from, to);
+            return new Vertex<>(from, to);
         }
     }
     

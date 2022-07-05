@@ -81,7 +81,7 @@ public class TypeDeclarationDescr
 
     public void addSuperType( QualifiedName type ) {
         if ( superTypes == null ) {
-            superTypes = new ArrayList<QualifiedName>();
+            superTypes = new ArrayList<>();
         }
         if ( ! this.superTypes.contains( type ) ) {
             this.superTypes.add( type );

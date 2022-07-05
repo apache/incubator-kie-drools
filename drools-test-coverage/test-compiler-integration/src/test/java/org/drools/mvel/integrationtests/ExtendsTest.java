@@ -45,12 +45,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Test for declared bean Extension
@@ -87,8 +82,8 @@ public class ExtendsTest {
 
         // A Rule will generate 3 Persons, one with default constructor, two with field constructor
         // and 3 Students, which extends Person. One with default, one with field constructor
-        assertEquals(6, ksession.getObjects(new ClassObjectFilter(person.getFactClass())).size());
-        assertEquals(1+4+1+4,ksession.getObjects(new ClassObjectFilter(eqPair.getFactClass())).size());
+        assertThat(ksession.getObjects(new ClassObjectFilter(person.getFactClass())).size()).isEqualTo(6);
+        assertThat(ksession.getObjects(new ClassObjectFilter(eqPair.getFactClass())).size()).isEqualTo(1 + 4 + 1 + 4);
         ksession.dispose();
     }
 
@@ -107,37 +102,37 @@ public class ExtendsTest {
 
         Object s1 = constructor.newInstance("John",18,"Skool");
             assertThat(s1).isNotNull();
-            assertEquals("Student( name=John, age=18, school=Skool )", s1.toString());
+        assertThat(s1.toString()).isEqualTo("Student( name=John, age=18, school=Skool )");
 
 
 
         Object s2 = constructor.newInstance("John",25,"Skool");
             assertThat(s2).isNotNull();
-            assertEquals("Student( name=John, age=25, school=Skool )", s2.toString());
-            assertEquals(s1.hashCode(),s2.hashCode());
-            assertTrue((Boolean) equals.invoke(s1,s2));
-            assertTrue(s1.equals(s2));
+        assertThat(s2.toString()).isEqualTo("Student( name=John, age=25, school=Skool )");
+        assertThat(s2.hashCode()).isEqualTo(s1.hashCode());
+        assertThat((Boolean) equals.invoke(s1, s2)).isTrue();
+        assertThat(s1.equals(s2)).isTrue();
 
 
         Object s3 = constructor.newInstance("Mark",18,"Skool");
             assertThat(s3).isNotNull();
-            assertEquals("Student( name=Mark, age=18, school=Skool )", s3.toString());
+        assertThat(s3.toString()).isEqualTo("Student( name=Mark, age=18, school=Skool )");
 
-            assertNotSame(s1.hashCode(),s3.hashCode());
-            assertNotSame(s2.hashCode(),s3.hashCode());
-            assertFalse(s1.equals(s3));
-            assertFalse(s2.equals(s3));
+            assertThat(s3.hashCode()).isNotEqualTo(s1.hashCode());
+            assertThat(s3.hashCode()).isNotEqualTo(s2.hashCode());
+        assertThat(s1.equals(s3)).isFalse();
+        assertThat(s2.equals(s3)).isFalse();
 
         Object s4 = constructor.newInstance("John",25,"AnotherSkool");
             assertThat(s4).isNotNull();
-            assertEquals("Student( name=John, age=25, school=AnotherSkool )", s4.toString());
+        assertThat(s4.toString()).isEqualTo("Student( name=John, age=25, school=AnotherSkool )");
 
-            assertNotSame(s1.hashCode(),s4.hashCode());
-            assertNotSame(s2.hashCode(),s4.hashCode());
-            assertNotSame(s3.hashCode(),s4.hashCode());
-            assertFalse(s1.equals(s4));
-            assertFalse(s2.equals(s4));
-            assertFalse(s3.equals(s4));
+            assertThat(s4.hashCode()).isNotEqualTo(s1.hashCode());
+            assertThat(s4.hashCode()).isNotEqualTo(s2.hashCode());
+            assertThat(s4.hashCode()).isNotEqualTo(s3.hashCode());
+        assertThat(s1.equals(s4)).isFalse();
+        assertThat(s2.equals(s4)).isFalse();
+        assertThat(s3.equals(s4)).isFalse();
         ksession.dispose();
     }
 
@@ -154,7 +149,7 @@ public class ExtendsTest {
         Object ls1 = constructor.newInstance("John",18,"Skool","C1245",4);
         Object ls2 = constructor.newInstance("John",33,"Skool","C1421",4);
 
-        assertEquals(ls1,ls2);
+        assertThat(ls2).isEqualTo(ls1);
 
         ksession.dispose();
     }
@@ -166,7 +161,7 @@ public class ExtendsTest {
         //Test Base Fact Type
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration, getClass(), false, "test_ExtLegacyIllegal.drl");
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -179,12 +174,12 @@ public class ExtendsTest {
 
         Object b = leg.newInstance();
 
-        assertEquals(3.3,leg.get(b,"doubleField"));
-        assertNull(leg.get(b,"objField"));
-        assertEquals(245,leg.get(b,"intField"));
-        assertEquals("XX",leg.get(b,"strField"));
-        assertEquals(true,leg.get(b,"prop"));
-        assertEquals("Hello",leg.get(b,"oneMoreField"));
+        assertThat(leg.get(b, "doubleField")).isEqualTo(3.3);
+        assertThat(leg.get(b, "objField")).isNull();
+        assertThat(leg.get(b, "intField")).isEqualTo(245);
+        assertThat(leg.get(b, "strField")).isEqualTo("XX");
+        assertThat(leg.get(b, "prop")).isEqualTo(true);
+        assertThat(leg.get(b, "oneMoreField")).isEqualTo("Hello");
 
         System.out.println(b);
 
@@ -211,7 +206,7 @@ public class ExtendsTest {
 
         Object w = ctor.newInstance("Adam",20,"Carpenter",150.0,40);
         System.out.println(w);
-            assertEquals("Adam",worker.get(w,"name"));
+        assertThat(worker.get(w, "name")).isEqualTo("Adam");
 
         ksession.fireAllRules();
     }
@@ -229,20 +224,20 @@ public class ExtendsTest {
         Object x = test.newInstance();
         assertThat(x).isNotNull();
 
-        assertEquals(12,test.get(x,"fieldint"));
-        assertEquals("xyz",test.get(x,"fieldstr"));
-        assertEquals(3.23,test.get(x,"fielddbl"));
-        assertEquals(0,test.get(x,"field0"));
-        assertEquals(0.0f,test.get(x,"field1"));
-        assertEquals(1.2f,test.get(x,"fieldflt"));
+        assertThat(test.get(x, "fieldint")).isEqualTo(12);
+        assertThat(test.get(x, "fieldstr")).isEqualTo("xyz");
+        assertThat(test.get(x, "fielddbl")).isEqualTo(3.23);
+        assertThat(test.get(x, "field0")).isEqualTo(0);
+        assertThat(test.get(x, "field1")).isEqualTo(0.0f);
+        assertThat(test.get(x, "fieldflt")).isEqualTo(1.2f);
         short sht = 2;
-        assertEquals(sht,test.get(x,"fieldsht"));
-        assertEquals(0,test.get(x,"field2"));
+        assertThat(test.get(x, "fieldsht")).isEqualTo(sht);
+        assertThat(test.get(x, "field2")).isEqualTo(0);
         byte byt = 1;
-        assertEquals(byt,test.get(x,"fieldbyt"));
-        assertEquals(true,test.get(x,"fieldbln"));
-        assertEquals('x',test.get(x,"fieldchr"));
-        assertEquals(9999L,test.get(x,"fieldlng"));
+        assertThat(test.get(x, "fieldbyt")).isEqualTo(byt);
+        assertThat(test.get(x, "fieldbln")).isEqualTo(true);
+        assertThat(test.get(x, "fieldchr")).isEqualTo('x');
+        assertThat(test.get(x, "fieldlng")).isEqualTo(9999L);
 
 
         System.out.println(x);
@@ -260,16 +255,16 @@ public class ExtendsTest {
         Object x = test.newInstance();
         assertThat(x).isNotNull();
 
-        assertEquals(12,test.get(x,"fieldint"));
-        assertEquals(3.23,test.get(x,"fielddbl"));
-        assertEquals(1.2f,test.get(x,"fieldflt"));
+        assertThat(test.get(x, "fieldint")).isEqualTo(12);
+        assertThat(test.get(x, "fielddbl")).isEqualTo(3.23);
+        assertThat(test.get(x, "fieldflt")).isEqualTo(1.2f);
         short sht = 2;
-        assertEquals(sht,test.get(x,"fieldsht"));
+        assertThat(test.get(x, "fieldsht")).isEqualTo(sht);
         byte byt = 1;
-        assertEquals(byt,test.get(x,"fieldbyt"));
-        assertEquals(true,test.get(x,"fieldbln"));
-        assertEquals('x',test.get(x,"fieldchr"));
-        assertEquals(9999L,test.get(x,"fieldlng"));
+        assertThat(test.get(x, "fieldbyt")).isEqualTo(byt);
+        assertThat(test.get(x, "fieldbln")).isEqualTo(true);
+        assertThat(test.get(x, "fieldchr")).isEqualTo('x');
+        assertThat(test.get(x, "fieldlng")).isEqualTo(9999L);
 
         System.out.println(x);
 
@@ -285,17 +280,17 @@ public class ExtendsTest {
         Object x = test.newInstance();
         assertThat(x).isNotNull();
 
-        assertEquals("foobar",test.get(x,"f0"));
-        assertEquals(-32,test.get(x,"fieldint"));
-        assertEquals(4.0,test.get(x,"fielddbl"));
-        assertEquals(0.5f,test.get(x,"fieldflt"));
+        assertThat(test.get(x, "f0")).isEqualTo("foobar");
+        assertThat(test.get(x, "fieldint")).isEqualTo(-32);
+        assertThat(test.get(x, "fielddbl")).isEqualTo(4.0);
+        assertThat(test.get(x, "fieldflt")).isEqualTo(0.5f);
         short sht = 6;
-        assertEquals(sht,test.get(x,"fieldsht"));
+        assertThat(test.get(x, "fieldsht")).isEqualTo(sht);
         byte byt = 2;
-        assertEquals(byt,test.get(x,"fieldbyt"));
-        assertEquals(true,test.get(x,"fieldbln"));
-        assertEquals('x',test.get(x,"fieldchr"));
-        assertEquals(9999L,test.get(x,"fieldlng"));
+        assertThat(test.get(x, "fieldbyt")).isEqualTo(byt);
+        assertThat(test.get(x, "fieldbln")).isEqualTo(true);
+        assertThat(test.get(x, "fieldchr")).isEqualTo('x');
+        assertThat(test.get(x, "fieldlng")).isEqualTo(9999L);
 
         System.out.println(x);
 
@@ -306,17 +301,17 @@ public class ExtendsTest {
         x = test2.newInstance();
         assertThat(x).isNotNull();
 
-        assertEquals("foobar",test2.get(x,"f0"));
-        assertEquals(-32,test2.get(x,"fieldint"));
-        assertEquals(4.0,test2.get(x,"fielddbl"));
-        assertEquals(0.5f,test2.get(x,"fieldflt"));
+        assertThat(test2.get(x, "f0")).isEqualTo("foobar");
+        assertThat(test2.get(x, "fieldint")).isEqualTo(-32);
+        assertThat(test2.get(x, "fielddbl")).isEqualTo(4.0);
+        assertThat(test2.get(x, "fieldflt")).isEqualTo(0.5f);
         sht = 6;
-        assertEquals(sht,test2.get(x,"fieldsht"));
+        assertThat(test2.get(x, "fieldsht")).isEqualTo(sht);
         byt = 2;
-        assertEquals(byt,test2.get(x,"fieldbyt"));
-        assertEquals(true,test2.get(x,"fieldbln"));
-        assertEquals('x',test2.get(x,"fieldchr"));
-        assertEquals(9999L,test2.get(x,"fieldlng"));
+        assertThat(test2.get(x, "fieldbyt")).isEqualTo(byt);
+        assertThat(test2.get(x, "fieldbln")).isEqualTo(true);
+        assertThat(test2.get(x, "fieldchr")).isEqualTo('x');
+        assertThat(test2.get(x, "fieldlng")).isEqualTo(9999L);
 
         System.out.println(x);
     }
@@ -329,7 +324,7 @@ public class ExtendsTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, ((List) ksession.getGlobal("list")).size());
+        assertThat(((List) ksession.getGlobal("list")).size()).isEqualTo(1);
     }
 
     @Test
@@ -375,11 +370,11 @@ public class ExtendsTest {
         Object x = out.get(0);
 
         FactType type = kbase.getFactType("test.beans","Bean2");
-        assertEquals(4, type.get( x, "fld") );
-        assertEquals("xxx", type.get( x, "myField") );
-        assertEquals(0.0, type.get( x, "moref") );
+        assertThat(type.get(x, "fld")).isEqualTo(4);
+        assertThat(type.get(x, "myField")).isEqualTo("xxx");
+        assertThat(type.get(x, "moref")).isEqualTo(0.0);
 
-        assertTrue( x instanceof ArrayList );
+        assertThat(x instanceof ArrayList).isTrue();
     }
 
     @Test
@@ -396,8 +391,8 @@ public class ExtendsTest {
         assertThat(p).isNotNull();
         assertThat(s).isNotNull();
 
-        assertEquals( 99, person.get(p,"age") );
-        assertEquals( 18, person.get(s,"age") );
+        assertThat(person.get(p, "age")).isEqualTo(99);
+        assertThat(person.get(s, "age")).isEqualTo(18);
 
         ksession.dispose();
     }
@@ -448,7 +443,7 @@ public class ExtendsTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, s1, s2);
         KieSession kSession = kbase.newKieSession();
 
-        assertEquals( 3, kSession.fireAllRules() );
+        assertThat(kSession.fireAllRules()).isEqualTo(3);
     }
 
     @Test
@@ -517,16 +512,16 @@ public class ExtendsTest {
 
         for ( Object o : kSession.getObjects() ) {
             FactHandle h = kSession.getFactHandle( o );
-            assertTrue( h instanceof EventFactHandle );
+            assertThat(h instanceof EventFactHandle).isTrue();
         }
 
         System.out.println( list );
-        assertEquals( 5, list.size() );
-        assertTrue( list.contains( 0 ) );
-        assertTrue( list.contains( 1 ) );
-        assertTrue( list.contains( 2 ) );
-        assertTrue( list.contains( 3 ) );
-        assertTrue( list.contains( 4 ) );
+        assertThat(list.size()).isEqualTo(5);
+        assertThat(list.contains(0)).isTrue();
+        assertThat(list.contains(1)).isTrue();
+        assertThat(list.contains(2)).isTrue();
+        assertThat(list.contains(3)).isTrue();
+        assertThat(list.contains(4)).isTrue();
 
     }
 
@@ -565,8 +560,8 @@ public class ExtendsTest {
         kSession.setGlobal( "list", list );
 
         kSession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( 100 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains(100)).isTrue();
 
     }
 
@@ -582,7 +577,7 @@ public class ExtendsTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -604,10 +599,10 @@ public class ExtendsTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
 
         System.out.println( errors );
-        assertTrue( errors.toString().contains( "circular" ) );
+        assertThat(errors.toString().contains("circular")).isTrue();
     }
 
     @Test
@@ -627,9 +622,9 @@ public class ExtendsTest {
         FactType bar = kb.getFactType( "org.test", "Bar" );
         try {
             Object x = bar.newInstance();
-            assertEquals( 42, bar.get( x, "val" ) );
+            assertThat(bar.get(x, "val")).isEqualTo(42);
             bar.set( x, "id", 1 );
-            assertEquals( 1, bar.get( x, "id" ) );
+            assertThat(bar.get(x, "id")).isEqualTo(1);
         } catch ( Exception e ) {
             fail( e.getMessage() );
         }
@@ -672,7 +667,7 @@ public class ExtendsTest {
         
         FactHandle h = knowledgeSession.insert( new X() );
 
-        assertTrue( ( (InternalFactHandle) h ).isEvent() );
+        assertThat(((InternalFactHandle) h).isEvent()).isTrue();
 
     }
 
@@ -685,7 +680,7 @@ public class ExtendsTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     @Test
@@ -697,7 +692,7 @@ public class ExtendsTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     @Test
@@ -709,7 +704,7 @@ public class ExtendsTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -722,7 +717,7 @@ public class ExtendsTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
 
     }
 
@@ -738,9 +733,9 @@ public class ExtendsTest {
         final FactHandle handle = session.insert(mycheese);
         session.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertTrue(list.contains("rule 4"));
-        assertTrue(list.contains("rule 2b"));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("rule 4")).isTrue();
+        assertThat(list.contains("rule 2b")).isTrue();
 
         //Test 2nd level (parent) to make sure rule honors the extend rule
         list = new ArrayList();
@@ -750,8 +745,8 @@ public class ExtendsTest {
         final FactHandle handle2 = session.insert(mycheese2);
         session.fireAllRules();
 
-        assertEquals("rule 4", list.get(0));
-        assertEquals(1, list.size());
+        assertThat(list.get(0)).isEqualTo("rule 4");
+        assertThat(list.size()).isEqualTo(1);
 
         //Test 3 levels of inheritance, all levels
         list = new ArrayList();
@@ -761,8 +756,8 @@ public class ExtendsTest {
         final FactHandle handle3 = session.insert(mycheese3);
         session.fireAllRules();
         //System.out.println(list.toString());
-        assertEquals("rule 3", list.get(0));
-        assertEquals(1, list.size());
+        assertThat(list.get(0)).isEqualTo("rule 3");
+        assertThat(list.size()).isEqualTo(1);
 
         //Test 3 levels of inheritance, third only
         list = new ArrayList();
@@ -772,7 +767,7 @@ public class ExtendsTest {
         final FactHandle handle4 = session.insert(mycheese4);
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal( "list" )).toString());
-        assertTrue(((List) session.getGlobal("list")).size() == 0);
+        assertThat(((List) session.getGlobal("list")).size() == 0).isTrue();
 
         //Test 3 levels of inheritance, 2nd only
         list = new ArrayList();
@@ -781,7 +776,7 @@ public class ExtendsTest {
         final Cheese mycheese5 = new Cheese("stilton", 7);
         session.insert(mycheese5);
         session.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
     }
 
     @Test
@@ -802,9 +797,9 @@ public class ExtendsTest {
 
         ksession.fireAllRules();
 
-        assertEquals(2, results.size());
-        assertEquals("stilton", results.get(0));
-        assertEquals("brie", results.get(1));
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get(0)).isEqualTo("stilton");
+        assertThat(results.get(1)).isEqualTo("brie");
     }
 
 }

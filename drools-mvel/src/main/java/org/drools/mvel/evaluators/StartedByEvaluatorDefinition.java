@@ -141,7 +141,7 @@ public class StartedByEvaluatorDefinition
                                   final Target left,
                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, StartedByEvaluator>();
+            this.cache = new HashMap<>();
         }
         String key = isNegated + ":" + parameterText;
         StartedByEvaluator eval = this.cache.get( key );

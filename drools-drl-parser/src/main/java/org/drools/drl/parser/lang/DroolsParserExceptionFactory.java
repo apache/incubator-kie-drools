@@ -132,7 +132,7 @@ public class DroolsParserExceptionFactory {
      * message out of it
      */
     private List<String> createErrorMessage( RecognitionException e ) {
-        List<String> codeAndMessage = new ArrayList<String>( 2 );
+        List<String> codeAndMessage = new ArrayList<>( 2 );
         String message;
         if ( e instanceof MismatchedTokenException ) {
             MismatchedTokenException mte = (MismatchedTokenException) e;

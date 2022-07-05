@@ -788,7 +788,7 @@ public class RuleBaseConfiguration
     }
 
     private void initWorkDefinitions() {
-        this.workDefinitions = new ArrayList<Map<String, Object>>();
+        this.workDefinitions = new ArrayList<>();
 
         // split on each space
         String locations[] = this.chainedProperties.getProperty( "drools.workDefinitions",

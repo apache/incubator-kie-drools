@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.compiler.commons.factories;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 

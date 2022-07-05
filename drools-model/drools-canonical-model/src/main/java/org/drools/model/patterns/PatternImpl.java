@@ -145,7 +145,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
     }
 
     private Variable[] collectInputVariables() {
-        Set<Variable> varSet = new LinkedHashSet<Variable>();
+        Set<Variable> varSet = new LinkedHashSet<>();
         collectInputVariables(constraint, varSet);
         return varSet.toArray(new Variable[varSet.size()]);
     }

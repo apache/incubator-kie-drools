@@ -20,13 +20,12 @@ import java.util.Collection;
 
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.codegen.execmodel.CepTest.getCepKieModuleModel;
-import static org.junit.Assert.assertEquals;
 
 public class ExisistentialTest extends BaseModelTest {
 
@@ -53,8 +52,8 @@ public class ExisistentialTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        Assert.assertEquals( "ok", results.iterator().next().getValue() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
     @Test
@@ -76,7 +75,7 @@ public class ExisistentialTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 0, results.size() );
+        assertThat(results.size()).isEqualTo(0);
     }
 
     @Test
@@ -98,8 +97,8 @@ public class ExisistentialTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        Assert.assertEquals( "ok", results.iterator().next().getValue() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
     @Test
@@ -122,8 +121,8 @@ public class ExisistentialTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        Assert.assertEquals( "ok", results.iterator().next().getValue() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
     @Test
@@ -144,7 +143,7 @@ public class ExisistentialTest extends BaseModelTest {
 
         QueryResults results = ksession.getQueryResults( "ifAllPersonsAreOlderReturnThem", 30 );
 
-        assertEquals( 3, results.size() );
+        assertThat(results.size()).isEqualTo(3);
     }
 
     @Test
@@ -165,8 +164,8 @@ public class ExisistentialTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        Assert.assertEquals("ok", results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
     @Test
@@ -188,8 +187,8 @@ public class ExisistentialTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
-        Assert.assertEquals("ok", results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
     @Test
@@ -213,8 +212,8 @@ public class ExisistentialTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        Assert.assertEquals( "ok", results.iterator().next().getValue() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
     @Test
@@ -263,7 +262,7 @@ public class ExisistentialTest extends BaseModelTest {
                 "";
 
         KieSession ksession = getKieSession( getCepKieModuleModel(), str );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
 
@@ -282,7 +281,7 @@ public class ExisistentialTest extends BaseModelTest {
 
         ksession.insert( "test" );
         ksession.insert( new Person("test", 18) );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -299,7 +298,7 @@ public class ExisistentialTest extends BaseModelTest {
         KieSession ksession = getKieSession( drl1 );
 
         ksession.insert( new Person("test", 18) );
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -319,6 +318,6 @@ public class ExisistentialTest extends BaseModelTest {
                 "end\n";
 
         KieSession ksession = getKieSession( drl1 );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

@@ -79,7 +79,7 @@ public class EnumDeclarationDescr extends AbstractClassTypeDeclarationDescr {
 
     public void addLiteral( EnumLiteralDescr lit ) {
         if ( this.literals == Collections.EMPTY_LIST ) {
-            this.literals = new ArrayList<EnumLiteralDescr>();
+            this.literals = new ArrayList<>();
         }
         this.literals.add( lit );
     }
@@ -98,7 +98,7 @@ public class EnumDeclarationDescr extends AbstractClassTypeDeclarationDescr {
     }
 
     public List<QualifiedName> getSuperTypes() {
-        List<QualifiedName> l = new ArrayList<QualifiedName>( 1 );
+        List<QualifiedName> l = new ArrayList<>( 1 );
         l.add( new QualifiedName( "Enum", "java.lang" ) );
         return l;
     }

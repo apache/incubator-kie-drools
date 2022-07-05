@@ -51,7 +51,7 @@ public class EvalConditionNode extends LeftTupleSource
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
 
-    private Map<Rule, RuleComponent> componentsMap = new HashMap<Rule, RuleComponent>();
+    private Map<Rule, RuleComponent> componentsMap = new HashMap<>();
 
     // ------------------------------------------------------------
     // Constructors

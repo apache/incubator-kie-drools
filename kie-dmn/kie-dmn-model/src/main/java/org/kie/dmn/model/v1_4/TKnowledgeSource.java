@@ -34,7 +34,7 @@ public class TKnowledgeSource extends TDRGElement implements KnowledgeSource {
     @Override
     public List<AuthorityRequirement> getAuthorityRequirement() {
         if (authorityRequirement == null) {
-            authorityRequirement = new ArrayList<AuthorityRequirement>();
+            authorityRequirement = new ArrayList<>();
         }
         return this.authorityRequirement;
     }

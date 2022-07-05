@@ -29,8 +29,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class NoTmsTest {
@@ -63,8 +62,8 @@ public class NoTmsTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertEquals(1, errors.size());
-        assertTrue(errors.get(0).getText().contains("drools-tms"));
+        assertThat(errors.size()).isEqualTo(1);
+        assertThat(errors.get(0).getText().contains("drools-tms")).isTrue();
     }
 
     @Test
@@ -87,6 +86,6 @@ public class NoTmsTest {
         KieSession ksession  = kbase.newKieSession();
 
         ksession.insert(1);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 }

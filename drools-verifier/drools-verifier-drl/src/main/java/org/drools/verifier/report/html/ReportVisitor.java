@@ -32,7 +32,7 @@ abstract class ReportVisitor {
     private static final Logger LOG = LoggerFactory.getLogger(ReportVisitor.class);
 
     protected static String processHeader(String folder) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("sourceFolder", folder);
 
         map.put("objectTypesFile", UrlFactory.HTML_FILE_INDEX);

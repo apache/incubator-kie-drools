@@ -30,7 +30,7 @@ public class TPerformanceIndicator extends TBusinessContextElement implements Pe
     @Override
     public List<DMNElementReference> getImpactingDecision() {
         if (impactingDecision == null) {
-            impactingDecision = new ArrayList<DMNElementReference>();
+            impactingDecision = new ArrayList<>();
         }
         return this.impactingDecision;
     }

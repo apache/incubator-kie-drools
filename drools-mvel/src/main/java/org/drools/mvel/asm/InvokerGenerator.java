@@ -69,7 +69,7 @@ public class InvokerGenerator {
         }).addMethod(ACC_PUBLIC, "getExpectedDeclarationTypes", generator.methodDescr(String[].class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 Declaration[] declarations = ((InvokerContext) data).getDeclarations();
-                List<String> declarationTypes = new ArrayList<String>(declarations.length);
+                List<String> declarationTypes = new ArrayList<>(declarations.length);
                 for (Declaration decl : declarations) {
                     declarationTypes.add(decl.getTypeName());
                 }

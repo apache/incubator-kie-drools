@@ -39,7 +39,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
 public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
-    private Map<String, TraitFieldImpl> fieldTMS = new LinkedHashMap<String, TraitFieldImpl>();
+    private Map<String, TraitFieldImpl> fieldTMS = new LinkedHashMap<>();
     private transient WorkingMemory workingMemory;
 
     private TypeCache typeCache = new TypeCache();
@@ -117,7 +117,7 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
     public void writeExternal( ObjectOutput out ) throws IOException {
         out.writeInt( fieldTMS.size() );
-        List<String> keys = new ArrayList<String>( fieldTMS.keySet() );
+        List<String> keys = new ArrayList<>( fieldTMS.keySet() );
         Collections.sort( keys );
         for ( String k : keys ) {
             out.writeObject( k );
@@ -130,7 +130,7 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
     }
 
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        fieldTMS = new HashMap<String, TraitFieldImpl>();
+        fieldTMS = new HashMap<>();
         int n = in.readInt();
         for ( int j = 0; j < n; j++ ) {
             String k = (String) in.readObject();

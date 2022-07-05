@@ -73,8 +73,6 @@ import org.drools.model.impl.From2Impl;
 import org.drools.model.impl.From3Impl;
 import org.drools.model.impl.From4Impl;
 import org.drools.model.impl.GlobalImpl;
-import org.drools.model.impl.PrototypeImpl;
-import org.drools.model.impl.PrototypeVariableImpl;
 import org.drools.model.impl.TypeMetaDataImpl;
 import org.drools.model.impl.UnitDataImpl;
 import org.drools.model.impl.ValueImpl;
@@ -142,19 +140,19 @@ public class DSL {
     }
 
     public static <T> Exchange<T> exchangeOf( Class<T> type ) {
-        return new Exchange<T>( type );
+        return new Exchange<>( type );
     }
 
     public static <T> Exchange<T> exchangeOf( Class<T> type, String name ) {
-        return new Exchange<T>( type, name );
+        return new Exchange<>( type, name );
     }
 
     public static <T> Declaration<T> declarationOf( Class<T> type ) {
-        return new DeclarationImpl<T>( type );
+        return new DeclarationImpl<>( type );
     }
 
     public static <T> Declaration<T> declarationOf( Class<T> type, String name ) {
-        return new DeclarationImpl<T>( type, name );
+        return new DeclarationImpl<>( type, name );
     }
 
     public static <T> Declaration<T> declarationOf( Class<T> type, DeclarationSource source ) {
@@ -214,11 +212,11 @@ public class DSL {
     }
 
     public static <T> Global<T> globalOf( Class<T> type, String pkg ) {
-        return new GlobalImpl<T>( type, pkg );
+        return new GlobalImpl<>( type, pkg );
     }
 
     public static <T> Global<T> globalOf( Class<T> type, String pkg, String name ) {
-        return new GlobalImpl<T>( type, pkg, name );
+        return new GlobalImpl<>( type, pkg, name );
     }
 
     public static EntryPoint entryPoint( String name ) {
@@ -252,7 +250,7 @@ public class DSL {
     private static <T> Predicate1<T>[] getPredicateForWindow( Predicate1<T>[] predicates ) {
         Predicate1<T>[] ps = new Predicate1[predicates.length];
         for (int i = 0; i < predicates.length; i++) {
-            ps[i] = new Predicate1.Impl<T>( predicates[i] );
+            ps[i] = new Predicate1.Impl<>( predicates[i] );
         }
         return ps;
     }
@@ -274,7 +272,7 @@ public class DSL {
     }
 
     public static <T> From<T> from( Function0<T> provider ) {
-        return new From0Impl<T>( provider );
+        return new From0Impl<>( provider );
     }
 
     public static <T> From<T> from( Variable<T> variable, Function1<T, ?> provider ) {
@@ -521,25 +519,25 @@ public class DSL {
     public static <T, A, K> ExprViewItem<T> groupBy(ViewItem<T> viewItem,
                                                     Variable<A> var1, Variable<K> varKey, Function1<A, K> groupingFunction,
                                                     AccumulateFunction... accFunctions) {
-        return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1 }, varKey, toFunctionN( groupingFunction ), accFunctions );
+        return new GroupByExprViewItem<>( viewItem, new Variable[] { var1 }, varKey, toFunctionN( groupingFunction ), accFunctions );
     }
 
     public static <T, A, B, K> ExprViewItem<T> groupBy(ViewItem<T> viewItem,
                                                        Variable<A> var1, Variable<B> var2, Variable<K> varKey, Function2<A, B, K> groupingFunction,
                                                        AccumulateFunction... accFunctions) {
-        return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1, var2 }, varKey, toFunctionN( groupingFunction ), accFunctions );
+        return new GroupByExprViewItem<>( viewItem, new Variable[] { var1, var2 }, varKey, toFunctionN( groupingFunction ), accFunctions );
     }
 
     public static <T, A, B, C, K> ExprViewItem<T> groupBy(ViewItem<T> viewItem,
                                                           Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<K> varKey, Function3<A, B, C, K> groupingFunction,
                                                           AccumulateFunction... accFunctions) {
-        return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1, var2, var3 }, varKey, toFunctionN( groupingFunction ), accFunctions );
+        return new GroupByExprViewItem<>( viewItem, new Variable[] { var1, var2, var3 }, varKey, toFunctionN( groupingFunction ), accFunctions );
     }
 
     public static <T, A, B, C, D, K> ExprViewItem<T> groupBy(ViewItem<T> viewItem,
                                                              Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<K> varKey, Function4<A, B, C, D, K> groupingFunction,
                                                              AccumulateFunction... accFunctions) {
-        return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1, var2, var3, var4 }, varKey, toFunctionN( groupingFunction ), accFunctions );
+        return new GroupByExprViewItem<>( viewItem, new Variable[] { var1, var2, var3, var4 }, varKey, toFunctionN( groupingFunction ), accFunctions );
     }
 
     // -- Temporal Constraints --

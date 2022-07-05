@@ -31,7 +31,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AndTest {
@@ -71,11 +71,11 @@ public class AndTest {
             ksession.insert(new Message("hola"));
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(new Cheese("brie", 33));
             ksession.fireAllRules();
-            assertEquals(1, ((List) ksession.getGlobal("list")).size());
+            assertThat(((List) ksession.getGlobal("list")).size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

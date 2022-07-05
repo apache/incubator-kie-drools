@@ -21,7 +21,7 @@ import java.util.Set;
 public class ReactiveSet<T> extends ReactiveCollection<T, Set<T>> implements Set<T> {
 
     public ReactiveSet() {
-        super((Set<T>) new HashSet<T>());
+        super((Set<T>) new HashSet<>());
     }
     
     public ReactiveSet(Set<T> wrapped) {

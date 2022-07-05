@@ -70,7 +70,7 @@ public class ExecutorProviderImpl implements KieExecutors {
             if (newExecutor == null) {
                 newExecutor = new ThreadPoolExecutor( Pool.SIZE, Pool.SIZE,
                                                       60L, TimeUnit.SECONDS,
-                                                      new LinkedBlockingQueue<Runnable>(),
+                                                      new LinkedBlockingQueue<>(),
                                                       threadFactory );
             }
 
@@ -95,7 +95,7 @@ public class ExecutorProviderImpl implements KieExecutors {
     }
 
     public <T> CompletionService<T> getCompletionService() {
-        return new ExecutorCompletionService<T>(getExecutor());
+        return new ExecutorCompletionService<>(getExecutor());
     }
 
     public static class DaemonThreadFactory implements ThreadFactory {

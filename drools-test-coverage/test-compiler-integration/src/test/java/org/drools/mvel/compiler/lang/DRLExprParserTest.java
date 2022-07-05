@@ -28,8 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * DRLExprTreeTest
@@ -53,107 +52,78 @@ public class DRLExprParserTest {
     public void testSimpleExpression() throws Exception {
         String source = "a > b";
         ConstraintConnectiveDescr result = parser.parse( source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        assertEquals( ConnectiveType.AND,
-                      result.getConnective() );
-        assertEquals( 1,
-                      result.getDescrs().size() );
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(1);
 
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
-        assertEquals( ">",
-                      expr.getOperator() );
+        assertThat(expr.getOperator()).isEqualTo(">");
 
         AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
         AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
 
-        assertEquals( "a",
-                      left.getExpression() );
-        assertEquals( "b",
-                      right.getExpression() );
+        assertThat(left.getExpression()).isEqualTo("a");
+        assertThat(right.getExpression()).isEqualTo("b");
     }
 
     @Test
     public void testAndConnective() throws Exception {
         String source = "a > b && 10 != 20";
         ConstraintConnectiveDescr result = parser.parse( source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        assertEquals( ConnectiveType.AND,
-                      result.getConnective() );
-        assertEquals( 2,
-                      result.getDescrs().size() );
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(2);
 
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
-        assertEquals( ">",
-                      expr.getOperator() );
+        assertThat(expr.getOperator()).isEqualTo(">");
         AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
         AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
-        assertEquals( "a",
-                      left.getExpression() );
-        assertEquals( "b",
-                      right.getExpression() );
+        assertThat(left.getExpression()).isEqualTo("a");
+        assertThat(right.getExpression()).isEqualTo("b");
 
         expr = (RelationalExprDescr) result.getDescrs().get( 1 );
-        assertEquals( "!=",
-                      expr.getOperator() );
+        assertThat(expr.getOperator()).isEqualTo("!=");
         left = (AtomicExprDescr) expr.getLeft();
         right = (AtomicExprDescr) expr.getRight();
-        assertEquals( "10",
-                      left.getExpression() );
-        assertEquals( "20",
-                      right.getExpression() );
+        assertThat(left.getExpression()).isEqualTo("10");
+        assertThat(right.getExpression()).isEqualTo("20");
     }
 
     @Test
     public void testConnective2() throws Exception {
         String source = "(a > b || 10 != 20) && someMethod(10) == 20";
         ConstraintConnectiveDescr result = parser.parse( source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        assertEquals( ConnectiveType.AND,
-                      result.getConnective() );
-        assertEquals( 2,
-                      result.getDescrs().size() );
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(2);
 
         ConstraintConnectiveDescr or = (ConstraintConnectiveDescr) result.getDescrs().get( 0 );
-        assertEquals( ConnectiveType.OR,
-                      or.getConnective() );
-        assertEquals( 2,
-                      or.getDescrs().size() );
+        assertThat(or.getConnective()).isEqualTo(ConnectiveType.OR);
+        assertThat(or.getDescrs().size()).isEqualTo(2);
 
         RelationalExprDescr expr = (RelationalExprDescr) or.getDescrs().get( 0 );
-        assertEquals( ">",
-                      expr.getOperator() );
+        assertThat(expr.getOperator()).isEqualTo(">");
         AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
         AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
-        assertEquals( "a",
-                      left.getExpression() );
-        assertEquals( "b",
-                      right.getExpression() );
+        assertThat(left.getExpression()).isEqualTo("a");
+        assertThat(right.getExpression()).isEqualTo("b");
 
         expr = (RelationalExprDescr) or.getDescrs().get( 1 );
-        assertEquals( "!=",
-                      expr.getOperator() );
+        assertThat(expr.getOperator()).isEqualTo("!=");
         left = (AtomicExprDescr) expr.getLeft();
         right = (AtomicExprDescr) expr.getRight();
-        assertEquals( "10",
-                      left.getExpression() );
-        assertEquals( "20",
-                      right.getExpression() );
+        assertThat(left.getExpression()).isEqualTo("10");
+        assertThat(right.getExpression()).isEqualTo("20");
 
         expr = (RelationalExprDescr) result.getDescrs().get( 1 );
-        assertEquals( "==",
-                      expr.getOperator() );
+        assertThat(expr.getOperator()).isEqualTo("==");
         left = (AtomicExprDescr) expr.getLeft();
         right = (AtomicExprDescr) expr.getRight();
-        assertEquals( "someMethod(10)",
-                      left.getExpression() );
-        assertEquals( "20",
-                      right.getExpression() );
+        assertThat(left.getExpression()).isEqualTo("someMethod(10)");
+        assertThat(right.getExpression()).isEqualTo("20");
 
     }
 
@@ -161,165 +131,119 @@ public class DRLExprParserTest {
     public void testBinding() throws Exception {
         String source = "$x : property";
         ConstraintConnectiveDescr result = parser.parse( source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        assertEquals( ConnectiveType.AND,
-                      result.getConnective() );
-        assertEquals( 1,
-                      result.getDescrs().size() );
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(1);
 
         BindingDescr bind = (BindingDescr) result.getDescrs().get( 0 );
-        assertEquals( "$x",
-                      bind.getVariable() );
-        assertEquals( "property",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$x");
+        assertThat(bind.getExpression()).isEqualTo("property");
     }
 
     @Test
     public void testBindingConstraint() throws Exception {
         String source = "$x : property > value";
         ConstraintConnectiveDescr result = parser.parse( source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        assertEquals( ConnectiveType.AND,
-                      result.getConnective() );
-        assertEquals( 1,
-                      result.getDescrs().size() );
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(1);
 
         RelationalExprDescr rel = (RelationalExprDescr) result.getDescrs().get( 0 );
-        assertEquals( ">",
-                      rel.getOperator() );
+        assertThat(rel.getOperator()).isEqualTo(">");
 
         BindingDescr bind = (BindingDescr) rel.getLeft();
-        assertEquals( "$x",
-                      bind.getVariable() );
-        assertEquals( "property",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$x");
+        assertThat(bind.getExpression()).isEqualTo("property");
 
         AtomicExprDescr right = (AtomicExprDescr) rel.getRight();
-        assertEquals( "value",
-                      right.getExpression() );
+        assertThat(right.getExpression()).isEqualTo("value");
     }
 
     @Test
     public void testBindingWithRestrictions() throws Exception {
         String source = "$x : property > value && < 20";
         ConstraintConnectiveDescr result = parser.parse( source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        assertEquals( ConnectiveType.AND,
-                      result.getConnective() );
-        assertEquals( 2,
-                      result.getDescrs().size() );
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(2);
 
         RelationalExprDescr rel = (RelationalExprDescr) result.getDescrs().get( 0 );
-        assertEquals( ">",
-                      rel.getOperator() );
+        assertThat(rel.getOperator()).isEqualTo(">");
 
         BindingDescr bind = (BindingDescr) rel.getLeft();
-        assertEquals( "$x",
-                      bind.getVariable() );
-        assertEquals( "property",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$x");
+        assertThat(bind.getExpression()).isEqualTo("property");
 
         AtomicExprDescr right = (AtomicExprDescr) rel.getRight();
-        assertEquals( "value",
-                      right.getExpression() );
+        assertThat(right.getExpression()).isEqualTo("value");
         
         rel = (RelationalExprDescr) result.getDescrs().get( 1 );
-        assertEquals( "<",
-                      rel.getOperator() );
+        assertThat(rel.getOperator()).isEqualTo("<");
 
         AtomicExprDescr left = (AtomicExprDescr) rel.getLeft();
-        assertEquals( "property",
-                      left.getExpression() );
+        assertThat(left.getExpression()).isEqualTo("property");
 
         right = (AtomicExprDescr) rel.getRight();
-        assertEquals( "20",
-                      right.getExpression() );
+        assertThat(right.getExpression()).isEqualTo("20");
     }
 
     @Test
     public void testDoubleBinding() throws Exception {
         String source = "$x : x.m( 1, a ) && $y : y[z].foo";
         ConstraintConnectiveDescr result = parser.parse( source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        assertEquals( ConnectiveType.AND,
-                      result.getConnective() );
-        assertEquals( 2,
-                      result.getDescrs().size() );
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(2);
 
         BindingDescr bind = (BindingDescr) result.getDescrs().get( 0 );
-        assertEquals( "$x",
-                      bind.getVariable() );
-        assertEquals( "x.m( 1, a )",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$x");
+        assertThat(bind.getExpression()).isEqualTo("x.m( 1, a )");
 
         bind = (BindingDescr) result.getDescrs().get( 1 );
-        assertEquals( "$y",
-                      bind.getVariable() );
-        assertEquals( "y[z].foo",
-                      bind.getExpression() );
+        assertThat(bind.getVariable()).isEqualTo("$y");
+        assertThat(bind.getExpression()).isEqualTo("y[z].foo");
     }
 
     @Test
     public void testDeepBinding() throws Exception {
         String source = "($a : a > $b : b[10].prop || 10 != 20) && $x : someMethod(10) == 20";
         ConstraintConnectiveDescr result = parser.parse( source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        assertEquals( ConnectiveType.AND,
-                      result.getConnective() );
-        assertEquals( 2,
-                      result.getDescrs().size() );
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(2);
 
         ConstraintConnectiveDescr or = (ConstraintConnectiveDescr) result.getDescrs().get( 0 );
-        assertEquals( ConnectiveType.OR,
-                      or.getConnective() );
-        assertEquals( 2,
-                      or.getDescrs().size() );
+        assertThat(or.getConnective()).isEqualTo(ConnectiveType.OR);
+        assertThat(or.getDescrs().size()).isEqualTo(2);
 
         RelationalExprDescr expr = (RelationalExprDescr) or.getDescrs().get( 0 );
-        assertEquals( ">",
-                      expr.getOperator() );
+        assertThat(expr.getOperator()).isEqualTo(">");
         BindingDescr leftBind = (BindingDescr) expr.getLeft();
         BindingDescr rightBind = (BindingDescr) expr.getRight();
-        assertEquals( "$a",
-                      leftBind.getVariable() );
-        assertEquals( "a",
-                      leftBind.getExpression() );
-        assertEquals( "$b",
-                      rightBind.getVariable() );
-        assertEquals( "b[10].prop",
-                      rightBind.getExpression() );
+        assertThat(leftBind.getVariable()).isEqualTo("$a");
+        assertThat(leftBind.getExpression()).isEqualTo("a");
+        assertThat(rightBind.getVariable()).isEqualTo("$b");
+        assertThat(rightBind.getExpression()).isEqualTo("b[10].prop");
 
         expr = (RelationalExprDescr) or.getDescrs().get( 1 );
-        assertEquals( "!=",
-                      expr.getOperator() );
+        assertThat(expr.getOperator()).isEqualTo("!=");
         AtomicExprDescr leftExpr = (AtomicExprDescr) expr.getLeft();
         AtomicExprDescr rightExpr = (AtomicExprDescr) expr.getRight();
-        assertEquals( "10",
-                      leftExpr.getExpression() );
-        assertEquals( "20",
-                      rightExpr.getExpression() );
+        assertThat(leftExpr.getExpression()).isEqualTo("10");
+        assertThat(rightExpr.getExpression()).isEqualTo("20");
 
         expr = (RelationalExprDescr) result.getDescrs().get( 1 );
-        assertEquals( "==",
-                      expr.getOperator() );
+        assertThat(expr.getOperator()).isEqualTo("==");
         leftBind = (BindingDescr) expr.getLeft();
         rightExpr = (AtomicExprDescr) expr.getRight();
-        assertEquals( "$x",
-                      leftBind.getVariable() );
-        assertEquals( "someMethod(10)",
-                      leftBind.getExpression() );
-        assertEquals( "20",
-                      rightExpr.getExpression() );
+        assertThat(leftBind.getVariable()).isEqualTo("$x");
+        assertThat(leftBind.getExpression()).isEqualTo("someMethod(10)");
+        assertThat(rightExpr.getExpression()).isEqualTo("20");
 
     }
 
@@ -328,24 +252,18 @@ public class DRLExprParserTest {
         // DROOLS-982
         String source = "(((((((((((((((((((((((((((((((((((((((((((((((((( a > b ))))))))))))))))))))))))))))))))))))))))))))))))))";
         ConstraintConnectiveDescr result = parser.parse( source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        assertEquals( ConnectiveType.AND,
-                      result.getConnective() );
-        assertEquals( 1,
-                      result.getDescrs().size() );
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(1);
 
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
-        assertEquals( ">",
-                      expr.getOperator() );
+        assertThat(expr.getOperator()).isEqualTo(">");
 
         AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
         AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
 
-        assertEquals( "a",
-                      left.getExpression() );
-        assertEquals( "b",
-                      right.getExpression() );
+        assertThat(left.getExpression()).isEqualTo("a");
+        assertThat(right.getExpression()).isEqualTo("b");
     }
 }

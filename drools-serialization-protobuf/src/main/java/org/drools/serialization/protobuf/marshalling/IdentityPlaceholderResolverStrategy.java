@@ -38,8 +38,8 @@ public class IdentityPlaceholderResolverStrategy
     
     public IdentityPlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor) {
         this.acceptor = acceptor;
-        this.ids = new HashMap<Integer, Object>();
-        this.objects = new IdentityHashMap<Object, Integer>();
+        this.ids = new HashMap<>();
+        this.objects = new IdentityHashMap<>();
     }
 
     public IdentityPlaceholderResolverStrategy(String name, ObjectMarshallingStrategyAcceptor acceptor) {

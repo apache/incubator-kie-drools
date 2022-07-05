@@ -37,7 +37,7 @@ public class ObjectType extends VerifierComponent<BaseDescr>
 
     private String              name;
 
-    private Set<Field>          fields           = new HashSet<Field>();
+    private Set<Field>          fields           = new HashSet<>();
 
 
     private Multimap<String, String> metadata         = TreeMultimap.create();

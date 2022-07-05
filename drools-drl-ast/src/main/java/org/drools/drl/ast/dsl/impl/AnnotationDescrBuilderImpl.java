@@ -43,6 +43,6 @@ public class AnnotationDescrBuilderImpl<P extends DescrBuilder< ? , ? >> extends
 
     @Override
     public AnnotationDescrBuilder<AnnotationDescrBuilder<P>> newAnnotation( String name ) {
-        return new AnnotationDescrBuilderImpl<AnnotationDescrBuilder<P>>( this, name );
+        return new AnnotationDescrBuilderImpl<>( this, name );
     }
 }

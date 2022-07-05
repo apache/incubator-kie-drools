@@ -303,13 +303,13 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
     public Node<K> insert(K key) {
         if (key == null) {
             if (nullNode == null) {
-                nullNode = new Node<K>( key );
+                nullNode = new Node<>( key );
             }
             return nullNode;
         }
         Node<K> insertedNode;
         if ( root == null ) {
-            insertedNode = new Node<K>( key );
+            insertedNode = new Node<>( key );
             root = insertedNode;
         } else {
             Node<K> n = root;
@@ -319,7 +319,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
                     return n;
                 } else if ( compResult < 0 ) {
                     if ( n.left == null ) {
-                        insertedNode = new Node<K>( key );
+                        insertedNode = new Node<>( key );
                         n.left = insertedNode;
                         break;
                     } else {
@@ -327,7 +327,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
                     }
                 } else {
                     if ( n.right == null ) {
-                        insertedNode = new Node<K>( key );
+                        insertedNode = new Node<>( key );
                         n.right = insertedNode;
                         break;
                     } else {

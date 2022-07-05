@@ -64,7 +64,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
             return existing;
         }
 
-        HierNode<T> node = new HierNode<T>( member );
+        HierNode<T> node = new HierNode<>( member );
 
         Set<HierNode<T>> parentNodes = floor( parents );
 
@@ -95,7 +95,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
     // Debug only
     List<T> ancestorValues( T name ) {
-        List<T> anx = new ArrayList<T>();
+        List<T> anx = new ArrayList<>();
         Set<HierNode<T>> nodes = ancestorNodes( getNode(name)  );
         for ( HierNode<T> node : nodes ) {
             anx.add( node.getValue() );
@@ -150,7 +150,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
     protected void resolveConflicts( HierNode<T> x ) {
         boolean conflicted = false;
-        Collection<HierNode<T>> nodes = new ArrayList<HierNode<T>>( getNodes() );
+        Collection<HierNode<T>> nodes = new ArrayList<>( getNodes() );
         for ( HierNode<T> y : nodes ) {
             if ( incomparable( x, y ) ) {
 //                System.out.println( " \t\tIncomparability between " + x + " and " + y );
@@ -205,7 +205,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
 
             Set<HierNode<T>> ancestors = ancestorNodes( x );
-            Set<HierNode<T>> affectedAncestors = new HashSet<HierNode<T>>();
+            Set<HierNode<T>> affectedAncestors = new HashSet<>();
 
             for ( HierNode<T> anc : ancestors ) {
                 if ( anc.getBitMask().get( inDex ) ) {
@@ -222,7 +222,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
             Set<HierNode<T>> gcs = gcs( affectedAncestors );
             //System.out.println( "GCS of Affected " + gcs );
 
-            Set<HierNode<T>> affectedDescendants = new HashSet<HierNode<T>>();
+            Set<HierNode<T>> affectedDescendants = new HashSet<>();
             for ( HierNode<T> g : gcs ) {
                 affectedDescendants.addAll( descendantNodes( g ) );
             }
@@ -231,7 +231,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
             int dx = firstOne( d );
 
             if ( bottom.get( i ) ) {
-                i = freeBit( new HierNode<T>( bottom ) );
+                i = freeBit( new HierNode<>( bottom ) );
             }
 
             for ( HierNode<T> sub : affectedDescendants ) {
@@ -276,7 +276,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
 
     protected Set<HierNode<T>> gcs( Set<HierNode<T>> set ) {
-        Set<HierNode<T>> s = new HashSet<HierNode<T>>();
+        Set<HierNode<T>> s = new HashSet<>();
 
         Iterator<HierNode<T>> iter = set.iterator();
         BitSet a = new BitSet( this.size() );
@@ -298,7 +298,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
     protected Set<HierNode<T>> ceil( Set<HierNode<T>> s ) {
         //System.out.println( "Looking for the ceiling of " + s);
         if ( s.size() <= 1 ) { return s; }
-        Set<HierNode<T>> ceil = new HashSet<HierNode<T>>( s );
+        Set<HierNode<T>> ceil = new HashSet<>( s );
         for ( HierNode<T> x : s ) {
             for( HierNode<T> y : s ) {
                 if ( superset( x, y ) > 0 ) {
@@ -314,7 +314,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
     protected Set<HierNode<T>> floor( Set<HierNode<T>> s ) {
         //System.out.println( "Looking for the floor of " + s);
         if ( s.size() <= 1 ) { return s; }
-        Set<HierNode<T>> ceil = new HashSet<HierNode<T>>( s );
+        Set<HierNode<T>> ceil = new HashSet<>( s );
         for ( HierNode<T> x : s ) {
             for( HierNode<T> y : s ) {
                 if ( superset( y, x ) > 0 ) {

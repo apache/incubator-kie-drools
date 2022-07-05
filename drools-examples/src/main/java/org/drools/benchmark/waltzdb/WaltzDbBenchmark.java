@@ -81,7 +81,7 @@ public class WaltzDbBenchmark {
     }
 
     private static List<Line> loadLines(String filename) {
-        List<Line> result = new ArrayList<Line>();
+        List<Line> result = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "data/" + filename ),
@@ -105,7 +105,7 @@ public class WaltzDbBenchmark {
     }
 
     private static List<Label> loadLabels(String filename) {
-        List<Label> result = new ArrayList<Label>();
+        List<Label> result = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "data/" + filename ),

@@ -190,7 +190,7 @@ pipeline {
 }
 
 void saveReports() {
-    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml, **/target/invoker-reports/**/TEST-*.xml', allowEmptyResults: true
 }
 
 void checkoutRepo() {

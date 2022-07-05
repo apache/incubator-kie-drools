@@ -37,7 +37,7 @@ public class EmbeddedPomParser implements PomParser {
     }
 
     public List<DependencyDescriptor> getPomDirectDependencies(DependencyFilter filter ) {
-        List<DependencyDescriptor> deps = new ArrayList<DependencyDescriptor>();
+        List<DependencyDescriptor> deps = new ArrayList<>();
         for (Dependency dep : mavenProject.getDependencies()) {
             DependencyDescriptor depDescr = new DependencyDescriptor(dep);
             if (depDescr.isValid() && filter.accept(depDescr.getReleaseId(), depDescr.getScope())) {

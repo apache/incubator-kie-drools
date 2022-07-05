@@ -61,7 +61,7 @@ public class ObjectModel implements Serializable {
     private String identifier;
     @XmlElement(name="parameter")
     @XmlElementWrapper(name="parameters")
-    private List<Object> parameters = new ArrayList<Object>();
+    private List<Object> parameters = new ArrayList<>();
 
     public ObjectModel() {
         // fox jaxb only
@@ -70,7 +70,7 @@ public class ObjectModel implements Serializable {
     public ObjectModel(String identifier, Object... parameters) {
         this.identifier = identifier;
         if (parameters != null) {
-            this.parameters = new ArrayList<Object>(Arrays.asList(parameters));
+            this.parameters = new ArrayList<>(Arrays.asList(parameters));
         }
     }
 
@@ -78,7 +78,7 @@ public class ObjectModel implements Serializable {
         this.resolver = resolver;
         this.identifier = identifier;
         if (parameters != null) {
-            this.parameters = new ArrayList<Object>(Arrays.asList(parameters));
+            this.parameters = new ArrayList<>(Arrays.asList(parameters));
         }
     }
 

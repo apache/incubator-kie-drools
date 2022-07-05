@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.core.base.ClassFieldAccessorCache;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextFactory;
@@ -35,13 +37,10 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.model.Cheese;
 import org.drools.mvel.model.MockObjectSource;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.assertSame;
 
 @RunWith(Parameterized.class)
 public class AlphaNodeTest extends DroolsTestCase {
@@ -106,12 +105,10 @@ public class AlphaNodeTest extends DroolsTestCase {
                                 context,
                                 ksession );
 
-        Assert.assertEquals( 1,
-                      sink.getAsserted().size() );
+        assertThat(sink.getAsserted().size()).isEqualTo(1);
 
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
-        assertSame( cheddar,
-                    ksession.getObject( (DefaultFactHandle) list[0] ) );
+        assertThat(ksession.getObject((DefaultFactHandle) list[0])).isSameAs(cheddar);
 
         final Cheese stilton = new Cheese( "stilton",
                                            6 );
@@ -127,8 +124,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
 
         list = (Object[]) sink.getAsserted().get( 0 );
-        assertSame( cheddar,
-                    ksession.getObject( (DefaultFactHandle) list[0] ) );
+        assertThat(ksession.getObject((DefaultFactHandle) list[0])).isSameAs(cheddar);
     }
 
     /*
@@ -173,8 +169,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertLength( 1,
                       sink.getAsserted() );
         final Object[] list = (Object[]) sink.getAsserted().get( 0 );
-        assertSame( cheddar,
-                    ksession.getObject( (DefaultFactHandle) list[0] ) );
+        assertThat(ksession.getObject((DefaultFactHandle) list[0])).isSameAs(cheddar);
 
         final Cheese stilton = new Cheese( "stilton",
                                            6 );
@@ -261,8 +256,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink1.getAsserted() );
         assertLength( 1,
                       sink2.getAsserted() );
-        Assert.assertEquals( 1,
-                      source.getUdated() );
+        assertThat(source.getUdated()).isEqualTo(1);
     }
 
 }

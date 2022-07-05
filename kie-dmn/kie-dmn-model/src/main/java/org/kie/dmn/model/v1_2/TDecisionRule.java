@@ -33,7 +33,7 @@ public class TDecisionRule extends TDMNElement implements DecisionRule {
     @Override
     public List<UnaryTests> getInputEntry() {
         if (inputEntry == null) {
-            inputEntry = new ArrayList<UnaryTests>();
+            inputEntry = new ArrayList<>();
         }
         return this.inputEntry;
     }
@@ -41,7 +41,7 @@ public class TDecisionRule extends TDMNElement implements DecisionRule {
     @Override
     public List<LiteralExpression> getOutputEntry() {
         if (outputEntry == null) {
-            outputEntry = new ArrayList<LiteralExpression>();
+            outputEntry = new ArrayList<>();
         }
         return this.outputEntry;
     }
@@ -49,7 +49,7 @@ public class TDecisionRule extends TDMNElement implements DecisionRule {
     @Override
     public List<RuleAnnotation> getAnnotationEntry() {
         if (annotationEntry == null) {
-            annotationEntry = new ArrayList<RuleAnnotation>();
+            annotationEntry = new ArrayList<>();
         }
         return this.annotationEntry;
     }

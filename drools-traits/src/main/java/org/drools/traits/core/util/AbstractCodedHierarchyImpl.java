@@ -36,7 +36,7 @@ public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHiera
             HierNode<T> node = line.get( key );
             node.setValue( val );
         } else {
-            HierNode<T> node = new HierNode<T>( val, key );
+            HierNode<T> node = new HierNode<>( val, key );
             Collection<HierNode<T>> infs = gcsBorderNodes( key, false );
             Collection<HierNode<T>> sups = lcsBorderNodes( key, false );
 
@@ -96,7 +96,7 @@ public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHiera
         if ( node == null ) {
             return Collections.EMPTY_LIST;
         }
-        List<T> p = new ArrayList<T>( node.getParents().size() );
+        List<T> p = new ArrayList<>( node.getParents().size() );
         for ( HierNode<T> parent : node.getParents() ) {
             p.add( parent.getValue() );
         }
@@ -119,7 +119,7 @@ public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHiera
             return Collections.EMPTY_SET;
         }
 
-        Set<T> ancestors = new HashSet<T>();
+        Set<T> ancestors = new HashSet<>();
 
         Collection<HierNode<T>> parents = node.getParents();
         for ( HierNode<T> p : parents ) {
@@ -130,7 +130,7 @@ public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHiera
     }
 
     protected Set<HierNode<T>> ancestorNodes( HierNode<T> x ) {
-        Set<HierNode<T>> ancestors = new HashSet<HierNode<T>>();
+        Set<HierNode<T>> ancestors = new HashSet<>();
 
         Collection<HierNode<T>> parents = x.getParents();
         ancestors.addAll( parents );
@@ -151,7 +151,7 @@ public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHiera
         if ( node == null ) {
             return Collections.EMPTY_LIST;
         }
-        List<T> c = new ArrayList<T>( node.getChildren().size() );
+        List<T> c = new ArrayList<>( node.getChildren().size() );
         for ( HierNode<T> child : node.getChildren() ) {
             c.add( child.getValue() );
         }
@@ -174,7 +174,7 @@ public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHiera
         if ( node == null ) {
             return Collections.EMPTY_SET;
         }
-        Set<T> descendants = new HashSet<T>();
+        Set<T> descendants = new HashSet<>();
         descendants.add( node.getValue() );
 
         Collection<HierNode<T>> children = node.getChildren();
@@ -198,7 +198,7 @@ public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHiera
     }
 
     protected Set<HierNode<T>> descendantNodes( HierNode<T> y ) {
-        Set<HierNode<T>> descendants = new HashSet<HierNode<T>>();
+        Set<HierNode<T>> descendants = new HashSet<>();
         descendants.add( y );
 
         Collection<HierNode<T>> children = y.getChildren();

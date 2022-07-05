@@ -140,7 +140,7 @@ public abstract class ArtifactResolver {
 
         @Override
         public List<DependencyDescriptor> getPomDirectDependencies(DependencyFilter filter) {
-            List<DependencyDescriptor> deps = new ArrayList<DependencyDescriptor>();
+            List<DependencyDescriptor> deps = new ArrayList<>();
             for (ReleaseId rId : pomModel.getDependencies(filter)) {
                 deps.add(new DependencyDescriptor(rId));
             }
@@ -153,7 +153,7 @@ public abstract class ArtifactResolver {
     }
 
     public Collection<DependencyDescriptor> getAllDependecies(DependencyFilter dependencyFilter) {
-        Set<DependencyDescriptor> dependencies = new HashSet<DependencyDescriptor>();
+        Set<DependencyDescriptor> dependencies = new HashSet<>();
         for (DependencyDescriptor dep : getPomDirectDependencies(dependencyFilter)) {
             dependencies.add(dep);
             for (DependencyDescriptor transitiveDep : getArtifactDependecies(dep.toString())) {

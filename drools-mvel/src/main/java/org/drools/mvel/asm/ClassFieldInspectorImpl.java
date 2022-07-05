@@ -58,12 +58,12 @@ import static org.drools.util.StringUtils.lcFirstForBean;
  */
 public class ClassFieldInspectorImpl implements ClassFieldInspector {
 
-    private final Map<String, Integer>    fieldNames           = new HashMap<String, Integer>();
-    private final Map<String, Class< ? >> fieldTypes           = new HashMap<String, Class< ? >>();
-    private final Map<String, Field>      fieldTypesField      = new HashMap<String, Field>();
-    private final Map<String, Method>     getterMethods        = new HashMap<String, Method>();
-    private final Map<String, Method>     setterMethods        = new HashMap<String, Method>();
-    private final Set<String>             nonGetters           = new HashSet<String>();
+    private final Map<String, Integer>    fieldNames           = new HashMap<>();
+    private final Map<String, Class< ? >> fieldTypes           = new HashMap<>();
+    private final Map<String, Field>      fieldTypesField      = new HashMap<>();
+    private final Map<String, Method>     getterMethods        = new HashMap<>();
+    private final Map<String, Method>     setterMethods        = new HashMap<>();
+    private final Set<String>             nonGetters           = new HashSet<>();
     private Class< ? >                    classUnderInspection = null;
     private Map<String, Collection<KnowledgeBuilderResult>>
                                           results              = null;
@@ -314,7 +314,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
     
     //class.getDeclaredField(String) doesn't walk the inheritance tree; this does
     private Map<String, Field> getAllFields(Class<?> type) {
-        Map<String, Field> fields = new HashMap<String, Field>();
+        Map<String, Field> fields = new HashMap<>();
         for (Class<?> c = type; c != null; c = c.getSuperclass()) {
             for(Field f : c.getDeclaredFields()) {
                 fields.put(f.getName(), f);
@@ -385,7 +385,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
         Map<String, Collection<KnowledgeBuilderResult>> results = getResults();
         Collection<KnowledgeBuilderResult> fieldResults = results.get( fieldName );
         if ( fieldResults == null ) {
-            fieldResults = new ArrayList<KnowledgeBuilderResult>( 3 );
+            fieldResults = new ArrayList<>( 3 );
             results.put( fieldName, fieldResults );
         }
         fieldResults.add( result );

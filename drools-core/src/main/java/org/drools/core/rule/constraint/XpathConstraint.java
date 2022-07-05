@@ -58,7 +58,7 @@ public class XpathConstraint extends MutableTypeConstraint {
     private Declaration xpathStartDeclaration;
 
     public XpathConstraint() {
-        this(new LinkedList<XpathChunk>());
+        this(new LinkedList<>());
     }
 
     private XpathConstraint(LinkedList<XpathChunk> chunks) {
@@ -188,7 +188,7 @@ public class XpathConstraint extends MutableTypeConstraint {
         }
 
         public Iterable<?> evaluate(ReteEvaluator reteEvaluator, Tuple leftTuple, Object object) {
-            return evaluateObject(reteEvaluator, leftTuple, chunk, new ArrayList<Object>(), object);
+            return evaluateObject(reteEvaluator, leftTuple, chunk, new ArrayList<>(), object);
         }
 
         private List<Object> evaluateObject(ReteEvaluator reteEvaluator, Tuple leftTuple, XpathChunk chunk, List<Object> list, Object object) {
@@ -314,7 +314,7 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         public void addConstraint(Constraint constraint) {
             if (constraints == null) {
-                constraints = new ArrayList<Constraint>();
+                constraints = new ArrayList<>();
             }
             setConstraintType((MutableTypeConstraint)constraint);
             constraints.add(constraint);
@@ -411,7 +411,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             if (constraints == null) {
                 return Collections.emptyList();
             }
-            List<T> typedConstraints = new ArrayList<T>();
+            List<T> typedConstraints = new ArrayList<>();
             for (Constraint constraint : constraints) {
                 if (constraint.getType() == constraintType) {
                     typedConstraints.add( (T) constraint );

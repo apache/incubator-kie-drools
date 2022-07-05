@@ -53,7 +53,7 @@ public class GetWorkItemIdsCommand implements ExecutableCommand<List<Long>> {
     public List<Long> execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         Set<WorkItem> workItems = ((WorkItemManager) ksession.getWorkItemManager()).getWorkItems();
-        List<Long> workItemIds = new ArrayList<Long>(workItems.size());
+        List<Long> workItemIds = new ArrayList<>(workItems.size());
         for(WorkItem workItem : workItems ) { 
             workItemIds.add(workItem.getId());
         }

@@ -58,7 +58,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.6.3</version.info.picocli>
     <version.io.micrometer>1.9.0</version.io.micrometer>
-    <version.io.quarkus>2.10.0.Final</version.io.quarkus>
+    <version.io.quarkus>2.10.1.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>2.1.22</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
@@ -1545,6 +1545,13 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>efesto-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-dmn-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
@@ -2234,7 +2241,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-invoker-plugin</artifactId>
-          <version>2.0.0</version>
+          <version>3.2.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

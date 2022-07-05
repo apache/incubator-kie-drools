@@ -69,7 +69,7 @@ public class DrlDumper  {
     }
 
     public String dump( final PackageDescr pkg ) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, Object> context = new HashMap<>();
         context.put( "pkg",
                      pkg );
         context.put( "mvel",
@@ -82,7 +82,7 @@ public class DrlDumper  {
     }
 
     public String dump( final BaseDescr pattern ) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, Object> context = new HashMap<>();
         context.put( "base",
                      pattern );
         context.put( "mvel",

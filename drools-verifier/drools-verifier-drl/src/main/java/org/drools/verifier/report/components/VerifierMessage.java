@@ -53,7 +53,7 @@ public class VerifierMessage extends VerifierMessageBase {
                faulty,
                message );
 
-        Collection<Cause> causes = new ArrayList<Cause>();
+        Collection<Cause> causes = new ArrayList<>();
         causes.add( cause );
 
         this.causes = causes;

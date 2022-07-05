@@ -34,7 +34,7 @@ public class EntryPointDeclarationDescrBuilderImpl extends BaseDescrBuilderImpl<
     }
 
     public AnnotationDescrBuilder<EntryPointDeclarationDescrBuilder> newAnnotation( String name ) {
-        AnnotationDescrBuilder<EntryPointDeclarationDescrBuilder> annotation = new AnnotationDescrBuilderImpl<EntryPointDeclarationDescrBuilder>( this, name );
+        AnnotationDescrBuilder<EntryPointDeclarationDescrBuilder> annotation = new AnnotationDescrBuilderImpl<>( this, name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }

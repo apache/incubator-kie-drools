@@ -34,7 +34,7 @@ public class TraitTypeMapImpl<T extends String, K extends Thing<C>, C>
     private Map<String,K> innerMap;
 
     private BitSet currentTypeCode = new BitSet();
-    private transient Collection<K> mostSpecificTraits = new LinkedList<K>();
+    private transient Collection<K> mostSpecificTraits = new LinkedList<>();
 
 
     private static final BitSet NO_STATIC = new BitSet();
@@ -94,7 +94,7 @@ public class TraitTypeMapImpl<T extends String, K extends Thing<C>, C>
 
     @Override
     protected BitMaskKey<K> wrap( K value, BitSet key ) {
-        return new BitMaskKey<K>( System.identityHashCode( value ), value );
+        return new BitMaskKey<>( System.identityHashCode( value ), value );
     }
 
     @Override
@@ -141,9 +141,9 @@ public class TraitTypeMapImpl<T extends String, K extends Thing<C>, C>
     @Override
     public Collection<K> removeCascade( BitSet code ) {
         Collection<K> subs = this.lowerDescendants( code );
-        List<K> ret = new ArrayList<K>( subs.size() );
+        List<K> ret = new ArrayList<>( subs.size() );
         for ( K k : subs ) {
-            Key<K> t = new BitMaskKey<K>( System.identityHashCode(k), k );
+            Key<K> t = new BitMaskKey<>( System.identityHashCode(k), k );
             TraitType tt = (TraitType) t.getValue();
             if ( ! tt._isVirtual() ) {
                 ret.add( t.getValue() );
@@ -213,7 +213,7 @@ public class TraitTypeMapImpl<T extends String, K extends Thing<C>, C>
         super.writeExternal( objectOutput );
 
         objectOutput.writeInt( innerMap.size() );
-        List<String> keys = new ArrayList<String>( innerMap.keySet() );
+        List<String> keys = new ArrayList<>( innerMap.keySet() );
         Collections.sort( keys );
         for ( String k : keys ) {
             objectOutput.writeObject( k );
@@ -228,7 +228,7 @@ public class TraitTypeMapImpl<T extends String, K extends Thing<C>, C>
     public void readExternal( ObjectInput objectInput ) throws IOException, ClassNotFoundException {
         super.readExternal( objectInput );
 
-        innerMap = new HashMap<String, K>();
+        innerMap = new HashMap<>();
         int n = objectInput.readInt();
         for ( int j = 0; j < n; j++ ) {
             String k = (String) objectInput.readObject();
@@ -285,7 +285,7 @@ public class TraitTypeMapImpl<T extends String, K extends Thing<C>, C>
 
     public void addStaticTrait( String name, BitSet code ) {
         if ( staticTypes == null ) {
-            staticTypes = new HashMap<String, BitSet>();
+            staticTypes = new HashMap<>();
         }
         staticTypes.put( name, code );
     }

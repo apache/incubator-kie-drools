@@ -4300,7 +4300,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         if (state.failed)
             return null;
 
-        List<String> parameters = new ArrayList<String>();
+        List<String> parameters = new ArrayList<>();
         if (input.LA(1) != DRL6Lexer.EOF && input.LA(1) != DRL6Lexer.RIGHT_PAREN) {
             String param = conditionalExpression();
             if (state.failed)

@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class SudokuGridSamples {
-   private Map<String, Integer[][]> samples = new LinkedHashMap<String, Integer[][]>();
+   private Map<String, Integer[][]> samples = new LinkedHashMap<>();
    private static SudokuGridSamples INSTANCE;
    
    private SudokuGridSamples() {

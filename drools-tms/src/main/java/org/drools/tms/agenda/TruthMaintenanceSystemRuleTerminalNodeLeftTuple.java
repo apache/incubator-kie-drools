@@ -72,7 +72,7 @@ public class TruthMaintenanceSystemRuleTerminalNodeLeftTuple<T extends ModedAsse
     public void addBlocked(final LogicalDependency<SimpleMode> dep) {
         // Adds the blocked to the blockers list
         if (this.blocked == null) {
-            this.blocked = new LinkedList<LogicalDependency<SimpleMode>>();
+            this.blocked = new LinkedList<>();
         }
 
         this.blocked.add(dep);
@@ -134,7 +134,7 @@ public class TruthMaintenanceSystemRuleTerminalNodeLeftTuple<T extends ModedAsse
     @Override
     public void addLogicalDependency(final LogicalDependency<T> node) {
         if (this.justified == null) {
-            this.justified = new LinkedList<LogicalDependency<T>>();
+            this.justified = new LinkedList<>();
         }
 
         this.justified.add(node);

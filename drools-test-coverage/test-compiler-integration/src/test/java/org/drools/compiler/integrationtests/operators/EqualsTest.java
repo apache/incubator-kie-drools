@@ -31,7 +31,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class EqualsTest {
@@ -83,8 +83,8 @@ public class EqualsTest {
             ksession.insert(person);
             ksession.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertEquals("mark", results.get(0));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(results.get(0)).isEqualTo("mark");
         } finally {
             ksession.dispose();
         }
@@ -116,7 +116,7 @@ public class EqualsTest {
             final int rules = ksession.fireAllRules();
             ksession.dispose();
 
-            assertEquals(1, rules);
+            assertThat(rules).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -175,10 +175,10 @@ public class EqualsTest {
 
             ksession.fireAllRules();
 
-            assertEquals(3, results.size());
-            assertEquals("1", results.get(0));
-            assertEquals("2", results.get(1));
-            assertEquals("3", results.get(2));
+            assertThat(results.size()).isEqualTo(3);
+            assertThat(results.get(0)).isEqualTo("1");
+            assertThat(results.get(1)).isEqualTo("2");
+            assertThat(results.get(2)).isEqualTo("3");
         } finally {
             ksession.dispose();
         }

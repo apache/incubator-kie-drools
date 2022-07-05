@@ -51,7 +51,7 @@ public class EnumLiteralDescrBuilderImpl extends BaseDescrBuilderImpl<EnumDeclar
     }
 
     public AnnotationDescrBuilder<EnumLiteralDescrBuilder> newAnnotation( String name ) {
-        AnnotationDescrBuilder<EnumLiteralDescrBuilder> annotation = new AnnotationDescrBuilderImpl<EnumLiteralDescrBuilder>( this, name );
+        AnnotationDescrBuilder<EnumLiteralDescrBuilder> annotation = new AnnotationDescrBuilderImpl<>( this, name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }

@@ -124,7 +124,7 @@ public class TripleBasedTypes extends TripleBasedStruct {
     }
 
     public Set<String> keySet() {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for ( Triple t : getSchemaTriplesForSubject( getObject() ) ) {
             if ( t.getProperty().equals( TripleStore.TYPE ) ) {
                 set.add( t.getValue().toString() );
@@ -134,7 +134,7 @@ public class TripleBasedTypes extends TripleBasedStruct {
     }
 
     public Collection<Object> values() {
-        List<Object> values = new ArrayList<Object>();
+        List<Object> values = new ArrayList<>();
         for ( Triple t : getSchemaTriplesForSubject( getObject() ) ) {
             Triple x = getProxyTripleByTraitType( t.getValue() );
             if ( x != null ) {
@@ -145,7 +145,7 @@ public class TripleBasedTypes extends TripleBasedStruct {
     }
 
     public Set<Entry<String, Object>> entrySet() {
-        Set<Entry<String, Object>> set = new HashSet<Entry<String, Object>>();
+        Set<Entry<String, Object>> set = new HashSet<>();
         for ( Triple t : getSchemaTriplesForSubject( getObject() ) ) {
             Triple x = getProxyTripleByTraitType( t.getValue() );
             if ( x != null ) {

@@ -594,7 +594,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                         BoundIdentifiers availableIdentifiers) {
         if ( expr.trim().length() <= 0 ) {
             MVELAnalysisResult result = analyze( (Set<String> ) Collections.EMPTY_SET, availableIdentifiers );
-            result.setMvelVariables( new HashMap<String, Class< ? >>() );
+            result.setMvelVariables( new HashMap<>() );
             result.setTypesafe( true );
             return result;
         }
