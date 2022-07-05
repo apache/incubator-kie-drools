@@ -17,8 +17,8 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class KieServicesTest {
@@ -54,9 +54,9 @@ public class KieServicesTest {
 		String myId = "myId";
 		
 		KieContainer c1 = ks.getKieClasspathContainer(myId);
-		
-		assertEquals(c1, ks.getKieClasspathContainer());
-		assertEquals(c1, ks.getKieClasspathContainer(myId));
+
+        assertThat(ks.getKieClasspathContainer()).isEqualTo(c1);
+        assertThat(ks.getKieClasspathContainer(myId)).isEqualTo(c1);
 		try {
 			ks.getKieClasspathContainer("invalid");
 			fail("this is not the containerId for the global singleton.");

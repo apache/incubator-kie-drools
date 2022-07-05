@@ -25,7 +25,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests iteration through the list of KieSessions of a KieBase.
@@ -64,7 +64,7 @@ public class KieSessionIterationTest {
         for (KieSession kieSession : this.kieBase.getKieSessions()) {
             kieSession.dispose();
         }
-        assertTrue("All KieSessions of the KieBase should have been disposed.", this.kieBase.getKieSessions().isEmpty());
+        assertThat(this.kieBase.getKieSessions().isEmpty()).as("All KieSessions of the KieBase should have been disposed.").isTrue();
     }
 
 }

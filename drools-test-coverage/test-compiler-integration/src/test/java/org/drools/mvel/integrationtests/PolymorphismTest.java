@@ -28,7 +28,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class PolymorphismTest {
@@ -65,7 +65,7 @@ public class PolymorphismTest {
 
         ksession.insert(1);
         int fired = ksession.fireAllRules();
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class PolymorphismTest {
 
         ksession.insert( new X(0) );
         ksession.fireAllRules();
-        assertEquals(0, ksession.getObjects().size());
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class PolymorphismTest {
 
         FactHandle fh = ksession.insert( new X(0) );
         ksession.fireAllRules();
-        assertEquals(0, ksession.getObjects().size());
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
         System.out.println(fh);
     }
 

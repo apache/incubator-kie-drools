@@ -37,7 +37,6 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -101,7 +100,7 @@ public class LeftTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTable
         ((TupleList) hashTable.getTable()[0]).setNext(leftTupleList);
 
         List tableIndexList = createTableIndexListForAssertion(hashTable);
-        assertEquals(5, tableIndexList.size());
+        assertThat(tableIndexList.size()).isEqualTo(5);
 
         // This tests the hashcode index allocation. If the rehash function (or any other way hashcodes are computed) changes, these numbers will change.
         // standard-drl and exec-model have different getRightExtractor().getIndex() value so hashCode changes
@@ -125,7 +124,7 @@ public class LeftTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTable
             resultList.add(leftTuple);
         }
 
-        assertEquals(13, resultList.size());
+        assertThat(resultList.size()).isEqualTo(13);
     }
 
     @Test

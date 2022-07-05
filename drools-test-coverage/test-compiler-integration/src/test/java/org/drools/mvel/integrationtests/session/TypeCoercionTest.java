@@ -34,7 +34,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class TypeCoercionTest {
@@ -64,20 +64,20 @@ public class TypeCoercionTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(fact.getData(), list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo(fact.getData());
 
         fact.setData("10");
         ksession.update(handle, fact);
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertEquals(fact.getData(), list.get(1));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(1)).isEqualTo(fact.getData());
 
         fact.setData(Boolean.TRUE);
         ksession.update(handle, fact);
 
-        assertEquals(2, list.size());
+        assertThat(list.size()).isEqualTo(2);
     }
 
     @Test
@@ -98,11 +98,11 @@ public class TypeCoercionTest {
         ksession.fireAllRules();
 
         int index = 0;
-        assertEquals(list.toString(), 4, list.size());
-        assertEquals("boolean", list.get(index++));
-        assertEquals("boolean wrapper", list.get(index++));
-        assertEquals("boolean object", list.get(index++));
-        assertEquals("char", list.get(index++));
+        assertThat(list.size()).as(list.toString()).isEqualTo(4);
+        assertThat(list.get(index++)).isEqualTo("boolean");
+        assertThat(list.get(index++)).isEqualTo("boolean wrapper");
+        assertThat(list.get(index++)).isEqualTo("boolean object");
+        assertThat(list.get(index++)).isEqualTo("char");
 
         fact.setBooleanPrimitive(false);
         fact.setBooleanWrapper(null);
@@ -110,14 +110,14 @@ public class TypeCoercionTest {
         fact.setObject('X');
         ksession.update(handle, fact);
         ksession.fireAllRules();
-        assertEquals(5, list.size());
-        assertEquals("char object", list.get(index++));
+        assertThat(list.size()).isEqualTo(5);
+        assertThat(list.get(index++)).isEqualTo("char object");
 
         fact.setObject(null);
         ksession.update(handle, fact);
         ksession.fireAllRules();
-        assertEquals(6, list.size());
-        assertEquals("null object", list.get(index));
+        assertThat(list.size()).isEqualTo(6);
+        assertThat(list.get(index)).isEqualTo("null object");
     }
 
     @Test
@@ -168,7 +168,7 @@ public class TypeCoercionTest {
         ksession.insert(outerTest2);
 
         final int rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+        assertThat(rules).isEqualTo(1);
     }
 
     public static class InnerBean {
@@ -224,7 +224,7 @@ public class TypeCoercionTest {
         typeA.set(a, "field", "12");
         ksession.insert(a);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -243,7 +243,7 @@ public class TypeCoercionTest {
 
         final Person p = new Person("42", 42);
         ksession.insert(p);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static String integer2String(final Integer value) {
@@ -269,7 +269,7 @@ public class TypeCoercionTest {
         KieSession kieSession = kieBase.newKieSession();
 
         kieSession.insert(new Person("11"));
-        assertEquals(2, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -291,7 +291,7 @@ public class TypeCoercionTest {
         KieSession kieSession = kieBase.newKieSession();
 
         kieSession.insert(new Person("Mario", 11));
-        assertEquals(2, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -308,7 +308,7 @@ public class TypeCoercionTest {
 
         kieSession.insert(2);
         kieSession.insert("2");
-        assertEquals(1, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -326,6 +326,6 @@ public class TypeCoercionTest {
 
         kieSession.insert(2);
         kieSession.insert(new Person("2", 11));
-        assertEquals(1, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 }

@@ -39,9 +39,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests updating events using API.
@@ -93,7 +91,7 @@ public class LifecycleTest {
         kfs.writeKModuleXML(kmoduleModel.toXML());
         
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertEquals(0, kieBuilder.getResults().getMessages().size());
+        assertThat(kieBuilder.getResults().getMessages().size()).isEqualTo(0);
 
         this.kieSession = ks.newKieContainer(ks.getRepository()
                 .getDefaultReleaseId()).newKieSession();
@@ -112,14 +110,14 @@ public class LifecycleTest {
 
         StockTick event = new StockTick();
         FactHandle handle = entryPoint.insert(event);
-        assertTrue(entryPoint.getFactHandles().contains(handle));
+        assertThat(entryPoint.getFactHandles().contains(handle)).isTrue();
         kieSession.fireAllRules();
 
-        assertTrue(entryPoint.getFactHandles().contains(handle));
+        assertThat(entryPoint.getFactHandles().contains(handle)).isTrue();
         advanceTime(5, TimeUnit.SECONDS);
         kieSession.fireAllRules();
 
-        assertFalse(entryPoint.getFactHandles().contains(handle));
+        assertThat(entryPoint.getFactHandles().contains(handle)).isFalse();
     }
   
     private void advanceTime(long amount, TimeUnit unit) throws InterruptedException {

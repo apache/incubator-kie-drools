@@ -21,9 +21,9 @@ import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.within;
 
 public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     ReadAccessor reader;
@@ -51,9 +51,8 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     @Test
     public void testGetByteValue() {
-        assertEquals(1,
-                this.reader.getByteValue(null,
-                        this.bean));
+        assertThat(this.reader.getByteValue(null,
+                this.bean)).isEqualTo((byte)1);
     }
 
     @Test
@@ -69,51 +68,43 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     @Test
     public void testGetDoubleValue() {
-        assertEquals(1.0,
-                this.reader.getDoubleValue(null,
-                        this.bean),
-                0.01);
+        assertThat(this.reader.getDoubleValue(null,
+                this.bean)).isCloseTo(1.0, within(0.01));
     }
 
     @Test
     public void testGetFloatValue() {
-        assertEquals(1.0f,
-                this.reader.getFloatValue(null,
-                        this.bean),
-                0.01);
+        assertThat(this.reader.getFloatValue(null,
+                this.bean)).isCloseTo(1.0f, within(0.01f));
     }
 
     @Test
     public void testGetIntValue() {
-        assertEquals(1,
-                this.reader.getIntValue(null,
-                        this.bean));
+        assertThat(this.reader.getIntValue(null,
+                this.bean)).isEqualTo(1);
     }
 
     @Test
     public void testGetLongValue() {
-        assertEquals(1,
-                this.reader.getLongValue(null,
-                        this.bean));
+        assertThat(this.reader.getLongValue(null,
+                this.bean)).isEqualTo(1);
     }
 
     @Test
     public void testGetShortValue() {
-        assertEquals(1,
-                this.reader.getShortValue(null,
-                        this.bean));
+        assertThat(this.reader.getShortValue(null,
+                this.bean)).isEqualTo((short)1);
     }
 
     @Test
     public void testGetValue() {
-        assertEquals(1,
-                ((Number) this.reader.getValue(null,
-                        this.bean)).byteValue());
+        assertThat(((Number) this.reader.getValue(null,
+                this.bean)).byteValue()).isEqualTo((byte)1);
     }
 
     @Test
     public void testIsNullValue() {
-        assertFalse(this.reader.isNullValue(null,
-                this.bean));
+        assertThat(this.reader.isNullValue(null,
+                this.bean)).isFalse();
     }
 }

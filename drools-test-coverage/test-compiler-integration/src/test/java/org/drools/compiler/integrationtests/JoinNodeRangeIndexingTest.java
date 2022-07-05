@@ -49,8 +49,6 @@ import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class JoinNodeRangeIndexingTest {
@@ -91,7 +89,7 @@ public class JoinNodeRangeIndexingTest {
 
             ksession.insert(new Pet(PetType.CAT, 10));
             ksession.insert(new Person("Paul", 20));
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -121,11 +119,11 @@ public class JoinNodeRangeIndexingTest {
             if (sink instanceof JoinNode) {
                 JoinNode join = (JoinNode) sink;
                 BetaConstraints betaConstraints = join.getRawConstraints();
-                assertEquals(isIndexed, betaConstraints.isIndexed());
+                assertThat(betaConstraints.isIndexed()).isEqualTo(isIndexed);
                 isPassedForJoinNode = true;
             }
         }
-        assertTrue(isPassedForJoinNode);
+        assertThat(isPassedForJoinNode).isTrue();
     }
 
     @Test
@@ -345,7 +343,7 @@ public class JoinNodeRangeIndexingTest {
         try {
             ksession.setGlobal("minAge", 15);
             ksession.insert(new Person("Paul", 20));
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -404,20 +402,20 @@ public class JoinNodeRangeIndexingTest {
             ksession.insert(new Person("John", 10));
             ksession.insert(new Person("Paul", 10));
 
-            assertEquals(2, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(2);
             assertThat(result).containsExactlyInAnyOrder("John > Oliver", "Paul > Oliver");
 
             ksession.insert("trigger R2"); // set Paul's age = 20
-            assertEquals(3, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(3);
             assertThat(result).containsExactlyInAnyOrder("John > Oliver", "Paul > Oliver", "Paul > Leo");
 
             ksession.insert("trigger R3"); // set all Pets' age minus 5
-            assertEquals(8, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(8);
             assertThat(result).containsExactlyInAnyOrder("John > Oliver", "John > Leo", "Paul > Oliver", "Paul > Leo", "Paul > Milo");
 
             ksession.insert("trigger R4"); // delete Oliver
             ksession.insert(new Person("George", 15));
-            assertEquals(2, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(2);
             assertThat(result).containsExactlyInAnyOrder("John > Oliver", "John > Leo", "Paul > Oliver", "Paul > Leo", "Paul > Milo", "George > Leo");
 
         } finally {
@@ -445,7 +443,7 @@ public class JoinNodeRangeIndexingTest {
 
             ksession.insert(new IntegerHolder(10));
             ksession.insert(new Person("Paul", 20));
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -471,7 +469,7 @@ public class JoinNodeRangeIndexingTest {
 
             ksession.insert(new IntegerHolder(30));
             ksession.insert(new Person("Paul", 20));
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -522,7 +520,7 @@ public class JoinNodeRangeIndexingTest {
             ksession.insert(new Person("George", 20));
             ksession.insert(new Person("Ringo", 30));
 
-            assertEquals(8, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(8);
 
             assertThat(result).containsExactlyInAnyOrder("Paul > Charlie", "George > Charlie", "George > Max", "George > Buddy", "Ringo > Charlie", "Ringo > Max", "Ringo > Buddy", "Ringo > Oscar");
 

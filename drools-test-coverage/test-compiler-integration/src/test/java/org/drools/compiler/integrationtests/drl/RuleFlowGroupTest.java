@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class RuleFlowGroupTest {
@@ -75,7 +75,7 @@ public class RuleFlowGroupTest {
             ksession.insert(new Person());
             ksession.insert(new Cheese("gorgonzola"));
             ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup("group1");
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

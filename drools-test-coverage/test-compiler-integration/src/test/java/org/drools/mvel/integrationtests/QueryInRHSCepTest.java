@@ -46,7 +46,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class QueryInRHSCepTest {
@@ -122,9 +122,9 @@ public class QueryInRHSCepTest {
         ksession.insert(new QueryItemPojo());
         ksession.insert(new SolicitFirePojo());
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
-        assertEquals(1, myGlobal.size());
-        assertEquals(1, ((QueryResults) myGlobal.get(0)).size());
+        assertThat(fired).isEqualTo(1);
+        assertThat(myGlobal.size()).isEqualTo(1);
+        assertThat(((QueryResults) myGlobal.get(0)).size()).isEqualTo(1);
     }
     @Test
     public void withResultOfSize1AnotherTest() {
@@ -133,9 +133,9 @@ public class QueryInRHSCepTest {
         ksession.insert(new SolicitFirePojo());
         ksession.insert(new QueryItemPojo());
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
-        assertEquals(1, myGlobal.size());
-        assertEquals(1, ((QueryResults) myGlobal.get(0)).size());
+        assertThat(fired).isEqualTo(1);
+        assertThat(myGlobal.size()).isEqualTo(1);
+        assertThat(((QueryResults) myGlobal.get(0)).size()).isEqualTo(1);
     }
     @Test
     public void withResultOfSize0Test() {
@@ -143,9 +143,9 @@ public class QueryInRHSCepTest {
     	clock.advanceTime(1, TimeUnit.SECONDS);
         ksession.insert(new SolicitFirePojo());
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
-        assertEquals(1, myGlobal.size());
-        assertEquals(0, ((QueryResults) myGlobal.get(0)).size());
+        assertThat(fired).isEqualTo(1);
+        assertThat(myGlobal.size()).isEqualTo(1);
+        assertThat(((QueryResults) myGlobal.get(0)).size()).isEqualTo(0);
     }
     
     @Test
@@ -191,9 +191,9 @@ public class QueryInRHSCepTest {
         ksession.insert(new QueryItemPojo());
         ksession.insert(new SolicitFirePojo());
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
-        assertEquals(1, myGlobal.size());
-        assertEquals(2, ((QueryResults) myGlobal.get(0)).size()); // notice 1 is manually inserted, 1 get inserted from rule's RHS, for a total of 2.
+        assertThat(fired).isEqualTo(1);
+        assertThat(myGlobal.size()).isEqualTo(1);
+        assertThat(((QueryResults) myGlobal.get(0)).size()).isEqualTo(2); // notice 1 is manually inserted, 1 get inserted from rule's RHS, for a total of 2.
     }
 
     @Test(timeout = 10000L)
@@ -236,8 +236,8 @@ public class QueryInRHSCepTest {
             for (int i = 1; i <= iterations; i++) {
                 kSession.insert( i );
                 kSession.fireAllRules();
-                assertEquals( 1, myGlobal.size() );
-                assertEquals( i, (( QueryResults ) myGlobal.get( 0 )).size() );
+                assertThat(myGlobal.size()).isEqualTo(1);
+                assertThat(((QueryResults) myGlobal.get(0)).size()).isEqualTo(i);
                 myGlobal.clear();
             }
 
@@ -252,7 +252,7 @@ public class QueryInRHSCepTest {
                 }
             }
 
-            assertEquals( successCounter, threadCount );
+            assertThat(threadCount).isEqualTo(successCounter);
         } finally {
             kSession.dispose();
             executor.shutdownNow();

@@ -31,8 +31,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class TerminalNodeIteratorTest {
@@ -80,17 +79,16 @@ public class TerminalNodeIteratorTest {
             nodes.add( ((RuleTerminalNode) node).getRule().getName() );
         }
 
-        assertEquals( 6,
-                      nodes.size() );
-        assertTrue( nodes.contains( "rule1" ) );
-        assertTrue( nodes.contains( "rule2" ) );
-        assertTrue( nodes.contains( "rule3" ) );
-        assertTrue( nodes.contains( "rule4" ) );
-        assertTrue( nodes.contains( "rule5" ) );
+        assertThat(nodes.size()).isEqualTo(6);
+        assertThat(nodes.contains("rule1")).isTrue();
+        assertThat(nodes.contains("rule2")).isTrue();
+        assertThat(nodes.contains("rule3")).isTrue();
+        assertThat(nodes.contains("rule4")).isTrue();
+        assertThat(nodes.contains("rule5")).isTrue();
 
         int first = nodes.indexOf( "rule5" );
         int second = nodes.lastIndexOf( "rule5" );
-        assertTrue( first != second );
+        assertThat(first != second).isTrue();
     }
 
 }
