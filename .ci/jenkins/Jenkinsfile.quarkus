@@ -56,6 +56,7 @@ pipeline {
         stage('Build Drools') {
             steps {
                 script {
+                    maven.mvnCompareDependencies(getBasicMavenCommand('drools'), 'io.quarkus:quarkus-bom:999-SNAPSHOT', ':drools-build-parent', true, true)
                     getMavenCommand('drools')
                         .withProperty('maven.test.failure.ignore', true)
                         .run('clean install')
@@ -73,6 +74,10 @@ pipeline {
         stage('Build kogito-runtimes') {
             steps {
                 script {
+                    maven.mvnCompareDependencies(getBasicMavenCommand('kogito-runtimes'), 'io.quarkus:quarkus-bom:999-SNAPSHOT', ':kogito-dependencies-bom', true, true)
+                    maven.mvnCompareDependencies(getBasicMavenCommand('kogito-runtimes'), 'io.quarkus:quarkus-bom:999-SNAPSHOT', ':kogito-build-parent', true, true)
+                    maven.mvnCompareDependencies(getBasicMavenCommand('kogito-runtimes'), 'io.quarkus:quarkus-bom:999-SNAPSHOT', ':kogito-quarkus-bom', true, true)
+                    maven.mvnCompareDependencies(getBasicMavenCommand('kogito-runtimes'), 'io.quarkus:quarkus-bom:999-SNAPSHOT', ':kogito-build-no-bom-parent', true, true)
                     getMavenCommand('kogito-runtimes')
                         .withProperty('maven.test.failure.ignore', true)
                         .run('clean install')
@@ -213,13 +218,17 @@ void checkoutDroolsRepo() {
     }
 }
 
-MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
-    def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
+MavenCommand getBasicMavenCommand(String directory) {
+    return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId('kogito_release_settings')
+                .inDirectory(directory)
+}
+
+MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
+    def mvnCmd = getBasicMavenCommand(directory)
                 // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
                 // https://github.com/quarkusio/quarkus/issues/23205
                 .withProperty('quarkus.bootstrap.effective-model-builder', true)
-                .inDirectory(directory)
     if (addQuarkusVersion) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
         mvnCmd.withProperty('version.io.quarkus.quarkus-test-maven', '999-SNAPSHOT')
