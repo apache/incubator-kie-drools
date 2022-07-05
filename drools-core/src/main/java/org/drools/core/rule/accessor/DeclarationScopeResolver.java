@@ -16,10 +16,12 @@
 
 package org.drools.core.rule.accessor;
 
+import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
+
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Stack;
 
 import org.drools.core.base.AcceptsClassObjectType;
 import org.drools.core.base.ClassObjectType;
@@ -31,13 +33,11 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
-import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
-
 /**
  * A class capable of resolving a declaration in the current build context
  */
 public class DeclarationScopeResolver {
-    private final Stack<RuleConditionElement>        buildStack;
+    private final LinkedList<RuleConditionElement>   buildLinkedList;
     private final Map<String, Class<?>>              globalMap;
     private final InternalKnowledgePackage           pkg;
 
@@ -45,23 +45,23 @@ public class DeclarationScopeResolver {
     private Optional<RuleUnitDescription> ruleUnitDescr = Optional.empty();
 
     protected DeclarationScopeResolver() {
-        this( new HashMap<>(), new Stack<>() );
+        this( new HashMap<>(), new LinkedList<>() );
     }
 
-    public DeclarationScopeResolver(final Map<String, Class<?>> globalMap, final Stack<RuleConditionElement> buildStack) {
-        this( globalMap, buildStack, null );
+    public DeclarationScopeResolver(final Map<String, Class<?>> globalMap, final LinkedList<RuleConditionElement> buildLinkedList) {
+        this( globalMap, buildLinkedList, null );
     }
 
     public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
                                     final InternalKnowledgePackage pkg) {
-        this( globalMap, new Stack<>(), pkg );
+        this( globalMap, new LinkedList<>(), pkg );
     }
 
     private DeclarationScopeResolver(Map<String, Class<?>> globalMap,
-                                     Stack<RuleConditionElement> buildStack,
+                                     LinkedList<RuleConditionElement> buildLinkedList,
                                      InternalKnowledgePackage pkg) {
         this.globalMap = globalMap;
-        this.buildStack = buildStack;
+        this.buildLinkedList = buildLinkedList;
         this.pkg = pkg;
     }
 
@@ -71,15 +71,15 @@ public class DeclarationScopeResolver {
     }
 
     public RuleConditionElement peekBuildStack() {
-        return buildStack.peek();
+        return buildLinkedList.peek();
     }
 
     public RuleConditionElement popBuildStack() {
-        return buildStack.pop();
+        return buildLinkedList.pop();
     }
 
     public void pushOnBuildStack(RuleConditionElement element) {
-        buildStack.push(element);
+        buildLinkedList.push(element);
     }
 
     private Declaration getExtendedDeclaration(RuleImpl rule, String identifier) {
@@ -102,8 +102,8 @@ public class DeclarationScopeResolver {
 
     public Declaration getDeclaration(String identifier) {
         // it may be a local bound variable
-        for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = this.buildStack.get( i ).resolveDeclaration( identifier );
+        for ( int i = this.buildLinkedList.size() - 1; i >= 0; i-- ) {
+            final Declaration declaration = this.buildLinkedList.get( i ).resolveDeclaration( identifier );
             if ( declaration != null ) {
                 return declaration;
             }
@@ -160,8 +160,8 @@ public class DeclarationScopeResolver {
 
     public boolean available(RuleImpl rule,
                              final String name) {
-        for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = buildStack.get( i ).resolveDeclaration( name );
+        for ( int i = this.buildLinkedList.size() - 1; i >= 0; i-- ) {
+            final Declaration declaration = buildLinkedList.get( i ).resolveDeclaration( name );
             if ( declaration != null ) {
                 return true;
             }
@@ -190,8 +190,8 @@ public class DeclarationScopeResolver {
             return true;
         }
 
-        for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-            final RuleConditionElement rce = buildStack.get( i );
+        for ( int i = this.buildLinkedList.size() - 1; i >= 0; i-- ) {
+            final RuleConditionElement rce = buildLinkedList.get( i );
             final Declaration declaration = rce.resolveDeclaration( name );
             if ( declaration != null ) {
                 // if it is an OR and it is duplicated, we can stop looking for duplication now
@@ -224,17 +224,17 @@ public class DeclarationScopeResolver {
      */
     public Map<String, Declaration> getDeclarations(RuleImpl rule, String consequenceName) {
         Map<String, Declaration> declarations = new HashMap<>();
-        for (RuleConditionElement aBuildStack : this.buildStack) {
+        for (RuleConditionElement aBuildLinkedList : this.buildLinkedList) {
             // if we are inside of an OR we don't want each previous stack entry added because we can't see those variables
-            if (aBuildStack instanceof GroupElement && ((GroupElement)aBuildStack).getType() == GroupElement.Type.OR) {
+            if (aBuildLinkedList instanceof GroupElement && ((GroupElement)aBuildLinkedList).getType() == GroupElement.Type.OR) {
                 continue;
             }
 
             // this may be optimized in the future to only re-add elements at
             // scope breaks, like "NOT" and "EXISTS"
-            Map<String,Declaration> innerDeclarations = aBuildStack instanceof GroupElement ?
-                    ((GroupElement)aBuildStack).getInnerDeclarations(consequenceName) :
-                    aBuildStack.getInnerDeclarations();
+            Map<String,Declaration> innerDeclarations = aBuildLinkedList instanceof GroupElement ?
+                    ((GroupElement)aBuildLinkedList).getInnerDeclarations(consequenceName) :
+                    aBuildLinkedList.getInnerDeclarations();
             declarations.putAll(innerDeclarations);
         }
         if ( null != rule.getParent() ) {
@@ -261,8 +261,8 @@ public class DeclarationScopeResolver {
     }
 
     public Pattern findPatternById(int id) {
-        if ( !this.buildStack.isEmpty() ) {
-            return findPatternInNestedElements( id, buildStack.get( 0 ) );
+        if ( !this.buildLinkedList.isEmpty() ) {
+            return findPatternInNestedElements( id, buildLinkedList.get( 0 ) );
         }
         return null;
     }

@@ -19,8 +19,8 @@ package org.drools.verifier.doc;
 import java.awt.Color;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Vector;
 
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
@@ -202,7 +202,7 @@ public class DroolsDocsComponentFactory {
     }
     
     private static String[] splitFirst(String source, String splitter) {
-        Vector rv = new Vector();
+        LinkedList<String> rv = new LinkedList<>();
         int last = 0;
         int next = 0;
 

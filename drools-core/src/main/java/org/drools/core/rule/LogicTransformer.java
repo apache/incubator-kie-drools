@@ -17,11 +17,12 @@
 package org.drools.core.rule;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Stack;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
@@ -143,28 +144,28 @@ public class LogicTransformer {
      * we need to fix any references to cloned declarations.
      */
     protected void fixClonedDeclarations( GroupElement and, Map<String, Class<?>> globals ) {
-        Stack<RuleConditionElement> contextStack = new Stack<>();
+        LinkedList<RuleConditionElement> contextLinkedList = new LinkedList<>();
         DeclarationScopeResolver resolver = new DeclarationScopeResolver( globals,
-                                                                          contextStack );
+                                                                          contextLinkedList );
 
-        contextStack.push( and );
+        contextLinkedList.push( and );
         processElement( resolver,
-                        contextStack,
+                        contextLinkedList,
                         and );
-        contextStack.pop();
+        contextLinkedList.pop();
     }
 
     /**
      * recurse through the rule condition elements updating the declaration objecs
      */
     private void processElement(final DeclarationScopeResolver resolver,
-                                final Stack<RuleConditionElement> contextStack,
+                                final Deque<RuleConditionElement> contextLinkedList,
                                 final RuleConditionElement element) {
         if ( element instanceof Pattern ) {
             Pattern pattern = (Pattern) element;
             for ( RuleConditionElement ruleConditionElement : pattern.getNestedElements() ) {
                 processElement( resolver,
-                                contextStack,
+                                contextLinkedList,
                                 ruleConditionElement );
             }
             for (Constraint constraint : pattern.getConstraints()) {
@@ -179,7 +180,7 @@ public class LogicTransformer {
 
         } else if ( element instanceof Accumulate ) {
             for ( RuleConditionElement rce : element.getNestedElements() ) {
-                processElement( resolver, contextStack, rce );
+                processElement( resolver, contextLinkedList, rce );
             }
             Accumulate accumulate = (Accumulate)element;
             replaceDeclarations( resolver, accumulate );
@@ -243,13 +244,13 @@ public class LogicTransformer {
             processBranch( resolver, (ConditionalBranch) element );
 
         } else {
-            contextStack.push( element );
+            contextLinkedList.push( element );
             for (RuleConditionElement ruleConditionElement : element.getNestedElements()) {
                 processElement(resolver,
-                        contextStack,
+                        contextLinkedList,
                         ruleConditionElement);
             }
-            contextStack.pop();
+            contextLinkedList.pop();
         }
     }
 

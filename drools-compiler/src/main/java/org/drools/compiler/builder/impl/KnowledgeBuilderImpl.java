@@ -15,6 +15,8 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
@@ -102,7 +104,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
@@ -139,7 +140,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
 
-    private final Stack<List<Resource>> buildResources = new Stack<>();
+    private final Deque<List<Resource>> buildResources = new LinkedList<>();
 
     private AssetFilter assetFilter = null;
 

@@ -19,10 +19,11 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Stack;
 
 import org.antlr.runtime.BitSet;
 import org.antlr.runtime.EarlyExitException;
@@ -57,9 +58,9 @@ public class DroolsParserExceptionFactory {
     public final static String                        TRAILING_SEMI_COLON_NOT_ALLOWED_MESSAGE = "Line %1$d:%2$d trailing semi-colon not allowed%3$s";
     public final static String                        PARSER_LOCATION_MESSAGE_COMPLETE        = " in %1$s %2$s";
     public final static String                        PARSER_LOCATION_MESSAGE_PART            = " in %1$s";
-    public final static String                        UNEXPECTED_EXCEPTION                    = "Line %1$d:%2$d unexpected exception at input '%3$s'. Exception: %4$s. Stack trace:\n %5$s";
+    public final static String                        UNEXPECTED_EXCEPTION                    = "Line %1$d:%2$d unexpected exception at input '%3$s'. Exception: %4$s. LinkedList trace:\n %5$s";
 
-    private final Stack<Map<DroolsParaphraseTypes, String>> paraphrases;
+    private final Deque<Map<DroolsParaphraseTypes, String>> paraphrases;
     
     // TODO: need to deal with this array
     private String[]                                  tokenNames                              = null;
@@ -74,7 +75,7 @@ public class DroolsParserExceptionFactory {
      * @param paraphrases
      *            paraphrases parser structure
      */
-    public DroolsParserExceptionFactory(Stack<Map<DroolsParaphraseTypes, String>> paraphrases, LanguageLevelOption languageLevel) {
+    public DroolsParserExceptionFactory(LinkedList<Map<DroolsParaphraseTypes, String>> paraphrases, LanguageLevelOption languageLevel) {
         this.paraphrases = paraphrases;
         this.languageLevel = languageLevel;
     }

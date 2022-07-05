@@ -16,14 +16,14 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Stack;
+import java.util.List;
 
 import org.drools.core.common.NetworkNode;
 
 public interface NetworkNodeVisitor {
 
     void visit(NetworkNode parent,
-               Stack<NetworkNode> nodeStack,
+               List<NetworkNode> nodeLinkedList,
                StatefulKnowledgeSessionInfo info);
 
 }

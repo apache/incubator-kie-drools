@@ -17,14 +17,13 @@
 package org.drools.kiesession.debug;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -35,6 +34,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.KieSession;
 
 public class SessionInspector {
@@ -98,35 +98,35 @@ public class SessionInspector {
 
         info.setSession( session );
 
-        Stack<NetworkNode> nodeStack = new Stack<>();
+        LinkedList<NetworkNode> nodeLinkedList = new LinkedList<>();
         gatherNodeInfo( session.getKnowledgeBase().getRete(),
-                        nodeStack,
+                        nodeLinkedList,
                         info );
 
         return info;
     }
 
     private void gatherNodeInfo(NetworkNode parent,
-                                Stack<NetworkNode> nodeStack,
+                                LinkedList<NetworkNode> nodeLinkedList,
                                 StatefulKnowledgeSessionInfo info) {
         if ( !info.visited( parent ) ) {
-            nodeStack.push( parent );
+            nodeLinkedList.push( parent );
             NetworkNodeVisitor visitor = visitors.get( parent.getType() );
             if ( visitor != null ) {
                 visitor.visit( parent,
-                               nodeStack,
+                               nodeLinkedList,
                                info );
             } else {
                 throw new RuntimeException( "No visitor found for node class: " + parent.getClass()+" node: "+parent );
             }
             visitChildren( parent,
-                           nodeStack,
+                           nodeLinkedList,
                            info );
-            nodeStack.pop();
+            nodeLinkedList.pop();
         } else {
             // if already visited, then assign the same rules to the nodes currently in the stack
             Set<RuleImpl> rules = info.getNodeInfo( parent ).getRules();
-            for ( NetworkNode snode : nodeStack ) {
+            for ( NetworkNode snode : nodeLinkedList ) {
                 for ( RuleImpl rule : rules ) {
                     info.assign( snode,
                                  rule );
@@ -136,34 +136,34 @@ public class SessionInspector {
     }
 
     protected void visitChildren(NetworkNode parent,
-                                 Stack<NetworkNode> nodeStack,
+                                 LinkedList<NetworkNode> nodeLinkedList,
                                  StatefulKnowledgeSessionInfo info) {
         if ( parent instanceof Rete ) {
             Rete rete = (Rete) parent;
             for ( EntryPointNode sink : rete.getEntryPointNodes().values() ) {
                 gatherNodeInfo( sink,
-                                nodeStack,
+                                nodeLinkedList,
                                 info );
             }
         } else if ( parent instanceof EntryPointNode ) {
             EntryPointNode epn = (EntryPointNode) parent;
             for ( ObjectTypeNode sink : epn.getObjectTypeNodes().values() ) {
                 gatherNodeInfo( sink,
-                                nodeStack,
+                                nodeLinkedList,
                                 info );
             }
         } else if ( parent instanceof ObjectSource ) {
             ObjectSource source = (ObjectSource) parent;
             for ( ObjectSink sink : source.getObjectSinkPropagator().getSinks() ) {
                 gatherNodeInfo( sink,
-                                nodeStack,
+                                nodeLinkedList,
                                 info );
             }
         } else if ( parent instanceof LeftTupleSource ) {
             LeftTupleSource source = (LeftTupleSource) parent;
             for ( LeftTupleSink sink : source.getSinkPropagator().getSinks() ) {
                 gatherNodeInfo( sink,
-                                nodeStack,
+                                nodeLinkedList,
                                 info );
             }
         } else if ( parent instanceof RuleTerminalNode || parent instanceof QueryTerminalNode ) {

@@ -16,7 +16,7 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Stack;
+import java.util.List;
 
 import org.drools.core.common.NetworkNode;
 
@@ -29,7 +29,7 @@ public class DefaultNetworkNodeVisitor extends AbstractNetworkNodeVisitor {
 
     @Override
     protected void doVisit(NetworkNode node,
-                           Stack<NetworkNode> nodeStack,
+                           List<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         // do nothing for now
     }
