@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class KieMemoryCompilerTest {
 
@@ -106,7 +105,7 @@ public class KieMemoryCompilerTest {
         Map<String, String> source = singletonMap("org.kie.memorycompiler.ExampleClass", EXAMPLE_INNER_CLASS);
         Map<String, Class<?>> compiled = KieMemoryCompiler.compile(source, this.getClass().getClassLoader());
 
-        assertEquals(2, compiled.size());
+        assertThat(compiled.size()).isEqualTo(2);
 
         assertThat(compiled.get("org.kie.memorycompiler.ExampleClass")).isNotNull();
         assertThat(compiled.get("org.kie.memorycompiler.ExampleClass$InnerClass")).isNotNull();
