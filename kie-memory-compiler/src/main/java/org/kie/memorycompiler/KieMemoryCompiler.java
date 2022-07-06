@@ -167,6 +167,14 @@ public class KieMemoryCompiler {
             customCompiledCode.put(name, bytes);
         }
 
+        public byte[] getCode(String name) {
+            return customCompiledCode.get(name);
+        }
+
+        public boolean contains(String name) {
+            return customCompiledCode.containsKey(name);
+        }
+
         @Override
         protected Class<?> findClass(String name) throws ClassNotFoundException {
             byte[] byteCode = customCompiledCode.get(name);
