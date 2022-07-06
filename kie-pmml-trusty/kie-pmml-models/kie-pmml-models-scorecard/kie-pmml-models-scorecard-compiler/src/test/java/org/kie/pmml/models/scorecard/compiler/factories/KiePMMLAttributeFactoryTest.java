@@ -35,7 +35,7 @@ import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.ComplexPartialScore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
@@ -64,7 +64,7 @@ public class KiePMMLAttributeFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLAttributeFactoryTest_01.txt";
 
     @Test
-    public void getAttributeVariableDeclarationWithComplexPartialScore() throws IOException {
+    void getAttributeVariableDeclarationWithComplexPartialScore() throws IOException {
         final String variableName = "variableName";
         Attribute attribute = new Attribute();
         attribute.setReasonCode(REASON_CODE);
@@ -94,18 +94,18 @@ public class KiePMMLAttributeFactoryTest {
         }
 
         BlockStmt retrieved = KiePMMLAttributeFactory.getAttributeVariableDeclaration(variableName, attribute,
-                                                                                      getFieldsFromDataDictionary(dataDictionary));
+                getFieldsFromDataDictionary(dataDictionary));
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, valuesString));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
         List<Class<?>> imports = Arrays.asList(KiePMMLAttribute.class,
-                                               KiePMMLComplexPartialScore.class,
-                                               KiePMMLCompoundPredicate.class,
-                                               KiePMMLConstant.class,
-                                               KiePMMLSimplePredicate.class,
-                                               KiePMMLSimpleSetPredicate.class,
-                                               Arrays.class,
-                                               Collections.class);
+                KiePMMLComplexPartialScore.class,
+                KiePMMLCompoundPredicate.class,
+                KiePMMLConstant.class,
+                KiePMMLSimplePredicate.class,
+                KiePMMLSimpleSetPredicate.class,
+                Arrays.class,
+                Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 

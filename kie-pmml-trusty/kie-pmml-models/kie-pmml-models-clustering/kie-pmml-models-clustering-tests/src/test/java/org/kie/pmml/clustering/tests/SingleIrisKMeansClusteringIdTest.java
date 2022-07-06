@@ -16,11 +16,6 @@
 
 package org.kie.pmml.clustering.tests;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,11 +24,17 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
+public class SingleIrisKMeansClusteringIdTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "SingleIrisKMeansClustering.pmml";
+    private static final String FILE_NAME = "SingleIrisKMeansClustering_id.pmml";
+    
     private static final String MODEL_NAME = "SingleIrisKMeansClustering";
     private static final String TARGET_FIELD = "class";
 
@@ -60,12 +61,12 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
 
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {4.4, 3.0, 1.3, 0.2, 4.966666666666667, "cluster_3", 3, 0.570791999999999300, "3"},
-                {5.0, 3.3, 1.4, 0.2, 5.433333333333334, "cluster_3", 3, 0.019992000000000173, "3"},
-                {7.0, 3.2, 4.7, 1.4, 6.950000000000001, "cluster_2", 2, 0.760178465199283600, "2"},
-                {5.7, 2.8, 4.1, 1.3, 5.937500000000001, "cluster_4", 4, 0.092633744855966940, "4"},
-                {6.3, 3.3, 6.0, 2.5, 6.162500000000000, "cluster_1", 1, 0.574580078125001700, "1"},
-                {6.7, 3.0, 5.2, 2.3, 6.575000000000000, "cluster_1", 1, 0.502080078124998400, "1"}
+                {4.4, 3.0, 1.3, 0.2, 4.966666666666667, "cluster_3", 3, 0.570791999999999300, "C_THREE"},
+                {5.0, 3.3, 1.4, 0.2, 5.433333333333334, "cluster_3", 3, 0.019992000000000173, "C_THREE"},
+                {7.0, 3.2, 4.7, 1.4, 6.950000000000001, "cluster_2", 2, 0.760178465199283600, "C_TWO"},
+                {5.7, 2.8, 4.1, 1.3, 5.937500000000001, "cluster_4", 4, 0.092633744855966940, "C_FOUR"},
+                {6.3, 3.3, 6.0, 2.5, 6.162500000000000, "cluster_1", 1, 0.574580078125001700, "C_ONE"},
+                {6.7, 3.0, 5.2, 2.3, 6.575000000000000, "cluster_1", 1, 0.502080078124998400, "C_ONE"}
         });
     }
 
@@ -82,7 +83,7 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
         this.predictedEntityId = predictedEntityId;
         this.predictedAffinity = predictedAffinity;
     }
-    
+
     @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);

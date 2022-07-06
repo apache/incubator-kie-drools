@@ -18,14 +18,15 @@ package org.kie.pmml.models.mining.model;
 
 import java.util.Collections;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.testingutility.PMMLContextTest;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.pmml.models.mining.model.AbstractKiePMMLMiningModelTest.getKiePMMLSegmentation;
 
 public class KiePMMLMiningModelTest {
@@ -35,7 +36,7 @@ public class KiePMMLMiningModelTest {
     private static KiePMMLMiningModel.Builder BUILDER;
     private static KiePMMLMiningModel KIE_PMML_MINING_MODEL;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         BUILDER = KiePMMLMiningModel.builder(MINING_MODEL_NAME, Collections.emptyList(), MININGFUNCTION);
         assertThat(BUILDER).isNotNull();
@@ -43,13 +44,15 @@ public class KiePMMLMiningModelTest {
         assertThat(KIE_PMML_MINING_MODEL).isNotNull();
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void evaluate() {
-        KIE_PMML_MINING_MODEL.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
+    @Test
+    void evaluate() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            KIE_PMML_MINING_MODEL.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
+        });
     }
 
     @Test
-    public void getAlgorithmName() {
+    void getAlgorithmName() {
         assertThat(KIE_PMML_MINING_MODEL.getAlgorithmName()).isNull();
         String algorithmName = "algorithmName";
         KIE_PMML_MINING_MODEL = BUILDER.withAlgorithmName(algorithmName).build();
@@ -57,14 +60,14 @@ public class KiePMMLMiningModelTest {
     }
 
     @Test
-    public void isScorable() {
-    	assertThat(KIE_PMML_MINING_MODEL.isScorable()).isTrue();
+    void isScorable() {
+        assertThat(KIE_PMML_MINING_MODEL.isScorable()).isTrue();
         KIE_PMML_MINING_MODEL = BUILDER.withScorable(false).build();
         assertThat(KIE_PMML_MINING_MODEL.isScorable()).isFalse();
     }
 
     @Test
-    public void getSegmentation() {
+    void getSegmentation() {
         assertThat(KIE_PMML_MINING_MODEL.getSegmentation()).isNull();
         final KiePMMLSegmentation segmentation = getKiePMMLSegmentation("SEGMENTATION_NAME");
         KIE_PMML_MINING_MODEL = BUILDER.withSegmentation(segmentation).build();

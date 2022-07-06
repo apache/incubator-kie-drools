@@ -15,13 +15,13 @@
  */
 package org.kie.pmml.compiler.commons.factories;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class KiePMMLExtensionInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLExtension() {
+    void getKiePMMLExtension() {
         // TODO {@gcardosi}
     }
 }

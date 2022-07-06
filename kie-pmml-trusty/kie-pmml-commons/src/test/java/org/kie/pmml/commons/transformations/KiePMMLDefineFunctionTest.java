@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -29,6 +29,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLDefineFunctionTest {
@@ -39,41 +40,46 @@ public class KiePMMLDefineFunctionTest {
     private static final Double value1 = 100.0;
     private static final Double value2 = 5.0;
 
-    @Test(expected = IllegalArgumentException.class)
-    public void evaluateNoParamValues() {
-        final KiePMMLParameterField parameterField1 =
-                KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build();
-        final KiePMMLParameterField parameterField2 =
-                KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
-        final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                                                               null,
-                                                                               OP_TYPE.CONTINUOUS,
-                                                                               Arrays.asList(parameterField1,
-                                                                                             parameterField2),
-                                                                               null);
-        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
-        defineFunction.evaluate(processingDTO, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void evaluateEmptyParamValues() {
-        final KiePMMLParameterField parameterField1 = KiePMMLParameterField.builder(PARAM_1, Collections.emptyList
-        ()).build();
-        final KiePMMLParameterField parameterField2 = KiePMMLParameterField.builder(PARAM_2, Collections.emptyList
-        ()).build();
-        final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
-        .emptyList(),
-                                                                               null,
-                                                                               OP_TYPE.CONTINUOUS,
-                                                                               Arrays.asList(parameterField1,
-                                                                                             parameterField2),
-                                                                               null);
-        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
-        defineFunction.evaluate(processingDTO, Collections.emptyList());
+    @Test
+    void evaluateNoParamValues() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final KiePMMLParameterField parameterField1 =
+                    KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build();
+            final KiePMMLParameterField parameterField2 =
+                    KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
+            final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION,
+                                                                                   Collections.emptyList(),
+                                                                                   null,
+                                                                                   OP_TYPE.CONTINUOUS,
+                                                                                   Arrays.asList(parameterField1,
+                                                                                                 parameterField2),
+                                                                                   null);
+            ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
+            defineFunction.evaluate(processingDTO, null);
+        });
     }
 
     @Test
-    public void evaluateFromConstant() {
+    void evaluateEmptyParamValues() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final KiePMMLParameterField parameterField1 = KiePMMLParameterField.builder(PARAM_1, Collections.emptyList
+                    ()).build();
+            final KiePMMLParameterField parameterField2 = KiePMMLParameterField.builder(PARAM_2, Collections.emptyList
+                    ()).build();
+            final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
+                    .emptyList(),
+                                                                                   null,
+                                                                                   OP_TYPE.CONTINUOUS,
+                                                                                   Arrays.asList(parameterField1,
+                                                                                                 parameterField2),
+                                                                                   null);
+            ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
+            defineFunction.evaluate(processingDTO, Collections.emptyList());
+        });
+    }
+
+    @Test
+    void evaluateFromConstant() {
         // <DefineFunction name="CUSTOM_FUNCTION" optype="continuous" dataType="double">
         //     <Constant>100.0</Constant>
         // </DefineFunction>
@@ -89,7 +95,7 @@ public class KiePMMLDefineFunctionTest {
     }
 
     @Test
-    public void evaluateFromFieldRef() {
+    void evaluateFromFieldRef() {
         // <DefineFunction name="CUSTOM_FUNCTION" optype="continuous" dataType="double">
         //     <ParameterField name="PARAM_1"/>
         //     <FieldRef field="PARAM_1"/>
@@ -106,7 +112,7 @@ public class KiePMMLDefineFunctionTest {
     }
 
     @Test
-    public void evaluateFromApply() {
+    void evaluateFromApply() {
         // <DefineFunction name="CUSTOM_FUNCTION" optype="continuous" dataType="double">
         //     <ParameterField name="PARAM_1"/>
         //     <ParameterField field="PARAM_2"/>

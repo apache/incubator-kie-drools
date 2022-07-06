@@ -19,7 +19,7 @@ package org.kie.pmml.commons.model;
 import java.util.Collections;
 
 import org.assertj.core.data.Offset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.models.TargetField;
 
@@ -30,7 +30,7 @@ public class KiePMMLTargetTest {
     private final static String TARGET_NAME = "TARGET_NAME";
 
     @Test
-    public void modifyPrediction() {
+    void modifyPrediction() {
         Object object = "STRING";
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
                                                   null);
@@ -48,7 +48,7 @@ public class KiePMMLTargetTest {
     }
 
     @Test
-    public void applyMin() {
+    void applyMin() {
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
                                                   null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();
@@ -60,7 +60,7 @@ public class KiePMMLTargetTest {
     }
 
     @Test
-    public void applyMax() {
+    void applyMax() {
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
                                                   null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();
@@ -72,7 +72,7 @@ public class KiePMMLTargetTest {
     }
 
     @Test
-    public void applyRescaleFactor() {
+    void applyRescaleFactor() {
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
                                                   null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();
@@ -83,7 +83,7 @@ public class KiePMMLTargetTest {
     }
 
     @Test
-    public void applyRescaleConstant() {
+    void applyRescaleConstant() {
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
                                                   null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();
@@ -94,7 +94,7 @@ public class KiePMMLTargetTest {
     }
 
     @Test
-    public void applyCastInteger() {
+    void applyCastInteger() {
         TargetField targetField = new TargetField(Collections.emptyList(), null, "string", null, null, null, null,
                                                   null);
         KiePMMLTarget kiePMMLTarget = getBuilder(targetField).build();

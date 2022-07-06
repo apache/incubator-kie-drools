@@ -16,7 +16,7 @@
 package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.Target;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.KiePMMLTarget;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTarget;
@@ -25,7 +25,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLTargetInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLTarget() {
+    void getKiePMMLTarget() {
         final Target toConvert = getRandomTarget();
         KiePMMLTarget retrieved = KiePMMLTargetInstanceFactory.getKiePMMLTarget(toConvert);
         commonVerifyKiePMMLTarget(retrieved, toConvert);

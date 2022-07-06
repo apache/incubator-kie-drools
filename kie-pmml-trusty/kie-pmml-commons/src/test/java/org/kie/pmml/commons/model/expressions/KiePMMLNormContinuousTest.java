@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.OUTLIER_TREATMENT_METHOD;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class KiePMMLNormContinuousTest {
 
     @Test
-    public void sortLinearNorms() {
+    void sortLinearNorms() {
         KiePMMLLinearNorm ln0 = new KiePMMLLinearNorm("0", Collections.emptyList(), 34, 45);
         KiePMMLLinearNorm ln1 = new KiePMMLLinearNorm("1", Collections.emptyList(), 32, 5);
         KiePMMLLinearNorm ln2 = new KiePMMLLinearNorm("2", Collections.emptyList(), 33, 34);
@@ -45,7 +45,7 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void evaluate() {
+    void evaluate() {
         String fieldName = "fieldName";
         Number input = 24;
         KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(fieldName, null, null);
@@ -53,7 +53,8 @@ public class KiePMMLNormContinuousTest {
                                                         Collections.emptyList(),
                                                         Collections.emptyList(),
                                                         Collections.emptyList(),
-                                                        Collections.singletonList(new KiePMMLNameValue(fieldName, input)),
+                                                        Collections.singletonList(new KiePMMLNameValue(fieldName,
+                                                                                                       input)),
                                                         Collections.emptyList(),
                                                         Collections.emptyList());
         Number retrieved = (Number) kiePMMLNormContinuous.evaluate(processingDTO);
@@ -65,7 +66,7 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void evaluateWithExpectedValue() {
+    void evaluateWithExpectedValue() {
         KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, null, null);
         Number input = 24;
         Number retrieved = kiePMMLNormContinuous.evaluate(input);
@@ -119,8 +120,9 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void evaluateWithOutlierValueAsIs() {
-        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_IS, null);
+    void evaluateWithOutlierValueAsIs() {
+        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_IS,
+                                                                               null);
         Number input = 23;
         Number retrieved = kiePMMLNormContinuous.evaluate(input);
         Number expected =
@@ -139,9 +141,10 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void evaluateWithOutlierValueAsMissingValues() {
+    void evaluateWithOutlierValueAsMissingValues() {
         Number missingValue = 45;
-        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_MISSING_VALUES, missingValue);
+        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null,
+                                                                               OUTLIER_TREATMENT_METHOD.AS_MISSING_VALUES, missingValue);
         Number input = 23;
         Number retrieved = kiePMMLNormContinuous.evaluate(input);
         assertThat(retrieved).isEqualTo(missingValue);
@@ -151,8 +154,9 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void evaluateWithOutlierValueAsExtremeValues() {
-        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_EXTREME_VALUES, null);
+    void evaluateWithOutlierValueAsExtremeValues() {
+        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null,
+                                                                               OUTLIER_TREATMENT_METHOD.AS_EXTREME_VALUES, null);
         Number input = 23;
         Number retrieved = kiePMMLNormContinuous.evaluate(input);
         assertThat(retrieved).isEqualTo(kiePMMLNormContinuous.linearNorms.get(0).getNorm());
@@ -162,7 +166,7 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void evaluateExpectedValue() {
+    void evaluateExpectedValue() {
         KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, null, null);
         Number input = 24;
         Number retrieved = kiePMMLNormContinuous.evaluateExpectedValue(input);
@@ -216,8 +220,9 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void evaluateOutlierValueAsIs() {
-        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_IS, null);
+    void evaluateOutlierValueAsIs() {
+        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_IS,
+                                                                               null);
         Number input = 23;
         Number retrieved = kiePMMLNormContinuous.evaluateOutlierValue(input);
         Number expected =
@@ -236,9 +241,10 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void evaluateOutlierValueAsMissingValues() {
+    void evaluateOutlierValueAsMissingValues() {
         Number missingValue = 45;
-        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_MISSING_VALUES, missingValue);
+        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null,
+                                                                               OUTLIER_TREATMENT_METHOD.AS_MISSING_VALUES, missingValue);
         Number input = 23;
         Number retrieved = kiePMMLNormContinuous.evaluateOutlierValue(input);
         assertThat(retrieved).isEqualTo(missingValue);
@@ -248,8 +254,9 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void evaluateOutlierValueAsExtremeValues() {
-        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, OUTLIER_TREATMENT_METHOD.AS_EXTREME_VALUES, null);
+    void evaluateOutlierValueAsExtremeValues() {
+        KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null,
+                                                                               OUTLIER_TREATMENT_METHOD.AS_EXTREME_VALUES, null);
         Number input = 23;
         Number retrieved = kiePMMLNormContinuous.evaluateOutlierValue(input);
         assertThat(retrieved).isEqualTo(kiePMMLNormContinuous.linearNorms.get(0).getNorm());
@@ -259,7 +266,7 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void getLimitExpectedValue() {
+    void getLimitExpectedValue() {
         KiePMMLNormContinuous kiePMMLNormContinuous = getKiePMMLNormContinuous(null, null, null);
         Number input = 24;
         KiePMMLLinearNorm[] retrieved = kiePMMLNormContinuous.getLimitExpectedValue(input);
@@ -292,7 +299,7 @@ public class KiePMMLNormContinuousTest {
     }
 
     @Test
-    public void evaluateInputAndLimitLinearNorms() {
+    void evaluateInputAndLimitLinearNorms() {
         double startOrig = 2.1;
         double startNorm = 2.6;
         double endOrig = 7.4;

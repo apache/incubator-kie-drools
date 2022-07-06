@@ -20,9 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.data.Offset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class DistributionFunctionsTest {
 
@@ -43,7 +44,7 @@ public class DistributionFunctionsTest {
     }
 
     @Test
-    public void getNormalCDFValueCorrectInput() {
+    void getNormalCDFValueCorrectInput() {
         Object[] input1 = {24.11, 24.54, 1.23};
         Object retrieved = DistributionFunctions.NORMAL_CDF.getValue(input1);
         assertThat((Double) retrieved).isCloseTo(0.363, Offset.offset(0.001));
@@ -52,20 +53,24 @@ public class DistributionFunctionsTest {
         assertThat((Double) retrieved).isCloseTo(0.278, Offset.offset(0.001));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getNormalCDFValueWrongSizeInput() {
-        final Object[] input = {34};
-        DistributionFunctions.NORMAL_CDF.getValue(input);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getNormalCDFValueWrongTypeInput() {
-        final Object[] input = {34, 25.3, "22.1"};
-        DistributionFunctions.NORMAL_CDF.getValue(input);
+    @Test
+    void getNormalCDFValueWrongSizeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34};
+            DistributionFunctions.NORMAL_CDF.getValue(input);
+        });
     }
 
     @Test
-    public void getNormalPDFValueCorrectInput() {
+    void getNormalCDFValueWrongTypeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34, 25.3, "22.1"};
+            DistributionFunctions.NORMAL_CDF.getValue(input);
+        });
+    }
+
+    @Test
+    void getNormalPDFValueCorrectInput() {
         Object[] input1 = {2, 7, 2};
         Object retrieved = DistributionFunctions.NORMAL_PDF.getValue(input1);
         assertThat((Double) retrieved).isCloseTo(0.00876, Offset.offset(0.001));
@@ -74,20 +79,24 @@ public class DistributionFunctionsTest {
         assertThat((Double) retrieved).isCloseTo(0.08868, Offset.offset(0.001));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getNormalPDFValueWrongSizeInput() {
-        final Object[] input = {34};
-        DistributionFunctions.NORMAL_PDF.getValue(input);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getNormalPDFValueWrongTypeInput() {
-        final Object[] input = {34, 25.3, "22.1"};
-        DistributionFunctions.NORMAL_PDF.getValue(input);
+    @Test
+    void getNormalPDFValueWrongSizeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34};
+            DistributionFunctions.NORMAL_PDF.getValue(input);
+        });
     }
 
     @Test
-    public void getStdNormalCDFValueCorrectInput() {
+    void getNormalPDFValueWrongTypeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34, 25.3, "22.1"};
+            DistributionFunctions.NORMAL_PDF.getValue(input);
+        });
+    }
+
+    @Test
+    void getStdNormalCDFValueCorrectInput() {
         Object[] input1 = {2};
         Object retrieved = DistributionFunctions.STD_NORMAL_CDF.getValue(input1);
         assertThat((Double) retrieved).isCloseTo(0.97725, Offset.offset(0.001));
@@ -96,20 +105,24 @@ public class DistributionFunctionsTest {
         assertThat((Double) retrieved).isCloseTo(0.89307, Offset.offset(0.001));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getStdNormalCDFValueWrongSizeInput() {
-        final Object[] input = {34, 312, 11};
-        DistributionFunctions.STD_NORMAL_CDF.getValue(input);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getStdNormalCDFValueWrongTypeInput() {
-        final Object[] input = {"34"};
-        DistributionFunctions.STD_NORMAL_CDF.getValue(input);
+    @Test
+    void getStdNormalCDFValueWrongSizeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34, 312, 11};
+            DistributionFunctions.STD_NORMAL_CDF.getValue(input);
+        });
     }
 
     @Test
-    public void getStdNormalPDFValueCorrectInput() {
+    void getStdNormalCDFValueWrongTypeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {"34"};
+            DistributionFunctions.STD_NORMAL_CDF.getValue(input);
+        });
+    }
+
+    @Test
+    void getStdNormalPDFValueCorrectInput() {
         Object[] input1 = {2};
         Object retrieved = DistributionFunctions.STD_NORMAL_PDF.getValue(input1);
         assertThat((Double) retrieved).isCloseTo(0.05399, Offset.offset(0.001));
@@ -118,20 +131,24 @@ public class DistributionFunctionsTest {
         assertThat((Double) retrieved).isCloseTo(0.18425, Offset.offset(0.001));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getStdNormalPDFValueWrongSizeInput() {
-        final Object[] input = {34, 312, 11};
-        DistributionFunctions.STD_NORMAL_PDF.getValue(input);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getStdNormalPDFValueWrongTypeInput() {
-        final Object[] input = {"34"};
-        DistributionFunctions.STD_NORMAL_PDF.getValue(input);
+    @Test
+    void getStdNormalPDFValueWrongSizeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34, 312, 11};
+            DistributionFunctions.STD_NORMAL_PDF.getValue(input);
+        });
     }
 
     @Test
-    public void getErfValueCorrectInput() {
+    void getStdNormalPDFValueWrongTypeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {"34"};
+            DistributionFunctions.STD_NORMAL_PDF.getValue(input);
+        });
+    }
+
+    @Test
+    void getErfValueCorrectInput() {
         Object[] input1 = {2};
         Object retrieved = DistributionFunctions.ERF.getValue(input1);
         assertThat((Double) retrieved).isCloseTo(0.9953223, Offset.offset(0.001));
@@ -140,20 +157,24 @@ public class DistributionFunctionsTest {
         assertThat((Double) retrieved).isCloseTo(0.92123, Offset.offset(0.001));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getErfValueWrongSizeInput() {
-        final Object[] input = {34, 312, 11};
-        DistributionFunctions.ERF.getValue(input);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getErfValueWrongTypeInput() {
-        final Object[] input = {"34"};
-        DistributionFunctions.ERF.getValue(input);
+    @Test
+    void getErfValueWrongSizeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34, 312, 11};
+            DistributionFunctions.ERF.getValue(input);
+        });
     }
 
     @Test
-    public void getNormalIDFValueCorrectInput() {
+    void getErfValueWrongTypeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {"34"};
+            DistributionFunctions.ERF.getValue(input);
+        });
+    }
+
+    @Test
+    void getNormalIDFValueCorrectInput() {
         Object[] input1 = {0.75, 1.23, 0.2};
         Object retrieved = DistributionFunctions.NORMAL_IDF.getValue(input1);
         assertThat((Double) retrieved).isCloseTo(1.36, Offset.offset(0.01));
@@ -162,20 +183,24 @@ public class DistributionFunctionsTest {
         assertThat((Double) retrieved).isCloseTo(16.46, Offset.offset(0.01));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getNormalIDFValueWrongSizeInput() {
-        final Object[] input = {34};
-        DistributionFunctions.NORMAL_IDF.getValue(input);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getNormalIDFValueWrongTypeInput() {
-        final Object[] input = {34, 25.3, "22.1"};
-        DistributionFunctions.NORMAL_IDF.getValue(input);
+    @Test
+    void getNormalIDFValueWrongSizeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34};
+            DistributionFunctions.NORMAL_IDF.getValue(input);
+        });
     }
 
     @Test
-    public void getStdNormalIDFValueCorrectInput() {
+    void getNormalIDFValueWrongTypeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34, 25.3, "22.1"};
+            DistributionFunctions.NORMAL_IDF.getValue(input);
+        });
+    }
+
+    @Test
+    void getStdNormalIDFValueCorrectInput() {
         Object[] input1 = {0.75};
         Object retrieved = DistributionFunctions.STD_NORMAL_IDF.getValue(input1);
         assertThat((Double) retrieved).isCloseTo(0.67, Offset.offset(0.01));
@@ -184,17 +209,19 @@ public class DistributionFunctionsTest {
         assertThat((Double) retrieved).isCloseTo(1.35, Offset.offset(0.01));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getStdNormalIDFValueWrongSizeInput() {
-        final Object[] input = {34, 312, 11};
-        DistributionFunctions.STD_NORMAL_IDF.getValue(input);
+    @Test
+    void getStdNormalIDFValueWrongSizeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {34, 312, 11};
+            DistributionFunctions.STD_NORMAL_IDF.getValue(input);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getStdNormalIDFValueWrongTypeInput() {
-        final Object[] input = {"34"};
-        DistributionFunctions.STD_NORMAL_IDF.getValue(input);
+    @Test
+    void getStdNormalIDFValueWrongTypeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            final Object[] input = {"34"};
+            DistributionFunctions.STD_NORMAL_IDF.getValue(input);
+        });
     }
-
-
 }

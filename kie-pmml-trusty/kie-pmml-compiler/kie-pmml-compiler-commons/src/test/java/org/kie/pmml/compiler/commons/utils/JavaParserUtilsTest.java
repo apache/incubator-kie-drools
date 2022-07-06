@@ -21,10 +21,11 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.Name;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class JavaParserUtilsTest {
 
@@ -34,23 +35,27 @@ public class JavaParserUtilsTest {
 
 
     @Test
-    public void getFromFileName() {
+    void getFromFileName() {
         CompilationUnit retrieved = JavaParserUtils.getFromFileName(TEMPLATE_FILE);
         assertThat(retrieved).isNotNull();
     }
 
-    @Test(expected = KiePMMLInternalException.class)
-    public void getFromFileNameNotParsable() {
-        JavaParserUtils.getFromFileName(NOT_PARSABLE_FILE);
-    }
-
-    @Test(expected = AssertionError.class)
-    public void getFromFileNameNotExisting() {
-        JavaParserUtils.getFromFileName("not_existing");
+    @Test
+    void getFromFileNameNotParsable() {
+        assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
+            JavaParserUtils.getFromFileName(NOT_PARSABLE_FILE);
+        });
     }
 
     @Test
-    public void getKiePMMLModelCompilationUnitWithPackage() {
+    void getFromFileNameNotExisting() {
+        assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> {
+            JavaParserUtils.getFromFileName("not_existing");
+        });
+    }
+
+    @Test
+    void getKiePMMLModelCompilationUnitWithPackage() {
         String className = "ClassName";
         String packageName = "apackage";
         CompilationUnit retrieved = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,  TEMPLATE_FILE, TEMPLATE_CLASS);
@@ -62,7 +67,7 @@ public class JavaParserUtilsTest {
     }
 
     @Test
-    public void getKiePMMLModelCompilationUnitWithoutPackage() {
+    void getKiePMMLModelCompilationUnitWithoutPackage() {
         String className = "ClassName";
         CompilationUnit retrieved = JavaParserUtils.getKiePMMLModelCompilationUnit(className, null,  TEMPLATE_FILE, TEMPLATE_CLASS);
         assertThat(retrieved).isNotNull();
@@ -72,7 +77,7 @@ public class JavaParserUtilsTest {
     }
 
     @Test
-    public void getFullClassName() {
+    void getFullClassName() {
         String className = "ClassName";
         String packageName = "apackage";
         PackageDeclaration packageDeclaration = new PackageDeclaration();

@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.LocalTransformations;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 
@@ -32,11 +32,11 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLLocalTransformationsInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLLocalTransformations() {
+    void getKiePMMLLocalTransformations() {
         final LocalTransformations toConvert = getRandomLocalTransformations();
         KiePMMLLocalTransformations retrieved =
                 KiePMMLLocalTransformationsInstanceFactory.getKiePMMLLocalTransformations(toConvert,
-                                                                                                                          Collections.emptyList());
+                        Collections.emptyList());
         assertThat(retrieved).isNotNull();
 
         List<DerivedField> derivedFields = toConvert.getDerivedFields();

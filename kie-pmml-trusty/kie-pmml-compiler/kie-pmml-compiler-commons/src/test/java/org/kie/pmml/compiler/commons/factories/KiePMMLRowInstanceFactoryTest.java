@@ -16,7 +16,7 @@
 package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.Row;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLRow;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomRow;
@@ -27,7 +27,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLRowInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLRow() {
+    void getKiePMMLRow() {
         Row toConvert = getRandomRow();
         KiePMMLRow retrieved = KiePMMLRowInstanceFactory.getKiePMMLRow(toConvert);
         commonVerifyKiePMMLRow(retrieved, toConvert);

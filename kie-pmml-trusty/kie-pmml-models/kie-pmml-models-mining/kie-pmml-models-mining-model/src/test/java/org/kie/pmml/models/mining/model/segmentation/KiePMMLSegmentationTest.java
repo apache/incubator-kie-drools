@@ -19,8 +19,8 @@ package org.kie.pmml.models.mining.model.segmentation;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +33,7 @@ public class KiePMMLSegmentationTest {
     private static KiePMMLSegmentation.Builder BUILDER;
     private static KiePMMLSegmentation KIE_PMML_SEGMENTATION;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         BUILDER = KiePMMLSegmentation.builder(SEGMENTATION_NAME, Collections.emptyList(),
                                               MULTIPLE_MODELMETHOD);
@@ -43,12 +43,12 @@ public class KiePMMLSegmentationTest {
     }
 
     @Test
-    public void getMultipleModelMethod() {
+    void getMultipleModelMethod() {
         assertThat(KIE_PMML_SEGMENTATION.getMultipleModelMethod()).isEqualTo(MULTIPLE_MODELMETHOD);
     }
 
     @Test
-    public void getSegments() {
+    void getSegments() {
         assertThat(KIE_PMML_SEGMENTATION.getSegments()).isNull();
         final List<KiePMMLSegment> segments = getKiePMMLSegments();
         KIE_PMML_SEGMENTATION = BUILDER.withSegments(segments).build();

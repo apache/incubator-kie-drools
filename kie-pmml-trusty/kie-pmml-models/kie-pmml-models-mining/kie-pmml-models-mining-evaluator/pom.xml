@@ -37,16 +37,16 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-xml-support</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

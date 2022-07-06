@@ -21,17 +21,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.data.Percentage;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MultipleAirconditioningScorecardTest extends AbstractPMMLTest {
     private static final String FILE_NAME = "MultipleScorecard.pmml";
     private static final String MODEL_NAME = "Forecast Score";
@@ -44,7 +42,7 @@ public class MultipleAirconditioningScorecardTest extends AbstractPMMLTest {
     private double humidity;
     private double score;
 
-    public MultipleAirconditioningScorecardTest(String period, String worldContinent, boolean precipitation, double humidity,
+    public void initMultipleAirconditioningScorecardTest(String period, String worldContinent, boolean precipitation, double humidity,
                                                 double score) {
         this.period = period;
         this.worldContinent = worldContinent;
@@ -53,12 +51,11 @@ public class MultipleAirconditioningScorecardTest extends AbstractPMMLTest {
         this.score = score;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"SPRING", "EUROPE", true, 25.0, 9.5},
@@ -66,8 +63,10 @@ public class MultipleAirconditioningScorecardTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testAirconditioningScorecard() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testAirconditioningScorecard(String period, String worldContinent, boolean precipitation, double humidity, double score) {
+        initMultipleAirconditioningScorecardTest(period, worldContinent, precipitation, humidity, score);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("period", period);
         inputData.put("worldcontinent", worldContinent);

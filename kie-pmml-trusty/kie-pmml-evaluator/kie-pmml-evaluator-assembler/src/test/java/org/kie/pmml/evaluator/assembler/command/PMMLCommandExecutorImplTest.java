@@ -22,51 +22,60 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class PMMLCommandExecutorImplTest {
 
-    @Test(expected = KiePMMLException.class)
-    public void validateNoSource() {
-        PMMLRequestData pmmlRequestData = new PMMLRequestData();
-        pmmlRequestData.setModelName("modelName");
-        PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
-        cmdExecutor.validate(pmmlRequestData);
+    @Test
+    void validateNoSource() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            PMMLRequestData pmmlRequestData = new PMMLRequestData();
+            pmmlRequestData.setModelName("modelName");
+            PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
+            cmdExecutor.validate(pmmlRequestData);
+        });
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void validateEmptySource() {
-        PMMLRequestData pmmlRequestData = new PMMLRequestData();
-        pmmlRequestData.setModelName("modelName");
-        pmmlRequestData.setSource("");
-        PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
-        cmdExecutor.validate(pmmlRequestData);
+    @Test
+    void validateEmptySource() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            PMMLRequestData pmmlRequestData = new PMMLRequestData();
+            pmmlRequestData.setModelName("modelName");
+            pmmlRequestData.setSource("");
+            PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
+            cmdExecutor.validate(pmmlRequestData);
+        });
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void validateNoModelName() {
-        PMMLRequestData pmmlRequestData = new PMMLRequestData();
-        pmmlRequestData.setSource("source");
-        PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
-        cmdExecutor.validate(pmmlRequestData);
+    @Test
+    void validateNoModelName() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            PMMLRequestData pmmlRequestData = new PMMLRequestData();
+            pmmlRequestData.setSource("source");
+            PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
+            cmdExecutor.validate(pmmlRequestData);
+        });
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void validateEmptyModelName() {
-        PMMLRequestData pmmlRequestData = new PMMLRequestData();
-        pmmlRequestData.setSource("source");
-        pmmlRequestData.setModelName("");
-        PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
-        cmdExecutor.validate(pmmlRequestData);
+    @Test
+    void validateEmptyModelName() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            PMMLRequestData pmmlRequestData = new PMMLRequestData();
+            pmmlRequestData.setSource("source");
+            pmmlRequestData.setModelName("");
+            PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
+            cmdExecutor.validate(pmmlRequestData);
+        });
     }
 
-    @Test()
-    public void getCleanedRequestData() {
+    @Test
+    void getCleanedRequestData() {
         PMMLRequestData pmmlRequestData = getPMMLRequestData();
         PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
         PMMLRequestData retrieved = cmdExecutor.getCleanedRequestData(pmmlRequestData);
@@ -76,7 +85,7 @@ public class PMMLCommandExecutorImplTest {
         assertThat(retrieved.getModelName()).isEqualTo(pmmlRequestData.getModelName());
         Map<String, ParameterInfo> requestParams = retrieved.getMappedRequestParams();
         pmmlRequestData.getRequestParams().forEach(parameterInfo -> {
-        	assertThat(requestParams).containsKey(parameterInfo.getName());
+            assertThat(requestParams).containsKey(parameterInfo.getName());
             ParameterInfo cleaned = requestParams.get(parameterInfo.getName());
             assertThat(cleaned.getName()).isEqualTo(parameterInfo.getName());
             assertThat(cleaned.getCorrelationId()).isEqualTo(parameterInfo.getCorrelationId());

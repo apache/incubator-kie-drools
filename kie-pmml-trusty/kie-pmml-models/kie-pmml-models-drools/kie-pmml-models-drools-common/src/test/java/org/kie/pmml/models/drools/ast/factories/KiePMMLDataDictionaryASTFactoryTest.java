@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -38,7 +38,7 @@ import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getTypeDataFi
 public class KiePMMLDataDictionaryASTFactoryTest {
 
     @Test
-    public void declareTypes() {
+    void declareTypes() {
         List<DataField> dataFields = Arrays.asList(getTypeDataField(), getDottedTypeDataField(), getTypeDataField(), getDottedTypeDataField());
         DataDictionary dataDictionary = new DataDictionary(dataFields);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
@@ -49,7 +49,7 @@ public class KiePMMLDataDictionaryASTFactoryTest {
     }
 
     @Test
-    public void declareType() {
+    void declareType() {
         DataField dataField = getTypeDataField();
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         KiePMMLDroolsType retrieved = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareType(dataField);

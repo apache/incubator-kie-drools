@@ -26,7 +26,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.LinearNorm;
 import org.dmg.pmml.NormContinuous;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.OUTLIER_TREATMENT_METHOD;
 import org.kie.pmml.commons.model.expressions.KiePMMLLinearNorm;
 import org.kie.pmml.commons.model.expressions.KiePMMLNormContinuous;
@@ -44,13 +44,14 @@ public class KiePMMLNormContinuousFactoryTest {
     private static final String TEST_02_SOURCE = "KiePMMLNormContinuousFactoryTest_02.txt";
 
     @Test
-    public void getNormContinuousVariableDeclaration() throws IOException {
+    void getNormContinuousVariableDeclaration() throws IOException {
         String variableName = "variableName";
         NormContinuous normContinuous = getRandomNormContinuous();
         List<LinearNorm> linearNorms = normContinuous.getLinearNorms();
 
-        BlockStmt retrieved = KiePMMLNormContinuousFactory.getNormContinuousVariableDeclaration(variableName,
-                                                                                                normContinuous);
+        BlockStmt retrieved =
+                org.kie.pmml.compiler.commons.codegenfactories.KiePMMLNormContinuousFactory.getNormContinuousVariableDeclaration(variableName,
+                                                                                                                                               normContinuous);
         String outlierString =
                 OUTLIER_TREATMENT_METHOD.class.getName() + "." + OUTLIER_TREATMENT_METHOD.byName(normContinuous.getOutliers().value()).name();
         String text = getFileContent(TEST_01_SOURCE);
@@ -70,7 +71,7 @@ public class KiePMMLNormContinuousFactoryTest {
     }
 
     @Test
-    public void getNewKiePMMLLinearNormExpression() throws IOException {
+    void getNewKiePMMLLinearNormExpression() throws IOException {
         String name = "name";
         LinearNorm linearNorm = getRandomLinearNorm();
         Expression retrieved = KiePMMLNormContinuousFactory.getNewKiePMMLLinearNormExpression(linearNorm, name);

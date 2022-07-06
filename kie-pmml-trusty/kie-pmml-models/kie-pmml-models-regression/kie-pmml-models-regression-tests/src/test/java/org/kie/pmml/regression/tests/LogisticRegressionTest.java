@@ -22,17 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.data.Percentage;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class LogisticRegressionTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "LogisticRegression.pmml";
@@ -52,7 +50,7 @@ public class LogisticRegressionTest extends AbstractPMMLTest {
     private double expectedProbAuthentic;
     private double expectedProbCounterfeit;
 
-    public LogisticRegressionTest(double variance, double skewness, double curtosis,
+    public void initLogisticRegressionTest(double variance, double skewness, double curtosis,
                                   double entropy, String expectedResult,
                                   double expectedProbAuthentic,
                                   double expectedProbCounterfeit) {
@@ -65,12 +63,11 @@ public class LogisticRegressionTest extends AbstractPMMLTest {
         this.expectedProbCounterfeit = expectedProbCounterfeit;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {2.3, 6.9, 3.1, 5.1, "Authentic", 0.999999999768916, 2.310840601778274E-10},
@@ -81,8 +78,10 @@ public class LogisticRegressionTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testLogisticRegression() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testLogisticRegression(double variance, double skewness, double curtosis, double entropy, String expectedResult, double expectedProbAuthentic, double expectedProbCounterfeit) {
+        initLogisticRegressionTest(variance, skewness, curtosis, entropy, expectedResult, expectedProbAuthentic, expectedProbCounterfeit);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("variance", variance);
         inputData.put("skewness", skewness);

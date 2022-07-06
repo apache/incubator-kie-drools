@@ -22,17 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.data.Percentage;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "LogisticRegressionNoneNormalization.pmml";
@@ -54,7 +52,7 @@ public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
     private double expectedVersicolorProbability;
     private double expectedVirginicaProbability;
 
-    public LogisticRegressionNoneNormalizationTest(double sepalLength, double sepalWidth, double petalLength,
+    public void initLogisticRegressionNoneNormalizationTest(double sepalLength, double sepalWidth, double petalLength,
                                                    double petalWidth, String expectedResult, double expectedSetosaProbability,
                                                    double expectedVersicolorProbability,
                                                    double expectedVirginicaProbability) {
@@ -68,12 +66,11 @@ public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
         this.expectedVirginicaProbability = expectedVirginicaProbability;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {6.9, 3.1, 5.1, 2.3, "virginica", 0.04871813160275851, 0.04509592640753013, 0.9061859419897114},
@@ -82,8 +79,10 @@ public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testLogisticRegressionWithNormalization() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testLogisticRegressionWithNormalization(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String expectedResult, double expectedSetosaProbability, double expectedVersicolorProbability, double expectedVirginicaProbability) throws Exception {
+        initLogisticRegressionNoneNormalizationTest(sepalLength, sepalWidth, petalLength, petalWidth, expectedResult, expectedSetosaProbability, expectedVersicolorProbability, expectedVirginicaProbability);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("Sepal.Length", sepalLength);
         inputData.put("Sepal.Width", sepalWidth);

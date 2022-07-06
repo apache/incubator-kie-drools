@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
@@ -44,18 +44,18 @@ public class KiePMMLCharacteristicsTest {
     private static final Double value2 = 5.0;
 
     @Test
-    public void evaluate() {
+    void evaluate() {
         Double initialScore = 25.23;
         KiePMMLCharacteristics kiePMMLCharacteristics = new KiePMMLCharacteristics("NAME", Collections.emptyList(),
-                                                                                   getKiePMMLCharacteristicList());
+                getKiePMMLCharacteristicList());
         PMMLContextTest pmmlContextTest = new PMMLContextTest();
         Optional<Number> retrieved = kiePMMLCharacteristics.evaluate(Collections.emptyList(), Collections.emptyList()
-                , Collections.emptyList(), Collections.emptyMap(),
-                                                                     pmmlContextTest,
-                                                                     initialScore,
-                                                                     REASONCODE_ALGORITHM.POINTS_BELOW,
-                                                                     true,
-                                                                     0);
+        , Collections.emptyList(), Collections.emptyMap(),
+                pmmlContextTest,
+                initialScore,
+                REASONCODE_ALGORITHM.POINTS_BELOW,
+                true,
+                0);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isPresent();
         Double EVALUATION_20 = baselineScore - value2;

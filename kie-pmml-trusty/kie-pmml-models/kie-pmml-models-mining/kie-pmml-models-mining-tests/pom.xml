@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-tests</artifactId>
-      <scope>test</scope>
+      <classifier>tests</classifier>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -98,6 +98,10 @@
           <groupId>ch.qos.logback</groupId>
           <artifactId>logback-core</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <!-- EXTERNAL -->
@@ -111,11 +115,7 @@
       <artifactId>commons-io</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
+
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>

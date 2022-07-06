@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SimpleScorecardMixedVariablesTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "SimpleScorecardMixedVariables.pmml";
@@ -47,7 +45,7 @@ public class SimpleScorecardMixedVariablesTest extends AbstractPMMLTest {
     private String reasonCode1;
     private String reasonCode2;
 
-    public SimpleScorecardMixedVariablesTest(double input1, String input2, double score, String reasonCode1, String reasonCode2) {
+    public void initSimpleScorecardMixedVariablesTest(double input1, String input2, double score, String reasonCode1, String reasonCode2) {
         this.input1 = input1;
         this.input2 = input2;
         this.score = score;
@@ -55,12 +53,11 @@ public class SimpleScorecardMixedVariablesTest extends AbstractPMMLTest {
         this.reasonCode2 = reasonCode2;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {5, "classB", 25, "Input1ReasonCode", null},
@@ -71,8 +68,10 @@ public class SimpleScorecardMixedVariablesTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testSimpleScorecardMixedVariables() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSimpleScorecardMixedVariables(double input1, String input2, double score, String reasonCode1, String reasonCode2) {
+        initSimpleScorecardMixedVariablesTest(input1, input2, score, reasonCode1, reasonCode2);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
