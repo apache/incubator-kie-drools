@@ -22,7 +22,7 @@ import org.appformer.maven.support.PomModel;
 import org.appformer.maven.support.PomModelGenerator;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.fail;
 
 public class DependentScopeNamedBeanTest {
 

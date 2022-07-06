@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClassObjectSerializationFilter;
 import org.drools.core.base.RuleNameEndsWithAgendaFilter;
@@ -57,6 +58,7 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 public class CommandSerializationTest {
 
     private Class<?>[] annotatedJaxbClasses = { JaxbListWrapper.class };

@@ -27,7 +27,7 @@ import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.Constraint;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultTemplateRuleBaseTest {
 
@@ -66,12 +66,12 @@ public class DefaultTemplateRuleBaseTest {
         };
         DefaultTemplateRuleBase ruleBase = new DefaultTemplateRuleBase(tc);
         InternalKnowledgePackage[] packages = ((KnowledgeBaseImpl)ruleBase.newStatefulSession().getKieBase()).getPackages();
-        assertEquals(1, packages.length);
+        assertThat(packages.length).isEqualTo(1);
         Map<String, Class<?>> globals = packages[0].getGlobals();
-        assertEquals(DefaultGenerator.class, globals.get("generator"));
+        assertThat(globals.get("generator")).isEqualTo(DefaultGenerator.class);
         Collection<org.kie.api.definition.rule.Rule> rules = packages[0].getRules();
-        assertEquals(1, rules.size());
-        assertEquals("template1", rules.iterator().next().getName());
+        assertThat(rules.size()).isEqualTo(1);
+        assertThat(rules.iterator().next().getName()).isEqualTo("template1");
         GroupElement lhs = ((RuleImpl)rules.iterator().next()).getLhs();
         //when
         //  r : Row()
@@ -81,33 +81,33 @@ public class DefaultTemplateRuleBaseTest {
         //  exists LongCell(row == r, column == column2, value < 5 | > 20)
         //  column3 : Column(name == "column3")
         //  exists StringCell(row == r, column == column3, value == "xyz")
-        assertEquals(7, lhs.getChildren().size());
+        assertThat(lhs.getChildren().size()).isEqualTo(7);
         org.drools.core.rule.Pattern pattern = (org.drools.core.rule.Pattern) lhs.getChildren().get(1);
-        assertEquals(1, pattern.getConstraints().size());
+        assertThat(pattern.getConstraints().size()).isEqualTo(1);
         Constraint constraint = pattern.getConstraints().get(0);
         GroupElement exists = (GroupElement) lhs.getChildren().get(2);
         pattern = (org.drools.core.rule.Pattern) exists.getChildren().get(0);
-        assertEquals(3, pattern.getConstraints().size());
+        assertThat(pattern.getConstraints().size()).isEqualTo(3);
         IndexableConstraint vconstraint = (IndexableConstraint) pattern.getConstraints().get(1);
-        assertEquals(Column.class, vconstraint.getFieldIndex().getRightExtractor().getExtractToClass());
-        assertEquals("column1", vconstraint.getRequiredDeclarations()[0].getIdentifier());
+        assertThat(vconstraint.getFieldIndex().getRightExtractor().getExtractToClass()).isEqualTo(Column.class);
+        assertThat(vconstraint.getRequiredDeclarations()[0].getIdentifier()).isEqualTo("column1");
         pattern = (org.drools.core.rule.Pattern) lhs.getChildren().get(3);
-        assertEquals(1, pattern.getConstraints().size());
+        assertThat(pattern.getConstraints().size()).isEqualTo(1);
         constraint = pattern.getConstraints().get(0);
         exists = (GroupElement) lhs.getChildren().get(4);
         pattern = (org.drools.core.rule.Pattern) exists.getChildren().get(0);
-        assertEquals(3, pattern.getConstraints().size());
+        assertThat(pattern.getConstraints().size()).isEqualTo(3);
         vconstraint = (IndexableConstraint) pattern.getConstraints().get(1);
-        assertEquals(Column.class, vconstraint.getFieldIndex().getRightExtractor().getExtractToClass());
-        assertEquals("column2", vconstraint.getRequiredDeclarations()[0].getIdentifier());
+        assertThat(vconstraint.getFieldIndex().getRightExtractor().getExtractToClass()).isEqualTo(Column.class);
+        assertThat(vconstraint.getRequiredDeclarations()[0].getIdentifier()).isEqualTo("column2");
         pattern = (org.drools.core.rule.Pattern) lhs.getChildren().get(5);
-        assertEquals(1, pattern.getConstraints().size());
+        assertThat(pattern.getConstraints().size()).isEqualTo(1);
         constraint = pattern.getConstraints().get(0);
         exists = (GroupElement) lhs.getChildren().get(6);
         pattern = (org.drools.core.rule.Pattern) exists.getChildren().get(0);
-        assertEquals(3, pattern.getConstraints().size());
+        assertThat(pattern.getConstraints().size()).isEqualTo(3);
         vconstraint = (IndexableConstraint) pattern.getConstraints().get(1);
-        assertEquals(Column.class, vconstraint.getFieldIndex().getRightExtractor().getExtractToClass());
-        assertEquals("column3", vconstraint.getRequiredDeclarations()[0].getIdentifier());
+        assertThat(vconstraint.getFieldIndex().getRightExtractor().getExtractToClass()).isEqualTo(Column.class);
+        assertThat(vconstraint.getRequiredDeclarations()[0].getIdentifier()).isEqualTo("column3");
     }
 }

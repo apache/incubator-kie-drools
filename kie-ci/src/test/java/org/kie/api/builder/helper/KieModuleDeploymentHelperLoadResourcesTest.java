@@ -23,8 +23,7 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.api.builder.helper.KieModuleDeploymentHelperImpl.internalLoadResources;
 
 public class KieModuleDeploymentHelperLoadResourcesTest {
@@ -35,34 +34,34 @@ public class KieModuleDeploymentHelperLoadResourcesTest {
         // local
         String path = "/builder/simple_query_test.drl";
         resources = internalLoadResources(path, false);
-        assertEquals( path, 1, resources.size());
+        assertThat(resources.size()).as(path).isEqualTo(1);
         String content = resources.get(0).content;
-        assertTrue( content != null && content.length() > 10 );
+        assertThat(content != null && content.length() > 10).isTrue();
 
         path = "/builder/test/";
         resources = internalLoadResources(path, true);
-        assertEquals( path, 2, resources.size());
+        assertThat(resources.size()).as(path).isEqualTo(2);
         content = resources.get(0).content;
-        assertTrue( content != null && content.length() > 10 );
+        assertThat(content != null && content.length() > 10).isTrue();
 
         path = "/builder/";
         resources = internalLoadResources(path, true);
-        assertEquals( path, 1, resources.size());
+        assertThat(resources.size()).as(path).isEqualTo(1);
         content = resources.get(0).content;
-        assertTrue( content != null && content.length() > 10 );
+        assertThat(content != null && content.length() > 10).isTrue();
 
         // classpath
         path = "META-INF/WorkDefinitions.conf";
         resources = internalLoadResources(path, false);
-        assertEquals( path, 1, resources.size());
+        assertThat(resources.size()).as(path).isEqualTo(1);
         content = resources.get(0).content;
-        assertTrue( content != null && content.length() > 10 );
+        assertThat(content != null && content.length() > 10).isTrue();
 
         path = "META-INF/plexus/";
         resources = internalLoadResources(path, true);
-        assertEquals( path, 3, resources.size());
+        assertThat(resources.size()).as(path).isEqualTo(3);
         content = resources.get(0).content;
-        assertTrue( content != null && content.length() > 10 );
+        assertThat(content != null && content.length() > 10).isTrue();
 
         // file
         content = "test file created by " + this.getClass().getSimpleName();
@@ -75,9 +74,9 @@ public class KieModuleDeploymentHelperLoadResourcesTest {
         fos.close();
         
         resources = internalLoadResources(tempFile.getAbsolutePath(), false);
-        assertEquals( path, 1, resources.size());
+        assertThat(resources.size()).as(path).isEqualTo(1);
         content = resources.get(0).content;
-        assertTrue( content != null && content.length() > 10 );
+        assertThat(content != null && content.length() > 10).isTrue();
 
         File tempDir = new File(baseTempPath + "/" + UUID.randomUUID().toString());
         tempDir.mkdir();
@@ -88,8 +87,8 @@ public class KieModuleDeploymentHelperLoadResourcesTest {
         fos.close();
         
         resources = internalLoadResources(tempDir.getAbsolutePath(), true);
-        assertEquals( path, 1, resources.size());
+        assertThat(resources.size()).as(path).isEqualTo(1);
         content = resources.get(0).content;
-        assertTrue( content != null && content.length() > 10 );
+        assertThat(content != null && content.length() > 10).isTrue();
     }
 }

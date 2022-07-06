@@ -16,13 +16,12 @@
 
 package org.drools.decisiontable.parser.xls;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -61,13 +60,13 @@ public class ExcelParserTest {
         cell.setCellValue(LAST_CELL_VALUE);
 
         cell = sheet.createRow(1).createCell(1);
-        assertNull(parser.getRangeIfMerged(cell, ranges));
+        assertThat(parser.getRangeIfMerged(cell, ranges)).isNull();
 
         cell = sheet.getRow(2).createCell(5);
         cell.setCellValue("wrong");
 
         CellRangeAddress rangeIfMerged = parser.getRangeIfMerged(cell, ranges);
-        assertEquals(FIRST_CELL_CONTENT, sheet.getRow(rangeIfMerged.getFirstRow()).getCell(rangeIfMerged.getFirstColumn()).getStringCellValue());
+        assertThat(sheet.getRow(rangeIfMerged.getFirstRow()).getCell(rangeIfMerged.getFirstColumn()).getStringCellValue()).isEqualTo(FIRST_CELL_CONTENT);
     }
 
 }

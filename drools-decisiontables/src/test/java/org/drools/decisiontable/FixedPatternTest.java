@@ -15,6 +15,10 @@
 
 package org.drools.decisiontable;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
@@ -26,12 +30,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class FixedPatternTest {
 
@@ -57,8 +57,8 @@ public class FixedPatternTest {
         ksession.insert(2);
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(1L, (long)list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((long) list.get(0)).isEqualTo(1L);
 
         ksession.dispose();
     }

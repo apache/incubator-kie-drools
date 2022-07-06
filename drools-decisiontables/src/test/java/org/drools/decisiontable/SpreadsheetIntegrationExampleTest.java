@@ -35,8 +35,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SpreadsheetIntegrationExampleTest {
 
@@ -57,10 +56,8 @@ public class SpreadsheetIntegrationExampleTest {
         ksession.setGlobal( "list",
                            list );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( "Old man stilton",
-                      list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Old man stilton");
     }
 
     private KieSession getKieSession(Resource dt) {
@@ -68,7 +65,7 @@ public class SpreadsheetIntegrationExampleTest {
 
         KieFileSystem kfs = ks.newKieFileSystem().write( dt );
         KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
-        assertTrue( kb.getResults().getMessages().isEmpty() );
+        assertThat(kb.getResults().getMessages().isEmpty()).isTrue();
 
         // get the session
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
@@ -90,10 +87,8 @@ public class SpreadsheetIntegrationExampleTest {
         ksession.setGlobal( "list",
                            list );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( "Old man stilton",
-                      list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Old man stilton");
     }
     
     @Test 
@@ -116,10 +111,8 @@ public class SpreadsheetIntegrationExampleTest {
         ksession.setGlobal( "list",
                            list );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( "Young man cheddar",
-                      list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Young man cheddar");
     }
 
     /**
@@ -128,8 +121,7 @@ public class SpreadsheetIntegrationExampleTest {
     @Test
     public void testInsuranceExample() throws Exception {
         PricingRuleLauncher launcher = new PricingRuleLauncher();
-        assertEquals( 120,
-                      launcher.executeExample() );
+        assertThat(launcher.executeExample()).isEqualTo(120);
     }
 
     @Test
@@ -142,7 +134,7 @@ public class SpreadsheetIntegrationExampleTest {
 
         ksession.fireAllRules();
 
-        assertTrue( p.getCanBuyAlcohol() );
+        assertThat(p.getCanBuyAlcohol()).isTrue();
     }
 
     @Test
@@ -157,7 +149,7 @@ public class SpreadsheetIntegrationExampleTest {
 
             ksession.fireAllRules();
 
-            assertTrue( p.getCanBuyAlcohol() );
+            assertThat(p.getCanBuyAlcohol()).isTrue();
         } finally {
             System.clearProperty( "drools.trimCellsInDTable" );
         }
@@ -177,6 +169,6 @@ public class SpreadsheetIntegrationExampleTest {
                 .addResource( ks.getResources().newClassPathResource( "/data/CanNotDrink2.xls", getClass() ), ResourceType.DTABLE )
                 .build();
 
-        assertEquals( 2, kbase.getKiePackage( "org.drools.simple.candrink" ).getRules().size() );
+        assertThat(kbase.getKiePackage("org.drools.simple.candrink").getRules().size()).isEqualTo(2);
     }
 }

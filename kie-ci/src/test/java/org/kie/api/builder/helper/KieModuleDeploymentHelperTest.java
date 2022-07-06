@@ -38,7 +38,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieModuleDeploymentHelperTest {
 
@@ -118,7 +118,7 @@ public class KieModuleDeploymentHelperTest {
             }
             ze = zip.getNextEntry();
         }
-        assertEquals("Num files in kjar", numFiles, jarFiles.size());
+        assertThat(jarFiles.size()).as("Num files in kjar").isEqualTo(numFiles);
     }
 
     @Test
@@ -196,6 +196,6 @@ public class KieModuleDeploymentHelperTest {
             }
             ze = zip.getNextEntry();
         }
-        assertEquals("Num files in kjar", numFiles, jarFiles.size());
+        assertThat(jarFiles.size()).as("Num files in kjar").isEqualTo(numFiles);
     }
 }

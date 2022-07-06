@@ -36,8 +36,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GraphCollapsionTest extends AbstractGraphTest {
 
@@ -106,7 +105,7 @@ public class GraphCollapsionTest extends AbstractGraphTest {
 
         Graph collapsedGraph = new GraphCollapsionHelper().collapseWithRuleNamePrefix(graph);
 
-        assertEquals(3, collapsedGraph.getNodeMap().size());
+        assertThat(collapsedGraph.getNodeMap().size()).isEqualTo(3);
 
         assertLink(collapsedGraph, "mypkg.CustomerCheck", "mypkg.PriceCheck", ReactivityType.POSITIVE, ReactivityType.NEGATIVE);
         assertLink(collapsedGraph, "mypkg.PriceCheck", "mypkg.StatusCheck", ReactivityType.POSITIVE, ReactivityType.NEGATIVE);
@@ -119,9 +118,9 @@ public class GraphCollapsionTest extends AbstractGraphTest {
         ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
         Graph impactedSubGraph = impactFilter.filterImpactedNodes(collapsedGraph, changedNode);
 
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.CustomerCheck"));
-        assertEquals(Status.CHANGED, impactedSubGraph.getNodeMap().get("mypkg.PriceCheck").getStatus());
-        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.StatusCheck").getStatus());
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.CustomerCheck")).isNull();
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.PriceCheck").getStatus()).isEqualTo(Status.CHANGED);
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.StatusCheck").getStatus()).isEqualTo(Status.IMPACTED);
     }
 
     @Test
@@ -140,7 +139,7 @@ public class GraphCollapsionTest extends AbstractGraphTest {
 
         Graph collapsedGraph = new GraphCollapsionHelper().collapseWithRuleNamePrefix(graph);
 
-        assertEquals(3, collapsedGraph.getNodeMap().size());
+        assertThat(collapsedGraph.getNodeMap().size()).isEqualTo(3);
 
         assertLink(collapsedGraph, "mypkg2.CustomerCheck", "mypkg2.PriceCheck", ReactivityType.POSITIVE, ReactivityType.NEGATIVE);
         assertLink(collapsedGraph, "mypkg2.PriceCheck", "mypkg2.StatusCheck", ReactivityType.POSITIVE, ReactivityType.NEGATIVE);
@@ -153,9 +152,9 @@ public class GraphCollapsionTest extends AbstractGraphTest {
         ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
         Graph impactedSubGraph = impactFilter.filterImpactedNodes(collapsedGraph, changedNode);
 
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg2.CustomerCheck"));
-        assertEquals(Status.CHANGED, impactedSubGraph.getNodeMap().get("mypkg2.PriceCheck").getStatus());
-        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg2.StatusCheck").getStatus());
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg2.CustomerCheck")).isNull();
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg2.PriceCheck").getStatus()).isEqualTo(Status.CHANGED);
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg2.StatusCheck").getStatus()).isEqualTo(Status.IMPACTED);
     }
 
 }

@@ -26,7 +26,6 @@ import org.drools.traits.core.factmodel.Jenerator;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 /**
  * This mostly shows how to go to a jar and back, if needed.
@@ -65,28 +64,28 @@ public class JeneratorTest {
 
         assertThat(je).isNotNull();
         System.err.println(je.getName());
-        assertEquals("factmodel.xml", je.getName());
+        assertThat(je.getName()).isEqualTo("factmodel.xml");
 
 
         je = jis.getNextJarEntry();
 
         assertThat(je).isNotNull();
         System.err.println(je.getName());
-        assertEquals("whee/waa/Foobar.class", je.getName());
+        assertThat(je.getName()).isEqualTo("whee/waa/Foobar.class");
 
 
         je = jis.getNextJarEntry();
 
         assertThat(je).isNotNull();
         System.err.println(je.getName());
-        assertEquals("whee/waa/Baz.class", je.getName());
+        assertThat(je.getName()).isEqualTo("whee/waa/Baz.class");
 
 
 
         Fact[] facts = jen.loadMetaModel(new JarInputStream(new ByteArrayInputStream(data)));
-        assertEquals(2, facts.length);
-        assertEquals("Foobar", facts[0].name);
-        assertEquals("Baz", facts[1].name);
+        assertThat(facts.length).isEqualTo(2);
+        assertThat(facts[0].name).isEqualTo("Foobar");
+        assertThat(facts[1].name).isEqualTo("Baz");
 
 
     }
