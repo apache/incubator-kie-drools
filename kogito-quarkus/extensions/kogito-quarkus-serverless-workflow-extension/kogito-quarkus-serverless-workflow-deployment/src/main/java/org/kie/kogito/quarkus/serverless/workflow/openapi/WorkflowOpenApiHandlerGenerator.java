@@ -29,7 +29,7 @@ import org.jboss.jandex.MethodInfo;
 import org.jboss.jandex.Type;
 import org.jboss.jandex.Type.Kind;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.quarkus.serverless.workflow.ClassAnnotatedWorkfkowHandlerGenerator;
+import org.kie.kogito.quarkus.serverless.workflow.ClassAnnotatedWorkflowHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
 import org.kie.kogito.serverless.workflow.openapi.OpenApiWorkItemHandler;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
@@ -55,7 +55,7 @@ import io.quarkiverse.openapi.generator.annotations.GeneratedParam;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
-public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkfkowHandlerGenerator {
+public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandlerGenerator {
 
     private static final DotName generatedMethod = DotName.createSimple(GeneratedMethod.class.getCanonicalName());
     private static final DotName generatedParam = DotName.createSimple(GeneratedParam.class.getCanonicalName());

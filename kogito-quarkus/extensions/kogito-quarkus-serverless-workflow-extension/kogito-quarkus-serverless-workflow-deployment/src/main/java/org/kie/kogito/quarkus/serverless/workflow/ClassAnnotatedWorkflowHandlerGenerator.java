@@ -30,7 +30,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
 
-public abstract class ClassAnnotatedWorkfkowHandlerGenerator implements WorkflowHandlerGenerator {
+public abstract class ClassAnnotatedWorkflowHandlerGenerator implements WorkflowHandlerGenerator {
 
     @Override
     public Collection<GeneratedFile> generateHandlerClasses(KogitoBuildContext context, IndexView index) {
