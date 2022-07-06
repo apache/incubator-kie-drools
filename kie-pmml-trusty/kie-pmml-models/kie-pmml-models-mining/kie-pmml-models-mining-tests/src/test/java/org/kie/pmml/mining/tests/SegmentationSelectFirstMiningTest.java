@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SegmentationSelectFirstMiningTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "segmentationSelectFirstMining.pmml";
@@ -43,30 +41,31 @@ public class SegmentationSelectFirstMiningTest extends AbstractPMMLTest {
     private double y;
     private double result;
 
-    public SegmentationSelectFirstMiningTest(double x, double y, double result) {
+    public void initSegmentationSelectFirstMiningTest(double x, double y, double result) {
         this.x = x;
         this.y = y;
         this.result = result;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { 0, 0, -10},
-                { 1, 1, 3},
-                { 20, 30, 121004},
-                { 25, 31, 167502},
-                { 5, 5, 55}
+                {0, 0, -10},
+                {1, 1, 3},
+                {20, 30, 121004},
+                {25, 31, 167502},
+                {5, 5, 55}
         });
     }
 
-    @Test
-    public void testSegmentationMedianMiningTest() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSegmentationMedianMiningTest(double x, double y, double result) {
+        initSegmentationSelectFirstMiningTest(x, y, result);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);

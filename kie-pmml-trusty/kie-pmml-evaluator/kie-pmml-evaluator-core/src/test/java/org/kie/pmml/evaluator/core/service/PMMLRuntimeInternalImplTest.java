@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
@@ -62,7 +62,7 @@ public class PMMLRuntimeInternalImplTest {
     private PMMLRuntimeInternalImpl pmmlRuntime;
     private static final String MODEL_NAME = "MODEL_NAME";
 
-    @Before
+    @BeforeEach
     public void setup() {
         modelMock = getKiePMMLModelMock();
         when(resultMock.getResultCode()).thenReturn(OK.getName());
@@ -78,7 +78,7 @@ public class PMMLRuntimeInternalImplTest {
     }
 
     @Test
-    public void addPMMLListener() {
+    void addPMMLListener() {
         try {
             pmmlRuntime.evaluate(MODEL_NAME, pmmlContextMock);
             verify(pmmlContextMock, never()).addPMMLListener(any());
@@ -97,7 +97,7 @@ public class PMMLRuntimeInternalImplTest {
     }
 
     @Test
-    public void removePMMLListener() {
+    void removePMMLListener() {
         try {
             PMMLListener listener = getPMMLListener(new ArrayList<>());
             pmmlRuntime.addPMMLListener(listener);
@@ -110,7 +110,7 @@ public class PMMLRuntimeInternalImplTest {
     }
 
     @Test
-    public void evaluateWithPmmlRuntimeListeners() {
+    void evaluateWithPmmlRuntimeListeners() {
         final PMMLRequestData requestData = getPMMLRequestData();
         final List<PMMLStep> pmmlSteps = new ArrayList<>();
         final PMMLContext pmmlContext = new PMMLContextImpl(requestData);
@@ -119,30 +119,30 @@ public class PMMLRuntimeInternalImplTest {
         Arrays.stream(PMML_STEP.values()).forEach(pmml_step -> {
             Optional<PMMLStep> retrieved =
                     pmmlSteps.stream().filter(pmmlStep -> pmml_step.equals(((PMMLRuntimeStep) pmmlStep).getPmmlStep()))
-                    .findFirst();
+                            .findFirst();
             assertThat(retrieved).isPresent();
             commonValuateStep(retrieved.get(), pmml_step, modelMock, requestData);
         });
     }
 
     @Test
-    public void evaluateWithPMMLContextListeners() {
+    void evaluateWithPMMLContextListeners() {
         final PMMLRequestData requestData = getPMMLRequestData();
         final List<PMMLStep> pmmlSteps = new ArrayList<>();
         final PMMLContext pmmlContext = new PMMLContextImpl(requestData,
-                                                            Collections.singleton(getPMMLListener(pmmlSteps)));
+                Collections.singleton(getPMMLListener(pmmlSteps)));
         pmmlRuntime.evaluate(modelMock, pmmlContext);
         Arrays.stream(PMML_STEP.values()).forEach(pmml_step -> {
             Optional<PMMLStep> retrieved =
                     pmmlSteps.stream().filter(pmmlStep -> pmml_step.equals(((PMMLRuntimeStep) pmmlStep).getPmmlStep()))
-                    .findFirst();
+                            .findFirst();
             assertThat(retrieved).isPresent();
             commonValuateStep(retrieved.get(), pmml_step, modelMock, requestData);
         });
     }
 
     @Test
-    public void getStep() {
+    void getStep() {
         final PMMLRequestData requestData = getPMMLRequestData();
         Arrays.stream(PMML_STEP.values()).forEach(pmml_step -> {
             PMMLStep retrieved = pmmlRuntime.getStep(pmml_step, modelMock, requestData);

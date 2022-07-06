@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SimpleSetPredicateTreeTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "SimpleSetPredicateTree.pmml";
@@ -43,20 +41,19 @@ public class SimpleSetPredicateTreeTest extends AbstractPMMLTest {
     private double input2;
     private double input3;
     private String expectedResult;
-	
-    public SimpleSetPredicateTreeTest(double input1, double input2, double input3, String expectedResult) {
+
+    public void initSimpleSetPredicateTreeTest(double input1, double input2, double input3, String expectedResult) {
         this.input1 = input1;
         this.input2 = input2;
         this.input3 = input3;
         this.expectedResult = expectedResult;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {0, 3, 0, "classA"},
@@ -69,8 +66,10 @@ public class SimpleSetPredicateTreeTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testSetPredicateTree() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSetPredicateTree(double input1, double input2, double input3, String expectedResult) {
+        initSimpleSetPredicateTreeTest(input1, input2, input3, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);

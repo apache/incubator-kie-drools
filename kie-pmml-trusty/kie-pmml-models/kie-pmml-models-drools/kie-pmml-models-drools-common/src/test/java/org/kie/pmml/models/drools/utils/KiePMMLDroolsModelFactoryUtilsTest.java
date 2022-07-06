@@ -50,8 +50,8 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
@@ -74,14 +74,14 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
     private static CompilationUnit COMPILATION_UNIT;
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         COMPILATION_UNIT = getFromFileName(TEMPLATE_SOURCE);
         MODEL_TEMPLATE = COMPILATION_UNIT.getClassByName(TEMPLATE_CLASS_NAME).get();
     }
 
     @Test
-    public void getKiePMMLModelCompilationUnit() {
+    void getKiePMMLModelCompilationUnit() {
         DataDictionary dataDictionary = new DataDictionary();
         String targetFieldString = "target.field";
         FieldName targetFieldName = FieldName.create(targetFieldString);
@@ -97,21 +97,21 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         model.setMiningSchema(miningSchema);
         Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         fieldTypeMap.put(targetFieldString, new KiePMMLOriginalTypeGeneratedType(targetFieldString,
-                                                                                 getSanitizedClassName(targetFieldString)));
+                getSanitizedClassName(targetFieldString)));
         String packageName = "net.test";
         PMML pmml = new PMML();
         pmml.setDataDictionary(dataDictionary);
         pmml.addModels(model);
         final CommonCompilationDTO<TreeModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(packageName,
-                                                                       pmml,
-                                                                       model,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        model,
+                        new HasClassLoaderMock());
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
                 DroolsCompilationDTO.fromCompilationDTO(source, fieldTypeMap);
         CompilationUnit retrieved =
                 KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit(droolsCompilationDTO, TEMPLATE_SOURCE,
-                                                                              TEMPLATE_CLASS_NAME);
+                        TEMPLATE_CLASS_NAME);
         assertThat(retrieved.getPackageDeclaration().get().getNameAsString()).isEqualTo(droolsCompilationDTO.getPackageName());
         ConstructorDeclaration constructorDeclaration =
                 retrieved.getClassByName(modelName).get().getDefaultConstructor().get();
@@ -120,7 +120,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetFieldString));
         assignExpressionMap.put("miningFunction",
-                                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
+                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
         String expectedKModulePackageName = getSanitizedPackageName(packageName + "." + modelName);
         assignExpressionMap.put("kModulePackageName", new StringLiteralExpr(expectedKModulePackageName));
@@ -131,7 +131,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
     }
 
     @Test
-    public void setConstructor() {
+    void setConstructor() {
         Model model = new TreeModel();
         PMML_MODEL pmmlModel = PMML_MODEL.byName(model.getClass().getSimpleName());
         ConstructorDeclaration constructorDeclaration = MODEL_TEMPLATE.getDefaultConstructor().get();
@@ -140,28 +140,28 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         MINING_FUNCTION miningFunction = MINING_FUNCTION.CLASSIFICATION;
         String kModulePackageName = getSanitizedPackageName("kModulePackageName");
         KiePMMLDroolsModelFactoryUtils.setConstructor(model, constructorDeclaration, tableName, targetField,
-                                                      miningFunction,
-                                                      kModulePackageName);
+                miningFunction,
+                kModulePackageName);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
         assignExpressionMap.put("miningFunction",
-                                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
+                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
         assignExpressionMap.put("kModulePackageName", new StringLiteralExpr(kModulePackageName));
         assertThat(commonEvaluateConstructor(constructorDeclaration, tableName.asString(),
-                                             superInvocationExpressionsMap,
-                                             assignExpressionMap)).isTrue();
+                superInvocationExpressionsMap,
+                assignExpressionMap)).isTrue();
     }
 
     @Test
-    public void addFieldTypeMapPopulation() {
+    void addFieldTypeMapPopulation() {
         BlockStmt blockStmt = new BlockStmt();
         Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         IntStream.range(0, 3).forEach(index -> {
             String key = "KEY-" + index;
             KiePMMLOriginalTypeGeneratedType value = new KiePMMLOriginalTypeGeneratedType("ORIGINALTYPE-" + index,
-                                                                                          "GENERATEDTYPE-" + index);
+                    "GENERATEDTYPE-" + index);
             fieldTypeMap.put(key, value);
         });
         KiePMMLDroolsModelFactoryUtils.addFieldTypeMapPopulation(blockStmt, fieldTypeMap);

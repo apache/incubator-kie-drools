@@ -37,8 +37,8 @@ import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
 import org.dmg.pmml.scorecard.Scorecard;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OPERATOR;
@@ -55,6 +55,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
@@ -71,7 +72,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
     private Scorecard scorecardModel;
     private DataDictionary dataDictionary;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         samplePmml = TestUtils.loadFromFile(SOURCE_SAMPLE);
         assertThat(samplePmml).isNotNull();
@@ -82,7 +83,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
     }
 
     @Test
-    public void declareRulesFromCharacteristics() {
+    void declareRulesFromCharacteristics() {
         Characteristics characteristics = scorecardModel.getCharacteristics();
         String parentPath = "_will";
         List<KiePMMLDroolsRule> retrieved = getKiePMMLScorecardModelCharacteristicASTFactory()
@@ -113,23 +114,23 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                 boolean isLastCharacteristic = (i == characteristicList.size() - 1);
                 String statusToSet = isLastCharacteristic ? DONE : String.format(PATH_PATTERN, parentPath, characteristicList.get(i + 1).getName());
                 commonValidateRule(rule,
-                                   attribute,
-                                   statusToSet,
-                                   parentPath + "_" + characteristic.getName(),
-                                   j,
-                                   isLastCharacteristic,
-                                   expectedAndConstraints,
-                                   expectedInConstraints,
-                                   expectedOperator,
-                                   null,
-                                   expectedOperatorValuesSize);
+                        attribute,
+                        statusToSet,
+                        parentPath + "_" + characteristic.getName(),
+                        j,
+                        isLastCharacteristic,
+                        expectedAndConstraints,
+                        expectedInConstraints,
+                        expectedOperator,
+                        null,
+                        expectedOperatorValuesSize);
             }
         }
-        assertThat(attributes).hasSize(retrieved.size() -1);
+        assertThat(attributes).hasSize(retrieved.size() - 1);
     }
 
     @Test
-    public void declareRuleFromCharacteristicNotLastCharacteristic() {
+    void declareRuleFromCharacteristicNotLastCharacteristic() {
         Characteristic characteristic = getCharacteristic();
         final String parentPath = "parent_path";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
@@ -139,29 +140,29 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         int[] expectedOperatorValuesSizes = {1, 2};
         getKiePMMLScorecardModelCharacteristicASTFactory()
                 .declareRuleFromCharacteristic(characteristic,
-                                               parentPath,
-                                               rules,
-                                               statusToSet,
-                                               isLastCharacteristic);
+                        parentPath,
+                        rules,
+                        statusToSet,
+                        isLastCharacteristic);
         assertThat(rules).hasSameSizeAs(characteristic.getAttributes());
         for (int i = 0; i < rules.size(); i++) {
             commonValidateRule(rules.get(i),
-                               characteristic.getAttributes().get(i),
-                               statusToSet,
-                               parentPath + "_AgeScore",
-                               i,
-                               isLastCharacteristic,
-                               1,
-                               null,
-                               BOOLEAN_OPERATOR.AND,
-                               expectedConstraints[i],
-                               expectedOperatorValuesSizes[i]
+                    characteristic.getAttributes().get(i),
+                    statusToSet,
+                    parentPath + "_AgeScore",
+                    i,
+                    isLastCharacteristic,
+                    1,
+                    null,
+                    BOOLEAN_OPERATOR.AND,
+                    expectedConstraints[i],
+                    expectedOperatorValuesSizes[i]
             );
         }
     }
 
     @Test
-    public void declareRuleFromAttributeWithSimplePredicateNotLastCharacteristic() {
+    void declareRuleFromAttributeWithSimplePredicateNotLastCharacteristic() {
         Attribute attribute = getSimplePredicateAttribute();
         final String parentPath = "parent_path";
         final int attributeIndex = 2;
@@ -174,20 +175,20 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                 .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, characteristicReasonCode, characteristicBaselineScore, isLastCharacteristic);
         assertThat(rules).hasSize(1);
         commonValidateRule(rules.get(0),
-                           attribute,
-                           statusToSet,
-                           parentPath,
-                           attributeIndex,
-                           isLastCharacteristic,
-                           1,
-                           null,
-                           BOOLEAN_OPERATOR.AND,
-                           "value <= 5.0",
-                           1);
+                attribute,
+                statusToSet,
+                parentPath,
+                attributeIndex,
+                isLastCharacteristic,
+                1,
+                null,
+                BOOLEAN_OPERATOR.AND,
+                "value <= 5.0",
+                1);
     }
 
     @Test
-    public void declareRuleFromAttributeWithSimplePredicateUseReasonCodesTrue() {
+    void declareRuleFromAttributeWithSimplePredicateUseReasonCodesTrue() {
         Attribute attribute = getSimplePredicateAttribute();
         final String parentPath = "parent_path";
         final int attributeIndex = 2;
@@ -202,16 +203,16 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         assertThat(rules).hasSize(1);
         KiePMMLDroolsRule toValidate = rules.get(0);
         commonValidateRule(toValidate,
-                           attribute,
-                           statusToSet,
-                           parentPath,
-                           attributeIndex,
-                           isLastCharacteristic,
-                           1,
-                           null,
-                           BOOLEAN_OPERATOR.AND,
-                           "value <= 5.0",
-                           1);
+                attribute,
+                statusToSet,
+                parentPath,
+                attributeIndex,
+                isLastCharacteristic,
+                1,
+                null,
+                BOOLEAN_OPERATOR.AND,
+                "value <= 5.0",
+                1);
         KiePMMLReasonCodeAndValue retrieved = toValidate.getReasonCodeAndValue();
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getReasonCode()).isEqualTo(characteristicReasonCode);
@@ -220,7 +221,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromAttributeWithSimplePredicateLastCharacteristic() {
+    void declareRuleFromAttributeWithSimplePredicateLastCharacteristic() {
         Attribute attribute = getSimplePredicateAttribute();
         final String parentPath = "parent_path";
         final int attributeIndex = 2;
@@ -233,20 +234,20 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                 .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, characteristicReasonCode, characteristicBaselineScore, isLastCharacteristic);
         assertThat(rules).hasSize(1);
         commonValidateRule(rules.get(0),
-                           attribute,
-                           statusToSet,
-                           parentPath,
-                           attributeIndex,
-                           isLastCharacteristic,
-                           1,
-                           null,
-                           BOOLEAN_OPERATOR.AND,
-                           "value <= 5.0",
-                           1);
+                attribute,
+                statusToSet,
+                parentPath,
+                attributeIndex,
+                isLastCharacteristic,
+                1,
+                null,
+                BOOLEAN_OPERATOR.AND,
+                "value <= 5.0",
+                1);
     }
 
     @Test
-    public void declareRuleFromAttributeWithCompoundPredicate() {
+    void declareRuleFromAttributeWithCompoundPredicate() {
         Attribute attribute = getCompoundPredicateAttribute();
         final String parentPath = "parent_path";
         final int attributeIndex = 2;
@@ -259,20 +260,20 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                 .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, characteristicReasonCode, characteristicBaselineScore, isLastCharacteristic);
         assertThat(rules).hasSize(1);
         commonValidateRule(rules.get(0),
-                           attribute,
-                           statusToSet,
-                           parentPath,
-                           attributeIndex,
-                           isLastCharacteristic,
-                           1,
-                           null,
-                           BOOLEAN_OPERATOR.AND,
-                           "value >= 5.0 && value < 12.0",
-                           2);
+                attribute,
+                statusToSet,
+                parentPath,
+                attributeIndex,
+                isLastCharacteristic,
+                1,
+                null,
+                BOOLEAN_OPERATOR.AND,
+                "value >= 5.0 && value < 12.0",
+                2);
     }
 
     @Test
-    public void declareRuleFromAttributeWithSimpleSetPredicate() {
+    void declareRuleFromAttributeWithSimpleSetPredicate() {
         Attribute attribute = getSimpleSetPredicateAttribute();
         final String parentPath = "parent_path";
         final int attributeIndex = 2;
@@ -285,16 +286,16 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                 .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, characteristicReasonCode, characteristicBaselineScore, isLastCharacteristic);
         assertThat(rules).hasSize(1);
         commonValidateRule(rules.get(0),
-                           attribute,
-                           statusToSet,
-                           parentPath,
-                           attributeIndex,
-                           isLastCharacteristic,
-                           null,
-                           1,
-                           null,
-                           null,
-                           null);
+                attribute,
+                statusToSet,
+                parentPath,
+                attributeIndex,
+                isLastCharacteristic,
+                null,
+                1,
+                null,
+                null,
+                null);
     }
 
     private void commonValidateRule(KiePMMLDroolsRule toValidate,
@@ -444,37 +445,43 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
     }
 
     @Test
-    public void getKiePMMLReasonCodeAndValueUseReasonCodesFalse() {
+    void getKiePMMLReasonCodeAndValueUseReasonCodesFalse() {
         assertThat(getKiePMMLScorecardModelCharacteristicASTFactory().getKiePMMLReasonCodeAndValue(new Attribute(),
-                                                                                                   "", 0)).isNull();
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getKiePMMLReasonCodeAndValueUseReasonCodesTrueNoBaselineScore() {
-        getKiePMMLScorecardModelCharacteristicASTFactory()
-                .withReasonCodes(null, null)
-                .getKiePMMLReasonCodeAndValue(new Attribute(),
-                                              "", null);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getKiePMMLReasonCodeAndValueUseReasonCodesTrueNoReasonCodeAlgorithm() {
-        getKiePMMLScorecardModelCharacteristicASTFactory()
-                .withReasonCodes(null, null)
-                .getKiePMMLReasonCodeAndValue(new Attribute(),
-                                              "", 12);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getKiePMMLReasonCodeAndValueUseReasonCodesTrueNoReasonCode() {
-        getKiePMMLScorecardModelCharacteristicASTFactory()
-                .withReasonCodes(null, REASONCODE_ALGORITHM.POINTS_ABOVE)
-                .getKiePMMLReasonCodeAndValue(new Attribute(),
-                                              "", 12);
+                "", 0)).isNull();
     }
 
     @Test
-    public void getKiePMMLReasonCodeAndValueUseReasonCodesTrue() {
+    void getKiePMMLReasonCodeAndValueUseReasonCodesTrueNoBaselineScore() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            getKiePMMLScorecardModelCharacteristicASTFactory()
+                    .withReasonCodes(null, null)
+                    .getKiePMMLReasonCodeAndValue(new Attribute(),
+                            "", null);
+        });
+    }
+
+    @Test
+    void getKiePMMLReasonCodeAndValueUseReasonCodesTrueNoReasonCodeAlgorithm() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            getKiePMMLScorecardModelCharacteristicASTFactory()
+                    .withReasonCodes(null, null)
+                    .getKiePMMLReasonCodeAndValue(new Attribute(),
+                            "", 12);
+        });
+    }
+
+    @Test
+    void getKiePMMLReasonCodeAndValueUseReasonCodesTrueNoReasonCode() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            getKiePMMLScorecardModelCharacteristicASTFactory()
+                    .withReasonCodes(null, REASONCODE_ALGORITHM.POINTS_ABOVE)
+                    .getKiePMMLReasonCodeAndValue(new Attribute(),
+                            "", 12);
+        });
+    }
+
+    @Test
+    void getKiePMMLReasonCodeAndValueUseReasonCodesTrue() {
         String characteristicReasonCode = "CHARACTERISTIC_REASON_CODE";
         String attributeReasonCode = "ATTRIBUTE_REASON_CODE";
         double baselineScore = 13;
@@ -485,7 +492,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         KiePMMLReasonCodeAndValue retrieved = getKiePMMLScorecardModelCharacteristicASTFactory()
                 .withReasonCodes(baselineScore, REASONCODE_ALGORITHM.POINTS_ABOVE)
                 .getKiePMMLReasonCodeAndValue(attribute,
-                                              characteristicReasonCode, null);
+                        characteristicReasonCode, null);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getReasonCode()).isEqualTo(characteristicReasonCode);
         double expected = attributePartialScore - baselineScore;
@@ -493,7 +500,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         retrieved = getKiePMMLScorecardModelCharacteristicASTFactory()
                 .withReasonCodes(baselineScore, REASONCODE_ALGORITHM.POINTS_ABOVE)
                 .getKiePMMLReasonCodeAndValue(attribute,
-                                              characteristicReasonCode, characteristicBaselineScore);
+                        characteristicReasonCode, characteristicBaselineScore);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getReasonCode()).isEqualTo(characteristicReasonCode);
         expected = attributePartialScore - characteristicBaselineScore;
@@ -502,7 +509,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         retrieved = getKiePMMLScorecardModelCharacteristicASTFactory()
                 .withReasonCodes(baselineScore, REASONCODE_ALGORITHM.POINTS_ABOVE)
                 .getKiePMMLReasonCodeAndValue(attribute,
-                                              characteristicReasonCode, characteristicBaselineScore);
+                        characteristicReasonCode, characteristicBaselineScore);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getReasonCode()).isEqualTo(attributeReasonCode);
         assertThat(retrieved.getValue()).isCloseTo(expected, Offset.offset(0.0));

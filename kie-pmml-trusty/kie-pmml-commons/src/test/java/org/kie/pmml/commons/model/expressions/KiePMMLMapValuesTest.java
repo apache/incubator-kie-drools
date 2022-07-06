@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
@@ -55,14 +55,14 @@ public class KiePMMLMapValuesTest {
     }
 
     @Test
-    public void evaluateKeyNotFound() {
+    void evaluateKeyNotFound() {
         KiePMMLMapValues kiePMMLMapValues = getKiePMMLMapValues();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         assertThat(kiePMMLMapValues.evaluate(processingDTO)).isEqualTo(MAPMISSINGTO);
     }
 
     @Test
-    public void evaluateKeyFoundNotMatching() {
+    void evaluateKeyFoundNotMatching() {
         KiePMMLMapValues kiePMMLMapValues = getKiePMMLMapValues();
         List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 2)
                 .mapToObj(i -> new KiePMMLNameValue("FIELD-" + i, "NOT-VALUE-1-" + i))
@@ -72,7 +72,7 @@ public class KiePMMLMapValuesTest {
     }
 
     @Test
-    public void evaluateKeyFoundMatching() {
+    void evaluateKeyFoundMatching() {
         KiePMMLMapValues kiePMMLMapValues = getKiePMMLMapValues();
         List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 2)
                 .mapToObj(i -> new KiePMMLNameValue("FIELD-" + i, "VALUE-1-" + i))

@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SegmentationMedianMiningTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "segmentationMedianMining.pmml";
@@ -44,30 +42,31 @@ public class SegmentationMedianMiningTest extends AbstractPMMLTest {
     private double y;
     private double result;
 
-    public SegmentationMedianMiningTest(double x, double y, double result) {
+    public void initSegmentationMedianMiningTest(double x, double y, double result) {
         this.x = x;
         this.y = y;
         this.result = result;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { 0, 0, 0},
-                { 1, 1, 8},
-                { 20, 30, 330},
-                { 25, 31, 363},
-                { 5, 5, 75}
+                {0, 0, 0},
+                {1, 1, 8},
+                {20, 30, 330},
+                {25, 31, 363},
+                {5, 5, 75}
         });
     }
 
-    @Test
-    public void testSegmentationMedianMiningTest() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSegmentationMedianMiningTest(double x, double y, double result) {
+        initSegmentationMedianMiningTest(x, y, result);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);

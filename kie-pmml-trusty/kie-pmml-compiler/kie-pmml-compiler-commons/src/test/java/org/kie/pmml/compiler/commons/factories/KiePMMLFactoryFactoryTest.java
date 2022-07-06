@@ -18,7 +18,7 @@ package org.kie.pmml.compiler.commons.factories;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
@@ -26,7 +26,7 @@ import static org.kie.pmml.commons.Constants.GET_MODEL;
 public class KiePMMLFactoryFactoryTest {
 
     @Test
-    public void getInstantiationExpression() {
+    void getInstantiationExpression() {
         final String kiePMMLModelClass = "org.kie.model.ClassModel";
         Expression retrieved = KiePMMLFactoryFactory.getInstantiationExpression(kiePMMLModelClass, true);
         validateNotCodegen(retrieved, kiePMMLModelClass);

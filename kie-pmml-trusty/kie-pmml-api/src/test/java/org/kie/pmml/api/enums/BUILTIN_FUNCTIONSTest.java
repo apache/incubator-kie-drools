@@ -19,12 +19,13 @@ package org.kie.pmml.api.enums;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctionsTest.supportedArithmeticFunctions;
 import static org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctionsTest.unsupportedArithmeticFunctions;
 import static org.kie.pmml.api.enums.builtinfunctions.BooleanFunctionsTest.supportedBooleanFunctions;
@@ -62,7 +63,7 @@ public class BUILTIN_FUNCTIONSTest {
     }
 
     @Test
-    public void getSupportedValueEmptyInput() {
+    void getSupportedValueEmptyInput() {
         final Object[] input = {};
         supportedBuiltinFunctions.forEach(builtinFunction -> {
             try {
@@ -77,7 +78,7 @@ public class BUILTIN_FUNCTIONSTest {
     }
 
     @Test
-    public void getUnsupportedValue() {
+    void getUnsupportedValue() {
         final Object[] input = {35, 12};
         unsupportedBuiltinFunctions.forEach(builtinFunction -> {
             try {
@@ -90,38 +91,44 @@ public class BUILTIN_FUNCTIONSTest {
     }
 
     @Test
-    public void checkNumbersCorrectInput() {
+    void checkNumbersCorrectInput() {
         Object[] input = {35, 12, 347, 2, 123};
         BUILTIN_FUNCTIONS.checkNumbers(input, input.length);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkNumbersWrongTypeInput() {
-        Object[] input = {35, 12, "347", 2, 123};
-        BUILTIN_FUNCTIONS.checkNumbers(input, input.length);
+    @Test
+    void checkNumbersWrongTypeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            Object[] input = {35, 12, "347", 2, 123};
+            BUILTIN_FUNCTIONS.checkNumbers(input, input.length);
+        });
     }
 
     @Test
-    public void checkStringsCorrectInput() {
+    void checkStringsCorrectInput() {
         Object[] input = {"35", "12", "347", "2", "123"};
         BUILTIN_FUNCTIONS.checkStrings(input, input.length);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkStringsWrongTypeInput() {
-        Object[] input = {"35", 12, "347", "2", "123"};
-        BUILTIN_FUNCTIONS.checkStrings(input, input.length);
+    @Test
+    void checkStringsWrongTypeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            Object[] input = {"35", 12, "347", "2", "123"};
+            BUILTIN_FUNCTIONS.checkStrings(input, input.length);
+        });
     }
 
     @Test
-    public void checkBooleansCorrectInput() {
+    void checkBooleansCorrectInput() {
         Object[] input = {true, Boolean.valueOf("false")};
         BUILTIN_FUNCTIONS.checkBooleans(input, input.length);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checkBooleansWrongTypeInput() {
-        Object[] input = {true, "false"};
-        BUILTIN_FUNCTIONS.checkBooleans(input, input.length);
+    @Test
+    void checkBooleansWrongTypeInput() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            Object[] input = {true, "false"};
+            BUILTIN_FUNCTIONS.checkBooleans(input, input.length);
+        });
     }
 }

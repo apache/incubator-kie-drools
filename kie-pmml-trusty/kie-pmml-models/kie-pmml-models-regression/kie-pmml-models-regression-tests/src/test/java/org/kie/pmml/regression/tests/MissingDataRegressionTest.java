@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MissingDataRegressionTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "MissingDataRegression.pmml";
@@ -43,18 +41,17 @@ public class MissingDataRegressionTest extends AbstractPMMLTest {
     private String y;
     private double expectedResult;
 
-    public MissingDataRegressionTest(Double x, String y, double expectedResult) {
+    public void initMissingDataRegressionTest(Double x, String y, double expectedResult) {
         this.x = x;
         this.y = y;
         this.expectedResult = expectedResult;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {Double.valueOf(0), "classA", 22}, {Double.valueOf(25), "classB", 92},
@@ -63,8 +60,10 @@ public class MissingDataRegressionTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testMissingValuesRegression() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testMissingValuesRegression(Double x, String y, double expectedResult) {
+        initMissingDataRegressionTest(x, y, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         if (x != null) {
             inputData.put("x", x.doubleValue());

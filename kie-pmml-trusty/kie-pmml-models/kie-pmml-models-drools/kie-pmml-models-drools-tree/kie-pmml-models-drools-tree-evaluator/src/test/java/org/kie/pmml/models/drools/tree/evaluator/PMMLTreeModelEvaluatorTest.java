@@ -22,8 +22,8 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.model.codegen.ExecutableModelProject;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.pmml.PMML4Result;
@@ -70,7 +70,7 @@ public class PMMLTreeModelEvaluatorTest {
     private final String RAIN = "rain";
     private final String TARGET_FIELD = "whatIdo";
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         evaluator = new PMMLTreeModelEvaluator();
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
@@ -93,12 +93,12 @@ public class PMMLTreeModelEvaluatorTest {
     }
 
     @Test
-    public void getPMMLModelType() {
+    void getPMMLModelType() {
         assertThat(evaluator.getPMMLModelType()).isEqualTo(PMML_MODEL.TREE_MODEL);
     }
 
     @Test
-    public void evaluateNull() throws Exception {
+    void evaluateNull() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
         commonEvaluate(modelName, inputData, null);
@@ -119,7 +119,7 @@ public class PMMLTreeModelEvaluatorTest {
     }
 
     @Test
-    public void evaluateWillPlay() throws Exception {
+    void evaluateWillPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(TEMPERATURE, 65.0);
@@ -128,7 +128,7 @@ public class PMMLTreeModelEvaluatorTest {
     }
 
     @Test
-    public void evaluateNoPlay() throws Exception {
+    void evaluateNoPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(TEMPERATURE, 65.0);
@@ -154,7 +154,7 @@ public class PMMLTreeModelEvaluatorTest {
     }
 
     @Test
-    public void evaluateMayPlay() throws Exception {
+    void evaluateMayPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, OVERCAST);
         inputData.put(TEMPERATURE, 70.0);
@@ -164,7 +164,7 @@ public class PMMLTreeModelEvaluatorTest {
     }
 
     @Test
-    public void evaluateWhoPlay() throws Exception {
+    void evaluateWhoPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(TEMPERATURE, 75.0);
         inputData.put(WINDY, "true");

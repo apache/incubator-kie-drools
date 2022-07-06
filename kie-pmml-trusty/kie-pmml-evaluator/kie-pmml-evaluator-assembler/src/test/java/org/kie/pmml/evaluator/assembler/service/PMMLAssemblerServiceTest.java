@@ -22,19 +22,20 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class PMMLAssemblerServiceTest {
 
     private static Map<String, String[]> resourcePathMap;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         resourcePathMap = new HashMap<>();
         resourcePathMap.put("/a/linux/path/a-dashed-name.pmml", new String[]{"AdashednameFactory", "adashedname"});
@@ -46,14 +47,16 @@ public class PMMLAssemblerServiceTest {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getFactoryClassNamePackageNameResourceNoFile() {
-        Resource resource = new MockResource();
-        PMMLAssemblerService.getFactoryClassNamePackageName(resource);
+    @Test
+    void getFactoryClassNamePackageNameResourceNoFile() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            Resource resource = new MockResource();
+            PMMLAssemblerService.getFactoryClassNamePackageName(resource);
+        });
     }
 
     @Test
-    public void getFactoryClassNamePackageNameResourceWithFile() {
+    void getFactoryClassNamePackageNameResourceWithFile() {
         resourcePathMap.forEach((sourcePath, comparison) -> {
             Resource resource = new MockResource(sourcePath);
             String[] retrieved = PMMLAssemblerService.getFactoryClassNamePackageName(resource);
@@ -62,7 +65,7 @@ public class PMMLAssemblerServiceTest {
     }
 
     @Test
-    public void testGetFactoryClassNamePackageName() {
+    void testGetFactoryClassNamePackageName() {
         resourcePathMap.forEach((sourcePath, comparison) -> {
             String[] retrieved = PMMLAssemblerService.getFactoryClassNamePackageName(sourcePath);
             commonVerifyStrings(retrieved, comparison);

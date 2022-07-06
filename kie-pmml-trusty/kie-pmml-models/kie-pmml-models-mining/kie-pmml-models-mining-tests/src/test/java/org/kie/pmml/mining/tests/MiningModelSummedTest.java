@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MiningModelSummedTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "MiningModelSummed.pmml";
@@ -47,7 +45,7 @@ public class MiningModelSummedTest extends AbstractPMMLTest {
 
     private double expectedResult;
 
-    public MiningModelSummedTest(double input1,
+    public void initMiningModelSummedTest(double input1,
                                  double input2,
                                  double input3,
                                  double expectedResult) {
@@ -57,20 +55,21 @@ public class MiningModelSummedTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {200.0, -1.0, 2.0, -299.0},
         });
     }
 
-    @Test
-    public void testMiningModelSummed() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testMiningModelSummed(double input1, double input2, double input3, double expectedResult) throws Exception {
+        initMiningModelSummedTest(input1, input2, input3, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put(INPUT1, input1);
         inputData.put(INPUT2, input2);

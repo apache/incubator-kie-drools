@@ -20,13 +20,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+
 public class KiePMMLModelWithSourcesTest {
+
+    private static final String FILE_NAME = "fileName";
 
     private static final String MODEL_NAME = "MODEL_NAME";
     private static final String PACKAGE_NAME = "PACKAGE_NAME";
@@ -34,7 +38,7 @@ public class KiePMMLModelWithSourcesTest {
 
     private KiePMMLModelWithSources kiePMMLModelWithSources;
 
-    @Before
+    @BeforeEach
     public void setup() {
         kiePMMLModelWithSources = new KiePMMLModelWithSources(MODEL_NAME,
                                                               PACKAGE_NAME,
@@ -45,24 +49,28 @@ public class KiePMMLModelWithSourcesTest {
                                                               false);
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void evaluate() {
-        kiePMMLModelWithSources.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
+    @Test
+    void evaluate() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            kiePMMLModelWithSources.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
+        });
     }
 
     @Test
-    public void getSourcesMap() {
+    void getSourcesMap() {
         assertThat(kiePMMLModelWithSources.getSourcesMap()).isEqualTo(SOURCES_MAP);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void addToGetSourcesMap() {
-        Map<String, String> retrieved = kiePMMLModelWithSources.getSourcesMap();
-        retrieved.put("KEY", "VALUE");
+    @Test
+    void addToGetSourcesMap() {
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> {
+            Map<String, String> retrieved = kiePMMLModelWithSources.getSourcesMap();
+            retrieved.put("KEY", "VALUE");
+        });
     }
 
     @Test
-    public void addSourceMap() {
+    void addSourceMap() {
         Map<String, String> retrieved = kiePMMLModelWithSources.getSourcesMap();
         assertThat(retrieved).isEmpty();
         kiePMMLModelWithSources.addSourceMap("KEY", "VALUE");

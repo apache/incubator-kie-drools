@@ -30,7 +30,7 @@ import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.TypeMetaData;
 import org.drools.model.impl.GlobalImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
@@ -43,20 +43,20 @@ import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 public class PMMLLoaderServiceTest {
 
     @Test
-    public void getKiePMMLModelsLoadedFromFactory() {
+    void getKiePMMLModelsLoadedFromFactory() {
         final KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl();
         assertThat(kbuilderImpl.getPackageNames()).isEmpty();
         assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNull();
         final KiePMMLModelFactory kiePMMLModelFactory = getKiePMMLModelFactory();
         final List<KiePMMLModel> retrieved = PMMLLoaderService.getKiePMMLModelsLoadedFromFactory(kbuilderImpl,
-                                                                                                 kiePMMLModelFactory);
+                kiePMMLModelFactory);
         assertThat(retrieved).isEqualTo(kiePMMLModelFactory.getKiePMMLModels());
         assertThat(kbuilderImpl.getPackageNames()).isEmpty();
         assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNull();
     }
 
     @Test
-    public void loadPMMLRuleMappersNotEmpty() {
+    void loadPMMLRuleMappersNotEmpty() {
         final KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl();
         assertThat(kbuilderImpl.getPackageNames()).isEmpty();
         assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNull();
@@ -67,7 +67,7 @@ public class PMMLLoaderServiceTest {
     }
 
     @Test
-    public void loadPMMLRuleMappersEmpty() {
+    void loadPMMLRuleMappersEmpty() {
         final KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl();
         assertThat(kbuilderImpl.getPackageNames()).isEmpty();
         assertThat(kbuilderImpl.getPackage(PACKAGE_NAME)).isNull();

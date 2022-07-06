@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
@@ -45,7 +45,7 @@ public class KiePMMLOutputFieldTest {
     private static final Double value2 = 5.0;
 
     @Test
-    public void getValueFromKiePMMLNameValuesByVariableName() {
+    void getValueFromKiePMMLNameValuesByVariableName() {
         final String variableName = "variableName";
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
                 "val-" + i, i)).collect(Collectors.toList());
@@ -60,7 +60,7 @@ public class KiePMMLOutputFieldTest {
     }
 
     @Test
-    public void getValueFromPMMLResultByVariableName() {
+    void getValueFromPMMLResultByVariableName() {
         final String variableName = "variableName";
         final Map<String, Object> resultsVariables = new HashMap<>();
         Optional<Object> retrieved = KiePMMLOutputField.getValueFromPMMLResultByVariableName(variableName,
@@ -74,7 +74,7 @@ public class KiePMMLOutputFieldTest {
     }
 
     @Test
-    public void evaluatePredictedValue() {
+    void evaluatePredictedValue() {
         final String variableName = "variableName";
         KiePMMLOutputField kiePMMLOutputField = KiePMMLOutputField.builder("outputfield", Collections.emptyList())
                 .withResultFeature(RESULT_FEATURE.PREDICTED_VALUE)
@@ -95,7 +95,7 @@ public class KiePMMLOutputFieldTest {
     }
 
     @Test
-    public void evaluateReasonCodeValue() {
+    void evaluateReasonCodeValue() {
         KiePMMLOutputField kiePMMLOutputField = KiePMMLOutputField.builder("outputfield", Collections.emptyList())
                 .withResultFeature(RESULT_FEATURE.REASON_CODE)
                 .withRank(4)
@@ -114,7 +114,7 @@ public class KiePMMLOutputFieldTest {
     }
 
     @Test
-    public void evaluateTransformedValueFromConstant() {
+    void evaluateTransformedValueFromConstant() {
         // <OutputField name="CUSTOM_FIELD" optype="continuous" dataType="double" feature="transformedValue">
         //     <Constant>100.0</Constant>
         // </OutputField>
@@ -130,7 +130,7 @@ public class KiePMMLOutputFieldTest {
     }
 
     @Test
-    public void evaluateTransformedValueFromFieldRef() {
+    void evaluateTransformedValueFromFieldRef() {
         // <OutputField name="CUSTOM_FIELD" optype="continuous" dataType="double" feature="transformedValue">
         //     <FieldRef field="PARAM_1"/>
         // </OutputField>
@@ -147,7 +147,7 @@ public class KiePMMLOutputFieldTest {
     }
 
     @Test
-    public void evaluateTransformedValueFromApplyWithKiePMMLNameValues() {
+    void evaluateTransformedValueFromApplyWithKiePMMLNameValues() {
         // <OutputField name="CUSTOM_FIELD" optype="continuous" dataType="double" feature="transformedValue">
         //     <Apply function="/">
         //        <FieldRef>PARAM_1</FieldRef>
@@ -171,7 +171,7 @@ public class KiePMMLOutputFieldTest {
     }
 
     @Test
-    public void evaluateTransformedValueFromApplyWithOutputFields() {
+    void evaluateTransformedValueFromApplyWithOutputFields() {
         // <OutputField name="CUSTOM_FIELD" optype="continuous" dataType="double" feature="transformedValue">
         //     <Apply function="/">
         //        <FieldRef>PARAM_1</FieldRef>

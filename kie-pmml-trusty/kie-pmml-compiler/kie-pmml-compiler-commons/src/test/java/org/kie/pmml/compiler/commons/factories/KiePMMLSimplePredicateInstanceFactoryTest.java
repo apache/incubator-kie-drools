@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.SimplePredicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataField;
@@ -32,7 +32,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLSimplePredicateInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLSimplePredicate() {
+    void getKiePMMLSimplePredicate() {
         List<Field<?>> fields = IntStream.range(0, 3).mapToObj(i -> getRandomDataField()).collect(Collectors.toList());
         final SimplePredicate toConvert = getRandomSimplePredicate((DataField) fields.get(0));
         final KiePMMLSimplePredicate retrieved =

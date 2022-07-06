@@ -19,8 +19,8 @@ package org.kie.pmml.compiler.commons.implementations;
 import java.util.List;
 
 import org.dmg.pmml.Model;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.compiler.commons.mocks.TestingModelImplementationProvider;
@@ -31,13 +31,13 @@ public class ModelImplementationProviderFinderImplTest {
 
     private ModelImplementationProviderFinderImpl modelImplementationProviderFinder;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         modelImplementationProviderFinder = new ModelImplementationProviderFinderImpl();
     }
 
     @Test
-    public <T extends Model, E extends KiePMMLModel> void getImplementations() {
+ <T extends Model, E extends KiePMMLModel> void getImplementations() {
         final List<ModelImplementationProvider<T, E>> retrieved = modelImplementationProviderFinder.getImplementations(false);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSize(1);

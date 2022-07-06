@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MixedVariablesRegressionTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "MixedVariablesRegression.pmml";
@@ -42,17 +40,16 @@ public class MixedVariablesRegressionTest extends AbstractPMMLTest {
     private double x;
     private String y;
 
-    public MixedVariablesRegressionTest(double x, String y) {
+    public void initMixedVariablesRegressionTest(double x, String y) {
         this.x = x;
         this.y = y;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {0, "classA"}, {-1, "classA"}, {0.5, "classA"}, {3, "classA"}, {25, "classB"},
@@ -69,8 +66,10 @@ public class MixedVariablesRegressionTest extends AbstractPMMLTest {
         return 2 * x + categoriesMap.get(y) + 22;
     }
 
-    @Test
-    public void testMixedVariablesRegression() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testMixedVariablesRegression(double x, String y) throws Exception {
+        initMixedVariablesRegressionTest(x, y);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);

@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.dmg.pmml.Array;
 import org.dmg.pmml.SimpleSetPredicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
@@ -40,24 +40,24 @@ import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getPredicateA
 public class KiePMMLSimpleSetPredicateASTFactoryTest {
 
     @Test
-    public void declareRuleFromSimpleSetPredicateIsInFinalLeaf() {
+    void declareRuleFromSimpleSetPredicateIsInFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("-5", "0.5", "1", "10");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input1",
-                                                                            values,
-                                                                            SimpleSetPredicate.BooleanOperator.IS_IN,
-                                                                            fieldTypeMap);
+                values,
+                SimpleSetPredicate.BooleanOperator.IS_IN,
+                fieldTypeMap);
         String parentPath = "_classA";
         String currentRule = "_classA_classB";
         String result = "classB";
         String declaredType = fieldTypeMap.get("input1").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simpleSetPredicate,
-                                                                                     Collections.emptyList(),
-                                                                                     rules,
-                                                                                     parentPath,
-                                                                                     currentRule,
-                                                                                     fieldTypeMap);
+                Collections.emptyList(),
+                rules,
+                parentPath,
+                currentRule,
+                fieldTypeMap);
         KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, true);
         assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
@@ -80,24 +80,24 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromSimpleSetPredicateIsInNotFinalLeaf() {
+    void declareRuleFromSimpleSetPredicateIsInNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("-5", "0.5", "1", "10");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input1",
-                                                                            values,
-                                                                            SimpleSetPredicate.BooleanOperator.IS_IN,
-                                                                            fieldTypeMap);
+                values,
+                SimpleSetPredicate.BooleanOperator.IS_IN,
+                fieldTypeMap);
         String parentPath = "_classA";
         String currentRule = "_classA_classB";
         String result = "classB";
         String declaredType = fieldTypeMap.get("input1").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simpleSetPredicate,
-                                                                                     Collections.emptyList(),
-                                                                                     rules,
-                                                                                     parentPath,
-                                                                                     currentRule,
-                                                                                     fieldTypeMap);
+                Collections.emptyList(),
+                rules,
+                parentPath,
+                currentRule,
+                fieldTypeMap);
         KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, false);
         assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
@@ -120,13 +120,13 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromSimpleSetPredicateIsNotInFinalLeaf() {
+    void declareRuleFromSimpleSetPredicateIsNotInFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("3", "8.5");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input2",
-                                                                            values,
-                                                                            SimpleSetPredicate.BooleanOperator.IS_NOT_IN,
-                                                                            fieldTypeMap);
+                values,
+                SimpleSetPredicate.BooleanOperator.IS_NOT_IN,
+                fieldTypeMap);
         String parentPath = "_classA";
         String currentRule = "_classA_classC";
         String result = "classC";
@@ -134,11 +134,11 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         String statusToSet = DONE;
         PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simpleSetPredicate,
-                                                                                     Collections.emptyList(),
-                                                                                     rules,
-                                                                                     parentPath,
-                                                                                     currentRule,
-                                                                                     fieldTypeMap);
+                Collections.emptyList(),
+                rules,
+                parentPath,
+                currentRule,
+                fieldTypeMap);
         KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, true);
         assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);
@@ -161,24 +161,24 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromSimpleSetPredicateIsNotInNotFinalLeaf() {
+    void declareRuleFromSimpleSetPredicateIsNotInNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("3", "8.5");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input2",
-                                                                            values,
-                                                                            SimpleSetPredicate.BooleanOperator.IS_NOT_IN,
-                                                                            fieldTypeMap);
+                values,
+                SimpleSetPredicate.BooleanOperator.IS_NOT_IN,
+                fieldTypeMap);
         String parentPath = "_classA";
         String currentRule = "_classA_classC";
         String result = "classC";
         String declaredType = fieldTypeMap.get("input2").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simpleSetPredicate,
-                                                                                     Collections.emptyList(),
-                                                                                     rules,
-                                                                                     parentPath,
-                                                                                     currentRule,
-                                                                                     fieldTypeMap);
+                Collections.emptyList(),
+                rules,
+                parentPath,
+                currentRule,
+                fieldTypeMap);
         KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, false);
         assertThat(rules).hasSize(1);
         final KiePMMLDroolsRule retrieved = rules.get(0);

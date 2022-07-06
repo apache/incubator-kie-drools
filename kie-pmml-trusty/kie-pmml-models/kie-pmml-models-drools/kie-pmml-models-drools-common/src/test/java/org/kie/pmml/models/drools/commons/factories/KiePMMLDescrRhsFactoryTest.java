@@ -26,8 +26,8 @@ import org.dmg.pmml.ResultFeature;
 import org.drools.drl.ast.dsl.DescrFactory;
 import org.drools.drl.ast.dsl.PackageDescrBuilder;
 import org.drools.drl.ast.dsl.RuleDescrBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 
@@ -46,7 +46,7 @@ public class KiePMMLDescrRhsFactoryTest {
     private static final String CURRENT_RULE = "currentRule";
     private RuleDescrBuilder ruleBuilder;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         PackageDescrBuilder builder = DescrFactory.newPackage().name(PACKAGE_NAME);
         ruleBuilder = builder.newRule().name(CURRENT_RULE);
@@ -54,7 +54,7 @@ public class KiePMMLDescrRhsFactoryTest {
     }
 
     @Test
-    public void declareRhsWithoutIfBreak() {
+    void declareRhsWithoutIfBreak() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
@@ -67,7 +67,7 @@ public class KiePMMLDescrRhsFactoryTest {
     }
 
     @Test
-    public void declareRhsWithIfBreak() {
+    void declareRhsWithIfBreak() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
         String ifBreakField = "ifBreakField";
@@ -86,7 +86,7 @@ public class KiePMMLDescrRhsFactoryTest {
     }
 
     @Test
-    public void declareDefaultThenWithoutResult() {
+    void declareDefaultThenWithoutResult() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
@@ -99,7 +99,7 @@ public class KiePMMLDescrRhsFactoryTest {
     }
 
     @Test
-    public void declareDefaultThenWithResult() {
+    void declareDefaultThenWithResult() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
         String result = "RESULT";
@@ -119,7 +119,7 @@ public class KiePMMLDescrRhsFactoryTest {
     }
 
     @Test
-    public void declareIfThenWithoutResult() {
+    void declareIfThenWithoutResult() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
@@ -135,7 +135,7 @@ public class KiePMMLDescrRhsFactoryTest {
     }
 
     @Test
-    public void declareIfThenWithResult() {
+    void declareIfThenWithResult() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
         String result = "RESULT";
@@ -158,7 +158,7 @@ public class KiePMMLDescrRhsFactoryTest {
     }
 
     @Test
-    public void commonDeclareThen() {
+    void commonDeclareThen() {
         String ruleName = "RULENAME";
         String statusToSet = "STATUSTOSET";
         String outputFieldName = "OUTPUTFIELDNAME";
@@ -205,7 +205,7 @@ public class KiePMMLDescrRhsFactoryTest {
     }
 
     @Test
-    public void commonDeclareOutputFields() {
+    void commonDeclareOutputFields() {
         String outputFieldName = "OUTPUTFIELDNAME";
         Object result = "RESULT";
         OutputField outputField = new OutputField();

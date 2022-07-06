@@ -20,30 +20,33 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.testingutility.PMMLContextTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class KiePMMLFactoryModelTest {
 
     private KiePMMLFactoryModel kiePMMLFactoryModel;
 
-    @Before
+    @BeforeEach
     public void setup() {
-        kiePMMLFactoryModel = new KiePMMLFactoryModel("", "", new HashMap<>());
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void getSourcesMap() {
-        Map<String, String> retrieved = kiePMMLFactoryModel.getSourcesMap();
-        retrieved.put("KEY", "VALUE");
+        kiePMMLFactoryModel = new KiePMMLFactoryModel("",  "", new HashMap<>());
     }
 
     @Test
-    public void addSourceMap() {
+    void getSourcesMap() {
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> {
+            Map<String, String> retrieved = kiePMMLFactoryModel.getSourcesMap();
+            retrieved.put("KEY", "VALUE");
+        });
+    }
+
+    @Test
+    void addSourceMap() {
         Map<String, String> retrieved = kiePMMLFactoryModel.getSourcesMap();
         assertThat(retrieved).isEmpty();
         kiePMMLFactoryModel.addSourceMap("KEY", "VALUE");
@@ -52,10 +55,10 @@ public class KiePMMLFactoryModelTest {
         assertThat(retrieved.get("KEY")).isEqualTo("VALUE");
     }
 
-
-    @Test(expected = KiePMMLException.class)
-    public void evaluate() {
-        kiePMMLFactoryModel.evaluate("", Collections.emptyMap(), new PMMLContextTest());
+    @Test
+    void evaluate() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            kiePMMLFactoryModel.evaluate("", Collections.emptyMap(), new PMMLContextTest());
+        });
     }
-
 }

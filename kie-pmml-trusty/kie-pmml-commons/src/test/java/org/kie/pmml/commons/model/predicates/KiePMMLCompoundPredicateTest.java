@@ -26,7 +26,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.IN_NOTIN;
@@ -40,14 +40,16 @@ public class KiePMMLCompoundPredicateTest {
     private final String SIMPLE_SET_PREDICATE_INT_NAME = "SIMPLESETPREDICATEINTNAME";
 
     @Test
-    public void evaluateCompoundPredicateSinglePredicate() {
+    void evaluateCompoundPredicateSinglePredicate() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> stringValues = getObjects(arrayType, 4);
-        KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateString = getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_STRING_NAME,
+        KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateString =
+                getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_STRING_NAME,
                                                                                                  stringValues,
                                                                                                  arrayType,
                                                                                                  IN_NOTIN.IN);
-        KiePMMLCompoundPredicate kiePMMLCompoundPredicate = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.AND, Collections.singletonList(kiePMMLSimpleSetPredicateString));
+        KiePMMLCompoundPredicate kiePMMLCompoundPredicate = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.AND,
+                                                                                        Collections.singletonList(kiePMMLSimpleSetPredicateString));
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, "NOT");
         assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isFalse();
@@ -60,7 +62,8 @@ public class KiePMMLCompoundPredicateTest {
                                                                                               intValues,
                                                                                               arrayType,
                                                                                               IN_NOTIN.NOT_IN);
-        kiePMMLCompoundPredicate = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.AND, Collections.singletonList(kiePMMLSimpleSetPredicateInt));
+        kiePMMLCompoundPredicate = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.AND,
+                                                               Collections.singletonList(kiePMMLSimpleSetPredicateInt));
         inputData = new HashMap<>();
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, intValues.get(0));
         assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isFalse();
@@ -69,10 +72,11 @@ public class KiePMMLCompoundPredicateTest {
     }
 
     @Test
-    public void evaluateCompoundPredicateAnd() {
+    void evaluateCompoundPredicateAnd() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> stringValues = getObjects(arrayType, 4);
-        KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateString = getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_STRING_NAME,
+        KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateString =
+                getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_STRING_NAME,
                                                                                                  stringValues,
                                                                                                  arrayType,
                                                                                                  IN_NOTIN.IN);
@@ -101,7 +105,7 @@ public class KiePMMLCompoundPredicateTest {
     }
 
     @Test
-    public void evaluateCompoundPredicateOr() {
+    void evaluateCompoundPredicateOr() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> stringValues = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateString = getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_STRING_NAME,
@@ -110,7 +114,8 @@ public class KiePMMLCompoundPredicateTest {
                                                                                                  IN_NOTIN.IN);
         arrayType = ARRAY_TYPE.INT;
         List<Object> intValues = getObjects(arrayType, 4);
-        KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateInt = getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_INT_NAME,
+        KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateInt =
+                getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_INT_NAME,
                                                                                               intValues,
                                                                                               arrayType,
                                                                                               IN_NOTIN.NOT_IN);
@@ -137,7 +142,7 @@ public class KiePMMLCompoundPredicateTest {
     }
 
     @Test
-    public void evaluateCompoundPredicateSurrogate() {
+    void evaluateCompoundPredicateSurrogate() {
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
         List<Object> stringValues = getObjects(arrayType, 4);
         KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateString = getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_STRING_NAME,
@@ -146,7 +151,8 @@ public class KiePMMLCompoundPredicateTest {
                                                                                                  IN_NOTIN.IN);
         arrayType = ARRAY_TYPE.INT;
         List<Object> intValues = getObjects(arrayType, 4);
-        KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateInt = getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_INT_NAME,
+        KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateInt =
+                getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_INT_NAME,
                                                                                               intValues,
                                                                                               arrayType,
                                                                                               IN_NOTIN.NOT_IN);
@@ -165,13 +171,14 @@ public class KiePMMLCompoundPredicateTest {
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, 1); // This predicate verify the "NOT_IN" condition
         assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isFalse();
 
-        inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, stringValues.get(0)); // This predicate verify the "IN" condition
+        inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, stringValues.get(0)); // This predicate verify the "IN"
+        // condition
         inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, 1); // This predicate verify the "NOT_IN" condition
         assertThat(kiePMMLCompoundPredicate.evaluate(inputData)).isTrue();
     }
 
     @Test
-    public void orOperator() {
+    void orOperator() {
         Boolean aBoolean = null;
         Boolean aBoolean2 = true;
         assertThat(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2)).isTrue();
@@ -197,7 +204,7 @@ public class KiePMMLCompoundPredicateTest {
     }
 
     @Test
-    public void andOperator() {
+    void andOperator() {
         Boolean aBoolean = null;
         Boolean aBoolean2 = true;
         assertThat(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2)).isTrue();
@@ -223,7 +230,7 @@ public class KiePMMLCompoundPredicateTest {
     }
 
     @Test
-    public void xorOperator() {
+    void xorOperator() {
         Boolean aBoolean = null;
         Boolean aBoolean2 = true;
         assertThat(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2)).isTrue();
@@ -250,7 +257,7 @@ public class KiePMMLCompoundPredicateTest {
     }
 
     @Test
-    public void surrogateOperator() {
+    void surrogateOperator() {
         Boolean aBoolean = null;
         Boolean aBoolean2 = true;
         assertThat(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2)).isTrue();
@@ -276,7 +283,7 @@ public class KiePMMLCompoundPredicateTest {
     }
 
     private KiePMMLCompoundPredicate getKiePMMLCompoundPredicate(final BOOLEAN_OPERATOR booleanOperator,
-                                                                   final List<KiePMMLPredicate> kiePMMLPredicates) {
+                                                                 final List<KiePMMLPredicate> kiePMMLPredicates) {
 
         return KiePMMLCompoundPredicate.builder(Collections.emptyList(),
                                                 booleanOperator)
@@ -285,7 +292,7 @@ public class KiePMMLCompoundPredicateTest {
     }
 
     private KiePMMLSimpleSetPredicate getKiePMMLSimpleSetPredicate(final String predicateName,
-                                                                    final List<Object> values,
+                                                                   final List<Object> values,
                                                                    final ARRAY_TYPE arrayType, final IN_NOTIN inNotIn) {
         return KiePMMLSimpleSetPredicate.builder(predicateName,
                                                  Collections.emptyList(),
@@ -297,17 +304,17 @@ public class KiePMMLCompoundPredicateTest {
 
     private List<Object> getObjects(ARRAY_TYPE arrayType, int size) {
         return IntStream.range(0, size).mapToObj(index -> {
-            switch (arrayType) {
-                case INT:
-                    return new Random().nextInt(40);
-                case REAL:
-                    return new Random().nextDouble();
-                case STRING:
-                    return UUID.randomUUID().toString();
-                default:
-                    return null;
-            }
-        })
+                    switch (arrayType) {
+                        case INT:
+                            return new Random().nextInt(40);
+                        case REAL:
+                            return new Random().nextDouble();
+                        case STRING:
+                            return UUID.randomUUID().toString();
+                        default:
+                            return null;
+                    }
+                })
                 .collect(Collectors.toList());
     }
 }
