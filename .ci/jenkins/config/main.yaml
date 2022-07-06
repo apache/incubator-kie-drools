@@ -7,7 +7,11 @@ ecosystem:
 git:
   branches:
   - name: main
+    seed:
+      branch: main
   - name: 8.24.x
+    seed:
+      branch: seed-optaplanner-8.24.x
   main_branch:
     default: main
 seed:
