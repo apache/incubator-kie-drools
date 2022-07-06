@@ -31,8 +31,6 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.impact.analysis.graph.TextReporter.INDENT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class ImpactAnalysisTest extends AbstractGraphTest {
 
@@ -102,12 +100,12 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
         Graph impactedSubGraph = impactFilter.filterImpactedNodes(graph, "mypkg.R2");
 
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R1"));
-        assertEquals(Status.CHANGED, impactedSubGraph.getNodeMap().get("mypkg.R2").getStatus());
-        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R3").getStatus());
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R4"));
-        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R5").getStatus());
-        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R6").getStatus());
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R1")).isNull();
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R2").getStatus()).isEqualTo(Status.CHANGED);
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R3").getStatus()).isEqualTo(Status.IMPACTED);
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R4")).isNull();
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R5").getStatus()).isEqualTo(Status.IMPACTED);
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R6").getStatus()).isEqualTo(Status.IMPACTED);
 
         // TextReporter test
         String hierarchyText = TextReporter.toHierarchyText(impactedSubGraph);
@@ -137,12 +135,12 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
         Graph impactingSubGraph = impactFilter.filterImpactingNodes(graph, "mypkg.R5");
 
-        assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R1").getStatus());
-        assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R2").getStatus());
-        assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R3").getStatus());
-        assertEquals(Status.IMPACTING, impactingSubGraph.getNodeMap().get("mypkg.R4").getStatus());
-        assertEquals(Status.TARGET, impactingSubGraph.getNodeMap().get("mypkg.R5").getStatus());
-        assertNull(impactingSubGraph.getNodeMap().get("mypkg.R6"));
+        assertThat(impactingSubGraph.getNodeMap().get("mypkg.R1").getStatus()).isEqualTo(Status.IMPACTING);
+        assertThat(impactingSubGraph.getNodeMap().get("mypkg.R2").getStatus()).isEqualTo(Status.IMPACTING);
+        assertThat(impactingSubGraph.getNodeMap().get("mypkg.R3").getStatus()).isEqualTo(Status.IMPACTING);
+        assertThat(impactingSubGraph.getNodeMap().get("mypkg.R4").getStatus()).isEqualTo(Status.IMPACTING);
+        assertThat(impactingSubGraph.getNodeMap().get("mypkg.R5").getStatus()).isEqualTo(Status.TARGET);
+        assertThat(impactingSubGraph.getNodeMap().get("mypkg.R6")).isNull();
 
         // TextReporter test
         String hierarchyText = TextReporter.toHierarchyText(impactingSubGraph);

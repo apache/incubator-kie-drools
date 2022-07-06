@@ -12,10 +12,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class LineBreakXLSTest {
 
@@ -41,7 +39,7 @@ public class LineBreakXLSTest {
 
         ksession.dispose();
 
-        assertTrue(fd.getエラーメッセージ().contains("値には0以上を指定してください。\n指定された値："));
+        assertThat(fd.getエラーメッセージ().contains("値には0以上を指定してください。\n指定された値：")).isTrue();
     }
 
     @Test
@@ -68,8 +66,8 @@ public class LineBreakXLSTest {
 
         ksession.dispose();
 
-        assertEquals(30, john.getAge());
-        assertFalse(john.isAlive());
+        assertThat(john.getAge()).isEqualTo(30);
+        assertThat(john.isAlive()).isFalse();
     }
 
     @Test
@@ -96,7 +94,7 @@ public class LineBreakXLSTest {
 
         ksession.dispose();
 
-        assertEquals(30, john.getAge());
-        assertEquals("ssss\nxxxx", john.getName());
+        assertThat(john.getAge()).isEqualTo(30);
+        assertThat(john.getName()).isEqualTo("ssss\nxxxx");
     }
 }

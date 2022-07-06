@@ -43,11 +43,10 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 
 public class JpaOptLockPersistentStatefulSessionTest {
 
@@ -155,6 +154,6 @@ public class JpaOptLockPersistentStatefulSessionTest {
             e.printStackTrace();
         }
 
-        assertEquals(4, attempts.get());
+        assertThat(attempts.get()).isEqualTo(4);
     }
 }
