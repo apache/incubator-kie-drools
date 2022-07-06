@@ -18,7 +18,8 @@ package org.drools.decisiontable.parser;
 import org.drools.decisiontable.parser.LhsBuilder.FieldType;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LhsBuilderTest {
 
@@ -35,18 +36,18 @@ public class LhsBuilderTest {
         builder.addCellValue(11, 3, "30");
 
 
-        assertEquals("Person(age == \"42\", size != 20, date < \"30\")", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Person(age == \"42\", size != 20, date < \"30\")");
 
         builder.clearValues();
 
         builder.addCellValue(12, 2, "42" );
-        assertEquals("Person(size != 42)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Person(size != 42)");
     }
 
     @Test
     public void testEmptyCells() {
         LhsBuilder builder = new LhsBuilder( 9, 1, "Person" );
-        assertFalse(builder.hasValues());
+        assertThat(builder.hasValues()).isFalse();
     }
 
     @Test
@@ -55,7 +56,7 @@ public class LhsBuilderTest {
         builder.addTemplate( 10, 1, "Person(age < $param)");
         builder.addCellValue( 11, 1, "42" );
 
-        assertEquals("Person(age < 42)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Person(age < 42)");
 
         builder = new LhsBuilder( 9, 3, null );
         builder.addTemplate( 10, 3, "Foo(bar == $param)");
@@ -64,7 +65,7 @@ public class LhsBuilderTest {
         builder.addCellValue( 11, 3, "42" );
         builder.addCellValue( 11, 4, "Y" );
 
-        assertEquals("Foo(bar == 42)\neval(true)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Foo(bar == 42)\neval(true)");
     }
 
     @Test
@@ -72,7 +73,7 @@ public class LhsBuilderTest {
         LhsBuilder builder = new LhsBuilder( 9, 1, "" );
         builder.addTemplate( 10, 1, "forall(&&){Foo(bar != $)}");
         builder.addCellValue( 11, 1, "42,43");
-        assertEquals("Foo(bar != 42) && Foo(bar != 43)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Foo(bar != 42) && Foo(bar != 43)");
     }
 
     @Test
@@ -80,7 +81,7 @@ public class LhsBuilderTest {
         LhsBuilder builder = new LhsBuilder( 9, 1, "Person" );
         builder.addTemplate( 10, 1, "forall(||){age < $}");
         builder.addCellValue( 11, 1, "42");
-        assertEquals("Person(age < 42)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Person(age < 42)");
     }
 
     @Test
@@ -88,7 +89,7 @@ public class LhsBuilderTest {
         LhsBuilder builder = new LhsBuilder( 9, 1, "Person" );
         builder.addTemplate( 10, 1, "age < 10 && forall(||){age < $}");
         builder.addCellValue( 11, 1, "42");
-        assertEquals("Person(age < 10 && age < 42)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Person(age < 10 && age < 42)");
     }
 
     @Test
@@ -96,7 +97,7 @@ public class LhsBuilderTest {
         LhsBuilder builder = new LhsBuilder( 9, 1, "Person" );
         builder.addTemplate( 10, 1, "forall(||){age < $}");
         builder.addCellValue( 11, 1, "42, 43, 44");
-        assertEquals("Person(age < 42 || age < 43 || age < 44)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Person(age < 42 || age < 43 || age < 44)");
     }
 
     @Test
@@ -104,7 +105,7 @@ public class LhsBuilderTest {
         LhsBuilder builder = new LhsBuilder( 9, 1, "Person" );
         builder.addTemplate(10, 1, "forall(&&){age < $}");
         builder.addCellValue(11, 1, "42");
-        assertEquals("Person(age < 42)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Person(age < 42)");
     }
 
     @Test
@@ -112,8 +113,8 @@ public class LhsBuilderTest {
         LhsBuilder builder = new LhsBuilder( 9, 1, "Person" );
         builder.addTemplate(10, 1, "forall(&&){age < $}");
         builder.addCellValue(11, 1, "42, 43, 44");
-        assertEquals("Person(age < 42 && age < 43 && age < 44)", builder
-                .getResult());
+        assertThat(builder
+                .getResult()).isEqualTo("Person(age < 42 && age < 43 && age < 44)");
     }
 
     @Test
@@ -121,9 +122,7 @@ public class LhsBuilderTest {
         LhsBuilder builder = new LhsBuilder( 9, 1, "Person" );
         builder.addTemplate(10, 1, "forall(&&){age < $ || age == $}");
         builder.addCellValue(11, 1, "42, 43, 44");
-        assertEquals(
-                "Person(age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44)",
-                builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Person(age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44)");
     }
 
     @Test
@@ -131,51 +130,49 @@ public class LhsBuilderTest {
         LhsBuilder builder = new LhsBuilder( 9, 1, "Person" );
         builder.addTemplate(10, 1, "forall(&&){age < $ || age == $} && forall(&&){age < $ || age == $}");
         builder.addCellValue(11, 1, "42, 43, 44");
-        assertEquals(
-                "Person(age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44 && age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44)",
-                builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Person(age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44 && age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44)");
     }
 
     @Test
     public void testIdentifyFieldTypes() {
         LhsBuilder builder = new LhsBuilder( 9, 1, "" );
-        assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("age"));
-        assertEquals(FieldType.OPERATOR_FIELD, builder.calcFieldType("age <"));
-        assertEquals(FieldType.NORMAL_FIELD, builder.calcFieldType("age < $param"));
-        assertEquals(FieldType.FORALL_FIELD, builder.calcFieldType("forall(||){age < $}"));
-        assertEquals(FieldType.FORALL_FIELD, builder.calcFieldType("forall(&&){age < $}"));
-        assertEquals(FieldType.FORALL_FIELD, builder.calcFieldType("forall(,){age < $}"));
-        assertEquals(FieldType.FORALL_FIELD, builder.calcFieldType("forall(){age < $}"));
-        assertEquals(FieldType.FORALL_FIELD, builder.calcFieldType("forall(){age < $} && forall(){age == $}"));
-        assertEquals(FieldType.FORALL_FIELD, builder.calcFieldType("x && forall(){age < $} && forall(){age == $}"));
-        assertEquals(FieldType.FORALL_FIELD, builder.calcFieldType("x && forall(){age < $} && forall(){age == $} && y"));
-        assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("age < $para"));
-        assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("forall{||}{age < $}"));
-        assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("forall(){}"));
-        assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("forall(){age < $"));
-        assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("forall(){,"));
-        assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("forall({})"));
-        assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("forall({}){test})"));
-        assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("forall(&&){{}})"));
-        assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("forall(&&){{})"));
+        assertThat(builder.calcFieldType("age")).isEqualTo(FieldType.SINGLE_FIELD);
+        assertThat(builder.calcFieldType("age <")).isEqualTo(FieldType.OPERATOR_FIELD);
+        assertThat(builder.calcFieldType("age < $param")).isEqualTo(FieldType.NORMAL_FIELD);
+        assertThat(builder.calcFieldType("forall(||){age < $}")).isEqualTo(FieldType.FORALL_FIELD);
+        assertThat(builder.calcFieldType("forall(&&){age < $}")).isEqualTo(FieldType.FORALL_FIELD);
+        assertThat(builder.calcFieldType("forall(,){age < $}")).isEqualTo(FieldType.FORALL_FIELD);
+        assertThat(builder.calcFieldType("forall(){age < $}")).isEqualTo(FieldType.FORALL_FIELD);
+        assertThat(builder.calcFieldType("forall(){age < $} && forall(){age == $}")).isEqualTo(FieldType.FORALL_FIELD);
+        assertThat(builder.calcFieldType("x && forall(){age < $} && forall(){age == $}")).isEqualTo(FieldType.FORALL_FIELD);
+        assertThat(builder.calcFieldType("x && forall(){age < $} && forall(){age == $} && y")).isEqualTo(FieldType.FORALL_FIELD);
+        assertThat(builder.calcFieldType("age < $para")).isEqualTo(FieldType.SINGLE_FIELD);
+        assertThat(builder.calcFieldType("forall{||}{age < $}")).isEqualTo(FieldType.SINGLE_FIELD);
+        assertThat(builder.calcFieldType("forall(){}")).isEqualTo(FieldType.SINGLE_FIELD);
+        assertThat(builder.calcFieldType("forall(){age < $")).isEqualTo(FieldType.SINGLE_FIELD);
+        assertThat(builder.calcFieldType("forall(){,")).isEqualTo(FieldType.SINGLE_FIELD);
+        assertThat(builder.calcFieldType("forall({})")).isEqualTo(FieldType.SINGLE_FIELD);
+        assertThat(builder.calcFieldType("forall({}){test})")).isEqualTo(FieldType.SINGLE_FIELD);
+        assertThat(builder.calcFieldType("forall(&&){{}})")).isEqualTo(FieldType.SINGLE_FIELD);
+        assertThat(builder.calcFieldType("forall(&&){{})")).isEqualTo(FieldType.SINGLE_FIELD);
     }
 
     @Test
     public void testIdentifyColumnCorrectly() {
         LhsBuilder builder = new LhsBuilder( 9, 1, null );
-        assertFalse(builder.isMultipleConstraints());
+        assertThat(builder.isMultipleConstraints()).isFalse();
 
         //will be added to Foo
         builder = new LhsBuilder( 9, 1, "Foo" );
-        assertTrue(builder.isMultipleConstraints());
+        assertThat(builder.isMultipleConstraints()).isTrue();
 
         //will be added to eval
         builder = new LhsBuilder( 9, 1, "f:Foo() eval  " );
-        assertTrue(builder.isMultipleConstraints());
+        assertThat(builder.isMultipleConstraints()).isTrue();
 
         // will just be verbatim
         builder = new LhsBuilder( 9, 1, "f: Foo()" );
-        assertTrue(builder.isMultipleConstraints());
+        assertThat(builder.isMultipleConstraints()).isTrue();
     }
 
     @Test
@@ -187,7 +184,7 @@ public class LhsBuilderTest {
         builder.addCellValue( 11, 1, "good");
         builder.addCellValue( 11, 2, "42");
         builder.addCellValue( 11, 3, "abc");
-        assertEquals("Type(flda == \"good\", fldb > \"42\", fldc str[startsWith] \"abc\")", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Type(flda == \"good\", fldb > \"42\", fldc str[startsWith] \"abc\")");
     }
 
     @Test
@@ -197,7 +194,7 @@ public class LhsBuilderTest {
         builder.addTemplate( 10, 2, "fldb >");
         builder.addCellValue( 11, 1, "good");
         builder.addCellValue( 11, 2, "42");
-        assertEquals("Type(flda == \"good\", fldb > \"42\")", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Type(flda == \"good\", fldb > \"42\")");
     }
 
     @Test
@@ -205,7 +202,7 @@ public class LhsBuilderTest {
         LhsBuilder builder = new LhsBuilder( 9, 1, "Type from $west" );
         builder.addTemplate( 10, 1, "flda");
         builder.addCellValue( 11, 1, "good");
-        assertEquals("Type(flda == \"good\") from $west", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Type(flda == \"good\") from $west");
     }
 
     @Test
@@ -215,7 +212,7 @@ public class LhsBuilderTest {
         builder.addTemplate( 10, 2, "$b < $param");
         builder.addCellValue( 11, 1, "1");
         builder.addCellValue( 11, 2, "99");
-        assertEquals("Type($a:a,$b:b) eval($a > 1 && $b < 99)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Type($a:a,$b:b) eval($a > 1 && $b < 99)");
     }
 
     @Test
@@ -225,7 +222,7 @@ public class LhsBuilderTest {
         builder.addTemplate( 10, 2, "$b < $param");
         builder.addCellValue( 11, 1, "1");
         builder.addCellValue( 11, 2, "99");
-        assertEquals("eval($a > 1 && $b < 99)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("eval($a > 1 && $b < 99)");
     }
 
     @Test
@@ -233,6 +230,6 @@ public class LhsBuilderTest {
         LhsBuilder builder = new LhsBuilder( 9, 1, null );
         builder.addTemplate( 10, 1, "Type()");
         builder.addCellValue( 11, 1, "x");
-        assertEquals("Type()", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Type()");
     }
 }

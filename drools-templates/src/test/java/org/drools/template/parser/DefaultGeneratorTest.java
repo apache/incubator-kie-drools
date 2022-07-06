@@ -21,7 +21,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultGeneratorTest {
     private DefaultGenerator g;
@@ -66,7 +66,7 @@ public class DefaultGeneratorTest {
     public void testSelectTemplate() {
         g.generate("rt2", new Row());
         String drl = g.getDrl();
-        assertEquals("Test template 2\n\n", drl);
+        assertThat(drl).isEqualTo("Test template 2\n\n");
     }
 
     @Test
@@ -74,7 +74,7 @@ public class DefaultGeneratorTest {
         g.generate("rt2", new Row());
         g.generate("rt1", new Row());
         String drl = g.getDrl();
-        assertEquals("Test template 2\n\nTest template 1\n\n", drl);
+        assertThat(drl).isEqualTo("Test template 2\n\nTest template 1\n\n");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class DefaultGeneratorTest {
         //        r.addCell(new StringCell(r, new StringColumn("col2"), "value2"));
         g.generate("rt3", r);
         String drl = g.getDrl();
-        assertEquals("1 value1 value2\n\n", drl);
+        assertThat(drl).isEqualTo("1 value1 value2\n\n");
     }
 
 }

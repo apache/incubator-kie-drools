@@ -26,8 +26,7 @@ import org.drools.core.base.ValueType;
 import org.drools.core.rule.accessor.FieldValue;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FieldFactoryTest {
 
@@ -35,18 +34,16 @@ public class FieldFactoryTest {
     public void testBigDecimal() {
         final FieldValue val = FieldFactory.getInstance().getFieldValue( "42.42",
                                                                          ValueType.BIG_DECIMAL_TYPE );
-        assertEquals( BigDecimal.class,
-                      val.getValue().getClass() );
-        assertTrue( val.getValue().equals( new BigDecimal( "42.42" ) ) );
+        assertThat(val.getValue().getClass()).isEqualTo(BigDecimal.class);
+        assertThat(val.getValue().equals(new BigDecimal( "42.42" ))).isTrue();
     }
 
     @Test
     public void testBigInteger() {
         final FieldValue val = FieldFactory.getInstance().getFieldValue( "424242",
                                                                          ValueType.BIG_INTEGER_TYPE );
-        assertEquals( BigInteger.class,
-                      val.getValue().getClass() );
-        assertTrue( val.getValue().equals( new BigInteger( "424242" ) ) );
+        assertThat(val.getValue().getClass()).isEqualTo(BigInteger.class);
+        assertThat(val.getValue().equals(new BigInteger( "424242" ))).isTrue();
     }
 
     @Test
@@ -55,10 +52,10 @@ public class FieldFactoryTest {
         String s = df.format(df.parse("10-Jul-1974"));
         final FieldValue val = FieldFactory.getInstance().getFieldValue( s,
                                                                          ValueType.DATE_TYPE );
-        assertEquals( Date.class, val.getValue().getClass() );
+        assertThat(val.getValue().getClass()).isEqualTo(Date.class);
 
         Date dt = (Date) val.getValue();
-        assertEquals(s, df.format(dt));
+        assertThat(df.format(dt)).isEqualTo(s);
 
     }
 

@@ -30,9 +30,6 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class TraitMapCoreTest extends CommonTraitTest {
 
@@ -92,7 +89,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
             System.err.println( o );
         }
 
-        assertEquals( 3.0, map.get( "GPA" ) );
+        assertThat(map.get("GPA")).isEqualTo(3.0);
     }
 
     @Test(timeout=10000)
@@ -144,8 +141,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.insert( map );
         ksession.fireAllRules();
 
-        assertTrue( map.containsKey( "height" ) );
-        assertEquals( map.get( "height"), 184.0 );
+        assertThat(map.containsKey("height")).isTrue();
+        assertThat(184.0).isEqualTo(map.get("height"));
 
     }
 
@@ -269,10 +266,10 @@ public class TraitMapCoreTest extends CommonTraitTest {
             System.err.println( o );
         }
 
-        assertEquals( "100", map.get( "ID" ) );
-        assertEquals( 184.0, map.get( "height" ) );
-        assertEquals( 4.0, map.get( "GPA" ) );
-        assertEquals( true, map.get( "final" ) );
+        assertThat(map.get("ID")).isEqualTo("100");
+        assertThat(map.get("height")).isEqualTo(184.0);
+        assertThat(map.get("GPA")).isEqualTo(4.0);
+        assertThat(map.get("final")).isEqualTo(true);
 
     }
 
@@ -337,8 +334,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
             System.err.println( o );
         }
 
-        assertEquals( 42, map.get( "years" ) );
-        assertEquals( 184.0, map.get( "tall" ) );
+        assertThat(map.get("years")).isEqualTo(42);
+        assertThat(map.get("tall")).isEqualTo(184.0);
 
     }
 
@@ -390,7 +387,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        assertTrue( list.size() == 1 && list.get( 0 ) == null );
+        assertThat(list.size() == 1 && list.get(0) == null).isTrue();
     }
 
     @Test
@@ -477,9 +474,9 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        assertTrue(list.contains("initialized"));
-        assertTrue(list.contains("student is donned"));
-        assertTrue(list.contains("worker is donned"));
+        assertThat(list.contains("initialized")).isTrue();
+        assertThat(list.contains("student is donned")).isTrue();
+        assertThat(list.contains("worker is donned")).isTrue();
 
     }
 
@@ -566,9 +563,9 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
-        assertTrue(list.contains("initialized"));
-        assertTrue(list.contains("student is donned"));
-        assertTrue(list.contains("worker is donned"));
+        assertThat(list.contains("initialized")).isTrue();
+        assertThat(list.contains("student is donned")).isTrue();
+        assertThat(list.contains("worker is donned")).isTrue();
     }
 
     @Test
@@ -685,11 +682,11 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        assertTrue(list.contains("initialized"));
-        assertTrue(list.contains("student is donned"));
-        assertTrue(list.contains("worker is donned"));
-        assertTrue(list.contains("studentworker is donned"));
-        assertTrue(list.contains("tuitionWaiver is true"));
+        assertThat(list.contains("initialized")).isTrue();
+        assertThat(list.contains("student is donned")).isTrue();
+        assertThat(list.contains("worker is donned")).isTrue();
+        assertThat(list.contains("studentworker is donned")).isTrue();
+        assertThat(list.contains("tuitionWaiver is true")).isTrue();
     }
 
     @Test
@@ -788,12 +785,12 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        assertTrue(list.contains("initialized"));
-        assertTrue(list.contains("student is donned"));
-        assertTrue(list.contains("student has ID and SSN"));
-        assertTrue(list.contains("student has personID and socialSecurity"));
-        assertTrue(list.contains("citizen has socialSecurity"));
-        assertTrue(list.contains("person has personID"));
+        assertThat(list.contains("initialized")).isTrue();
+        assertThat(list.contains("student is donned")).isTrue();
+        assertThat(list.contains("student has ID and SSN")).isTrue();
+        assertThat(list.contains("student has personID and socialSecurity")).isTrue();
+        assertThat(list.contains("citizen has socialSecurity")).isTrue();
+        assertThat(list.contains("person has personID")).isTrue();
     }
 
     @Test
@@ -854,8 +851,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.insert( map );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertNull( list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0)).isNull();
         assertThat(list.get(1)).isNotNull();
     }
 
@@ -910,8 +907,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.insert(map);
         ksession.fireAllRules();
 
-        assertTrue(list.contains("correct1"));
-        assertTrue(list.contains("correct2"));
+        assertThat(list.contains("correct1")).isTrue();
+        assertThat(list.contains("correct2")).isTrue();
     }
 
     @Test(timeout=10000)
@@ -959,8 +956,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.insert(map);
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( null, list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo(null);
     }
 
     @Test
@@ -1025,7 +1022,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isNotNull();
     }
 
@@ -1097,7 +1094,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isNotNull();
     }
 
@@ -1169,7 +1166,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isNotNull();
     }
 
@@ -1244,7 +1241,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isNotNull();
     }
 
@@ -1294,11 +1291,11 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.insert( map );
         ksession.fireAllRules();
 
-        assertTrue( map.containsKey( "height" ) );
-        assertEquals( map.get( "height"), 184.0 );
+        assertThat(map.containsKey("height")).isTrue();
+        assertThat(184.0).isEqualTo(map.get("height"));
 
-        assertEquals( 2, ksession.getObjects().size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( DomainMap.class ) ).size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(2);
+        assertThat(ksession.getObjects(new ClassObjectFilter( DomainMap.class )).size()).isEqualTo(1);
 
     }
 

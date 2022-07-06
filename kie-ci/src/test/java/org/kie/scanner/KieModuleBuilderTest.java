@@ -24,7 +24,6 @@ import java.io.InputStream;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -36,7 +35,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.maven.integration.MavenRepository;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieModuleBuilderTest extends AbstractKieCiTest {
 
@@ -79,7 +78,7 @@ public class KieModuleBuilderTest extends AbstractKieCiTest {
                    createJavaSourceInPackage() );
 
         KieBuilder kieBuilder1 = ks.newKieBuilder( kfs );
-        Assert.assertTrue( kieBuilder1.buildAll().getResults().getMessages().isEmpty() );
+        assertThat(kieBuilder1.buildAll().getResults().getMessages().isEmpty()).isTrue();
         InternalKieModule kieModule = (InternalKieModule) kieBuilder1.getKieModule();
 
         KieMavenRepository.getKieMavenRepository().installArtifact( releaseId, kieModule, pomFile );
@@ -114,7 +113,7 @@ public class KieModuleBuilderTest extends AbstractKieCiTest {
                              createDRLWithImport( "rule1" ) );
         KieBuilder kieBuilder = kieServices.newKieBuilder( kieFileSystem );
         kieBuilder.buildAll();
-        assertTrue( kieBuilder.getResults().getMessages().isEmpty() );
+        assertThat(kieBuilder.getResults().getMessages().isEmpty()).isTrue();
     }
 
     private String createJavaSourceInPackage() {
@@ -167,7 +166,7 @@ public class KieModuleBuilderTest extends AbstractKieCiTest {
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         System.out.println(kieBuilder.getResults().getMessages());
-        assertTrue(kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 

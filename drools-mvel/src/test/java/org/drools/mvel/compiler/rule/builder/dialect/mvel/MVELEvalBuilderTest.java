@@ -50,8 +50,7 @@ import org.drools.mvel.expr.MVELEvalExpression;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MVELEvalBuilderTest {
 
@@ -121,16 +120,16 @@ public class MVELEvalBuilderTest {
         
         Object evalContext = eval.createContext();
 
-        assertTrue( eval.isAllowed( tuple,
-                                    ksession,
-                                    evalContext ) );
+        assertThat(eval.isAllowed(tuple,
+                ksession,
+                evalContext)).isTrue();
 
         cheddar.setPrice( 9 );
         ksession.update( f0,
                    cheddar );
-        assertFalse( eval.isAllowed( tuple,
-                                     ksession,
-                                     evalContext ) );
+        assertThat(eval.isAllowed(tuple,
+                ksession,
+                evalContext)).isFalse();
     }
 
 }

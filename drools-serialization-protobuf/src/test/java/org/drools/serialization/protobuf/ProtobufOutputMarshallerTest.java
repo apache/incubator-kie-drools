@@ -22,7 +22,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProtobufOutputMarshallerTest {
 
@@ -33,7 +33,7 @@ public class ProtobufOutputMarshallerTest {
         for(Integer i : ids) {
             list.add(new DefaultFactHandle(i.intValue(), i));
         }
-        InternalFactHandle first = ProtobufOutputMarshaller.orderFacts(list)[0];        
-        assertEquals(-2147483640, first.getId());        
+        InternalFactHandle first = ProtobufOutputMarshaller.orderFacts(list)[0];
+        assertThat(first.getId()).isEqualTo(-2147483640);        
     }
 }

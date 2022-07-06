@@ -27,8 +27,7 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScenarioSimulationSharedUtilsTest {
 
@@ -43,33 +42,33 @@ public class ScenarioSimulationSharedUtilsTest {
 
     @Test
     public void isCollectionOrMap() {
-        assertTrue(listValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollectionOrMap));
-        assertTrue(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollectionOrMap));
-        assertTrue(ScenarioSimulationSharedUtils.isCollectionOrMap(Collection.class.getCanonicalName()));
+        assertThat(listValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollectionOrMap)).isTrue();
+        assertThat(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollectionOrMap)).isTrue();
+        assertThat(ScenarioSimulationSharedUtils.isCollectionOrMap(Collection.class.getCanonicalName())).isTrue();
     }
 
     @Test
     public void isCollection() {
-        assertTrue(listValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollection));
-        assertFalse(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollection));
-        assertTrue(ScenarioSimulationSharedUtils.isCollectionOrMap(Collection.class.getCanonicalName()));
+        assertThat(listValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollection)).isTrue();
+        assertThat(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isCollection)).isFalse();
+        assertThat(ScenarioSimulationSharedUtils.isCollectionOrMap(Collection.class.getCanonicalName())).isTrue();
     }
 
     @Test
     public void isList() {
-        assertTrue(listValues.stream().allMatch(ScenarioSimulationSharedUtils::isList));
-        assertFalse(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isList));
-        assertFalse(ScenarioSimulationSharedUtils.isList(Collection.class.getCanonicalName()));
+        assertThat(listValues.stream().allMatch(ScenarioSimulationSharedUtils::isList)).isTrue();
+        assertThat(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isList)).isFalse();
+        assertThat(ScenarioSimulationSharedUtils.isList(Collection.class.getCanonicalName())).isFalse();
     }
 
     @Test
     public void isMap() {
-        assertTrue(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isMap));
+        assertThat(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isMap)).isTrue();
     }
 
     @Test
     public void isEnumCanonicalName() {
-        assertTrue(ScenarioSimulationSharedUtils.isEnumCanonicalName(Enum.class.getCanonicalName()));
-        assertFalse(ScenarioSimulationSharedUtils.isEnumCanonicalName(Enum.class.getSimpleName()));
+        assertThat(ScenarioSimulationSharedUtils.isEnumCanonicalName(Enum.class.getCanonicalName())).isTrue();
+        assertThat(ScenarioSimulationSharedUtils.isEnumCanonicalName(Enum.class.getSimpleName())).isFalse();
     }
 }

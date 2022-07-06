@@ -46,7 +46,6 @@ import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Person;
 import org.drools.serialization.protobuf.marshalling.ObjectMarshallingStrategyStoreImpl;
 import org.drools.util.StringUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
@@ -57,7 +56,8 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.RuleRuntime;
 import org.kie.internal.marshalling.MarshallerFactory;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class FactHandleMarshallingTest {
 
@@ -132,7 +132,7 @@ public class FactHandleMarshallingTest {
             inContext.close();
         }
 
-        assertTrue( "Serialized FactHandle not the same as the original.", compareInstances(factHandle, newFactHandle) );
+        assertThat(compareInstances(factHandle, newFactHandle)).as("Serialized FactHandle not the same as the original.").isTrue();
     }
 
     private static InternalFactHandle readFactHandle( MarshallerReaderContext context ) throws IOException,
@@ -253,7 +253,7 @@ public class FactHandleMarshallingTest {
             }
             catch( Exception e ) { 
                 same = false;
-                Assert.fail(e.getClass().getSimpleName() + ":" + e.getMessage() );
+                fail(e.getClass().getSimpleName() + ":" + e.getMessage() );
             }
         }
         else if( objA != objB ) { 
