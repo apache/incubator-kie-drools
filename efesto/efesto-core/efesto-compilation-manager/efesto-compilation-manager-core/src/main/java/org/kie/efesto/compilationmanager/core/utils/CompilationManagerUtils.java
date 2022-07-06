@@ -57,8 +57,7 @@ public class CompilationManagerUtils {
     private CompilationManagerUtils() {
     }
 
-    public static Collection<IndexFile> getIndexFilesWithProcessedResource(EfestoResource<?> toProcess,
-                                                                           KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static Collection<IndexFile> getIndexFilesWithProcessedResource(EfestoResource toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
@@ -73,7 +72,7 @@ public class CompilationManagerUtils {
                 if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
                     loadClasses(((EfestoCallableOutputClassesContainer) compilationOutput).getCompiledClassesMap(), memoryCompilerClassLoader);
                 } else if (compilationOutput instanceof EfestoRedirectOutput) {
-                    toPopulate.addAll(getIndexFilesWithProcessedResource((EfestoRedirectOutput<?>) compilationOutput, memoryCompilerClassLoader));
+                    toPopulate.addAll(getIndexFilesWithProcessedResource((EfestoRedirectOutput) compilationOutput, memoryCompilerClassLoader));
                 }
             }
         }

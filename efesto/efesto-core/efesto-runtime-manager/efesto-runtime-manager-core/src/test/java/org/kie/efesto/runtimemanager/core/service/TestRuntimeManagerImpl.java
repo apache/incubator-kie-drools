@@ -55,30 +55,30 @@ class TestRuntimeManagerImpl {
         MANAGED_Efesto_INPUTS.forEach(managedInput -> {
             try {
                 EfestoInput toProcess = managedInput.getDeclaredConstructor().newInstance();
-                Collection<EfestoOutput<?>> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, toProcess);
+                Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, toProcess);
                 assertThat(retrieved).isNotNull().hasSize(1);
             } catch (Exception e) {
                 fail(e);
             }
         });
-        Collection<EfestoOutput<?>> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader,
+        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader,
                                                                           new MockEfestoInputD());
         assertThat(retrieved).isNotNull().isEmpty();
     }
 
     @Test
     void evaluateInputs() {
-        List<EfestoInput<?>> toProcess = new ArrayList<>();
+        List<EfestoInput> toProcess = new ArrayList<>();
         MANAGED_Efesto_INPUTS.forEach(managedInput -> {
             try {
-                EfestoInput<?> toAdd = managedInput.getDeclaredConstructor().newInstance();
+                EfestoInput toAdd = managedInput.getDeclaredConstructor().newInstance();
                 toProcess.add(toAdd);
             } catch (Exception e) {
                 fail(e);
             }
         });
         toProcess.add(new MockEfestoInputD());
-        Collection<EfestoOutput<?>> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader,
+        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader,
                                                                           toProcess.toArray(new EfestoInput[0]));
         assertThat(retrieved).isNotNull().hasSize(MANAGED_Efesto_INPUTS.size());
     }

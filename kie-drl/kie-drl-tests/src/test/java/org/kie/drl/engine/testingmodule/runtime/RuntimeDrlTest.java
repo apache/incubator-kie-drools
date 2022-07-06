@@ -58,7 +58,7 @@ class RuntimeDrlTest {
     @Test
     void evaluateWithKieSessionLocalStaticCompilation() {
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(basePath, "drl"), "");
-        Collection<EfestoOutput<?>> output = runtimeManager.evaluateInput(memoryCompilerClassLoader, toEvaluate);
+        Collection<EfestoOutput> output = runtimeManager.evaluateInput(memoryCompilerClassLoader, toEvaluate);
         assertThat(output).isNotNull().hasSize(1);
         EfestoOutput<?> retrievedRaw = output.iterator().next();
         assertThat(retrievedRaw).isInstanceOf(EfestoOutputDrlKieSessionLocal.class);
@@ -74,9 +74,9 @@ class RuntimeDrlTest {
         Collection<IndexFile> indexFiles = compilationManager.processResource(memoryCompilerClassLoader, toProcess);
 
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(onTheFlyPath, "drl"), "");
-        Collection<EfestoOutput<?>> output = runtimeManager.evaluateInput(memoryCompilerClassLoader, toEvaluate);
+        Collection<EfestoOutput> output = runtimeManager.evaluateInput(memoryCompilerClassLoader, toEvaluate);
         assertThat(output).isNotNull().hasSize(1);
-        EfestoOutput<?> retrievedRaw = output.iterator().next();
+        EfestoOutput retrievedRaw = output.iterator().next();
         assertThat(retrievedRaw).isInstanceOf(EfestoOutputDrlKieSessionLocal.class);
         EfestoOutputDrlKieSessionLocal retrieved = (EfestoOutputDrlKieSessionLocal) retrievedRaw;
         assertThat(retrieved.getOutputData()).isNotNull().isInstanceOf(KieSession.class);
