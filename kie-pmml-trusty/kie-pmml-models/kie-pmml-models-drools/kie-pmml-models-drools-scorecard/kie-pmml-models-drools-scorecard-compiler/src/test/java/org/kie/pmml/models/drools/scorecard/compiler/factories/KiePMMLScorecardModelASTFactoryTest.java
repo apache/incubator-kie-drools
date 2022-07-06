@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
@@ -39,7 +39,7 @@ public class KiePMMLScorecardModelASTFactoryTest {
     private PMML samplePmml;
     private Scorecard scorecardModel;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         samplePmml = TestUtils.loadFromFile(SOURCE_SAMPLE);
         assertThat(samplePmml).isNotNull();
@@ -49,7 +49,7 @@ public class KiePMMLScorecardModelASTFactoryTest {
     }
 
     @Test
-    public void getKiePMMLDroolsSampleAST() {
+    void getKiePMMLDroolsSampleAST() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(samplePmml.getDataDictionary(), samplePmml.getTransformationDictionary(),  scorecardModel.getLocalTransformations());
         List<KiePMMLDroolsType> types = Collections.emptyList();
         KiePMMLDroolsAST retrieved = KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(samplePmml.getDataDictionary()), scorecardModel, fieldTypeMap, types);

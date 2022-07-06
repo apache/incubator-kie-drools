@@ -17,7 +17,7 @@ package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataField;
@@ -27,7 +27,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLMiningFieldInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLMiningField() {
+    void getKiePMMLMiningField() {
         DataField dataField = getRandomDataField();
         MiningField toConvert = getRandomMiningField(dataField);
         KiePMMLMiningField toVerify = KiePMMLMiningFieldInstanceFactory.getKiePMMLMiningField(toConvert, dataField);

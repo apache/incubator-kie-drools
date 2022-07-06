@@ -16,7 +16,7 @@
 package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.InlineTable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLInlineTable;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomInlineTableWithCells;
@@ -25,7 +25,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLInlineTableInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLInlineTable() {
+    void getKiePMMLInlineTable() {
         final InlineTable toConvert = getRandomInlineTableWithCells();
         final KiePMMLInlineTable retrieved = KiePMMLInlineTableInstanceFactory.getKiePMMLInlineTable(toConvert);
         commonVerifyKiePMMLInlineTableWithCells(retrieved, toConvert);

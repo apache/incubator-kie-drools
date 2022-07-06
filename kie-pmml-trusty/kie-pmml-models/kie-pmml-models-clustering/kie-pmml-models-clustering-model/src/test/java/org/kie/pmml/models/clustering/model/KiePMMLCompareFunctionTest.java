@@ -17,7 +17,7 @@
 package org.kie.pmml.models.clustering.model;
 
 import org.assertj.core.data.Offset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,7 +43,7 @@ public class KiePMMLCompareFunctionTest {
             new KiePMMLClusteringField("test", 1.0, true, ABS_DIFF, TEST_SIMILARITY_SCALE);
 
     @Test
-    public void testNames() {
+    void testNames() {
         assertThat(enumByName(KiePMMLCompareFunction.class, "absDiff")).isEqualTo(ABS_DIFF);
         assertThat(enumByName(KiePMMLCompareFunction.class, "gaussSim")).isEqualTo(GAUSS_SIM);
         assertThat(enumByName(KiePMMLCompareFunction.class, "delta")).isEqualTo(DELTA);
@@ -52,7 +52,7 @@ public class KiePMMLCompareFunctionTest {
     }
 
     @Test
-    public void testApply() {
+    void testApply() {
         assertThat(ABS_DIFF.apply(TEST_FIELD, TEST_X, TEST_Y)).isEqualTo(absDiff(TEST_X, TEST_Y), DOUBLE_OFFSET);
         assertThat(GAUSS_SIM.apply(TEST_FIELD, TEST_X, TEST_Y)).isEqualTo(gaussSim(TEST_X, TEST_Y, TEST_SIMILARITY_SCALE), DOUBLE_OFFSET);
         assertThat(DELTA.apply(TEST_FIELD, TEST_X, TEST_Y)).isEqualTo(delta(TEST_X, TEST_Y), DOUBLE_OFFSET);
@@ -61,26 +61,26 @@ public class KiePMMLCompareFunctionTest {
     }
 
     @Test
-    public void testAbsDiff() {
+    void testAbsDiff() {
         assertThat(absDiff(10.0, 25.0)).isEqualTo(15.0, DOUBLE_OFFSET);
         assertThat(absDiff(25.0, 10.0)).isEqualTo(15.0, DOUBLE_OFFSET);
     }
 
     @Test
-    public void testGaussSim() {
+    void testGaussSim() {
         assertThat(gaussSim(4.0, 2.0, 1.0)).isEqualTo(1.0 / 16.0, DOUBLE_OFFSET);
         assertThat(gaussSim(3.0, 2.0, Math.sqrt(2.0))).isEqualTo(1.0 / Math.sqrt(2.0), DOUBLE_OFFSET);
     }
 
     @Test
-    public void testDelta() {
+    void testDelta() {
         assertThat(delta(10.0, 25.0)).isEqualTo(1.0, DOUBLE_OFFSET);
         assertThat(delta(25.0, 10.0)).isEqualTo(1.0, DOUBLE_OFFSET);
         assertThat(delta(10.0, 10.0)).isEqualTo(0.0, DOUBLE_OFFSET);
     }
 
     @Test
-    public void testEqual() {
+    void testEqual() {
         assertThat(equal(10.0, 25.0)).isEqualTo(0.0, DOUBLE_OFFSET);
         assertThat(equal(25.0, 10.0)).isEqualTo(0.0, DOUBLE_OFFSET);
         assertThat(equal(10.0, 10.0)).isEqualTo(1.0, DOUBLE_OFFSET);

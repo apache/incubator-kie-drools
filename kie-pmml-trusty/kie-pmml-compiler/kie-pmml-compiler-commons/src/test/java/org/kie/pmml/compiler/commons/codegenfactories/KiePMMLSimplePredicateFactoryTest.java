@@ -28,7 +28,7 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.SimplePredicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -43,7 +43,7 @@ public class KiePMMLSimplePredicateFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLSimplePredicateFactoryTest_01.txt";
 
     @Test
-    public void getSimplePredicateVariableDeclaration() throws IOException {
+    void getSimplePredicateVariableDeclaration() throws IOException {
         String variableName = "variableName";
         final SimplePredicate simplePredicate = new SimplePredicate();
         simplePredicate.setField(FieldName.create("CUSTOM_FIELD"));

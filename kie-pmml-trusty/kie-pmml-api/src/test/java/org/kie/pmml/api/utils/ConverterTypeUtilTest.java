@@ -19,7 +19,7 @@ package org.kie.pmml.api.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -92,7 +92,7 @@ public class ConverterTypeUtilTest {
     }
 
     @Test
-    public void convertConvertibleToString() {
+    void convertConvertibleToString() {
         CONVERTIBLE_TO_STRING.forEach((s, o) -> {
             Class<?> expectedClass = o.getClass();
             Object retrieved = ConverterTypeUtil.convert(expectedClass, s);
@@ -101,7 +101,7 @@ public class ConverterTypeUtilTest {
     }
 
     @Test
-    public void convertConvertibleFromString() {
+    void convertConvertibleFromString() {
         CONVERTIBLE_FROM_STRING.forEach((s, expected) -> {
             Class<?> expectedClass = expected.getClass();
             Object retrieved = ConverterTypeUtil.convert(expectedClass, s);
@@ -110,7 +110,7 @@ public class ConverterTypeUtilTest {
     }
 
     @Test
-    public void convertUnconvertibleFromString() {
+    void convertUnconvertibleFromString() {
         UNCONVERTIBLE_FROM_STRING.forEach((s, o) -> {
             Class<?> expectedClass = o.getClass();
             try {
@@ -123,7 +123,7 @@ public class ConverterTypeUtilTest {
     }
 
     @Test
-    public void convertConvertibleFromInteger() {
+    void convertConvertibleFromInteger() {
         CONVERTIBLE_FROM_INTEGER.forEach((s, expected) -> {
             Class<?> expectedClass = expected.getClass();
             Object retrieved = ConverterTypeUtil.convert(expectedClass, s);
@@ -132,7 +132,7 @@ public class ConverterTypeUtilTest {
     }
 
     @Test
-    public void convertUnconvertibleFromInteger() {
+    void convertUnconvertibleFromInteger() {
         UNCONVERTIBLE_FROM_INTEGER.forEach((s, o) -> {
             Class<?> expectedClass = o.getClass();
             try {
@@ -145,7 +145,7 @@ public class ConverterTypeUtilTest {
     }
 
     @Test
-    public void convertConvertibleFromDouble() {
+    void convertConvertibleFromDouble() {
         CONVERTIBLE_FROM_DOUBLE.forEach((s, expected) -> {
             Class<?> expectedClass = expected.getClass();
             Object retrieved = ConverterTypeUtil.convert(expectedClass, s);
@@ -154,7 +154,7 @@ public class ConverterTypeUtilTest {
     }
 
     @Test
-    public void convertUnconvertibleFromDouble() {
+    void convertUnconvertibleFromDouble() {
         UNCONVERTIBLE_FROM_DOUBLE.forEach((s, o) -> {
             Class<?> expectedClass = o.getClass();
             try {

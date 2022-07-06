@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.assertj.core.data.Offset;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.pmml.PMML4Result;
@@ -55,6 +55,7 @@ import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.pmml.api.enums.ResultCode.FAIL;
 import static org.kie.pmml.api.enums.ResultCode.OK;
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.AVERAGE;
@@ -89,24 +90,24 @@ public class PMMLMiningModelEvaluatorTest {
     private final static List<MULTIPLE_MODEL_METHOD> NOT_IMPLEMENTED_METHODS = Arrays.asList(WEIGHTED_MAJORITY_VOTE);
     private PMMLMiningModelEvaluator evaluator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         evaluator = new PMMLMiningModelEvaluator();
     }
 
     @Test
-    public void getPMMLModelType() {
+    void getPMMLModelType() {
         assertThat(evaluator.getPMMLModelType()).isEqualTo(PMML_MODEL.MINING_MODEL);
     }
 
     @Test
-    public void getPMML4ResultOK() {
+    void getPMML4ResultOK() {
         String name = "NAME";
         String targetField = "TARGET";
         String prediction = "FIRST_VALUE";
         KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), SELECT_FIRST).build();
         KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
-                                                                           MINING_FUNCTION.ASSOCIATION_RULES)
+                MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
                 .build();
@@ -123,12 +124,12 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getPMML4ResultFAIL() {
+    void getPMML4ResultFAIL() {
         String name = "NAME";
         String targetField = "TARGET";
         KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), AVERAGE).build();
         KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
-                                                                           MINING_FUNCTION.ASSOCIATION_RULES)
+                MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
                 .build();
@@ -145,7 +146,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getPMMLRuntime() {
+    void getPMMLRuntime() {
         final KieServices kieServices = KieServices.Factory.get();
         final KieContainer kieContainer = kieServices.newKieClasspathContainer();
         final KieBase kieBase = kieContainer.getKieBase();
@@ -169,7 +170,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getKiePMMLNameRawObject() {
+    void getKiePMMLNameRawObject() {
         final Object rawObject = "OBJ";
         final PMML4Result pmml4Result = getPMML4Result(rawObject);
         RAW_OBJECT_METHODS.forEach(multipleModelMethod -> {
@@ -181,7 +182,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getKiePMMLNameValueValueWeightNumber() {
+    void getKiePMMLNameValueValueWeightNumber() {
         final Integer rawObject = 24;
         final PMML4Result pmml4Result = getPMML4Result(rawObject);
         final double weight = 2.23;
@@ -199,7 +200,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getKiePMMLNameValueWeightNoNumber() {
+    void getKiePMMLNameValueWeightNoNumber() {
         final PMML4Result pmml4Result = getPMML4Result("OBJ");
         VALUE_WEIGHT_METHODS.forEach(multipleModelMethod -> {
             try {
@@ -212,7 +213,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getKiePMMLNameValueNotImplemented() {
+    void getKiePMMLNameValueNotImplemented() {
         final PMML4Result pmml4Result = getPMML4Result("OBJ");
         NOT_IMPLEMENTED_METHODS.forEach(multipleModelMethod -> {
             try {
@@ -225,7 +226,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getEventuallyWeightedResultRawObject() {
+    void getEventuallyWeightedResultRawObject() {
         final Object rawObject = "OBJ";
         RAW_OBJECT_METHODS.forEach(multipleModelMethod -> {
             Object retrieved = evaluator.getEventuallyWeightedResult(rawObject, multipleModelMethod, 34.2);
@@ -235,7 +236,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getEventuallyWeightedResultValueWeightNumber() {
+    void getEventuallyWeightedResultValueWeightNumber() {
         final Integer rawObject = 24;
         final double weight = 2.23;
         VALUE_WEIGHT_METHODS.forEach(multipleModelMethod -> {
@@ -249,7 +250,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getEventuallyWeightedResultValueWeightNoNumber() {
+    void getEventuallyWeightedResultValueWeightNoNumber() {
         VALUE_WEIGHT_METHODS.forEach(multipleModelMethod -> {
             try {
                 evaluator.getEventuallyWeightedResult("OBJ", multipleModelMethod, 34.2);
@@ -261,7 +262,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getEventuallyWeightedResultNotImplemented() {
+    void getEventuallyWeightedResultNotImplemented() {
         NOT_IMPLEMENTED_METHODS.forEach(multipleModelMethod -> {
             try {
                 evaluator.getEventuallyWeightedResult("OBJ", multipleModelMethod, 34.2);
@@ -273,52 +274,58 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void validateKiePMMLMiningModel() {
+    void validateKiePMMLMiningModel() {
         String name = "NAME";
         KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
-                                                                           MINING_FUNCTION.ASSOCIATION_RULES)
+                MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField("TARGET")
                 .build();
         evaluator.validate(kiePMMLMiningModel);
     }
 
-    @Test(expected = KiePMMLModelException.class)
-    public void validateNoKiePMMLMiningModel() {
-        String name = "NAME";
-        KiePMMLModel kiePMMLModel = new KiePMMLTestingModel(name, Collections.emptyList());
-        evaluator.validate(kiePMMLModel);
+    @Test
+    void validateNoKiePMMLMiningModel() {
+        assertThatExceptionOfType(KiePMMLModelException.class).isThrownBy(() -> {
+            String name = "NAME";
+            KiePMMLModel kiePMMLModel = new KiePMMLTestingModel(name, Collections.emptyList());
+            evaluator.validate(kiePMMLModel);
+        });
     }
 
     @Test
-    public void validateMiningTargetField() {
+    void validateMiningTargetField() {
         String name = "NAME";
         KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
-                                                                           MINING_FUNCTION.ASSOCIATION_RULES)
+                MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField("TARGET")
                 .build();
         evaluator.validateMining(kiePMMLMiningModel);
     }
 
-    @Test(expected = KiePMMLInternalException.class)
-    public void validateMiningEmptyTargetField() {
-        String name = "NAME";
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
-                                                                           MINING_FUNCTION.ASSOCIATION_RULES)
-                .withTargetField("     ")
-                .build();
-        evaluator.validateMining(kiePMMLMiningModel);
-    }
-
-    @Test(expected = KiePMMLInternalException.class)
-    public void validateMiningNoTargetField() {
-        String name = "NAME";
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
-                                                                           MINING_FUNCTION.ASSOCIATION_RULES).build();
-        evaluator.validateMining(kiePMMLMiningModel);
+    @Test
+    void validateMiningEmptyTargetField() {
+        assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
+            String name = "NAME";
+            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+                    MINING_FUNCTION.ASSOCIATION_RULES)
+                    .withTargetField("     ")
+                    .build();
+            evaluator.validateMining(kiePMMLMiningModel);
+        });
     }
 
     @Test
-    public void addStep() {
+    void validateMiningNoTargetField() {
+        assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
+            String name = "NAME";
+            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+                    MINING_FUNCTION.ASSOCIATION_RULES).build();
+            evaluator.validateMining(kiePMMLMiningModel);
+        });
+    }
+
+    @Test
+    void addStep() {
         PMMLStep step = mock(PMMLStep.class);
         Set<PMMLListener> pmmlListenersMock = IntStream.range(0, 3).mapToObj(i -> mock(PMMLListener.class)).collect(Collectors.toSet());
         PMMLContext pmmlContextMock = mock(PMMLContext.class);
@@ -328,7 +335,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getStep() {
+    void getStep() {
         final String modelName = "MODEL_NAME";
         KiePMMLModel modelMock = mock(KiePMMLModel.class);
         when(modelMock.getName()).thenReturn(modelName);

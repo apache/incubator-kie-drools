@@ -23,7 +23,7 @@ import java.util.List;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.models.TargetValue;
 import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -39,7 +39,7 @@ public class KiePMMLTargetValueFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLTargetValueFactoryTest_01.txt";
 
     @Test
-    public void getKiePMMLTargetValueVariableInitializer() throws IOException {
+    void getKiePMMLTargetValueVariableInitializer() throws IOException {
         TargetValue targetValue = convertToKieTargetValue(getRandomTargetValue());
         MethodCallExpr retrieved = KiePMMLTargetValueFactory.getKiePMMLTargetValueVariableInitializer(targetValue);
         String text = getFileContent(TEST_01_SOURCE);

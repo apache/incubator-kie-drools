@@ -27,7 +27,7 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.ParameterField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
@@ -42,7 +42,7 @@ public class KiePMMLParameterFieldFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLParameterFieldFactoryTest_01.txt";
 
     @Test
-    public void getParameterFieldVariableDeclaration() throws IOException {
+    void getParameterFieldVariableDeclaration() throws IOException {
         String variableName = "variableName";
         ParameterField parameterField = new ParameterField(FieldName.create(variableName));
         parameterField.setDataType(DataType.DOUBLE);

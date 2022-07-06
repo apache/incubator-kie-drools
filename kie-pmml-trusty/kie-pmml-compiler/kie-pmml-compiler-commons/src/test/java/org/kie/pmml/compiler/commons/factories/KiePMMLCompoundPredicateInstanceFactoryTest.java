@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.Field;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomCompoundPredicate;
@@ -31,7 +31,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLCompoundPredicateInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLCompoundPredicate() {
+    void getKiePMMLCompoundPredicate() {
         List<Field<?>> fields = IntStream.range(0, 3).mapToObj(i -> getRandomDataField()).collect(Collectors.toList());
         final CompoundPredicate toConvert = getRandomCompoundPredicate(fields);
         final KiePMMLCompoundPredicate retrieved =

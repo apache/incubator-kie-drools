@@ -16,7 +16,7 @@
 package org.kie.pmml.compiler.commons.factories;
 
 import org.dmg.pmml.MapValues;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLMapValues;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomMapValues;
@@ -25,7 +25,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLMapValuesInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLMapValues() {
+    void getKiePMMLMapValues() {
         MapValues toConvert = getRandomMapValues();
         KiePMMLMapValues retrieved = KiePMMLMapValuesInstanceFactory.getKiePMMLMapValues(toConvert);
         commonVerifyKiePMMLMapValues(retrieved, toConvert);

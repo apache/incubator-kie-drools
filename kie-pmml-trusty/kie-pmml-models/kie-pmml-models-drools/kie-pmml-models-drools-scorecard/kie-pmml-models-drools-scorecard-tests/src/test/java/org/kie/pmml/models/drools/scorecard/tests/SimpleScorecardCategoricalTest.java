@@ -24,17 +24,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "Simple-Scorecard_Categorical.pmml";
@@ -51,7 +49,7 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
     private String reasonCode1;
     private String reasonCode2;
 
-    public SimpleScorecardCategoricalTest(String input1, String input2, double score, String reasonCode1,
+    public void initSimpleScorecardCategoricalTest(String input1, String input2, double score, String reasonCode1,
                                           String reasonCode2) {
         this.input1 = input1;
         this.input2 = input2;
@@ -60,12 +58,11 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
         this.reasonCode2 = reasonCode2;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"classA", "classB", 25, "Input1ReasonCode", null},
@@ -75,8 +72,10 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testSimpleScorecardCategorical() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSimpleScorecardCategorical(String input1, String input2, double score, String reasonCode1, String reasonCode2) {
+        initSimpleScorecardCategoricalTest(input1, input2, score, reasonCode1, reasonCode2);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
@@ -88,13 +87,17 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
         assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
     }
 
-    @Test
-    public void testSimpleScorecardCategoricalVerifyNoException() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSimpleScorecardCategoricalVerifyNoException(String input1, String input2, double score, String reasonCode1, String reasonCode2) {
+        initSimpleScorecardCategoricalTest(input1, input2, score, reasonCode1, reasonCode2);
         getSamples().stream().map(sample -> evaluate(pmmlRuntime, sample, MODEL_NAME)).forEach((x) -> assertThat(x).isNotNull());
     }
 
-    @Test
-    public void testSimpleScorecardCategoricalVerifyNoReasonCodeWithoutScore() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testSimpleScorecardCategoricalVerifyNoReasonCodeWithoutScore(String input1, String input2, double score, String reasonCode1, String reasonCode2) {
+        initSimpleScorecardCategoricalTest(input1, input2, score, reasonCode1, reasonCode2);
         getSamples().stream().map(sample -> evaluate(pmmlRuntime, sample, MODEL_NAME))
                 .filter(pmml4Result -> pmml4Result.getResultVariables().get(TARGET_FIELD) == null)
                 .forEach(pmml4Result -> {
@@ -104,9 +107,11 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
     }
 
     private List<Map<String, Object>> getSamples() {
-        return IntStream.range(0, 10).boxed().map(i -> new HashMap<String, Object>() {{
-            put("input1", CATEGORY[i % CATEGORY.length]);
-            put("input2", CATEGORY[Math.abs(CATEGORY.length - i) % CATEGORY.length]);
-        }}).collect(Collectors.toList());
+        return IntStream.range(0, 10).boxed().map(i -> new HashMap<String, Object>() {
+            {
+                put("input1", CATEGORY[i % CATEGORY.length]);
+                put("input2", CATEGORY[Math.abs(CATEGORY.length - i) % CATEGORY.length]);
+            }
+        }).collect(Collectors.toList());
     }
 }

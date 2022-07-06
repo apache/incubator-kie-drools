@@ -30,8 +30,8 @@ import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TextIndex;
 import org.dmg.pmml.TextIndexNormalization;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLInlineTable;
 import org.kie.pmml.commons.model.expressions.KiePMMLRow;
 import org.kie.pmml.commons.model.expressions.KiePMMLTextIndexNormalization;
@@ -50,7 +50,7 @@ public class KiePMMLTextIndexNormalizationFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLTextIndexNormalizationFactoryTest_01.txt";
     private static TextIndexNormalization TEXTINDEXNORMALIZATION;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         PMML pmmlModel = KiePMMLUtil.load(getFileInputStream(TRANSFORMATIONS_SAMPLE), TRANSFORMATIONS_SAMPLE);
         DefineFunction definedFunction = pmmlModel.getTransformationDictionary()
@@ -64,11 +64,11 @@ public class KiePMMLTextIndexNormalizationFactoryTest {
     }
 
     @Test
-    public void getTextIndexNormalizationVariableDeclaration() throws IOException {
+    void getTextIndexNormalizationVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved =
                 KiePMMLTextIndexNormalizationFactory.getTextIndexNormalizationVariableDeclaration(variableName,
-                                                                                                                TEXTINDEXNORMALIZATION);
+                                                                                                  TEXTINDEXNORMALIZATION);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();

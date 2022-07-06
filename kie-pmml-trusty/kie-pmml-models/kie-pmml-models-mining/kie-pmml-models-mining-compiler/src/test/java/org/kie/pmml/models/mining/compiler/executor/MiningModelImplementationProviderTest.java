@@ -26,7 +26,7 @@ import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.util.CloneUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.HasSourcesMap;
@@ -54,52 +54,52 @@ public class MiningModelImplementationProviderTest {
     private static final String SOURCE_SEGMENT_ID = "MiningModel_SegmentId.pmml";
 
     @Test
-    public void getPMMLModelType() {
+    void getPMMLModelType() {
         assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.MINING_MODEL);
     }
 
     @Test
-    public void getKiePMMLModelRegression() throws Exception {
+    void getKiePMMLModelRegression() throws Exception {
         commonGetKiePMMLModel(SOURCE_REGRESSION);
     }
 
     @Test
-    public void getKiePMMLModelTree() throws Exception {
+    void getKiePMMLModelTree() throws Exception {
         commonGetKiePMMLModel(SOURCE_TREE);
     }
 
     @Test
-    public void getKiePMMLModelScorecard() throws Exception {
+    void getKiePMMLModelScorecard() throws Exception {
         commonGetKiePMMLModel(SOURCE_SCORECARD);
     }
 
     @Test
-    public void getKiePMMLModelMixed() throws Exception {
+    void getKiePMMLModelMixed() throws Exception {
         commonGetKiePMMLModel(SOURCE_MIXED);
     }
 
     @Test
-    public void getKiePMMLModelWithSourcesRegression() throws Exception {
+    void getKiePMMLModelWithSourcesRegression() throws Exception {
         commonGetKiePMMLModelWithSources(SOURCE_REGRESSION);
     }
 
     @Test
-    public void getKiePMMLModelWithSourcesTree() throws Exception {
+    void getKiePMMLModelWithSourcesTree() throws Exception {
         commonGetKiePMMLModelWithSources(SOURCE_TREE);
     }
 
     @Test
-    public void getKiePMMLModelWithSourcesScorecard() throws Exception {
+    void getKiePMMLModelWithSourcesScorecard() throws Exception {
         commonGetKiePMMLModelWithSources(SOURCE_SCORECARD);
     }
 
     @Test
-    public void getKiePMMLModelWithSourcesMixed() throws Exception {
+    void getKiePMMLModelWithSourcesMixed() throws Exception {
         commonGetKiePMMLModelWithSources(SOURCE_MIXED);
     }
 
     @Test
-    public void populateMissingIds() throws Exception {
+    void populateMissingIds() throws Exception {
         commonVerifySegmentId(SOURCE_NO_SEGMENT_ID);
         commonVerifySegmentId(SOURCE_SEGMENT_ID);
     }

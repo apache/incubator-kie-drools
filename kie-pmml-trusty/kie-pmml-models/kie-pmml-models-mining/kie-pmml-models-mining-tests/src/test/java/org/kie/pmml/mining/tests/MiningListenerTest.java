@@ -25,10 +25,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntime;
@@ -37,7 +36,6 @@ import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MiningListenerTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "MultipleMining.pmml";
@@ -51,7 +49,7 @@ public class MiningListenerTest extends AbstractPMMLTest {
     private String residenceState;
     private boolean validLicense;
 
-    public MiningListenerTest(String categoricalX,
+    public void initMiningListenerTest(String categoricalX,
                               String categoricalY,
                               double age,
                               String occupation,
@@ -65,12 +63,11 @@ public class MiningListenerTest extends AbstractPMMLTest {
         this.validLicense = validLicense;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"red", "classA", 25.0, "ASTRONAUT", "AP", true},
@@ -83,8 +80,10 @@ public class MiningListenerTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testMixedMining() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testMixedMining(String categoricalX, String categoricalY, double age, String occupation, String residenceState, boolean validLicense) {
+        initMiningListenerTest(categoricalX, categoricalY, age, occupation, residenceState, validLicense);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("categoricalX", categoricalX);
         inputData.put("categoricalY", categoricalY);
@@ -95,7 +94,7 @@ public class MiningListenerTest extends AbstractPMMLTest {
         Set<PMMLListener> pmmlListeners = IntStream.range(0, 3)
                 .mapToObj(i -> getPMMLListener()).collect(Collectors.toSet());
         evaluate(pmmlRuntime, inputData, MODEL_NAME, pmmlListeners);
-        final List<PMMLStep> retrieved = ((PMMLListenerTest)pmmlListeners.iterator().next()).getSteps();
+        final List<PMMLStep> retrieved = ((PMMLListenerTest) pmmlListeners.iterator().next()).getSteps();
         retrieved
                 .stream()
                 .filter(pmmlStep -> !(pmmlStep instanceof PMMLRuntimeStep))

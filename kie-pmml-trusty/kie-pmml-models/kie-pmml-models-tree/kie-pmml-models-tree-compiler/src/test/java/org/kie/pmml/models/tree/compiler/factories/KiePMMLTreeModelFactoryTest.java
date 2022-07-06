@@ -32,8 +32,8 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -67,7 +67,7 @@ public class KiePMMLTreeModelFactoryTest {
     private static TransformationDictionary transformationDictionary2;
     private static TreeModel treeModel2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() throws Exception {
         pmml1 = TestUtils.loadFromFile(SOURCE_1);
         dataDictionary1 = pmml1.getDataDictionary();
@@ -80,62 +80,62 @@ public class KiePMMLTreeModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLTreeModel() {
+    void getKiePMMLTreeModel() {
         CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                                                        pmml1,
-                                                                                                        treeModel1,
-                                                                                                        new HasClassLoaderMock());
+                pmml1,
+                treeModel1,
+                new HasClassLoaderMock());
         KiePMMLTreeModel retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(source));
         assertThat(retrieved).isNotNull();
         source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                        pmml2,
-                                                                        treeModel2,
-                                                                        new HasClassLoaderMock());
+                pmml2,
+                treeModel2,
+                new HasClassLoaderMock());
         retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModel(TreeCompilationDTO.fromCompilationDTO(source));
         assertThat(retrieved).isNotNull();
     }
 
     @Test
-    public void getKiePMMLTreeModelSourcesMap() {
+    void getKiePMMLTreeModelSourcesMap() {
         CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                                                        pmml1,
-                                                                                                        treeModel1,
-                                                                                                        new HasClassLoaderMock());
+                pmml1,
+                treeModel1,
+                new HasClassLoaderMock());
         Map<String, String> retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(source));
         assertThat(retrieved).isNotNull();
         source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                        pmml2,
-                                                                        treeModel2,
-                                                                        new HasClassLoaderMock());
+                pmml2,
+                treeModel2,
+                new HasClassLoaderMock());
         retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(source));
         assertThat(retrieved).isNotNull();
     }
 
     @Test
-    public void setConstructor() {
+    void setConstructor() {
         String className = getSanitizedClassName(treeModel1.getModelName());
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, PACKAGE_NAME,
-                                                                                 KIE_PMML_TREE_MODEL_TEMPLATE_JAVA,
-                                                                                 KIE_PMML_TREE_MODEL_TEMPLATE);
+                KIE_PMML_TREE_MODEL_TEMPLATE_JAVA,
+                KIE_PMML_TREE_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         String targetField = "whatIdo";
         String fullNodeClassName = "full.Node.ClassName";
         CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                                                        pmml1,
-                                                                                                        treeModel1,
-                                                                                                        new HasClassLoaderMock());
+                pmml1,
+                treeModel1,
+                new HasClassLoaderMock());
         KiePMMLTreeModelFactory.setConstructor(TreeCompilationDTO.fromCompilationDTO(source),
-                                               modelTemplate,
-                                               fullNodeClassName);
+                modelTemplate,
+                fullNodeClassName);
         ConstructorDeclaration constructorDeclaration = modelTemplate
                 .getDefaultConstructor()
                 .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR,
-                                                                              modelTemplate.getName())))
+                        modelTemplate.getName())))
                 .clone();
         BlockStmt body = constructorDeclaration.getBody();
         // targetField

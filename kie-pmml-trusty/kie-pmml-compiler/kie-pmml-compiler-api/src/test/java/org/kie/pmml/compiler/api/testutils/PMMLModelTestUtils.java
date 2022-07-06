@@ -73,8 +73,6 @@ import org.dmg.pmml.TextIndex;
 import org.dmg.pmml.TextIndexNormalization;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.Value;
-import org.dmg.pmml.Visitor;
-import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.clustering.Cluster;
 import org.dmg.pmml.clustering.ClusteringField;
 import org.dmg.pmml.clustering.ClusteringModel;

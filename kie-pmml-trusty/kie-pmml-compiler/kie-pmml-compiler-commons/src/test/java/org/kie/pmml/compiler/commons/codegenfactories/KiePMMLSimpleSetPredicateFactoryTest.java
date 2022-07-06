@@ -30,7 +30,7 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.SimpleSetPredicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.IN_NOTIN;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
@@ -48,7 +48,7 @@ public class KiePMMLSimpleSetPredicateFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLSimpleSetPredicateFactoryTest_01.txt";
 
     @Test
-    public void getSimpleSetPredicateVariableDeclaration() throws IOException {
+    void getSimpleSetPredicateVariableDeclaration() throws IOException {
         String variableName = "variableName";
         Array.Type arrayType = Array.Type.STRING;
         List<String> values = getStringObjects(arrayType, 4);

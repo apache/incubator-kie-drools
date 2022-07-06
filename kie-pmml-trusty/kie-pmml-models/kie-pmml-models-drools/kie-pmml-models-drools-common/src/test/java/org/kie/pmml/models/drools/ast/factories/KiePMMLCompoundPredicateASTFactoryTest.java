@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
@@ -45,7 +45,7 @@ import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getPredicateA
 public class KiePMMLCompoundPredicateASTFactoryTest {
 
     @Test
-    public void declareRuleFromCompoundPredicateAndOrXorFinalLeaf() {
+    void declareRuleFromCompoundPredicateAndOrXorFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         final List<SimplePredicate> predicates = getSimplePredicates(fieldTypeMap);
         String parentPath = "_will play";
@@ -60,11 +60,11 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
             predicates.forEach(compoundPredicate::addPredicates);
             final List<KiePMMLDroolsRule> rules = new ArrayList<>();
             PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(compoundPredicate,
-                                                                                         Collections.emptyList(),
-                                                                                         rules,
-                                                                                         parentPath,
-                                                                                         currentRule,
-                                                                                         fieldTypeMap);
+                    Collections.emptyList(),
+                    rules,
+                    parentPath,
+                    currentRule,
+                    fieldTypeMap);
             KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(result, true);
             assertThat(rules).hasSize(1);
             final KiePMMLDroolsRule retrieved = rules.get(0);
@@ -85,13 +85,13 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                     assertThat(retrieved.getXorConstraints()).isNotNull();
                     break;
                 default:
-                    // no op
+                // no op
             }
         }
     }
 
     @Test
-    public void declareRuleFromCompoundPredicateAndOrXorNotFinalLeaf() {
+    void declareRuleFromCompoundPredicateAndOrXorNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         final List<SimplePredicate> predicates = getSimplePredicates(fieldTypeMap);
         String parentPath = "_will play";
@@ -106,11 +106,11 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
             predicates.forEach(compoundPredicate::addPredicates);
             final List<KiePMMLDroolsRule> rules = new ArrayList<>();
             PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(compoundPredicate,
-                                                                                         Collections.emptyList(),
-                                                                                         rules,
-                                                                                         parentPath,
-                                                                                         currentRule,
-                                                                                         fieldTypeMap);
+                    Collections.emptyList(),
+                    rules,
+                    parentPath,
+                    currentRule,
+                    fieldTypeMap);
             KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(result, false);
             assertThat(rules).hasSize(1);
             final KiePMMLDroolsRule retrieved = rules.get(0);
@@ -129,13 +129,13 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                     assertThat(retrieved.getXorConstraints()).isNotNull();
                     break;
                 default:
-                    // no op
+                // no op
             }
         }
     }
 
     @Test
-    public void declareRuleFromCompoundPredicateSurrogateFinalLeaf() {
+    void declareRuleFromCompoundPredicateSurrogateFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         final List<SimplePredicate> predicates = getSimplePredicates(fieldTypeMap);
         String parentPath = "_will play";
@@ -146,11 +146,11 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
         predicates.forEach(compoundPredicate::addPredicates);
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(compoundPredicate,
-                                                                                     Collections.emptyList(),
-                                                                                     rules,
-                                                                                     parentPath,
-                                                                                     currentRule,
-                                                                                     fieldTypeMap);
+                Collections.emptyList(),
+                rules,
+                parentPath,
+                currentRule,
+                fieldTypeMap);
         KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(result, true);
         int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
         assertThat(rules).hasSize(expectedRules);
@@ -200,7 +200,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromCompoundPredicateSurrogateNotFinalLeaf() {
+    void declareRuleFromCompoundPredicateSurrogateNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         final List<SimplePredicate> predicates = getSimplePredicates(fieldTypeMap);
         String parentPath = "_will play";
@@ -211,11 +211,11 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
         predicates.forEach(compoundPredicate::addPredicates);
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(compoundPredicate,
-                                                                                     Collections.emptyList(),
-                                                                                     rules,
-                                                                                     parentPath,
-                                                                                     currentRule,
-                                                                                     fieldTypeMap);
+                Collections.emptyList(),
+                rules,
+                parentPath,
+                currentRule,
+                fieldTypeMap);
         KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(result, false);
         int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
         assertThat(rules).hasSize(expectedRules);

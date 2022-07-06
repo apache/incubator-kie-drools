@@ -19,7 +19,7 @@ package org.kie.pmml.commons.model.expressions;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -34,7 +34,7 @@ public class KiePMMLFieldRefTest {
     private static final String FIELD_NAME = "FIELD_NAME";
 
     @Test
-    public void evaluateFromKiePMMLNameValues() {
+    void evaluateFromKiePMMLNameValues() {
         final Object value = 234.45;
         final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME,
                                                                                                         value));
@@ -45,7 +45,7 @@ public class KiePMMLFieldRefTest {
     }
 
     @Test
-    public void evaluateFromDerivedFields() {
+    void evaluateFromDerivedFields() {
         final Object value = 234.45;
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), value, null);
         final KiePMMLDerivedField kiePMMLDerivedField = KiePMMLDerivedField.builder(FIELD_NAME,
@@ -64,9 +64,10 @@ public class KiePMMLFieldRefTest {
     }
 
     @Test
-    public void evaluateFromMapMissingTo() {
+    void evaluateFromMapMissingTo() {
         final String value = "234.45";
-        final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), "WRONG-CONSTANT", null);
+        final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), "WRONG-CONSTANT"
+                , null);
         final KiePMMLDerivedField kiePMMLDerivedField = KiePMMLDerivedField.builder("ANOTHER_FIELD",
                                                                                     Collections.emptyList(),
                                                                                     DATA_TYPE.DOUBLE,
@@ -83,7 +84,7 @@ public class KiePMMLFieldRefTest {
     }
 
     @Test
-    public void evaluateNull() {
+    void evaluateNull() {
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), "WRONG-CONSTANT", null);
         final KiePMMLDerivedField kiePMMLDerivedField = KiePMMLDerivedField.builder("ANOTHER_FIELD",
                                                                                     Collections.emptyList(),

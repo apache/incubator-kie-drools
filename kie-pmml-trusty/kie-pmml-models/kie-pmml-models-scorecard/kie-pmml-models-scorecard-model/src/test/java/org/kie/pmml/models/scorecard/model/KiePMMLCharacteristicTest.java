@@ -19,7 +19,7 @@ package org.kie.pmml.models.scorecard.model;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 
@@ -38,7 +38,7 @@ public class KiePMMLCharacteristicTest {
     private static final Double value2 = 5.0;
 
     @Test
-    public void evaluateNoMatchingAttributes() {
+    void evaluateNoMatchingAttributes() {
         KiePMMLAttribute attribute1 = KiePMMLAttribute.builder(ATTRIBUTE_1, Collections.emptyList(), KiePMMLFalsePredicate.builder(Collections.emptyList()).build())
                 .withPartialScore(value1)
                 .build();
@@ -50,11 +50,11 @@ public class KiePMMLCharacteristicTest {
                 .withReasonCode(REASON_CODE)
                 .build();
         assertThat(kiePMMLCharacteristic.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                      Collections.emptyMap())).isNull();
+                Collections.emptyMap())).isNull();
     }
 
     @Test
-    public void evaluateFirstMatchingAttributesNoAttributeReasonCode() {
+    void evaluateFirstMatchingAttributesNoAttributeReasonCode() {
         KiePMMLAttribute attribute1 = KiePMMLAttribute.builder(ATTRIBUTE_1, Collections.emptyList(), KiePMMLTruePredicate.builder(Collections.emptyList()).build())
                 .withPartialScore(value1)
                 .build();
@@ -72,7 +72,7 @@ public class KiePMMLCharacteristicTest {
     }
 
     @Test
-    public void evaluateLastMatchingAttributesNoAttributeReasonCode() {
+    void evaluateLastMatchingAttributesNoAttributeReasonCode() {
         KiePMMLAttribute attribute1 = KiePMMLAttribute.builder(ATTRIBUTE_1, Collections.emptyList(), KiePMMLFalsePredicate.builder(Collections.emptyList()).build())
                 .withPartialScore(value1)
                 .build();
@@ -90,7 +90,7 @@ public class KiePMMLCharacteristicTest {
     }
 
     @Test
-    public void evaluateFirstMatchingAttributesAttributeReasonCode() {
+    void evaluateFirstMatchingAttributesAttributeReasonCode() {
         KiePMMLAttribute attribute1 = KiePMMLAttribute.builder(ATTRIBUTE_1, Collections.emptyList(), KiePMMLTruePredicate.builder(Collections.emptyList()).build())
                 .withPartialScore(value1)
                 .withReasonCode(REASON_CODE_1)
@@ -110,7 +110,7 @@ public class KiePMMLCharacteristicTest {
     }
 
     @Test
-    public void evaluateLastMatchingAttributesAttributeReasonCode() {
+    void evaluateLastMatchingAttributesAttributeReasonCode() {
         KiePMMLAttribute attribute1 = KiePMMLAttribute.builder(ATTRIBUTE_1, Collections.emptyList(), KiePMMLFalsePredicate.builder(Collections.emptyList()).build())
                 .withPartialScore(value1)
                 .withReasonCode(REASON_CODE_1)

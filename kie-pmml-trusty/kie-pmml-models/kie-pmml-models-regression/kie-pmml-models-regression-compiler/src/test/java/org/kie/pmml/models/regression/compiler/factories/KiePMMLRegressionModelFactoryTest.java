@@ -50,8 +50,8 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -105,7 +105,7 @@ public class KiePMMLRegressionModelFactoryTest {
     private static RegressionModel regressionModel;
     private static PMML pmml;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         Random random = new Random();
         Set<String> fieldNames = new HashSet<>();
@@ -152,12 +152,12 @@ public class KiePMMLRegressionModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLRegressionModelClasses() throws IOException, IllegalAccessException, InstantiationException {
+    void getKiePMMLRegressionModelClasses() throws IOException, IllegalAccessException, InstantiationException {
         final CompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         KiePMMLRegressionModel retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -171,12 +171,12 @@ public class KiePMMLRegressionModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLRegressionModelSourcesMap() throws IOException {
+    void getKiePMMLRegressionModelSourcesMap() throws IOException {
         final CommonCompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         Map<String, String> retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -186,46 +186,46 @@ public class KiePMMLRegressionModelFactoryTest {
     }
 
     @Test
-    public void getRegressionTablesMap() {
+    void getRegressionTablesMap() {
         final CompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionModelFactory
                 .getRegressionTablesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         int expectedSize = regressionTables.size() + 1; // One for classification
         assertThat(retrieved).hasSize(expectedSize);
         final Collection<KiePMMLTableSourceCategory> values = retrieved.values();
         regressionTables.forEach(regressionTable ->
-                                         assertThat(values.stream().anyMatch(kiePMMLTableSourceCategory -> kiePMMLTableSourceCategory.getCategory().equals(regressionTable.getTargetCategory()))).isTrue());
+                assertThat(values.stream().anyMatch(kiePMMLTableSourceCategory -> kiePMMLTableSourceCategory.getCategory().equals(regressionTable.getTargetCategory()))).isTrue());
     }
 
     @Test
-    public void setStaticGetter() throws IOException {
+    void setStaticGetter() throws IOException {
         String nestedTable = "NestedTable";
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  new ArrayList<>(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        new ArrayList<>(),
+                        regressionModel.getNormalizationMethod());
         KiePMMLRegressionModelFactory.setStaticGetter(compilationDTO,
-                                                      modelTemplate,
-                                                      nestedTable);
+                modelTemplate,
+                nestedTable);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", regressionModel.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetMiningField.getName().getValue()));
         assignExpressionMap.put("miningFunction",
-                                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
+                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL",
-                                new NameExpr(PMML_MODEL.class.getName() + "." + PMML_MODEL.REGRESSION_MODEL.name()));
+                new NameExpr(PMML_MODEL.class.getName() + "." + PMML_MODEL.REGRESSION_MODEL.name()));
         MethodCallExpr methodCallExpr = new MethodCallExpr();
         methodCallExpr.setScope(new NameExpr(nestedTable));
         methodCallExpr.setName(GETKIEPMML_TABLE);

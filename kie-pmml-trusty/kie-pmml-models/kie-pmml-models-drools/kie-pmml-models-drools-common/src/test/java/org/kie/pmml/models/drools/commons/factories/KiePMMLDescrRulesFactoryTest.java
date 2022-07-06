@@ -23,8 +23,8 @@ import java.util.List;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.dsl.DescrFactory;
 import org.drools.drl.ast.dsl.PackageDescrBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
@@ -41,7 +41,7 @@ public class KiePMMLDescrRulesFactoryTest {
     private static final String PACKAGE_NAME = "package";
     private PackageDescrBuilder builder;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         builder = DescrFactory.newPackage().name(PACKAGE_NAME);
         assertThat(builder.getDescr()).isNotNull();
@@ -49,14 +49,14 @@ public class KiePMMLDescrRulesFactoryTest {
     }
 
     @Test
-    public void declareRule() {
+    void declareRule() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
         String patternType = "TEMPERATURE";
         String agendaGroup = "agendaGroup";
         String activationGroup = "activationGroup";
         List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(patternType, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
-                                                                      new KiePMMLFieldOperatorValue(patternType, BOOLEAN_OPERATOR.AND, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
+                new KiePMMLFieldOperatorValue(patternType, BOOLEAN_OPERATOR.AND, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList())
                 .withAgendaGroup(agendaGroup)
                 .withActivationGroup(activationGroup)

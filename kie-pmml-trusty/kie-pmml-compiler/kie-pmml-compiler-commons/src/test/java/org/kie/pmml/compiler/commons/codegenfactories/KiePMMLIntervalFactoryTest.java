@@ -24,7 +24,7 @@ import java.util.List;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.Interval;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.CLOSURE;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -38,7 +38,7 @@ public class KiePMMLIntervalFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLIntervalFactoryTest_01.txt";
 
     @Test
-    public void getIntervalVariableDeclaration() throws IOException {
+    void getIntervalVariableDeclaration() throws IOException {
         String variableName = "variableName";
         double leftMargin = 45.32;
 
