@@ -55,13 +55,10 @@ public class HumanTaskWorkItemHandler implements KogitoWorkItemHandler {
         lifeCycle.transitionTo(workItem, manager, new HumanTaskTransition(Abort.ID));
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    public static boolean transitionToPhase(KogitoWorkItemHandler handler, KogitoWorkItem workItem, KogitoWorkItemManager manager, Transition<?> transition) {
-        if (handler instanceof HumanTaskWorkItemHandler) {
-            ((HumanTaskWorkItemHandler) handler).lifeCycle.transitionTo(workItem, manager, (Transition<Map<String, Object>>) transition);
-            return true;
-        }
-        return false;
+    public void transitionToPhase(KogitoWorkItem workItem, KogitoWorkItemManager manager, Transition<?> transition) {
+        lifeCycle.transitionTo(workItem, manager, (Transition<Map<String, Object>>) transition);
     }
 
     public static Stream<LifeCyclePhase> allowedPhases(KogitoWorkItemHandler handler, String phaseId) {

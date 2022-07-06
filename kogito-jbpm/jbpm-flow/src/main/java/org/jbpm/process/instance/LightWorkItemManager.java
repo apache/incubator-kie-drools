@@ -43,7 +43,6 @@ import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.kie.kogito.signal.SignalManager;
 
-import static org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler.transitionToPhase;
 import static org.jbpm.process.instance.impl.workitem.Abort.ID;
 import static org.jbpm.process.instance.impl.workitem.Abort.STATUS;
 import static org.kie.api.runtime.process.WorkItem.ABORTED;
@@ -205,8 +204,9 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
             KogitoProcessInstance processInstance = processInstanceManager
                     .getProcessInstance(workItem.getProcessInstanceStringId());
             eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
-
-            if (!transitionToPhase(handler, workItem, this, transition)) {
+            try {
+                handler.transitionToPhase(workItem, this, transition);
+            } catch (UnsupportedOperationException ex) {
                 workItem.setResults((Map<String, Object>) transition.data());
                 workItem.setPhaseId(Complete.ID);
                 workItem.setPhaseStatus(Complete.STATUS);
