@@ -16,13 +16,12 @@
 
 package org.drools.decisiontable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -45,15 +44,15 @@ public class XlsFormulaTest {
 
         ksession.insert( new Person( "michael", "stilton", 1 ) );
         ksession.fireAllRules();
-        assertEquals( "10", list.get(0) ); // 10
+        assertThat(list.get(0)).isEqualTo("10"); // 10
         
         ksession.insert( new Person( "michael", "stilton", 2 ) );
         ksession.fireAllRules();
-        assertEquals( "11", list.get(1) ); // =ROW()
+        assertThat(list.get(1)).isEqualTo("11"); // =ROW()
 
         ksession.insert( new Person( "michael", "stilton", 3 ) );
         ksession.fireAllRules();
-        assertEquals( "21", list.get(2) ); // =SUM(D10:D11)
+        assertThat(list.get(2)).isEqualTo("21"); // =SUM(D10:D11)
     }
 
     private KieSession getKieSession(Resource dt) {
@@ -61,7 +60,7 @@ public class XlsFormulaTest {
 
         KieFileSystem kfs = ks.newKieFileSystem().write( dt );
         KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
-        assertTrue( kb.getResults().getMessages().isEmpty() );
+        assertThat(kb.getResults().getMessages().isEmpty()).isTrue();
 
         // get the session
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();

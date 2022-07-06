@@ -20,9 +20,7 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScenarioTest {
 
@@ -45,20 +43,20 @@ public class ScenarioTest {
     public void removeFactMappingValueByIdentifiersTest() {
         scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
         Optional<FactMappingValue> retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved.isPresent()).isTrue();
         scenario.removeFactMappingValueByIdentifiers(factIdentifier, expressionIdentifier);
         retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved.isPresent()).isFalse();
     }
 
     @Test
     public void removeFactMappingValue() {
         scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
         Optional<FactMappingValue> retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved.isPresent()).isTrue();
         scenario.removeFactMappingValue(retrieved.get());
         retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved.isPresent()).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -70,15 +68,15 @@ public class ScenarioTest {
 
     @Test
     public void getDescriptionTest() {
-        assertEquals("", scenario.getDescription());
+        assertThat(scenario.getDescription()).isEqualTo("");
 
         String description = "Test Description";
         scenario.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, description);
-        assertEquals(description, scenario.getDescription());
+        assertThat(scenario.getDescription()).isEqualTo(description);
 
         Scenario scenarioWithDescriptionNull = simulation.addData();
         scenarioWithDescriptionNull.setDescription(null);
-        assertEquals("", scenarioWithDescriptionNull.getDescription());
+        assertThat(scenarioWithDescriptionNull.getDescription()).isEqualTo("");
     }
 
     @Test
@@ -86,9 +84,9 @@ public class ScenarioTest {
         Object value1 = "Test 1";
         Object value2 = "Test 2";
         FactMappingValue factMappingValue = scenario.addMappingValue(factIdentifier, expressionIdentifier, value1);
-        assertEquals(factMappingValue.getRawValue(), value1);
+        assertThat(value1).isEqualTo(factMappingValue.getRawValue());
         FactMappingValue factMappingValue1 = scenario.addOrUpdateMappingValue(factIdentifier, expressionIdentifier, value2);
-        assertEquals(factMappingValue, factMappingValue1);
-        assertEquals(factMappingValue1.getRawValue(), value2);
+        assertThat(factMappingValue1).isEqualTo(factMappingValue);
+        assertThat(value2).isEqualTo(factMappingValue1.getRawValue());
     }
 }

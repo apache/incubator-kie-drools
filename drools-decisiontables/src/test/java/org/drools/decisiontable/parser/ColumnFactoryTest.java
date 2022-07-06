@@ -22,9 +22,8 @@ import org.drools.template.parser.LongColumn;
 import org.drools.template.parser.StringColumn;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ColumnFactoryTest {
 
@@ -32,35 +31,35 @@ public class ColumnFactoryTest {
     public void testGetColumn() {
         ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column");
-        assertTrue(column instanceof StringColumn);
-        assertEquals("column", column.getName());
+        assertThat(column instanceof StringColumn).isTrue();
+        assertThat(column.getName()).isEqualTo("column");
     }
 
     @Test
     public void testGetStringArrayColumn() {
         ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column: String[]");
-        assertTrue(column instanceof ArrayColumn);
-        assertEquals("column", column.getName());
-        assertEquals("StringCell", column.getCellType());
+        assertThat(column instanceof ArrayColumn).isTrue();
+        assertThat(column.getName()).isEqualTo("column");
+        assertThat(column.getCellType()).isEqualTo("StringCell");
     }
 
     @Test
     public void testGetLongArrayColumn() {
         ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column: Long[]");
-        assertTrue(column instanceof ArrayColumn);
-        assertEquals("column", column.getName());
-        assertEquals("LongCell", column.getCellType());
+        assertThat(column instanceof ArrayColumn).isTrue();
+        assertThat(column.getName()).isEqualTo("column");
+        assertThat(column.getCellType()).isEqualTo("LongCell");
     }
 
     @Test
     public void testGetArrayColumnSimple() {
         ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column[]");
-        assertTrue(column instanceof ArrayColumn);
-        assertEquals("column", column.getName());
-        assertEquals("StringCell", column.getCellType());
+        assertThat(column instanceof ArrayColumn).isTrue();
+        assertThat(column.getName()).isEqualTo("column");
+        assertThat(column.getCellType()).isEqualTo("StringCell");
 
     }
 
@@ -68,8 +67,8 @@ public class ColumnFactoryTest {
     public void testGetLongColumn() {
         ColumnFactory f = new ColumnFactory();
         Column column = f.getColumn("column: Long");
-        assertTrue(column instanceof LongColumn);
-        assertEquals("column", column.getName());
+        assertThat(column instanceof LongColumn).isTrue();
+        assertThat(column.getName()).isEqualTo("column");
     }
 
     @Test

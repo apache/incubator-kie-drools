@@ -23,7 +23,7 @@ import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultiSheetsTest {
 
@@ -73,7 +73,7 @@ public class MultiSheetsTest {
         sessionDtable.insert( new Person("Mario", 45) );
         sessionDtable.fireAllRules();
         for (String r : results) {
-            assertTrue( result.toString().contains( r ) );
+            assertThat(result.toString().contains(r)).isTrue();
         }
     }
 }

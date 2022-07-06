@@ -18,8 +18,8 @@ package org.drools.scenariosimulation.api.model;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.IMPORTED_PREFIX;
-import static org.junit.Assert.assertEquals;
 
 public class FactIdentifierTest {
 
@@ -27,9 +27,9 @@ public class FactIdentifierTest {
     public void importedFactIdentifierTest() {
         String importedBookName = IMPORTED_PREFIX + "." + "Book";
         FactIdentifier factIdentifier = FactIdentifier.create(importedBookName, importedBookName, IMPORTED_PREFIX);
-        assertEquals(importedBookName, factIdentifier.getName());
-        assertEquals(importedBookName, factIdentifier.getClassName());
-        assertEquals(IMPORTED_PREFIX, factIdentifier.getImportPrefix());
+        assertThat(factIdentifier.getName()).isEqualTo(importedBookName);
+        assertThat(factIdentifier.getClassName()).isEqualTo(importedBookName);
+        assertThat(factIdentifier.getImportPrefix()).isEqualTo(IMPORTED_PREFIX);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class FactIdentifierTest {
 
     private void commonGetClassNameWithoutPackage(String name, String className, String expectedClassName) {
         FactIdentifier factIdentifier = FactIdentifier.create(name, className);
-        assertEquals(expectedClassName, factIdentifier.getClassNameWithoutPackage());
+        assertThat(factIdentifier.getClassNameWithoutPackage()).isEqualTo(expectedClassName);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class FactIdentifierTest {
 
     private void commonGetPackageWithoutClassName(String name, String className, String expectedPackage) {
         FactIdentifier factIdentifier = FactIdentifier.create(name, className);
-        assertEquals(expectedPackage, factIdentifier.getPackageWithoutClassName());
+        assertThat(factIdentifier.getPackageWithoutClassName()).isEqualTo(expectedPackage);
     }
     
 }

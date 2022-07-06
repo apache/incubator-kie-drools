@@ -28,7 +28,6 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -58,6 +57,7 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
@@ -150,14 +150,12 @@ public class TimerAndCalendarTest {
         List<Integer> list = Collections.synchronizedList( new ArrayList<Integer>() );
         ksession.setGlobal( "list",
                             list );
-        Assert.assertEquals( 0,
-                             list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 1700,
                            TimeUnit.MILLISECONDS );
-        Assert.assertEquals( 2,
-                             list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         ksession = disposeAndReloadSession( ksession,
                                             kbase );
@@ -169,8 +167,7 @@ public class TimerAndCalendarTest {
                            TimeUnit.MILLISECONDS );
 
         // if the rule is fired, the list size will greater than one.
-        Assert.assertEquals( 4,
-                             list.size() );
+        assertThat(list.size()).isEqualTo(4);
     }
 
     @Test @Ignore("beta4 phreak")
@@ -233,14 +230,12 @@ public class TimerAndCalendarTest {
         clock.advanceTime( 10,
                            TimeUnit.MILLISECONDS );
 
-        Assert.assertEquals( 1,
-                             list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
         clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 3,
                            TimeUnit.SECONDS );
-        Assert.assertEquals( 4,
-                             list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
         ksession = disposeAndReloadSession( ksession,
                                             kbase );
@@ -252,8 +247,7 @@ public class TimerAndCalendarTest {
                            TimeUnit.SECONDS );
 
         // if the rule is fired, the list size will greater than one.
-        Assert.assertEquals( 6,
-                             list.size() );
+        assertThat(list.size()).isEqualTo(6);
     }
 
     @Test
@@ -329,7 +323,7 @@ public class TimerAndCalendarTest {
 
         ksession1.dispose(); // dispose before firing
 
-        Assert.assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         Thread.sleep(5000);
 
@@ -362,7 +356,7 @@ public class TimerAndCalendarTest {
 
         ksession2.dispose();
 
-        Assert.assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
     }
 
     private KieSession createSession(KieBase kbase) {
@@ -402,7 +396,7 @@ public class TimerAndCalendarTest {
             for ( KnowledgeBuilderError error : errors ) {
                 System.err.println( "Error: " + error.getMessage() );
             }
-            Assert.fail( "KnowledgeBase did not build" );
+            fail( "KnowledgeBase did not build" );
         }
         Collection<KiePackage> packages = kbuilder.getKnowledgePackages();
         return packages;

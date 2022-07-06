@@ -19,7 +19,6 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.util.io.ByteArrayResource;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
@@ -33,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public abstract class MapPersistenceTest {
 
@@ -71,7 +71,7 @@ public abstract class MapPersistenceTest {
             for ( KnowledgeBuilderError error : errors ) {
                 logger.warn( "Error: " + error.getMessage() );
             }
-            Assert.fail( "KnowledgeBase did not build" );
+            fail( "KnowledgeBase did not build" );
         }
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -82,19 +82,16 @@ public abstract class MapPersistenceTest {
         FactHandle buddyFactHandle = ksession.insert( new Buddy() );
         ksession.fireAllRules();
 
-        Assert.assertEquals( 1,
-                             ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(1);
 
         ksession = disposeAndReloadSession( ksession,
                                             kbase );
 
         assertThat(ksession).isNotNull();
 
-        Assert.assertEquals( 1,
-                             ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(1);
 
-        Assert.assertNull( "An object can't be retrieved with a FactHandle from a disposed session",
-                           ksession.getObject( buddyFactHandle ) );
+        assertThat(ksession.getObject( buddyFactHandle)).as( "An object can't be retrieved with a FactHandle from a disposed session").isNull();
 
     }
 
@@ -111,7 +108,7 @@ public abstract class MapPersistenceTest {
 
         crmPersistentSession = disposeAndReloadSession(crmPersistentSession, kbase);
 
-        Assert.assertEquals(ksessionId, crmPersistentSession.getIdentifier());
+        assertThat(crmPersistentSession.getIdentifier()).isEqualTo(ksessionId);
 
         ksessionId = crmPersistentSession.getIdentifier();
         crmPersistentSession.fireAllRules();
@@ -120,7 +117,7 @@ public abstract class MapPersistenceTest {
 
         crmPersistentSession.fireAllRules();
 
-        Assert.assertEquals(initialNumberOfSavedSessions + 1, getSavedSessionsCount());
+        assertThat(getSavedSessionsCount()).isEqualTo(initialNumberOfSavedSessions + 1);
         crmPersistentSession.dispose();
     }
 
@@ -136,8 +133,8 @@ public abstract class MapPersistenceTest {
         crmPersistentSession = disposeAndReloadSession(crmPersistentSession, kbase);
         Object obtainedBuddy = crmPersistentSession
                 .getObjects().iterator().next();
-        Assert.assertNotSame( bestBuddy, obtainedBuddy );
-        Assert.assertEquals(bestBuddy, obtainedBuddy);
+        assertThat(obtainedBuddy).isNotSameAs(bestBuddy);
+        assertThat(obtainedBuddy).isEqualTo(bestBuddy);
 
         crmPersistentSession.dispose();
     }

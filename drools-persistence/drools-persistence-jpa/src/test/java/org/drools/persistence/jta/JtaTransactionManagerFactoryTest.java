@@ -14,8 +14,6 @@
  */
 package org.drools.persistence.jta;
 
-import static org.junit.Assert.*;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.transaction.HeuristicMixedException;
@@ -26,6 +24,8 @@ import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 import org.drools.core.impl.EnvironmentFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.runtime.Environment;
@@ -47,13 +47,13 @@ public class JtaTransactionManagerFactoryTest {
 
         env.set(EnvironmentName.TRANSACTION, DUMMY_UT);
         JtaTransactionManager txm = (JtaTransactionManager) new JtaTransactionManagerFactory().newTransactionManager(env);
-        assertEquals(DUMMY_UT, txm.ut);
+        assertThat(txm.ut).isEqualTo(DUMMY_UT);
     }
 
     @Test
     public void createsWithoutEnvironment() throws Exception {
         JtaTransactionManager txm = (JtaTransactionManager) new JtaTransactionManagerFactory().newTransactionManager();
-        assertTrue(TransactionManager.class.isAssignableFrom(txm.tm.getClass()));
+        assertThat(TransactionManager.class.isAssignableFrom(txm.tm.getClass())).isTrue();
     }
     
     private static final UserTransaction DUMMY_UT = new UserTransaction() {

@@ -20,9 +20,8 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class FactMappingTest {
 
@@ -33,7 +32,7 @@ public class FactMappingTest {
         original.setExpressionAlias("EA_TEST");
         original.setGenericTypes(new ArrayList<>());
         FactMapping retrieved = original.cloneFactMapping();
-        assertTrue(retrieved.equals(original));
+        assertThat(retrieved.equals(original)).isTrue();
     }
 
     @Test
@@ -42,10 +41,10 @@ public class FactMappingTest {
         assertThatThrownBy(original::getExpressionElementsWithoutClass)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("ExpressionElements malformed");
-        assertEquals(0, original.getExpressionElements().size());
+        assertThat(original.getExpressionElements().size()).isEqualTo(0);
         original.addExpressionElement("STEP", String.class.getCanonicalName());
 
-        assertEquals(0, original.getExpressionElementsWithoutClass().size());
-        assertEquals(1, original.getExpressionElements().size());
+        assertThat(original.getExpressionElementsWithoutClass().size()).isEqualTo(0);
+        assertThat(original.getExpressionElements().size()).isEqualTo(1);
     }
 }

@@ -32,14 +32,12 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleRuntimeEventSupportTest {
     @Test
     public void testIsSerializable() {
-        assertTrue( Serializable.class.isAssignableFrom( RuleRuntimeEventSupport.class ) );
+        assertThat(Serializable.class.isAssignableFrom(RuleRuntimeEventSupport.class)).isTrue();
     }
 
     @Test
@@ -64,7 +62,7 @@ public class RuleRuntimeEventSupportTest {
         };
 
         wm.addEventListener( workingMemoryListener );
-        assertEquals(1, wm.getRuleRuntimeEventListeners().size() );
+        assertThat(wm.getRuleRuntimeEventListeners().size()).isEqualTo(1);
 
         final Cheese stilton = new Cheese( "stilton",
                                            15 );
@@ -74,26 +72,22 @@ public class RuleRuntimeEventSupportTest {
         final FactHandle stiltonHandle = wm.insert( stilton );
 
         ObjectInsertedEvent oae = (ObjectInsertedEvent) wmList.get( 0 );
-        assertSame( stiltonHandle,
-                    oae.getFactHandle() );
+        assertThat(oae.getFactHandle()).isSameAs(stiltonHandle);
 
         wm.update( stiltonHandle,
                    cheddar );
         final ObjectUpdatedEvent ome = (ObjectUpdatedEvent) wmList.get( 1 );
-        assertSame( stiltonHandle,
-                    ome.getFactHandle() );
-        assertEquals( cheddar, ome.getObject() );
-        assertEquals( stilton, ome.getOldObject()  );
+        assertThat(ome.getFactHandle()).isSameAs(stiltonHandle);
+        assertThat(ome.getObject()).isEqualTo(cheddar);
+        assertThat(ome.getOldObject()).isEqualTo(stilton);
 
         wm.retract( stiltonHandle );
         final ObjectDeletedEvent ore = (ObjectDeletedEvent) wmList.get( 2 );
-        assertSame( stiltonHandle,
-                    ore.getFactHandle() );
+        assertThat(ore.getFactHandle()).isSameAs(stiltonHandle);
 
         final FactHandle cheddarHandle = wm.insert( cheddar );
         oae = (ObjectInsertedEvent) wmList.get( 3 );
-        assertSame( cheddarHandle,
-                    oae.getFactHandle() );
+        assertThat(oae.getFactHandle()).isSameAs(cheddarHandle);
     }
 
     @Test
@@ -128,19 +122,16 @@ public class RuleRuntimeEventSupportTest {
         final FactHandle stiltonHandle = ksession.insert( stilton );
 
         final ObjectInsertedEvent oae = (ObjectInsertedEvent) wmList.get( 0 );
-        assertSame( stiltonHandle,
-                oae.getFactHandle() );
+        assertThat(oae.getFactHandle()).isSameAs(stiltonHandle);
 
         ksession.update( stiltonHandle,
                 stilton );
         final ObjectUpdatedEvent ome = (ObjectUpdatedEvent) wmList.get( 1 );
-        assertSame( stiltonHandle,
-                ome.getFactHandle() );
+        assertThat(ome.getFactHandle()).isSameAs(stiltonHandle);
 
         ksession.retract( stiltonHandle );
         final ObjectDeletedEvent ore = (ObjectDeletedEvent) wmList.get( 2 );
-        assertSame( stiltonHandle,
-                ore.getFactHandle() );
+        assertThat(ore.getFactHandle()).isSameAs(stiltonHandle);
 
         ksession.insert( cheddar );
     }
@@ -176,16 +167,16 @@ public class RuleRuntimeEventSupportTest {
                 17 );
 
         final FactHandle stiltonHandle = ksession.insert( stilton );
-        assertTrue( wmList.isEmpty() );
+        assertThat(wmList.isEmpty()).isTrue();
 
         ksession.update( stiltonHandle,
                 stilton );
-        assertTrue( wmList.isEmpty() );
+        assertThat(wmList.isEmpty()).isTrue();
 
         ksession.retract( stiltonHandle );
-        assertTrue( wmList.isEmpty() );
+        assertThat(wmList.isEmpty()).isTrue();
 
         ksession.insert( cheddar );
-        assertTrue( wmList.isEmpty() );
+        assertThat(wmList.isEmpty()).isTrue();
     }
 }
