@@ -41,6 +41,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.processor.DotNames;
+import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.IsDockerWorking;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -76,14 +77,14 @@ public class KogitoDevServicesProcessor {
     private final IsDockerWorking isDockerWorking = new IsDockerWorking(true);
 
     @BuildStep
-    public void logger(BuildProducer<AdditionalBeanBuildItem> additionalBean, LaunchModeBuildItem launchMode, KogitoBuildTimeConfig config) {
-        if (shouldInclude(launchMode, config)) {
+    public void logger(BuildProducer<AdditionalBeanBuildItem> additionalBean, LaunchModeBuildItem launchMode, KogitoBuildTimeConfig config, Capabilities capabilities) {
+        if (shouldInclude(launchMode, config, capabilities)) {
             additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DevModeWorkflowLogger.class).setUnremovable().setDefaultScope(DotNames.APPLICATION_SCOPED).build());
         }
     }
 
-    private static boolean shouldInclude(LaunchModeBuildItem launchMode, KogitoBuildTimeConfig config) {
-        return launchMode.getLaunchMode().isDevOrTest() || config.alwaysInclude;
+    private static boolean shouldInclude(LaunchModeBuildItem launchMode, KogitoBuildTimeConfig config, Capabilities capabilities) {
+        return capabilities.isMissing("org.kie.kogito.serverless-workflow") && (launchMode.getLaunchMode().isDevOrTest() || config.alwaysInclude);
     }
 
     private static String getDataIndexImageVersion() {

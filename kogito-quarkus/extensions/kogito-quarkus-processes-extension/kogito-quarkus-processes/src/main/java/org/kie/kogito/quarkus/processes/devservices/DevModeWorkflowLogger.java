@@ -25,28 +25,17 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 public class DevModeWorkflowLogger extends DefaultKogitoProcessEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DevModeWorkflowLogger.class);
 
+    @Override
     public void beforeProcessStarted(ProcessStartedEvent event) {
         LOGGER.info("Starting workflow '{}' ({})", event.getProcessInstance().getProcessId(), ((KogitoProcessInstance) event.getProcessInstance()).getStringId());
-        ((KogitoProcessInstance) event.getProcessInstance()).getVariables().forEach((name, value) -> {
-            if ("workflowdata".equals(name)) {
-                if (value instanceof JsonNode) {
-                    JsonNode node = (JsonNode) value;
-                    if (!node.isEmpty()) {
-                        LOGGER.info("Workflow data \n{}", node.toPrettyString());
-                    }
-                }
-            } else {
-                LOGGER.info("Variable '{}' value: '{}'", name, value);
-            }
-        });
+        ((KogitoProcessInstance) event.getProcessInstance()).getVariables().forEach((name, value) -> LOGGER.info("Variable '{}' value: '{}'", name, value));
     }
 
+    @Override
     public void afterProcessStarted(ProcessStartedEvent event) {
         if (event.getProcessInstance().getState() != 2) {
             LOGGER.info("Workflow '{}' ({}) was started, now '{}'", event.getProcessInstance().getProcessId(), ((KogitoProcessInstance) event.getProcessInstance()).getStringId(), getStatus(
@@ -62,23 +51,13 @@ public class DevModeWorkflowLogger extends DefaultKogitoProcessEventListener {
     @Override
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         String nodeName = event.getNodeInstance().getNodeName();
-        if (!"EmbeddedStart".equals(nodeName) && !"EmbeddedEnd".equals(nodeName) && !"Script".equals(nodeName)) {
-            LOGGER.info("Triggered node '{}' for process '{}' ({})", nodeName, event.getProcessInstance().getProcessId(),
-                    ((KogitoProcessInstance) event.getProcessInstance()).getStringId());
-        }
+        LOGGER.info("Triggered node '{}' for process '{}' ({})", nodeName, event.getProcessInstance().getProcessId(),
+                ((KogitoProcessInstance) event.getProcessInstance()).getStringId());
     }
 
+    @Override
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
-        if ("workflowdata".equals(event.getVariableId())) {
-            if (event.getNewValue() instanceof JsonNode) {
-                JsonNode node = (JsonNode) event.getNewValue();
-                if (!node.isEmpty()) {
-                    LOGGER.info("Workflow data change\n{}", node.toPrettyString());
-                }
-            }
-        } else {
-            LOGGER.info("Variable '{}' changed value from: '{}', to: '{}'", event.getVariableId(), event.getOldValue(), event.getNewValue());
-        }
+        LOGGER.info("Variable '{}' changed value from: '{}', to: '{}'", event.getVariableId(), event.getOldValue(), event.getNewValue());
     }
 
     private static String getStatus(int status) {

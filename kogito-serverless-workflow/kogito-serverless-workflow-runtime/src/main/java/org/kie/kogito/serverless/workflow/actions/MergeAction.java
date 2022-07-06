@@ -19,6 +19,8 @@ import org.jbpm.process.instance.impl.Action;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.MergeUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import static org.kie.kogito.serverless.workflow.actions.ActionUtils.getJsonNode;
 
 public class MergeAction implements Action {
@@ -33,6 +35,15 @@ public class MergeAction implements Action {
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        MergeUtils.merge(getJsonNode(context, inputName), getJsonNode(context, outputName));
+        JsonNode inputNode = getJsonNode(context, inputName);
+        if (inputNode.isEmpty()) {
+            return;
+        }
+        JsonNode targetNode = getJsonNode(context, outputName);
+        if (inputNode.equals(targetNode)) {
+            return;
+        }
+        JsonNode merge = MergeUtils.merge(inputNode, targetNode);
+        context.setVariable(outputName, merge);
     }
 }
