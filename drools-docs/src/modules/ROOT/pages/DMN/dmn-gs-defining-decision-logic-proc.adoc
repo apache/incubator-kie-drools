@@ -1,4 +1,5 @@
 [id='dmn-gs-defining-decision-logic-proc']
+[discrete]
 = Defining the traffic violations DMN decision logic
 
 To calculate the fine and to decide whether the driver is to be suspended or not, you can define the traffic violations DMN decision logic using a DMN decision table and context boxed expression.
@@ -10,7 +11,7 @@ image::dmn/dmn-gs-fine-decision-table.png[Fine expression decision table]
 image::dmn/dmn-gs-context-table.png[Should the driver be suspended expression decision table]
 
 .Prerequisites
-* You have assigned the DMN custom data types to the appropriate decision and input nodes in the traffic violations DRD in {CENTRAL}.
+* You have assigned the DMN custom data types to the appropriate decision and input nodes in the traffic violations DRD in {DMN_EDITOR}.
 
 .Procedure
 . To calculate the fine, in the DMN designer canvas, select the *Fine* decision node and click the *Edit* icon to open the DMN boxed expression designer.

@@ -1,7 +1,8 @@
 [id='dmn-gs-creating-custom-datatypes-proc']
+[discrete]
 = Creating the traffic violations DMN custom data types
 
-DMN data types determine the structure of the data that you use within a table, column, or field in a DMN boxed expression for defining decision logic. You can use default DMN data types (such as string, number, or boolean) or you can create custom data types to specify additional fields and constraints that you want to implement for the boxed expression values. Use the DMN designer's *Data Types* tab in {CENTRAL} to define the custom data types for the traffic violations project.
+DMN data types determine the structure of the data that you use within a table, column, or field in a DMN boxed expression for defining decision logic. You can use default DMN data types (such as string, number, or boolean) or you can create custom data types to specify additional fields and constraints that you want to implement for the boxed expression values. Use the {DMN_EDITOR}'s *Data Types* tab to define the custom data types for the traffic violations project.
 
 .The custom data types tab
 image::dmn/dmn-custom-datatypes-tab.png[The custom data types tab]
@@ -45,7 +46,7 @@ The following tables list the `tDriver`, `tViolation`, and `tFine` custom data t
 |===
 
 .Prerequisites
-* You created the traffic violations DMN decision requirements diagram (DRDs) in {CENTRAL}.
+* You created the traffic violations DMN decision requirements diagram (DRDs) using {DMN_EDITOR}.
 
 .Procedure
 . To create the `tDriver` custom data type, click *Add a custom Data Type* on the *Data Types* tab, enter `tDriver` in the *Name* field, and select `Structure` from the *Type* list.
