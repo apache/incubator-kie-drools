@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
-import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
@@ -35,7 +34,6 @@ import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
 import org.kie.efesto.compilationmanager.api.model.EfestoClassesContainer;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
-import org.kie.efesto.compilationmanager.api.model.EfestoRedirectOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.memorycompiler.KieMemoryCompiler;
@@ -71,9 +69,9 @@ public class CompilationManagerUtils {
                 populateIndexFile(indexFile, compilationOutput);
                 if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
                     loadClasses(((EfestoCallableOutputClassesContainer) compilationOutput).getCompiledClassesMap(), memoryCompilerClassLoader);
-                } else if (compilationOutput instanceof EfestoRedirectOutput) {
-                    toPopulate.addAll(getIndexFilesWithProcessedResource((EfestoRedirectOutput) compilationOutput, memoryCompilerClassLoader));
                 }
+            } else if (compilationOutput instanceof EfestoResource) {
+                toPopulate.addAll(getIndexFilesWithProcessedResource((EfestoResource) compilationOutput, memoryCompilerClassLoader));
             }
         }
         return toPopulate;
@@ -116,14 +114,11 @@ public class CompilationManagerUtils {
     }
 
     static GeneratedResource getGeneratedResource(EfestoCompilationOutput compilationOutput) {
-        if (compilationOutput instanceof EfestoRedirectOutput) {
-            return new GeneratedRedirectResource(((EfestoRedirectOutput) compilationOutput).getFri(), ((EfestoRedirectOutput) compilationOutput).getTargetEngine());
-        } else if (compilationOutput instanceof EfestoCallableOutput) {
+        if (compilationOutput instanceof EfestoCallableOutput) {
             return new GeneratedExecutableResource(((EfestoCallableOutput) compilationOutput).getFri(), ((EfestoCallableOutput) compilationOutput).getFullClassNames());
         } else {
             throw new KieCompilerServiceException("Unmanaged type " + compilationOutput.getClass().getName());
         }
-
     }
 
     static List<GeneratedResource> getGeneratedResources(EfestoClassesContainer finalOutput) {
