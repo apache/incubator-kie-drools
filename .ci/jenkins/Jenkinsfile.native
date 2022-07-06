@@ -9,8 +9,8 @@ pipeline {
         label 'kie-rhel7 && kie-mem16g && !master'
     }
     tools {
-        maven 'kie-maven-3.8.1'
-        jdk 'kie-jdk11'
+        maven env.BUILD_MAVEN_TOOL
+        jdk env.BUILD_JDK_TOOL
     }
     options {
         timestamps()
