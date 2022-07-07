@@ -58,3 +58,6 @@ cloud:
     latest_git_branch: main
 jenkins:
   email_creds_id: OPTAPLANNER_CI_EMAIL
+  default_tools:
+    jdk: kie-jdk11
+    maven: kie-maven-3.8.1
