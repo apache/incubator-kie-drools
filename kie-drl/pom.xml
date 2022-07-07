@@ -58,12 +58,6 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <artifactId>kie-drl-compilation-common</artifactId>
-        <groupId>org.kie</groupId>
-        <version>${project.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <artifactId>kie-drl-runtime-common</artifactId>
         <groupId>org.kie</groupId>
         <version>${project.version}</version>
@@ -76,12 +70,6 @@
       <dependency>
         <artifactId>kie-drl-map-input-runtime</artifactId>
         <groupId>org.kie</groupId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <artifactId>kie-drl-map-input-runtime</artifactId>
-        <groupId>org.kie</groupId>
-        <scope>test</scope>
         <version>${project.version}</version>
       </dependency>
       <dependency>
