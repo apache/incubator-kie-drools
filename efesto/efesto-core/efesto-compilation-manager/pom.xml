@@ -11,7 +11,7 @@
   </parent>
   <packaging>pom</packaging>
 
-  <artifactId>compilation-manager</artifactId>
+  <artifactId>efesto-compilation-manager</artifactId>
   <name>Efesto :: Compilation :: Manager</name>
 
   <modules>
