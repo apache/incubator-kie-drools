@@ -13,32 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.efesto.compilationmanager.api.model;
-
-import org.kie.efesto.common.api.model.FRI;
+package org.kie.efesto.compilationmanager.core.mocks;
 
 import java.util.List;
+
+import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.compilationmanager.api.model.AbstractEfestoCallableCompilationOutput;
+import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
 /**
  * A generic <i>Resource</i> to be processed by specific engine
  */
-public abstract class EfestoRedirectOutput<T> extends AbstractEfestoCallableCompilationOutput implements EfestoResource<T> {
-
-    private final String targetEngine;
+public abstract class AbstractMockOutput<T> extends AbstractEfestoCallableCompilationOutput implements EfestoResource<T> {
 
     /**
      * This is the <b>payload</b> to forward to the target compilation-engine
      */
     private final T content;
 
-    protected EfestoRedirectOutput(FRI fri, String targetEngine, T content) {
+    protected AbstractMockOutput(FRI fri, T content) {
         super(fri, (List<String>) null);
-        this.targetEngine = targetEngine;
         this.content = content;
-    }
-
-    public String getTargetEngine() {
-        return targetEngine;
     }
 
     @Override
