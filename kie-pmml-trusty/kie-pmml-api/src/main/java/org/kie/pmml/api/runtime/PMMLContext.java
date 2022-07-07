@@ -19,11 +19,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.runtime.Context;
 import org.kie.efesto.runtimemanager.api.model.EfestoContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.api.models.PMMLStep;
 
-public interface PMMLContext extends EfestoContext<PMMLListener> {
+public interface PMMLContext extends EfestoContext<PMMLListener>,
+                                     Context {
 
     PMMLRequestData getRequestData();
 
