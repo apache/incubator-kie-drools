@@ -470,6 +470,10 @@ public class NamedEntryPoint
                 if (handle.isDisconnected()) {
                     handle = this.objectStore.reconnect(handle);
                 }
+                if (handle == null) {
+                    // the handle doesn't exist. no op
+                    return;
+                }
 
                 if (!handle.getEntryPointId().equals( entryPoint )) {
                     throw new IllegalArgumentException("Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPointId() + "' instead of '" + getEntryPointId() + "'");
