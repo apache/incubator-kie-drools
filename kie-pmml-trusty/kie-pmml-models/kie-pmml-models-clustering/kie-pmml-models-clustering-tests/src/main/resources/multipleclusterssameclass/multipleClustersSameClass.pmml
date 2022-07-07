@@ -5,18 +5,17 @@
         <DataField name="Dimension2" optype="continuous" dataType="double"/>
     </DataDictionary>
     <ClusteringModel modelName="multipleClusterSameClassModel" functionName="clustering"
-                     modelClass="centerBased" numberOfClusters="5">
-      <MiningSchema>
-        <MiningField name="Dimension1" invalidValueTreatment="returnInvalid"/>
-        <MiningField name="Dimension2" invalidValueTreatment="returnInvalid"/>
-      </MiningSchema>
-      <Output>
-        <OutputField name="predictedValue" feature="predictedValue" dataType="string" optype="categorical"/>
-        <OutputField name="predictedDisplayValue" feature="predictedDisplayValue" dataType="string"
-                     optype="categorical"/>
-        <OutputField name="predictedAffinity" feature="affinity" dataType="double"/>
-        <OutputField name="predictedClusterAffinity" feature="clusterAffinity" dataType="double"/>
-      </Output>
+        modelClass="centerBased" numberOfClusters="5">
+        <MiningSchema>
+            <MiningField name="Dimension1" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="Dimension2" invalidValueTreatment="returnInvalid"/>
+        </MiningSchema>
+        <Output>
+            <OutputField name="predictedValue" feature="predictedValue" dataType="string" optype="categorical"/>
+            <OutputField name="predictedDisplayValue" feature="predictedDisplayValue" dataType="string" optype="categorical"/>
+            <OutputField name="predictedAffinity" feature="affinity" dataType="double"/>
+            <OutputField name="predictedClusterAffinity" feature="clusterAffinity" dataType="double"/>
+        </Output>
         <ComparisonMeasure kind="distance">
             <squaredEuclidean/>
         </ComparisonMeasure>

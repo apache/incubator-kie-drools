@@ -37,7 +37,6 @@ public class KiePMMLSegment extends AbstractKiePMMLComponent {
 
     /**
      * Builder to auto-generate the <b>id</b>
-     *
      * @return
      */
     public static Builder builder(String name, List<KiePMMLExtension> extensions, KiePMMLPredicate kiePMMLPredicate, KiePMMLModel model) {

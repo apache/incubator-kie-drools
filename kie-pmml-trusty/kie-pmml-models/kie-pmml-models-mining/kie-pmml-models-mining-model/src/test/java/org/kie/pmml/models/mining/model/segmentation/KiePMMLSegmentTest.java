@@ -46,6 +46,7 @@ public class KiePMMLSegmentTest {
         assertThat(KIE_PMML_SEGMENT).isNotNull();
     }
 
+
     @Test
     void getWeight() {
         final double weight = 33.45;
@@ -63,5 +64,7 @@ public class KiePMMLSegmentTest {
     void getModel() {
         assertThat(KIE_PMML_SEGMENT.getModel()).isEqualTo(KIE_PMML_MODEL);
     }
+
+
 
 }

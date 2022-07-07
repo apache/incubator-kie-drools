@@ -71,7 +71,6 @@ public class KiePMMLSimplePredicateWithResultASTFactory {
      * $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classOrAndNestedNode");
      * <p>
      * end
-     *
      * @param builder
      * @param rules
      * @param result

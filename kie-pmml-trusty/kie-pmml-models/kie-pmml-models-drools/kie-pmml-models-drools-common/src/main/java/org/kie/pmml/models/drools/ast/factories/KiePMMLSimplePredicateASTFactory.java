@@ -152,7 +152,6 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
      * end
      * <p>
      * end
-     *
      * @param result
      * @param isFinalLeaf
      */
@@ -210,7 +209,6 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
      * end
      * <p>
      * end
-     *
      * @param statusToSet
      * @return
      */

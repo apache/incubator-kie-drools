@@ -49,7 +49,6 @@ public class KiePMMLPredicateASTFactory extends KiePMMLAbstractPredicateASTFacto
      * <p>2) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate">SimplePredicate</a><p>
      * <p>3) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate">CompoundPredicate</a><p>
      * <p>4) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimpleSetPredicate">SimpleSetPredicate</a><p>
-     *
      * @param toAccumulate
      * @param statusToSet
      * @param reasonCodeAndValue
@@ -85,7 +84,6 @@ public class KiePMMLPredicateASTFactory extends KiePMMLAbstractPredicateASTFacto
      * <p>2) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate">SimplePredicate</a><p>
      * <p>3) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate">CompoundPredicate</a><p>
      * <p>4) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimpleSetPredicate">SimpleSetPredicate</a><p>
-     *
      * @param result
      * @param isFinalLeaf
      */

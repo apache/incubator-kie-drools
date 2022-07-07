@@ -33,17 +33,13 @@ public class KiePMMLAgendaListenerUtils {
 
     public static AgendaEventListener getAgendaEventListener(final Logger logger) {
         return new AgendaEventListener() {
-            public void matchCancelled(MatchCancelledEvent event) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(event.toString());
-                }
-            }
+            public void matchCancelled(MatchCancelledEvent event) { if (logger.isDebugEnabled()) {
+                logger.debug(event.toString());
+            }}
 
-            public void matchCreated(MatchCreatedEvent event) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(event.toString());
-                }
-            }
+            public void matchCreated(MatchCreatedEvent event) { if (logger.isDebugEnabled()) {
+                logger.debug(event.toString());
+            }}
 
             public void afterMatchFired(AfterMatchFiredEvent event) {
                 if (logger.isDebugEnabled()) {
@@ -51,11 +47,9 @@ public class KiePMMLAgendaListenerUtils {
                 }
             }
 
-            public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(event.toString());
-                }
-            }
+            public void agendaGroupPopped(AgendaGroupPoppedEvent event) { if (logger.isDebugEnabled()) {
+                logger.debug(event.toString());
+            }}
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
                 if (logger.isDebugEnabled()) {
@@ -69,29 +63,21 @@ public class KiePMMLAgendaListenerUtils {
                 }
             }
 
-            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(event.toString());
-                }
-            }
+            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) { if (logger.isDebugEnabled()) {
+                logger.debug(event.toString());
+            }}
 
-            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(event.toString());
-                }
-            }
+            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) { if (logger.isDebugEnabled()) {
+                logger.debug(event.toString());
+            }}
 
-            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(event.toString());
-                }
-            }
+            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) { if (logger.isDebugEnabled()) {
+                logger.debug(event.toString());
+            }}
 
-            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(event.toString());
-                }
-            }
+            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) { if (logger.isDebugEnabled()) {
+                logger.debug(event.toString());
+            }}
         };
     }
 }

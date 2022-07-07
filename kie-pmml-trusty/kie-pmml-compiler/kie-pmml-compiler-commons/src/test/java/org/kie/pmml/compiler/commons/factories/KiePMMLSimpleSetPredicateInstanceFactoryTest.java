@@ -27,8 +27,7 @@ public class KiePMMLSimpleSetPredicateInstanceFactoryTest {
     @Test
     void getKiePMMLSimpleSetPredicate() {
         final SimpleSetPredicate toConvert = getRandomSimpleSetPredicate();
-        final KiePMMLSimpleSetPredicate retrieved =
-                KiePMMLSimpleSetPredicateInstanceFactory.getKiePMMLSimpleSetPredicate(toConvert);
+        final KiePMMLSimpleSetPredicate retrieved = KiePMMLSimpleSetPredicateInstanceFactory.getKiePMMLSimpleSetPredicate(toConvert);
         commonVerifyKiePMMLSimpleSetPredicate(retrieved, toConvert);
     }
 }

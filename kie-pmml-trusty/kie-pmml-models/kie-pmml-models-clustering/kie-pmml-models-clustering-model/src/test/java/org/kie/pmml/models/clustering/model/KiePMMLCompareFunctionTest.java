@@ -54,9 +54,7 @@ public class KiePMMLCompareFunctionTest {
     @Test
     void testApply() {
         assertThat(ABS_DIFF.apply(TEST_FIELD, TEST_X, TEST_Y)).isEqualTo(absDiff(TEST_X, TEST_Y), DOUBLE_OFFSET);
-        assertThat(GAUSS_SIM.apply(TEST_FIELD, TEST_X, TEST_Y)).isEqualTo(gaussSim(TEST_X, TEST_Y,
-                                                                                   TEST_SIMILARITY_SCALE),
-                                                                          DOUBLE_OFFSET);
+        assertThat(GAUSS_SIM.apply(TEST_FIELD, TEST_X, TEST_Y)).isEqualTo(gaussSim(TEST_X, TEST_Y, TEST_SIMILARITY_SCALE), DOUBLE_OFFSET);
         assertThat(DELTA.apply(TEST_FIELD, TEST_X, TEST_Y)).isEqualTo(delta(TEST_X, TEST_Y), DOUBLE_OFFSET);
         assertThat(EQUAL.apply(TEST_FIELD, TEST_X, TEST_Y)).isEqualTo(equal(TEST_X, TEST_Y), DOUBLE_OFFSET);
         assertThatThrownBy(() -> TABLE.apply(TEST_FIELD, TEST_X, TEST_Y)).isInstanceOf(UnsupportedOperationException.class);

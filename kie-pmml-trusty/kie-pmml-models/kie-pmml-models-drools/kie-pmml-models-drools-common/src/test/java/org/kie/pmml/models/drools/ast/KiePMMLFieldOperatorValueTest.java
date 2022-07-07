@@ -57,8 +57,7 @@ public class KiePMMLFieldOperatorValueTest {
     }
 
     private KiePMMLFieldOperatorValue getKiePMMLFieldOperatorValueWithName() {
-        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN,
-                                                                                                  35),
+        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35),
                                                                          new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85));
         return new KiePMMLFieldOperatorValue(NAME, BOOLEANOPERATOR, kiePMMLOperatorValues, Collections.emptyList());
     }
@@ -66,10 +65,8 @@ public class KiePMMLFieldOperatorValueTest {
     private KiePMMLFieldOperatorValue getKiePMMLFieldOperatorValueWithoutName() {
         String humidityField = "HUMIDITY";
         final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues = Arrays
-                .asList(new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
-                        new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
+                .asList(new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
+                        new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
         List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35),
                                                                          new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85));
 

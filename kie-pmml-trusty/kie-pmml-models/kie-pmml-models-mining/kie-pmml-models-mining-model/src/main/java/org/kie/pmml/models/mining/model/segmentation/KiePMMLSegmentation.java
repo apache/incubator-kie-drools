@@ -37,7 +37,6 @@ public class KiePMMLSegmentation extends AbstractKiePMMLComponent {
 
     /**
      * Builder to auto-generate the <b>id</b>
-     *
      * @return
      */
     public static Builder builder(String name, List<KiePMMLExtension> extensions, MULTIPLE_MODEL_METHOD multipleModelMethod) {

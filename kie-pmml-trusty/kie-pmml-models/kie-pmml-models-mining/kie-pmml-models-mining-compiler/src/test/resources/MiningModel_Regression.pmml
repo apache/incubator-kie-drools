@@ -3,7 +3,7 @@
   <Header copyright="KNIME">
     <Application name="KNIME" version="2.8.0"/>
   </Header>
-  <DataDictionary>
+  <DataDictionary >
     <DataField name="categoricalResult" optype="continuous" dataType="double"/>
     <DataField name="categoricalX" optype="categorical" dataType="string">
       <Value value="red"/>
@@ -36,14 +36,12 @@
         <True/>
         <RegressionModel modelName="CategoricalVariablesRegression" functionName="regression">
           <MiningSchema>
-            <MiningField name="categoricalResult" usageType="predicted"
-                         invalidValueTreatment="returnInvalid"/>
+            <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
           <Output>
-            <OutputField name="Predicted_result" optype="continuous" dataType="double"
-                         feature="predictedValue"/>
+            <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
           </Output>
           <RegressionTable intercept="-22.1">
             <CategoricalPredictor name="categoricalX" value="red" coefficient="5.5"/>
@@ -61,15 +59,13 @@
         <True/>
         <RegressionModel modelName="PredictorTermRegression" functionName="regression">
           <MiningSchema>
-            <MiningField name="predictionResult" usageType="predicted"
-                         invalidValueTreatment="returnInvalid"/>
+            <MiningField name="predictionResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
             <MiningField name="predictionX" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="predictionY" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="predictionZ" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
           <Output>
-            <OutputField name="Predicted_result" optype="continuous" dataType="double"
-                         feature="predictedValue"/>
+            <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
           </Output>
           <RegressionTable intercept="5">
             <NumericPredictor name="predictionX" exponent="1" coefficient="2"/>

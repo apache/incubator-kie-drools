@@ -48,7 +48,6 @@ public class KiePMMLDerivedFieldASTFactory {
     /**
      * Create a <code>List&lt;KiePMMLDroolsType&gt;</code> out of original <code>List&lt;DerivedField&gt;</code>s,
      * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
-     *
      * @param derivedFields
      */
     public List<KiePMMLDroolsType> declareTypes(final List<DerivedField> derivedFields) {
@@ -58,7 +57,6 @@ public class KiePMMLDerivedFieldASTFactory {
     /**
      * Create a <code>KiePMMLDroolsType</code> out of original <code>DerivedField</code>,
      * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
-     *
      * @param derivedField
      */
     public KiePMMLDroolsType declareType(DerivedField derivedField) {

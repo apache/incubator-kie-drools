@@ -48,29 +48,6 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
 
     private static final Logger logger = LoggerFactory.getLogger(DroolsModelProvider.class.getName());
 
-//    @Override
-//    public E getKiePMMLModel(final CompilationDTO<T> compilationDTO) {
-//        logger.trace("getKiePMMLModel {} {} {}", compilationDTO.getPackageName(), compilationDTO.getFields(),
-//                compilationDTO.getPMMLModel());
-//        if (!(compilationDTO.getHasClassloader() instanceof HasKnowledgeBuilder)) {
-//            throw new KiePMMLException(String.format(EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE,
-//                    compilationDTO.getHasClassloader().getClass().getName()));
-//        }
-//        HasKnowledgeBuilder hasKnowledgeBuilder = (HasKnowledgeBuilder) compilationDTO.getHasClassloader();
-//        KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl) hasKnowledgeBuilder.getKnowledgeBuilder();
-//        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-//        KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(compilationDTO.getFields(),
-//                compilationDTO.getPMMLModel(), fieldTypeMap);
-//        final DroolsCompilationDTO<T> droolsCompilationDTO =
-//                DroolsCompilationDTO.fromCompilationDTO(compilationDTO, fieldTypeMap);
-//        E toReturn = getKiePMMLDroolsModel(droolsCompilationDTO);
-//        PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn.getKModulePackageName());
-//        // Needed to compile Rules from PackageDescr
-//        CompositePackageDescr compositePackageDescr = new CompositePackageDescr(null, packageDescr);
-//        knowledgeBuilder.buildPackages(Collections.singletonList(compositePackageDescr));
-//        return toReturn;
-//    }
-
     @Override
     public Map<String, String> getSourcesMap(final CompilationDTO<T> compilationDTO) {
         throw new KiePMMLException("DroolsModelProvider.getSourcesMap is not meant to be invoked");
@@ -104,45 +81,6 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             throw new KiePMMLException(e);
         }
     }
-
-//    @Override
-//    public KiePMMLModelWithSources getKiePMMLModelWithSourcesCompiled(final CompilationDTO<T> compilationDTO) {
-//        logger.trace("getKiePMMLModelWithSourcesCompiled {} {} {}", compilationDTO.getPackageName(),
-//                compilationDTO.getFields(), compilationDTO.getPMMLModel());
-//        if (!(compilationDTO.getHasClassloader() instanceof HasKnowledgeBuilder)) {
-//            throw new KiePMMLException(String.format(EXPECTING_HAS_KNOWLEDGEBUILDER_TEMPLATE,
-//                    compilationDTO.getHasClassloader().getClass().getName()));
-//        }
-//        try {
-//            HasKnowledgeBuilder hasKnowledgeBuilder = (HasKnowledgeBuilder) compilationDTO.getHasClassloader();
-//            KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl) hasKnowledgeBuilder.getKnowledgeBuilder();
-//            final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-//            KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(compilationDTO.getFields(),
-//                    compilationDTO.getPMMLModel(), fieldTypeMap);
-//            final DroolsCompilationDTO<T> droolsCompilationDTO =
-//                    DroolsCompilationDTO.fromCompilationDTO(compilationDTO, fieldTypeMap);
-//            Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(droolsCompilationDTO);
-//            compilationDTO.compileAndLoadClass(sourcesMap);
-//            PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, compilationDTO.getPackageName());
-//            String pkgUUID = getPkgUUID(knowledgeBuilder.getReleaseId(), compilationDTO.getPackageName());
-//            packageDescr.setPreferredPkgUUID(pkgUUID);
-//            Map<String, String> rulesSourceMap = Collections.unmodifiableMap(getRulesSourceMap(packageDescr));
-//            KiePMMLDroolsModelWithSources toReturn = new KiePMMLDroolsModelWithSources(compilationDTO.getModelName(),
-//                    compilationDTO.getPackageName(),
-//                    compilationDTO.getKieMiningFields(),
-//                    compilationDTO.getKieOutputFields(),
-//                    compilationDTO.getKieTargetFields(),
-//                    sourcesMap,
-//                    pkgUUID,
-//                    rulesSourceMap);
-//            // Needed to compile Rules from PackageDescr
-//            CompositePackageDescr compositePackageDescr = new CompositePackageDescr(null, packageDescr);
-//            knowledgeBuilder.buildPackages(Collections.singletonList(compositePackageDescr));
-//            return toReturn;
-//        } catch (Exception e) {
-//            throw new KiePMMLException(e);
-//        }
-//    }
 
     public PackageDescr getPackageDescr(final KiePMMLDroolsAST kiePMMLDroolsAST, final String packageName) {
         return getBaseDescr(kiePMMLDroolsAST, packageName);
@@ -188,59 +126,4 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         types.addAll(KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(fields));
         return getKiePMMLDroolsAST(fields, model, fieldTypeMap, types);
     }
-
-//    protected Map<String, String> getRulesSourceMap(PackageDescr packageDescr) {
-//        List<GeneratedFile> generatedRuleFiles = generateRulesFiles(packageDescr);
-//        return generatedRuleFiles.stream()
-//                .collect(Collectors.toMap(generatedFile -> generatedFile.getPath()
-//                                .replace('/', '.')
-//                                .replace(".java", ""),
-//                        generatedFile -> new String(generatedFile.getData())));
-//    }
-//
-//    /**
-//     * This method depends on exec-model. Be aware in case of refactoring
-//     *
-//     * @param packageDescr
-//     * @return
-//     */
-//    protected List<GeneratedFile> generateRulesFiles(PackageDescr packageDescr) {
-//        ModelBuilderImpl<PackageSources> modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources,
-//                (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(getClass().getClassLoader()),
-//                new ReleaseIdImpl("dummy:dummy:0.0.0"),
-//                false);
-//        CompositeKnowledgeBuilder batch = modelBuilder.batch();
-//        batch.add(new DescrResource(packageDescr), ResourceType.DESCR);
-//        try {
-//            batch.build();
-//            if (modelBuilder.hasErrors()) {
-//                StringBuilder builder = new StringBuilder();
-//                for (DroolsError error : modelBuilder.getErrors().getErrors()) {
-//                    logger.error(error.toString());
-//                    builder.append(error.toString()).append(" ");
-//                }
-//                throw new KiePMMLException(builder.toString());
-//            }
-//        } catch (Exception e) {
-//            logger.error(e.getMessage());
-//            StringBuilder builder = new StringBuilder(e.getMessage()).append(" ");
-//            for (DroolsError error : modelBuilder.getErrors().getErrors()) {
-//                logger.error(error.toString());
-//                builder.append(error.toString()).append(" ");
-//            }
-//            throw new RuntimeException(builder.toString(), e);
-//        }
-//        return generateModels(modelBuilder)
-//                .stream()
-//                .map(f -> new GeneratedFile(GeneratedFile.Type.RULE, f.getPath(), new String(f.getData())))
-//                .collect(toList());
-//    }
-//
-//    protected List<GeneratedFile> generateModels(ModelBuilderImpl<PackageSources> modelBuilder) {
-//        List<GeneratedFile> toReturn = new ArrayList<>();
-//        for (PackageSources pkgSources : modelBuilder.getPackageSources()) {
-//            pkgSources.collectGeneratedFiles(toReturn);
-//        }
-//        return toReturn;
-//    }
 }

@@ -22,8 +22,7 @@
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
       <ParameterField name="eval_temperature"/>
-      <Discretize field="eval_temperature" dataType="string" mapMissingTo="mapMissing"
-                  defaultValue="defaultValue">
+      <Discretize field="eval_temperature" dataType="string" mapMissingTo="mapMissing" defaultValue="defaultValue">
         <DiscretizeBin binValue="abc">
           <Interval closure="openOpen" leftMargin="4.2" rightMargin="9.8"/>
         </DiscretizeBin>
@@ -120,12 +119,10 @@
       <OutputField name="out_der_constant" dataType="string" feature="transformedValue">
         <FieldRef field="der_constant"/>
       </OutputField>
-      <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double"
-                   optype="continuous">
+      <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double" optype="continuous">
         <FieldRef field="normcontinuous_field"/>
       </OutputField>
-      <OutputField name="out_normdiscrete_field" feature="transformedValue" dataType="string"
-                   optype="categorical">
+      <OutputField name="out_normdiscrete_field" feature="transformedValue" dataType="string" optype="categorical">
         <Apply function="norm_discrete_function">
           <FieldRef field="decision"/>
         </Apply>
@@ -154,8 +151,7 @@
           </InlineTable>
         </MapValues>
       </OutputField>
-      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double"
-                   optype="continuous">
+      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double" optype="continuous">
         <Apply function="TEXT_INDEX_NORMALIZATION_FUNCTION">
           <FieldRef field="text_input"/>
           <Constant>ui_good</Constant>

@@ -73,7 +73,7 @@ public class KiePMMLASTFactoryUtilsTest {
                 })
                 .collect(Collectors.toList());
         compoundPredicates = IntStream.range(0, 4)
-                .mapToObj(index -> PMMLModelTestUtils.getCompoundPredicate(simplePredicates, index))
+                .mapToObj( index -> PMMLModelTestUtils.getCompoundPredicate(simplePredicates, index))
                 .collect(Collectors.toList());
     }
 

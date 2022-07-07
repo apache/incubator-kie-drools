@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OPERATOR;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -43,7 +43,6 @@ public class KiePMMLASTFactoryUtils {
 
     /**
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code> or <code>OR</code>. Throws exception otherwise
-     *
      * @param compoundPredicate
      * @param fieldTypeMap
      * @return
@@ -69,7 +68,6 @@ public class KiePMMLASTFactoryUtils {
 
     /**
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>XOR</code>. Throws exception otherwise
-     *
      * @param compoundPredicate
      * @param fieldTypeMap
      * @return
@@ -92,7 +90,6 @@ public class KiePMMLASTFactoryUtils {
 
     /**
      * This method should be invoked with a <code>List&lt;SimplePredicate&gt;</code> where each <code>SimplePredicate</code> is referring to the same field
-     *
      * @param fieldName
      * @param containerOperator
      * @param simplePredicates
@@ -130,7 +127,6 @@ public class KiePMMLASTFactoryUtils {
 
     /**
      * Populate the given <code>List&lt;KiePMMLFieldOperatorValue&gt;</code> with <code>KiePMMLFieldOperatorValue</code>s generated from the given <b>predicatesByField</b>
-     *
      * @param toPopulate
      * @param booleanOperator
      * @param predicatesByField
@@ -154,7 +150,6 @@ public class KiePMMLASTFactoryUtils {
 
     /**
      * Populate the given <code>List&lt;KiePMMLFieldOperatorValue&gt;</code> with <code>KiePMMLFieldOperatorValue</code>s generated from the given <b>compoundPredicates</b>
-     *
      * @param toPopulate
      * @param compoundPredicates
      * @param fieldTypeMap

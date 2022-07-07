@@ -25,7 +25,6 @@ public class ClusteringCompilationDTO extends AbstractSpecificCompilationDTO<Clu
 
     /**
      * Private constructor
-     *
      * @param source
      */
     private ClusteringCompilationDTO(final CompilationDTO<ClusteringModel> source) {
@@ -34,7 +33,6 @@ public class ClusteringCompilationDTO extends AbstractSpecificCompilationDTO<Clu
 
     /**
      * Default builder
-     *
      * @param source
      * @return
      */

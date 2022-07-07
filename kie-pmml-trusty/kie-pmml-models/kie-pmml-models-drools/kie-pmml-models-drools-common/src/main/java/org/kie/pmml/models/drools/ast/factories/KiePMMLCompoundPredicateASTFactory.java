@@ -109,7 +109,6 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
     /**
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
      * <XOR>XOR</XOR>. Throws exception otherwise
-     *
      * @param toAccumulate
      * @param statusToSet
      * @param reasonCodeAndValue
@@ -128,7 +127,6 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
     /**
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
      * <XOR>XOR</XOR>. Throws exception otherwise
-     *
      * @param result
      * @param isFinalLeaf
      */
@@ -143,7 +141,6 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
     /**
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
      * <XOR>XOR</XOR>. Throws exception otherwise
-     *
      * @param statusToSet
      */
     private KiePMMLDroolsRule.Builder getBuilderForCompoundPredicateAndOrXor(final String statusToSet) {
@@ -180,7 +177,6 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
     /**
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>SURROGATE</code>.
      * Throws exception otherwise
-     *
      * @param agendaActivationGroup
      * @param statusToSet
      */

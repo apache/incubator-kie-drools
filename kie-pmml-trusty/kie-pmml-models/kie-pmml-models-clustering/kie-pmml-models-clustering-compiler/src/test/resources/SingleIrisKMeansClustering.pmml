@@ -18,8 +18,7 @@
     </DataField>
     <DataField name="class" optype="continuous" dataType="string"/>
   </DataDictionary>
-  <ClusteringModel modelName="SingleIrisKMeansClustering" functionName="clustering" modelClass="centerBased"
-                   numberOfClusters="4">
+  <ClusteringModel modelName="SingleIrisKMeansClustering" functionName="clustering" modelClass="centerBased" numberOfClusters="4">
     <MiningSchema>
       <MiningField name="sepal_length" invalidValueTreatment="asIs"/>
       <MiningField name="sepal_width" invalidValueTreatment="asIs"/>

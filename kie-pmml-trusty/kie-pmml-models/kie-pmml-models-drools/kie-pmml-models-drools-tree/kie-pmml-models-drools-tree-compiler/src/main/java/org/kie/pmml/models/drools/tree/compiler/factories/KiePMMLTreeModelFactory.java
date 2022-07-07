@@ -77,7 +77,6 @@ public class KiePMMLTreeModelFactory {
      * This method returns a <code>KiePMMLDroolsAST</code> out of the given <code>DataDictionary</code> and
      * <code>TreeModel</code>.
      * <b>It also populate the given <code>Map</code> that has to be used for final <code>KiePMMLTreeModel</code></b>
-     *
      * @param fields
      * @param model
      * @param fieldTypeMap

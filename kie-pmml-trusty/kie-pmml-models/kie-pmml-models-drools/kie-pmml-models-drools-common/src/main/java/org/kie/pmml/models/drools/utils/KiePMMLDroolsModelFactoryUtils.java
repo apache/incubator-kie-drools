@@ -81,12 +81,11 @@ public class KiePMMLDroolsModelFactoryUtils {
                        miningFunction,
                        droolsCompilationDTO.getPackageName());
         addFieldTypeMapPopulation(constructorDeclaration.getBody(), droolsCompilationDTO.getFieldTypeMap());
-        return cloneCU;
+         return cloneCU;
     }
 
     /**
      * Define the <b>targetField</b>, the <b>miningFunction</b> and the <b>pmmlMODEL</b> inside the constructor
-     *
      * @param model
      * @param constructorDeclaration
      * @param tableName
@@ -114,7 +113,6 @@ public class KiePMMLDroolsModelFactoryUtils {
 
     /**
      * Populate the <b>fieldTypeMap</b> <code>Map&lt;String, KiePMMLOriginalTypeGeneratedType&gt;</code>
-     *
      * @param body
      * @param fieldTypeMap
      */

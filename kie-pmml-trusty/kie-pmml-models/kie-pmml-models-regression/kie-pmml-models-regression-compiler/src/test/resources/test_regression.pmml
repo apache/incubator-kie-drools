@@ -1,6 +1,4 @@
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2"
-      xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd"
-      xmlns="http://www.dmg.org/PMML-4_2">
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
   <Header copyright="JBoss"/>
   <DataDictionary numberOfFields="5">
     <DataField dataType="double" name="fld1" optype="continuous"/>
@@ -12,8 +10,7 @@
     <DataField dataType="double" name="fld4" optype="continuous"/>
     <DataField dataType="double" name="fld5" optype="continuous"/>
   </DataDictionary>
-  <RegressionModel algorithmName="linearRegression" functionName="regression" modelName="LinReg"
-                   normalizationMethod="logit" targetFieldName="fld4">
+  <RegressionModel algorithmName="linearRegression" functionName="regression" modelName="LinReg" normalizationMethod="logit" targetFieldName="fld4">
     <MiningSchema>
       <MiningField name="fld1"/>
       <MiningField name="fld2"/>

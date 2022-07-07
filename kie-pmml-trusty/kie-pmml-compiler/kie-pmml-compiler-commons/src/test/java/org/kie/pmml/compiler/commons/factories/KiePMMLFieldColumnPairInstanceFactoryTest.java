@@ -27,8 +27,7 @@ public class KiePMMLFieldColumnPairInstanceFactoryTest {
     @Test
     void getKiePMMLFieldColumnPair() {
         final FieldColumnPair toConvert = getRandomFieldColumnPair();
-        final KiePMMLFieldColumnPair retrieved =
-                KiePMMLFieldColumnPairInstanceFactory.getKiePMMLFieldColumnPair(toConvert);
+        final KiePMMLFieldColumnPair retrieved = KiePMMLFieldColumnPairInstanceFactory.getKiePMMLFieldColumnPair(toConvert);
         commonVerifyKiePMMLFieldColumnPair(retrieved, toConvert);
     }
 }

@@ -31,7 +31,6 @@ public class KiePMMLDroolsModelUtils {
      * is <code>DATA_TYPE.STRING</code> returns the <b>quoted</b> rawValue.
      * <p>
      * If <b>rawValue</b> is <code>null</code>, returns <code>null</code>
-     *
      * @param rawValue
      * @param targetType
      * @return

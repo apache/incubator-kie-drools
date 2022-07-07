@@ -54,7 +54,7 @@ public class KiePMMLDerivedFieldASTFactoryTest {
                 .collect(Collectors.toList());
         List<KiePMMLDroolsType> retrieved = fieldASTFactory.declareTypes(derivedFields);
         assertThat(retrieved).hasSameSizeAs(derivedFields);
-        for (int i = 0; i < derivedFields.size(); i++) {
+        for (int i = 0; i < derivedFields.size(); i++)  {
             commonValidateKiePMMLDroolsType(retrieved.get(i), derivedFields.get(i));
         }
     }

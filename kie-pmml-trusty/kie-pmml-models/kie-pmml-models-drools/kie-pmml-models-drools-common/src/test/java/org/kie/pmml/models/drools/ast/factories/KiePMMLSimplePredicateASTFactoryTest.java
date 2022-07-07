@@ -249,8 +249,8 @@ public class KiePMMLSimplePredicateASTFactoryTest {
 
     private SimplePredicate getSimplePredicate(final String predicateName,
                                                final Object value,
-                                               final SimplePredicate.Operator operator,
-                                               final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+                                                     final SimplePredicate.Operator operator,
+                                                     final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         fieldTypeMap.put(predicateName,
                          new KiePMMLOriginalTypeGeneratedType(DataType.STRING.value(),
                                                               getSanitizedClassName(predicateName.toUpperCase())));

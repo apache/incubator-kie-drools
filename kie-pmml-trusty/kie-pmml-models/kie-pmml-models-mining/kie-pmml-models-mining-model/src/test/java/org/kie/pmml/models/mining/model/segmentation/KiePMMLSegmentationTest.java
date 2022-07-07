@@ -54,4 +54,8 @@ public class KiePMMLSegmentationTest {
         KIE_PMML_SEGMENTATION = BUILDER.withSegments(segments).build();
         assertThat(KIE_PMML_SEGMENTATION.getSegments()).isEqualTo(segments);
     }
+
+
+
+
 }

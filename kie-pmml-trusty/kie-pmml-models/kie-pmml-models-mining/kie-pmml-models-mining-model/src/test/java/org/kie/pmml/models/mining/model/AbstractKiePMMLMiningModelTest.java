@@ -39,7 +39,7 @@ public abstract class AbstractKiePMMLMiningModelTest {
 
     public static List<KiePMMLSegment> getKiePMMLSegments() {
         return IntStream.range(0, 3)
-                .mapToObj(i -> getKiePMMLSegment("SEGMENT-" + i))
+                .mapToObj(i -> getKiePMMLSegment("SEGMENT-"+i))
                 .collect(Collectors.toList());
     }
 
@@ -56,6 +56,6 @@ public abstract class AbstractKiePMMLMiningModelTest {
     }
 
     public static KiePMMLModel getKiePMMLModel(String modelName) {
-        return new KiePMMLTestingModel("fileName", modelName, Collections.emptyList());
+        return new KiePMMLTestingModel(modelName, Collections.emptyList());
     }
 }

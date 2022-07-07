@@ -15,8 +15,7 @@
     <DataField name="p_len" optype="continuous" dataType="float"/>
     <DataField name="p_wid" optype="continuous" dataType="float"/>
   </DataDictionary>
-  <MiningModel modelName="MiningWithNestedRefers" functionName="classification"
-               algorithmName="sklearn.ensemble._forest.RandomForestClassifier">
+  <MiningModel modelName="MiningWithNestedRefers" functionName="classification" algorithmName="sklearn.ensemble._forest.RandomForestClassifier">
     <MiningSchema>
       <MiningField name="class" usageType="target"/>
       <MiningField name="p_wid"/>
@@ -25,12 +24,9 @@
       <MiningField name="s_len"/>
     </MiningSchema>
     <Output>
-      <OutputField name="probability(Iris-setosa)" optype="continuous" dataType="double" feature="probability"
-                   value="Iris-setosa"/>
-      <OutputField name="probability(Iris-versicolor)" optype="continuous" dataType="double" feature="probability"
-                   value="Iris-versicolor"/>
-      <OutputField name="probability(Iris-virginica)" optype="continuous" dataType="double" feature="probability"
-                   value="Iris-virginica"/>
+      <OutputField name="probability(Iris-setosa)" optype="continuous" dataType="double" feature="probability" value="Iris-setosa"/>
+      <OutputField name="probability(Iris-versicolor)" optype="continuous" dataType="double" feature="probability" value="Iris-versicolor"/>
+      <OutputField name="probability(Iris-virginica)" optype="continuous" dataType="double" feature="probability" value="Iris-virginica"/>
     </Output>
     <LocalTransformations>
       <DerivedField name="double(p_wid)" optype="continuous" dataType="double">
@@ -49,7 +45,7 @@
     <Segmentation multipleModelMethod="selectFirst">
       <Segment id="1">
         <True/>
-        <RegressionModel functionName="classification">
+        <RegressionModel functionName="classification" >
           <MiningSchema>
             <MiningField name="double(p_wid)"/>
             <MiningField name="double(s_wid)"/>
@@ -57,12 +53,9 @@
             <MiningField name="double(s_len)"/>
           </MiningSchema>
           <Output>
-            <OutputField name="Probability_setosa" optype="continuous" dataType="double"
-                         feature="probability" value="setosa"/>
-            <OutputField name="Probability_versicolor" optype="continuous" dataType="double"
-                         feature="probability" value="versicolor"/>
-            <OutputField name="Probability_virginica" optype="continuous" dataType="double"
-                         feature="probability" value="virginica"/>
+            <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability" value="setosa"/>
+            <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability" value="versicolor"/>
+            <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability" value="virginica"/>
           </Output>
 
           <RegressionTable targetCategory="setosa" intercept="0.11822288946815">

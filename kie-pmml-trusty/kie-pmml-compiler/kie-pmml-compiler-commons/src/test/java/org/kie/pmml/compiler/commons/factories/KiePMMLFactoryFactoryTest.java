@@ -28,8 +28,7 @@ public class KiePMMLFactoryFactoryTest {
     @Test
     void getInstantiationExpression() {
         final String kiePMMLModelClass = "org.kie.model.ClassModel";
-        Expression retrieved =
-                org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getInstantiationExpression(kiePMMLModelClass, true);
+        Expression retrieved = KiePMMLFactoryFactory.getInstantiationExpression(kiePMMLModelClass, true);
         validateNotCodegen(retrieved, kiePMMLModelClass);
         retrieved = KiePMMLFactoryFactory.getInstantiationExpression(kiePMMLModelClass, false);
         validateCodegen(retrieved, kiePMMLModelClass);

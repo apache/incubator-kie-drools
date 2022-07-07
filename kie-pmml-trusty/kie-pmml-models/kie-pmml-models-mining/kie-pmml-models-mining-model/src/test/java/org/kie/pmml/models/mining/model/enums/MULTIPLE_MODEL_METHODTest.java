@@ -53,19 +53,19 @@ import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.WEIGH
 public class MULTIPLE_MODEL_METHODTest {
 
     private final Map<MULTIPLE_MODEL_METHOD, String> EXISTING_VALUES = Stream.of(
-                    new AbstractMap.SimpleEntry<>(MAJORITY_VOTE, "majorityVote"),
-                    new AbstractMap.SimpleEntry<>(WEIGHTED_MAJORITY_VOTE, "weightedMajorityVote"),
-                    new AbstractMap.SimpleEntry<>(AVERAGE, "average"),
-                    new AbstractMap.SimpleEntry<>(WEIGHTED_AVERAGE, "weightedAverage"),
-                    new AbstractMap.SimpleEntry<>(MEDIAN, "median"),
-                    new AbstractMap.SimpleEntry<>(WEIGHTED_MEDIAN, "x-weightedMedian"),
-                    new AbstractMap.SimpleEntry<>(MAX, "max"),
-                    new AbstractMap.SimpleEntry<>(SUM, "sum"),
-                    new AbstractMap.SimpleEntry<>(WEIGHTED_SUM, "x-weightedSum"),
-                    new AbstractMap.SimpleEntry<>(SELECT_FIRST, "selectFirst"),
-                    new AbstractMap.SimpleEntry<>(SELECT_ALL, "selectAll"),
-                    new AbstractMap.SimpleEntry<>(MODEL_CHAIN, "modelChain")
-            )
+            new AbstractMap.SimpleEntry<>(MAJORITY_VOTE, "majorityVote"),
+            new AbstractMap.SimpleEntry<>(WEIGHTED_MAJORITY_VOTE, "weightedMajorityVote"),
+            new AbstractMap.SimpleEntry<>(AVERAGE, "average"),
+            new AbstractMap.SimpleEntry<>(WEIGHTED_AVERAGE, "weightedAverage"),
+            new AbstractMap.SimpleEntry<>(MEDIAN, "median"),
+            new AbstractMap.SimpleEntry<>(WEIGHTED_MEDIAN, "x-weightedMedian"),
+            new AbstractMap.SimpleEntry<>(MAX, "max"),
+            new AbstractMap.SimpleEntry<>(SUM, "sum"),
+            new AbstractMap.SimpleEntry<>(WEIGHTED_SUM, "x-weightedSum"),
+            new AbstractMap.SimpleEntry<>(SELECT_FIRST, "selectFirst"),
+            new AbstractMap.SimpleEntry<>(SELECT_ALL, "selectAll"),
+            new AbstractMap.SimpleEntry<>(MODEL_CHAIN, "modelChain")
+    )
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     private final List<MULTIPLE_MODEL_METHOD> UNIMPLEMENTED = Arrays.asList(
@@ -219,7 +219,7 @@ public class MULTIPLE_MODEL_METHODTest {
     @Test
     void applyWEIGHTED_MEDIANNumbers() {
         Map<String, Object> expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(true);
-        double weightedMedian = (Double) expectedKiePMMLValueWeightMap.get("weightedMedian");
+        double weightedMedian = (Double)  expectedKiePMMLValueWeightMap.get("weightedMedian");
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) WEIGHTED_MEDIAN.applyPrediction(inputData);
@@ -228,7 +228,7 @@ public class MULTIPLE_MODEL_METHODTest {
         weightedMedian = (Double) expectedKiePMMLValueWeightMap.get("weightedMedian");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
-        retrieved = (Double) WEIGHTED_MEDIAN.applyPrediction(inputData);
+        retrieved = (Double)  WEIGHTED_MEDIAN.applyPrediction(inputData);
         assertThat(retrieved).isCloseTo(weightedMedian, Offset.offset(0.0000000000001));
     }
 
@@ -249,7 +249,7 @@ public class MULTIPLE_MODEL_METHODTest {
     @Test
     void applyMAXNumbers() {
         Map<String, Object> expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(true);
-        double max = (Double) expectedKiePMMLValueWeightMap.get("max");
+        double max = (Double)  expectedKiePMMLValueWeightMap.get("max");
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) MAX.applyPrediction(inputData);
@@ -258,7 +258,7 @@ public class MULTIPLE_MODEL_METHODTest {
         max = (Double) expectedKiePMMLValueWeightMap.get("max");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
-        retrieved = (Double) MAX.applyPrediction(inputData);
+        retrieved = (Double)  MAX.applyPrediction(inputData);
         assertThat(retrieved).isCloseTo(max, Offset.offset(0.0000000000001));
     }
 
@@ -279,7 +279,7 @@ public class MULTIPLE_MODEL_METHODTest {
     @Test
     void applySUMNumbers() {
         Map<String, Object> expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(true);
-        double sum = (Double) expectedKiePMMLValueWeightMap.get("sum");
+        double sum = (Double)  expectedKiePMMLValueWeightMap.get("sum");
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) SUM.applyPrediction(inputData);
@@ -288,7 +288,7 @@ public class MULTIPLE_MODEL_METHODTest {
         sum = (Double) expectedKiePMMLValueWeightMap.get("sum");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
-        retrieved = (Double) SUM.applyPrediction(inputData);
+        retrieved = (Double)  SUM.applyPrediction(inputData);
         assertThat(retrieved).isCloseTo(sum, Offset.offset(0.0000000000001));
     }
 
@@ -309,7 +309,7 @@ public class MULTIPLE_MODEL_METHODTest {
     @Test
     void applyWEIGHTED_SUMNumbers() {
         Map<String, Object> expectedKiePMMLValueWeightMap = getExpectedKiePMMLValueWeightMap(true);
-        double weightsSum = (Double) expectedKiePMMLValueWeightMap.get("weightedSum");
+        double weightsSum = (Double)  expectedKiePMMLValueWeightMap.get("weightedSum");
         LinkedHashMap<String, KiePMMLNameValue> inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         double retrieved = (Double) WEIGHTED_SUM.applyPrediction(inputData);
@@ -318,7 +318,7 @@ public class MULTIPLE_MODEL_METHODTest {
         weightsSum = (Double) expectedKiePMMLValueWeightMap.get("weightedSum");
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
-        retrieved = (Double) WEIGHTED_SUM.applyPrediction(inputData);
+        retrieved = (Double)  WEIGHTED_SUM.applyPrediction(inputData);
         assertThat(retrieved).isCloseTo(weightsSum, Offset.offset(0.0000000000001));
     }
 
@@ -348,7 +348,7 @@ public class MULTIPLE_MODEL_METHODTest {
         inputData =
                 (LinkedHashMap<String, KiePMMLNameValue>) expectedKiePMMLValueWeightMap.get("inputData");
         first = ((KiePMMLValueWeight) inputData.entrySet().iterator().next().getValue().getValue()).getValue();
-        retrieved = (Double) SELECT_FIRST.applyPrediction(inputData);
+        retrieved = (Double)  SELECT_FIRST.applyPrediction(inputData);
         assertThat(retrieved).isCloseTo(first, Offset.offset(0.0000000000001));
     }
 
@@ -361,7 +361,7 @@ public class MULTIPLE_MODEL_METHODTest {
         inputData.put("ValueC", new KiePMMLNameValue("valuec", "dssd"));
         inputData.put("ValueD", new KiePMMLNameValue("valuex", "vfdsvsdeeee"));
         inputData.put("ValueE", new KiePMMLNameValue("valueb", "vsd"));
-        Object retrieved = SELECT_FIRST.applyPrediction(inputData);
+        Object retrieved =  SELECT_FIRST.applyPrediction(inputData);
         assertThat(retrieved).isEqualTo(EXPECTED);
     }
 
@@ -478,7 +478,7 @@ public class MULTIPLE_MODEL_METHODTest {
             }
         }
         toReturn.put("weightedMedian", weightedMedian);
-        double max = valueWeightList.get(valueWeightList.size() - 1).getValue();
+        double max = valueWeightList.get(valueWeightList.size()-1).getValue();
         toReturn.put("max", max);
         return toReturn;
     }

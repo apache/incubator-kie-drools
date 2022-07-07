@@ -49,8 +49,7 @@ public class KiePMMLDescrTypesFactoryTest {
         KiePMMLDescrTypesFactory.factory(builder).declareTypes(types);
         assertThat(builder.getDescr().getTypeDeclarations()).hasSize(2);
         IntStream.range(0, types.size())
-                .forEach(i -> commonVerifyTypeDeclarationDescr(Objects.requireNonNull(types.get(i)),
-                                                               builder.getDescr().getTypeDeclarations().get(i)));
+                .forEach(i -> commonVerifyTypeDeclarationDescr(Objects.requireNonNull(types.get(i)), builder.getDescr().getTypeDeclarations().get(i)));
     }
 
     @Test

@@ -29,8 +29,7 @@ public class KiePMMLRowInstanceFactoryTest {
     @Test
     void getKiePMMLRow() {
         Row toConvert = getRandomRow();
-        KiePMMLRow retrieved =
-                org.kie.pmml.compiler.commons.factories.KiePMMLRowInstanceFactory.getKiePMMLRow(toConvert);
+        KiePMMLRow retrieved = KiePMMLRowInstanceFactory.getKiePMMLRow(toConvert);
         commonVerifyKiePMMLRow(retrieved, toConvert);
         toConvert = getRandomRowWithCells();
         retrieved = KiePMMLRowInstanceFactory.getKiePMMLRow(toConvert);
