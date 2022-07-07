@@ -16,12 +16,12 @@
 package org.kie.efesto.compilationmanager.core.utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.kie.efesto.common.api.io.IndexFile;
@@ -55,13 +55,13 @@ public class CompilationManagerUtils {
     private CompilationManagerUtils() {
     }
 
-    public static Collection<IndexFile> getIndexFilesWithProcessedResource(EfestoResource toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static Set<IndexFile> getIndexFilesWithProcessedResource(EfestoResource toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
-        Collection<IndexFile> toPopulate = new ArrayList<>();
+        Set<IndexFile> toPopulate = new HashSet<>();
         for (EfestoCompilationOutput compilationOutput : retrieved.get().processResource(toProcess, memoryCompilerClassLoader)) {
             if (compilationOutput instanceof EfestoCallableOutput) {
                 IndexFile indexFile = CompilationManagerUtils.getIndexFile((EfestoCallableOutput) compilationOutput);
