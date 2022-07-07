@@ -16,11 +16,15 @@
 package org.kie.efesto.runtimemanager.api.utils;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
@@ -74,6 +78,38 @@ public class GeneratedResourceUtils {
                 return Optional.empty();
             }
         });
+    }
+
+    public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(String modelType) {
+        Collection<GeneratedExecutableResource> toReturn = new HashSet<>();
+        getIndexFile(modelType).ifPresent(indexFile -> {
+            try {
+                GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
+                toReturn.addAll(generatedResources.stream()
+                                        .filter(generatedResource -> generatedResource instanceof GeneratedExecutableResource)
+                                        .map(GeneratedExecutableResource.class::cast)
+                                        .collect(Collectors.toSet()));
+            } catch (IOException e) {
+                logger.debug("Failed to read GeneratedClassResource from {}.", indexFile.getName(), e);
+            }
+        });
+        return toReturn;
+    }
+
+    public static Collection<GeneratedClassResource> getAllGeneratedClassResources(String modelType) {
+        Collection<GeneratedClassResource> toReturn = new HashSet<>();
+        getIndexFile(modelType).ifPresent(indexFile -> {
+            try {
+                GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
+                toReturn.addAll(generatedResources.stream()
+                        .filter(generatedResource -> generatedResource instanceof GeneratedClassResource)
+                        .map(GeneratedClassResource.class::cast)
+                        .collect(Collectors.toSet()));
+            } catch (IOException e) {
+                logger.debug("Failed to read GeneratedClassResource from {}.", indexFile.getName(), e);
+            }
+        });
+        return toReturn;
     }
 
     public static Optional<IndexFile> getIndexFile(String modelType) {

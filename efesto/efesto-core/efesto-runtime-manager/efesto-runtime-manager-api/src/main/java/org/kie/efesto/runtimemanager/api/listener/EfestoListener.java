@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.efesto.compilationmanager.core.mocks;
+package org.kie.efesto.runtimemanager.api.listener;
 
-import org.kie.efesto.common.api.model.FRI;
+public interface EfestoListener {
 
-public class MockEfestoRedirectOutputA extends AbstractMockOutput<String> {
-
-    public MockEfestoRedirectOutputA() {
-        super(new FRI("this/is/mock/friA", "mock"), "MockEfestoRedirectOutputA");
-    }
 }

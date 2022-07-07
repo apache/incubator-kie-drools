@@ -16,11 +16,10 @@
 package org.kie.efesto.compilationmanager.core.mocks;
 
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.compilationmanager.api.model.EfestoRedirectOutput;
 
-public class MockEfestoRedirectOutputC extends EfestoRedirectOutput<String> {
+public class MockEfestoRedirectOutputC extends AbstractMockOutput<String> {
 
     public MockEfestoRedirectOutputC() {
-        super(new FRI("this/is/mock/friC", "mock"), "notmock", "MockEfestoRedirectOutputC");
+        super(new FRI("this/is/mock/friC", "mock"), "MockEfestoRedirectOutputC");
     }
 }

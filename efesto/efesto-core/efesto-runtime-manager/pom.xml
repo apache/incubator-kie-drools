@@ -11,7 +11,7 @@
   </parent>
   <packaging>pom</packaging>
 
-  <artifactId>runtime-manager</artifactId>
+  <artifactId>efesto-runtime-manager</artifactId>
   <name>Efesto :: Runtime :: Manager</name>
 
   <modules>
