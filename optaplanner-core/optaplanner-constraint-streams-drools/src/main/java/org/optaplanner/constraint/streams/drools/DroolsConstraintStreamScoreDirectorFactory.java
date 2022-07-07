@@ -17,7 +17,7 @@ import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.KieBaseBuilder;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
