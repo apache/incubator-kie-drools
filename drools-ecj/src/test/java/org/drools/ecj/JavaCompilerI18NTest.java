@@ -22,7 +22,7 @@ import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.kie.memorycompiler.resources.MemoryResourceStore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaCompilerI18NTest {
 
@@ -43,6 +43,6 @@ public class JavaCompilerI18NTest {
         settings.setTargetVersion( "1.5" );
         EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings, "" );
         CompilationResult res = compiler.compile( classes.toArray( new String[classes.size()] ), reader, store );
-        assertEquals(res.getErrors().length, 0);
+        assertThat(0).isEqualTo(res.getErrors().length);
 	}
 }

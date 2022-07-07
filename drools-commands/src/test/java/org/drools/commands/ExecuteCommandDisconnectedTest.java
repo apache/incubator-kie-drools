@@ -32,8 +32,6 @@ import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.CommandFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class ExecuteCommandDisconnectedTest {
 
@@ -60,7 +58,7 @@ public class ExecuteCommandDisconnectedTest {
 
         assertThat(results.getFactHandle("handle")).isNotNull();
 
-        assertTrue(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
+        assertThat(((DefaultFactHandle) results.getFactHandle("handle")).isDisconnected()).isTrue();
 
         cmds = new ArrayList();
         cmds.add(new InsertObjectCommand(new String("Hi!"), "handle"));
@@ -73,7 +71,7 @@ public class ExecuteCommandDisconnectedTest {
 
         assertThat(results.getFactHandle("handle")).isNotNull();
 
-        assertFalse(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
+        assertThat(((DefaultFactHandle) results.getFactHandle("handle")).isDisconnected()).isFalse();
 
     }
 }

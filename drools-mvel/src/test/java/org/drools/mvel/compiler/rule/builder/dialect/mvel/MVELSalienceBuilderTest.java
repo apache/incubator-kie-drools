@@ -54,7 +54,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MVELSalienceBuilderTest {
     private RuleBuildContext context;
@@ -131,8 +131,7 @@ public class MVELSalienceBuilderTest {
         AgendaItem item = new AgendaItemImpl(0, tuple, 0, null, rtn, null);
 
 
-        assertEquals( 25,
-                      context.getRule().getSalience().getValue( item, context.getRule(), ksession ) );
+        assertThat(context.getRule().getSalience().getValue(item, context.getRule(), ksession)).isEqualTo(25);
 
     }
 
@@ -167,9 +166,7 @@ public class MVELSalienceBuilderTest {
                 errors++;
             }
         }
-        assertEquals( "There shouldn't be any threads in error: ",
-                      0,
-                      errors );
+        assertThat(errors).as("There shouldn't be any threads in error: ").isEqualTo(0);
 
     }
 
@@ -222,8 +219,7 @@ public class MVELSalienceBuilderTest {
             try {
                 Thread.sleep( 1000 );
                 for ( int i = 0; i < iterations && !halt; i++ ) {
-                    assertEquals( result,
-                                  salience.getValue( item, rule, wm ) );
+                    assertThat(salience.getValue(item, rule, wm)).isEqualTo(result);
                     Thread.currentThread().yield();
                 }
             } catch ( Throwable e ) {

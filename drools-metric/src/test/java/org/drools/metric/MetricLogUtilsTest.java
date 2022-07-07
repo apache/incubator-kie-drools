@@ -31,7 +31,6 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class MetricLogUtilsTest extends AbstractMetricTest {
 
@@ -65,7 +64,7 @@ public class MetricLogUtilsTest extends AbstractMetricTest {
 
         int fired = ksession.fireAllRules();
         ksession.dispose();
-        assertEquals(36, fired);
+        assertThat(fired).isEqualTo(36);
 
         // 2 nodes expected
         Collection<Timer> timers = Search.in(registry)
@@ -113,7 +112,7 @@ public class MetricLogUtilsTest extends AbstractMetricTest {
 
         int fired = ksession.fireAllRules();
         ksession.dispose();
-        assertEquals(20, fired);
+        assertThat(fired).isEqualTo(20);
 
         // 1 node expected
         Collection<Timer> timers = Search.in(registry)
@@ -155,7 +154,7 @@ public class MetricLogUtilsTest extends AbstractMetricTest {
 
         int fired = ksession.fireAllRules();
         ksession.dispose();
-        assertEquals(90, fired);
+        assertThat(fired).isEqualTo(90);
 
         // 2 nodes expected
         Collection<Timer> timers = Search.in(registry)
@@ -197,7 +196,7 @@ public class MetricLogUtilsTest extends AbstractMetricTest {
 
         int fired = ksession.fireAllRules();
         ksession.dispose();
-        assertEquals(90, fired);
+        assertThat(fired).isEqualTo(90);
 
         // 2 nodes expected
         Collection<Timer> timers = Search.in(registry)
@@ -242,7 +241,7 @@ public class MetricLogUtilsTest extends AbstractMetricTest {
 
         int fired = ksession.fireAllRules();
         ksession.dispose();
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
 
         // 1 node expected.
         Collection<Timer> timers = Search.in(registry)
@@ -286,7 +285,7 @@ public class MetricLogUtilsTest extends AbstractMetricTest {
 
         int fired = ksession.fireAllRules();
         ksession.dispose();
-        assertEquals(5, fired);
+        assertThat(fired).isEqualTo(5);
 
         // 1 node expected
         Collection<Timer> timers = Search.in(registry)
@@ -329,7 +328,7 @@ public class MetricLogUtilsTest extends AbstractMetricTest {
 
         int fired = ksession.fireAllRules();
         ksession.dispose();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
 
         // 1 node expected
         Collection<Timer> timers = Search.in(registry)
