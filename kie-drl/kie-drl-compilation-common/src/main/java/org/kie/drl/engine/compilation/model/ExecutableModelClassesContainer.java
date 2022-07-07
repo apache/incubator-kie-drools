@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.efesto.compilationmanager.core.mocks;
+package org.kie.drl.engine.compilation.model;
+
+import java.util.List;
+import java.util.Map;
 
 import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
 
-public class MockEfestoRedirectOutputA extends AbstractMockOutput<String> {
-
-    public MockEfestoRedirectOutputA() {
-        super(new FRI("this/is/mock/friA", "mock"), "MockEfestoRedirectOutputA");
+public class ExecutableModelClassesContainer extends EfestoCallableOutputClassesContainer {
+    public ExecutableModelClassesContainer(FRI fri, List<String> fullClassNames, Map<String, byte[]> compiledClassMap) {
+        super(fri, fullClassNames, compiledClassMap);
     }
 }

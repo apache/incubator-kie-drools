@@ -23,7 +23,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.compilationmanager.api.model.EfestoRedirectOutput;
+import org.kie.efesto.compilationmanager.core.mocks.AbstractMockOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputA;
@@ -42,7 +42,7 @@ class TestCompilationManagerImpl {
     private static CompilationManager compilationManager;
     private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 
-    private static final List<Class<? extends EfestoRedirectOutput>> MANAGED_Efesto_RESOURCES = Arrays.asList(MockEfestoRedirectOutputA.class, MockEfestoRedirectOutputB.class, MockEfestoRedirectOutputC.class);
+    private static final List<Class<? extends AbstractMockOutput>> MANAGED_Efesto_RESOURCES = Arrays.asList(MockEfestoRedirectOutputA.class, MockEfestoRedirectOutputB.class, MockEfestoRedirectOutputC.class);
 
 
     @BeforeAll
@@ -55,7 +55,7 @@ class TestCompilationManagerImpl {
     void processResource() {
         MANAGED_Efesto_RESOURCES.forEach(managedResource -> {
             try {
-                EfestoRedirectOutput toProcess = managedResource.getDeclaredConstructor().newInstance();
+                AbstractMockOutput toProcess = managedResource.getDeclaredConstructor().newInstance();
                 Collection<IndexFile> retrieved = compilationManager.processResource(memoryCompilerClassLoader,
                                                                                      toProcess);
                 assertEquals(1, retrieved.size());
@@ -71,10 +71,10 @@ class TestCompilationManagerImpl {
 
     @Test
     void processResources() {
-        List<EfestoRedirectOutput> toProcess = new ArrayList<>();
+        List<AbstractMockOutput> toProcess = new ArrayList<>();
         MANAGED_Efesto_RESOURCES.forEach(managedResource -> {
             try {
-                EfestoRedirectOutput toAdd = managedResource.getDeclaredConstructor().newInstance();
+                AbstractMockOutput toAdd = managedResource.getDeclaredConstructor().newInstance();
                 toProcess.add(toAdd);
             } catch (Exception e) {
                 fail(e);
