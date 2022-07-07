@@ -23,7 +23,7 @@ import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.KieModuleRepo;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.drools.wiring.api.ResourceProvider;
 import org.junit.After;
 import org.junit.Before;

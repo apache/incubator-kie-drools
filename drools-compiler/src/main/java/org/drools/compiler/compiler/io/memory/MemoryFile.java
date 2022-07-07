@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
-import org.drools.util.io.InputStreamResource;
+import org.drools.io.InputStreamResource;
 import org.drools.util.PortablePath;
 
 public class MemoryFile implements File,

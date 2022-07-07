@@ -29,9 +29,9 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.drools.util.io.ByteArrayResource;
-import org.drools.util.io.FileSystemResource;
-import org.drools.util.io.InternalResource;
+import org.drools.io.ByteArrayResource;
+import org.drools.io.FileSystemResource;
+import org.drools.io.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.slf4j.Logger;

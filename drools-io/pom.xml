@@ -12,15 +12,23 @@
     </parent>
 
     <groupId>org.drools</groupId>
-    <artifactId>drools-util</artifactId>
+    <artifactId>drools-io</artifactId>
 
-    <name>Drools :: Util</name>
+    <name>Drools :: IO</name>
 
     <properties>
-        <java.module.name>org.drools.util</java.module.name>
+        <java.module.name>org.drools.io</java.module.name>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-util</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

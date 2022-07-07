@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.util.io;
+package org.drools.io;
 
 import org.drools.util.StringUtils;
 

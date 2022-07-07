@@ -33,7 +33,7 @@ import org.drools.drl.parser.DroolsError;
 import org.drools.model.codegen.execmodel.GeneratedFile;
 import org.drools.model.codegen.execmodel.ModelBuilderImpl;
 import org.drools.model.codegen.execmodel.PackageSources;
-import org.drools.util.io.DescrResource;
+import org.drools.io.DescrResource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.pmml.api.enums.DATA_TYPE;
