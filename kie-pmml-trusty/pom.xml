@@ -26,8 +26,6 @@
     <module>kie-pmml-commons</module>
     <module>kie-pmml-compiler</module>
     <module>kie-pmml-evaluator</module>
-<!--    <module>kie-pmml-models-archetype</module>-->
-<!--    <module>kie-pmml-models-drools-archetype</module>-->
     <module>kie-pmml-models</module>
     <module>kie-pmml-benchmarks</module>
     <module>kie-pmml-dependencies</module>
