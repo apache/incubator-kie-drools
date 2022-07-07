@@ -33,23 +33,24 @@ public class JavaParserUtilsTest {
     private static final String TEMPLATE_CLASS = "Template";
     private static final String NOT_PARSABLE_FILE = "Unparsable.tmpl";
 
+
     @Test
     void getFromFileName() {
-        CompilationUnit retrieved = org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName(TEMPLATE_FILE);
+        CompilationUnit retrieved = JavaParserUtils.getFromFileName(TEMPLATE_FILE);
         assertThat(retrieved).isNotNull();
     }
 
     @Test
     void getFromFileNameNotParsable() {
         assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
-            org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName(NOT_PARSABLE_FILE);
+            JavaParserUtils.getFromFileName(NOT_PARSABLE_FILE);
         });
     }
 
     @Test
     void getFromFileNameNotExisting() {
         assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> {
-            org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName("not_existing");
+            JavaParserUtils.getFromFileName("not_existing");
         });
     }
 
@@ -57,11 +58,7 @@ public class JavaParserUtilsTest {
     void getKiePMMLModelCompilationUnitWithPackage() {
         String className = "ClassName";
         String packageName = "apackage";
-        CompilationUnit retrieved =
-                org.kie.pmml.compiler.commons.utils.JavaParserUtils.getKiePMMLModelCompilationUnit(className,
-                                                                                                   packageName,
-                                                                                                   TEMPLATE_FILE,
-                                                                                                   TEMPLATE_CLASS);
+        CompilationUnit retrieved = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,  TEMPLATE_FILE, TEMPLATE_CLASS);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getPackageDeclaration()).isPresent();
         assertThat(retrieved.getPackageDeclaration().get().getName().asString()).isEqualTo(packageName);
@@ -72,7 +69,7 @@ public class JavaParserUtilsTest {
     @Test
     void getKiePMMLModelCompilationUnitWithoutPackage() {
         String className = "ClassName";
-        CompilationUnit retrieved = org.kie.pmml.compiler.commons.utils.JavaParserUtils.getKiePMMLModelCompilationUnit(className, null, TEMPLATE_FILE, TEMPLATE_CLASS);
+        CompilationUnit retrieved = JavaParserUtils.getKiePMMLModelCompilationUnit(className, null,  TEMPLATE_FILE, TEMPLATE_CLASS);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getPackageDeclaration()).isNotPresent();
         assertThat(retrieved.getClassByName(TEMPLATE_CLASS)).isNotPresent();

@@ -32,8 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SegmentationMedian2MiningTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "segmentationMedian2Mining";
-
+    private static final String FILE_NAME = "segmentationMedian2Mining.pmml";
     private static final String MODEL_NAME = "SegmentationMedian2Mining";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -42,9 +41,15 @@ public class SegmentationMedian2MiningTest extends AbstractPMMLTest {
     private double y;
     private double result;
 
+    public void initSegmentationMedian2MiningTest(double x, double y, double result) {
+        this.x = x;
+        this.y = y;
+        this.result = result;
+    }
+
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -57,12 +62,6 @@ public class SegmentationMedian2MiningTest extends AbstractPMMLTest {
         });
     }
 
-    public void initSegmentationMedian2MiningTest(double x, double y, double result) {
-        this.x = x;
-        this.y = y;
-        this.result = result;
-    }
-
     @MethodSource("data")
     @ParameterizedTest
     void testSegmentationMedianMiningTest(double x, double y, double result) {
@@ -70,7 +69,7 @@ public class SegmentationMedian2MiningTest extends AbstractPMMLTest {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(result);

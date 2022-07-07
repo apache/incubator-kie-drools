@@ -22,7 +22,7 @@ import org.kie.maven.integration.MavenPomModelGenerator;
 import org.kie.util.maven.support.PomModel;
 import org.kie.util.maven.support.PomModelGenerator;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class DependentScopeNamedBeanTest {
 

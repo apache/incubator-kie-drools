@@ -69,7 +69,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.LAMBDA_PARAMETER_NAME;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.ReplacementTupla;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
 
 public class CommonCodegenUtilsTest {
@@ -82,7 +81,7 @@ public class CommonCodegenUtilsTest {
                 .collect(Collectors.toList());
         final ClassOrInterfaceDeclaration toPopulate = new ClassOrInterfaceDeclaration();
         assertThat(toPopulate.getMembers()).isEmpty();
-        org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.populateMethodDeclarations(toPopulate, toAdd);
+        CommonCodegenUtils.populateMethodDeclarations(toPopulate, toAdd);
         final NodeList<BodyDeclaration<?>> retrieved = toPopulate.getMembers();
         assertThat(retrieved).hasSameSizeAs(toAdd);
         assertThat(toAdd.stream().anyMatch(methodDeclaration -> retrieved.stream()
@@ -93,56 +92,49 @@ public class CommonCodegenUtilsTest {
     void getFilteredKiePMMLNameValueExpression() {
         String kiePMMLNameValueListParam = "KIEPMMLNAMEVALUELISTPARAM";
         String fieldNameToRef = "FIELDNAMETOREF";
-        ExpressionStmt retrieved =
-                org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef, true);
+        ExpressionStmt retrieved = CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef, true);
         assertThat(retrieved).isNotNull();
-        String expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(\"%7$s\", " +
-                                                "%5$s.getName())).findFirst();",
-                                        Optional.class.getName(),
-                                        KiePMMLNameValue.class.getName(),
-                                        OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME,
-                                        kiePMMLNameValueListParam,
-                                        LAMBDA_PARAMETER_NAME,
-                                        Objects.class.getName(),
-                                        fieldNameToRef);
+        String expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(\"%7$s\", %5$s.getName())).findFirst();",
+                Optional.class.getName(),
+                KiePMMLNameValue.class.getName(),
+                OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME,
+                kiePMMLNameValueListParam,
+                LAMBDA_PARAMETER_NAME,
+                Objects.class.getName(),
+                fieldNameToRef);
         String retrievedString = retrieved.toString();
         assertThat(retrievedString).isEqualTo(expected);
         BlockStmt body = new BlockStmt();
         body.addStatement(retrieved);
-        Parameter listParameter =
-                new Parameter(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
+        Parameter listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
         Parameter fieldRefParameter = new Parameter(parseClassOrInterfaceType(String.class.getName()), fieldNameToRef);
         commonValidateCompilation(body, Arrays.asList(listParameter, fieldRefParameter));
         //
-        retrieved =
-                org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef, false);
+        retrieved = CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef, false);
         assertThat(retrieved).isNotNull();
-        expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(%7$s, %5$s" +
-                                         ".getName())).findFirst();",
-                                 Optional.class.getName(),
-                                 KiePMMLNameValue.class.getName(),
-                                 OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME,
-                                 kiePMMLNameValueListParam,
-                                 LAMBDA_PARAMETER_NAME,
-                                 Objects.class.getName(),
-                                 fieldNameToRef);
+        expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(%7$s, %5$s.getName())).findFirst();",
+                Optional.class.getName(),
+                KiePMMLNameValue.class.getName(),
+                OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME,
+                kiePMMLNameValueListParam,
+                LAMBDA_PARAMETER_NAME,
+                Objects.class.getName(),
+                fieldNameToRef);
         retrievedString = retrieved.toString();
         assertThat(retrievedString).isEqualTo(expected);
         body = new BlockStmt();
         body.addStatement(retrieved);
-        listParameter =
-                new Parameter(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
+        listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
         fieldRefParameter = new Parameter(parseClassOrInterfaceType(String.class.getName()), fieldNameToRef);
         commonValidateCompilation(body, Arrays.asList(listParameter, fieldRefParameter));
     }
 
     @Test
     void addMapPopulation() {
-        final Map<String, MethodDeclaration> toAdd = IntStream.range(0, 5).boxed().collect(Collectors.toMap(index ->
-                                                                                                                    "KEY_" + index, index -> getMethodDeclaration("METHOD_" + index)));
+        final Map<String, MethodDeclaration> toAdd = IntStream.range(0, 5).boxed().collect(Collectors.toMap(index -> "KEY_" + index, index -> getMethodDeclaration("METHOD_" + index)));
         BlockStmt body = new BlockStmt();
         String mapName = "MAP_NAME";
-        org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation(toAdd, body, mapName);
+        CommonCodegenUtils.addMapPopulation(toAdd, body, mapName);
         NodeList<Statement> statements = body.getStatements();
         assertThat(statements).hasSize(toAdd.size());
         for (Statement statement : statements) {
@@ -189,7 +181,7 @@ public class CommonCodegenUtilsTest {
 
         String inputMapName = "testMap";
 
-        org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulationExpressions(inputMap, inputBody, inputMapName);
+        CommonCodegenUtils.addMapPopulationExpressions(inputMap, inputBody, inputMapName);
 
         NodeList<Statement> statements = inputBody.getStatements();
         assertThat(statements).hasSize(inputMap.size());
@@ -231,7 +223,7 @@ public class CommonCodegenUtilsTest {
                 .collect(Collectors.toList());
         BlockStmt body = new BlockStmt();
         String listName = "LIST_NAME";
-        org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulationByObjectCreationExpr(toAdd, body, listName);
+        CommonCodegenUtils.addListPopulationByObjectCreationExpr(toAdd, body, listName);
         NodeList<Statement> statements = body.getStatements();
         assertThat(statements).hasSameSizeAs(toAdd);
         for (Statement statement : statements) {
@@ -263,8 +255,7 @@ public class CommonCodegenUtilsTest {
 
     @Test
     void createArraysAsListExpression() {
-        ExpressionStmt retrieved =
-                org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.createArraysAsListExpression();
+        ExpressionStmt retrieved = CommonCodegenUtils.createArraysAsListExpression();
         assertThat(retrieved).isNotNull();
         String expected = "java.util.Arrays.asList();";
         String retrievedString = retrieved.toString();
@@ -276,7 +267,7 @@ public class CommonCodegenUtilsTest {
         List<String> strings = IntStream.range(0, 3)
                 .mapToObj(i -> "Element" + i)
                 .collect(Collectors.toList());
-        ExpressionStmt retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.createArraysAsListFromList(strings);
+        ExpressionStmt retrieved = CommonCodegenUtils.createArraysAsListFromList(strings);
         assertThat(retrieved).isNotNull();
         String arguments = strings.stream()
                 .map(string -> "\"" + string + "\"")
@@ -285,9 +276,9 @@ public class CommonCodegenUtilsTest {
         String retrievedString = retrieved.toString();
         assertThat(retrievedString).isEqualTo(expected);
         List<Double> doubles = IntStream.range(0, 3)
-                .mapToObj(i -> i * 0.17)
+                .mapToObj(i ->  i * 0.17)
                 .collect(Collectors.toList());
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.createArraysAsListFromList(doubles);
+        retrieved = CommonCodegenUtils.createArraysAsListFromList(doubles);
         assertThat(retrieved).isNotNull();
         arguments = doubles.stream()
                 .map(String::valueOf)
@@ -303,11 +294,8 @@ public class CommonCodegenUtilsTest {
         final Map<String, ClassOrInterfaceType> parameterNameTypeMap = new HashMap<>();
         parameterNameTypeMap.put("stringParam", parseClassOrInterfaceType(String.class.getName()));
         parameterNameTypeMap.put("kiePMMLNameValueParam", parseClassOrInterfaceType(KiePMMLNameValue.class.getName()));
-        parameterNameTypeMap.put("listParam", new ClassOrInterfaceType(null, new SimpleName(List.class.getName()),
-                                                                       NodeList.nodeList(parseClassOrInterfaceType(KiePMMLNameValue.class.getName()))));
-        MethodDeclaration retrieved =
-                org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getMethodDeclaration(methodName,
-                                                                                            parameterNameTypeMap);
+        parameterNameTypeMap.put("listParam", new ClassOrInterfaceType(null, new SimpleName(List.class.getName()), NodeList.nodeList(parseClassOrInterfaceType(KiePMMLNameValue.class.getName()))));
+        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(methodName, parameterNameTypeMap);
         commonValidateMethodDeclaration(retrieved, methodName);
         commonValidateMethodDeclarationParams(retrieved, parameterNameTypeMap);
     }
@@ -315,15 +303,14 @@ public class CommonCodegenUtilsTest {
     @Test
     void getNoParamMethodDeclarationByString() {
         String methodName = "METHOD_NAME";
-        MethodDeclaration retrieved =
-                org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getMethodDeclaration(methodName);
+        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(methodName);
         commonValidateMethodDeclaration(retrieved, methodName);
     }
 
     @Test
     void getReturnStmt() {
         String returnedVariable = "RETURNED_VARIABLE";
-        ReturnStmt retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnStmt(returnedVariable);
+        ReturnStmt retrieved = CommonCodegenUtils.getReturnStmt(returnedVariable);
         String expected = String.format("return %s;", returnedVariable);
         assertThat(retrieved.toString()).isEqualTo(expected);
     }
@@ -332,8 +319,7 @@ public class CommonCodegenUtilsTest {
     void getTypedClassOrInterfaceType() {
         String className = "CLASS_NAME";
         List<String> typesName = Arrays.asList("TypeA", "TypeB");
-        ClassOrInterfaceType retrieved =
-                org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(className, typesName);
+        ClassOrInterfaceType retrieved = CommonCodegenUtils.getTypedClassOrInterfaceTypeByTypeNames(className, typesName);
         assertThat(retrieved).isNotNull();
         String expected = String.format("%1$s<%2$s,%3$s>", className, typesName.get(0), typesName.get(1));
         assertThat(retrieved.asString()).isEqualTo(expected);
@@ -346,7 +332,7 @@ public class CommonCodegenUtilsTest {
         assignExpr.setTarget(new NameExpr("MATCH"));
         body.addStatement(assignExpr);
         final Expression value = new DoubleLiteralExpr(24.22);
-        org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setAssignExpressionValue(body, "MATCH", value);
+        CommonCodegenUtils.setAssignExpressionValue(body, "MATCH", value);
         assertThat(assignExpr.getValue()).isEqualTo(value);
     }
 
@@ -357,8 +343,7 @@ public class CommonCodegenUtilsTest {
             AssignExpr assignExpr = new AssignExpr();
             assignExpr.setTarget(new NameExpr("MATCH"));
             body.addStatement(assignExpr);
-            org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setAssignExpressionValue(body, "NOMATCH",
-                                                                                            new DoubleLiteralExpr(24.22));
+            CommonCodegenUtils.setAssignExpressionValue(body, "NOMATCH", new DoubleLiteralExpr(24.22));
         });
     }
 
@@ -366,25 +351,23 @@ public class CommonCodegenUtilsTest {
     void setAssignExpressionValueNoAssignExpressions() {
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final BlockStmt body = new BlockStmt();
-            org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setAssignExpressionValue(body, "NOMATCH",
-                                                                                            new DoubleLiteralExpr(24.22));
+            CommonCodegenUtils.setAssignExpressionValue(body, "NOMATCH", new DoubleLiteralExpr(24.22));
         });
     }
 
     @Test
     void getAssignExpression() {
         BlockStmt body = new BlockStmt();
-        Optional<AssignExpr> retrieved =
-                org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
+        Optional<AssignExpr> retrieved = CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isNotPresent();
         AssignExpr assignExpr = new AssignExpr();
         assignExpr.setTarget(new NameExpr("MATCH"));
         body.addStatement(assignExpr);
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
+        retrieved = CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isNotPresent();
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getAssignExpression(body, "MATCH");
+        retrieved = CommonCodegenUtils.getAssignExpression(body, "MATCH");
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isPresent();
         AssignExpr retrievedAssignExpr = retrieved.get();
@@ -394,13 +377,12 @@ public class CommonCodegenUtilsTest {
     @Test
     void getExplicitConstructorInvocationStmt() {
         BlockStmt body = new BlockStmt();
-        Optional<ExplicitConstructorInvocationStmt> retrieved =
-                org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
+        Optional<ExplicitConstructorInvocationStmt> retrieved = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isNotPresent();
         ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
         body.addStatement(explicitConstructorInvocationStmt);
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
+        retrieved = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isPresent();
         ExplicitConstructorInvocationStmt retrievedExplicitConstructorInvocationStmt = retrieved.get();
@@ -411,49 +393,44 @@ public class CommonCodegenUtilsTest {
     void setExplicitConstructorInvocationStmtArgumentWithParameter() {
         final String parameterName = "PARAMETER_NAME";
         final String value = "VALUE";
-        final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt =
-                new ExplicitConstructorInvocationStmt();
-        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList(new NameExpr("NOT_PARAMETER"),
-                                                                         new NameExpr(parameterName)));
-        assertThat(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isPresent();
-        org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(explicitConstructorInvocationStmt, parameterName, value);
-        assertThat(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isNotPresent();
-        assertThat(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, value)).isPresent();
+        final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
+        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList(new NameExpr("NOT_PARAMETER"), new NameExpr(parameterName)));
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isPresent();
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(explicitConstructorInvocationStmt, parameterName, value);
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isNotPresent();
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, value)).isPresent();
     }
 
     @Test
     void setExplicitConstructorInvocationStmtArgumentNoParameter() {
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final String parameterName = "PARAMETER_NAME";
-            final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt =
-                    new ExplicitConstructorInvocationStmt();
+            final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
             explicitConstructorInvocationStmt.setArguments(NodeList.nodeList(new NameExpr("NOT_PARAMETER")));
-            org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(explicitConstructorInvocationStmt, parameterName, "VALUE");
+            CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(explicitConstructorInvocationStmt, parameterName, "VALUE");
         });
     }
 
     @Test
     void getExplicitConstructorInvocationParameter() {
         final String parameterName = "PARAMETER_NAME";
-        final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt =
-                new ExplicitConstructorInvocationStmt();
-        assertThat(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isNotPresent();
+        final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isNotPresent();
         explicitConstructorInvocationStmt.setArguments(NodeList.nodeList(new NameExpr("NOT_PARAMETER")));
-        assertThat(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isNotPresent();
-        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList(new NameExpr("NOT_PARAMETER"),
-                                                                         new NameExpr(parameterName)));
-        assertThat(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isPresent();
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isNotPresent();
+        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList(new NameExpr("NOT_PARAMETER"), new NameExpr(parameterName)));
+        assertThat(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName)).isPresent();
     }
 
     @Test
     void getMethodDeclaration() {
         final String methodName = "METHOD_NAME";
         final ClassOrInterfaceDeclaration classOrInterfaceDeclaration = new ClassOrInterfaceDeclaration();
-        assertThat(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName)).isNotPresent();
+        assertThat(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName)).isNotPresent();
         classOrInterfaceDeclaration.addMethod("NOT_METHOD");
-        assertThat(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName)).isNotPresent();
+        assertThat(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName)).isNotPresent();
         classOrInterfaceDeclaration.addMethod(methodName);
-        assertThat(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName)).isPresent();
+        assertThat(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName)).isPresent();
     }
 
     @Test
@@ -465,8 +442,7 @@ public class CommonCodegenUtilsTest {
         final String methodName = "METHOD_NAME";
         final ClassOrInterfaceDeclaration classOrInterfaceDeclaration = new ClassOrInterfaceDeclaration();
         assertThat(classOrInterfaceDeclaration.getMethodsByName(methodName)).isEmpty();
-        org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMethod(methodTemplate, classOrInterfaceDeclaration,
-                                                                         methodName);
+        CommonCodegenUtils.addMethod(methodTemplate, classOrInterfaceDeclaration, methodName);
         assertThat(classOrInterfaceDeclaration.getMethodsByName(methodName)).hasSize(1);
         assertThat(classOrInterfaceDeclaration.getMethodsByName(methodName).get(0).getBody().get()).isEqualTo(body);
     }
@@ -475,12 +451,10 @@ public class CommonCodegenUtilsTest {
     void getVariableDeclarator() {
         final String variableName = "variableName";
         final BlockStmt body = new BlockStmt();
-        assertThat(org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator(body, variableName)).isNotPresent();
-        final VariableDeclarationExpr variableDeclarationExpr =
-                new VariableDeclarationExpr(parseClassOrInterfaceType("String"), variableName);
+        assertThat(CommonCodegenUtils.getVariableDeclarator(body, variableName)).isNotPresent();
+        final VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(parseClassOrInterfaceType("String"), variableName);
         body.addStatement(variableDeclarationExpr);
-        Optional<VariableDeclarator> retrieved =
-                org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator(body, variableName);
+        Optional<VariableDeclarator> retrieved =  CommonCodegenUtils.getVariableDeclarator(body, variableName);
         assertThat(retrieved).isPresent();
         VariableDeclarator variableDeclarator = retrieved.get();
         assertThat(variableDeclarator.getName().asString()).isEqualTo(variableName);
@@ -489,39 +463,39 @@ public class CommonCodegenUtilsTest {
     @Test
     void getExpressionForObject() {
         String string = "string";
-        Expression retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject(string);
+        Expression retrieved = CommonCodegenUtils.getExpressionForObject(string);
         assertThat(retrieved).isInstanceOf(StringLiteralExpr.class);
         assertThat(retrieved.toString()).isEqualTo("\"string\"");
         int i = 1;
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject(i);
+        retrieved = CommonCodegenUtils.getExpressionForObject(i);
         assertThat(retrieved).isInstanceOf(IntegerLiteralExpr.class);
         assertThat(((IntegerLiteralExpr) retrieved).asInt()).isEqualTo(i);
         Integer j = 3;
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject(j);
+        retrieved = CommonCodegenUtils.getExpressionForObject(j);
         assertThat(retrieved).isInstanceOf(IntegerLiteralExpr.class);
         assertThat(((IntegerLiteralExpr) retrieved).asInt()).isEqualTo(j.intValue());
         double x = 1.12;
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject(x);
+        retrieved = CommonCodegenUtils.getExpressionForObject(x);
         assertThat(retrieved).isInstanceOf(DoubleLiteralExpr.class);
         assertThat(((DoubleLiteralExpr) retrieved).asDouble()).isCloseTo(x, Offset.offset(0.001));
         Double y = 3.12;
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject(y);
+        retrieved = CommonCodegenUtils.getExpressionForObject(y);
         assertThat(retrieved).isInstanceOf(DoubleLiteralExpr.class);
         assertThat(((DoubleLiteralExpr) retrieved).asDouble()).isCloseTo(y, Offset.offset(0.001));
         float k = 1.12f;
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject(k);
+        retrieved = CommonCodegenUtils.getExpressionForObject(k);
         assertThat(retrieved).isInstanceOf(DoubleLiteralExpr.class);
         assertThat(((DoubleLiteralExpr) retrieved).asDouble()).isCloseTo(1.12, Offset.offset(0.001));
         Float z = 3.12f;
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject(z);
+        retrieved = CommonCodegenUtils.getExpressionForObject(z);
         assertThat(retrieved).isInstanceOf(DoubleLiteralExpr.class);
         assertThat(((DoubleLiteralExpr) retrieved).asDouble()).isCloseTo(z.doubleValue(), Offset.offset(0.001));
         boolean b = true;
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject(b);
+        retrieved = CommonCodegenUtils.getExpressionForObject(b);
         assertThat(retrieved).isInstanceOf(BooleanLiteralExpr.class);
         assertThat(((BooleanLiteralExpr) retrieved).getValue()).isEqualTo(b);
         Boolean c = false;
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject(c);
+        retrieved = CommonCodegenUtils.getExpressionForObject(c);
         assertThat(retrieved).isInstanceOf(BooleanLiteralExpr.class);
         assertThat(((BooleanLiteralExpr) retrieved).getValue()).isEqualTo(c);
     }
@@ -529,11 +503,11 @@ public class CommonCodegenUtilsTest {
     @Test
     void getNameExprsFromBlock() {
         BlockStmt toRead = new BlockStmt();
-        List<NameExpr> retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
+        List<NameExpr> retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isEmpty();
         toRead = getBlockStmt();
-        retrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
+        retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSize(2);
     }
@@ -602,29 +576,28 @@ public class CommonCodegenUtilsTest {
     @Test
     void replaceNodesInBlock() {
         final BlockStmt toRead = getBlockStmt();
-        final List<NameExpr> retrieved =
-                org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
+        final List<NameExpr> retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
         assertThat(retrieved).hasSize(2);
-        final List<NullLiteralExpr> nullExprs = toRead.stream()
+        final List<NullLiteralExpr> nullExprs =  toRead.stream()
                 .filter(node -> node instanceof NullLiteralExpr)
                 .map(NullLiteralExpr.class::cast)
                 .collect(Collectors.toList());
         assertThat(nullExprs).isNotNull();
         assertThat(nullExprs).isEmpty();
 
-        final List<ReplacementTupla> replacementTuplas =
+        final List<CommonCodegenUtils.ReplacementTupla> replacementTuplas =
                 retrieved.stream()
                         .map(nameExpr -> {
                             NullLiteralExpr toAdd = new NullLiteralExpr();
                             nullExprs.add(toAdd);
-                            return new ReplacementTupla(nameExpr, toAdd);
+                            return new CommonCodegenUtils.ReplacementTupla(nameExpr, toAdd);
                         })
                         .collect(Collectors.toList());
-        org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.replaceNodesInStatement(toRead, replacementTuplas);
-        final List<NameExpr> newRetrieved = org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
+        CommonCodegenUtils.replaceNodesInStatement(toRead, replacementTuplas);
+        final List<NameExpr> newRetrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
         assertThat(newRetrieved).isEmpty();
 
-        final List<NullLiteralExpr> retrievedNullExprs = toRead.stream()
+        final List<NullLiteralExpr> retrievedNullExprs =  toRead.stream()
                 .filter(node -> node instanceof NullLiteralExpr)
                 .map(NullLiteralExpr.class::cast)
                 .collect(Collectors.toList());

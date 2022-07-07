@@ -32,8 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MiningModelChainTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "MiningModelChain";
-
+    private static final String FILE_NAME = "MiningModelChain.pmml";
     private static final String MODEL_NAME = "SampleModelChainMine";
     private static final String TARGET_FIELD = "qualificationLevel";
     private final String AGE = "age";
@@ -48,21 +47,21 @@ public class MiningModelChainTest extends AbstractPMMLTest {
 
     private String expectedResult;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initMiningModelChainTest(double age,
-                                         String occupation,
-                                         String residenceState,
-                                         boolean validLicense,
-                                         String expectedResult) {
+                                String occupation,
+                                String residenceState,
+                                boolean validLicense,
+                                String expectedResult) {
         this.age = age;
         this.occupation = occupation;
         this.residenceState = residenceState;
         this.validLicense = validLicense;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -79,8 +78,7 @@ public class MiningModelChainTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testMiningModelChain(double age, String occupation, String residenceState, boolean validLicense,
-                              String expectedResult) throws Exception {
+    void testMiningModelChain(double age, String occupation, String residenceState, boolean validLicense, String expectedResult) throws Exception {
         initMiningModelChainTest(age, occupation, residenceState, validLicense, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put(AGE, age);
@@ -88,7 +86,7 @@ public class MiningModelChainTest extends AbstractPMMLTest {
         inputData.put(RESIDENCESTATE, residenceState);
         inputData.put(VALIDLICENSE, validLicense);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

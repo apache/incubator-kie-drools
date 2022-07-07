@@ -39,17 +39,13 @@ public class KiePMMLDataDictionaryASTFactoryTest {
 
     @Test
     void declareTypes() {
-        List<DataField> dataFields = Arrays.asList(getTypeDataField(), getDottedTypeDataField(), getTypeDataField(),
-                                                   getDottedTypeDataField());
+        List<DataField> dataFields = Arrays.asList(getTypeDataField(), getDottedTypeDataField(), getTypeDataField(), getDottedTypeDataField());
         DataDictionary dataDictionary = new DataDictionary(dataFields);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<KiePMMLDroolsType> retrieved =
-                KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(getFieldsFromDataDictionary(dataDictionary));
+        List<KiePMMLDroolsType> retrieved = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(getFieldsFromDataDictionary(dataDictionary));
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSameSizeAs(dataFields);
-        IntStream.range(0, dataFields.size()).forEach(i -> commonVerifyTypeDeclarationDescr(dataFields.get(i),
-                                                                                            fieldTypeMap,
-                                                                                            retrieved.get(i)));
+        IntStream.range(0, dataFields.size()).forEach(i -> commonVerifyTypeDeclarationDescr(dataFields.get(i), fieldTypeMap, retrieved.get(i)));
     }
 
     @Test

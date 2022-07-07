@@ -50,10 +50,10 @@ public class KiePMMLClassificationTableTest {
     private double secondExpectedValue;
 
     public void initKiePMMLClassificationTableTest(double firstTableResult,
-                                                   double secondTableResult,
-                                                   String expectedResult,
-                                                   double firstExpectedValue,
-                                                   double secondExpectedValue) {
+                                          double secondTableResult,
+                                          String expectedResult,
+                                          double firstExpectedValue,
+                                          double secondExpectedValue) {
         this.firstTableResult = firstTableResult;
         this.secondTableResult = secondTableResult;
         this.expectedResult = expectedResult;
@@ -72,10 +72,8 @@ public class KiePMMLClassificationTableTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void evaluateRegression(double firstTableResult, double secondTableResult, String expectedResult,
-                            double firstExpectedValue, double secondExpectedValue) {
-        initKiePMMLClassificationTableTest(firstTableResult, secondTableResult, expectedResult, firstExpectedValue,
-                                           secondExpectedValue);
+    void evaluateRegression(double firstTableResult, double secondTableResult, String expectedResult, double firstExpectedValue, double secondExpectedValue) {
+        initKiePMMLClassificationTableTest(firstTableResult, secondTableResult, expectedResult, firstExpectedValue, secondExpectedValue);
         PMMLContextTest pmmlContextTest = new PMMLContextTest();
         Map<String, Object> input = new HashMap<>();
         input.put(CASE_A, firstTableResult);
@@ -89,16 +87,14 @@ public class KiePMMLClassificationTableTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void getProbabilityMap(double firstTableResult, double secondTableResult, String expectedResult,
-                           double firstExpectedValue, double secondExpectedValue) {
-        initKiePMMLClassificationTableTest(firstTableResult, secondTableResult, expectedResult, firstExpectedValue,
-                                           secondExpectedValue);
+    void getProbabilityMap(double firstTableResult, double secondTableResult, String expectedResult, double firstExpectedValue, double secondExpectedValue) {
+        initKiePMMLClassificationTableTest(firstTableResult, secondTableResult, expectedResult, firstExpectedValue, secondExpectedValue);
         LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
         resultMap.put(CASE_B, firstTableResult);
         resultMap.put(CASE_A, secondTableResult);
         LinkedHashMap<String, Double> retrieved = KiePMMLClassificationTable.getProbabilityMap(resultMap,
-                                                                                               FIRST_ITEM_OPERATOR,
-                                                                                               SECOND_ITEM_OPERATOR);
+                FIRST_ITEM_OPERATOR,
+                SECOND_ITEM_OPERATOR);
         double expectedDouble = FIRST_ITEM_OPERATOR.applyAsDouble(firstTableResult);
 
         assertThat(retrieved.get(CASE_B)).isCloseTo(expectedDouble, Offset.offset(0.0));
@@ -108,10 +104,8 @@ public class KiePMMLClassificationTableTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void getProbabilityMapFewInput(double firstTableResult, double secondTableResult, String expectedResult,
-                                   double firstExpectedValue, double secondExpectedValue) {
-        initKiePMMLClassificationTableTest(firstTableResult, secondTableResult, expectedResult, firstExpectedValue,
-                                           secondExpectedValue);
+    void getProbabilityMapFewInput(double firstTableResult, double secondTableResult, String expectedResult, double firstExpectedValue, double secondExpectedValue) {
+        initKiePMMLClassificationTableTest(firstTableResult, secondTableResult, expectedResult, firstExpectedValue, secondExpectedValue);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
             resultMap.put(CASE_B, firstTableResult);
@@ -121,10 +115,8 @@ public class KiePMMLClassificationTableTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void getProbabilityMapTooManyInput(double firstTableResult, double secondTableResult, String expectedResult,
-                                       double firstExpectedValue, double secondExpectedValue) {
-        initKiePMMLClassificationTableTest(firstTableResult, secondTableResult, expectedResult, firstExpectedValue,
-                                           secondExpectedValue);
+    void getProbabilityMapTooManyInput(double firstTableResult, double secondTableResult, String expectedResult, double firstExpectedValue, double secondExpectedValue) {
+        initKiePMMLClassificationTableTest(firstTableResult, secondTableResult, expectedResult, firstExpectedValue, secondExpectedValue);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
             resultMap.put(CASE_B, firstTableResult);

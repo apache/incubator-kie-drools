@@ -1,4 +1,4 @@
-[id='performance-tuning-drl-ref_{context}']
+[id='performance-tuning-drl-ref_drl-rules']
 
 = Performance tuning considerations with DRL
 
@@ -8,7 +8,7 @@ Define the property and value of pattern constraints from left to right::
 In DRL pattern constraints, ensure that the fact property name is on the left side of the operator and that the value (constant or a variable) is on the right side. The property name must always be the key in the index and not the value. For example, write `Person( firstName == "John" )` instead of `Person( "John" == firstName )`. Defining the constraint property and value from right to left can hinder {RULE_ENGINE} performance.
 +
 --
-For more information about DRL patterns and constraints, see xref:drl-rules-WHEN-con_drl-rules[].
+For more information about DRL patterns and constraints, see xref:con-drl-rules-conditions_drl-rules[].
 --
 
 Use equality operators more than other operator types in pattern constraints when possible::
@@ -36,7 +36,7 @@ when
   $h:hotel() // Rarely booked
 ----
 
-For more information about DRL patterns and constraints, see xref:drl-rules-WHEN-con_drl-rules[].
+For more information about DRL patterns and constraints, see xref:con-drl-rules-conditions_drl-rules[].
 --
 
 Avoid iterating over large collections of objects with excessive `from` clauses::
@@ -65,7 +65,7 @@ when
 
 In this example, the {RULE_ENGINE} iterates over the list only one time and can evaluate rules more efficiently.
 
-For more information about the `from` element or other DRL condition elements, see xref:drl-rules-WHEN-elements-ref_drl-rules[].
+For more information about the `from` element or other DRL condition elements, see xref:con-drl-rules-conditions_drl-rules[].
 --
 
 Use {RULE_ENGINE} event listeners instead of `System.out.println` statements in rules for debug logging::
@@ -77,7 +77,7 @@ ifdef::DM,PAM[]
 {URL_DEVELOPING_DECISION_SERVICES}#engine-event-listeners-con_decision-engine[_{DECISION_ENGINE_DOC}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
-xref:engine-event-listeners-con_decision-engine[].
+xref:engine-event-listeners-con_rule-engine[].
 endif::[]
 --
 

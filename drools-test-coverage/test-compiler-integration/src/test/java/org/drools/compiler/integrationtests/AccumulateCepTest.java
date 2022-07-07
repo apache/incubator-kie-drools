@@ -38,8 +38,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AccumulateCepTest {
@@ -127,7 +126,7 @@ public class AccumulateCepTest {
 
             ksession.fireAllRules();
 
-            assertFalse(list.contains(0));
+            assertThat(list.contains(0)).isFalse();
         } finally {
             ksession.dispose();
         }
@@ -148,28 +147,28 @@ public class AccumulateCepTest {
             // the same number
             ksession.insert( new Integer( 20 ) );
             ksession.fireAllRules();
-            assertEquals(asList(1, 1), list);
+            assertThat(list).isEqualTo(asList(1, 1));
 
             ksession.insert(new Integer(20));
             ksession.fireAllRules();
 
-            assertEquals(asList(2, 2), list);
+            assertThat(list).isEqualTo(asList(2, 2));
 
             ksession.insert(new Integer(20));
             ksession.fireAllRules();
-            assertEquals(asList(2, 3), list);
+            assertThat(list).isEqualTo(asList(2, 3));
 
             ksession.insert(new Integer(2));
             ksession.fireAllRules();
-            assertEquals(asList(2, 4), list);
+            assertThat(list).isEqualTo(asList(2, 4));
 
             ksession.insert(new Integer(2));
             ksession.fireAllRules();
-            assertEquals(asList(2, 5), list);
+            assertThat(list).isEqualTo(asList(2, 5));
 
             ksession.insert(new Integer(2));
             ksession.fireAllRules();
-            assertEquals(asList(2, 5), list);
+            assertThat(list).isEqualTo(asList(2, 5));
         } finally {
             ksession.dispose();
         }

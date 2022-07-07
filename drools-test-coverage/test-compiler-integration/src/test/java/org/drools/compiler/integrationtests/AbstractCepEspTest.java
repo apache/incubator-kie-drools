@@ -33,9 +33,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -69,18 +67,18 @@ public abstract class AbstractCepEspTest {
             final FactHandle fh3 = ep1.insert(st3);
 
             if (kieBaseTestConfiguration.isIdentity()) {
-                assertSame(fh1, fh1_2);
-                assertNotSame(fh1, fh2);
-                assertNotSame(fh1, fh3);
-                assertNotSame(fh2, fh3);
+                assertThat(fh1).isSameAs(fh1_2);
+                assertThat(fh1).isNotSameAs(fh2);
+                assertThat(fh1).isNotSameAs(fh3);
+                assertThat(fh2).isNotSameAs(fh3);
 
                 ksession.fireAllRules();
                 // must have fired 3 times, one for each event identity
                 verify(ael1, times(3)).afterMatchFired(any(AfterMatchFiredEvent.class));
             } else {
-                assertSame(fh1, fh1_2);
-                assertSame(fh1, fh2);
-                assertNotSame(fh1, fh3);
+                assertThat(fh1).isSameAs(fh1_2);
+                assertThat(fh1).isNotSameAs(fh2);
+                assertThat(fh1).isNotSameAs(fh3);
 
                 ksession.fireAllRules();
                 // must have fired 2 times, one for each event equality
@@ -139,9 +137,9 @@ public abstract class AbstractCepEspTest {
         } finally {
             ksession.dispose();
             if (kieBaseTestConfiguration.isIdentity()) {
-                assertEquals(Arrays.asList(1L, 2L, 1L, 1L), list);
+                assertThat(list).isEqualTo(Arrays.asList(1L, 2L, 1L, 1L));
             } else {
-                assertEquals(Arrays.asList(1L, 2L, 1L), list);
+                assertThat(list).isEqualTo(Arrays.asList(1L, 2L, 1L));
             }
         }
     }

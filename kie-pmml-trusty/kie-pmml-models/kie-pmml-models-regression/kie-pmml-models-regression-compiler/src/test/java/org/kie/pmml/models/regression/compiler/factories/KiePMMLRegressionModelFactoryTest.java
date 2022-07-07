@@ -69,7 +69,6 @@ import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHO
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getCategoricalPredictor;
@@ -85,6 +84,7 @@ import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileNam
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.GETKIEPMML_TABLE;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLRegressionModelFactoryTest {
 
@@ -155,9 +155,9 @@ public class KiePMMLRegressionModelFactoryTest {
     void getKiePMMLRegressionModelClasses() throws IOException, IllegalAccessException, InstantiationException {
         final CompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         KiePMMLRegressionModel retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -174,9 +174,9 @@ public class KiePMMLRegressionModelFactoryTest {
     void getKiePMMLRegressionModelSourcesMap() throws IOException {
         final CommonCompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         Map<String, String> retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -189,16 +189,16 @@ public class KiePMMLRegressionModelFactoryTest {
     void getRegressionTablesMap() {
         final CompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionModelFactory
                 .getRegressionTablesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         int expectedSize = regressionTables.size() + 1; // One for classification
         assertThat(retrieved).hasSize(expectedSize);
         final Collection<KiePMMLTableSourceCategory> values = retrieved.values();
         regressionTables.forEach(regressionTable ->
-                                         assertThat(values.stream().anyMatch(kiePMMLTableSourceCategory -> kiePMMLTableSourceCategory.getCategory().equals(regressionTable.getTargetCategory()))).isTrue());
+                assertThat(values.stream().anyMatch(kiePMMLTableSourceCategory -> kiePMMLTableSourceCategory.getCategory().equals(regressionTable.getTargetCategory()))).isTrue());
     }
 
     @Test
@@ -208,24 +208,24 @@ public class KiePMMLRegressionModelFactoryTest {
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  new ArrayList<>(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        new ArrayList<>(),
+                        regressionModel.getNormalizationMethod());
         KiePMMLRegressionModelFactory.setStaticGetter(compilationDTO,
-                                                      modelTemplate,
-                                                      nestedTable);
+                modelTemplate,
+                nestedTable);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", regressionModel.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetMiningField.getName().getValue()));
         assignExpressionMap.put("miningFunction",
-                                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
+                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL",
-                                new NameExpr(PMML_MODEL.class.getName() + "." + PMML_MODEL.REGRESSION_MODEL.name()));
+                new NameExpr(PMML_MODEL.class.getName() + "." + PMML_MODEL.REGRESSION_MODEL.name()));
         MethodCallExpr methodCallExpr = new MethodCallExpr();
         methodCallExpr.setScope(new NameExpr(nestedTable));
         methodCallExpr.setName(GETKIEPMML_TABLE);
@@ -258,12 +258,12 @@ public class KiePMMLRegressionModelFactoryTest {
         final Map<String, SerializableFunction<String, Double>> categoricalFunctionMap =
                 regressionTable.getCategoricalFunctionMap();
         for (CategoricalPredictor categoricalPredictor : originalRegressionTable.getCategoricalPredictors()) {
-            assertThat(categoricalFunctionMap).containsKey(categoricalPredictor.getName().getValue());
+        	assertThat(categoricalFunctionMap).containsKey(categoricalPredictor.getName().getValue());
         }
         final Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermsFunctionMap =
                 regressionTable.getPredictorTermsFunctionMap();
         for (PredictorTerm predictorTerm : originalRegressionTable.getPredictorTerms()) {
-            assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName().getValue());
+        	assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName().getValue());
         }
     }
 }

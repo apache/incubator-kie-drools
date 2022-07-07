@@ -36,7 +36,7 @@ public class KiePMMLLocalTransformationsInstanceFactoryTest {
         final LocalTransformations toConvert = getRandomLocalTransformations();
         KiePMMLLocalTransformations retrieved =
                 KiePMMLLocalTransformationsInstanceFactory.getKiePMMLLocalTransformations(toConvert,
-                                                                                          Collections.emptyList());
+                        Collections.emptyList());
         assertThat(retrieved).isNotNull();
 
         List<DerivedField> derivedFields = toConvert.getDerivedFields();

@@ -51,7 +51,6 @@ import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getGeneratedClassName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
@@ -61,6 +60,7 @@ import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassific
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassificationTableFactory.KIE_PMML_CLASSIFICATION_TABLE_TEMPLATE_JAVA;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassificationTableFactory.SUPPORTED_NORMALIZATION_METHODS;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassificationTableFactory.UNSUPPORTED_NORMALIZATION_METHODS;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegressionTableRegressionFactoryTest {
 
@@ -110,19 +110,19 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  regressionModel.getRegressionTables(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        regressionModel.getRegressionTables(),
+                        regressionModel.getNormalizationMethod());
         KiePMMLClassificationTable retrieved =
                 KiePMMLClassificationTableFactory.getClassificationTable(compilationDTO);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getCategoryTableMap()).hasSameSizeAs(regressionModel.getRegressionTables());
         regressionModel.getRegressionTables().forEach(regressionTable ->
-                                                              assertThat(retrieved.getCategoryTableMap()).containsKey(regressionTable.getTargetCategory().toString()));
+                assertThat(retrieved.getCategoryTableMap()).containsKey(regressionTable.getTargetCategory().toString()));
         assertThat(retrieved.getRegressionNormalizationMethod().getName()).isEqualTo(regressionModel.getNormalizationMethod().value());
         assertThat(retrieved.getOpType()).isEqualTo(OP_TYPE.CATEGORICAL);
         boolean isBinary = regressionModel.getRegressionTables().size() == 2;
@@ -163,13 +163,13 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  regressionModel.getRegressionTables(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        regressionModel.getRegressionTables(),
+                        regressionModel.getNormalizationMethod());
         Map<String, KiePMMLTableSourceCategory> retrieved =
                 KiePMMLClassificationTableFactory.getClassificationTableBuilders(compilationDTO);
         assertThat(retrieved).isNotNull();
@@ -177,7 +177,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         retrieved.values().forEach(kiePMMLTableSourceCategory -> commonValidateKiePMMLRegressionTable(kiePMMLTableSourceCategory.getSource()));
 
         Map<String, String> sources = retrieved.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                                                                                             stringKiePMMLTableSourceCategoryEntry -> stringKiePMMLTableSourceCategoryEntry.getValue().getSource()));
+                stringKiePMMLTableSourceCategoryEntry -> stringKiePMMLTableSourceCategoryEntry.getValue().getSource()));
         commonValidateCompilation(sources);
     }
 
@@ -213,13 +213,13 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  regressionModel.getRegressionTables(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        regressionModel.getRegressionTables(),
+                        regressionModel.getNormalizationMethod());
         final LinkedHashMap<String,
                 KiePMMLTableSourceCategory> regressionTablesMap = new LinkedHashMap<>();
 
@@ -227,7 +227,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
             String key =
                     compilationDTO.getPackageName() + "." + regressionTable.getTargetCategory().toString().toUpperCase();
             KiePMMLTableSourceCategory value = new KiePMMLTableSourceCategory("",
-                                                                              regressionTable.getTargetCategory().toString());
+                    regressionTable.getTargetCategory().toString());
             regressionTablesMap.put(key, value);
         });
         Map.Entry<String, String> retrieved =
@@ -243,7 +243,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
             } catch (Throwable t) {
                 assertThat(t).isInstanceOf(KiePMMLInternalException.class);
                 String expected = String.format("Unsupported NormalizationMethod %s",
-                                                normalizationMethod);
+                        normalizationMethod);
                 assertThat(t.getMessage()).isEqualTo(expected);
             }
             try {
@@ -251,7 +251,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
             } catch (Throwable t) {
                 assertThat(t).isInstanceOf(KiePMMLInternalException.class);
                 String expected = String.format("Unsupported NormalizationMethod %s",
-                                                normalizationMethod);
+                        normalizationMethod);
                 assertThat(t.getMessage()).isEqualTo(expected);
             }
         });
@@ -260,9 +260,9 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
     @Test
     void getProbabilityMapSupportedFunction() {
         KiePMMLClassificationTableFactory.SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
-                                                                                          assertThat(KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, false)).isNotNull());
+                assertThat(KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, false)).isNotNull());
         KiePMMLClassificationTableFactory.SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod ->
-                                                                                          assertThat(KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, true)).isNotNull());
+                assertThat(KiePMMLClassificationTableFactory.getProbabilityMapFunction(normalizationMethod, true)).isNotNull());
     }
 
     @Test
@@ -298,13 +298,13 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                                                                                                  regressionModel.getRegressionTables(),
-                                                                                                  regressionModel.getNormalizationMethod());
+                        regressionModel.getRegressionTables(),
+                        regressionModel.getNormalizationMethod());
 
         final LinkedHashMap<String,
                 KiePMMLTableSourceCategory> regressionTablesMap = new LinkedHashMap<>();
@@ -312,14 +312,14 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         regressionModel.getRegressionTables().forEach(regressionTable -> {
             String key = "defpack." + regressionTable.getTargetCategory().toString().toUpperCase();
             KiePMMLTableSourceCategory value = new KiePMMLTableSourceCategory("",
-                                                                              regressionTable.getTargetCategory().toString());
+                    regressionTable.getTargetCategory().toString());
             regressionTablesMap.put(key, value);
         });
         final MethodDeclaration staticGetterMethod = STATIC_GETTER_METHOD.clone();
         KiePMMLClassificationTableFactory.setStaticGetter(compilationDTO,
-                                                          regressionTablesMap,
-                                                          staticGetterMethod,
-                                                          variableName);
+                regressionTablesMap,
+                staticGetterMethod,
+                variableName);
         String text = getFileContent(TEST_02_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
         assertThat(JavaParserUtils.equalsNode(expected, staticGetterMethod)).isTrue();
@@ -330,11 +330,11 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             Expression retrieved =
                     KiePMMLClassificationTableFactory.getProbabilityMapFunctionExpression(normalizationMethod,
-                                                                                          false);
+                            false);
             try {
                 String text = getFileContent(TEST_01_SOURCE);
                 Expression expected = JavaParserUtils.parseExpression(String.format(text,
-                                                                                    normalizationMethod.name()));
+                        normalizationMethod.name()));
                 assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
             } catch (IOException e) {
                 fail(e.getMessage());
@@ -347,7 +347,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             try {
                 KiePMMLClassificationTableFactory.getProbabilityMapFunctionExpression(normalizationMethod,
-                                                                                      false);
+                        false);
                 fail("Expecting KiePMMLInternalException with normalizationMethod " + normalizationMethod);
             } catch (Exception e) {
                 assertThat(e).isInstanceOf(KiePMMLInternalException.class);
@@ -361,7 +361,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                 KiePMMLClassificationTableFactory.getProbabilityMapFunctionSupportedExpression(RegressionModel.NormalizationMethod.CAUCHIT, true);
         String text = getFileContent(TEST_01_SOURCE);
         Expression expected = JavaParserUtils.parseExpression(String.format(text,
-                                                                            RegressionModel.NormalizationMethod.CAUCHIT.name()));
+                RegressionModel.NormalizationMethod.CAUCHIT.name()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 

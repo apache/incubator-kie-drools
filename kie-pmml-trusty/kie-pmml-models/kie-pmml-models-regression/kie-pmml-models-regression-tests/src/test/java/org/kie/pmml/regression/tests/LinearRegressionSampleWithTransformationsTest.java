@@ -27,7 +27,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.exceptions.KiePMMLInputDataException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
@@ -36,8 +35,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "LinearRegressionSampleWithTransformations";
-
+    private static final String FILE_NAME = "LinearRegressionSampleWithTransformations.pmml";
     private static final String MODEL_NAME = "LinearRegressionSampleWithTransformations";
     private static final String TARGET_FIELD = "number_of_claims";
 
@@ -74,19 +72,19 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
     private String car_location;
     private double expectedResult;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initLinearRegressionSampleWithTransformationsTest(double age,
-                                                                  double salary,
-                                                                  String car_location,
-                                                                  double expectedResult) {
+                                                         double salary,
+                                                         String car_location,
+                                                         double expectedResult) {
         this.age = age;
         this.salary = salary;
         this.car_location = car_location;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -101,8 +99,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
 
     @MethodSource("data")
     @ParameterizedTest
-    void testLinearRegressionSampleWithTransformations(double age, double salary, String car_location,
-                                                       double expectedResult) throws Exception {
+    void testLinearRegressionSampleWithTransformations(double age, double salary, String car_location, double expectedResult) throws Exception {
         initLinearRegressionSampleWithTransformationsTest(age, salary, car_location, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("age", age);
@@ -111,11 +108,11 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         inputData.put("text_input", TEXT_INPUT);
         inputData.put("input3", 34.1);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat((double) pmml4Result.getResultVariables().get(TARGET_FIELD)).isCloseTo(expectedResult,
-                                                                                          TOLERANCE_PERCENTAGE);
+                TOLERANCE_PERCENTAGE);
         assertThat(pmml4Result.getResultVariables().get(OUT_NUMBER_OF_CLAIMS)).isNotNull();
         assertThat((double) pmml4Result.getResultVariables().get(OUT_NUMBER_OF_CLAIMS)).isCloseTo(expectedResult, TOLERANCE_PERCENTAGE);
         assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_CAR_LOCATION_REFERRED)).isNotNull();
@@ -173,23 +170,21 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
 
     @MethodSource("data")
     @ParameterizedTest
-    void testLinearRegressionSampleWithTransformationsWithoutRequired(double age, double salary, String car_location,
-                                                                      double expectedResult) {
+    void testLinearRegressionSampleWithTransformationsWithoutRequired(double age, double salary, String car_location, double expectedResult) {
         initLinearRegressionSampleWithTransformationsTest(age, salary, car_location, expectedResult);
-        assertThatExceptionOfType(KiePMMLInputDataException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
             inputData.put("age", age);
             inputData.put("salary", salary);
             inputData.put("car_location", car_location);
             inputData.put("text_input", TEXT_INPUT);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testLinearRegressionSampleWithTransformationsConvertible(double age, double salary, String car_location,
-                                                                  double expectedResult) {
+    void testLinearRegressionSampleWithTransformationsConvertible(double age, double salary, String car_location, double expectedResult) {
         initLinearRegressionSampleWithTransformationsTest(age, salary, car_location, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("age", String.valueOf(age));
@@ -197,13 +192,12 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         inputData.put("car_location", car_location);
         inputData.put("text_input", TEXT_INPUT);
         inputData.put("input3", "34.1");
-        assertThat(evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME)).isNotNull();
+        assertThat(evaluate(pmmlRuntime, inputData, MODEL_NAME)).isNotNull();
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testLinearRegressionSampleWithTransformationsNotConvertible(double age, double salary, String car_location,
-                                                                     double expectedResult) {
+    void testLinearRegressionSampleWithTransformationsNotConvertible(double age, double salary, String car_location, double expectedResult) {
         initLinearRegressionSampleWithTransformationsTest(age, salary, car_location, expectedResult);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
@@ -212,7 +206,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
             inputData.put("car_location", car_location);
             inputData.put("text_input", TEXT_INPUT);
             inputData.put("input3", true);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 
@@ -220,14 +214,14 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
     @ParameterizedTest
     void testLinearRegressionSampleInvalidValue(double age, double salary, String car_location, double expectedResult) {
         initLinearRegressionSampleWithTransformationsTest(age, salary, car_location, expectedResult);
-        assertThatExceptionOfType(KiePMMLInputDataException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
             inputData.put("age", age);
             inputData.put("salary", salary);
             inputData.put("car_location", car_location);
             inputData.put("text_input", TEXT_INPUT);
             inputData.put("input3", 4.1);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 }

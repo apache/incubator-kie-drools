@@ -39,9 +39,7 @@ import org.drools.core.util.index.TupleList;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RightTupleIndexHashTableTest {
 
@@ -75,11 +73,10 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 0,
                                                                          cheddar );
 
-        assertEquals( 0,
-                      map.size() );
-        assertNull( map.getFirst( new LeftTupleImpl( cheddarHandle1,
-                                                     null,
-                                                     true ) ) );
+        assertThat(map.size()).isEqualTo(0);
+        assertThat(map.getFirst(new LeftTupleImpl( cheddarHandle1,
+                null,
+                true ))).isNull();
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -89,10 +86,8 @@ public class RightTupleIndexHashTableTest {
 
         map.add( stiltonRighTuple );
 
-        assertEquals( 1,
-                      map.size() );
-        assertEquals( 1,
-                      tablePopulationSize( map ) );
+        assertThat(map.size()).isEqualTo(1);
+        assertThat(tablePopulationSize(map)).isEqualTo(1);
 
         final Cheese stilton2 = new Cheese( "stilton",
                                             80 );
@@ -102,9 +97,8 @@ public class RightTupleIndexHashTableTest {
         final Tuple tuple = map.getFirst( new LeftTupleImpl( stiltonHandle2,
                                                              null,
                                                              true ) );
-        assertSame( stiltonRighTuple.getFactHandle(),
-                    tuple.getFactHandle() );
-        assertNull( tuple.getNext() );
+        assertThat(tuple.getFactHandle()).isSameAs(stiltonRighTuple.getFactHandle());
+        assertThat(tuple.getNext()).isNull();
     }
 
     @Test
@@ -124,8 +118,7 @@ public class RightTupleIndexHashTableTest {
 
         final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
-        assertEquals( 0,
-                      map.size() );
+        assertThat(map.size()).isEqualTo(0);
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -141,10 +134,8 @@ public class RightTupleIndexHashTableTest {
         map.add( new RightTupleImpl( cheddarHandle1,
                                  null ) );
 
-        assertEquals( 2,
-                      map.size() );
-        assertEquals( 2,
-                      tablePopulationSize( map ) );
+        assertThat(map.size()).isEqualTo(2);
+        assertThat(tablePopulationSize(map)).isEqualTo(2);
 
         final Cheese stilton2 = new Cheese( "stilton",
                                             77 );
@@ -153,9 +144,8 @@ public class RightTupleIndexHashTableTest {
         Tuple tuple = map.getFirst( new LeftTupleImpl( stiltonHandle2,
                                                        null,
                                                        true ) );
-        assertSame( stiltonHandle1,
-                    tuple.getFactHandle() );
-        assertNull( tuple.getNext() );
+        assertThat(tuple.getFactHandle()).isSameAs(stiltonHandle1);
+        assertThat(tuple.getNext()).isNull();
 
         final Cheese cheddar2 = new Cheese( "cheddar",
                                             5 );
@@ -164,9 +154,8 @@ public class RightTupleIndexHashTableTest {
         tuple = map.getFirst( new LeftTupleImpl( cheddarHandle2,
                                                  null,
                                                  true ) );
-        assertSame( cheddarHandle1,
-                    tuple.getFactHandle() );
-        assertNull( tuple.getNext() );
+        assertThat(tuple.getFactHandle()).isSameAs(cheddarHandle1);
+        assertThat(tuple.getNext()).isNull();
     }
 
     @Test
@@ -186,8 +175,7 @@ public class RightTupleIndexHashTableTest {
 
         final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
-        assertEquals( 0,
-                      map.size() );
+        assertThat(map.size()).isEqualTo(0);
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -210,10 +198,8 @@ public class RightTupleIndexHashTableTest {
         map.add( new RightTupleImpl( stiltonHandle2,
                                  null ) );
 
-        assertEquals( 3,
-                      map.size() );
-        assertEquals( 2,
-                      tablePopulationSize( map ) );
+        assertThat(map.size()).isEqualTo(3);
+        assertThat(tablePopulationSize(map)).isEqualTo(2);
 
         // Check they are correctly chained to the same FieldIndexEntry
         final Cheese stilton3 = new Cheese( "stilton",
@@ -224,10 +210,8 @@ public class RightTupleIndexHashTableTest {
         final Tuple tuple = map.getFirst( new LeftTupleImpl( stiltonHandle3,
                                                            null,
                                                            true ) );
-        assertSame( stiltonHandle1,
-                    tuple.getFactHandle() );
-        assertSame( stiltonHandle2,
-                    ((RightTuple) tuple.getNext()).getFactHandle() );
+        assertThat(tuple.getFactHandle()).isSameAs(stiltonHandle1);
+        assertThat(((RightTuple) tuple.getNext()).getFactHandle()).isSameAs(stiltonHandle2);
     }
 
     @Test
@@ -266,26 +250,21 @@ public class RightTupleIndexHashTableTest {
                                  null ) );
 
         // same hashcode, but different values, so it should result in  a size of 2
-        assertEquals( 2,
-                      map.size() );
+        assertThat(map.size()).isEqualTo(2);
 
         // however both are in the same table bucket
-        assertEquals( 1,
-                      tablePopulationSize( map ) );
+        assertThat(tablePopulationSize(map)).isEqualTo(1);
 
         // this table bucket will have two FieldIndexEntries, as they are actually two different values
         Entry[] entries = getEntries( map );
-        assertEquals( 1,
-                      entries.length );
+        assertThat(entries.length).isEqualTo(1);
         TupleList list = (TupleList) entries[0];
-        assertSame( ch2,
-                    list.getFirst().getFactHandle() );
-        assertNull( list.getFirst().getNext() );
+        assertThat(list.getFirst().getFactHandle()).isSameAs(ch2);
+        assertThat(list.getFirst().getNext()).isNull();
 
-        assertSame( ch1,
-                    list.getNext().getFirst().getFactHandle() );
-        assertNull( list.getNext().getFirst().getNext() );
-        assertNull( list.getNext().getNext() );
+        assertThat(list.getNext().getFirst().getFactHandle()).isSameAs(ch1);
+        assertThat(list.getNext().getFirst().getNext()).isNull();
+        assertThat(list.getNext().getNext()).isNull();
     }
 
     @Test
@@ -305,8 +284,7 @@ public class RightTupleIndexHashTableTest {
 
         final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
-        assertEquals( 0,
-                      map.size() );
+        assertThat(map.size()).isEqualTo(0);
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -332,32 +310,24 @@ public class RightTupleIndexHashTableTest {
                                                         null );
         map.add( stiltonRightTuple2 );
 
-        assertEquals( 3,
-                      map.size() );
-        assertEquals( 2,
-                      tablePopulationSize( map ) );
+        assertThat(map.size()).isEqualTo(3);
+        assertThat(tablePopulationSize(map)).isEqualTo(2);
 
         // cheddar is in its own bucket, which should be removed once empty. We cannot have
         // empty FieldIndexEntries in the Map, as they get their value  from the first FactEntry.
         map.remove( cheddarRightTuple1 );
-        assertEquals( 2,
-                      map.size() );
-        assertEquals( 1,
-                      tablePopulationSize( map ) );
+        assertThat(map.size()).isEqualTo(2);
+        assertThat(tablePopulationSize(map)).isEqualTo(1);
 
         // We remove t he stiltonHandle2, but there is still  one more stilton, so size  should be the same
         map.remove( stiltonRightTuple2 );
-        assertEquals( 1,
-                      map.size() );
-        assertEquals( 1,
-                      tablePopulationSize( map ) );
+        assertThat(map.size()).isEqualTo(1);
+        assertThat(tablePopulationSize(map)).isEqualTo(1);
 
         //  No more stiltons, so the table should be empty
         map.remove( stiltonRightTuple1 );
-        assertEquals( 0,
-                      map.size() );
-        assertEquals( 0,
-                      tablePopulationSize( map ) );
+        assertThat(map.size()).isEqualTo(0);
+        assertThat(tablePopulationSize(map)).isEqualTo(0);
     }
 
     @Test
@@ -377,8 +347,7 @@ public class RightTupleIndexHashTableTest {
 
         final TupleIndexHashTable map = new TupleIndexHashTable( 16, 0.75f, new FieldIndex[]{fieldIndex}, false );
 
-        assertEquals( 0,
-                      map.size() );
+        assertThat(map.size()).isEqualTo(0);
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -463,12 +432,10 @@ public class RightTupleIndexHashTableTest {
         // At this point we have 16 facts but only 12 different types of cheeses
         // so no table resize and thus its size is 16
 
-        assertEquals( 16,
-                      map.size() );
+        assertThat(map.size()).isEqualTo(16);
 
         Entry[] table = map.getTable();
-        assertEquals( 16,
-                      table.length );
+        assertThat(table.length).isEqualTo(16);
 
         final Cheese feta = new Cheese( "feta",
                                         48 );
@@ -477,12 +444,10 @@ public class RightTupleIndexHashTableTest {
 
         // This adds our 13th type of cheese. The map is set with an initial capacity of 16 and
         // a threshold of 75%, that after 12 it should resize the map to 32.
-        assertEquals( 17,
-                      map.size() );
+        assertThat(map.size()).isEqualTo(17);
 
         table = map.getTable();
-        assertEquals( 32,
-                      table.length );
+        assertThat(table.length).isEqualTo(32);
 
         final Cheese haloumi = new Cheese( "haloumi",
                                            48 );
@@ -606,7 +571,7 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle = new DefaultFactHandle( 2,
                                                                         stilton );
 
-        assertNull( map.getFirst( new LeftTupleImpl( stiltonHandle, null, true ) ) );
+        assertThat(map.getFirst(new LeftTupleImpl( stiltonHandle, null, true ))).isNull();
     }
 
 }

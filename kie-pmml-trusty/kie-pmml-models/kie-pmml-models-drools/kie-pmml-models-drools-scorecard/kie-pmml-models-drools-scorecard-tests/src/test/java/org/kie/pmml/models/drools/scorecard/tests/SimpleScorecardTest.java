@@ -34,7 +34,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 public class SimpleScorecardTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "SimpleScorecard";
+    private static final String FILE_NAME = "SimpleScorecard.pmml";
     private static final String MODEL_NAME = "SimpleScorecard";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
@@ -47,18 +47,17 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
     private String reasonCode1;
     private String reasonCode2;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
-    public void initSimpleScorecardTest(double input1, double input2, double score, String reasonCode1,
-                                        String reasonCode2) {
+    public void initSimpleScorecardTest(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
         this.input1 = input1;
         this.input2 = input2;
         this.score = score;
         this.reasonCode1 = reasonCode1;
         this.reasonCode2 = reasonCode2;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -79,7 +78,7 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         inputData.put("input1", input1);
         inputData.put("input2", input2);
         inputData.put("input3", 34.1);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);
@@ -89,54 +88,50 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testSimpleScorecardWithoutRequired(double input1, double input2, double score, String reasonCode1,
-                                            String reasonCode2) {
+    void testSimpleScorecardWithoutRequired(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
         initSimpleScorecardTest(input1, input2, score, reasonCode1, reasonCode2);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
             inputData.put("input1", input1);
             inputData.put("input2", input2);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testSimpleScorecardConvertible(double input1, double input2, double score, String reasonCode1,
-                                        String reasonCode2) {
+    void testSimpleScorecardConvertible(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
         initSimpleScorecardTest(input1, input2, score, reasonCode1, reasonCode2);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", String.valueOf(input1));
         inputData.put("input2", String.valueOf(input2));
         inputData.put("input3", "34.1");
-        assertThat(evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME)).isNotNull();
+        assertThat(evaluate(pmmlRuntime, inputData, MODEL_NAME)).isNotNull();
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testSimpleScorecardNotConvertible(double input1, double input2, double score, String reasonCode1,
-                                           String reasonCode2) {
+    void testSimpleScorecardNotConvertible(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
         initSimpleScorecardTest(input1, input2, score, reasonCode1, reasonCode2);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
             inputData.put("input1", input1);
             inputData.put("input2", input2);
             inputData.put("input3", true);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testSimpleScorecardInvalidValue(double input1, double input2, double score, String reasonCode1,
-                                         String reasonCode2) {
+    void testSimpleScorecardInvalidValue(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
         initSimpleScorecardTest(input1, input2, score, reasonCode1, reasonCode2);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
             inputData.put("input1", input1);
             inputData.put("input2", input2);
             inputData.put("input3", 4.1);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 }

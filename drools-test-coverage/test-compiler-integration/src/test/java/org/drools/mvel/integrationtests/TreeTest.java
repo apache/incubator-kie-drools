@@ -28,7 +28,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class TreeTest {
@@ -58,7 +58,7 @@ public class TreeTest {
             wm.insert(e);
             wm.fireAllRules();
 
-            assertEquals("Rule should have fired twice, seting the price to 30", 30, e.getPrice());
+            assertThat(e.getPrice()).as("Rule should have fired twice, seting the price to 30").isEqualTo(30);
         } finally {
             wm.dispose();
         }

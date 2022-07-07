@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,8 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "SingleIrisKMeansClustering";
-
+    private static final String FILE_NAME = "SingleIrisKMeansClustering.pmml";
     private static final String MODEL_NAME = "SingleIrisKMeansClustering";
     private static final String TARGET_FIELD = "class";
 
@@ -46,7 +46,7 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
     private static final String PREDICTED_CLUSTER_INDEX_FIELD = "predicted_cluster_index";
     private static final String PREDICTED_CLUSTER_AFFINITY_FIELD = "predicted_cluster_affinity";
 
-    protected PMMLRuntime pmmlRuntime;
+    private static PMMLRuntime pmmlRuntime;
 
     private double sepalLength;
     private double sepalWidth;
@@ -82,26 +82,23 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
         this.predictedEntityId = predictedEntityId;
         this.predictedAffinity = predictedAffinity;
     }
-
-    @BeforeEach
-    public void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+    
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testLogisticRegressionIrisData(double sepalLength, double sepalWidth, double petalLength, double petalWidth,
-                                        double outNormcontinuousField, String predictedDisplayValue,
-                                        int predictedEntityId, double predictedAffinity, String irisClass) throws Exception {
-        initSingleIrisKMeansClusteringTest(sepalLength, sepalWidth, petalLength, petalWidth, outNormcontinuousField,
-                                           predictedDisplayValue, predictedEntityId, predictedAffinity, irisClass);
+    void testLogisticRegressionIrisData(double sepalLength, double sepalWidth, double petalLength, double petalWidth, double outNormcontinuousField, String predictedDisplayValue, int predictedEntityId, double predictedAffinity, String irisClass) throws Exception {
+        initSingleIrisKMeansClusteringTest(sepalLength, sepalWidth, petalLength, petalWidth, outNormcontinuousField, predictedDisplayValue, predictedEntityId, predictedAffinity, irisClass);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("sepal_length", sepalLength);
         inputData.put("sepal_width", sepalWidth);
         inputData.put("petal_length", petalLength);
         inputData.put("petal_width", petalWidth);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(irisClass);

@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderApprovalRegressionTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "OrderApproval";
+    private static final String FILE_NAME = "OrderApproval.pmml";
 
     private static final String MODEL_NAME = "OrderApprovalRegression";
     private static final String TARGET_FIELD = "approval";
@@ -51,15 +51,10 @@ public class OrderApprovalRegressionTest extends AbstractPMMLTest {
     private double expectedProbTrue;
     private double expectedProbFalse;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initOrderApprovalRegressionTest(double category, double urgency, double targetPrice,
-                                                double price, String expectedResult,
-                                                double expectedProbTrue,
-                                                double expectedProbFalse) {
+                                       double price, String expectedResult,
+                                       double expectedProbTrue,
+                                       double expectedProbFalse) {
         this.category = category;
         this.urgency = urgency;
         this.targetPrice = targetPrice;
@@ -67,6 +62,11 @@ public class OrderApprovalRegressionTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
         this.expectedProbTrue = expectedProbTrue;
         this.expectedProbFalse = expectedProbFalse;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -82,16 +82,14 @@ public class OrderApprovalRegressionTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testOrderApprovalRegression(double category, double urgency, double targetPrice, double price,
-                                     String expectedResult, double expectedProbTrue, double expectedProbFalse) {
-        initOrderApprovalRegressionTest(category, urgency, targetPrice, price, expectedResult, expectedProbTrue,
-                                        expectedProbFalse);
+    void testOrderApprovalRegression(double category, double urgency, double targetPrice, double price, String expectedResult, double expectedProbTrue, double expectedProbFalse) {
+        initOrderApprovalRegressionTest(category, urgency, targetPrice, price, expectedResult, expectedProbTrue, expectedProbFalse);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("category", category);
         inputData.put("urgency", urgency);
         inputData.put("targetPrice", targetPrice);
         inputData.put("price", price);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

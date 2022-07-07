@@ -21,8 +21,7 @@ import java.util.function.Supplier;
 import org.drools.mvel.compiler.Person;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LambdaIntrospectorTest {
 
@@ -32,8 +31,8 @@ public class LambdaIntrospectorTest {
         Predicate1<Person> predicate1 = p -> p.getAge() > 35;
         String fingerprint = lambdaIntrospector.apply(predicate1);
 
-        assertTrue(fingerprint.contains("ALOAD 0"));
-        assertTrue(fingerprint.contains("INVOKEVIRTUAL org/drools/mvel/compiler/Person.getAge()I"));
+        assertThat(fingerprint.contains("ALOAD 0")).isTrue();
+        assertThat(fingerprint.contains("INVOKEVIRTUAL org/drools/mvel/compiler/Person.getAge()I")).isTrue();
     }
 
     @Test
@@ -41,7 +40,7 @@ public class LambdaIntrospectorTest {
         LambdaIntrospector lambdaIntrospector = new LambdaIntrospector();
         String fingerprint = lambdaIntrospector.apply(LambdaPredicate21D56248F6A2E8DA3990031D77D229DD.INSTANCE);
 
-        assertEquals("4DEB93975D9859892B1A5FD4B38E2155", fingerprint);
+        assertThat(fingerprint).isEqualTo("4DEB93975D9859892B1A5FD4B38E2155");
     }
 
     public enum LambdaPredicate21D56248F6A2E8DA3990031D77D229DD implements Predicate1<Person> {
@@ -72,7 +71,7 @@ public class LambdaIntrospectorTest {
 
         LambdaIntrospector.ClassesFingerPrintsCache methodFingerprintsMap = methodFingerprintsMapPerClassLoader.get(predicate1.getClass().getClassLoader());
 
-        assertEquals(1, methodFingerprintsMap.size()); // methodFingerprintsMap is null if cache size is 0.
+        assertThat(methodFingerprintsMap.size()).isEqualTo(1); // methodFingerprintsMap is null if cache size is 0.
     }
 
     public interface Predicate1<A> extends Serializable {

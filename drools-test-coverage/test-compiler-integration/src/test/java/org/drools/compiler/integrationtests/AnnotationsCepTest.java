@@ -29,7 +29,7 @@ import org.kie.api.KieBase;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.definition.rule.Rule;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AnnotationsCepTest {
@@ -65,14 +65,10 @@ public class AnnotationsCepTest {
         final Rule rule = kbase.getRule("org.drools.compiler.integrationtests",
                                         "X" );
 
-        assertEquals( "John Doe",
-                      rule.getMetaData().get( "author" ) );
-        assertEquals( "Hello World!",
-                      rule.getMetaData().get( "output" ) );
-        assertEquals( 20,
-                      ((Number)rule.getMetaData().get( "value" )).intValue() );
-        assertEquals( "Hello World!",
-                      rule.getMetaData().get( "alt" ) );
+        assertThat(rule.getMetaData().get("author")).isEqualTo("John Doe");
+        assertThat(rule.getMetaData().get("output")).isEqualTo("Hello World!");
+        assertThat(((Number) rule.getMetaData().get("value")).intValue()).isEqualTo(20);
+        assertThat(rule.getMetaData().get("alt")).isEqualTo("Hello World!");
 
     }
 
@@ -92,8 +88,7 @@ public class AnnotationsCepTest {
         final Rule rule = kbase.getRule("org.drools.compiler.integrationtests",
                                         "X" );
 
-        assertEquals( " \"<- these are supposed to be the only quotes ->\" ",
-                      rule.getMetaData().get( "alt" ) );
+        assertThat(rule.getMetaData().get("alt")).isEqualTo(" \"<- these are supposed to be the only quotes ->\" ");
 
     }
 

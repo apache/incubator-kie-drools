@@ -35,8 +35,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class DrlSpecificFeaturesTest {
@@ -95,7 +94,7 @@ public class DrlSpecificFeaturesTest {
                 ksession.insert(new ChildB(i % 10));
             }
 
-            assertEquals(4, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(4);
 
             // give time to async jitting to complete
             // actually, the constraint is not jitted because MVELConstraint.isDynamic == true
@@ -103,7 +102,7 @@ public class DrlSpecificFeaturesTest {
 
             ksession.insert(new ChildA(1));
             ksession.insert(new ChildB(1));
-            assertEquals(2, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -222,7 +221,7 @@ public class DrlSpecificFeaturesTest {
 
             ksession.insert(p);
             ksession.fireAllRules();
-            assertEquals(p, list.get(0));
+            assertThat(list.get(0)).isEqualTo(p);
         } finally {
             ksession.dispose();
         }

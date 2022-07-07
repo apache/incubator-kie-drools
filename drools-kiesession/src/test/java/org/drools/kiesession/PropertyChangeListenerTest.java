@@ -30,7 +30,7 @@ import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PropertyChangeListenerTest {
     private InternalKnowledgeBase kBase;
@@ -63,8 +63,7 @@ public class PropertyChangeListenerTest {
         ksession.insert( a, true );
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      sink.getAsserted().size() );
+        assertThat(sink.getAsserted().size()).isEqualTo(1);
 
         a.setState( "stop" );
 

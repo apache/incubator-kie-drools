@@ -32,8 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MiningWithNestedRefersTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "MiningWithNestedRefers";
-
+    private static final String FILE_NAME = "MiningWithNestedRefers.pmml";
     private static final String MODEL_NAME = "MiningWithNestedRefers";
     private static final String TARGET_FIELD = "class";
     private static final String S_LEN = "s_len";
@@ -55,19 +54,14 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
     private double pVersicolor;
     private double pVirginica;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initMiningWithNestedRefersTest(float sLen,
-                                               float sWid,
-                                               float pLen,
-                                               float pWid,
-                                               double pSetosa,
-                                               double pVersicolor,
-                                               double pVirginica,
-                                               String expectedResult) {
+                                      float sWid,
+                                      float pLen,
+                                      float pWid,
+                                      double pSetosa,
+                                      double pVersicolor,
+                                      double pVirginica,
+                                      String expectedResult) {
         this.sLen = sLen;
         this.sWid = sWid;
         this.pLen = pLen;
@@ -76,6 +70,11 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
         this.pVersicolor = pVersicolor;
         this.pVirginica = pVirginica;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -90,8 +89,7 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testMiningWithNestedRefers(float sLen, float sWid, float pLen, float pWid, double pSetosa,
-                                    double pVersicolor, double pVirginica, String expectedResult) throws Exception {
+    void testMiningWithNestedRefers(float sLen, float sWid, float pLen, float pWid, double pSetosa, double pVersicolor, double pVirginica, String expectedResult) throws Exception {
         initMiningWithNestedRefersTest(sLen, sWid, pLen, pWid, pSetosa, pVersicolor, pVirginica, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put(S_LEN, sLen);
@@ -99,7 +97,7 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
         inputData.put(P_LEN, pLen);
         inputData.put(P_WID, pWid);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

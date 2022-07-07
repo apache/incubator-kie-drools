@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "CompoundPredicateScorecard";
+    private static final String FILE_NAME = "CompoundPredicateScorecard.pmml";
     private static final String MODEL_NAME = "CompoundPredicateScorecard";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
@@ -49,9 +49,21 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
     private String reasonCode2;
     private String reasonCode3;
 
+    public void initCompoundPredicateScorecardTest(double input1, double input2, String input3, String input4, double score,
+                                          String reasonCode1, String reasonCode2, String reasonCode3) {
+        this.input1 = input1;
+        this.input2 = input2;
+        this.input3 = input3;
+        this.input4 = input4;
+        this.score = score;
+        this.reasonCode1 = reasonCode1;
+        this.reasonCode2 = reasonCode2;
+        this.reasonCode3 = reasonCode3;
+    }
+
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -64,38 +76,21 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
                 {-8, 3, "classB", "classB", 170, "characteristic3ReasonCode", "characteristic1ReasonCode", null},
                 {5, 3, "classB", "classB", 160, "characteristic3ReasonCode", "characteristic1ReasonCode", null},
                 {-8, -50, "classC", "classC", 230.5, "characteristic3ReasonCode", "characteristic2ReasonCode", null},
-                {-8, 3, "classC", "classC", 265.5, "characteristic3ReasonCode", "characteristic2ReasonCode",
-                "characteristic1ReasonCode"},
-                {5, 3, "classC", "classC", 255.5, "characteristic3ReasonCode", "characteristic2ReasonCode",
-                "characteristic1ReasonCode"},
+                {-8, 3, "classC", "classC", 265.5, "characteristic3ReasonCode", "characteristic2ReasonCode", "characteristic1ReasonCode"},
+                {5, 3, "classC", "classC", 255.5, "characteristic3ReasonCode", "characteristic2ReasonCode", "characteristic1ReasonCode"},
         });
-    }
-
-    public void initCompoundPredicateScorecardTest(double input1, double input2, String input3, String input4,
-                                                   double score,
-                                                   String reasonCode1, String reasonCode2, String reasonCode3) {
-        this.input1 = input1;
-        this.input2 = input2;
-        this.input3 = input3;
-        this.input4 = input4;
-        this.score = score;
-        this.reasonCode1 = reasonCode1;
-        this.reasonCode2 = reasonCode2;
-        this.reasonCode3 = reasonCode3;
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testCompoundPredicateScorecard(double input1, double input2, String input3, String input4, double score,
-                                        String reasonCode1, String reasonCode2, String reasonCode3) {
-        initCompoundPredicateScorecardTest(input1, input2, input3, input4, score, reasonCode1, reasonCode2,
-                                           reasonCode3);
+    void testCompoundPredicateScorecard(double input1, double input2, String input3, String input4, double score, String reasonCode1, String reasonCode2, String reasonCode3) {
+        initCompoundPredicateScorecardTest(input1, input2, input3, input4, score, reasonCode1, reasonCode2, reasonCode3);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
         inputData.put("input3", input3);
         inputData.put("input4", input4);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);

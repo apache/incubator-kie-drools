@@ -32,9 +32,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class GeneratedBeansTest {
@@ -57,18 +55,18 @@ public class GeneratedBeansTest {
         final FactType cheeseFact = kbase.getFactType("org.drools.generatedbeans", "Cheese");
         final Object cheese = cheeseFact.newInstance();
         cheeseFact.set(cheese, "type", "stilton");
-        assertEquals("stilton", cheeseFact.get(cheese, "type"));
+        assertThat(cheeseFact.get(cheese, "type")).isEqualTo("stilton");
 
         final FactType personType = kbase.getFactType("org.drools.generatedbeans", "Person");
         final Object ps = personType.newInstance();
         personType.set(ps, "age", 42);
         final Map<String, Object> personMap = personType.getAsMap(ps);
-        assertEquals(42, personMap.get("age"));
+        assertThat(personMap.get("age")).isEqualTo(42);
 
         personMap.put("age", 43);
         personType.setFromMap(ps, personMap);
-        assertEquals(43, personType.get(ps, "age"));
-        assertEquals("stilton", cheeseFact.getField("type").get(cheese));
+        assertThat(personType.get(ps, "age")).isEqualTo(43);
+        assertThat(cheeseFact.getField("type").get(cheese)).isEqualTo("stilton");
 
         final KieSession ksession = kbase.newKieSession();
         final Object cg = cheeseFact.newInstance();
@@ -78,8 +76,8 @@ public class GeneratedBeansTest {
 
         ksession.insert(cheese);
         ksession.fireAllRules();
-        assertEquals(1, result.size());
-        assertEquals(5, result.get(0));
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0)).isEqualTo(5);
 
         final FactType personFact = kbase.getFactType("org.drools.generatedbeans", "Person");
         final Object person = personFact.newInstance();
@@ -88,8 +86,8 @@ public class GeneratedBeansTest {
 
         ksession.insert(person);
         ksession.fireAllRules();
-        assertEquals(2, result.size());
-        assertEquals(person, result.get(1));
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(1)).isEqualTo(person);
     }
 
     @Test
@@ -98,11 +96,11 @@ public class GeneratedBeansTest {
         final FactType cheeseFact = kbase.getFactType("org.drools.generatedbeans", "Cheese");
         final Object cheese = cheeseFact.newInstance();
         cheeseFact.set(cheese, "type", "stilton");
-        assertEquals("stilton", cheeseFact.get(cheese, "type"));
+        assertThat(cheeseFact.get(cheese, "type")).isEqualTo("stilton");
 
         final Object cheese2 = cheeseFact.newInstance();
         cheeseFact.set(cheese2, "type", "stilton");
-        assertEquals(cheese, cheese2);
+        assertThat(cheese2).isEqualTo(cheese);
 
         final FactType personType = kbase.getFactType("org.drools.generatedbeans", "Person");
         final Object ps = personType.newInstance();
@@ -114,10 +112,10 @@ public class GeneratedBeansTest {
         personType.set(ps2, "name", "mark");
         personType.set(ps2, "last", "proctor");
         personType.set(ps2, "age", 30);
-        assertEquals(ps, ps2);
+        assertThat(ps2).isEqualTo(ps);
 
         personType.set(ps2, "last", "little");
-        assertFalse(ps.equals(ps2));
+        assertThat(ps.equals(ps2)).isFalse();
 
         final KieSession wm = kbase.newKieSession();
         final Object cg = cheeseFact.newInstance();
@@ -127,8 +125,8 @@ public class GeneratedBeansTest {
 
         wm.insert(cheese);
         wm.fireAllRules();
-        assertEquals(1, result.size());
-        assertEquals(5, result.get(0));
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0)).isEqualTo(5);
 
         final FactType personFact = kbase.getFactType("org.drools.generatedbeans", "Person");
         final Object person = personFact.newInstance();
@@ -137,8 +135,8 @@ public class GeneratedBeansTest {
 
         wm.insert(person);
         wm.fireAllRules();
-        assertEquals(2, result.size());
-        assertEquals(person, result.get(1));
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(1)).isEqualTo(person);
     }
 
     @Test
@@ -146,7 +144,7 @@ public class GeneratedBeansTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_GeneratedBeansSerializable.drl");
 
         final FactType cheeseFact = kbase.getFactType("org.drools.generatedbeans", "Cheese");
-        assertTrue("Generated beans must be serializable", Serializable.class.isAssignableFrom(cheeseFact.getFactClass()));
+        assertThat(Serializable.class.isAssignableFrom(cheeseFact.getFactClass())).as("Generated beans must be serializable").isTrue();
 
         final Object cheese = cheeseFact.newInstance();
         cheeseFact.set(cheese, "type", "stilton");
@@ -162,7 +160,7 @@ public class GeneratedBeansTest {
         ksession.insert(cheese2);
         ksession.fireAllRules();
 
-        assertEquals(1, results.size());
-        assertEquals(2, results.get(0).intValue());
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0).intValue()).isEqualTo(2);
     }
 }

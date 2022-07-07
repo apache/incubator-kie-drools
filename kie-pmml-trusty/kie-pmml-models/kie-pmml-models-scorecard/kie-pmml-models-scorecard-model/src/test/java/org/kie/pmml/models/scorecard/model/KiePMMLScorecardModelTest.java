@@ -32,7 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class KiePMMLScorecardModelTest {
 
-    private static final String FILE_NAME = "fileName";
     private static final String MODEL_NAME = "MODEL_NAME";
     private static final String CUSTOM_FIELD = "CUSTOM_FIELD";
     private static final String REASON_CODE = "REASON_CODE";
@@ -48,15 +47,14 @@ public class KiePMMLScorecardModelTest {
     void evaluate() {
         Double initialScore = 25.23;
         PMMLContextTest pmmlContextTest = new PMMLContextTest();
-        KiePMMLScorecardModel kiePMMLScorecardModel = new KiePMMLScorecardModel(FILE_NAME,
-                                                                                MODEL_NAME,
-                                                                                Collections.emptyList(),
-                                                                                getKiePMMLCharacteristics(),
-                                                                                initialScore,
-                                                                                true,
-                                                                                REASONCODE_ALGORITHM.POINTS_BELOW,
-                                                                                0);
-        Object retrieved = kiePMMLScorecardModel.evaluate(Collections.emptyMap(), pmmlContextTest);
+        KiePMMLScorecardModel kiePMMLScorecardModel = new KiePMMLScorecardModel(MODEL_NAME,
+                Collections.emptyList(),
+                getKiePMMLCharacteristics(),
+                initialScore,
+                true,
+                REASONCODE_ALGORITHM.POINTS_BELOW,
+                0);
+        Object retrieved = kiePMMLScorecardModel.evaluate(null, Collections.emptyMap(), pmmlContextTest);
         assertThat(retrieved).isNotNull();
 
         Double EVALUATION_20 = baselineScore - value2;

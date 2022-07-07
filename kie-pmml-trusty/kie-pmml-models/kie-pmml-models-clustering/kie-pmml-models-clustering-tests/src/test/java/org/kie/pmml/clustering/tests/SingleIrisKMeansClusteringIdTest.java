@@ -16,6 +16,7 @@
 
 package org.kie.pmml.clustering.tests;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SingleIrisKMeansClusteringIdTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "SingleIrisKMeansClustering_id";
+    private static final String FILE_NAME = "SingleIrisKMeansClustering_id.pmml";
     
     private static final String MODEL_NAME = "SingleIrisKMeansClustering";
     private static final String TARGET_FIELD = "class";
@@ -46,7 +47,7 @@ public class SingleIrisKMeansClusteringIdTest extends AbstractPMMLTest {
     private static final String PREDICTED_CLUSTER_INDEX_FIELD = "predicted_cluster_index";
     private static final String PREDICTED_CLUSTER_AFFINITY_FIELD = "predicted_cluster_affinity";
 
-    protected PMMLRuntime pmmlRuntime;
+    private static PMMLRuntime pmmlRuntime;
 
     private double sepalLength;
     private double sepalWidth;
@@ -83,9 +84,9 @@ public class SingleIrisKMeansClusteringIdTest extends AbstractPMMLTest {
         this.predictedAffinity = predictedAffinity;
     }
 
-    @BeforeEach
-    public void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     @MethodSource("data")
@@ -98,7 +99,7 @@ public class SingleIrisKMeansClusteringIdTest extends AbstractPMMLTest {
         inputData.put("petal_length", petalLength);
         inputData.put("petal_width", petalWidth);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(irisClass);

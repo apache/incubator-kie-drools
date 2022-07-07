@@ -22,18 +22,15 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
-class KiePMMLDroolsModelTest {
+public class KiePMMLDroolsModelTest {
 
-    private final static String FILE_NAME = "filename";
     private final static String MODEL_NAME = "MODELNAME";
     private final static String KMODULE_PACKAGE_NAME = getSanitizedPackageName(MODEL_NAME);
     private final static List<KiePMMLExtension> EXTENSIONS = new ArrayList<>();
@@ -41,7 +38,7 @@ class KiePMMLDroolsModelTest {
 
     @BeforeEach
     public void setup() {
-        kiePMMLDroolsModel = new KiePMMLDroolsModelFake(FILE_NAME, MODEL_NAME, KMODULE_PACKAGE_NAME, EXTENSIONS);
+        kiePMMLDroolsModel = new KiePMMLDroolsModelFake(MODEL_NAME, KMODULE_PACKAGE_NAME, EXTENSIONS);
     }
 
     @Test
@@ -54,17 +51,16 @@ class KiePMMLDroolsModelTest {
     @Test
     void evaluateNoKieBase() {
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
-            kiePMMLDroolsModel.evaluate(new HashMap<>(), new PMMLContextImpl(new PMMLRequestData(), FILE_NAME, null));
+            kiePMMLDroolsModel.evaluate("NOT_KIE_BASE", new HashMap<>(), null);
         });
     }
 
     private final class KiePMMLDroolsModelFake extends KiePMMLDroolsModel {
 
-        protected KiePMMLDroolsModelFake(final String fileName,
-                                         String modelName,
+        protected KiePMMLDroolsModelFake(String modelName,
                                          String kModulePackageName,
                                          List<KiePMMLExtension> extensions) {
-            super(fileName, modelName, extensions);
+            super(modelName, extensions);
             this.kModulePackageName = kModulePackageName;
         }
 

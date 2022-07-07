@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.clustering.evaluator;
+package  org.kie.pmml.models.clustering.evaluator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class PMMLClusteringModelEvaluatorTest {
     private PMMLClusteringModelEvaluator evaluator;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp(){
         evaluator = new PMMLClusteringModelEvaluator();
     }
 
@@ -34,4 +34,5 @@ public class PMMLClusteringModelEvaluatorTest {
     void getPMMLModelType() {
         assertThat(evaluator.getPMMLModelType()).isEqualTo(PMML_MODEL.CLUSTERING_MODEL);
     }
+
 }

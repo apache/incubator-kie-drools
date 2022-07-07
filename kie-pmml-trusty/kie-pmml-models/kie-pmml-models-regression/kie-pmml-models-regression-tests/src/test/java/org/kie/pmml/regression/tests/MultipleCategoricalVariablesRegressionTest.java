@@ -32,8 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultipleCategoricalVariablesRegressionTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "MultipleRegression";
-
+    private static final String FILE_NAME = "MultipleRegression.pmml";
     private static final String MODEL_NAME = "CategoricalVariablesRegression";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -41,14 +40,14 @@ public class MultipleCategoricalVariablesRegressionTest extends AbstractPMMLTest
     private String x;
     private String y;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initMultipleCategoricalVariablesRegressionTest(String x, String y) {
         this.x = x;
         this.y = y;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -82,7 +81,7 @@ public class MultipleCategoricalVariablesRegressionTest extends AbstractPMMLTest
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result).isNotNull();
         assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);

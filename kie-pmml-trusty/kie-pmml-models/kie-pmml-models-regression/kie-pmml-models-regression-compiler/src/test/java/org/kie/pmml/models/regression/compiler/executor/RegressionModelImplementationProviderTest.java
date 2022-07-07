@@ -32,6 +32,7 @@ import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -48,6 +49,7 @@ import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDict
 public class RegressionModelImplementationProviderTest {
 
     private static final RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
+    private static final String RELEASE_ID = "org.drools:kie-pmml-models-testing:1.0";
     private static final String SOURCE_1 = "LinearRegressionSample.pmml";
     private static final String SOURCE_2 = "test_regression.pmml";
     private static final String SOURCE_3 = "test_regression_clax.pmml";
@@ -67,6 +69,23 @@ public class RegressionModelImplementationProviderTest {
     }
 
     @Test
+    void getKiePMMLModel() throws Exception {
+        final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
+        assertThat(pmml).isNotNull();
+        assertThat(pmml.getModels()).hasSize(1);
+        assertThat(pmml.getModels().get(0)).isInstanceOf(RegressionModel.class);
+        RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
+        final CommonCompilationDTO<RegressionModel> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
+        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(Serializable.class);
+    }
+
+    @Test
     void getKiePMMLModelWithSources() throws Exception {
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
         assertThat(pmml).isNotNull();
@@ -75,9 +94,9 @@ public class RegressionModelImplementationProviderTest {
         RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
         final CommonCompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       regressionModel,
-                                                                       new HasClassLoaderMock(), SOURCE_1);
+                        pmml,
+                        regressionModel,
+                        new HasClassLoaderMock());
         final KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
         final Map<String, String> sourcesMap = retrieved.getSourcesMap();
@@ -135,7 +154,7 @@ public class RegressionModelImplementationProviderTest {
             // Expected
         }
         regressionModel = new RegressionModel(regressionModel.getMiningFunction(), regressionModel.getMiningSchema(),
-                                              null);
+                null);
         try {
             PROVIDER.validate(fields, regressionModel);
             fail("Expecting validation failure due to missing RegressionTables");

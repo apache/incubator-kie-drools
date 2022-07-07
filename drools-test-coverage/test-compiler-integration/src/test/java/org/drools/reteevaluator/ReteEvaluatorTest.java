@@ -31,8 +31,8 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ReteEvaluatorTest {
 
@@ -52,9 +52,9 @@ public class ReteEvaluatorTest {
         Person me = new Person( "Mario", 40 );
         reteEvaluator.insert( "Mario" );
         reteEvaluator.insert( me );
-        assertEquals( 1, reteEvaluator.fireAllRules() );
+        assertThat(reteEvaluator.fireAllRules()).isEqualTo(1);
 
-        assertEquals( 41, me.getAge() );
+        assertThat(me.getAge()).isEqualTo(41);
     }
 
     private InternalKnowledgeBase getKBase(String... stringRules) {

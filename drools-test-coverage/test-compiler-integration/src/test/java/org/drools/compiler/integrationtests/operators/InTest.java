@@ -28,7 +28,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class InTest {
@@ -70,7 +70,7 @@ public class InTest {
             ksession.insert(person);
 
             final int rules = ksession.fireAllRules();
-            assertEquals(2, rules);
+            assertThat(rules).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -100,7 +100,7 @@ public class InTest {
             ksession.insert(person);
 
             final int rules = ksession.fireAllRules();
-            assertEquals(2, rules);
+            assertThat(rules).isEqualTo(2);
         } finally {
             ksession.dispose();
         }

@@ -32,8 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultipleMixedMiningTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "MultipleMining";
-
+    private static final String FILE_NAME = "MultipleMining.pmml";
     private static final String MODEL_NAME = "MixedMining";
     private static final String TARGET_FIELD = "categoricalResult";
     private static PMMLRuntime pmmlRuntime;
@@ -46,18 +45,13 @@ public class MultipleMixedMiningTest extends AbstractPMMLTest {
     private boolean validLicense;
     private double expectedResult;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initMultipleMixedMiningTest(String categoricalX,
-                                            String categoricalY,
-                                            double age,
-                                            String occupation,
-                                            String residenceState,
-                                            boolean validLicense,
-                                            double expectedResult) {
+                                   String categoricalY,
+                                   double age,
+                                   String occupation,
+                                   String residenceState,
+                                   boolean validLicense,
+                                   double expectedResult) {
         this.categoricalX = categoricalX;
         this.categoricalY = categoricalY;
         this.age = age;
@@ -65,6 +59,11 @@ public class MultipleMixedMiningTest extends AbstractPMMLTest {
         this.residenceState = residenceState;
         this.validLicense = validLicense;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -81,10 +80,8 @@ public class MultipleMixedMiningTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testMixedMining(String categoricalX, String categoricalY, double age, String occupation,
-                         String residenceState, boolean validLicense, double expectedResult) {
-        initMultipleMixedMiningTest(categoricalX, categoricalY, age, occupation, residenceState, validLicense,
-                                    expectedResult);
+    void testMixedMining(String categoricalX, String categoricalY, double age, String occupation, String residenceState, boolean validLicense, double expectedResult) {
+        initMultipleMixedMiningTest(categoricalX, categoricalY, age, occupation, residenceState, validLicense, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("categoricalX", categoricalX);
         inputData.put("categoricalY", categoricalY);
@@ -92,7 +89,7 @@ public class MultipleMixedMiningTest extends AbstractPMMLTest {
         inputData.put("occupation", occupation);
         inputData.put("residenceState", residenceState);
         inputData.put("validLicense", validLicense);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

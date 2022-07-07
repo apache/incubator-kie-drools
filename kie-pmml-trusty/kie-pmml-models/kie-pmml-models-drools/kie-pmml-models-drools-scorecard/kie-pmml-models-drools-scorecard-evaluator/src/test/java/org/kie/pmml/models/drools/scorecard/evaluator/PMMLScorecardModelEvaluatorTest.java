@@ -22,34 +22,42 @@ import java.util.Map;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.api.KieBase;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
+import org.kie.pmml.models.drools.scorecard.compiler.executor.ScorecardModelImplementationProvider;
+import org.kie.pmml.models.drools.scorecard.evaluator.implementations.HasKnowledgeBuilderMock;
+import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
+import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
 public class PMMLScorecardModelEvaluatorTest {
 
-    private static final String SOURCE_BASE = "ScorecardSample";
-    private static final String SOURCE_1 = SOURCE_BASE + PMML_SUFFIX;
-    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+    private static final String SOURCE_1 = "ScorecardSample.pmml";
     private static final Logger logger = LoggerFactory.getLogger(PMMLScorecardModelEvaluatorTest.class);
     private static final String modelName = "Sample Score";
     private static final String PACKAGE_NAME = "PACKAGE_NAME";
-    //    private static final ScorecardModelImplementationProvider provider = new
-    //    ScorecardModelImplementationProvider();
+    private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org", "test", "1.0.0");
+    private static final ScorecardModelImplementationProvider provider = new ScorecardModelImplementationProvider();
+    private static KieBase kieBase;
+    private static KiePMMLScorecardModel kiePMMLModel;
     private static PMMLScorecardModelEvaluator evaluator;
     private final String AGE = "age";
     private final String OCCUPATION = "occupation";
@@ -62,29 +70,35 @@ public class PMMLScorecardModelEvaluatorTest {
     private boolean validLicense;
     private double expectedResult;
 
-    @BeforeAll
-    public static void setUp() throws Exception {
-        memoryCompilerClassLoader =
-                new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-        evaluator = new PMMLScorecardModelEvaluator();
-        final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
-        assertThat(pmml).isNotNull();
-        assertThat(pmml.getModels()).hasSize(1);
-        assertThat(pmml.getModels().get(0)).isInstanceOf(Scorecard.class);
-        final CommonCompilationDTO<Scorecard> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       (Scorecard) pmml.getModels().get(0),
-                                                                       new HasClassLoaderMock(), SOURCE_BASE);
-    }
-
     public void initPMMLScorecardModelEvaluatorTest(double age, String occupation, String residenceState,
-                                                    boolean validLicense, double expectedResult) {
+                                           boolean validLicense, double expectedResult) {
         this.age = age;
         this.occupation = occupation;
         this.residenceState = residenceState;
         this.validLicense = validLicense;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setUp() throws Exception {
+        evaluator = new PMMLScorecardModelEvaluator();
+        final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
+        assertThat(pmml).isNotNull();
+        assertThat(pmml.getModels()).hasSize(1);
+        assertThat(pmml.getModels().get(0)).isInstanceOf(Scorecard.class);
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                        pmml,
+                        (Scorecard) pmml.getModels().get(0),
+                        new HasKnowledgeBuilderMock(knowledgeBuilder));
+
+        kiePMMLModel = provider.getKiePMMLModel(compilationDTO);
+        kieBase = new KieHelper()
+                .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
+                .setReleaseId(RELEASE_ID)
+                .build(ExecutableModelProject.class);
+        assertThat(kieBase).isNotNull();
     }
 
     public static Collection<Object[]> data() {
@@ -274,16 +288,14 @@ public class PMMLScorecardModelEvaluatorTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void getPMMLModelType(double age, String occupation, String residenceState, boolean validLicense,
-                          double expectedResult) {
+    void getPMMLModelType(double age, String occupation, String residenceState, boolean validLicense, double expectedResult) {
         initPMMLScorecardModelEvaluatorTest(age, occupation, residenceState, validLicense, expectedResult);
         assertThat(evaluator.getPMMLModelType()).isEqualTo(PMML_MODEL.SCORECARD_MODEL);
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testScorecardSample(double age, String occupation, String residenceState, boolean validLicense,
-                             double expectedResult) {
+    void testScorecardSample(double age, String occupation, String residenceState, boolean validLicense, double expectedResult) {
         initPMMLScorecardModelEvaluatorTest(age, occupation, residenceState, validLicense, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put(AGE, age);
@@ -295,21 +307,21 @@ public class PMMLScorecardModelEvaluatorTest {
 
     private void commonEvaluate(Map<String, Object> inputData) {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
-        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData, "", memoryCompilerClassLoader);
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
         commonEvaluate(pmmlContext);
     }
 
     private void commonEvaluate(PMMLContext pmmlContext) {
-//        PMML4Result retrieved = evaluator.evaluate(kiePMMLModel, pmmlContext);
-//        assertThat(retrieved).isNotNull();
-//        logger.trace(retrieved.toString());
-//        assertThat(retrieved.getResultObjectName()).isEqualTo(TARGET_FIELD);
-//        final Map<String, Object> resultVariables = retrieved.getResultVariables();
-//        assertThat(resultVariables).isNotNull();
-//        assertThat(retrieved.getResultCode()).isEqualTo(ResultCode.OK.getName());
-//        assertThat(resultVariables).isNotEmpty();
-//        assertThat(resultVariables).containsKey(TARGET_FIELD);
-//        assertThat(resultVariables.get(TARGET_FIELD)).isEqualTo(expectedResult);
+        PMML4Result retrieved = evaluator.evaluate(kieBase, kiePMMLModel, pmmlContext);
+        assertThat(retrieved).isNotNull();
+        logger.trace(retrieved.toString());
+        assertThat(retrieved.getResultObjectName()).isEqualTo(TARGET_FIELD);
+        final Map<String, Object> resultVariables = retrieved.getResultVariables();
+        assertThat(resultVariables).isNotNull();
+        assertThat(retrieved.getResultCode()).isEqualTo(ResultCode.OK.getName());
+        assertThat(resultVariables).isNotEmpty();
+        assertThat(resultVariables).containsKey(TARGET_FIELD);
+        assertThat(resultVariables.get(TARGET_FIELD)).isEqualTo(expectedResult);
     }
 
     private PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {

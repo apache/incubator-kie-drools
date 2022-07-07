@@ -16,19 +16,19 @@
 package org.kie.test.util;
 
 import static org.kie.test.util.StaticMethodTestHelper.*;
-import static org.junit.Assert.assertFalse;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StaticMethodTestHelperTest {
 
     @Test
     public void versionIsLessThanProjectVersion() {
         double version = 6.2d;
-        assertFalse( projectVersionIsLessThan(version) );
+        assertThat(projectVersionIsLessThan(version)).isFalse();
 
-        assertFalse( isLessThanProjectVersion("7.0.0.Beta1", version ) );
-        assertFalse( isLessThanProjectVersion("7.0.0.20160123-098765", version ) );
-        assertFalse( isLessThanProjectVersion("7.0.0-SNAPSHOT", version ) );
+        assertThat(isLessThanProjectVersion("7.0.0.Beta1", version)).isFalse();
+        assertThat(isLessThanProjectVersion("7.0.0.20160123-098765", version)).isFalse();
+        assertThat(isLessThanProjectVersion("7.0.0-SNAPSHOT", version)).isFalse();
     }
 }

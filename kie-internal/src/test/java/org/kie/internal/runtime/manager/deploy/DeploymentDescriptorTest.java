@@ -32,10 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class DeploymentDescriptorTest {
 
@@ -60,19 +56,19 @@ public class DeploymentDescriptorTest {
         DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(stream);
 
         assertThat(fromXml).isNotNull();
-        assertEquals("org.jbpm.domain", fromXml.getPersistenceUnit());
-        assertEquals("org.jbpm.domain", fromXml.getAuditPersistenceUnit());
-        assertEquals(AuditMode.JPA, fromXml.getAuditMode());
-        assertEquals(PersistenceMode.JPA, fromXml.getPersistenceMode());
-        assertEquals(RuntimeStrategy.SINGLETON, fromXml.getRuntimeStrategy());
-        assertEquals(1, fromXml.getMarshallingStrategies().size());
-        assertEquals(0, fromXml.getConfiguration().size());
-        assertEquals(0, fromXml.getEnvironmentEntries().size());
-        assertEquals(0, fromXml.getEventListeners().size());
-        assertEquals(0, fromXml.getGlobals().size());
-        assertEquals(0, fromXml.getTaskEventListeners().size());
-        assertEquals(0, fromXml.getWorkItemHandlers().size());
-        assertEquals(1, fromXml.getRequiredRoles().size());
+        assertThat(fromXml.getPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(fromXml.getAuditPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(fromXml.getAuditMode()).isEqualTo(AuditMode.JPA);
+        assertThat(fromXml.getPersistenceMode()).isEqualTo(PersistenceMode.JPA);
+        assertThat(fromXml.getRuntimeStrategy()).isEqualTo(RuntimeStrategy.SINGLETON);
+        assertThat(fromXml.getMarshallingStrategies().size()).isEqualTo(1);
+        assertThat(fromXml.getConfiguration().size()).isEqualTo(0);
+        assertThat(fromXml.getEnvironmentEntries().size()).isEqualTo(0);
+        assertThat(fromXml.getEventListeners().size()).isEqualTo(0);
+        assertThat(fromXml.getGlobals().size()).isEqualTo(0);
+        assertThat(fromXml.getTaskEventListeners().size()).isEqualTo(0);
+        assertThat(fromXml.getWorkItemHandlers().size()).isEqualTo(0);
+        assertThat(fromXml.getRequiredRoles().size()).isEqualTo(1);
     }
 
     @Test
@@ -81,19 +77,19 @@ public class DeploymentDescriptorTest {
 
         DeploymentDescriptor descriptor = DeploymentDescriptorIO.fromXml(input);
         assertThat(descriptor).isNotNull();
-        assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
-        assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
-        assertEquals(AuditMode.JPA, descriptor.getAuditMode());
-        assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
-        assertEquals(RuntimeStrategy.SINGLETON, descriptor.getRuntimeStrategy());
-        assertEquals(0, descriptor.getMarshallingStrategies().size());
-        assertEquals(0, descriptor.getConfiguration().size());
-        assertEquals(0, descriptor.getEnvironmentEntries().size());
-        assertEquals(0, descriptor.getEventListeners().size());
-        assertEquals(0, descriptor.getGlobals().size());
-        assertEquals(0, descriptor.getTaskEventListeners().size());
-        assertEquals(0, descriptor.getWorkItemHandlers().size());
-        assertEquals(0, descriptor.getRequiredRoles().size());
+        assertThat(descriptor.getPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(descriptor.getAuditPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(descriptor.getAuditMode()).isEqualTo(AuditMode.JPA);
+        assertThat(descriptor.getPersistenceMode()).isEqualTo(PersistenceMode.JPA);
+        assertThat(descriptor.getRuntimeStrategy()).isEqualTo(RuntimeStrategy.SINGLETON);
+        assertThat(descriptor.getMarshallingStrategies().size()).isEqualTo(0);
+        assertThat(descriptor.getConfiguration().size()).isEqualTo(0);
+        assertThat(descriptor.getEnvironmentEntries().size()).isEqualTo(0);
+        assertThat(descriptor.getEventListeners().size()).isEqualTo(0);
+        assertThat(descriptor.getGlobals().size()).isEqualTo(0);
+        assertThat(descriptor.getTaskEventListeners().size()).isEqualTo(0);
+        assertThat(descriptor.getWorkItemHandlers().size()).isEqualTo(0);
+        assertThat(descriptor.getRequiredRoles().size()).isEqualTo(0);
     }
 
     @Test
@@ -102,19 +98,19 @@ public class DeploymentDescriptorTest {
 
         DeploymentDescriptor descriptor = DeploymentDescriptorIO.fromXml(input);
         assertThat(descriptor).isNotNull();
-        assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
-        assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
-        assertEquals(AuditMode.JPA, descriptor.getAuditMode());
-        assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
-        assertEquals(RuntimeStrategy.SINGLETON, descriptor.getRuntimeStrategy());
-        assertEquals(1, descriptor.getMarshallingStrategies().size());
-        assertEquals(0, descriptor.getConfiguration().size());
-        assertEquals(0, descriptor.getEnvironmentEntries().size());
-        assertEquals(0, descriptor.getEventListeners().size());
-        assertEquals(0, descriptor.getGlobals().size());
-        assertEquals(0, descriptor.getTaskEventListeners().size());
-        assertEquals(0, descriptor.getWorkItemHandlers().size());
-        assertEquals(1, descriptor.getRequiredRoles().size());
+        assertThat(descriptor.getPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(descriptor.getAuditPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(descriptor.getAuditMode()).isEqualTo(AuditMode.JPA);
+        assertThat(descriptor.getPersistenceMode()).isEqualTo(PersistenceMode.JPA);
+        assertThat(descriptor.getRuntimeStrategy()).isEqualTo(RuntimeStrategy.SINGLETON);
+        assertThat(descriptor.getMarshallingStrategies().size()).isEqualTo(1);
+        assertThat(descriptor.getConfiguration().size()).isEqualTo(0);
+        assertThat(descriptor.getEnvironmentEntries().size()).isEqualTo(0);
+        assertThat(descriptor.getEventListeners().size()).isEqualTo(0);
+        assertThat(descriptor.getGlobals().size()).isEqualTo(0);
+        assertThat(descriptor.getTaskEventListeners().size()).isEqualTo(0);
+        assertThat(descriptor.getWorkItemHandlers().size()).isEqualTo(0);
+        assertThat(descriptor.getRequiredRoles().size()).isEqualTo(1);
     }
 
     @Test
@@ -123,19 +119,19 @@ public class DeploymentDescriptorTest {
 
         DeploymentDescriptor descriptor = DeploymentDescriptorIO.fromXml(input);
         assertThat(descriptor).isNotNull();
-        assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
-        assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
-        assertEquals(AuditMode.JPA, descriptor.getAuditMode());
-        assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
-        assertEquals(RuntimeStrategy.PER_PROCESS_INSTANCE, descriptor.getRuntimeStrategy());
-        assertEquals(0, descriptor.getMarshallingStrategies().size());
-        assertEquals(0, descriptor.getConfiguration().size());
-        assertEquals(0, descriptor.getEnvironmentEntries().size());
-        assertEquals(0, descriptor.getEventListeners().size());
-        assertEquals(0, descriptor.getGlobals().size());
-        assertEquals(0, descriptor.getTaskEventListeners().size());
-        assertEquals(0, descriptor.getWorkItemHandlers().size());
-        assertEquals(0, descriptor.getRequiredRoles().size());
+        assertThat(descriptor.getPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(descriptor.getAuditPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(descriptor.getAuditMode()).isEqualTo(AuditMode.JPA);
+        assertThat(descriptor.getPersistenceMode()).isEqualTo(PersistenceMode.JPA);
+        assertThat(descriptor.getRuntimeStrategy()).isEqualTo(RuntimeStrategy.PER_PROCESS_INSTANCE);
+        assertThat(descriptor.getMarshallingStrategies().size()).isEqualTo(0);
+        assertThat(descriptor.getConfiguration().size()).isEqualTo(0);
+        assertThat(descriptor.getEnvironmentEntries().size()).isEqualTo(0);
+        assertThat(descriptor.getEventListeners().size()).isEqualTo(0);
+        assertThat(descriptor.getGlobals().size()).isEqualTo(0);
+        assertThat(descriptor.getTaskEventListeners().size()).isEqualTo(0);
+        assertThat(descriptor.getWorkItemHandlers().size()).isEqualTo(0);
+        assertThat(descriptor.getRequiredRoles().size()).isEqualTo(0);
     }
 
     @Test
@@ -158,19 +154,19 @@ public class DeploymentDescriptorTest {
         descriptor.setRequiredRoles(roles);
 
         assertThat(descriptor).isNotNull();
-        assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
-        assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
-        assertEquals(AuditMode.JMS, descriptor.getAuditMode());
-        assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
-        assertEquals(RuntimeStrategy.SINGLETON, descriptor.getRuntimeStrategy());
-        assertEquals(1, descriptor.getMarshallingStrategies().size());
-        assertEquals(0, descriptor.getConfiguration().size());
-        assertEquals(0, descriptor.getEnvironmentEntries().size());
-        assertEquals(0, descriptor.getEventListeners().size());
-        assertEquals(0, descriptor.getGlobals().size());
-        assertEquals(0, descriptor.getTaskEventListeners().size());
-        assertEquals(0, descriptor.getWorkItemHandlers().size());
-        assertEquals(1, descriptor.getRequiredRoles().size());
+        assertThat(descriptor.getPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(descriptor.getAuditPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(descriptor.getAuditMode()).isEqualTo(AuditMode.JMS);
+        assertThat(descriptor.getPersistenceMode()).isEqualTo(PersistenceMode.JPA);
+        assertThat(descriptor.getRuntimeStrategy()).isEqualTo(RuntimeStrategy.SINGLETON);
+        assertThat(descriptor.getMarshallingStrategies().size()).isEqualTo(1);
+        assertThat(descriptor.getConfiguration().size()).isEqualTo(0);
+        assertThat(descriptor.getEnvironmentEntries().size()).isEqualTo(0);
+        assertThat(descriptor.getEventListeners().size()).isEqualTo(0);
+        assertThat(descriptor.getGlobals().size()).isEqualTo(0);
+        assertThat(descriptor.getTaskEventListeners().size()).isEqualTo(0);
+        assertThat(descriptor.getWorkItemHandlers().size()).isEqualTo(0);
+        assertThat(descriptor.getRequiredRoles().size()).isEqualTo(1);
     }
 
     @Test
@@ -203,19 +199,19 @@ public class DeploymentDescriptorTest {
         DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(stream);
 
         assertThat(fromXml).isNotNull();
-        assertEquals("org.jbpm.domain", fromXml.getPersistenceUnit());
-        assertEquals("org.jbpm.domain", fromXml.getAuditPersistenceUnit());
-        assertEquals(AuditMode.JPA, fromXml.getAuditMode());
-        assertEquals(PersistenceMode.JPA, fromXml.getPersistenceMode());
-        assertEquals(RuntimeStrategy.SINGLETON, fromXml.getRuntimeStrategy());
-        assertEquals(0, fromXml.getMarshallingStrategies().size());
-        assertEquals(0, fromXml.getConfiguration().size());
-        assertEquals(0, fromXml.getEnvironmentEntries().size());
-        assertEquals(0, fromXml.getEventListeners().size());
-        assertEquals(0, fromXml.getGlobals().size());
-        assertEquals(0, fromXml.getTaskEventListeners().size());
-        assertEquals(1, fromXml.getWorkItemHandlers().size());
-        assertEquals(1, fromXml.getRequiredRoles().size());
+        assertThat(fromXml.getPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(fromXml.getAuditPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(fromXml.getAuditMode()).isEqualTo(AuditMode.JPA);
+        assertThat(fromXml.getPersistenceMode()).isEqualTo(PersistenceMode.JPA);
+        assertThat(fromXml.getRuntimeStrategy()).isEqualTo(RuntimeStrategy.SINGLETON);
+        assertThat(fromXml.getMarshallingStrategies().size()).isEqualTo(0);
+        assertThat(fromXml.getConfiguration().size()).isEqualTo(0);
+        assertThat(fromXml.getEnvironmentEntries().size()).isEqualTo(0);
+        assertThat(fromXml.getEventListeners().size()).isEqualTo(0);
+        assertThat(fromXml.getGlobals().size()).isEqualTo(0);
+        assertThat(fromXml.getTaskEventListeners().size()).isEqualTo(0);
+        assertThat(fromXml.getWorkItemHandlers().size()).isEqualTo(1);
+        assertThat(fromXml.getRequiredRoles().size()).isEqualTo(1);
     }
 
     @Test
@@ -241,43 +237,43 @@ public class DeploymentDescriptorTest {
         descriptor.setRequiredRoles(roles);
 
         assertThat(descriptor).isNotNull();
-        assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
-        assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
-        assertEquals(AuditMode.JMS, descriptor.getAuditMode());
-        assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
-        assertEquals(RuntimeStrategy.SINGLETON, descriptor.getRuntimeStrategy());
-        assertEquals(1, descriptor.getMarshallingStrategies().size());
-        assertEquals(0, descriptor.getConfiguration().size());
-        assertEquals(0, descriptor.getEnvironmentEntries().size());
-        assertEquals(0, descriptor.getEventListeners().size());
-        assertEquals(0, descriptor.getGlobals().size());
-        assertEquals(0, descriptor.getTaskEventListeners().size());
-        assertEquals(0, descriptor.getWorkItemHandlers().size());
-        assertEquals(4, descriptor.getRequiredRoles().size());
+        assertThat(descriptor.getPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(descriptor.getAuditPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(descriptor.getAuditMode()).isEqualTo(AuditMode.JMS);
+        assertThat(descriptor.getPersistenceMode()).isEqualTo(PersistenceMode.JPA);
+        assertThat(descriptor.getRuntimeStrategy()).isEqualTo(RuntimeStrategy.SINGLETON);
+        assertThat(descriptor.getMarshallingStrategies().size()).isEqualTo(1);
+        assertThat(descriptor.getConfiguration().size()).isEqualTo(0);
+        assertThat(descriptor.getEnvironmentEntries().size()).isEqualTo(0);
+        assertThat(descriptor.getEventListeners().size()).isEqualTo(0);
+        assertThat(descriptor.getGlobals().size()).isEqualTo(0);
+        assertThat(descriptor.getTaskEventListeners().size()).isEqualTo(0);
+        assertThat(descriptor.getWorkItemHandlers().size()).isEqualTo(0);
+        assertThat(descriptor.getRequiredRoles().size()).isEqualTo(4);
 
         List<String> toVerify = descriptor.getRequiredRoles();
-        assertEquals(4, toVerify.size());
-        assertTrue(toVerify.contains("view:managers"));
-        assertTrue(toVerify.contains("execute:experts"));
-        assertTrue(toVerify.contains("all:everyone"));
-        assertTrue(toVerify.contains("employees"));
+        assertThat(toVerify.size()).isEqualTo(4);
+        assertThat(toVerify.contains("view:managers")).isTrue();
+        assertThat(toVerify.contains("execute:experts")).isTrue();
+        assertThat(toVerify.contains("all:everyone")).isTrue();
+        assertThat(toVerify.contains("employees")).isTrue();
 
         toVerify = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_ALL);
-        assertEquals(4, toVerify.size());
-        assertTrue(toVerify.contains("managers"));
-        assertTrue(toVerify.contains("experts"));
-        assertTrue(toVerify.contains("everyone"));
-        assertTrue(toVerify.contains("employees"));
+        assertThat(toVerify.size()).isEqualTo(4);
+        assertThat(toVerify.contains("managers")).isTrue();
+        assertThat(toVerify.contains("experts")).isTrue();
+        assertThat(toVerify.contains("everyone")).isTrue();
+        assertThat(toVerify.contains("employees")).isTrue();
 
         toVerify = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_EXECUTE);
-        assertEquals(2, toVerify.size());
-        assertTrue(toVerify.contains("experts"));
-        assertTrue(toVerify.contains("employees"));
+        assertThat(toVerify.size()).isEqualTo(2);
+        assertThat(toVerify.contains("experts")).isTrue();
+        assertThat(toVerify.contains("employees")).isTrue();
 
         toVerify = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_VIEW);
-        assertEquals(2, toVerify.size());
-        assertTrue(toVerify.contains("managers"));
-        assertTrue(toVerify.contains("employees"));
+        assertThat(toVerify.size()).isEqualTo(2);
+        assertThat(toVerify.contains("managers")).isTrue();
+        assertThat(toVerify.contains("employees")).isTrue();
     }
 
     @Test
@@ -300,19 +296,19 @@ public class DeploymentDescriptorTest {
         DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(stream);
 
         assertThat(fromXml).isNotNull();
-        assertEquals("org.jbpm.domain", fromXml.getPersistenceUnit());
-        assertEquals("org.jbpm.domain", fromXml.getAuditPersistenceUnit());
-        assertEquals(AuditMode.JPA, fromXml.getAuditMode());
-        assertEquals(PersistenceMode.JPA, fromXml.getPersistenceMode());
-        assertEquals(RuntimeStrategy.SINGLETON, fromXml.getRuntimeStrategy());
-        assertEquals(0, fromXml.getMarshallingStrategies().size());
-        assertEquals(0, fromXml.getConfiguration().size());
-        assertEquals(0, fromXml.getEnvironmentEntries().size());
-        assertEquals(0, fromXml.getEventListeners().size());
-        assertEquals(0, fromXml.getGlobals().size());
-        assertEquals(0, fromXml.getTaskEventListeners().size());
-        assertEquals(0, fromXml.getWorkItemHandlers().size());
-        assertEquals(1, fromXml.getRequiredRoles().size());
+        assertThat(fromXml.getPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(fromXml.getAuditPersistenceUnit()).isEqualTo("org.jbpm.domain");
+        assertThat(fromXml.getAuditMode()).isEqualTo(AuditMode.JPA);
+        assertThat(fromXml.getPersistenceMode()).isEqualTo(PersistenceMode.JPA);
+        assertThat(fromXml.getRuntimeStrategy()).isEqualTo(RuntimeStrategy.SINGLETON);
+        assertThat(fromXml.getMarshallingStrategies().size()).isEqualTo(0);
+        assertThat(fromXml.getConfiguration().size()).isEqualTo(0);
+        assertThat(fromXml.getEnvironmentEntries().size()).isEqualTo(0);
+        assertThat(fromXml.getEventListeners().size()).isEqualTo(0);
+        assertThat(fromXml.getGlobals().size()).isEqualTo(0);
+        assertThat(fromXml.getTaskEventListeners().size()).isEqualTo(0);
+        assertThat(fromXml.getWorkItemHandlers().size()).isEqualTo(0);
+        assertThat(fromXml.getRequiredRoles().size()).isEqualTo(1);
     }
 
     @Test
@@ -326,26 +322,26 @@ public class DeploymentDescriptorTest {
                                                                       "param2"}))
                   .addRequiredRole("experts");
 
-        assertFalse(descriptor.isEmpty());
+        assertThat(descriptor.isEmpty()).isFalse();
 
         InputStream input = this.getClass().getResourceAsStream("/deployment/empty-descriptor.xml");
         DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(input);
 
         assertThat(fromXml).isNotNull();
-        assertTrue(((DeploymentDescriptorImpl) fromXml).isEmpty());
+        assertThat(((DeploymentDescriptorImpl) fromXml).isEmpty()).isTrue();
 
-        assertNull(fromXml.getPersistenceUnit());
-        assertNull(fromXml.getAuditPersistenceUnit());
-        assertEquals(AuditMode.JPA, fromXml.getAuditMode());
-        assertEquals(PersistenceMode.JPA, fromXml.getPersistenceMode());
-        assertEquals(RuntimeStrategy.SINGLETON, fromXml.getRuntimeStrategy());
-        assertEquals(0, fromXml.getMarshallingStrategies().size());
-        assertEquals(0, fromXml.getConfiguration().size());
-        assertEquals(0, fromXml.getEnvironmentEntries().size());
-        assertEquals(0, fromXml.getEventListeners().size());
-        assertEquals(0, fromXml.getGlobals().size());
-        assertEquals(0, fromXml.getTaskEventListeners().size());
-        assertEquals(0, fromXml.getWorkItemHandlers().size());
-        assertEquals(0, fromXml.getRequiredRoles().size());
+        assertThat(fromXml.getPersistenceUnit()).isNull();
+        assertThat(fromXml.getAuditPersistenceUnit()).isNull();
+        assertThat(fromXml.getAuditMode()).isEqualTo(AuditMode.JPA);
+        assertThat(fromXml.getPersistenceMode()).isEqualTo(PersistenceMode.JPA);
+        assertThat(fromXml.getRuntimeStrategy()).isEqualTo(RuntimeStrategy.SINGLETON);
+        assertThat(fromXml.getMarshallingStrategies().size()).isEqualTo(0);
+        assertThat(fromXml.getConfiguration().size()).isEqualTo(0);
+        assertThat(fromXml.getEnvironmentEntries().size()).isEqualTo(0);
+        assertThat(fromXml.getEventListeners().size()).isEqualTo(0);
+        assertThat(fromXml.getGlobals().size()).isEqualTo(0);
+        assertThat(fromXml.getTaskEventListeners().size()).isEqualTo(0);
+        assertThat(fromXml.getWorkItemHandlers().size()).isEqualTo(0);
+        assertThat(fromXml.getRequiredRoles().size()).isEqualTo(0);
     }
 }

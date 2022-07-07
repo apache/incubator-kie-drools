@@ -38,8 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MiningListenerTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "MultipleMining";
-
+    private static final String FILE_NAME = "MultipleMining.pmml";
     private static final String MODEL_NAME = "MixedMining";
     private static PMMLRuntime pmmlRuntime;
 
@@ -50,23 +49,23 @@ public class MiningListenerTest extends AbstractPMMLTest {
     private String residenceState;
     private boolean validLicense;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initMiningListenerTest(String categoricalX,
-                                       String categoricalY,
-                                       double age,
-                                       String occupation,
-                                       String residenceState,
-                                       boolean validLicense) {
+                              String categoricalY,
+                              double age,
+                              String occupation,
+                              String residenceState,
+                              boolean validLicense) {
         this.categoricalX = categoricalX;
         this.categoricalY = categoricalY;
         this.age = age;
         this.occupation = occupation;
         this.residenceState = residenceState;
         this.validLicense = validLicense;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -83,8 +82,7 @@ public class MiningListenerTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testMixedMining(String categoricalX, String categoricalY, double age, String occupation,
-                         String residenceState, boolean validLicense) {
+    void testMixedMining(String categoricalX, String categoricalY, double age, String occupation, String residenceState, boolean validLicense) {
         initMiningListenerTest(categoricalX, categoricalY, age, occupation, residenceState, validLicense);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("categoricalX", categoricalX);
@@ -95,7 +93,7 @@ public class MiningListenerTest extends AbstractPMMLTest {
         inputData.put("validLicense", validLicense);
         Set<PMMLListener> pmmlListeners = IntStream.range(0, 3)
                 .mapToObj(i -> getPMMLListener()).collect(Collectors.toSet());
-        evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME, pmmlListeners);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME, pmmlListeners);
         final List<PMMLStep> retrieved = ((PMMLListenerTest) pmmlListeners.iterator().next()).getSteps();
         retrieved
                 .stream()
@@ -107,9 +105,9 @@ public class MiningListenerTest extends AbstractPMMLTest {
 
     private void commonValidateStep(final PMMLStep toValidate) {
         Map<String, Object> retrieved = toValidate.getInfo();
-        assertThat(retrieved).containsKey("SEGMENT");
-        assertThat(retrieved).containsKey("RESULT CODE");
-        assertThat(retrieved).containsKey("MODEL");
-        assertThat(retrieved).containsKey("RESULT");
+        assertThat(retrieved.containsKey("SEGMENT")).isTrue();
+        assertThat(retrieved.containsKey("RESULT CODE")).isTrue();
+        assertThat(retrieved.containsKey("MODEL")).isTrue();
+        assertThat(retrieved.containsKey("RESULT")).isTrue();
     }
 }

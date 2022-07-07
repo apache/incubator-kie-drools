@@ -47,10 +47,10 @@ public class KiePMMLRegressionTableTest {
     private double expectedResult;
 
     public void initKiePMMLRegressionTableTest(double firstNumericalInput,
-                                               double secondNumericalInput,
-                                               double firstCategoricalResult,
-                                               double secondCategoricalResult,
-                                               double expectedResult) {
+                                      double secondNumericalInput,
+                                      double firstCategoricalResult,
+                                      double secondCategoricalResult,
+                                      double expectedResult) {
         firstCategoricalFunction = aObject -> firstCategoricalResult;
         secondCategoricalFunction = aObject -> secondCategoricalResult;
         this.firstNumericalInput = firstNumericalInput;
@@ -69,10 +69,8 @@ public class KiePMMLRegressionTableTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void evaluateRegression(double firstNumericalInput, double secondNumericalInput, double firstCategoricalResult,
-                            double secondCategoricalResult, double expectedResult) {
-        initKiePMMLRegressionTableTest(firstNumericalInput, secondNumericalInput, firstCategoricalResult,
-                                       secondCategoricalResult, expectedResult);
+    void evaluateRegression(double firstNumericalInput, double secondNumericalInput, double firstCategoricalResult, double secondCategoricalResult, double expectedResult) {
+        initKiePMMLRegressionTableTest(firstNumericalInput, secondNumericalInput, firstCategoricalResult, secondCategoricalResult, expectedResult);
         Map<String, Object> input = new HashMap<>();
         input.put(FIRST_NUMERIC_INPUT, firstNumericalInput);
         input.put(SECOND_NUMERIC_INPUT, secondNumericalInput);

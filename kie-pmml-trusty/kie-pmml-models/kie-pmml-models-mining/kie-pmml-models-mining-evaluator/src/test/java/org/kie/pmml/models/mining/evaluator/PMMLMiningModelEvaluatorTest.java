@@ -28,7 +28,10 @@ import java.util.stream.IntStream;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.api.runtime.KieContainer;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;
@@ -37,12 +40,14 @@ import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.commons.testingutility.PMMLContextTest;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
@@ -70,8 +75,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class PMMLMiningModelEvaluatorTest {
-
-    private static final String FILE_NAME = "fileName";
 
     private final static List<MULTIPLE_MODEL_METHOD> RAW_OBJECT_METHODS = Arrays.asList(MAJORITY_VOTE,
                                                                                         SELECT_ALL,
@@ -102,21 +105,15 @@ public class PMMLMiningModelEvaluatorTest {
         String name = "NAME";
         String targetField = "TARGET";
         String prediction = "FIRST_VALUE";
-        KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(),
-                                                                              SELECT_FIRST).build();
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
-                                                                           MINING_FUNCTION.ASSOCIATION_RULES)
+        KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), SELECT_FIRST).build();
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+                MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
                 .build();
-        final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData =
-                new LinkedHashMap<>();
-        inputData.put("FIRST_KEY",
-                      new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue(
-                              "FIRST_NAME", prediction), new ArrayList<>()));
-        inputData.put("SECOND_KEY",
-                      new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue(
-                              "SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
+        final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
+        inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", prediction), new ArrayList<>()));
+        inputData.put("SECOND_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
         PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData, new PMMLContextTest());
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getResultCode()).isEqualTo(OK.getName());
@@ -130,21 +127,15 @@ public class PMMLMiningModelEvaluatorTest {
     void getPMML4ResultFAIL() {
         String name = "NAME";
         String targetField = "TARGET";
-        KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(),
-                                                                              AVERAGE).build();
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
-                                                                           MINING_FUNCTION.ASSOCIATION_RULES)
+        KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), AVERAGE).build();
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+                MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
                 .build();
-        final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData =
-                new LinkedHashMap<>();
-        inputData.put("FIRST_KEY",
-                      new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue(
-                              "FIRST_NAME", "FIRST_VALUE"), new ArrayList<>()));
-        inputData.put("SECOND_KEY",
-                      new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue(
-                              "SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
+        final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
+        inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", "FIRST_VALUE"), new ArrayList<>()));
+        inputData.put("SECOND_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
         PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData, new PMMLContextTest());
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getResultCode()).isEqualTo(FAIL.getName());
@@ -152,6 +143,30 @@ public class PMMLMiningModelEvaluatorTest {
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
         assertThat(resultVariables).containsKey(targetField);
         assertThat(resultVariables.get(targetField)).isNull();
+    }
+
+    @Test
+    void getPMMLRuntime() {
+        final KieServices kieServices = KieServices.Factory.get();
+        final KieContainer kieContainer = kieServices.newKieClasspathContainer();
+        final KieBase kieBase = kieContainer.getKieBase();
+        String kModulePackageName = "kModulePackageNameA";
+        String containerModelName = "containerModelNameA";
+        PMMLRuntime firstRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
+        assertThat(firstRetrieved).isNotNull();
+        assertThat(firstRetrieved).isInstanceOf(PMMLRuntimeInternal.class);
+        PMMLRuntimeInternal firstPMMLRuntimeInternal = (PMMLRuntimeInternal) firstRetrieved;
+        PMMLRuntime secondRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
+        assertThat(secondRetrieved).isInstanceOf(PMMLRuntimeInternal.class);
+        PMMLRuntimeInternal secondPMMLRuntimeInternal = (PMMLRuntimeInternal) secondRetrieved;
+        assertThat(secondPMMLRuntimeInternal.getKnowledgeBase()).isEqualTo(firstPMMLRuntimeInternal.getKnowledgeBase());
+        kModulePackageName = "kModulePackageNameB";
+        containerModelName = "containerModelNameB";
+        PMMLRuntime thirdRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
+        assertThat(thirdRetrieved).isNotNull();
+        assertThat(thirdRetrieved).isInstanceOf(PMMLRuntimeInternal.class);
+        PMMLRuntimeInternal thirdPMMLRuntimeInternal = (PMMLRuntimeInternal) thirdRetrieved;
+        assertThat(firstPMMLRuntimeInternal.getKnowledgeBase()).isNotEqualTo(thirdPMMLRuntimeInternal.getKnowledgeBase());
     }
 
     @Test
@@ -261,8 +276,8 @@ public class PMMLMiningModelEvaluatorTest {
     @Test
     void validateKiePMMLMiningModel() {
         String name = "NAME";
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
-                                                                           MINING_FUNCTION.ASSOCIATION_RULES)
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+                MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField("TARGET")
                 .build();
         evaluator.validate(kiePMMLMiningModel);
@@ -272,7 +287,7 @@ public class PMMLMiningModelEvaluatorTest {
     void validateNoKiePMMLMiningModel() {
         assertThatExceptionOfType(KiePMMLModelException.class).isThrownBy(() -> {
             String name = "NAME";
-            KiePMMLModel kiePMMLModel = new KiePMMLTestingModel(FILE_NAME, name, Collections.emptyList());
+            KiePMMLModel kiePMMLModel = new KiePMMLTestingModel(name, Collections.emptyList());
             evaluator.validate(kiePMMLModel);
         });
     }
@@ -280,8 +295,8 @@ public class PMMLMiningModelEvaluatorTest {
     @Test
     void validateMiningTargetField() {
         String name = "NAME";
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
-                                                                           MINING_FUNCTION.ASSOCIATION_RULES)
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+                MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField("TARGET")
                 .build();
         evaluator.validateMining(kiePMMLMiningModel);
@@ -291,8 +306,8 @@ public class PMMLMiningModelEvaluatorTest {
     void validateMiningEmptyTargetField() {
         assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
             String name = "NAME";
-            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
-                                                                               MINING_FUNCTION.ASSOCIATION_RULES)
+            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+                    MINING_FUNCTION.ASSOCIATION_RULES)
                     .withTargetField("     ")
                     .build();
             evaluator.validateMining(kiePMMLMiningModel);
@@ -303,8 +318,8 @@ public class PMMLMiningModelEvaluatorTest {
     void validateMiningNoTargetField() {
         assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
             String name = "NAME";
-            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(FILE_NAME, name, Collections.emptyList(),
-                                                                               MINING_FUNCTION.ASSOCIATION_RULES).build();
+            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+                    MINING_FUNCTION.ASSOCIATION_RULES).build();
             evaluator.validateMining(kiePMMLMiningModel);
         });
     }
@@ -312,10 +327,9 @@ public class PMMLMiningModelEvaluatorTest {
     @Test
     void addStep() {
         PMMLStep step = mock(PMMLStep.class);
-        Set<PMMLListener> pmmlListenersMock =
-                IntStream.range(0, 3).mapToObj(i -> mock(PMMLListener.class)).collect(Collectors.toSet());
+        Set<PMMLListener> pmmlListenersMock = IntStream.range(0, 3).mapToObj(i -> mock(PMMLListener.class)).collect(Collectors.toSet());
         PMMLContext pmmlContextMock = mock(PMMLContext.class);
-        when(pmmlContextMock.getEfestoListeners()).thenReturn(pmmlListenersMock);
+        when(pmmlContextMock.getPMMLListeners()).thenReturn(pmmlListenersMock);
         evaluator.addStep(() -> step, pmmlContextMock);
         pmmlListenersMock.forEach(pmmlListenerMock -> verify(pmmlListenerMock).stepExecuted(step));
     }

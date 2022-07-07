@@ -67,15 +67,15 @@ public class PostProcessTest {
         String TARGET_NAME = "TARGET_NAME";
         String FIELD_NAME = "FIELD_NAME";
         TargetField targetField = new TargetField(Collections.emptyList(), null, FIELD_NAME, null, 4.34, null, null,
-                                                  null);
+                null);
         KiePMMLTarget kiePMMLTarget = KiePMMLTarget.builder(TARGET_NAME, Collections.emptyList(), targetField)
                 .build();
         List<KiePMMLTarget> kiePMMLTargets = Arrays.asList(kiePMMLTarget, KiePMMLTarget.builder("NEW_TARGET",
-                                                                                                Collections.emptyList(),
-                                                                                                new TargetField(Collections.emptyList(), null, "NEW_TARGET", null, null, null, null,
-                                                                                                                null)).build());
-        KiePMMLTestingModel model = KiePMMLTestingModel.builder("FILENAME", "TESTINGMODEL", Collections.emptyList(),
-                                                                MINING_FUNCTION.REGRESSION)
+                Collections.emptyList(),
+                new TargetField(Collections.emptyList(), null, "NEW_TARGET", null, null, null, null,
+                        null)).build());
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                MINING_FUNCTION.REGRESSION)
                 .withKiePMMLTargets(kiePMMLTargets)
                 .build();
         // Build PMML4Result
@@ -193,9 +193,9 @@ public class PostProcessTest {
         // </DerivedField>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE,
-                                                                             OP_TYPE.CONTINUOUS,
-                                                                             kiePMMLConstant1)
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLConstant1)
                 .build();
         //     <Apply function="/">
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
@@ -214,7 +214,7 @@ public class PostProcessTest {
 
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                        "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", Collections.emptyList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel1 = testingModelBuilder(outputField)
@@ -231,7 +231,7 @@ public class PostProcessTest {
 
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
-                        , Collections.emptyList())
+        , Collections.emptyList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel2 = testingModelBuilder(outputField)
@@ -254,19 +254,19 @@ public class PostProcessTest {
         // </DerivedField>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField1 = KiePMMLDerivedField.builder(CUSTOM_REF_FIELD, Collections
-                                                                                      .emptyList(),
-                                                                              DATA_TYPE.DOUBLE,
-                                                                              OP_TYPE.CONTINUOUS,
-                                                                              kiePMMLConstant1).build();
+                        .emptyList(),
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLConstant1).build();
 
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //        <FieldRef>CUSTOM_REF_FIELD</FieldRef>
         // </DerivedField>
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(CUSTOM_REF_FIELD, Collections.emptyList(), null);
         final KiePMMLDerivedField derivedField2 = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                              DATA_TYPE.DOUBLE,
-                                                                              OP_TYPE.CONTINUOUS,
-                                                                              kiePMMLFieldRef).build();
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLFieldRef).build();
         //     <Apply function="/">
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
         //        <Constant>5.0</Constant>
@@ -284,7 +284,7 @@ public class PostProcessTest {
 
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                        "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", Collections.emptyList())
                 .withDerivedFields(Arrays.asList(derivedField1, derivedField2))
                 .build();
         KiePMMLTestingModel kiePMMLModel1 = testingModelBuilder(outputField)
@@ -301,7 +301,7 @@ public class PostProcessTest {
 
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
-                        , Collections.emptyList())
+        , Collections.emptyList())
                 .withDerivedFields(Arrays.asList(derivedField1, derivedField2))
                 .build();
         KiePMMLTestingModel kiePMMLModel2 = testingModelBuilder(outputField)
@@ -331,9 +331,9 @@ public class PostProcessTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE,
-                                                                             OP_TYPE.CONTINUOUS,
-                                                                             kiePMMLApplyRef).build();
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLApplyRef).build();
         //     <Apply function="/">
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
         //        <Constant>5.0</Constant>
@@ -351,7 +351,7 @@ public class PostProcessTest {
 
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                        "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", Collections.emptyList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel1 = testingModelBuilder(outputField)
@@ -368,7 +368,7 @@ public class PostProcessTest {
 
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
-                        , Collections.emptyList())
+        , Collections.emptyList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel2 = testingModelBuilder(outputField)
@@ -391,11 +391,11 @@ public class PostProcessTest {
         // </DefineFunction>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
-                .emptyList(),
-                                                                               DATA_TYPE.DOUBLE,
-                                                                               OP_TYPE.CONTINUOUS,
-                                                                               Collections.emptyList(),
-                                                                               kiePMMLConstant1);
+                        .emptyList(),
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                Collections.emptyList(),
+                kiePMMLConstant1);
         //     <Apply function="CUSTOM_FUNCTION">
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
         //        <Constant>5.0</Constant>
@@ -413,7 +413,7 @@ public class PostProcessTest {
 
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                        "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", Collections.emptyList())
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .build();
         KiePMMLTestingModel kiePMMLModel = testingModelBuilder(outputField)
@@ -436,20 +436,20 @@ public class PostProcessTest {
         // </DerivedField>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_REF_FIELD, Collections
-                                                                                     .emptyList(),
-                                                                             DATA_TYPE.DOUBLE,
-                                                                             OP_TYPE.CONTINUOUS,
-                                                                             kiePMMLConstant1).build();
+                        .emptyList(),
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                kiePMMLConstant1).build();
         // <DefineFunction name="CUSTOM_FUNCTION" optype="continuous" dataType="double">
         //     <FieldRef>CUSTOM_REF_FIELD</FieldRef>
         // </DefineFunction>
         final KiePMMLFieldRef kiePMMLFieldRef1 = new KiePMMLFieldRef(CUSTOM_REF_FIELD, Collections.emptyList(), null);
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
-                .emptyList(),
-                                                                               DATA_TYPE.DOUBLE,
-                                                                               OP_TYPE.CONTINUOUS,
-                                                                               Collections.emptyList(),
-                                                                               kiePMMLFieldRef1);
+                        .emptyList(),
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                Collections.emptyList(),
+                kiePMMLFieldRef1);
         //     <Apply function="CUSTOM_FUNCTION">
         //        <Constant>5.0</Constant>
         //      </Apply>
@@ -465,7 +465,7 @@ public class PostProcessTest {
 
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                        "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", Collections.emptyList())
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
@@ -499,12 +499,12 @@ public class PostProcessTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLConstant2))
                 .build();
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
-                .emptyList(),
-                                                                               DATA_TYPE.DOUBLE,
-                                                                               OP_TYPE.CONTINUOUS,
-                                                                               Collections.singletonList
-                                                                                       (kiePMMLParameterField),
-                                                                               kiePMMLApplyRef);
+                        .emptyList(),
+                DATA_TYPE.DOUBLE,
+                OP_TYPE.CONTINUOUS,
+                Collections.singletonList
+                        (kiePMMLParameterField),
+                kiePMMLApplyRef);
         //     <Apply function="CUSTOM_FUNCTION">
         //        <Constant>100.0</Constant>
         //      </Apply>
@@ -520,7 +520,7 @@ public class PostProcessTest {
 
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                        "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", Collections.emptyList())
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .build();
         KiePMMLTestingModel kiePMMLModel = testingModelBuilder(outputField)
@@ -596,7 +596,7 @@ public class PostProcessTest {
     }
 
     private static KiePMMLTestingModel.Builder testingModelBuilder(KiePMMLOutputField outputField) {
-        return (KiePMMLTestingModel.Builder) KiePMMLTestingModel.builder("fileName", "TESTINGMODEL", Collections.emptyList(),
+        return (KiePMMLTestingModel.Builder) KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
                                                                          MINING_FUNCTION.REGRESSION)
                 .withKiePMMLOutputFields(Collections.singletonList(outputField));
     }

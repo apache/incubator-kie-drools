@@ -35,8 +35,6 @@ import org.kie.api.runtime.process.CaseData;
 import org.kie.api.task.model.OrganizationalEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class ProcessContextTest {
 
@@ -73,7 +71,7 @@ public class ProcessContextTest {
         assertThat(caseAssignment).isNotNull();
         Collection<OrganizationalEntity> forRole = caseAssignment.getAssignments("owner");
         assertThat(forRole).isNotNull();
-        assertEquals(1, forRole.size());
+        assertThat(forRole.size()).isEqualTo(1);
     }
 
     @Test
@@ -94,8 +92,8 @@ public class ProcessContextTest {
         assertThat(caseData).isNotNull();
         Map<String, Object> allData = caseData.getData();
         assertThat(allData).isNotNull();
-        assertEquals(1, allData.size());
-        assertEquals("value", caseData.getData("test"));
+        assertThat(allData.size()).isEqualTo(1);
+        assertThat(caseData.getData("test")).isEqualTo("value");
     }
 
     @Test
@@ -108,10 +106,10 @@ public class ProcessContextTest {
         ProcessContext processContext = new ProcessContext(ksession);
 
         CaseData caseData = processContext.getCaseData();
-        assertNull(caseData);
+        assertThat(caseData).isNull();
 
         CaseAssignment caseAssignment = processContext.getCaseAssignment();
-        assertNull(caseAssignment);
+        assertThat(caseAssignment).isNull();
     }
 
     private class CaseInformation implements CaseData, CaseAssignment {

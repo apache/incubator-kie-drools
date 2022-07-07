@@ -16,8 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class IrisDataTreeTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "irisTree";
-
+    private static final String FILE_NAME = "irisTree.pmml";
     private static final String MODEL_NAME = "IrisTreeModel";
     private static final String TARGET_FIELD = "Predicted_Species";
     private static PMMLRuntime pmmlRuntime;
@@ -28,18 +27,18 @@ public class IrisDataTreeTest extends AbstractPMMLTest {
     private double petalWidth;
     private String expectedResult;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initIrisDataTreeTest(double sepalLength, double sepalWidth, double petalLength,
-                                     double petalWidth, String expectedResult) {
+                            double petalWidth, String expectedResult) {
         this.sepalLength = sepalLength;
         this.sepalWidth = sepalWidth;
         this.petalLength = petalLength;
         this.petalWidth = petalWidth;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -54,16 +53,16 @@ public class IrisDataTreeTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testIrisTree(double sepalLength, double sepalWidth, double petalLength, double petalWidth,
-                      String expectedResult) {
+    void testIrisTree(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String expectedResult) {
         initIrisDataTreeTest(sepalLength, sepalWidth, petalLength, petalWidth, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("Sepal.Length", sepalLength);
         inputData.put("Sepal.Width", sepalWidth);
         inputData.put("Petal.Length", petalLength);
         inputData.put("Petal.Width", petalWidth);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
-        assertThat(pmml4Result).isNotNull();
-        assertThat(pmml4Result.getResultVariables()).containsEntry(TARGET_FIELD, expectedResult);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
+        assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
     }
 }

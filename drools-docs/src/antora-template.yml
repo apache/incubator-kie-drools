@@ -6,12 +6,13 @@
 # the drools-website is refreshed.
 name: drools
 title: Drools User Guide ${project.version}
-version: latest
+version: ~
 asciidoc:
   attributes:
     drools-version: ${project.version}
     java-version: ${maven.compiler.release}
     maven-version: ${maven.min.version}
     quarkus-version: ${version.io.quarkus}
+start_page: getting-started/index.adoc
 nav:
   - modules/ROOT/nav.adoc

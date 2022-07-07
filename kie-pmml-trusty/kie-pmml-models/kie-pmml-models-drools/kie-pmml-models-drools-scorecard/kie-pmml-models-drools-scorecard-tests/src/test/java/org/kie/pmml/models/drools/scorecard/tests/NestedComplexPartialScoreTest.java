@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NestedComplexPartialScoreTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "NestedComplexPartialScore";
+    private static final String FILE_NAME = "NestedComplexPartialScore.pmml";
     private static final String MODEL_NAME = "NestedComplexPartialScoreScorecard";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
@@ -46,9 +46,18 @@ public class NestedComplexPartialScoreTest extends AbstractPMMLTest {
     private String reasonCode1;
     private String reasonCode2;
 
+    public void initNestedComplexPartialScoreTest(double input1, double input2, double score,
+                                        String reasonCode1, String reasonCode2) {
+        this.input1 = input1;
+        this.input2 = input2;
+        this.score = score;
+        this.reasonCode1 = reasonCode1;
+        this.reasonCode2 = reasonCode2;
+    }
+
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -61,25 +70,15 @@ public class NestedComplexPartialScoreTest extends AbstractPMMLTest {
         });
     }
 
-    public void initNestedComplexPartialScoreTest(double input1, double input2, double score,
-                                                  String reasonCode1, String reasonCode2) {
-        this.input1 = input1;
-        this.input2 = input2;
-        this.score = score;
-        this.reasonCode1 = reasonCode1;
-        this.reasonCode2 = reasonCode2;
-    }
-
     @ParameterizedTest
     @Disabled
     @MethodSource("data")
-    void testNestedComplexPartialScore(double input1, double input2, double score, String reasonCode1,
-                                       String reasonCode2) {
+    void testNestedComplexPartialScore(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
         initNestedComplexPartialScoreTest(input1, input2, score, reasonCode1, reasonCode2);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);

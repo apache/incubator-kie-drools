@@ -33,8 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "LogisticRegressionNoneNormalization";
-
+    private static final String FILE_NAME = "LogisticRegressionNoneNormalization.pmml";
     private static final String MODEL_NAME = "LogisticRegressionNoneNormalization";
     private static final String TARGET_FIELD = "Species";
     private static final String PROBABILITY_SETOSA_FIELD = "Probability_setosa";
@@ -53,16 +52,10 @@ public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
     private double expectedVersicolorProbability;
     private double expectedVirginicaProbability;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initLogisticRegressionNoneNormalizationTest(double sepalLength, double sepalWidth, double petalLength,
-                                                            double petalWidth, String expectedResult,
-                                                            double expectedSetosaProbability,
-                                                            double expectedVersicolorProbability,
-                                                            double expectedVirginicaProbability) {
+                                                   double petalWidth, String expectedResult, double expectedSetosaProbability,
+                                                   double expectedVersicolorProbability,
+                                                   double expectedVirginicaProbability) {
         this.sepalLength = sepalLength;
         this.sepalWidth = sepalWidth;
         this.petalLength = petalLength;
@@ -71,6 +64,11 @@ public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
         this.expectedSetosaProbability = expectedSetosaProbability;
         this.expectedVersicolorProbability = expectedVersicolorProbability;
         this.expectedVirginicaProbability = expectedVirginicaProbability;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -83,20 +81,14 @@ public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testLogisticRegressionWithNormalization(double sepalLength, double sepalWidth, double petalLength,
-                                                 double petalWidth, String expectedResult,
-                                                 double expectedSetosaProbability,
-                                                 double expectedVersicolorProbability,
-                                                 double expectedVirginicaProbability) throws Exception {
-        initLogisticRegressionNoneNormalizationTest(sepalLength, sepalWidth, petalLength, petalWidth, expectedResult,
-                                                    expectedSetosaProbability, expectedVersicolorProbability,
-                                                    expectedVirginicaProbability);
+    void testLogisticRegressionWithNormalization(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String expectedResult, double expectedSetosaProbability, double expectedVersicolorProbability, double expectedVirginicaProbability) throws Exception {
+        initLogisticRegressionNoneNormalizationTest(sepalLength, sepalWidth, petalLength, petalWidth, expectedResult, expectedSetosaProbability, expectedVersicolorProbability, expectedVirginicaProbability);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("Sepal.Length", sepalLength);
         inputData.put("Sepal.Width", sepalWidth);
         inputData.put("Petal.Length", petalLength);
         inputData.put("Petal.Width", petalWidth);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

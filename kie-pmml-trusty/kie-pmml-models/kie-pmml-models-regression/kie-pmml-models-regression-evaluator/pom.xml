@@ -14,10 +14,6 @@
   <name>KIE :: PMML :: Models :: Regression :: Evaluator</name>
   <description>PMML Regression Evaluator</description>
 
-  <properties>
-    <skip.jdepend>false</skip.jdepend>
-  </properties>
-
   <dependencies>
     <!-- PMML -->
     <dependency>
@@ -34,6 +30,7 @@
       <artifactId>commons-math3</artifactId>
     </dependency>
     <!-- TEST -->
+
   </dependencies>
 
 </project>

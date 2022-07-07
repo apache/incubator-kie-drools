@@ -34,8 +34,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 public class MixedMiningTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "MiningModel_Mixed";
-
+    private static final String FILE_NAME = "MiningModel_Mixed.pmml";
     private static final String MODEL_NAME = "MixedMining";
     private static final String TARGET_FIELD = "categoricalResult";
     private static final String NUMBER_OF_CLAIMS = "Number of Claims";
@@ -60,18 +59,13 @@ public class MixedMiningTest extends AbstractPMMLTest {
     private boolean validLicense;
     private double expectedResult;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initMixedMiningTest(String categoricalX,
-                                    String categoricalY,
-                                    double age,
-                                    String occupation,
-                                    String residenceState,
-                                    boolean validLicense,
-                                    double expectedResult) {
+                           String categoricalY,
+                           double age,
+                           String occupation,
+                           String residenceState,
+                           boolean validLicense,
+                           double expectedResult) {
         this.categoricalX = categoricalX;
         this.categoricalY = categoricalY;
         this.age = age;
@@ -79,6 +73,11 @@ public class MixedMiningTest extends AbstractPMMLTest {
         this.residenceState = residenceState;
         this.validLicense = validLicense;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -95,8 +94,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testMixedMining(String categoricalX, String categoricalY, double age, String occupation,
-                         String residenceState, boolean validLicense, double expectedResult) throws Exception {
+    void testMixedMining(String categoricalX, String categoricalY, double age, String occupation, String residenceState, boolean validLicense, double expectedResult) throws Exception {
         initMixedMiningTest(categoricalX, categoricalY, age, occupation, residenceState, validLicense, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("categoricalX", categoricalX);
@@ -108,7 +106,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
         inputData.put("text_input", TEXT_INPUT);
         inputData.put("input3", 34.1);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
@@ -162,8 +160,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testMixedMiningWithoutRequired(String categoricalX, String categoricalY, double age, String occupation,
-                                        String residenceState, boolean validLicense, double expectedResult) {
+    void testMixedMiningWithoutRequired(String categoricalX, String categoricalY, double age, String occupation, String residenceState, boolean validLicense, double expectedResult) {
         initMixedMiningTest(categoricalX, categoricalY, age, occupation, residenceState, validLicense, expectedResult);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
@@ -174,14 +171,13 @@ public class MixedMiningTest extends AbstractPMMLTest {
             inputData.put("residenceState", residenceState);
             inputData.put("validLicense", validLicense);
             inputData.put("text_input", TEXT_INPUT);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testMixedMiningConvertible(String categoricalX, String categoricalY, double age, String occupation,
-                                    String residenceState, boolean validLicense, double expectedResult) {
+    void testMixedMiningConvertible(String categoricalX, String categoricalY, double age, String occupation, String residenceState, boolean validLicense, double expectedResult) {
         initMixedMiningTest(categoricalX, categoricalY, age, occupation, residenceState, validLicense, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("categoricalX", categoricalX);
@@ -192,13 +188,12 @@ public class MixedMiningTest extends AbstractPMMLTest {
         inputData.put("validLicense", String.valueOf(validLicense));
         inputData.put("text_input", TEXT_INPUT);
         inputData.put("input3", "34.1");
-        assertThat(evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME)).isNotNull();
+        assertThat(evaluate(pmmlRuntime, inputData, MODEL_NAME)).isNotNull();
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testMixedMiningNotConvertible(String categoricalX, String categoricalY, double age, String occupation,
-                                       String residenceState, boolean validLicense, double expectedResult) {
+    void testMixedMiningNotConvertible(String categoricalX, String categoricalY, double age, String occupation, String residenceState, boolean validLicense, double expectedResult) {
         initMixedMiningTest(categoricalX, categoricalY, age, occupation, residenceState, validLicense, expectedResult);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
@@ -210,14 +205,13 @@ public class MixedMiningTest extends AbstractPMMLTest {
             inputData.put("validLicense", validLicense);
             inputData.put("text_input", TEXT_INPUT);
             inputData.put("input3", true);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testMixedMiningInvalidValue(String categoricalX, String categoricalY, double age, String occupation,
-                                     String residenceState, boolean validLicense, double expectedResult) {
+    void testMixedMiningInvalidValue(String categoricalX, String categoricalY, double age, String occupation, String residenceState, boolean validLicense, double expectedResult) {
         initMixedMiningTest(categoricalX, categoricalY, age, occupation, residenceState, validLicense, expectedResult);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
@@ -229,7 +223,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
             inputData.put("validLicense", validLicense);
             inputData.put("text_input", TEXT_INPUT);
             inputData.put("input3", 4.1);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 }

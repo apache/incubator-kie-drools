@@ -30,8 +30,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AsmGeneratorTest {
@@ -75,9 +74,9 @@ public class AsmGeneratorTest {
         ksession.insert( "s4" );
         ksession.insert( "s5" );
         
-        ksession.fireAllRules();     
-        assertEquals( 1, list.size() );
-        assertEquals( "s1s2s3s5", list.get( 0 ));        
+        ksession.fireAllRules();
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("s1s2s3s5");        
     }
     
     @Test
@@ -114,10 +113,10 @@ public class AsmGeneratorTest {
         ksession.insert( "s3" );
         ksession.insert( new Person( "s3" ) );
         
-        ksession.fireAllRules();         
-        
-        assertEquals( 1, list.size() );
-        assertEquals( "s1[Person name='s1 age='0' likes='']s1s3[Person name='s3 age='0' likes='']s3", list.get( 0 ));
+        ksession.fireAllRules();
+
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("s1[Person name='s1 age='0' likes='']s1s3[Person name='s3 age='0' likes='']s3");
     }    
     
     @Test
@@ -148,11 +147,11 @@ public class AsmGeneratorTest {
         ksession.insert( new Cheese( "brie") );
         ksession.insert( new Person( "s2" ) );
         
-        ksession.fireAllRules();         
-        
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains("test3brie:0"));
-        assertTrue( list.contains("test3stilton:0"));
+        ksession.fireAllRules();
+
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("test3brie:0")).isTrue();
+        assertThat(list.contains("test3stilton:0")).isTrue();
     }      
 
 }

@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "SimpleScorecardWithTransformations";
+    private static final String FILE_NAME = "SimpleScorecardWithTransformations.pmml";
     private static final String MODEL_NAME = "SimpleScorecardWithTransformations";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
@@ -56,18 +56,17 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
     private String reasonCode1;
     private String reasonCode2;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
-    public void initSimpleScorecardWithTransformationsTest(double input1, double input2, double score,
-                                                           String reasonCode1, String reasonCode2) {
+    public void initSimpleScorecardWithTransformationsTest(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
         this.input1 = input1;
         this.input2 = input2;
         this.score = score;
         this.reasonCode1 = reasonCode1;
         this.reasonCode2 = reasonCode2;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -89,7 +88,7 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
         inputData.put("input2", input2);
         inputData.put("text_input", TEXT_INPUT);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);

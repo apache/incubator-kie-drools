@@ -139,10 +139,10 @@ public class BooleanFunctionsTest {
     void getIsValidValueCorrectInput() {
         Object[] input1 = {35};
         MiningField referredByFieldRef = getReferredByFieldRef(null,
-                                                               null,
-                                                               Arrays.asList(new Interval(20, 29), new Interval(30,
-                                                                                                                40),
-                                                                             new Interval(41, 50)));
+                null,
+                Arrays.asList(new Interval(20, 29), new Interval(30,
+                                40),
+                        new Interval(41, 50)));
         Object retrieved = BooleanFunctions.IS_VALID.getValue(input1, referredByFieldRef);
         assertThat((boolean) retrieved).isTrue();
         referredByFieldRef = getReferredByFieldRef(
@@ -153,27 +153,27 @@ public class BooleanFunctionsTest {
         assertThat((boolean) retrieved).isFalse();
 
         referredByFieldRef = getReferredByFieldRef(null,
-                                                   Arrays.asList("123", "35"),
-                                                   Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
+                Arrays.asList("123", "35"),
+                Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_VALID.getValue(input1, referredByFieldRef);
         assertThat((boolean) retrieved).isTrue();
 
         referredByFieldRef = getReferredByFieldRef(null,
-                                                   Arrays.asList("123", "36"),
-                                                   Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
+                Arrays.asList("123", "36"),
+                Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_VALID.getValue(input1, referredByFieldRef);
         assertThat((boolean) retrieved).isFalse();
 
         Object[] input2 = {"VALUE"};
         referredByFieldRef = getReferredByFieldRef(null,
-                                                   Arrays.asList("123", "VALUE"),
-                                                   Collections.emptyList());
+                Arrays.asList("123", "VALUE"),
+                Collections.emptyList());
         retrieved = BooleanFunctions.IS_VALID.getValue(input2, referredByFieldRef);
         assertThat((boolean) retrieved).isTrue();
 
         referredByFieldRef = getReferredByFieldRef(null,
-                                                   Arrays.asList("123", "VELUE"),
-                                                   Collections.emptyList());
+                Arrays.asList("123", "VELUE"),
+                Collections.emptyList());
         retrieved = BooleanFunctions.IS_VALID.getValue(input2, referredByFieldRef);
         assertThat((boolean) retrieved).isFalse();
         Object[] input3 = {null};
@@ -186,10 +186,10 @@ public class BooleanFunctionsTest {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             final Object[] input = {34, 34};
             MiningField referredByFieldRef = getReferredByFieldRef(null,
-                                                                   null,
-                                                                   Arrays.asList(new Interval(20, 29), new Interval(30,
-                                                                                                                    40),
-                                                                                 new Interval(41, 50)));
+                    null,
+                    Arrays.asList(new Interval(20, 29), new Interval(30,
+                                    40),
+                            new Interval(41, 50)));
             BooleanFunctions.IS_VALID.getValue(input, referredByFieldRef);
         });
     }
@@ -199,10 +199,10 @@ public class BooleanFunctionsTest {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             final Object[] input = {"34"};
             MiningField referredByFieldRef = getReferredByFieldRef(null,
-                                                                   null,
-                                                                   Arrays.asList(new Interval(20, 29), new Interval(30,
-                                                                                                                    40),
-                                                                                 new Interval(41, 50)));
+                    null,
+                    Arrays.asList(new Interval(20, 29), new Interval(30,
+                                    40),
+                            new Interval(41, 50)));
             BooleanFunctions.IS_VALID.getValue(input, referredByFieldRef);
         });
     }
@@ -219,52 +219,52 @@ public class BooleanFunctionsTest {
     void getIsNotValidValueCorrectInput() {
         Object[] input1 = {35};
         MiningField referredByFieldRef = getReferredByFieldRef(null,
-                                                               null,
-                                                               Arrays.asList(new Interval(20, 29), new Interval(30,
-                                                                                                                40),
-                                                                             new Interval(41, 50)));
+                null,
+                Arrays.asList(new Interval(20, 29), new Interval(30,
+                                40),
+                        new Interval(41, 50)));
         Object retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
         assertThat((boolean) retrieved).isFalse();
         referredByFieldRef = getReferredByFieldRef(null,
-                                                   null,
-                                                   Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
+                null,
+                Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
         assertThat((boolean) retrieved).isTrue();
 
         referredByFieldRef = getReferredByFieldRef(null,
-                                                   Arrays.asList("123", "35"),
-                                                   Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
+                Arrays.asList("123", "35"),
+                Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
         assertThat((boolean) retrieved).isFalse();
 
         referredByFieldRef = getReferredByFieldRef(INVALID_VALUE_TREATMENT_METHOD.AS_MISSING,
-                                                   Arrays.asList("123", "36"),
-                                                   Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
+                Arrays.asList("123", "36"),
+                Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
         assertThat((boolean) retrieved).isFalse();
 
         referredByFieldRef = getReferredByFieldRef(INVALID_VALUE_TREATMENT_METHOD.AS_IS,
-                                                   Arrays.asList("123", "36"),
-                                                   Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
+                Arrays.asList("123", "36"),
+                Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
         assertThat((boolean) retrieved).isTrue();
 
         referredByFieldRef = getReferredByFieldRef(null,
-                                                   Arrays.asList("123", "36"),
-                                                   Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
+                Arrays.asList("123", "36"),
+                Arrays.asList(new Interval(20, 29), new Interval(41, 50)));
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input1, referredByFieldRef);
         assertThat((boolean) retrieved).isTrue();
 
         Object[] input2 = {"VALUE"};
         referredByFieldRef = getReferredByFieldRef(null,
-                                                   Arrays.asList("123", "VALUE"),
-                                                   Collections.emptyList());
+                Arrays.asList("123", "VALUE"),
+                Collections.emptyList());
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input2, referredByFieldRef);
         assertThat((boolean) retrieved).isFalse();
 
         referredByFieldRef = getReferredByFieldRef(null,
-                                                   Arrays.asList("123", "VELUE"),
-                                                   Collections.emptyList());
+                Arrays.asList("123", "VELUE"),
+                Collections.emptyList());
         retrieved = BooleanFunctions.IS_NOT_VALID.getValue(input2, referredByFieldRef);
         assertThat((boolean) retrieved).isTrue();
         Object[] input3 = {null};
@@ -277,10 +277,10 @@ public class BooleanFunctionsTest {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             final Object[] input = {34, 34};
             MiningField referredByFieldRef = getReferredByFieldRef(null,
-                                                                   null,
-                                                                   Arrays.asList(new Interval(20, 29), new Interval(30,
-                                                                                                                    40),
-                                                                                 new Interval(41, 50)));
+                    null,
+                    Arrays.asList(new Interval(20, 29), new Interval(30,
+                                    40),
+                            new Interval(41, 50)));
             BooleanFunctions.IS_NOT_VALID.getValue(input, referredByFieldRef);
         });
     }
@@ -290,10 +290,10 @@ public class BooleanFunctionsTest {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             final Object[] input = {"34"};
             MiningField referredByFieldRef = getReferredByFieldRef(null,
-                                                                   null,
-                                                                   Arrays.asList(new Interval(20, 29), new Interval(30,
-                                                                                                                    40),
-                                                                                 new Interval(41, 50)));
+                    null,
+                    Arrays.asList(new Interval(20, 29), new Interval(30,
+                                    40),
+                            new Interval(41, 50)));
             BooleanFunctions.IS_NOT_VALID.getValue(input, referredByFieldRef);
         });
     }

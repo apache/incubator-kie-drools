@@ -32,8 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SegmentationClassificationSelectFirstTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "segmentationClassificationSelectFirst";
-
+    private static final String FILE_NAME = "segmentationClassificationSelectFirst.pmml";
     private static final String MODEL_NAME = "SegmentationClassificationSelectFirst";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -43,17 +42,16 @@ public class SegmentationClassificationSelectFirstTest extends AbstractPMMLTest 
     private double input3;
     private String result;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
-    public void initSegmentationClassificationSelectFirstTest(double input1, double input2, double input3,
-                                                              String result) {
+    public void initSegmentationClassificationSelectFirstTest(double input1, double input2, double input3, String result) {
         this.input1 = input1;
         this.input2 = input2;
         this.input3 = input3;
         this.result = result;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -79,7 +77,7 @@ public class SegmentationClassificationSelectFirstTest extends AbstractPMMLTest 
         inputData.put("input1", input1);
         inputData.put("input2", input2);
         inputData.put("input3", input3);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(result);

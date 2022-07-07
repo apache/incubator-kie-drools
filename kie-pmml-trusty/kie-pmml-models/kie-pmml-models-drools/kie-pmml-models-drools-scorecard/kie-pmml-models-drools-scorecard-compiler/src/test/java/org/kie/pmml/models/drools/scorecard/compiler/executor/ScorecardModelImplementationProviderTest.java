@@ -16,26 +16,29 @@
 package org.kie.pmml.models.drools.scorecard.compiler.executor;
 
 import java.io.FileInputStream;
+import java.io.Serializable;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.util.CloneUtil;
 import org.junit.jupiter.api.Test;
-import org.kie.efesto.common.api.utils.FileUtils;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.ExternalizableMock;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
+import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
+import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
+import org.kie.test.util.filesystem.FileUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
 public class ScorecardModelImplementationProviderTest {
 
     private static final ScorecardModelImplementationProvider PROVIDER = new ScorecardModelImplementationProvider();
-
-    private static final String SOURCE_BASE = "ScorecardSample";
-    private static final String SOURCE_1 = SOURCE_BASE + PMML_SUFFIX;
+    private static final String SOURCE_1 = "ScorecardSample.pmml";
     private static final String PACKAGE_NAME = "PACKAGE_NAME";
 
     @Test
@@ -44,15 +47,31 @@ public class ScorecardModelImplementationProviderTest {
     }
 
     @Test
-    void getKiePMMLModelWithSources() throws Exception {
+    void getKiePMMLModel() throws Exception {
         final PMML pmml = getPMML(SOURCE_1);
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final CommonCompilationDTO<Scorecard> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       (Scorecard) pmml.getModels().get(0),
-                                                                       new HasClassLoaderMock(), SOURCE_BASE);
+                        pmml,
+                        (Scorecard) pmml.getModels().get(0),
+                        new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final KiePMMLScorecardModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
+        assertThat(retrieved).isNotNull();
+        commonVerifyIsDeepCloneable(retrieved);
+    }
+
+    @Test
+    void getKiePMMLModelWithSources() throws Exception {
+        final PMML pmml = getPMML(SOURCE_1);
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        final CommonCompilationDTO<Scorecard> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                        pmml,
+                        (Scorecard) pmml.getModels().get(0),
+                        new HasKnowledgeBuilderMock(knowledgeBuilder));
         final KiePMMLDroolsModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
+        commonVerifyIsDeepCloneable(retrieved);
     }
 
     private PMML getPMML(String source) throws Exception {
@@ -64,4 +83,10 @@ public class ScorecardModelImplementationProviderTest {
         return toReturn;
     }
 
+    private void commonVerifyIsDeepCloneable(AbstractKiePMMLComponent toVerify) {
+        assertThat(toVerify).isInstanceOf(Serializable.class);
+        ExternalizableMock externalizableMock = new ExternalizableMock();
+        externalizableMock.setKiePMMLComponent(toVerify);
+        CloneUtil.deepClone(externalizableMock);
+    }
 }

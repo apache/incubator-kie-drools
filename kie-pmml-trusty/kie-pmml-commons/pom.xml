@@ -16,7 +16,6 @@
 
   <properties>
     <sonar.coverage.exclusions>**/exceptions/**.java,**/model/predicates/**.java</sonar.coverage.exclusions>
-    <skip.jdepend>false</skip.jdepend>
   </properties>
 
   <dependencies>
@@ -34,11 +33,12 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>efesto-compilation-manager-api</artifactId>
-    </dependency>
     <!-- TEST -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

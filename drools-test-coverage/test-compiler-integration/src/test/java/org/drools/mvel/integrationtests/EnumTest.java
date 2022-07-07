@@ -34,8 +34,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test for declared Enums
@@ -63,9 +62,9 @@ public class EnumTest {
 
         ksession.fireAllRules();
 
-        assertTrue( list.contains( 4 ) );
-        assertTrue( list.contains( 5.976e+24 ) );
-        assertTrue( list.contains( "Mercury" ) );
+        assertThat(list.contains(4)).isTrue();
+        assertThat(list.contains(5.976e+24)).isTrue();
+        assertThat(list.contains("Mercury")).isTrue();
 
         ksession.dispose();
     }
@@ -84,7 +83,7 @@ public class EnumTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     @Test
@@ -125,7 +124,7 @@ public class EnumTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
         
         InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder);
 
@@ -152,7 +151,7 @@ public class EnumTest {
 
         ksession.insert(new Triangle());
         final int rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+        assertThat(rules).isEqualTo(1);
         ksession.dispose();
     }
 }

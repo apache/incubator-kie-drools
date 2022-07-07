@@ -86,9 +86,8 @@ public class KiePMMLDescrLhsFactoryTest {
         String humidityField = "HUMIDITY";
         List<KiePMMLFieldOperatorValue> kiePMMLOperatorValues =
                 Arrays.asList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.AND,
-                                                            Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
-                              new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                            Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                        new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.and());
         assertThat(lhsBuilder.getDescr()).isNotNull();
         assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
@@ -133,12 +132,12 @@ public class KiePMMLDescrLhsFactoryTest {
         String humidityField = "HUMIDITY";
         final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues = Arrays
                 .asList(new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
                         new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
         List<KiePMMLFieldOperatorValue> kiePMMLOperatorValues =
                 Collections.singletonList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.AND,
-                                                                        Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), nestedKiePMMLFieldOperatorValues));
+                        Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), nestedKiePMMLFieldOperatorValues));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.and());
         assertThat(lhsBuilder.getDescr()).isNotNull();
         assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
@@ -202,9 +201,8 @@ public class KiePMMLDescrLhsFactoryTest {
         String humidityField = "HUMIDITY";
         List<KiePMMLFieldOperatorValue> kiePMMLOperatorValues =
                 Arrays.asList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.AND,
-                                                            Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
-                              new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                            Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                        new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.or());
         assertThat(lhsBuilder.getDescr()).isNotNull();
         assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
@@ -250,13 +248,13 @@ public class KiePMMLDescrLhsFactoryTest {
             String humidityField = "HUMIDITY";
             final List<KiePMMLFieldOperatorValue> xorConstraints = Arrays
                     .asList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
-                                                          Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                                    Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
                             new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
-                                                          Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null),
+                                    Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null),
                             new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                          Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
+                                    Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
                             new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                          Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
+                                    Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
             KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsXor(xorConstraints);
         });
     }
@@ -266,9 +264,9 @@ public class KiePMMLDescrLhsFactoryTest {
         String temperatureField = "TEMPERATURE";
         final List<KiePMMLFieldOperatorValue> xorConstraints = Arrays
                 .asList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
                         new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsXor(xorConstraints);
         assertThat(lhsBuilder.getDescr()).isNotNull();
         assertThat(lhsBuilder.getDescr().getDescrs()).isNotNull();
@@ -352,7 +350,7 @@ public class KiePMMLDescrLhsFactoryTest {
         String constraintsString = "value < 35";
         final CEDescrBuilder<CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, NotDescr>, ExistsDescr> existsBuilder = lhsBuilder.not().exists();
         KiePMMLDescrLhsFactory.factory(lhsBuilder).commonDeclarePatternWithConstraint(existsBuilder, patternType,
-                                                                                      constraintsString);
+                constraintsString);
         assertThat(existsBuilder.getDescr()).isNotNull();
         final List<BaseDescr> descrs = existsBuilder.getDescr().getDescrs();
         assertThat(descrs).isNotNull();

@@ -17,23 +17,20 @@
   <description>Support for PMML-Encoded Predictive Models</description>
 
   <properties>
-    <rewrite.maven.plugin.version>4.23.0</rewrite.maven.plugin.version>
+    <rewrite.maven.plugin.version>4.25.3</rewrite.maven.plugin.version>
     <rewrite.testing.frameworks.version>1.22.0</rewrite.testing.frameworks.version>
     <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
-    <jdepend.maven.plugin.version>2.0</jdepend.maven.plugin.version>
-    <skip.jdepend>true</skip.jdepend>
   </properties>
 
   <modules>
-    <module>kie-pmml-api</module>
     <module>kie-pmml-commons</module>
     <module>kie-pmml-compiler</module>
     <module>kie-pmml-evaluator</module>
-    <!--    <module>kie-pmml-models-archetype</module>-->
-    <!--    <module>kie-pmml-models-drools-archetype</module>-->
     <module>kie-pmml-models</module>
-<!--        <module>kie-pmml-benchmarks</module>-->
+    <module>kie-pmml-benchmarks</module>
     <module>kie-pmml-dependencies</module>
+    <module>kie-pmml-api</module>
+    <module>kie-pmml-kie-internal</module>
   </modules>
 
   <dependencyManagement>
@@ -45,73 +42,24 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-common-utils</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-common-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-compilation-manager-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-compilation-manager-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-runtime-manager-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-runtime-manager-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- ENGINES -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-evaluator-utils</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- External -->
-      <!-- Logging -->
-      <!-- Test -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-runtime-manager-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>tests</classifier>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>efesto-common-utils</artifactId>
-    </dependency>
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
     </dependency>
-    <!-- Test -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -120,11 +68,6 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -141,11 +84,6 @@
           <groupId>com.societegenerale.commons</groupId>
           <artifactId>arch-unit-maven-plugin</artifactId>
           <version>${archunit.maven.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>jdepend-maven-plugin</artifactId>
-          <version>${jdepend.maven.plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -224,13 +162,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jdepend-maven-plugin</artifactId>
-        <configuration>
-          <skip>${skip.jdepend}</skip>
-        </configuration>
       </plugin>
     </plugins>
   </build>

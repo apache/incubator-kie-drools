@@ -14,19 +14,11 @@
   <name>KIE :: PMML :: API</name>
   <description>Public APIs from Trusty PMML</description>
 
-  <properties>
-    <skip.jdepend>false</skip.jdepend>
-  </properties>
-
   <dependencies>
     <!-- KIE -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>efesto-runtime-manager-api</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <dependency>
@@ -34,6 +26,17 @@
       <artifactId>commons-math3</artifactId>
     </dependency>
     <!-- TEST -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
 
 </project>

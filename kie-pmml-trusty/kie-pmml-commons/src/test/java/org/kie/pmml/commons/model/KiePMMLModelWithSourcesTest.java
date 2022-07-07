@@ -40,8 +40,7 @@ public class KiePMMLModelWithSourcesTest {
 
     @BeforeEach
     public void setup() {
-        kiePMMLModelWithSources = new KiePMMLModelWithSources(FILE_NAME,
-                                                              MODEL_NAME,
+        kiePMMLModelWithSources = new KiePMMLModelWithSources(MODEL_NAME,
                                                               PACKAGE_NAME,
                                                               Collections.emptyList(),
                                                               Collections.emptyList(),
@@ -53,7 +52,7 @@ public class KiePMMLModelWithSourcesTest {
     @Test
     void evaluate() {
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
-            kiePMMLModelWithSources.evaluate(Collections.EMPTY_MAP, new PMMLContextTest());
+            kiePMMLModelWithSources.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
         });
     }
 

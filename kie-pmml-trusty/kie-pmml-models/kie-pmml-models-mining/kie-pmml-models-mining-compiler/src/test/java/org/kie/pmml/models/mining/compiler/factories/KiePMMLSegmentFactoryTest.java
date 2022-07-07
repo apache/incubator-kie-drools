@@ -42,20 +42,21 @@ import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.models.mining.compiler.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.kie.pmml.models.mining.compiler.dto.SegmentCompilationDTO;
 import org.xml.sax.SAXException;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.KIE_PMML_SEGMENT_TEMPLATE;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.KIE_PMML_SEGMENT_TEMPLATE_JAVA;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
 
@@ -69,6 +70,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         COMPILATION_UNIT_BASE = getFromFileName(KIE_PMML_SEGMENT_TEMPLATE_JAVA);
     }
 
+
     @BeforeEach
     public void initLocal() throws IOException, JAXBException, SAXException {
         CompilationUnit cloned = COMPILATION_UNIT_BASE.clone();
@@ -81,9 +83,9 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       MINING_MODEL,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        MINING_MODEL,
+                        new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentsSourcesMap(
@@ -102,18 +104,49 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       MINING_MODEL,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        MINING_MODEL,
+                        new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final SegmentCompilationDTO segmentCompilationDTO =
                 SegmentCompilationDTO.fromGeneratedPackageNameAndFields(compilationDTO, segment,
-                                                                        compilationDTO.getFields());
+                        compilationDTO.getFields());
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(segmentCompilationDTO,
-                                                                                         nestedModels);
+                nestedModels);
         commonEvaluateNestedModels(nestedModels);
         commonEvaluateMap(retrieved, segment);
+    }
+
+    @Test
+    void getSegmentSourcesMapCompiled() throws Exception {
+        final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
+        final List<KiePMMLModel> nestedModels = new ArrayList<>();
+
+        final String expectedNestedModelGeneratedClass = getExpectedNestedModelClass(segment);
+
+        final HasKnowledgeBuilderMock hasKnowledgeBuilderMock = new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER);
+        try {
+            hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedNestedModelGeneratedClass);
+            fail("Expecting class not found: " + expectedNestedModelGeneratedClass);
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(ClassNotFoundException.class);
+        }
+        final CommonCompilationDTO<MiningModel> source =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                        pmml,
+                        MINING_MODEL,
+                        hasKnowledgeBuilderMock);
+        final MiningModelCompilationDTO compilationDTO =
+                MiningModelCompilationDTO.fromCompilationDTO(source);
+        final SegmentCompilationDTO segmentCompilationDTO =
+                SegmentCompilationDTO.fromGeneratedPackageNameAndFields(compilationDTO, segment,
+                        compilationDTO.getFields());
+        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMapCompiled(segmentCompilationDTO,
+                nestedModels);
+        commonEvaluateNestedModels(nestedModels);
+        commonEvaluateMap(retrieved, segment);
+        hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedNestedModelGeneratedClass);
     }
 
     @Test
@@ -125,14 +158,14 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         sourcesMap.put(kiePMMLModelClass, String.format("public class %s {}", regressionModelName));
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       MINING_MODEL,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        MINING_MODEL,
+                        new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final SegmentCompilationDTO segmentCompilationDTO =
                 SegmentCompilationDTO.fromGeneratedPackageNameAndFields(compilationDTO, segment,
-                                                                        compilationDTO.getFields());
+                        compilationDTO.getFields());
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(segmentCompilationDTO, true);
         commonEvaluateMap(retrieved, segment);
     }
@@ -145,11 +178,11 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         String kiePMMLModelClass = "KIEPMMLMODELCLASS";
         double weight = 12.22;
         KiePMMLSegmentFactory.setConstructor(segmentName,
-                                             generatedClassName,
-                                             constructorDeclaration,
-                                             kiePMMLModelClass,
-                                             false,
-                                             weight);
+                generatedClassName,
+                constructorDeclaration,
+                kiePMMLModelClass,
+                false,
+                weight);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", segmentName)));
         ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
@@ -160,7 +193,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         assignExpressionMap.put("weight", new DoubleLiteralExpr(weight));
         assignExpressionMap.put("id", new StringLiteralExpr(segmentName));
         assertThat(commonEvaluateConstructor(constructorDeclaration, generatedClassName,
-                                             superInvocationExpressionsMap, assignExpressionMap)).isTrue();
+                superInvocationExpressionsMap, assignExpressionMap)).isTrue();
     }
 
     @Test
@@ -171,11 +204,11 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         String kiePMMLModelClass = "KIEPMMLMODELCLASS";
         double weight = 12.22;
         KiePMMLSegmentFactory.setConstructor(segmentName,
-                                             generatedClassName,
-                                             constructorDeclaration,
-                                             kiePMMLModelClass,
-                                             true,
-                                             weight);
+                generatedClassName,
+                constructorDeclaration,
+                kiePMMLModelClass,
+                true,
+                weight);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", segmentName)));
         ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);

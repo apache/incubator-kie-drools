@@ -28,6 +28,7 @@ import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -54,14 +55,30 @@ public class ClusteringModelImplementationProviderTest {
     }
 
     @Test
+    void getKiePMMLModel() throws Exception {
+        PMML pmml = TestUtils.loadFromFile(SOURCE_FILE);
+        ClusteringModel model = getModel(pmml);
+
+        final CommonCompilationDTO<ClusteringModel> compilationDTO =
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
+                        pmml,
+                        model,
+                        new HasClassLoaderMock());
+        KiePMMLClusteringModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
+
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(Serializable.class);
+    }
+
+    @Test
     void getKiePMMLModelWithSources() throws Exception {
         PMML pmml = TestUtils.loadFromFile(SOURCE_FILE);
         ClusteringModel model = getModel(pmml);
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       model,
-                                                                       new HasClassLoaderMock(), "fileName");
+                        pmml,
+                        model,
+                        new HasClassLoaderMock());
         KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
 
         assertThat(retrieved).isNotNull();

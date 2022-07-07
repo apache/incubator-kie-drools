@@ -20,10 +20,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
@@ -31,15 +29,7 @@ import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PMMLListenerUtilsTest {
-
-    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
-
-    @BeforeAll
-    static void setUp() {
-        memoryCompilerClassLoader =
-                new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-    }
+public class PMMLListenerUtilsTest {
 
     @Test
     void stepExecuted() {
@@ -56,15 +46,15 @@ class PMMLListenerUtilsTest {
 
     @Test
     void stepNotExecuted() {
-        PMMLContext pmmlContext = new PMMLContextImpl(new PMMLRequestData(), "filename", memoryCompilerClassLoader);
+        PMMLContext pmmlContext = new PMMLContextImpl(new PMMLRequestData());
         AtomicBoolean invoked = new AtomicBoolean(false);
         PMMLListenerUtils.stepExecuted(() -> new PMMLStepTest(invoked), pmmlContext);
         assertThat(invoked).isFalse();
     }
 
     private PMMLContext getPMMLContext(int size, Map<Integer, PMMLStep> listenerFeedback) {
-        PMMLContext toReturn = new PMMLContextImpl(new PMMLRequestData(), "filename", memoryCompilerClassLoader);
-        IntStream.range(0, size).forEach(i -> toReturn.addEfestoListener(getPMMLListener(i, listenerFeedback)));
+        PMMLContext toReturn = new PMMLContextImpl(new PMMLRequestData());
+        IntStream.range(0, size).forEach(i -> toReturn.addPMMLListener(getPMMLListener(i, listenerFeedback)));
         return toReturn;
     }
 

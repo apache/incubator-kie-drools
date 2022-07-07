@@ -32,8 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleClassificationTreeTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "SimpleClassificationTree";
-    //
+    private static final String FILE_NAME = "SimpleClassificationTree.pmml";
     private static final String MODEL_NAME = "SimpleClassificationTreeModel";
     private static final String TARGET_FIELD = "Predicted_result";
     private static PMMLRuntime pmmlRuntime;
@@ -43,16 +42,16 @@ public class SimpleClassificationTreeTest extends AbstractPMMLTest {
     private double input3;
     private String expectedResult;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initSimpleClassificationTreeTest(double input1, double input2, double input3, String expectedResult) {
         this.input1 = input1;
         this.input2 = input2;
         this.input3 = input3;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -73,7 +72,7 @@ public class SimpleClassificationTreeTest extends AbstractPMMLTest {
         inputData.put("input1", input1);
         inputData.put("input2", input2);
         inputData.put("input3", input3);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

@@ -48,10 +48,10 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.utils.KieHelper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class AgendaRuleFlowGroupsTest {
@@ -85,9 +85,9 @@ public class AgendaRuleFlowGroupsTest {
 		CommandBasedStatefulKnowledgeSessionImpl ksession = createSession(-1, "ruleflow-groups.drl");
 
         InternalAgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
-		// only main is available
-		assertEquals(1, groups.length);
-		assertEquals("MAIN", groups[0].getName());
+        // only main is available
+        assertThat(groups.length).isEqualTo(1);
+        assertThat(groups[0].getName()).isEqualTo("MAIN");
 		long id = ksession.getIdentifier();
 		List<String> list = new ArrayList<String>();
 		list.add("Test");
@@ -100,9 +100,9 @@ public class AgendaRuleFlowGroupsTest {
         
         groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
         // main and rule flow is now on the agenda
-        assertEquals(2, groups.length);
-        assertEquals("MAIN", groups[0].getName());
-        assertEquals("ruleflow-group", groups[1].getName());
+        assertThat(groups.length).isEqualTo(2);
+        assertThat(groups[0].getName()).isEqualTo("MAIN");
+        assertThat(groups[1].getName()).isEqualTo("ruleflow-group");
 	}
     
     @Test   
@@ -112,8 +112,8 @@ public class AgendaRuleFlowGroupsTest {
 
         InternalAgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
         // only main is available
-        assertEquals(1, groups.length);
-        assertEquals("MAIN", groups[0].getName());
+        assertThat(groups.length).isEqualTo(1);
+        assertThat(groups[0].getName()).isEqualTo("MAIN");
         long id = ksession.getIdentifier();
         List<String> list = new ArrayList<String>();
         list.add("Test");
@@ -126,9 +126,9 @@ public class AgendaRuleFlowGroupsTest {
         
         groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
         // main and agenda group is now on the agenda
-        assertEquals(2, groups.length);
-        assertEquals("MAIN", groups[0].getName());
-        assertEquals("agenda-group", groups[1].getName());
+        assertThat(groups.length).isEqualTo(2);
+        assertThat(groups[0].getName()).isEqualTo("MAIN");
+        assertThat(groups[1].getName()).isEqualTo("agenda-group");
         
     }
     
@@ -139,8 +139,8 @@ public class AgendaRuleFlowGroupsTest {
 
         InternalAgendaGroup[] groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
         // only main is available
-        assertEquals(1, groups.length);
-        assertEquals("MAIN", groups[0].getName());
+        assertThat(groups.length).isEqualTo(1);
+        assertThat(groups[0].getName()).isEqualTo("MAIN");
         long id = ksession.getIdentifier();
         List<String> list = new ArrayList<String>();
         list.add("Test");
@@ -154,10 +154,10 @@ public class AgendaRuleFlowGroupsTest {
         
         groups = ((InternalAgenda)stripSession(ksession).getAgenda()).getAgendaGroupsManager().getAgendaGroups();
         // main and agenda group is now on the agenda
-        assertEquals(3, groups.length);
-        assertEquals("MAIN", groups[0].getName());
-        assertEquals("ruleflow-group", groups[1].getName());
-        assertEquals("agenda-group", groups[2].getName());
+        assertThat(groups.length).isEqualTo(3);
+        assertThat(groups[0].getName()).isEqualTo("MAIN");
+        assertThat(groups[1].getName()).isEqualTo("ruleflow-group");
+        assertThat(groups[2].getName()).isEqualTo("agenda-group");
         
     }
     
@@ -256,8 +256,8 @@ public class AgendaRuleFlowGroupsTest {
 
         System.err.println( res.getMessages() );
 
-        assertEquals( 1, res.getMessages( Message.Level.WARNING ).size() );
-        assertEquals( 0, res.getMessages( Message.Level.ERROR ).size() );
+        assertThat(res.getMessages(Message.Level.WARNING).size()).isEqualTo(1);
+        assertThat(res.getMessages(Message.Level.ERROR).size()).isEqualTo(0);
 
     }
 

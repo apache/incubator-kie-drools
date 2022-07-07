@@ -41,8 +41,6 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -79,7 +77,7 @@ public class KieLoggersTest {
 
         ksession.insert( new Message("Hello World") );
         int fired = ksession.fireAllRules();
-        assertEquals( 1, fired ); 
+        assertThat(fired).isEqualTo(1); 
         
         logger.close();
     }
@@ -110,7 +108,7 @@ public class KieLoggersTest {
         KieSession ksession = kieContainer.newKieSession("KSession1");
         ksession.insert( new Message("Hello World") );
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
 
         KieRuntimeLogger logger = ksession.getLogger();
         assertThat(logger).isNotNull();
@@ -202,13 +200,13 @@ public class KieLoggersTest {
 
         ksession.insert(new Message("Hello World"));
         int fired = ksession.fireAllRules();
-        assertEquals( 1, fired );
+        assertThat(fired).isEqualTo(1);
 
         logger.close();
 
         file = new File( fileName + ".log" );
-        assertTrue( file.exists() );
-        assertTrue( file.length() > 0 );
+        assertThat(file.exists()).isTrue();
+        assertThat(file.length() > 0).isTrue();
         file.delete();
     }
 
@@ -239,12 +237,12 @@ public class KieLoggersTest {
 
         ksession.insert(new Message("Hello World"));
         int fired = ksession.fireAllRules();
-        assertEquals( 1, fired );
+        assertThat(fired).isEqualTo(1);
 
         // check that the file has been populated before closing it
         file = new File( fileName + ".log" );
-        assertTrue( file.exists() );
-        assertTrue( file.length() > 0 );
+        assertThat(file.exists()).isTrue();
+        assertThat(file.length() > 0).isTrue();
 
         logger.close();
         file.delete();
@@ -283,13 +281,13 @@ public class KieLoggersTest {
         
         ksession.insert( new Message("Hello World") );
         int fired = ksession.fireAllRules();
-        assertEquals( 1, fired );
+        assertThat(fired).isEqualTo(1);
 
         // disposing the ksession also flushes and closes the logger
         ksession.dispose();
 
         file = new File( fileName+".log" );
-        assertTrue( file.exists() );
+        assertThat(file.exists()).isTrue();
         file.delete();
     }
 
@@ -314,7 +312,7 @@ public class KieLoggersTest {
 
         KieFileSystem kfs = ks.newKieFileSystem().write( dt );
         KieBuilder kb = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertTrue( kb.getResults().getMessages().isEmpty() );
+        assertThat(kb.getResults().getMessages().isEmpty()).isTrue();
         return ks;
     }
 }

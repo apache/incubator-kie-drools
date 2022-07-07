@@ -34,8 +34,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "SampleMineTreeModelWithTransformations";
-
+    private static final String FILE_NAME = "SampleMineTreeModelWithTransformations.pmml";
     private static final String MODEL_NAME = "SampleMineTreeModelWithTransformations";
     private static final String TARGET_FIELD = "decision";
     private static final String OUT_DER_TEMPERATURE = "out_der_temperature";
@@ -56,16 +55,15 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
     private double humidity;
     private String expectedResult;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
-    public void initSampleMineTreeModelWithTransformationsTest(double temperature, double humidity,
-                                                               String expectedResult) {
+    public void initSampleMineTreeModelWithTransformationsTest(double temperature, double humidity, String expectedResult) {
         this.temperature = temperature;
         this.humidity = humidity;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -86,7 +84,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
         inputData.put("text_input", TEXT_INPUT);
         inputData.put("input3", 34.1);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
         assertThat(pmml4Result.getResultVariables().get(OUT_DER_TEMPERATURE)).isEqualTo(temperature);
@@ -129,35 +127,32 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
 
     @MethodSource("data")
     @ParameterizedTest
-    void testSampleMineTreeModelWithTransformationsWithoutRequired(double temperature, double humidity,
-                                                                   String expectedResult) {
+    void testSampleMineTreeModelWithTransformationsWithoutRequired(double temperature, double humidity, String expectedResult) {
         initSampleMineTreeModelWithTransformationsTest(temperature, humidity, expectedResult);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
             inputData.put("temperature", temperature);
             inputData.put("humidity", humidity);
             inputData.put("text_input", TEXT_INPUT);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testSampleMineTreeModelWithTransformationsConvertible(double temperature, double humidity,
-                                                               String expectedResult) {
+    void testSampleMineTreeModelWithTransformationsConvertible(double temperature, double humidity, String expectedResult) {
         initSampleMineTreeModelWithTransformationsTest(temperature, humidity, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("temperature", String.valueOf(temperature));
         inputData.put("humidity", String.valueOf(humidity));
         inputData.put("text_input", TEXT_INPUT);
         inputData.put("input3", "34.1");
-        assertThat(evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME)).isNotNull();
+        assertThat(evaluate(pmmlRuntime, inputData, MODEL_NAME)).isNotNull();
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testSampleMineTreeModelWithTransformationsNotConvertible(double temperature, double humidity,
-                                                                  String expectedResult) {
+    void testSampleMineTreeModelWithTransformationsNotConvertible(double temperature, double humidity, String expectedResult) {
         initSampleMineTreeModelWithTransformationsTest(temperature, humidity, expectedResult);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
@@ -165,14 +160,13 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
             inputData.put("humidity", humidity);
             inputData.put("text_input", TEXT_INPUT);
             inputData.put("input3", true);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 
     @MethodSource("data")
     @ParameterizedTest
-    void testSampleMineTreeModelWithTransformationsInvalidValue(double temperature, double humidity,
-                                                                String expectedResult) {
+    void testSampleMineTreeModelWithTransformationsInvalidValue(double temperature, double humidity, String expectedResult) {
         initSampleMineTreeModelWithTransformationsTest(temperature, humidity, expectedResult);
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
             final Map<String, Object> inputData = new HashMap<>();
@@ -180,7 +174,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
             inputData.put("humidity", humidity);
             inputData.put("text_input", TEXT_INPUT);
             inputData.put("input3", 4.1);
-            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
         });
     }
 }

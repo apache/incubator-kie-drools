@@ -32,8 +32,6 @@ import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -67,7 +65,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         mark1.setCheese(new Cheese("gorgonzola", 10));
         ksession.insert(mark1);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -91,8 +89,8 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         mark1.setCheese(new Cheese("gorgonzola", 10));
         ksession.insert(mark1);
 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals("gorgonzola", sb.toString());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(sb.toString()).isEqualTo("gorgonzola");
         ksession.dispose();
     }
 
@@ -111,7 +109,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         mark1.setCheese(new Cheese("gorgonzola", 10));
         ksession.insert(mark1);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -137,7 +135,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         mark3.setAddress(new Address("street", "suburb", "zipCode"));
         ksession.insert(mark3);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -161,7 +159,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         final Order order2 = new Order(12, "Mark");
         final Order.OrderStatus status = new Order.OrderStatus();
@@ -178,9 +176,9 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertSame(item21, list.get(0));
-        assertSame(item22, list.get(1));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0)).isSameAs(item21);
+        assertThat(list.get(1)).isSameAs(item22);
     }
 
     @Test

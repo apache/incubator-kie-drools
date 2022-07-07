@@ -39,7 +39,7 @@ public class KiePMMLTransformationDictionaryInstanceFactoryTest {
         final TransformationDictionary toConvert = getRandomTransformationDictionary();
         KiePMMLTransformationDictionary retrieved =
                 KiePMMLTransformationDictionaryInstanceFactory.getKiePMMLTransformationDictionary(toConvert,
-                                                                                                  Collections.emptyList());
+                        Collections.emptyList());
         assertThat(retrieved).isNotNull();
 
         List<DerivedField> derivedFields = toConvert.getDerivedFields();

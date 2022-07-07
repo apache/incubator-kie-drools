@@ -55,10 +55,8 @@ public class KiePMMLDescrRulesFactoryTest {
         String patternType = "TEMPERATURE";
         String agendaGroup = "agendaGroup";
         String activationGroup = "activationGroup";
-        List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(patternType,
-                                                                                                    BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
-                                                                      new KiePMMLFieldOperatorValue(patternType,
-                                                                                                    BOOLEAN_OPERATOR.AND, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
+        List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(patternType, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                new KiePMMLFieldOperatorValue(patternType, BOOLEAN_OPERATOR.AND, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList())
                 .withAgendaGroup(agendaGroup)
                 .withActivationGroup(activationGroup)

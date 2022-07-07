@@ -10,8 +10,8 @@ The following diagram illustrates how the {RULE_ENGINE} evaluates rules using fo
 
 .Rule evaluation logic using forward and backward chaining
 ifdef::DROOLS,JBPM,OP[]
-image::rule-engine/BackwardChaining/RuleEvaluation.png[align="center"]
+image::rule-engine/RuleEvaluation.png[align="center"]
 endif::[]
 ifdef::DM,PAM[]
-image::rule-engine/BackwardChaining/RuleEvaluation_Enterprise.png[align="center"]
+image::rule-engine/RuleEvaluation_Enterprise.png[align="center"]
 endif::[]

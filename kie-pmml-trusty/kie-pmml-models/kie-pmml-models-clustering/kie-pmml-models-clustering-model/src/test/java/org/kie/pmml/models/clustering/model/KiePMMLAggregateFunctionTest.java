@@ -72,11 +72,9 @@ public class KiePMMLAggregateFunctionTest {
     @Test
     void testApply() {
         assertThat(EUCLIDEAN.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
-                .isEqualTo(euclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST),
-                           DOUBLE_OFFSET);
+                .isEqualTo(euclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST), DOUBLE_OFFSET);
         assertThat(SQUARED_EUCLIDEAN.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
-                .isEqualTo(squaredEuclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST),
-                           DOUBLE_OFFSET);
+                .isEqualTo(squaredEuclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST), DOUBLE_OFFSET);
         assertThatThrownBy(() -> CHEBYCHEV.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
                 .isInstanceOf(UnsupportedOperationException.class);
         assertThatThrownBy(() -> CITY_BLOCK.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
@@ -95,8 +93,7 @@ public class KiePMMLAggregateFunctionTest {
 
     @Test
     void testEuclidean() {
-        assertThat(euclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST)).isEqualTo(5.0,
-                                                                                                            DOUBLE_OFFSET);
+        assertThat(euclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST)).isEqualTo(5.0, DOUBLE_OFFSET);
     }
 
     @Test

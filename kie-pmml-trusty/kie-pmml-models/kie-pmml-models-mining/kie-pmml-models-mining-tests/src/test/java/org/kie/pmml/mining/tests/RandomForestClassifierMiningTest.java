@@ -32,8 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RandomForestClassifierMiningTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "RandomForestClassifier";
-
+    private static final String FILE_NAME = "RandomForestClassifier.pmml";
     private static final String MODEL_NAME = "RandomForestClassifier";
     private static final String TARGET_FIELD = "Approved";
     private static PMMLRuntime pmmlRuntime;
@@ -44,21 +43,21 @@ public class RandomForestClassifierMiningTest extends AbstractPMMLTest {
     private double income;
     private int expectedResult;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initRandomForestClassifierMiningTest(double age,
-                                                     double debt,
-                                                     double yearsEmployed,
-                                                     double income,
-                                                     int expectedResult) {
+                                            double debt,
+                                            double yearsEmployed,
+                                            double income,
+                                            int expectedResult) {
         this.age = age;
         this.debt = debt;
         this.yearsEmployed = yearsEmployed;
         this.income = income;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -79,7 +78,7 @@ public class RandomForestClassifierMiningTest extends AbstractPMMLTest {
         inputData.put("Debt", debt);
         inputData.put("YearsEmployed", yearsEmployed);
         inputData.put("Income", income);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

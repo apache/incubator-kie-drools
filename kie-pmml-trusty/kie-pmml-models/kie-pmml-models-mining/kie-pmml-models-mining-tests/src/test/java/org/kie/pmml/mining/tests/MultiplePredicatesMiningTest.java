@@ -34,8 +34,7 @@ import static org.kie.pmml.api.enums.ResultCode.OK;
 
 public class MultiplePredicatesMiningTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "MultipleMining";
-
+    private static final String FILE_NAME = "MultipleMining.pmml";
     private static final String MODEL_NAME = "PredicatesMining";
     private static final String TARGET_FIELD = "categoricalResult";
     private static PMMLRuntime pmmlRuntime;
@@ -49,19 +48,14 @@ public class MultiplePredicatesMiningTest extends AbstractPMMLTest {
     private double variable;
     private Double expectedResult;
 
-    @BeforeAll
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
-    }
-
     public void initMultiplePredicatesMiningTest(String residenceState,
-                                                 boolean validLicense,
-                                                 String occupation,
-                                                 String categoricalY,
-                                                 String categoricalX,
-                                                 double variable,
-                                                 double age,
-                                                 Double expectedResult) {
+                                        boolean validLicense,
+                                        String occupation,
+                                        String categoricalY,
+                                        String categoricalX,
+                                        double variable,
+                                        double age,
+                                        Double expectedResult) {
         this.residenceState = residenceState;
         this.validLicense = validLicense;
         this.occupation = occupation;
@@ -70,6 +64,11 @@ public class MultiplePredicatesMiningTest extends AbstractPMMLTest {
         this.variable = variable;
         this.age = age;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeAll
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     public static Collection<Object[]> data() {
@@ -87,10 +86,8 @@ public class MultiplePredicatesMiningTest extends AbstractPMMLTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    void testPredicatesMining(String residenceState, boolean validLicense, String occupation, String categoricalY,
-                              String categoricalX, double variable, double age, Double expectedResult) {
-        initMultiplePredicatesMiningTest(residenceState, validLicense, occupation, categoricalY, categoricalX,
-                                         variable, age, expectedResult);
+    void testPredicatesMining(String residenceState, boolean validLicense, String occupation, String categoricalY, String categoricalX, double variable, double age, Double expectedResult) {
+        initMultiplePredicatesMiningTest(residenceState, validLicense, occupation, categoricalY, categoricalX, variable, age, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("residenceState", residenceState);
         inputData.put("validLicense", validLicense);
@@ -99,7 +96,7 @@ public class MultiplePredicatesMiningTest extends AbstractPMMLTest {
         inputData.put("categoricalX", categoricalX);
         inputData.put("variable", variable);
         inputData.put("age", age);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         if (expectedResult != null) {
             assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();

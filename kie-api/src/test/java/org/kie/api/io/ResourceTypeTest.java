@@ -20,10 +20,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ResourceTypeTest {
 
@@ -31,10 +28,10 @@ public class ResourceTypeTest {
     public void testBPMN2Extension() {
         final ResourceType BPMN2 = ResourceType.BPMN2;
 
-        assertTrue(BPMN2.matchesExtension("abc.bpmn"));
-        assertTrue(BPMN2.matchesExtension("abc.bpmn2"));
-        assertTrue(BPMN2.matchesExtension("abc.bpmn-cm"));
-        assertFalse(BPMN2.matchesExtension("abc.bpmn2-cm"));
+        assertThat(BPMN2.matchesExtension("abc.bpmn")).isTrue();
+        assertThat(BPMN2.matchesExtension("abc.bpmn2")).isTrue();
+        assertThat(BPMN2.matchesExtension("abc.bpmn-cm")).isTrue();
+        assertThat(BPMN2.matchesExtension("abc.bpmn2-cm")).isFalse();
     }
 
     @Test
@@ -42,22 +39,22 @@ public class ResourceTypeTest {
         final ResourceType BPMN2 = ResourceType.BPMN2;
         final List<String> extensionsBPMN2 = BPMN2.getAllExtensions();
 
-        assertEquals(3, extensionsBPMN2.size());
-        assertTrue(extensionsBPMN2.contains("bpmn"));
-        assertTrue(extensionsBPMN2.contains("bpmn2"));
-        assertTrue(extensionsBPMN2.contains("bpmn-cm"));
-        assertFalse(extensionsBPMN2.contains("bpmn2-cm"));
+        assertThat(extensionsBPMN2.size()).isEqualTo(3);
+        assertThat(extensionsBPMN2.contains("bpmn")).isTrue();
+        assertThat(extensionsBPMN2.contains("bpmn2")).isTrue();
+        assertThat(extensionsBPMN2.contains("bpmn-cm")).isTrue();
+        assertThat(extensionsBPMN2.contains("bpmn2-cm")).isFalse();
 
         final ResourceType DRL = ResourceType.DRL;
         final List<String> extensionsDRL = DRL.getAllExtensions();
 
-        assertEquals(1, extensionsDRL.size());
-        assertTrue(extensionsDRL.contains("drl"));
+        assertThat(extensionsDRL.size()).isEqualTo(1);
+        assertThat(extensionsDRL.contains("drl")).isTrue();
     }
 
     @Test
     public void testDetermineResourceType() {
-        assertEquals(ResourceType.DTABLE, ResourceType.determineResourceType("test.drl.xls"));
-        assertNull(ResourceType.determineResourceType("test.xls"));
+        assertThat(ResourceType.determineResourceType("test.drl.xls")).isEqualTo(ResourceType.DTABLE);
+        assertThat(ResourceType.determineResourceType("test.xls")).isNull();
     }
 }

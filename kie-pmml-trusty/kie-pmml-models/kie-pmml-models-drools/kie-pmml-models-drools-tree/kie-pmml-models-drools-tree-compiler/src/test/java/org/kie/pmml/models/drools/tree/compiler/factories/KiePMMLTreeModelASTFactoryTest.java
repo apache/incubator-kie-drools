@@ -68,12 +68,9 @@ public class KiePMMLTreeModelASTFactoryTest {
 
     @Test
     void getKiePMMLDroolsGolfingAST() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap =
-                getFieldTypeMap(golfingPmml.getDataDictionary(), golfingPmml.getTransformationDictionary(),
-                                golfingModel.getLocalTransformations());
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(golfingPmml.getDataDictionary(), golfingPmml.getTransformationDictionary(),  golfingModel.getLocalTransformations());
         List<KiePMMLDroolsType> types = Collections.emptyList();
-        KiePMMLDroolsAST retrieved =
-                KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(golfingPmml.getDataDictionary()), golfingModel, fieldTypeMap, types);
+        KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(golfingPmml.getDataDictionary()), golfingModel, fieldTypeMap, types);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getTypes()).isEqualTo(types);
         assertThat(retrieved.getRules()).isNotEmpty();
@@ -81,12 +78,9 @@ public class KiePMMLTreeModelASTFactoryTest {
 
     @Test
     void getKiePMMLDroolsIrisAST() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap =
-                getFieldTypeMap(irisPmml.getDataDictionary(), irisPmml.getTransformationDictionary(),
-                                irisModel.getLocalTransformations());
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(irisPmml.getDataDictionary(), irisPmml.getTransformationDictionary(),  irisModel.getLocalTransformations());
         List<KiePMMLDroolsType> types = Collections.emptyList();
-        KiePMMLDroolsAST retrieved =
-                KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(irisPmml.getDataDictionary()), irisModel, fieldTypeMap, types);
+        KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(irisPmml.getDataDictionary()), irisModel, fieldTypeMap, types);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getTypes()).isEqualTo(types);
         assertThat(retrieved.getRules()).isNotEmpty();
@@ -94,12 +88,9 @@ public class KiePMMLTreeModelASTFactoryTest {
 
     @Test
     void getKiePMMLDroolsSimpleSetAST() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap =
-                getFieldTypeMap(simpleSetPmml.getDataDictionary(), simpleSetPmml.getTransformationDictionary(),
-                                simpleSetModel.getLocalTransformations());
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(simpleSetPmml.getDataDictionary(), simpleSetPmml.getTransformationDictionary(),  simpleSetModel.getLocalTransformations());
         List<KiePMMLDroolsType> types = Collections.emptyList();
-        KiePMMLDroolsAST retrieved =
-                KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(simpleSetPmml.getDataDictionary()), simpleSetModel, fieldTypeMap, types);
+        KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(simpleSetPmml.getDataDictionary()), simpleSetModel, fieldTypeMap, types);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getTypes()).isEqualTo(types);
         assertThat(retrieved.getRules()).isNotEmpty();

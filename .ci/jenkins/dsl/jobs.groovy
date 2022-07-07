@@ -76,6 +76,7 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
 
 void setupNativeJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools', Folder.NIGHTLY_NATIVE, "${jenkins_path}/Jenkinsfile.native", 'Drools Native Testing')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 6 * * *' ]
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -91,6 +92,7 @@ void setupNativeJob() {
 
 void setupMandrelJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools', Folder.NIGHTLY_MANDREL, "${jenkins_path}/Jenkinsfile.native", 'Drools Mandrel Testing')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 8 * * *' ]
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -106,6 +108,7 @@ void setupMandrelJob() {
 
 void setupDeployJob(Folder jobFolder) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools-deploy', jobFolder, "${jenkins_path}/Jenkinsfile.deploy", 'Drools Deploy')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'drools',
         PROPERTIES_FILE_NAME: 'deployment.properties',
@@ -145,6 +148,7 @@ void setupDeployJob(Folder jobFolder) {
 
 void setupPromoteJob(Folder jobFolder) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Drools Promote')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'drools',
         PROPERTIES_FILE_NAME: 'deployment.properties',
