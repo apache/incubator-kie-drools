@@ -72,6 +72,7 @@ if (Utils.isMainBranch(this)) {
 
 void setupSonarCloudJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps', Folder.NIGHTLY_SONARCLOUD, "${jenkins_path}/Jenkinsfile.sonarcloud", 'Kogito Apps Daily Sonar')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 20 * * 1-5' ]
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -87,6 +88,7 @@ void setupSonarCloudJob() {
 
 void setupNativeJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps', Folder.NIGHTLY_NATIVE, "${jenkins_path}/Jenkinsfile.native", 'Kogito Apps Native Testing')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 6 * * *' ]
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -102,6 +104,7 @@ void setupNativeJob() {
 
 void setupMandrelJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps', Folder.NIGHTLY_MANDREL, "${jenkins_path}/Jenkinsfile.native", 'Kogito Apps Mandrel Testing')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 8 * * *' ]
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -117,6 +120,7 @@ void setupMandrelJob() {
 
 void setupOptaplannerJob(String optaplannerBranch) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps-optaplanner-snapshot', Folder.NIGHTLY_ECOSYSTEM, "${jenkins_path}/Jenkinsfile.optaplanner", 'Kogito Apps Testing against Optaplanner snapshot')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 6 * * *' ]
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -134,6 +138,7 @@ void setupOptaplannerJob(String optaplannerBranch) {
 
 void setupDeployJob(Folder jobFolder) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps-deploy', jobFolder, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Apps Deploy')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     if (jobFolder.isPullRequest()) {
         jobParams.git.branch = '${BUILD_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
@@ -193,6 +198,7 @@ void setupDeployJob(Folder jobFolder) {
 
 void setupPromoteJob(Folder jobFolder) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Apps Promote')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'kogito-apps',
         PROPERTIES_FILE_NAME: 'deployment.properties',
