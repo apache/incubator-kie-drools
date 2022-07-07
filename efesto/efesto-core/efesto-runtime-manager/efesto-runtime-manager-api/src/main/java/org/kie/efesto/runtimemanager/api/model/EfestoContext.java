@@ -18,13 +18,12 @@ package org.kie.efesto.runtimemanager.api.model;
 
 import java.util.Set;
 
-import org.kie.api.runtime.Context;
 import org.kie.efesto.runtimemanager.api.listener.EfestoListener;
 
 /**
  * The context of an execution
  */
-public interface EfestoContext<T  extends EfestoListener> extends Context {
+public interface EfestoContext<T extends EfestoListener> {
 
     /**
      * Add the given <code>EfestoListener</code> to the current <code>Context</code>
