@@ -32,7 +32,7 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.util.io.FileSystemResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.drl.engine.compilation.model.DrlCallableClassesContainer;
+import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
@@ -70,7 +70,7 @@ class DrlCompilerHelperTest {
     void getDrlCallableClassesContainerFromPackageDescrResource() {
         String basePath = UUID.randomUUID().toString();
         DrlPackageDescrSetResource toProcess = new DrlPackageDescrSetResource(packageDescrs, basePath);
-        EfestoCompilationOutput retrieved = DrlCompilerHelper.getDrlCallableClassesContainer(toProcess, memoryCompilerClassLoader);
+        EfestoCompilationOutput retrieved = DrlCompilerHelper.pkgDescrToExecModel(toProcess, memoryCompilerClassLoader);
         commonVerifyEfestoCompilationOutput(retrieved, basePath);
     }
 
@@ -78,13 +78,13 @@ class DrlCompilerHelperTest {
     void getDrlCallableClassesContainerFromFileResource() {
         String basePath = UUID.randomUUID().toString();
         DrlFileSetResource toProcess = new DrlFileSetResource(drlFiles, basePath);
-        EfestoCompilationOutput retrieved = DrlCompilerHelper.getDrlCallableClassesContainer(toProcess, memoryCompilerClassLoader);
+        EfestoCompilationOutput retrieved = DrlCompilerHelper.drlToExecutableModel(toProcess, memoryCompilerClassLoader);
         commonVerifyEfestoCompilationOutput(retrieved, basePath);
     }
 
     private void commonVerifyEfestoCompilationOutput(EfestoCompilationOutput toVerify, String baseBath) {
-        assertThat(toVerify).isNotNull().isInstanceOf(DrlCallableClassesContainer.class);
-        DrlCallableClassesContainer retrieved = (DrlCallableClassesContainer) toVerify;
+        assertThat(toVerify).isNotNull().isInstanceOf(ExecutableModelClassesContainer.class);
+        ExecutableModelClassesContainer retrieved = (ExecutableModelClassesContainer) toVerify;
         assertThat(retrieved.getFri().getModel()).isEqualTo("drl");
         assertThat(retrieved.getFri().getBasePath()).isEqualTo(SLASH + baseBath);
         assertThat(retrieved.getFullClassNames()).hasSize(2); // magic number due to compiled resources

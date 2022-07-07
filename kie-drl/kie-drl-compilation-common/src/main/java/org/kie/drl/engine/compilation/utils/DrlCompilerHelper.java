@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.BuildResultCollector;
@@ -37,8 +38,9 @@ import org.drools.model.codegen.project.RuleCodegenError;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
 import org.kie.api.io.Resource;
 import org.kie.drl.engine.compilation.model.DecisionTableFileSetResource;
-import org.kie.drl.engine.compilation.model.DrlCallableClassesContainer;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
+import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
+import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
@@ -48,6 +50,8 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
+
 public class DrlCompilerHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(DrlCompilerHelper.class);
@@ -55,42 +59,29 @@ public class DrlCompilerHelper {
     private DrlCompilerHelper() {
     }
 
-    public static DrlCallableClassesContainer getDrlCallableClassesContainer(DecisionTableFileSetResource resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static ExecutableModelClassesContainer dTableToDrl(DecisionTableFileSetResource resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         // TODO {mfusco}
-        // There are two possible options
-        // 1) translate the DecisionTableFileSetResource to DrlFileSetResource, and then invoke getDrlCallableClassesContainer(DrlFileSetResource, MemoryCompilerClassLoader)
-        // 2) define an "intermediate" resource that contains PackageDescr, and returns it (as it will be done inside PMML)
         throw new KieCompilerServiceException("Not implemented, yet");
     }
 
-    public static DrlCallableClassesContainer getDrlCallableClassesContainer(EfestoSetResource<PackageDescr> resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        Map<String, CompositePackageDescr> packages = new HashMap<>();
-        for (PackageDescr packageDescr : resources.getContent()) {
-            addPackageDescr(packageDescr, packageDescr.getResource(), packages);
-        }
-        return getDrlCallableClassesContainer(packages, resources.getBasePath(), new KnowledgeBuilderConfigurationImpl(), memoryCompilerClassLoader);
+    public static DrlPackageDescrSetResource drlToPackageDescrs(DrlFileSetResource resources, ClassLoader classLoader) {
+        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(classLoader);
+        Set<PackageDescr> packageDescrSet = buildCompositePackageDescrs(resources, conf).stream().collect(Collectors.toSet());
+        return new DrlPackageDescrSetResource(packageDescrSet, resources.getBasePath());
     }
 
-
-    public static DrlCallableClassesContainer getDrlCallableClassesContainer(DrlFileSetResource resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration = new KnowledgeBuilderConfigurationImpl();
-
-        DrlResourceHandler drlResourceHandler = new DrlResourceHandler(knowledgeBuilderConfiguration);
-
-        Map<String, CompositePackageDescr> packages = new HashMap<>();
-
-        for (Resource resource : resources.getFileSystemResource()) {
-            parseAndAdd(drlResourceHandler, resource, packages);
-        }
-        return getDrlCallableClassesContainer(packages, resources.getBasePath(), knowledgeBuilderConfiguration, memoryCompilerClassLoader);
+    public static ExecutableModelClassesContainer pkgDescrToExecModel(EfestoSetResource<PackageDescr> resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        return pkgDescrToExecModel(toCompositePackageDescrs(resources.getContent()), resources.getBasePath(), new KnowledgeBuilderConfigurationImpl(), memoryCompilerClassLoader);
     }
 
-    static DrlCallableClassesContainer getDrlCallableClassesContainer(Map<String, CompositePackageDescr> packages, String basePath, KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static ExecutableModelClassesContainer drlToExecutableModel(DrlFileSetResource resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(memoryCompilerClassLoader);
+        return pkgDescrToExecModel(buildCompositePackageDescrs(resources, conf), resources.getBasePath(), conf, memoryCompilerClassLoader);
+    }
+
+    public static ExecutableModelClassesContainer pkgDescrToExecModel(Collection<CompositePackageDescr> packages, String basePath, KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         ExplicitCanonicalModelCompiler<KogitoPackageSources> compiler =
-                ExplicitCanonicalModelCompiler.of(
-                        packages.values(),
-                        knowledgeBuilderConfiguration,
-                        KogitoPackageSources::dumpSources);
+                ExplicitCanonicalModelCompiler.of( packages, knowledgeBuilderConfiguration, KogitoPackageSources::dumpSources );
 
         compiler.process();
         BuildResultCollector buildResults = compiler.getBuildResults();
@@ -104,40 +95,50 @@ public class DrlCompilerHelper {
 
         Collection<KogitoPackageSources> packageSources = compiler.getPackageSources();
 
-        List<GeneratedFile> legacyModelFiles = new ArrayList<>();
+        List<GeneratedFile> modelFiles = new ArrayList<>();
         List<String> generatedRulesModels = new ArrayList<>();
 
         for (KogitoPackageSources pkgSources : packageSources) {
-            pkgSources.collectGeneratedFiles(legacyModelFiles);
+            pkgSources.collectGeneratedFiles(modelFiles);
             generatedRulesModels.add(pkgSources.getPackageName() + "." + pkgSources.getRulesFileName());
         }
 
-
-        Map<String, String> sourceCode = legacyModelFiles.stream()
+        Map<String, String> sourceCode = modelFiles.stream()
                 .collect(Collectors.toMap(generatedFile -> generatedFile.getPath()
                                 .replace(".java", "")
                                 .replace(File.separatorChar, '.'),
                         generatedFile -> new String(generatedFile.getData(), StandardCharsets.UTF_8)));
 
         Map<String, byte[]> compiledClasses = compileClasses(sourceCode, memoryCompilerClassLoader);
-        return new DrlCallableClassesContainer(new FRI(basePath, "drl"), generatedRulesModels, compiledClasses);
+        return new ExecutableModelClassesContainer(new FRI(basePath, "drl"), generatedRulesModels, compiledClasses);
     }
 
-    static void addPackageDescr(PackageDescr packageDescr, Resource resource, Map<String, CompositePackageDescr> packages) {
-        CompositePackageDescr compositePackageDescr =
-                packages.computeIfAbsent(packageDescr.getNamespace(), (CompositePackageDescr) -> new CompositePackageDescr(packageDescr.getNamespace()));
-        compositePackageDescr.addPackageDescr(resource, packageDescr);
+    private static Collection<CompositePackageDescr> buildCompositePackageDescrs(DrlFileSetResource resources, KnowledgeBuilderConfigurationImpl conf) {
+        DrlResourceHandler drlResourceHandler = new DrlResourceHandler(conf);
+        return toCompositePackageDescrs(resources.getFileSystemResource().stream().map(r -> resourceToPackageDescr(drlResourceHandler, r)).collect(Collectors.toList()));
     }
 
-    static void parseAndAdd(DrlResourceHandler drlResourceHandler, Resource resource, Map<String, CompositePackageDescr> packages) {
+    private static Collection<CompositePackageDescr> toCompositePackageDescrs(Iterable<PackageDescr> packageDescrs) {
+        Map<String, CompositePackageDescr> packages = new HashMap<>();
+        for (PackageDescr packageDescr : packageDescrs) {
+            addPackageDescr(packageDescr, packageDescr.getResource(), packages);
+        }
+        return packages.values();
+    }
+
+    private static void addPackageDescr(PackageDescr packageDescr, Resource resource, Map<String, CompositePackageDescr> packages) {
+        packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new).addPackageDescr(resource, packageDescr);
+    }
+
+    private static PackageDescr resourceToPackageDescr(DrlResourceHandler drlResourceHandler, Resource resource) {
         try {
-            addPackageDescr(drlResourceHandler.process(resource), resource, packages);
+            return drlResourceHandler.process(resource);
         } catch (DroolsParserException | IOException e) {
             throw new KieCompilerServiceException(e);
         }
     }
 
-    static Map<String, byte[]> compileClasses(Map<String, String> sourcesMap, KieMemoryCompiler.MemoryCompilerClassLoader memoryClassLoader) {
+    private static Map<String, byte[]> compileClasses(Map<String, String> sourcesMap, KieMemoryCompiler.MemoryCompilerClassLoader memoryClassLoader) {
         return KieMemoryCompiler.compileNoLoad(sourcesMap, memoryClassLoader, JavaConfiguration.CompilerType.NATIVE);
     }
 }
