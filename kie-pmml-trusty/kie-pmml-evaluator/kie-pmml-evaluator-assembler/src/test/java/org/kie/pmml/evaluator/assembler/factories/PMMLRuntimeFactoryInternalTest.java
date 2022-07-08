@@ -28,7 +28,7 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.codegen.ExecutableModelProject;
-import org.drools.util.io.DescrResource;
+import org.drools.io.DescrResource;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;

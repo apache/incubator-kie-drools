@@ -32,7 +32,7 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.wiring.api.ResourceProvider;
 import org.drools.wiring.api.classloader.ProjectClassLoader;

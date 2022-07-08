@@ -29,7 +29,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
-import org.drools.util.io.FileSystemResource;
+import org.drools.io.FileSystemResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;

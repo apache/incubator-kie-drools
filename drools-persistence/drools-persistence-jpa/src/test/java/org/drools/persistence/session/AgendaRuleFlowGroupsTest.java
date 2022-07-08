@@ -27,7 +27,7 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.util.DroolsPersistenceUtil;
-import org.drools.util.io.ClassPathResource;
+import org.drools.io.ClassPathResource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -15,7 +15,7 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.kie.api.io.Resource;
 
 public class DeprecatedResourceTypeWarning extends DroolsWarning {

@@ -19,7 +19,7 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.util.io.ByteArrayResource;
+import org.drools.io.ByteArrayResource;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.junit.Test;
 import org.kie.api.KieServices;

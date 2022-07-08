@@ -18,7 +18,6 @@ package org.drools.util;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.api.builder.ReleaseId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.util.StringUtils.getPkgUUID;
@@ -228,56 +227,12 @@ public class StringUtilsTest {
     }
 
     @Test
-    public void getPkgUUIDFromReleaseIdNotNullNotSnapshot() {
-        ReleaseId releaseId = new TestingReleaseId(false);
-        String packageName = "apackage";
-        String retrieved = getPkgUUID(releaseId.toString(), packageName);
-        String expected = md5Hash(releaseId.toString()+packageName);
-        assertThat(retrieved).isEqualTo(expected);
-    }
-
-    @Test
     public void getPkgUUIDFromGAV() {
         String gav = "group:artifact:version";
         String packageName = "apackage";
         String retrieved = getPkgUUID(gav, packageName);
         String expected = md5Hash(gav+packageName);
         assertThat(retrieved).isEqualTo(expected);
-    }
-
-
-    private static class TestingReleaseId implements ReleaseId {
-
-        final boolean snapshot;
-
-        public TestingReleaseId(boolean snapshot) {
-            this.snapshot = snapshot;
-        }
-
-        @Override
-        public String getGroupId() {
-            return "group";
-        }
-
-        @Override
-        public String getArtifactId() {
-            return "artifact";
-        }
-
-        @Override
-        public String getVersion() {
-            return "version";
-        }
-
-        @Override
-        public String toExternalForm() {
-            return "externalForm";
-        }
-
-        @Override
-        public boolean isSnapshot() {
-            return snapshot;
-        }
     }
 
     @Test

@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.drools.util.io.FileSystemResource;
+import org.drools.io.FileSystemResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileSetResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
