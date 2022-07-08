@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SegmentationMajorityVoteMiningTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "segmentationClassificationMajorityVote.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "segmentationClassificationMajorityVote";
     private static final String MODEL_NAME = "SegmentationClassificationMajorityVote";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -35,7 +35,7 @@ public class SegmentationMajorityVoteMiningTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -63,7 +63,7 @@ public class SegmentationMajorityVoteMiningTest extends AbstractPMMLTest {
         inputData.put("input1", input1);
         inputData.put("input2", input2);
         inputData.put("input3", input3);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(result);

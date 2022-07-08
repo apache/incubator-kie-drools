@@ -15,16 +15,12 @@
  */
 package org.kie.pmml.models.drools.commons.model;
 
+import java.util.Collections;
+
 import org.drools.drl.ast.descr.PackageDescr;
-import org.kie.api.io.Resource;
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.compilationmanager.api.model.EfestoRedirectOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.Set;
 
 public class EfestoRedirectOutputPMMLDrl extends EfestoSetResource<PackageDescr> implements EfestoOutput<PackageDescr> {
 

@@ -57,23 +57,13 @@ public class ScorecardModelImplementationProviderTest {
     }
 
     @Test
-    void getKiePMMLModel() {
-        final CommonCompilationDTO<Scorecard> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        basicComplexPartialScorePmml,
-                        basicComplexPartialScore,
-                        new HasClassLoaderMock());
-        KiePMMLScorecardModel retrieved = provider.getKiePMMLModel(compilationDTO);
-        assertThat(retrieved).isNotNull();
-    }
-
-    @Test
     void getKiePMMLModelWithSources() {
         final CommonCompilationDTO<Scorecard> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        basicComplexPartialScorePmml,
-                        basicComplexPartialScore,
-                        new HasClassLoaderMock());
+                                                                       basicComplexPartialScorePmml,
+                                                                       basicComplexPartialScore,
+                                                                       new HasClassLoaderMock(),
+                                                                       BASIC_COMPLEX_PARTIAL_SCORE_SOURCE);
         KiePMMLModelWithSources retrieved = provider.getKiePMMLModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
         Map<String, String> retrievedSourcesMap = retrieved.getSourcesMap();

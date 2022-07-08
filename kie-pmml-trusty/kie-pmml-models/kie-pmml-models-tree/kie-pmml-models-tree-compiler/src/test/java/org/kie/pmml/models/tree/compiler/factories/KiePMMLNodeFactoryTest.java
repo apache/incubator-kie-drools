@@ -109,17 +109,6 @@ public class KiePMMLNodeFactoryTest {
     }
 
     @Test
-    void getKiePMMLNode() {
-        final KiePMMLNode retrieved = KiePMMLNodeFactory.getKiePMMLNode(node1,
-                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary1, derivedFields1),
-                PACKAGE_NAME,
-                1.0,
-                new HasClassLoaderMock());
-        assertThat(retrieved).isNotNull();
-        commonVerifyNode(retrieved, node1);
-    }
-
-    @Test
     void getKiePMMLNodeSourcesMap() {
         final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node1,
                 createNodeClassName(),

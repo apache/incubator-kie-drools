@@ -27,7 +27,8 @@
     <module>kie-pmml-compiler</module>
     <module>kie-pmml-evaluator</module>
     <module>kie-pmml-models</module>
-    <module>kie-pmml-benchmarks</module>
+    <!-- Disabled due to "bad class" and "ClosedFileSystemException" exceptions - not urgent to resolve now -->
+<!--    <module>kie-pmml-benchmarks</module>-->
     <module>kie-pmml-dependencies</module>
     <module>kie-pmml-api</module>
   </modules>

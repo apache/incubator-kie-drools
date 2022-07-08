@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.commons;
 
-
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 
 /**

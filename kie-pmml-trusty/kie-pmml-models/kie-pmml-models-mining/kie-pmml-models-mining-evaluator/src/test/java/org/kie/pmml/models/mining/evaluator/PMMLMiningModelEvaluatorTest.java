@@ -102,11 +102,12 @@ public class PMMLMiningModelEvaluatorTest {
 
     @Test
     void getPMML4ResultOK() {
+        String fileName = "FILENAME";
         String name = "NAME";
         String targetField = "TARGET";
         String prediction = "FIRST_VALUE";
         KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), SELECT_FIRST).build();
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(fileName, name, Collections.emptyList(),
                 MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
@@ -125,10 +126,11 @@ public class PMMLMiningModelEvaluatorTest {
 
     @Test
     void getPMML4ResultFAIL() {
+        String fileName = "FILENAME";
         String name = "NAME";
         String targetField = "TARGET";
         KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), AVERAGE).build();
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(fileName, name, Collections.emptyList(),
                 MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField(targetField)
                 .withSegmentation(kiePMMLSegmentation)
@@ -143,30 +145,6 @@ public class PMMLMiningModelEvaluatorTest {
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
         assertThat(resultVariables).containsKey(targetField);
         assertThat(resultVariables.get(targetField)).isNull();
-    }
-
-    @Test
-    void getPMMLRuntime() {
-        final KieServices kieServices = KieServices.Factory.get();
-        final KieContainer kieContainer = kieServices.newKieClasspathContainer();
-        final KieBase kieBase = kieContainer.getKieBase();
-        String kModulePackageName = "kModulePackageNameA";
-        String containerModelName = "containerModelNameA";
-        PMMLRuntime firstRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
-        assertThat(firstRetrieved).isNotNull();
-        assertThat(firstRetrieved).isInstanceOf(PMMLRuntimeInternal.class);
-        PMMLRuntimeInternal firstPMMLRuntimeInternal = (PMMLRuntimeInternal) firstRetrieved;
-        PMMLRuntime secondRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
-        assertThat(secondRetrieved).isInstanceOf(PMMLRuntimeInternal.class);
-        PMMLRuntimeInternal secondPMMLRuntimeInternal = (PMMLRuntimeInternal) secondRetrieved;
-        assertThat(secondPMMLRuntimeInternal.getKnowledgeBase()).isEqualTo(firstPMMLRuntimeInternal.getKnowledgeBase());
-        kModulePackageName = "kModulePackageNameB";
-        containerModelName = "containerModelNameB";
-        PMMLRuntime thirdRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
-        assertThat(thirdRetrieved).isNotNull();
-        assertThat(thirdRetrieved).isInstanceOf(PMMLRuntimeInternal.class);
-        PMMLRuntimeInternal thirdPMMLRuntimeInternal = (PMMLRuntimeInternal) thirdRetrieved;
-        assertThat(firstPMMLRuntimeInternal.getKnowledgeBase()).isNotEqualTo(thirdPMMLRuntimeInternal.getKnowledgeBase());
     }
 
     @Test
@@ -276,7 +254,7 @@ public class PMMLMiningModelEvaluatorTest {
     @Test
     void validateKiePMMLMiningModel() {
         String name = "NAME";
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder("FILENAME", name, Collections.emptyList(),
                 MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField("TARGET")
                 .build();
@@ -287,7 +265,7 @@ public class PMMLMiningModelEvaluatorTest {
     void validateNoKiePMMLMiningModel() {
         assertThatExceptionOfType(KiePMMLModelException.class).isThrownBy(() -> {
             String name = "NAME";
-            KiePMMLModel kiePMMLModel = new KiePMMLTestingModel(name, Collections.emptyList());
+            KiePMMLModel kiePMMLModel = new KiePMMLTestingModel("FILENAME", name, Collections.emptyList());
             evaluator.validate(kiePMMLModel);
         });
     }
@@ -295,7 +273,7 @@ public class PMMLMiningModelEvaluatorTest {
     @Test
     void validateMiningTargetField() {
         String name = "NAME";
-        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder("FILENAME", name, Collections.emptyList(),
                 MINING_FUNCTION.ASSOCIATION_RULES)
                 .withTargetField("TARGET")
                 .build();
@@ -306,7 +284,7 @@ public class PMMLMiningModelEvaluatorTest {
     void validateMiningEmptyTargetField() {
         assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
             String name = "NAME";
-            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder("FILENAME", name, Collections.emptyList(),
                     MINING_FUNCTION.ASSOCIATION_RULES)
                     .withTargetField("     ")
                     .build();
@@ -318,7 +296,7 @@ public class PMMLMiningModelEvaluatorTest {
     void validateMiningNoTargetField() {
         assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
             String name = "NAME";
-            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+            KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder("FILENAME", name, Collections.emptyList(),
                     MINING_FUNCTION.ASSOCIATION_RULES).build();
             evaluator.validateMining(kiePMMLMiningModel);
         });
@@ -329,7 +307,7 @@ public class PMMLMiningModelEvaluatorTest {
         PMMLStep step = mock(PMMLStep.class);
         Set<PMMLListener> pmmlListenersMock = IntStream.range(0, 3).mapToObj(i -> mock(PMMLListener.class)).collect(Collectors.toSet());
         PMMLContext pmmlContextMock = mock(PMMLContext.class);
-        when(pmmlContextMock.getPMMLListeners()).thenReturn(pmmlListenersMock);
+        when(pmmlContextMock.getEfestoListeners()).thenReturn(pmmlListenersMock);
         evaluator.addStep(() -> step, pmmlContextMock);
         pmmlListenersMock.forEach(pmmlListenerMock -> verify(pmmlListenerMock).stepExecuted(step));
     }

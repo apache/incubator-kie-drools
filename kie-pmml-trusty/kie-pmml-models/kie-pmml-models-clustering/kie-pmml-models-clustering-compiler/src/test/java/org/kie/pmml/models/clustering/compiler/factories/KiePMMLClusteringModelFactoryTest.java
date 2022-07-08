@@ -134,9 +134,10 @@ public class KiePMMLClusteringModelFactoryTest {
     void getKiePMMLClusteringModel() {
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        clusteringModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       clusteringModel,
+                                                                       new HasClassLoaderMock(),
+                                                                       "FILENAME");
         KiePMMLClusteringModel retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -160,9 +161,9 @@ public class KiePMMLClusteringModelFactoryTest {
     void getKiePMMLClusteringModelSourcesMap() {
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        clusteringModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       clusteringModel,
+                                                                       new HasClassLoaderMock(), "FILENAME");
         Map<String, String> retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModelSourcesMap(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -239,9 +240,9 @@ public class KiePMMLClusteringModelFactoryTest {
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        clusteringModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       clusteringModel,
+                                                                       new HasClassLoaderMock(), "FILENAME");
         String expectedModelClass =
                 KiePMMLClusteringModel.ModelClass.class.getCanonicalName() + "." + clusteringModel.getModelClass().name();
         ComparisonMeasure comparisonMeasure = clusteringModel.getComparisonMeasure();

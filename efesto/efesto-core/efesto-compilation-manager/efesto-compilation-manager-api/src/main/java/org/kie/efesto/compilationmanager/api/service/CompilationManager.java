@@ -26,10 +26,8 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 public interface CompilationManager {
 
     /**
-     * Produce one <code>EfestoCallableOutput</code> from the given <code>EfestoRedirectOutput</code>.
-     * The return is <code>Optional</code> because the engine required to process given
-     * <code>EfestoRedirectOutput</code>
-     * may not be found
+     * Produce a  <code>Collection&lt;IndexFile&gt;</code> from the given <code>EfestoResource</code>s.
+     * The return is a <code>Collection</code> there could be molutple engines, or none, involved
      *
      * @param memoryCompilerClassLoader
      * @param toProcess

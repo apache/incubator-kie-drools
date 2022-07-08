@@ -104,9 +104,10 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         pmml.addModels(model);
         final CommonCompilationDTO<TreeModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(packageName,
-                        pmml,
-                        model,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       model,
+                                                                       new HasClassLoaderMock(),
+                                                                       "FILENAME");
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
                 DroolsCompilationDTO.fromCompilationDTO(source, fieldTypeMap);
         CompilationUnit retrieved =

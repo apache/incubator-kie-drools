@@ -56,7 +56,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         String basePath = context.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
         FRI fri = new FRI(basePath, PMML_STRING);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
-        Collection<EfestoOutput<?>> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, darInputPMML);
+        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, darInputPMML);
         if (retrieved.isEmpty()) {
             throw new KieRuntimeServiceException("Failed to retrieve EfestoOutput");
         }

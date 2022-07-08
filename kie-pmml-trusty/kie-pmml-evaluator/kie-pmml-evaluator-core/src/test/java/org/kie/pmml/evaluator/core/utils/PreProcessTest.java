@@ -421,7 +421,7 @@ public class PreProcessTest {
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         KiePMMLTestingModel kiePMMLModel = KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("FILENAME", "TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withKiePMMLTransformationDictionary(transformationDictionary)
                 .build();
         //

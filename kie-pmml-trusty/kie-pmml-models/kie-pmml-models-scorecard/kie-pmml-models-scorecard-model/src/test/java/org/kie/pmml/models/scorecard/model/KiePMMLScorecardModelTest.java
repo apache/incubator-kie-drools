@@ -47,14 +47,15 @@ public class KiePMMLScorecardModelTest {
     void evaluate() {
         Double initialScore = 25.23;
         PMMLContextTest pmmlContextTest = new PMMLContextTest();
-        KiePMMLScorecardModel kiePMMLScorecardModel = new KiePMMLScorecardModel(MODEL_NAME,
-                Collections.emptyList(),
-                getKiePMMLCharacteristics(),
-                initialScore,
-                true,
-                REASONCODE_ALGORITHM.POINTS_BELOW,
-                0);
-        Object retrieved = kiePMMLScorecardModel.evaluate(null, Collections.emptyMap(), pmmlContextTest);
+        KiePMMLScorecardModel kiePMMLScorecardModel = new KiePMMLScorecardModel("FILENAME",
+                                                                                MODEL_NAME,
+                                                                                Collections.emptyList(),
+                                                                                getKiePMMLCharacteristics(),
+                                                                                initialScore,
+                                                                                true,
+                                                                                REASONCODE_ALGORITHM.POINTS_BELOW,
+                                                                                0);
+        Object retrieved = kiePMMLScorecardModel.evaluate(Collections.emptyMap(), pmmlContextTest);
         assertThat(retrieved).isNotNull();
 
         Double EVALUATION_20 = baselineScore - value2;

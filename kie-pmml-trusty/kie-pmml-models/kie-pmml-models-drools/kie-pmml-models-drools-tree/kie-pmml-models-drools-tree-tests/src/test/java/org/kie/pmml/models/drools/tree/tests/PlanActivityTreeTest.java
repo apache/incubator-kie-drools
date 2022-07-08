@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PlanActivityTreeTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "PlanActivityTree.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "PlanActivityTree";
     private static final String MODEL_NAME = "PlanActivityTreeModel";
     private static final String TARGET_FIELD = "Predicted_activity";
     private static PMMLRuntime pmmlRuntime;
@@ -51,7 +51,7 @@ public class PlanActivityTreeTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -75,7 +75,7 @@ public class PlanActivityTreeTest extends AbstractPMMLTest {
         inputData.put("weather", this.weather);
         inputData.put("friendsAvailable", this.friendsAvailable);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         Object result = pmml4Result.getResultVariables().get(TARGET_FIELD);
 

@@ -45,31 +45,8 @@ class KieCompilerServicePMMLTest {
         File pmmlFile = getFileFromFileName("LinearRegressionSample.pmml").orElseThrow(() -> new RuntimeException("Failed to get pmmlFIle"));
         EfestoResource toProcess = new EfestoFileResource(pmmlFile);
         assertThat(kieCompilerService.canManageResource(toProcess)).isTrue();
-        toProcess = () -> "EfestoRedirectOutput";
+        toProcess = () -> "EfestoResource";
         assertThat(kieCompilerService.canManageResource(toProcess)).isFalse();
     }
 
-//    @Test
-//    void processResource() {
-//        File pmmlFile = getFileFromFileName("TestingSample.pmml");
-//        EfestoResource toProcess = new EfestoFileResource(pmmlFile);
-//        EfestoCompilationOutput retrieved = kieCompilerService.processResource(toProcess, memoryCompilerClassLoader);
-//        assertThat(retrieved).isNotNull().isInstanceOf(EfestoCallableOutputPMML.class);
-
-    // TODO after enabling drools models
-//        pmmlFile = getFileFromFileName("SimpleSetPredicateTree.pmml");
-//        toProcess = new EfestoFileResource(pmmlFile);
-//        retrieved = kieCompilerService.processResource(toProcess, memoryCompilerClassLoader);
-//        assertThat(retrieved).isNotNull();
-//        assertThat(retrieved instanceof EfestoRedirectOutputBar).isTrue();
-//        assertThat(((EfestoRedirectOutputBar) retrieved).getTargetEngine()).isEqualTo("foo");
-
-//        try {
-//            toProcess = () -> "EfestoRedirectOutput";
-//            kieCompilerService.processResource(toProcess, memoryCompilerClassLoader);
-//            fail("Expecting KieCompilerServiceException");
-//        } catch (Exception e) {
-//            assertThat(e instanceof KieCompilerServiceException).isTrue();
-//        }
-//    }
 }

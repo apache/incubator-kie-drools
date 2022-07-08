@@ -38,7 +38,7 @@ public class KiePMMLMiningModelTest {
 
     @BeforeAll
     public static void setup() {
-        BUILDER = KiePMMLMiningModel.builder(MINING_MODEL_NAME, Collections.emptyList(), MININGFUNCTION);
+        BUILDER = KiePMMLMiningModel.builder("FILENAME", MINING_MODEL_NAME, Collections.emptyList(), MININGFUNCTION);
         assertThat(BUILDER).isNotNull();
         KIE_PMML_MINING_MODEL = BUILDER.build();
         assertThat(KIE_PMML_MINING_MODEL).isNotNull();
@@ -47,7 +47,7 @@ public class KiePMMLMiningModelTest {
     @Test
     void evaluate() {
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
-            KIE_PMML_MINING_MODEL.evaluate("KB", Collections.EMPTY_MAP, new PMMLContextTest());
+            KIE_PMML_MINING_MODEL.evaluate(Collections.EMPTY_MAP, new PMMLContextTest());
         });
     }
 

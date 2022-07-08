@@ -42,8 +42,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
+import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
-import org.kie.pmml.models.mining.compiler.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.kie.pmml.models.mining.compiler.dto.SegmentCompilationDTO;
 import org.xml.sax.SAXException;
@@ -85,7 +85,8 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                         pmml,
                         MINING_MODEL,
-                        new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
+                        new HasClassLoaderMock(),
+                                                                       "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentsSourcesMap(
@@ -106,7 +107,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                         pmml,
                         MINING_MODEL,
-                        new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
+                        new HasClassLoaderMock(), "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final SegmentCompilationDTO segmentCompilationDTO =
@@ -116,37 +117,6 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                 nestedModels);
         commonEvaluateNestedModels(nestedModels);
         commonEvaluateMap(retrieved, segment);
-    }
-
-    @Test
-    void getSegmentSourcesMapCompiled() throws Exception {
-        final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
-        final List<KiePMMLModel> nestedModels = new ArrayList<>();
-
-        final String expectedNestedModelGeneratedClass = getExpectedNestedModelClass(segment);
-
-        final HasKnowledgeBuilderMock hasKnowledgeBuilderMock = new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER);
-        try {
-            hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedNestedModelGeneratedClass);
-            fail("Expecting class not found: " + expectedNestedModelGeneratedClass);
-        } catch (Exception e) {
-            assertThat(e).isInstanceOf(ClassNotFoundException.class);
-        }
-        final CommonCompilationDTO<MiningModel> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        MINING_MODEL,
-                        hasKnowledgeBuilderMock);
-        final MiningModelCompilationDTO compilationDTO =
-                MiningModelCompilationDTO.fromCompilationDTO(source);
-        final SegmentCompilationDTO segmentCompilationDTO =
-                SegmentCompilationDTO.fromGeneratedPackageNameAndFields(compilationDTO, segment,
-                        compilationDTO.getFields());
-        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMapCompiled(segmentCompilationDTO,
-                nestedModels);
-        commonEvaluateNestedModels(nestedModels);
-        commonEvaluateMap(retrieved, segment);
-        hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedNestedModelGeneratedClass);
     }
 
     @Test
@@ -160,7 +130,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                         pmml,
                         MINING_MODEL,
-                        new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
+                        new HasClassLoaderMock(), "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final SegmentCompilationDTO segmentCompilationDTO =

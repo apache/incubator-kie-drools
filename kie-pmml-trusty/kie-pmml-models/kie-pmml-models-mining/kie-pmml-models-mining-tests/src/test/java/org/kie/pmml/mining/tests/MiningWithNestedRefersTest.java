@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MiningWithNestedRefersTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "MiningWithNestedRefers.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "MiningWithNestedRefers";
     private static final String MODEL_NAME = "MiningWithNestedRefers";
     private static final String TARGET_FIELD = "class";
     private static final String S_LEN = "s_len";
@@ -74,7 +74,7 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -97,7 +97,7 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
         inputData.put(P_LEN, pLen);
         inputData.put(P_WID, pWid);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

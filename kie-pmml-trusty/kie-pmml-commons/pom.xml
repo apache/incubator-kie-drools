@@ -26,6 +26,10 @@
     </dependency>
     <!-- EXTERNAL -->
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-compilation-manager-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>

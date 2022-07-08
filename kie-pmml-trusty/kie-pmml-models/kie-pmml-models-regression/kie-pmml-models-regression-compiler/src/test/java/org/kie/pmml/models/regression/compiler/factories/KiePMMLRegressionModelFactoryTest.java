@@ -155,9 +155,10 @@ public class KiePMMLRegressionModelFactoryTest {
     void getKiePMMLRegressionModelClasses() throws IOException, IllegalAccessException, InstantiationException {
         final CompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        regressionModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock(),
+                                                                       "FILENAME");
         KiePMMLRegressionModel retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -174,9 +175,10 @@ public class KiePMMLRegressionModelFactoryTest {
     void getKiePMMLRegressionModelSourcesMap() throws IOException {
         final CommonCompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        regressionModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock(),
+                                                                       "FILENAME");
         Map<String, String> retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -189,9 +191,10 @@ public class KiePMMLRegressionModelFactoryTest {
     void getRegressionTablesMap() {
         final CompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        regressionModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock(),
+                                                                       "FILENAME");
         Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionModelFactory
                 .getRegressionTablesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         int expectedSize = regressionTables.size() + 1; // One for classification
@@ -208,13 +211,14 @@ public class KiePMMLRegressionModelFactoryTest {
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        regressionModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock(),
+                                                                       "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                        new ArrayList<>(),
-                        regressionModel.getNormalizationMethod());
+                                                                                                  new ArrayList<>(),
+                                                                                                  regressionModel.getNormalizationMethod());
         KiePMMLRegressionModelFactory.setStaticGetter(compilationDTO,
                 modelTemplate,
                 nestedTable);
@@ -233,6 +237,7 @@ public class KiePMMLRegressionModelFactoryTest {
         MethodDeclaration retrieved = modelTemplate.getMethodsByName(GET_MODEL).get(0);
         String text = getFileContent(TEST_01_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
+        assertThat(expected.toString()).isEqualTo(retrieved.toString());
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 

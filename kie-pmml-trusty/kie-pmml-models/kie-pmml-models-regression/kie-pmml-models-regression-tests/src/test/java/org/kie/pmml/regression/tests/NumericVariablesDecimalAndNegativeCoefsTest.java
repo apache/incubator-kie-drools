@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NumericVariablesDecimalAndNegativeCoefsTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "NumericVariablesDecimalAndNegativeCoefs.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "NumericVariablesDecimalAndNegativeCoefs";
     private static final String MODEL_NAME = "NumericVariablesDecimalAndNegativeCoefs";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -47,7 +47,7 @@ public class NumericVariablesDecimalAndNegativeCoefsTest extends AbstractPMMLTes
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -68,7 +68,7 @@ public class NumericVariablesDecimalAndNegativeCoefsTest extends AbstractPMMLTes
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result).isNotNull();
         assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);

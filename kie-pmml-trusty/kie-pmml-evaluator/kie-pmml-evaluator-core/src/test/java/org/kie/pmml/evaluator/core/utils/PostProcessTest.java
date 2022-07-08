@@ -74,7 +74,7 @@ public class PostProcessTest {
                 Collections.emptyList(),
                 new TargetField(Collections.emptyList(), null, "NEW_TARGET", null, null, null, null,
                         null)).build());
-        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("FILENAME", "TESTINGMODEL", Collections.emptyList(),
                 MINING_FUNCTION.REGRESSION)
                 .withKiePMMLTargets(kiePMMLTargets)
                 .build();
@@ -596,7 +596,7 @@ public class PostProcessTest {
     }
 
     private static KiePMMLTestingModel.Builder testingModelBuilder(KiePMMLOutputField outputField) {
-        return (KiePMMLTestingModel.Builder) KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+        return (KiePMMLTestingModel.Builder) KiePMMLTestingModel.builder("FILENAME", "TESTINGMODEL", Collections.emptyList(),
                                                                          MINING_FUNCTION.REGRESSION)
                 .withKiePMMLOutputFields(Collections.singletonList(outputField));
     }

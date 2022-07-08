@@ -55,30 +55,15 @@ public class ClusteringModelImplementationProviderTest {
     }
 
     @Test
-    void getKiePMMLModel() throws Exception {
-        PMML pmml = TestUtils.loadFromFile(SOURCE_FILE);
-        ClusteringModel model = getModel(pmml);
-
-        final CommonCompilationDTO<ClusteringModel> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        model,
-                        new HasClassLoaderMock());
-        KiePMMLClusteringModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
-
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(Serializable.class);
-    }
-
-    @Test
     void getKiePMMLModelWithSources() throws Exception {
         PMML pmml = TestUtils.loadFromFile(SOURCE_FILE);
         ClusteringModel model = getModel(pmml);
         final CommonCompilationDTO<ClusteringModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        model,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       model,
+                                                                       new HasClassLoaderMock(),
+                                                                       SOURCE_FILE);
         KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
 
         assertThat(retrieved).isNotNull();

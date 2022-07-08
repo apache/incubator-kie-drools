@@ -48,19 +48,13 @@ public class KiePMMLDroolsModelTest {
         assertThat(kiePMMLDroolsModel.getKModulePackageName()).isEqualTo(getSanitizedPackageName(MODEL_NAME));
     }
 
-    @Test
-    void evaluateNoKieBase() {
-        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
-            kiePMMLDroolsModel.evaluate("NOT_KIE_BASE", new HashMap<>(), null);
-        });
-    }
 
     private final class KiePMMLDroolsModelFake extends KiePMMLDroolsModel {
 
         protected KiePMMLDroolsModelFake(String modelName,
                                          String kModulePackageName,
                                          List<KiePMMLExtension> extensions) {
-            super(modelName, extensions);
+            super("FILENAME", modelName, extensions);
             this.kModulePackageName = kModulePackageName;
         }
 

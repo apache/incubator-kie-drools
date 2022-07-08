@@ -56,7 +56,7 @@ class KieCompilerServiceDrlTest {
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, "BasePath");
         // this is really only testing the constant field "drl" so it is always true...
         assertThat(kieCompilerService.canManageResource(toProcess)).isTrue();
-        EfestoResource<String> toProcess2 = () -> "EfestoRedirectOutput";
+        EfestoResource<String> toProcess2 = () -> "EfestoResource";
         assertThat(kieCompilerService.canManageResource(toProcess2)).isFalse();
     }
 

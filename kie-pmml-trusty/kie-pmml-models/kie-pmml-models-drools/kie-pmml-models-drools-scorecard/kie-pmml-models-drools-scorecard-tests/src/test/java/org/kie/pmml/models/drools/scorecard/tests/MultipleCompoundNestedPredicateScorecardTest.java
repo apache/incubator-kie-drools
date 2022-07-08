@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultipleCompoundNestedPredicateScorecardTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "MultipleScorecard.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "MultipleScorecard";
     private static final String MODEL_NAME = "CompoundNestedPredicateScorecard";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
@@ -56,7 +56,7 @@ public class MultipleCompoundNestedPredicateScorecardTest extends AbstractPMMLTe
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -81,7 +81,7 @@ public class MultipleCompoundNestedPredicateScorecardTest extends AbstractPMMLTe
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
         assertThat(pmml4Result).isNotNull();
 
         //  Currently unsupported for drools models

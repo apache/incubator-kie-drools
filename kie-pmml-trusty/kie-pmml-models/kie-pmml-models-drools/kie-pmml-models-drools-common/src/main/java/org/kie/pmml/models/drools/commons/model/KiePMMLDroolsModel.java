@@ -116,7 +116,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         if (!runtimeManager.isPresent()) {
             throw new KieRuntimeServiceException("Cannot find RuntimeManager");
         }
-        Collection<EfestoOutput<?>> output = runtimeManager.get().evaluateInput((KieMemoryCompiler.MemoryCompilerClassLoader) context.getMemoryClassLoader(), input);
+        Collection<EfestoOutput> output = runtimeManager.get().evaluateInput((KieMemoryCompiler.MemoryCompilerClassLoader) context.getMemoryClassLoader(), input);
         // TODO manage for different kind of retrieved output
         if (output.isEmpty()) {
             throw new KiePMMLException("Failed to retrieve value for " + this.getName());
@@ -177,7 +177,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
 
         };
 
-        Optional<KieRuntimeService<S, U, T, E>> targetService = getKieRuntimeService(redirectInput, true,
+        Optional<KieRuntimeService> targetService = getKieRuntimeService(redirectInput, true,
                                                                          memoryCompilerClassLoader);
         if (!targetService.isPresent()) {
             logger.warn("Cannot find KieRuntimeService for {}", toEvaluate.getFRI());

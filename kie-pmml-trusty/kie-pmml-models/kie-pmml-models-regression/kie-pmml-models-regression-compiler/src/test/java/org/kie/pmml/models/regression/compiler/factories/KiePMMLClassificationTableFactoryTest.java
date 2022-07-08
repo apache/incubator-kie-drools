@@ -110,13 +110,14 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        regressionModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock(),
+                                                                       "FILENAME");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                        regressionModel.getRegressionTables(),
-                        regressionModel.getNormalizationMethod());
+                                                                                                  regressionModel.getRegressionTables(),
+                                                                                                  regressionModel.getNormalizationMethod());
         KiePMMLClassificationTable retrieved =
                 KiePMMLClassificationTableFactory.getClassificationTable(compilationDTO);
         assertThat(retrieved).isNotNull();
@@ -163,13 +164,14 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        regressionModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock(),
+                                                                       "FILENAME");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                        regressionModel.getRegressionTables(),
-                        regressionModel.getNormalizationMethod());
+                                                                                                  regressionModel.getRegressionTables(),
+                                                                                                  regressionModel.getNormalizationMethod());
         Map<String, KiePMMLTableSourceCategory> retrieved =
                 KiePMMLClassificationTableFactory.getClassificationTableBuilders(compilationDTO);
         assertThat(retrieved).isNotNull();
@@ -213,13 +215,14 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        regressionModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock(),
+                                                                       "FILENAME");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                        regressionModel.getRegressionTables(),
-                        regressionModel.getNormalizationMethod());
+                                                                                                  regressionModel.getRegressionTables(),
+                                                                                                  regressionModel.getNormalizationMethod());
         final LinkedHashMap<String,
                 KiePMMLTableSourceCategory> regressionTablesMap = new LinkedHashMap<>();
 
@@ -298,13 +301,14 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
         pmml.addModels(regressionModel);
         final CommonCompilationDTO<RegressionModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        regressionModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new HasClassLoaderMock(),
+                                                                       "FILENAME");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
-                        regressionModel.getRegressionTables(),
-                        regressionModel.getNormalizationMethod());
+                                                                                                  regressionModel.getRegressionTables(),
+                                                                                                  regressionModel.getNormalizationMethod());
 
         final LinkedHashMap<String,
                 KiePMMLTableSourceCategory> regressionTablesMap = new LinkedHashMap<>();
