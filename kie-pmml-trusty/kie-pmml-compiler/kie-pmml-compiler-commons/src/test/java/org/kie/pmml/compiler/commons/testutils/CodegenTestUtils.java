@@ -169,21 +169,19 @@ public class CodegenTestUtils {
         Optional<ExplicitConstructorInvocationStmt> retrieved =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
         final List<AssertionError> errors = new ArrayList<>();
-        retrieved.ifPresent(explicitConstructorInvocationStmt -> superInvocationExpressionsMap.forEach(new BiConsumer<Integer, Expression>() {
-            @Override
-            public void accept(Integer integer, Expression expression) {
-                try {
-                    assertThat(explicitConstructorInvocationStmt.getArgument(integer)).isEqualTo(expression);
-                } catch (AssertionError e) {
-                    if (e.getMessage() != null && !e.getMessage().isEmpty()) {
-                        LOGGER.error(e.getMessage());
-                    } else {
-                        e.printStackTrace();
-                    }
-                    errors.add(e);
-                }
-            }
-        }));
+        retrieved.ifPresent(explicitConstructorInvocationStmt -> superInvocationExpressionsMap.forEach((integer,
+                                                                                                        expression) -> {
+                                                                                                            try {
+                                                                                                                assertThat(explicitConstructorInvocationStmt.getArgument(integer)).isEqualTo(expression);
+                                                                                                            } catch (AssertionError e) {
+                                                                                                                if (e.getMessage() != null && !e.getMessage().isEmpty()) {
+                                                                                                                    LOGGER.error(e.getMessage());
+                                                                                                                } else {
+                                                                                                                    e.printStackTrace();
+                                                                                                                }
+                                                                                                                errors.add(e);
+                                                                                                            }
+                                                                                                        }));
         return errors.isEmpty();
     }
 

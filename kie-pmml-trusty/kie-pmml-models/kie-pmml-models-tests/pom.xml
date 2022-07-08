@@ -22,7 +22,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-utils</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

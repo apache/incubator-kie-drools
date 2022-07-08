@@ -19,5 +19,59 @@
     <module>kie-pmml-models-drools-scorecard</module>
   </modules>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-compilation-common</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-map-input-runtime</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>de.skuzzle.enforcer</groupId>
+            <artifactId>restrict-imports-enforcer-rule</artifactId>
+            <version>2.0.0</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>check-drools-imports</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <RestrictImports>
+                  <!-- Define an explanatory reason why these imports are prohibited -->
+                  <reason>Do not leak Drools internals/helpers inside kie-pmml-trusty</reason>
+                  <bannedImports>
+                    <bannedImport>org.drools.compiler.builder.impl.KnowledgeBuilderImpl</bannedImport>
+                    <bannedImport>org.kie.internal.utils.KieHelper</bannedImport>
+                  </bannedImports>
+                </RestrictImports>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 
 </project>

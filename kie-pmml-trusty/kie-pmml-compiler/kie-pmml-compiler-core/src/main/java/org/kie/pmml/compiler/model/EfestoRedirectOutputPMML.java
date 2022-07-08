@@ -15,34 +15,12 @@
  */
 package org.kie.pmml.compiler.model;
 
-import java.util.List;
-
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.compilationmanager.api.model.AbstractEfestoCallableCompilationOutput;
-import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.kie.efesto.compilationmanager.api.model.EfestoRedirectOutput;
 
-public class EfestoRedirectOutputPMML extends AbstractEfestoCallableCompilationOutput implements EfestoResource<String> {
-
-    private final String targetEngine;
-
-    /**
-     * This is the <b>payload</b> to forward to the target compilation-engine
-     */
-    private final String content;
+public class EfestoRedirectOutputPMML extends EfestoRedirectOutput<String> {
 
     public EfestoRedirectOutputPMML(FRI fri, String modelFile) {
-        super(fri, (List<String>) null);
-        this.targetEngine = "drl";
-        this.content = modelFile;
+        super(fri, "drl", modelFile);
     }
-
-    public String getTargetEngine() {
-        return targetEngine;
-    }
-
-    @Override
-    public String getContent() {
-        return content;
-    }
-
 }

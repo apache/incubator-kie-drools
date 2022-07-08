@@ -54,7 +54,8 @@ import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLScorecardM
 
 public class KiePMMLScorecardModelFactoryTest {
 
-    private static final String BASIC_COMPLEX_PARTIAL_SCORE_SOURCE = "BasicComplexPartialScore.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "BasicComplexPartialScore";
+    private static final String BASIC_COMPLEX_PARTIAL_SCORE_SOURCE = FILE_NAME_NO_SUFFIX + ".pmml";
     private static final String PACKAGE_NAME = "packagename";
     private static final String CONTAINER_CLASS_NAME = KiePMMLModelUtils.getGeneratedClassName("Scorecard");
     private static final CompilationUnit scorecardCloneCU =
@@ -125,16 +126,18 @@ public class KiePMMLScorecardModelFactoryTest {
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
                         .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         Statement expected = JavaParserUtils
-                .parseStatement(String.format("super(\"%1$s\", Collections.emptyList()" +
-                        ", new %2$s" +
-                        "(), %3$s, %4$s, %5$s, %6$s);\n",
-                        getSanitizedClassName(basicComplexPartialScore.getModelName()),
-                        fullCharacteristicsClassName,
-                        basicComplexPartialScore.getInitialScore(),
-                        basicComplexPartialScore.isUseReasonCodes(),
-                        REASONCODE_ALGORITHM.class.getName() + "." + REASONCODE_ALGORITHM.byName(basicComplexPartialScore.getReasonCodeAlgorithm().value()),
-                        basicComplexPartialScore.getBaselineScore()
+                .parseStatement(String.format("super(\"%1$s\", \"%2$s\", Collections.emptyList()" +
+                                                      ", new %3$s" +
+                                                      "(), %4$s, %5$s, %6$s, %7$s);\n",
+                                              FILE_NAME_NO_SUFFIX,
+                                              getSanitizedClassName(basicComplexPartialScore.getModelName()),
+                                              fullCharacteristicsClassName,
+                                              basicComplexPartialScore.getInitialScore(),
+                                              basicComplexPartialScore.isUseReasonCodes(),
+                                              REASONCODE_ALGORITHM.class.getName() + "." + REASONCODE_ALGORITHM.byName(basicComplexPartialScore.getReasonCodeAlgorithm().value()),
+                                              basicComplexPartialScore.getBaselineScore()
                 ));
+        assertThat(expected.toString()).isEqualTo(retrieved.toString());
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 }

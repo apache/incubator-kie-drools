@@ -112,8 +112,9 @@ public class KiePMMLTreeModelFactoryTest {
                 DroolsCompilationDTO.fromCompilationDTO(compilationDTO, new HashMap<>());
         KiePMMLTreeModelFactory.setConstructor(droolsCompilationDTO, modelTemplate);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
-        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", treeModel.getModelName())));
-        superInvocationExpressionsMap.put(2, new NameExpr(String.format("\"%s\"", treeModel.getAlgorithmName())));
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", "FILENAME")));
+        superInvocationExpressionsMap.put(1, new NameExpr(String.format("\"%s\"", treeModel.getModelName())));
+        superInvocationExpressionsMap.put(3, new NameExpr(String.format("\"%s\"", treeModel.getAlgorithmName())));
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(treeModel.getMiningFunction().value());
         PMML_MODEL pmmlModel = PMML_MODEL.byName(treeModel.getClass().getSimpleName());
         Map<String, Expression> assignExpressionMap = new HashMap<>();

@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LogisticRegressionIrisDataTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME_NO_SUFFIX = "LogisticRegressionIrisData.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "LogisticRegressionIrisData";
 
     private static final String MODEL_NAME = "LogisticRegressionIrisData";
     private static final String TARGET_FIELD = "Species";

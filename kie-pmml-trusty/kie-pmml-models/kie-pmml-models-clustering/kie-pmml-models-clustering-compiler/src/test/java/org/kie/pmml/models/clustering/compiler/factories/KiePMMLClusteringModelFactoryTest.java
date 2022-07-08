@@ -137,7 +137,7 @@ public class KiePMMLClusteringModelFactoryTest {
                                                                        pmml,
                                                                        clusteringModel,
                                                                        new HasClassLoaderMock(),
-                                                                       "FILENAME");
+                                                                       "fileName");
         KiePMMLClusteringModel retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -163,7 +163,7 @@ public class KiePMMLClusteringModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        clusteringModel,
-                                                                       new HasClassLoaderMock(), "FILENAME");
+                                                                       new HasClassLoaderMock(), "fileName");
         Map<String, String> retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModelSourcesMap(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -242,7 +242,7 @@ public class KiePMMLClusteringModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        clusteringModel,
-                                                                       new HasClassLoaderMock(), "FILENAME");
+                                                                       new HasClassLoaderMock(), "fileName"); // fileName hardcoded inside TEST_01_SOURCE
         String expectedModelClass =
                 KiePMMLClusteringModel.ModelClass.class.getCanonicalName() + "." + clusteringModel.getModelClass().name();
         ComparisonMeasure comparisonMeasure = clusteringModel.getComparisonMeasure();

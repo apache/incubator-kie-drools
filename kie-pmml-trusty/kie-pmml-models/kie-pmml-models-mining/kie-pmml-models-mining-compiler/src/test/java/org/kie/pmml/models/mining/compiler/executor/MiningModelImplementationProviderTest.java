@@ -114,12 +114,6 @@ public class MiningModelImplementationProviderTest {
         assertThat(retrieved.getNestedModels()).isNotEmpty();
         final Map<String, String> sourcesMap = new HashMap<>(retrieved.getSourcesMap());
         assertThat(sourcesMap).isNotEmpty();
-        try {
-            KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
-            fail("Expecting compilation error without nested models sources");
-        } catch (Exception e) {
-            // Expected
-        }
         retrieved.getNestedModels().forEach(nestedModel -> sourcesMap.putAll(((HasSourcesMap) nestedModel).getSourcesMap()));
         try {
             KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());

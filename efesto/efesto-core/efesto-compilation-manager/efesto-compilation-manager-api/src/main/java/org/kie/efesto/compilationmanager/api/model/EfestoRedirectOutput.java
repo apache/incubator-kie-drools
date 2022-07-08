@@ -20,24 +20,33 @@ import org.kie.efesto.common.api.model.FRI;
 import java.util.List;
 
 /**
- * A <code>CompilationOutput</code>.
- *
- * It will be translated to a <code>GeneratedExecutableResource</code>,
+ * A  <code>CompilationOutput</code> from one engine that will
+ * be an <code>EfestoResource</code> for another one.
+ * This will be translated to a <code>GeneratedRedirectResource</code>,
  * that has a specif json-format and semantic.
  */
-public interface EfestoCallableOutput extends EfestoCompilationOutput {
+public abstract class EfestoRedirectOutput<T> extends AbstractEfestoCallableCompilationOutput implements EfestoResource<T> {
+
+    private final String targetEngine;
 
     /**
-     * Returns the <b>full resource identifier</b> to be invoked for execution
-     *
-     * @return
+     * This is the <b>payload</b> to forward to the target compilation-engine
      */
-    FRI getFri();
+    private final T content;
 
-    /**
-     * Returns the <b>full class names</b> to be instantiated for execution
-     *
-     * @return
-     */
-    List<String> getFullClassNames();
+    protected EfestoRedirectOutput(FRI fri, String targetEngine, T content) {
+        super(fri, (List<String>) null);
+        this.targetEngine = targetEngine;
+        this.content = content;
+    }
+
+    public String getTargetEngine() {
+        return targetEngine;
+    }
+
+    @Override
+    public T getContent() {
+        return content;
+    }
+
 }
