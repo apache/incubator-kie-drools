@@ -89,7 +89,7 @@ public class App implements Callable<Integer> {
             }
         } else {
             if (!inputFile.exists()) {
-                throw new RuntimeException(inputFile + " does not exists.");
+                throw new IllegalArgumentException(inputFile + " does not exists.");
             }
             inputStream = new FileInputStream(inputFile);
         }
