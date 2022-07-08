@@ -15,15 +15,13 @@
  */
 package org.jbpm.process.core.context.exception;
 
-public class RootCauseExceptionPolicy extends AbstractHierarchyExceptionPolicy {
-
-    @Override
-    protected boolean verifyRoot(String errorCode, Throwable exception) {
-        return false;
-    }
-
+public class MessageContentExceptionPolicy extends AbstractHierarchyExceptionPolicy {
     @Override
     protected boolean verify(String errorCode, Throwable exception) {
-        return errorCode.equals(exception.getClass().getName());
+        String msg = exception.getMessage();
+        if (msg != null) {
+            return msg.toLowerCase().contains(errorCode.toLowerCase()) || msg.matches(errorCode);
+        }
+        return false;
     }
 }

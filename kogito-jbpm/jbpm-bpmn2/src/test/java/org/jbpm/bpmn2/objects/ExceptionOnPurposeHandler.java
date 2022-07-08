@@ -23,7 +23,7 @@ public class ExceptionOnPurposeHandler implements KogitoWorkItemHandler {
 
     @Override
     public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-        throw new RuntimeException("Thrown on purpose");
+        throw new RuntimeException("Unknown error, status code 400");
     }
 
     @Override

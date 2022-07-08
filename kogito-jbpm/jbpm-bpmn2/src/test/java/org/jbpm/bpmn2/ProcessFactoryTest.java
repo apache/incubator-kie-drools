@@ -29,6 +29,8 @@ import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -368,10 +370,10 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
     }
 
-    @Test
-    public void testBoundaryErrorEvent() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = { "java.lang.RuntimeException", "Unknown error", "Status code 400", "(.*)code 4[0-9]{2}" })
+    public void testBoundaryErrorEvent(String errorCode) throws Exception {
         final String boundaryErrorEvent = "BoundaryErrorEvent";
-        final String errorCode = "java.lang.RuntimeException";
         final String processId = "myProcess";
         final RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess(processId);
         final String startNode = "Start";
