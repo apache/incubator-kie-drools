@@ -50,7 +50,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.drools.util.io.ClassPathResource;
+import org.drools.io.ClassPathResource;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;

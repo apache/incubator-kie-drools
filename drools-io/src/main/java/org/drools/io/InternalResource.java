@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.util.io;
+package org.drools.io;
 
 import java.io.IOException;
 import java.net.URL;

@@ -86,7 +86,7 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.util.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.LineMappings;

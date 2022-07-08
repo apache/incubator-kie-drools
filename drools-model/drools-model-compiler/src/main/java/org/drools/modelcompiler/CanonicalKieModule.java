@@ -69,7 +69,7 @@ import org.drools.model.NamedModelItem;
 import org.drools.util.IoUtils;
 import org.drools.util.PortablePath;
 import org.drools.util.StringUtils;
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.drools.wiring.api.ResourceProvider;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;

@@ -25,12 +25,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-memory-compiler</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-util</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 

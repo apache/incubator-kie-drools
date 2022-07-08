@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.KieScannerFactoryService;

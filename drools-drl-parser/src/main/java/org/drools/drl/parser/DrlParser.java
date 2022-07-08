@@ -16,7 +16,7 @@
 
 package org.drools.drl.parser;
 
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.lang.DRLLexer;
 import org.drools.drl.parser.lang.DRLParser;
