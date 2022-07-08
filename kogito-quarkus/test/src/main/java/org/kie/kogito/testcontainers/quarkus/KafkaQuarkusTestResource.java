@@ -35,7 +35,6 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * Kafka quarkus resource that works within the test lifecycle.
- *
  */
 public class KafkaQuarkusTestResource extends ConditionalQuarkusTestResource<KogitoKafkaContainer> {
 
@@ -50,7 +49,7 @@ public class KafkaQuarkusTestResource extends ConditionalQuarkusTestResource<Kog
 
     @Override
     protected Map<String, String> getProperties() {
-        return singletonMap(KOGITO_KAFKA_PROPERTY, "localhost:" + getTestResource().getMappedPort());
+        return singletonMap(KOGITO_KAFKA_PROPERTY, getServerUrl());
     }
 
     @Override

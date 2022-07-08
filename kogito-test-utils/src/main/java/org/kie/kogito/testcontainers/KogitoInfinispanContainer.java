@@ -15,11 +15,11 @@
  */
 package org.kie.kogito.testcontainers;
 
-import java.time.Duration;
-
 import org.kie.kogito.test.resources.TestResource;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.wait.strategy.Wait;
+
+import static org.kie.kogito.testcontainers.Constants.CONTAINER_START_TIMEOUT;
 
 /**
  * This container wraps Infinispan container
@@ -33,7 +33,7 @@ public class KogitoInfinispanContainer extends KogitoGenericContainer<KogitoInfi
     public KogitoInfinispanContainer() {
         super(NAME);
         addExposedPort(PORT);
-        waitingFor(Wait.forHttp("/").withStartupTimeout(Duration.ofMinutes(5)));
+        waitingFor(Wait.forHttp("/").withStartupTimeout(CONTAINER_START_TIMEOUT));
         withClasspathResourceMapping("testcontainers/infinispan/infinispan-local.xml", CONF_PATH + "infinispan-local.xml", BindMode.READ_ONLY);
         withCommand("-c infinispan-local.xml");
         withEnv("USER", "admin");

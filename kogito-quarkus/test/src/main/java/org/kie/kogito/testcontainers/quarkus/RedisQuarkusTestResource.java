@@ -32,7 +32,7 @@ public class RedisQuarkusTestResource extends ConditionalQuarkusTestResource {
 
     @Override
     protected Map<String, String> getProperties() {
-        return singletonMap(KOGITO_REDIS_URL, "http://localhost:" + getTestResource().getMappedPort());
+        return singletonMap(KOGITO_REDIS_URL, "http://" + getServerUrl());
     }
 
     public static class Conditional extends RedisQuarkusTestResource {

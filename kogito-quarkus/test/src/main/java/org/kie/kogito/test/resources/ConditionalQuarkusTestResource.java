@@ -25,21 +25,24 @@ import javax.annotation.Resource;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.Container;
 
 import com.google.common.base.Strings;
 
+import io.quarkus.test.common.DevServicesContext;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 /**
  * Quarkus resource to be run if and only if it was enabled.
  */
-public abstract class ConditionalQuarkusTestResource<T extends TestResource> implements QuarkusTestResourceLifecycleManager {
+public abstract class ConditionalQuarkusTestResource<T extends TestResource> implements QuarkusTestResourceLifecycleManager, DevServicesContext.ContextAware {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ConditionalQuarkusTestResource.class);
 
     private final T testResource;
     private final ConditionHolder condition;
     private boolean conditionalEnabled = false;
+    private Optional<String> containerNetworkId = Optional.empty();
 
     public ConditionalQuarkusTestResource(T testResource) {
         this(testResource, new ConditionHolder(testResource.getResourceName()));
@@ -61,6 +64,9 @@ public abstract class ConditionalQuarkusTestResource<T extends TestResource> imp
     @Override
     public Map<String, String> start() {
         if (condition.isEnabled()) {
+            if (containerNetworkId.isPresent()) {
+                ((Container) testResource).withNetworkMode(containerNetworkId.get());
+            }
             testResource.start();
             return getProperties();
         }
@@ -72,6 +78,23 @@ public abstract class ConditionalQuarkusTestResource<T extends TestResource> imp
     public void stop() {
         if (condition.isEnabled()) {
             testResource.stop();
+        }
+    }
+
+    @Override
+    public void setIntegrationTestContext(DevServicesContext context) {
+        containerNetworkId = context.containerNetworkId();
+    }
+
+    protected String getServerUrl() {
+        Container container = (Container) getTestResource();
+        Integer port = container.getExposedPorts().get(0);
+        if (containerNetworkId.isPresent()) {
+            return container.getCurrentContainerInfo().getConfig().getHostName()
+                    + ":"
+                    + port;
+        } else {
+            return container.getHost() + ":" + getTestResource().getMappedPort();
         }
     }
 

@@ -23,7 +23,6 @@ import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 
 /**
  * Infinispan quarkus resource that works within the test lifecycle.
- *
  */
 public class InfinispanQuarkusTestResource extends ConditionalQuarkusTestResource<KogitoInfinispanContainer> {
 
@@ -36,7 +35,7 @@ public class InfinispanQuarkusTestResource extends ConditionalQuarkusTestResourc
     @Override
     protected Map<String, String> getProperties() {
         Map<String, String> properties = new HashMap<>();
-        properties.put(KOGITO_INFINISPAN_PROPERTY, "localhost:" + getTestResource().getMappedPort());
+        properties.put(KOGITO_INFINISPAN_PROPERTY, getServerUrl());
         properties.put("quarkus.infinispan-client.use-auth", "false");
         return properties;
     }
