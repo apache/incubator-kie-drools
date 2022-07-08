@@ -31,7 +31,7 @@ import org.drools.codegen.common.context.QuarkusDroolsModelBuildContext;
 import org.drools.codegen.common.context.SpringBootDroolsModelBuildContext;
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.drl.extensions.DecisionTableProvider;
-import org.drools.util.io.FileSystemResource;
+import org.drools.io.FileSystemResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

@@ -38,7 +38,7 @@ import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.util.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.util.io.ByteArrayResource;
+import org.drools.io.ByteArrayResource;
 import org.drools.util.StringUtils;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.ChangeType;

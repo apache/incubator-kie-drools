@@ -16,7 +16,7 @@
 
 package org.drools.core.util;
 
-import org.drools.util.io.ReaderInputStream;
+import org.drools.io.ReaderInputStream;
 import org.drools.util.IoUtils;
 import org.junit.Test;
 

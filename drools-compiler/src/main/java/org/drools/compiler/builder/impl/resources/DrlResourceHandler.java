@@ -20,7 +20,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.ParserError;
-import org.drools.util.io.DescrResource;
+import org.drools.io.DescrResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
