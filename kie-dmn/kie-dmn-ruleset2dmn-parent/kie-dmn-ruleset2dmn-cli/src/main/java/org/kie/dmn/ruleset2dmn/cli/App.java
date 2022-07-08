@@ -67,7 +67,7 @@ public class App implements Callable<Integer> {
             try {
                 Files.write(f.toPath(), t.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new UncheckedIOException(e);
             }
         }
     }
