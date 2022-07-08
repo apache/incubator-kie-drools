@@ -32,8 +32,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.io.ClassPathResource;
 import org.drools.util.PortablePath;
-import org.drools.util.io.ClassPathResource;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.compiler.canonical.ProcessMetaData;

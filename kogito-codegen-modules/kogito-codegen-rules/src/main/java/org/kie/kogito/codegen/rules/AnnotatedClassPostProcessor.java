@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.util.io.ByteArrayResource;
+import org.drools.io.ByteArrayResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 

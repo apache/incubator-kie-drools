@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.util.io.ClassPathResource;
+import org.drools.io.ClassPathResource;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

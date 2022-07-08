@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.util.io.ClassPathResource;
+import org.drools.io.ClassPathResource;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessVariableChangedEvent;

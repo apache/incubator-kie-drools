@@ -36,7 +36,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.util.io.ReaderResource;
+import org.drools.io.ReaderResource;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;

@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.util.io.FileSystemResource;
+import org.drools.io.FileSystemResource;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.pmml.PMML4Result;

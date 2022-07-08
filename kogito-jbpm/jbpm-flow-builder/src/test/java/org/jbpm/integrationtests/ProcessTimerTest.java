@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.util.io.ReaderResource;
+import org.drools.io.ReaderResource;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;

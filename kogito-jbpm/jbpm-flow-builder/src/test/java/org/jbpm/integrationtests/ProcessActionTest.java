@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.util.io.ReaderResource;
+import org.drools.io.ReaderResource;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.test.util.AbstractBaseTest;

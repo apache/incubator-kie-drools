@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.io.ByteArrayResource;
+import org.drools.io.ReaderResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.drools.util.io.ByteArrayResource;
-import org.drools.util.io.ReaderResource;
 import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Person;

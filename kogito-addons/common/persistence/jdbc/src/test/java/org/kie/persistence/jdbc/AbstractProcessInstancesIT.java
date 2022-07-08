@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
-import org.drools.util.io.ClassPathResource;
+import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;

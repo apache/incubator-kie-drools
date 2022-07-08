@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.bson.Document;
-import org.drools.util.io.ClassPathResource;
+import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.ProcessInstance;

@@ -20,7 +20,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.util.io.ReaderResource;
+import org.drools.io.ReaderResource;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;

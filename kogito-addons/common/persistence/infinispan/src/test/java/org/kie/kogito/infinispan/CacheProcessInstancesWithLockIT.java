@@ -18,7 +18,7 @@ package org.kie.kogito.infinispan;
 import java.util.Collections;
 import java.util.Date;
 
-import org.drools.util.io.ClassPathResource;
+import org.drools.io.ClassPathResource;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;

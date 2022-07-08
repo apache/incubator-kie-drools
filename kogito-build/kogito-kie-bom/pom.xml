@@ -80,6 +80,11 @@
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
+                <artifactId>drools-io</artifactId>
+                <version>${version.org.kie}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
                 <artifactId>drools-core</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>

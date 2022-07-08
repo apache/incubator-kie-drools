@@ -18,7 +18,7 @@ package org.jbpm.integrationtests;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.drools.util.io.ReaderResource;
+import org.drools.io.ReaderResource;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
