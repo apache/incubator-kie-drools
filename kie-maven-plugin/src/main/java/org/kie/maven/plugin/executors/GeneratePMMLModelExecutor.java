@@ -37,7 +37,7 @@ import org.drools.core.impl.RuleBase;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.model.codegen.execmodel.GeneratedFile;
-import org.drools.util.io.FileSystemResource;
+import org.drools.io.FileSystemResource;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.maven.plugin.KieMavenPluginContext;

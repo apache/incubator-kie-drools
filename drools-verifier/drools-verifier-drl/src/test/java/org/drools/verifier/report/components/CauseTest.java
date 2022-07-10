@@ -19,7 +19,7 @@ package org.drools.verifier.report.components;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.util.io.ClassPathResource;
+import org.drools.io.ClassPathResource;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;

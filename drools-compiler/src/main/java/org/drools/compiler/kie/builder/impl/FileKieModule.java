@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.drools.util.IoUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;

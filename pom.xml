@@ -153,6 +153,7 @@
     <module>drools-wiring</module>
     <module>kie-test-util</module>
     <module>drools-util</module>
+    <module>drools-io</module>
     <module>drools-core</module>
     <module>drools-commands</module>
     <module>drools-kiesession</module>

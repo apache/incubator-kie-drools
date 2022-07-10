@@ -37,7 +37,7 @@ import org.drools.model.codegen.execmodel.generator.ModelGenerator;
 import org.drools.mvel.DrlDumper;
 import org.drools.mvel.parser.MvelParser;
 import org.drools.mvel.parser.ParseStart;
-import org.drools.util.io.InputStreamResource;
+import org.drools.io.InputStreamResource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;

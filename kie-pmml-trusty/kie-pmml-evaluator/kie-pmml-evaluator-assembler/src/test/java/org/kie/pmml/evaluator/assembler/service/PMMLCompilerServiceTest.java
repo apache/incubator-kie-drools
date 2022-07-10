@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.drools.util.io.FileSystemResource;
+import org.drools.io.FileSystemResource;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.pmml.api.enums.MINING_FUNCTION;

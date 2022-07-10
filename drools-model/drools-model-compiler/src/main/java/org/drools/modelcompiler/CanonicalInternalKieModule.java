@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 

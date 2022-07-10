@@ -34,7 +34,7 @@ import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.wiring.api.ResourceProvider;
 import org.kie.api.builder.ReleaseId;

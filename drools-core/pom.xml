@@ -47,7 +47,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-util</artifactId>
+      <artifactId>drools-io</artifactId>
     </dependency>
 
     <dependency>

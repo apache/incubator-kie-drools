@@ -21,7 +21,7 @@ import java.util.Collections;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.modelcompiler.constraints.ConstraintEvaluationException;
-import org.drools.util.io.ByteArrayResource;
+import org.drools.io.ByteArrayResource;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.model.functions.PredicateInformation;
