@@ -197,7 +197,7 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
         /*
          * Strip all comments out of the code.
          */
-        StringBuffer buffer = new StringBuffer(text);
+        StringBuilder buffer = new StringBuilder(text);
         int commentIndex = buffer.indexOf("//");
 
         while (commentIndex != -1) {

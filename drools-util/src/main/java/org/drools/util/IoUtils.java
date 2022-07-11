@@ -80,7 +80,7 @@ public class IoUtils {
     }
 
     public static String readFileAsString(File file) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF8_CHARSET));

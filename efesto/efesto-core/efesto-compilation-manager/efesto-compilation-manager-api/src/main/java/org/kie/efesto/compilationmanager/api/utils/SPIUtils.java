@@ -16,7 +16,6 @@
 package org.kie.efesto.compilationmanager.api.utils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;

@@ -71,7 +71,7 @@ public class CorrelationKeyXmlAdapter extends XmlAdapter<String, CorrelationKey>
         if( key == null ) {
             return "";
         }
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         if( ! key.getProperties().isEmpty() ) {
             Iterator<CorrelationProperty<?>> iter = key.getProperties().iterator();
             CorrelationProperty<?> prop = iter.next();

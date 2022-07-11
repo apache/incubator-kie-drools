@@ -1,6 +1,7 @@
 package org.drools.model.codegen.execmodel.drlx;
 
-import java.util.Stack;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
@@ -57,23 +58,23 @@ public class DrlxVisitor implements DrlVoidVisitor<Void> {
     }
 
     RuleDescrBuilder ruleDescrBuilder;
-    Stack<CEDescrBuilder<?, ?>> lhsStack = new Stack<>();
+    LinkedList<CEDescrBuilder<?, ?>> lhsLinkedList = new LinkedList<>();
 
     public void visit(RuleDeclaration decl, Void v) {
         this.ruleDescrBuilder = builder.newRule();
         ruleDescrBuilder.name(decl.getNameAsString());
 
         CEDescrBuilder<?, ?> lhs = ruleDescrBuilder.lhs();
-        lhsStack.push(lhs);
+        lhsLinkedList.push(lhs);
         for (RuleItem item : decl.getRuleBody().getItems()) {
             item.accept(this, v);
         }
-        lhsStack.pop();
+        lhsLinkedList.pop();
         ruleDescrBuilder = null;
     }
 
     public void visit(RulePattern p, Void v) {
-        CEDescrBuilder<?,?> lhs = lhsStack.peek();
+        CEDescrBuilder<?,?> lhs = lhsLinkedList.peek();
         PatternDescrBuilder<? extends CEDescrBuilder<?, ?>> pat = lhs.pattern();
         if (p.getBind() == null) {
             pat.constraint(PrintUtil.printNode(p.getExpr()));
@@ -89,21 +90,21 @@ public class DrlxVisitor implements DrlVoidVisitor<Void> {
 
     public void visit(RuleJoinedPatterns jp, Void v) {
         if (jp.getType() == RuleJoinedPatterns.Type.AND) {
-            CEDescrBuilder<?, ?> lhs = lhsStack.peek().and();
-            lhsStack.push(lhs);
+            CEDescrBuilder<?, ?> lhs = lhsLinkedList.peek().and();
+            lhsLinkedList.push(lhs);
             for (RuleItem item : jp.getItems()) {
                 item.accept(this, v);
             }
-            lhsStack.pop();
+            lhsLinkedList.pop();
             return;
         }
         if (jp.getType() == RuleJoinedPatterns.Type.OR) {
-            CEDescrBuilder<?, ?> lhs = lhsStack.peek().or();
-            lhsStack.push(lhs);
+            CEDescrBuilder<?, ?> lhs = lhsLinkedList.peek().or();
+            lhsLinkedList.push(lhs);
             for (RuleItem ruleItem : jp.getItems()) {
                 ruleItem.accept(this, v);
             }
-            lhsStack.pop();
+            lhsLinkedList.pop();
             return;
         }
     }

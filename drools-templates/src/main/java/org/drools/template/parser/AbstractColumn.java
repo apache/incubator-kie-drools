@@ -33,7 +33,7 @@ public abstract class AbstractColumn implements Column {
     }
 
     public String getCondition(String condition, int index) {
-        StringBuffer conditionString = new StringBuffer(getCellType());
+        StringBuilder conditionString = new StringBuilder(getCellType());
         conditionString.append("(row == r, column == $param");
         if (index != -1) {
             conditionString.append(", index == ").append(index);

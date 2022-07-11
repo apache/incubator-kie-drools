@@ -121,7 +121,7 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
     }
 
     private Consequence createConsequence(RuleTemplate template) {
-        StringBuffer action = new StringBuffer();
+        StringBuilder action = new StringBuilder();
         action.append("generator.generate( \"");
         action.append(template.getName()).append("\", r);");
         final Consequence consequence = new Consequence();
