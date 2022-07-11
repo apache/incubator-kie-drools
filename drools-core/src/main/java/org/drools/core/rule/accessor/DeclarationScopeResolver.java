@@ -37,7 +37,7 @@ import org.kie.internal.ruleunit.RuleUnitDescription;
  * A class capable of resolving a declaration in the current build context
  */
 public class DeclarationScopeResolver {
-    private final LinkedList<RuleConditionElement>   buildLinkedList;
+    private final LinkedList<RuleConditionElement>   buildList; //NOSONAR -- Needs to be both a DeQueue and a List
     private final Map<String, Class<?>>              globalMap;
     private final InternalKnowledgePackage           pkg;
 
@@ -48,8 +48,9 @@ public class DeclarationScopeResolver {
         this( new HashMap<>(), new LinkedList<>() );
     }
 
-    public DeclarationScopeResolver(final Map<String, Class<?>> globalMap, final LinkedList<RuleConditionElement> buildLinkedList) {
-        this( globalMap, buildLinkedList, null );
+    public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
+            final LinkedList<RuleConditionElement> buildList) {
+        this(globalMap, buildList, null);
     }
 
     public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
@@ -58,10 +59,10 @@ public class DeclarationScopeResolver {
     }
 
     private DeclarationScopeResolver(Map<String, Class<?>> globalMap,
-                                     LinkedList<RuleConditionElement> buildLinkedList,
+                                     LinkedList<RuleConditionElement> buildList,
                                      InternalKnowledgePackage pkg) {
         this.globalMap = globalMap;
-        this.buildLinkedList = buildLinkedList;
+        this.buildList = buildList;
         this.pkg = pkg;
     }
 
@@ -71,15 +72,15 @@ public class DeclarationScopeResolver {
     }
 
     public RuleConditionElement peekBuildStack() {
-        return buildLinkedList.peek();
+        return buildList.peek();
     }
 
     public RuleConditionElement popBuildStack() {
-        return buildLinkedList.pop();
+        return buildList.pop();
     }
 
     public void pushOnBuildStack(RuleConditionElement element) {
-        buildLinkedList.push(element);
+        buildList.push(element);
     }
 
     private Declaration getExtendedDeclaration(RuleImpl rule, String identifier) {
@@ -102,8 +103,8 @@ public class DeclarationScopeResolver {
 
     public Declaration getDeclaration(String identifier) {
         // it may be a local bound variable
-        for ( int i = this.buildLinkedList.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = this.buildLinkedList.get( i ).resolveDeclaration( identifier );
+        for ( int i = this.buildList.size() - 1; i >= 0; i-- ) {
+            final Declaration declaration = this.buildList.get( i ).resolveDeclaration( identifier );
             if ( declaration != null ) {
                 return declaration;
             }
@@ -160,8 +161,8 @@ public class DeclarationScopeResolver {
 
     public boolean available(RuleImpl rule,
                              final String name) {
-        for ( int i = this.buildLinkedList.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = buildLinkedList.get( i ).resolveDeclaration( name );
+        for ( int i = this.buildList.size() - 1; i >= 0; i-- ) {
+            final Declaration declaration = buildList.get( i ).resolveDeclaration( name );
             if ( declaration != null ) {
                 return true;
             }
@@ -190,8 +191,8 @@ public class DeclarationScopeResolver {
             return true;
         }
 
-        for ( int i = this.buildLinkedList.size() - 1; i >= 0; i-- ) {
-            final RuleConditionElement rce = buildLinkedList.get( i );
+        for ( int i = this.buildList.size() - 1; i >= 0; i-- ) {
+            final RuleConditionElement rce = buildList.get( i );
             final Declaration declaration = rce.resolveDeclaration( name );
             if ( declaration != null ) {
                 // if it is an OR and it is duplicated, we can stop looking for duplication now
@@ -224,17 +225,17 @@ public class DeclarationScopeResolver {
      */
     public Map<String, Declaration> getDeclarations(RuleImpl rule, String consequenceName) {
         Map<String, Declaration> declarations = new HashMap<>();
-        for (RuleConditionElement aBuildLinkedList : this.buildLinkedList) {
+        for (RuleConditionElement aBuildList : this.buildList) {
             // if we are inside of an OR we don't want each previous stack entry added because we can't see those variables
-            if (aBuildLinkedList instanceof GroupElement && ((GroupElement)aBuildLinkedList).getType() == GroupElement.Type.OR) {
+            if (aBuildList instanceof GroupElement && ((GroupElement)aBuildList).getType() == GroupElement.Type.OR) {
                 continue;
             }
 
             // this may be optimized in the future to only re-add elements at
             // scope breaks, like "NOT" and "EXISTS"
-            Map<String,Declaration> innerDeclarations = aBuildLinkedList instanceof GroupElement ?
-                    ((GroupElement)aBuildLinkedList).getInnerDeclarations(consequenceName) :
-                    aBuildLinkedList.getInnerDeclarations();
+            Map<String,Declaration> innerDeclarations = aBuildList instanceof GroupElement ?
+                    ((GroupElement)aBuildList).getInnerDeclarations(consequenceName) :
+                    aBuildList.getInnerDeclarations();
             declarations.putAll(innerDeclarations);
         }
         if ( null != rule.getParent() ) {
@@ -261,8 +262,8 @@ public class DeclarationScopeResolver {
     }
 
     public Pattern findPatternById(int id) {
-        if ( !this.buildLinkedList.isEmpty() ) {
-            return findPatternInNestedElements( id, buildLinkedList.get( 0 ) );
+        if ( !this.buildList.isEmpty() ) {
+            return findPatternInNestedElements( id, buildList.get( 0 ) );
         }
         return null;
     }
