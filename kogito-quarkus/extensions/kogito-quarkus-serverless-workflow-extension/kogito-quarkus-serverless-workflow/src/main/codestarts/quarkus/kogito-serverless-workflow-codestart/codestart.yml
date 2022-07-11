@@ -1,0 +1,14 @@
+name: kogito-serverless-workflow-codestart
+ref: kogito-serverless-workflow
+type: code
+tags: extension-codestart
+metadata:
+  title: Kogito Serverless Workflow codestart
+  description: This is an example Kogito Serverless Workflow Quarkus codestart, it contains a sample Serverless Workflow definition for REST code generation.
+  related-guide-section: https://quarkus.io/guides/kogito
+language:
+  base:
+    dependencies:
+      - io.quarkus:quarkus-resteasy-jackson
+    test-dependencies:
+      - io.rest-assured:rest-assured

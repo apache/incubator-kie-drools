@@ -47,12 +47,12 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
     </dependency>
-   
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-jackson</artifactId>
@@ -62,10 +62,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
-        
+
     <dependency>
-       <groupId>io.quarkus</groupId>
-       <artifactId>quarkus-grpc</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-grpc</artifactId>
     </dependency>
 
     <!-- Support CloudEvents OotB -->
@@ -104,7 +104,35 @@
   </dependencies>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+      <testResource>
+        <directory>src/main/codestarts</directory>
+      </testResource>
+    </testResources>
     <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-codestart-jar</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classesDirectory>${project.basedir}/src/main</classesDirectory>
+              <includes>
+                <include>codestarts/**</include>
+              </includes>
+              <classifier>codestarts</classifier>
+              <skipIfEmpty>true</skipIfEmpty>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bootstrap-maven-plugin</artifactId>

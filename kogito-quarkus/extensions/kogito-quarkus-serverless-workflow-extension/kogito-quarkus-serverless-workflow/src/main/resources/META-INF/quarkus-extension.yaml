@@ -11,3 +11,8 @@ metadata:
   categories:
     - "business-automation"
   status: "preview"
+  codestart:
+    name: "kogito-serverless-workflow-codestart"
+    languages:
+      - "java"
+    artifact: "org.kie.kogito:kogito-quarkus-serverless-workflow:codestarts:jar:${project.version}"
