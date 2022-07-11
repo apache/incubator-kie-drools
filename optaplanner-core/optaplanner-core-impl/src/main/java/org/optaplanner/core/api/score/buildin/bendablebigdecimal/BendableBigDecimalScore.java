@@ -327,6 +327,19 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     }
 
     @Override
+    public BendableBigDecimalScore abs() {
+        BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
+        BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
+        for (int i = 0; i < newHardScores.length; i++) {
+            newHardScores[i] = hardScores[i].abs();
+        }
+        for (int i = 0; i < newSoftScores.length; i++) {
+            newSoftScores[i] = softScores[i].abs();
+        }
+        return new BendableBigDecimalScore(Math.abs(initScore), newHardScores, newSoftScores);
+    }
+
+    @Override
     public BendableBigDecimalScore zero() {
         return BendableBigDecimalScore.zero(getHardLevelsSize(), getSoftLevelsSize());
     }

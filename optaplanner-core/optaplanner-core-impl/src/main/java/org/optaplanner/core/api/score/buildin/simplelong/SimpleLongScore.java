@@ -114,6 +114,11 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
     }
 
     @Override
+    public SimpleLongScore abs() {
+        return new SimpleLongScore(Math.abs(initScore), Math.abs(score));
+    }
+
+    @Override
     public SimpleLongScore zero() {
         return SimpleLongScore.ZERO;
     }

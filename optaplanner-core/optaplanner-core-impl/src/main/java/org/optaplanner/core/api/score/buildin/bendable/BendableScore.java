@@ -302,6 +302,19 @@ public final class BendableScore extends AbstractBendableScore<BendableScore> {
     }
 
     @Override
+    public BendableScore abs() {
+        int[] newHardScores = new int[hardScores.length];
+        int[] newSoftScores = new int[softScores.length];
+        for (int i = 0; i < newHardScores.length; i++) {
+            newHardScores[i] = Math.abs(hardScores[i]);
+        }
+        for (int i = 0; i < newSoftScores.length; i++) {
+            newSoftScores[i] = Math.abs(softScores[i]);
+        }
+        return new BendableScore(Math.abs(initScore), newHardScores, newSoftScores);
+    }
+
+    @Override
     public BendableScore zero() {
         return BendableScore.zero(getHardLevelsSize(), getSoftLevelsSize());
     }

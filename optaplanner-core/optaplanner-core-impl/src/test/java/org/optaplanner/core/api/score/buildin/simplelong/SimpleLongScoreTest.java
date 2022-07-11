@@ -88,6 +88,12 @@ class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void abs() {
+        assertThat(SimpleLongScore.of(5L).abs()).isEqualTo(SimpleLongScore.of(5L));
+        assertThat(SimpleLongScore.of(-5L).abs()).isEqualTo(SimpleLongScore.of(5L));
+    }
+
+    @Test
     void zero() {
         SimpleLongScore manualZero = SimpleLongScore.of(0);
         SoftAssertions.assertSoftly(softly -> {

@@ -169,6 +169,11 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     @Override
+    public HardSoftBigDecimalScore abs() {
+        return new HardSoftBigDecimalScore(Math.abs(initScore), hardScore.abs(), softScore.abs());
+    }
+
+    @Override
     public HardSoftBigDecimalScore zero() {
         return HardSoftBigDecimalScore.ZERO;
     }

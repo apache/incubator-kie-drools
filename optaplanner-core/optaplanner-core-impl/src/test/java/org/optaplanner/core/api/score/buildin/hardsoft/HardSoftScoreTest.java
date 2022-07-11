@@ -111,6 +111,14 @@ class HardSoftScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void abs() {
+        assertThat(HardSoftScore.of(4, 5).abs()).isEqualTo(HardSoftScore.of(4, 5));
+        assertThat(HardSoftScore.of(-4, 5).abs()).isEqualTo(HardSoftScore.of(4, 5));
+        assertThat(HardSoftScore.of(4, -5).abs()).isEqualTo(HardSoftScore.of(4, 5));
+        assertThat(HardSoftScore.of(-4, -5).abs()).isEqualTo(HardSoftScore.of(4, 5));
+    }
+
+    @Test
     void zero() {
         HardSoftScore manualZero = HardSoftScore.of(0, 0);
         SoftAssertions.assertSoftly(softly -> {

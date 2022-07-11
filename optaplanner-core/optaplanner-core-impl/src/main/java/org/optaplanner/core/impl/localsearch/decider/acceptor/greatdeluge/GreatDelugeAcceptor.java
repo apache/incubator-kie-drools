@@ -85,8 +85,8 @@ public class GreatDelugeAcceptor<Solution_> extends AbstractAcceptor<Solution_> 
             currentWaterLevelRatio += waterLevelIncrementRatio;
             currentWaterLevel = startingWaterLevel.add(
                     // TODO targetWaterLevel.subtract(startingWaterLevel).multiply(waterLevelIncrementRatio);
-                    // The startingWaterLevel.negate() is short for zeroScore.subtract(startingWaterLevel)
-                    startingWaterLevel.negate().multiply(currentWaterLevelRatio));
+                    // Use startingWaterLevel.abs() to keep the number being positive.
+                    startingWaterLevel.abs().multiply(currentWaterLevelRatio));
         }
     }
 

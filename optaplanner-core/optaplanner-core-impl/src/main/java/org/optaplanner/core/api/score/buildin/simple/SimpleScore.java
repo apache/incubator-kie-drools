@@ -114,6 +114,11 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     }
 
     @Override
+    public SimpleScore abs() {
+        return new SimpleScore(Math.abs(initScore), Math.abs(score));
+    }
+
+    @Override
     public SimpleScore zero() {
         return SimpleScore.ZERO;
     }

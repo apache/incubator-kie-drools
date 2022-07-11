@@ -142,6 +142,18 @@ class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void abs() {
+        assertThat(HardSoftBigDecimalScore.of(new BigDecimal("4.0"), new BigDecimal("5.0")).abs())
+                .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("4.0"), new BigDecimal("5.0")));
+        assertThat(HardSoftBigDecimalScore.of(new BigDecimal("4.0"), new BigDecimal("-5.0")).abs())
+                .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("4.0"), new BigDecimal("5.0")));
+        assertThat(HardSoftBigDecimalScore.of(new BigDecimal("-4.0"), new BigDecimal("5.0")).abs())
+                .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("4.0"), new BigDecimal("5.0")));
+        assertThat(HardSoftBigDecimalScore.of(new BigDecimal("-4.0"), new BigDecimal("-5.0")).abs())
+                .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("4.0"), new BigDecimal("5.0")));
+    }
+
+    @Test
     void zero() {
         HardSoftBigDecimalScore manualZero = HardSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.ZERO);
         SoftAssertions.assertSoftly(softly -> {

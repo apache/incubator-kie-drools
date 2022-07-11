@@ -105,6 +105,14 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void abs() {
+        assertThat(SimpleBigDecimalScore.of(new BigDecimal("5.0")).abs())
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("5.0")));
+        assertThat(SimpleBigDecimalScore.of(new BigDecimal("-5.0")).abs())
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("5.0")));
+    }
+
+    @Test
     void zero() {
         SimpleBigDecimalScore manualZero = SimpleBigDecimalScore.of(BigDecimal.ZERO);
         SoftAssertions.assertSoftly(softly -> {

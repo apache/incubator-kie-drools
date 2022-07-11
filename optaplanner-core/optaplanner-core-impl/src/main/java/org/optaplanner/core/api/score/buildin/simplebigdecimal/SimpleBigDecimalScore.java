@@ -130,6 +130,11 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     }
 
     @Override
+    public SimpleBigDecimalScore abs() {
+        return new SimpleBigDecimalScore(Math.abs(initScore), score.abs());
+    }
+
+    @Override
     public SimpleBigDecimalScore zero() {
         return SimpleBigDecimalScore.ZERO;
     }

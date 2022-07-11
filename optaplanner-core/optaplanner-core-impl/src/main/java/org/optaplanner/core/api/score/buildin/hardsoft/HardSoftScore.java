@@ -153,6 +153,11 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> {
     }
 
     @Override
+    public HardSoftScore abs() {
+        return new HardSoftScore(Math.abs(initScore), Math.abs(hardScore), Math.abs(softScore));
+    }
+
+    @Override
     public HardSoftScore zero() {
         return HardSoftScore.ZERO;
     }

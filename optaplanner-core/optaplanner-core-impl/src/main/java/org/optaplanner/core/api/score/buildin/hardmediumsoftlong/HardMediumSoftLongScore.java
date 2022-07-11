@@ -188,6 +188,12 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     }
 
     @Override
+    public HardMediumSoftLongScore abs() {
+        return new HardMediumSoftLongScore(Math.abs(initScore), Math.abs(hardScore), Math.abs(mediumScore),
+                Math.abs(softScore));
+    }
+
+    @Override
     public HardMediumSoftLongScore zero() {
         return HardMediumSoftLongScore.ZERO;
     }

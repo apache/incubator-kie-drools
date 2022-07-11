@@ -88,6 +88,12 @@ class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void abs() {
+        assertThat(SimpleScore.of(5).abs()).isEqualTo(SimpleScore.of(5));
+        assertThat(SimpleScore.of(-5).abs()).isEqualTo(SimpleScore.of(5));
+    }
+
+    @Test
     void zero() {
         SimpleScore manualZero = SimpleScore.of(0);
         SoftAssertions.assertSoftly(softly -> {

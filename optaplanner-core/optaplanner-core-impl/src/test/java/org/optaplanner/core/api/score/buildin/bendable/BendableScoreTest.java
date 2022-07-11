@@ -147,6 +147,14 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void absHSS() {
+        assertThat(scoreDefinitionHSS.createScore(3, 4, 5).abs()).isEqualTo(scoreDefinitionHSS.createScore(3, 4, 5));
+        assertThat(scoreDefinitionHSS.createScore(3, -4, 5).abs()).isEqualTo(scoreDefinitionHSS.createScore(3, 4, 5));
+        assertThat(scoreDefinitionHSS.createScore(-3, 4, -5).abs()).isEqualTo(scoreDefinitionHSS.createScore(3, 4, 5));
+        assertThat(scoreDefinitionHSS.createScore(-3, -4, -5).abs()).isEqualTo(scoreDefinitionHSS.createScore(3, 4, 5));
+    }
+
+    @Test
     void zero() {
         BendableScore manualZero = BendableScore.zero(0, 1);
         SoftAssertions.assertSoftly(softly -> {
@@ -266,6 +274,18 @@ class BendableScoreTest extends AbstractScoreTest {
                 .isEqualTo(scoreDefinitionHHSSS.createScore(-3, 4, -5, 0, 0));
         assertThat(scoreDefinitionHHSSS.createScore(-3, 4, -5, 0, 0).negate())
                 .isEqualTo(scoreDefinitionHHSSS.createScore(3, -4, 5, 0, 0));
+    }
+
+    @Test
+    void absHHSSS() {
+        assertThat(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0));
+        assertThat(scoreDefinitionHHSSS.createScore(3, -4, 5, 0, 0).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0));
+        assertThat(scoreDefinitionHHSSS.createScore(-3, 4, -5, 0, 0).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0));
+        assertThat(scoreDefinitionHHSSS.createScore(-3, -4, -5, 0, 0).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0));
     }
 
     @Test

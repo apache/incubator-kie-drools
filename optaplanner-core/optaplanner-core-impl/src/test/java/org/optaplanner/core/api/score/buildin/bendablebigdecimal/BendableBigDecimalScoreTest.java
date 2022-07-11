@@ -204,6 +204,18 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void absHSS() {
+        assertThat(scoreDefinitionHSS.createScore(THREE, FOUR, FIVE).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(THREE, FOUR, FIVE));
+        assertThat(scoreDefinitionHSS.createScore(THREE, MINUS_FOUR, FIVE).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(THREE, FOUR, FIVE));
+        assertThat(scoreDefinitionHSS.createScore(MINUS_THREE, FOUR, MINUS_FIVE).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(THREE, FOUR, FIVE));
+        assertThat(scoreDefinitionHSS.createScore(MINUS_THREE, MINUS_FOUR, MINUS_FIVE).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(THREE, FOUR, FIVE));
+    }
+
+    @Test
     void zero() {
         BendableBigDecimalScore manualZero = BendableBigDecimalScore.zero(0, 1);
         SoftAssertions.assertSoftly(softly -> {
@@ -321,6 +333,18 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
                 .isEqualTo(scoreDefinitionHHSSS.createScore(MINUS_THREE, FOUR, MINUS_FIVE, ZERO, ZERO));
         assertThat(scoreDefinitionHHSSS.createScore(MINUS_THREE, FOUR, MINUS_FIVE, ZERO, ZERO).negate())
                 .isEqualTo(scoreDefinitionHHSSS.createScore(THREE, MINUS_FOUR, FIVE, ZERO, ZERO));
+    }
+
+    @Test
+    void absHHSSS() {
+        assertThat(scoreDefinitionHHSSS.createScore(THREE, FOUR, FIVE, ZERO, ZERO).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(THREE, FOUR, FIVE, ZERO, ZERO));
+        assertThat(scoreDefinitionHHSSS.createScore(THREE, MINUS_FOUR, FIVE, ZERO, ZERO).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(THREE, FOUR, FIVE, ZERO, ZERO));
+        assertThat(scoreDefinitionHHSSS.createScore(MINUS_THREE, FOUR, MINUS_FIVE, ZERO, ZERO).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(THREE, FOUR, FIVE, ZERO, ZERO));
+        assertThat(scoreDefinitionHHSSS.createScore(MINUS_THREE, MINUS_FOUR, MINUS_FIVE, ZERO, ZERO).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(THREE, FOUR, FIVE, ZERO, ZERO));
     }
 
     @Test

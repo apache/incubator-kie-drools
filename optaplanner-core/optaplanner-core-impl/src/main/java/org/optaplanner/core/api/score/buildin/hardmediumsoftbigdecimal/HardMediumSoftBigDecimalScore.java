@@ -205,6 +205,11 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
     }
 
     @Override
+    public HardMediumSoftBigDecimalScore abs() {
+        return new HardMediumSoftBigDecimalScore(Math.abs(initScore), hardScore.abs(), mediumScore.abs(), softScore.abs());
+    }
+
+    @Override
     public HardMediumSoftBigDecimalScore zero() {
         return HardMediumSoftBigDecimalScore.ZERO;
     }
