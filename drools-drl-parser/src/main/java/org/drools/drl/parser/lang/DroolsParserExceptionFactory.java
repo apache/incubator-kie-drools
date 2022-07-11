@@ -19,8 +19,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,7 +59,7 @@ public class DroolsParserExceptionFactory {
     public final static String                        PARSER_LOCATION_MESSAGE_PART            = " in %1$s";
     public final static String                        UNEXPECTED_EXCEPTION                    = "Line %1$d:%2$d unexpected exception at input '%3$s'. Exception: %4$s. LinkedList trace:\n %5$s";
 
-    private final Deque<Map<DroolsParaphraseTypes, String>> paraphrases;
+    private final Collection<Map<DroolsParaphraseTypes, String>> paraphrases;
     
     // TODO: need to deal with this array
     private String[]                                  tokenNames                              = null;
@@ -75,7 +74,8 @@ public class DroolsParserExceptionFactory {
      * @param paraphrases
      *            paraphrases parser structure
      */
-    public DroolsParserExceptionFactory(LinkedList<Map<DroolsParaphraseTypes, String>> paraphrases, LanguageLevelOption languageLevel) {
+    public DroolsParserExceptionFactory(Collection<Map<DroolsParaphraseTypes, String>> paraphrases,
+            LanguageLevelOption languageLevel) {
         this.paraphrases = paraphrases;
         this.languageLevel = languageLevel;
     }
