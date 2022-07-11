@@ -1,13 +1,14 @@
 [id='dmn-gs-creating-drd-proc']
+[discrete]
 = Creating the traffic violations DMN decision requirements diagram (DRD)
 
-A decision requirements diagram (DRD) is a visual representation of your DMN model. Use the  DMN designer in {CENTRAL} to design the DRD for the traffic violations project and to define the decision logic of the DRD components.
+A decision requirements diagram (DRD) is a visual representation of your DMN model. Use the  {DMN_EDITOR} to design the DRD for the traffic violations project and to define the decision logic of the DRD components.
 
 .DRD for the Traffic Violations example
 image::dmn/dmn-traffic-violations-drd.png[DRD for the Traffic Violations example]
 
 .Prerequisites
-* You have created the traffic violations project in {CENTRAL}.
+* You have created the traffic violations project in {PRODUCT}.
 
 .Procedure
 . On the *traffic-violation* project's home page, click *Add Asset*.
