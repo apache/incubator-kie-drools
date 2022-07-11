@@ -17,6 +17,7 @@
 package org.kie.dmn.core.compiler;
 
 import java.io.Reader;
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -30,7 +31,7 @@ import org.kie.dmn.feel.lang.CompilerContext;
 public class DMNCompilerContext {
 
     private final DMNFEELHelper feelHelper;
-    private Deque<DMNScope> stack = new LinkedList();
+    private Deque<DMNScope> stack = new ArrayDeque<>();
     private Function<String, Reader> relativeResolver;
 
     public DMNCompilerContext(DMNFEELHelper feelHelper) {

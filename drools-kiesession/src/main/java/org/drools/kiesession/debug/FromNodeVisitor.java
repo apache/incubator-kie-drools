@@ -16,7 +16,7 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.FromNode;
@@ -32,7 +32,7 @@ public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
 
     @Override
     protected void doVisit(NetworkNode node,
-                           List<NetworkNode> nodeStack,
+                           Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         FromNode fn = (FromNode) node;
         DefaultNodeInfo ni = info.getNodeInfo( node );

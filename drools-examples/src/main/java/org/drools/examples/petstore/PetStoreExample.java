@@ -23,7 +23,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.AbstractButton;
@@ -64,7 +63,7 @@ public class PetStoreExample {
 
     public void init(KieContainer kc, boolean exitOnClose) {
         //RuleB
-        List<Product> stock = new LinkedList<>();
+        List<Product> stock = new ArrayList<>();
         stock.add( new Product( "Gold Fish",
                                 5 ) );
         stock.add( new Product( "Fish Tank",

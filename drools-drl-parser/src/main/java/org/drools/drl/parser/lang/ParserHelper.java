@@ -13,7 +13,9 @@
  */
 package org.drools.drl.parser.lang;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,7 +80,7 @@ public class ParserHelper {
     public List<DroolsParserException>                errors                   = new ArrayList<>();
     public LinkedList<DroolsSentence>                 editorInterface          = null;
     public boolean                                    isEditorInterfaceEnabled = false;
-    private LinkedList<Map<DroolsParaphraseTypes, String>> paraphrases         = new LinkedList<>();
+    private Deque<Map<DroolsParaphraseTypes, String>> paraphrases         = new ArrayDeque<>();
 
     // parameters from parser
     private DroolsParserExceptionFactory              errorMessageFactory      = null;

@@ -16,7 +16,7 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
@@ -35,7 +35,7 @@ public class RightInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
 
     @Override
     protected void doVisit(NetworkNode node,
-                           List<NetworkNode> nodeStack,
+                           Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         RightInputAdapterNode an = (RightInputAdapterNode) node;
         DefaultNodeInfo ni = info.getNodeInfo( node );

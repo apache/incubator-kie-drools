@@ -18,8 +18,10 @@ package org.drools.core.rule.accessor;
 
 import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,7 +39,7 @@ import org.kie.internal.ruleunit.RuleUnitDescription;
  * A class capable of resolving a declaration in the current build context
  */
 public class DeclarationScopeResolver {
-    private final LinkedList<RuleConditionElement>   buildList; //NOSONAR -- Needs to be both a DeQueue and a List
+    private final Deque<RuleConditionElement>   buildList;
     private final Map<String, Class<?>>              globalMap;
     private final InternalKnowledgePackage           pkg;
 
@@ -45,21 +47,21 @@ public class DeclarationScopeResolver {
     private Optional<RuleUnitDescription> ruleUnitDescr = Optional.empty();
 
     protected DeclarationScopeResolver() {
-        this( new HashMap<>(), new LinkedList<>() );
+        this( new HashMap<>(), new ArrayDeque<>() );
     }
 
     public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
-            final LinkedList<RuleConditionElement> buildList) {
+            final Deque<RuleConditionElement> buildList) {
         this(globalMap, buildList, null);
     }
 
     public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
                                     final InternalKnowledgePackage pkg) {
-        this( globalMap, new LinkedList<>(), pkg );
+        this( globalMap, new ArrayDeque<>(), pkg );
     }
 
     private DeclarationScopeResolver(Map<String, Class<?>> globalMap,
-                                     LinkedList<RuleConditionElement> buildList,
+                                     Deque<RuleConditionElement> buildList,
                                      InternalKnowledgePackage pkg) {
         this.globalMap = globalMap;
         this.buildList = buildList;
@@ -103,8 +105,8 @@ public class DeclarationScopeResolver {
 
     public Declaration getDeclaration(String identifier) {
         // it may be a local bound variable
-        for ( int i = this.buildList.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = this.buildList.get( i ).resolveDeclaration( identifier );
+        for (final Iterator<RuleConditionElement> iterator = buildList.descendingIterator(); iterator.hasNext();) {
+            final Declaration declaration = iterator.next().resolveDeclaration( identifier );
             if ( declaration != null ) {
                 return declaration;
             }
@@ -161,8 +163,9 @@ public class DeclarationScopeResolver {
 
     public boolean available(RuleImpl rule,
                              final String name) {
-        for ( int i = this.buildList.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = buildList.get( i ).resolveDeclaration( name );
+        for (final Iterator<RuleConditionElement> iterator = buildList.descendingIterator(); iterator.hasNext();) {
+            RuleConditionElement rce = iterator.next();
+            final Declaration declaration = rce.resolveDeclaration( name );
             if ( declaration != null ) {
                 return true;
             }
@@ -190,9 +193,10 @@ public class DeclarationScopeResolver {
         if ( this.globalMap.containsKey( (name) ) ) {
             return true;
         }
-
-        for ( int i = this.buildList.size() - 1; i >= 0; i-- ) {
-            final RuleConditionElement rce = buildList.get( i );
+        
+        
+        for (final Iterator<RuleConditionElement> iterator = buildList.descendingIterator(); iterator.hasNext();) {
+            RuleConditionElement rce = iterator.next();
             final Declaration declaration = rce.resolveDeclaration( name );
             if ( declaration != null ) {
                 // if it is an OR and it is duplicated, we can stop looking for duplication now
@@ -263,7 +267,7 @@ public class DeclarationScopeResolver {
 
     public Pattern findPatternById(int id) {
         if ( !this.buildList.isEmpty() ) {
-            return findPatternInNestedElements( id, buildList.get( 0 ) );
+            return findPatternInNestedElements( id, buildList.peekFirst() );
         }
         return null;
     }

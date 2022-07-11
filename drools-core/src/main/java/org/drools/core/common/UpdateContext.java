@@ -15,12 +15,12 @@
 
 package org.drools.core.common;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 public class UpdateContext {
 
-    private Deque<BaseNode> visitedNodes = new LinkedList<>();
+    private Deque<BaseNode> visitedNodes = new ArrayDeque<>();
 
     public void startVisitNode(BaseNode baseNode) {
         visitedNodes.push(baseNode);

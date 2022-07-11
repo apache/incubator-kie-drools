@@ -16,7 +16,7 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -31,7 +31,7 @@ public class RuleTerminalNodeVisitor extends AbstractNetworkNodeVisitor {
 
     @Override
     protected void doVisit(NetworkNode node,
-                           List<NetworkNode> nodeStack,
+                           Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         RuleTerminalNode rtn = (RuleTerminalNode) node;
         RuleImpl rule = rtn.getRule();

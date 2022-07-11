@@ -16,8 +16,9 @@
 
 package org.drools.kiesession.debug;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -98,35 +99,35 @@ public class SessionInspector {
 
         info.setSession( session );
 
-        LinkedList<NetworkNode> nodeLinkedList = new LinkedList<>();
+        Deque<NetworkNode> nodeList = new ArrayDeque<>();
         gatherNodeInfo( session.getKnowledgeBase().getRete(),
-                        nodeLinkedList,
+                        nodeList,
                         info );
 
         return info;
     }
 
     private void gatherNodeInfo(NetworkNode parent,
-                                LinkedList<NetworkNode> nodeLinkedList,
+                                Deque<NetworkNode> nodeList,
                                 StatefulKnowledgeSessionInfo info) {
         if ( !info.visited( parent ) ) {
-            nodeLinkedList.push( parent );
+            nodeList.push( parent );
             NetworkNodeVisitor visitor = visitors.get( parent.getType() );
             if ( visitor != null ) {
                 visitor.visit( parent,
-                               nodeLinkedList,
+                               nodeList,
                                info );
             } else {
                 throw new RuntimeException( "No visitor found for node class: " + parent.getClass()+" node: "+parent );
             }
             visitChildren( parent,
-                           nodeLinkedList,
+                           nodeList,
                            info );
-            nodeLinkedList.pop();
+            nodeList.pop();
         } else {
             // if already visited, then assign the same rules to the nodes currently in the stack
             Set<RuleImpl> rules = info.getNodeInfo( parent ).getRules();
-            for ( NetworkNode snode : nodeLinkedList ) {
+            for ( NetworkNode snode : nodeList ) {
                 for ( RuleImpl rule : rules ) {
                     info.assign( snode,
                                  rule );
@@ -136,34 +137,34 @@ public class SessionInspector {
     }
 
     protected void visitChildren(NetworkNode parent,
-                                 LinkedList<NetworkNode> nodeLinkedList,
+                                 Deque<NetworkNode> nodeStack,
                                  StatefulKnowledgeSessionInfo info) {
         if ( parent instanceof Rete ) {
             Rete rete = (Rete) parent;
             for ( EntryPointNode sink : rete.getEntryPointNodes().values() ) {
                 gatherNodeInfo( sink,
-                                nodeLinkedList,
+                                nodeStack,
                                 info );
             }
         } else if ( parent instanceof EntryPointNode ) {
             EntryPointNode epn = (EntryPointNode) parent;
             for ( ObjectTypeNode sink : epn.getObjectTypeNodes().values() ) {
                 gatherNodeInfo( sink,
-                                nodeLinkedList,
+                                nodeStack,
                                 info );
             }
         } else if ( parent instanceof ObjectSource ) {
             ObjectSource source = (ObjectSource) parent;
             for ( ObjectSink sink : source.getObjectSinkPropagator().getSinks() ) {
                 gatherNodeInfo( sink,
-                                nodeLinkedList,
+                                nodeStack,
                                 info );
             }
         } else if ( parent instanceof LeftTupleSource ) {
             LeftTupleSource source = (LeftTupleSource) parent;
             for ( LeftTupleSink sink : source.getSinkPropagator().getSinks() ) {
                 gatherNodeInfo( sink,
-                                nodeLinkedList,
+                                nodeStack,
                                 info );
             }
         } else if ( parent instanceof RuleTerminalNode || parent instanceof QueryTerminalNode ) {

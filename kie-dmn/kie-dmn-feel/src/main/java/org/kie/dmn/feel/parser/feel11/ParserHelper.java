@@ -16,8 +16,8 @@
 
 package org.kie.dmn.feel.parser.feel11;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,7 +56,7 @@ public class ParserHelper {
     private FEELEventListenersManager eventsManager;
     private SymbolTable   symbols      = new SymbolTable();
     private Scope         currentScope = symbols.getGlobalScope();
-    private Deque<String> currentName  = new LinkedList<>();
+    private Deque<String> currentName  = new ArrayDeque<>();
     private int dynamicResolution = 0;
     private boolean featDMN12EnhancedForLoopEnabled = true; // DROOLS-2307 DMN enhanced for loop
     private boolean featDMN12weekday = true; // DROOLS-2648 DMN v1.2 weekday on 'date', 'date and time'
