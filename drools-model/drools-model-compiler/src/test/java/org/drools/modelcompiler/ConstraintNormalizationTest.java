@@ -35,7 +35,6 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class ConstraintNormalizationTest extends BaseModelTest {
 
@@ -68,7 +67,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final Person p = new Person("Toshiya", 45);
         ksession.insert(t);
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules(10)); // no infinite loop
+        assertThat(ksession.fireAllRules(10)).isEqualTo(2); // no infinite loop
     }
 
     @Test
@@ -93,7 +92,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final Person p = new Person("Toshiya", 45);
         ksession.insert(new Integer(30));
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules(10)); // no infinite loop
+        assertThat(ksession.fireAllRules(10)).isEqualTo(2); // no infinite loop
     }
 
     @Test
@@ -126,11 +125,11 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         CompositeObjectSinkAdapter sinkAdaptor = (CompositeObjectSinkAdapter) objectSinkPropagator;
 
         assertThat(sinkAdaptor.getHashedSinkMap()).isNotNull();
-        assertEquals(3, sinkAdaptor.getHashedSinkMap().size());
+        assertThat(sinkAdaptor.getHashedSinkMap().size()).isEqualTo(3);
 
         final Person p = new Person("Toshiya", 45);
         ksession.insert(p);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -150,11 +149,11 @@ public class ConstraintNormalizationTest extends BaseModelTest {
 
         final KieSession ksession = getKieSession(str);
 
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final Person p = new Person("Toshiya", 45);
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -178,14 +177,14 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(4, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(4);
 
         final Person p1 = new Person("John", 21);
         final Person p2 = new Person("Paul", 40);
 
         ksession.insert(p1);
         ksession.insert(p2);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -206,13 +205,13 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final Person p = new Person("Toshiya", 45);
         p.setAddress(new Address("ABC"));
 
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -234,13 +233,13 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final Person p = new Person("Toshiya", 45);
         p.setMoney(new BigDecimal("0.0"));
 
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -261,13 +260,13 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final Person p = new Person("Toshiya", 45);
         p.setId(45);
 
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -288,12 +287,12 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final Person p = new Person("Toshiya", 45);
 
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -315,17 +314,17 @@ public class ConstraintNormalizationTest extends BaseModelTest {
 
         // Check NodeSharing to verify if normalization works expectedly
         if (testRunType == RUN_TYPE.STANDARD_FROM_DRL || testRunType == RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK) {
-            assertEquals(2, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+            assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(2);
         } else {
             // && is not split in case of executable-model
-            assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+            assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
         }
 
         final Person p = new Person("Toshiya", 45);
         p.setLikes("Bird");
 
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -346,13 +345,13 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final Person p = new Person("Toshiya", 45);
         p.setLikes("Bird");
 
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -373,12 +372,12 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final Person p = new Person("Toshiya", 45);
 
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -398,14 +397,14 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         Person p = new Person("John");
         p.setMoney(new BigDecimal("30.0"));
 
         ksession.insert(p);
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -428,7 +427,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -444,7 +443,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         ksession.insert(p2);
         ksession.insert(p3);
 
-        assertEquals(4, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(4);
         assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
     }
 
@@ -468,7 +467,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -484,7 +483,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         ksession.insert(p2);
         ksession.insert(p3);
 
-        assertEquals(4, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(4);
         assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
     }
 
@@ -509,14 +508,14 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(2, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(2);
 
         FactType factType = ksession.getKieBase().getFactType("org.drools.test", "Person");
         Object p = factType.newInstance();
         factType.set(p, "name", "Toshiya");
         factType.set(p, "age", 45);
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -537,13 +536,13 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final Person p = new Person("Toshiya");
         p.getItems().put(5, 100);
 
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -564,13 +563,13 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         final Person p = new Person("Toshiya");
         p.getItemsString().put("AAA", "XXX");
 
         ksession.insert(p);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -591,12 +590,12 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
         Map<String, String> map = new HashMap<>();
         map.put("AAA", "XXX");
 
         ksession.insert(map);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 }

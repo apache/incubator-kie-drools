@@ -32,13 +32,12 @@ import org.drools.ruleunit.RuleUnit;
 import org.drools.ruleunit.RuleUnitExecutor;
 
 import static java.util.Arrays.asList;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.on;
 import static org.drools.model.DSL.unitData;
 import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.rule;
-import static org.junit.Assert.assertTrue;
 
 public class RuleUnitTest {
 
@@ -93,7 +92,7 @@ public class RuleUnitTest {
 
         executor.run( AdultUnit.class );
 
-        assertTrue( result.containsAll( asList("Mario", "Marilena") ) );
+        assertThat(result.containsAll(asList("Mario", "Marilena"))).isTrue();
     }
 
     @Test
@@ -124,6 +123,6 @@ public class RuleUnitTest {
         AdultUnit ruleUnit = new AdultUnit();
         executor.run( ruleUnit );
 
-        assertTrue( ruleUnit.getResults().containsAll( asList("Mario", "Marilena") ) );
+        assertThat(ruleUnit.getResults().containsAll(asList("Mario", "Marilena"))).isTrue();
     }
 }

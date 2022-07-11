@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class HalfBinaryTest extends BaseModelTest {
 
@@ -44,7 +43,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( 3 );
         ksession.insert( 4 );
         ksession.insert( 6 );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -61,7 +60,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( 3 );
         ksession.insert( 4 );
         ksession.insert( 6 );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -78,7 +77,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( 3 );
         ksession.insert( 4 );
         ksession.insert( 6 );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -95,7 +94,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( 3 );
         ksession.insert( 4 );
         ksession.insert( 6 );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -113,7 +112,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( "D" );
         ksession.insert( "H" );
         ksession.insert( "S" );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -131,7 +130,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( "D" );
         ksession.insert( "H" );
         ksession.insert( "S" );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -149,7 +148,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( "D" );
         ksession.insert( "Q" );
         ksession.insert( "S" );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -168,7 +167,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( new Person("D") );
         ksession.insert( new Person("Q") );
         ksession.insert( new Person("S") );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -196,7 +195,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( d );
         ksession.insert( q );
         ksession.insert( s );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -227,7 +226,7 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( d );
         ksession.insert( q );
         ksession.insert( s );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test

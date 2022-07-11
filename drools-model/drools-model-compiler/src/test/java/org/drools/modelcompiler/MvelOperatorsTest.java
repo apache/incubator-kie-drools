@@ -29,9 +29,6 @@ import org.kie.api.runtime.KieSession;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class MvelOperatorsTest extends BaseModelTest {
 
@@ -50,7 +47,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert( "b" );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -64,7 +61,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert( "Mario" );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -80,7 +77,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert( "Mario" );
         ksession.insert( "Luca" );
         ksession.insert( "Edoardo" );
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -97,7 +94,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert( "Luca" );
         ksession.insert( "Edoardo" );
         ksession.insert( "Valentina" );
-        assertEquals(3, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
     @Test
@@ -114,7 +111,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert( "Luca" );
         ksession.insert( "Edoardo" );
         ksession.insert( "Valentina" );
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -139,8 +136,8 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert(new Person("Luca", 30));
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertTrue(list.containsAll( asList("Mark", "Edson") ));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(asList("Mark", "Edson"))).isTrue();
     }
 
     @Test
@@ -165,8 +162,8 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert(new Person("Luca", 30));
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertTrue(list.containsAll( asList("Luca", "Mario") ));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(asList("Luca", "Mario"))).isTrue();
     }
 
     @Test
@@ -189,8 +186,8 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert(person1);
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("Mario", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Mario");
     }
 
     @Test
@@ -204,7 +201,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert( "b" );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -218,9 +215,9 @@ public class MvelOperatorsTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(str);
         ksession.insert( asList("ciao", "test") );
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
         ksession.insert( asList("hello", "world") );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -234,9 +231,9 @@ public class MvelOperatorsTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(str);
         ksession.insert( asList("ciao", "test") );
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
         ksession.insert( asList("hello", "world") );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -260,8 +257,8 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert(new Person("Mario", 45));
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("Luca", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Luca");
     }
 
     @Test
@@ -285,8 +282,8 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert(new Person("Edson", 37));
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("Mario", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Mario");
     }
 
     @Test
@@ -310,8 +307,8 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert(new Person("Edson", 37));
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("Mario", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Mario");
     }
 
     @Test
@@ -330,7 +327,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         Person p = new Person("Mark", 40);
         p.setLikes( "M." );
         ksession.insert(p);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -413,7 +410,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         f.setDoubleVal(new Double(100));
         f.setPrimitiveDoubleVal(200);
         ksession.insert(f);
-        assertEquals(4, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(4);
         ksession.dispose();
     }
 
@@ -446,10 +443,10 @@ public class MvelOperatorsTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert( new ListContainer() );
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         ksession.insert( new ListContainer( Collections.singletonList( 3 ) ) );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -464,7 +461,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert( 800 );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -479,7 +476,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert( 2048 );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -500,7 +497,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Object obj = result.get(0);
-        assertTrue(obj instanceof List);
+        assertThat(obj instanceof List).isTrue();
         assertThat((List)obj).containsExactlyInAnyOrder("aaa", "bbb", "ccc");
     }
 
@@ -522,8 +519,8 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Object obj = result.get(0);
-        assertTrue(obj instanceof Map);
-        assertEquals("value", ((Map) obj).get("key"));
+        assertThat(obj instanceof Map).isTrue();
+        assertThat(((Map) obj).get("key")).isEqualTo("value");
     }
 
     @Test
@@ -547,8 +544,8 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert(person1);
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("");
     }
 
     @Test
@@ -565,7 +562,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         Person person1 = new Person("");
         ksession.insert(new Person("mario", 47));
         ksession.insert(new Person("atesta", 47));
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -579,7 +576,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "end ";
 
         Results results = createKieBuilder( str ).getResults();
-        assertFalse(results.getMessages( Message.Level.ERROR ).isEmpty());
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
     @Test
@@ -593,6 +590,6 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "end ";
 
         Results results = createKieBuilder( str ).getResults();
-        assertFalse(results.getMessages( Message.Level.ERROR ).isEmpty());
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 }

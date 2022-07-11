@@ -15,7 +15,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.any;
 import static org.drools.model.DSL.execute;
 import static org.drools.model.DSL.exists;
@@ -23,7 +23,6 @@ import static org.drools.model.DSL.not;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.rule;
-import static org.junit.Assert.assertTrue;
 
 public class FireAndAlarmUsingDroolsTest {
 
@@ -104,7 +103,7 @@ public class FireAndAlarmUsingDroolsTest {
         ksession.insert(sprinkler1);
         ksession.fireAllRules();
 
-        assertTrue(sprinkler1.isOn());
+        assertThat(sprinkler1.isOn()).isTrue();
 
         // phase 3
         ksession.delete(fireFact1);

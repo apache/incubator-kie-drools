@@ -25,7 +25,7 @@ import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FunctionsTest extends BaseModelTest {
 
@@ -60,7 +60,7 @@ public class FunctionsTest extends BaseModelTest {
 
         ksession.insert(new Person("John", 10));
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 1, rulesFired ); // only R1 should fire
+        assertThat(rulesFired).isEqualTo(1); // only R1 should fire
     }
 
     @Test
@@ -83,7 +83,7 @@ public class FunctionsTest extends BaseModelTest {
 
         ksession.insert(john);
         int rulesFired = ksession.fireAllRules();
-        assertEquals(1, rulesFired);
+        assertThat(rulesFired).isEqualTo(1);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class FunctionsTest extends BaseModelTest {
 
         ksession.insert(john);
         int rulesFired = ksession.fireAllRules();
-        assertEquals(1, rulesFired);
+        assertThat(rulesFired).isEqualTo(1);
     }
 
     public enum FunctionEnum {
@@ -136,7 +136,7 @@ public class FunctionsTest extends BaseModelTest {
 
         ksession.insert( new Pojo( Arrays.asList(1,3) ) );
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 1, rulesFired );
+        assertThat(rulesFired).isEqualTo(1);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class FunctionsTest extends BaseModelTest {
 
         ksession.insert( new Pojo( Arrays.asList(1,2,3) ) );
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 1, rulesFired );
+        assertThat(rulesFired).isEqualTo(1);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class FunctionsTest extends BaseModelTest {
 
         ksession.insert( new Pojo( Arrays.asList(1,3) ) );
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 1, rulesFired );
+        assertThat(rulesFired).isEqualTo(1);
     }
 
     @Test
@@ -194,7 +194,7 @@ public class FunctionsTest extends BaseModelTest {
 
         ksession.insert( new Pojo( Arrays.asList(1,2,3) ) );
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 1, rulesFired );
+        assertThat(rulesFired).isEqualTo(1);
     }
 
     public static class Pojo {
@@ -227,7 +227,7 @@ public class FunctionsTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
 
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 1, rulesFired );
+        assertThat(rulesFired).isEqualTo(1);
     }
 
     @Test
@@ -247,7 +247,7 @@ public class FunctionsTest extends BaseModelTest {
 
         ksession.insert( new Pojo( Arrays.asList(1,3) ) );
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 1, rulesFired );
+        assertThat(rulesFired).isEqualTo(1);
     }
 
     public static String constantValue(String input) {
@@ -279,7 +279,7 @@ public class FunctionsTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class );
-        assertEquals( 2, results.size() );
-        assertEquals( "whatever", results.iterator().next().getValue() );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.iterator().next().getValue()).isEqualTo("whatever");
     }
 }

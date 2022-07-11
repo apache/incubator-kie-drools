@@ -30,8 +30,6 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class TypeCoercionTest extends BaseModelTest {
 
@@ -59,8 +57,8 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert(person1);
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("40", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("40");
     }
 
     @Test
@@ -83,8 +81,8 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert(person1);
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("40", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("40");
     }
 
     @Test
@@ -107,8 +105,8 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert(person1);
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("Mario", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Mario");
     }
 
     @Test
@@ -130,8 +128,8 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert(0);
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("0", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("0");
     }
 
 
@@ -159,7 +157,7 @@ public class TypeCoercionTest extends BaseModelTest {
         KieSession ksession = getKieSession( drl1 );
 
         ksession.insert(new DoubleHolder());
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -174,7 +172,7 @@ public class TypeCoercionTest extends BaseModelTest {
         KieSession ksession = getKieSession( drl1 );
 
         ksession.insert(new LongHolder());
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -192,7 +190,7 @@ public class TypeCoercionTest extends BaseModelTest {
 
         ksession.insert(new LongHolder());
         ksession.insert(new DoubleHolder());
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -210,7 +208,7 @@ public class TypeCoercionTest extends BaseModelTest {
 
         ksession.insert(new LongHolder());
         ksession.insert(new DoubleHolder());
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -226,7 +224,7 @@ public class TypeCoercionTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -240,7 +238,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "end\n";
 
         KieSession ksession = getKieSession( str );
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -254,7 +252,7 @@ public class TypeCoercionTest extends BaseModelTest {
                         "end\n";
 
         KieSession ksession = getKieSession( str );
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -277,7 +275,7 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         assertThat(results.stream().map(Result::getValue)).containsExactlyInAnyOrder(luca);
     }
 
@@ -294,7 +292,7 @@ public class TypeCoercionTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert( 3 );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -320,8 +318,8 @@ public class TypeCoercionTest extends BaseModelTest {
         nan.setTestDouble2(100.0);
         ksession.insert(nan);
 
-        assertEquals( 0, ksession.fireAllRules() );
-        assertFalse( nan.getTestBoolean() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+        assertThat(nan.getTestBoolean()).isFalse();
     }
 
     public static class DoubleNaNPojo {
@@ -404,7 +402,7 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert( new ClassWithIntProperty( 10 ) );
         ksession.insert( new ClassWithStringProperty( "10" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -425,7 +423,7 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert( new ClassWithIntProperty( 10 ) );
         ksession.insert( new ClassWithStringProperty( "10" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -446,7 +444,7 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert( new ClassWithShortProperty( (short)10 ) );
         ksession.insert( new ClassWithIntProperty( 10 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -467,7 +465,7 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert( new ClassWithShortProperty( (short)10 ) );
         ksession.insert( new ClassWithIntProperty( 10 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -485,7 +483,7 @@ public class TypeCoercionTest extends BaseModelTest {
 
         ksession.insert( new ClassWithIntProperty( 3 ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -501,7 +499,7 @@ public class TypeCoercionTest extends BaseModelTest {
 
         ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -517,7 +515,7 @@ public class TypeCoercionTest extends BaseModelTest {
 
         ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -533,7 +531,7 @@ public class TypeCoercionTest extends BaseModelTest {
 
         ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -549,7 +547,7 @@ public class TypeCoercionTest extends BaseModelTest {
 
         ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
 
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -578,7 +576,7 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert(new Person("Mario2", 41));
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("Mario", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Mario");
     }
 }

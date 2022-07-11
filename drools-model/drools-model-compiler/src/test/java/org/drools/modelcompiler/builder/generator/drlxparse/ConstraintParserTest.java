@@ -28,11 +28,11 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConstraintParserTest {
 
@@ -53,20 +53,20 @@ public class ConstraintParserTest {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "address!.city == \"London\"");
 
         List<Expression> nullSafeExpressions = result.getNullSafeExpressions();
-        assertEquals(1, nullSafeExpressions.size());
-        assertEquals("_this.getAddress() != null", nullSafeExpressions.get(0).toString()); // will be added as the first predicate
+        assertThat(nullSafeExpressions.size()).isEqualTo(1);
+        assertThat(nullSafeExpressions.get(0).toString()).isEqualTo("_this.getAddress() != null"); // will be added as the first predicate
 
-        assertEquals("org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getAddress().getCity(), \"London\")", result.getExpr().toString());
+        assertThat(result.getExpr().toString()).isEqualTo("org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getAddress().getCity(), \"London\")");
     }
 
     @Test
     public void testNullSafeExpressionsWithOr() {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "name == \"John\" || == address!.city");
 
-        assertEquals(0, result.getNullSafeExpressions().size()); // not using NullSafeExpressions for complex OR cases
+        assertThat(result.getNullSafeExpressions().size()).isEqualTo(0); // not using NullSafeExpressions for complex OR cases
 
         // null check is done after the first constraint
-        assertEquals("_this.getName() == \"John\" || _this.getAddress() != null && _this.getName() == _this.getAddress().getCity()", result.getExpr().toString());
+        assertThat(result.getExpr().toString()).isEqualTo("_this.getName() == \"John\" || _this.getAddress() != null && _this.getName() == _this.getAddress().getCity()");
     }
 
     @Test
@@ -74,12 +74,11 @@ public class ConstraintParserTest {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Object.class, "$o", "this#Person.name == \"Mark\"");
 
         Optional<Expression> implicitCastExpression = result.getImplicitCastExpression();
-        assertTrue(implicitCastExpression.isPresent());
-        assertEquals("_this instanceof Person", implicitCastExpression.get().toString()); // will be added as the first predicate
+        assertThat(implicitCastExpression.isPresent()).isTrue();
+        assertThat(implicitCastExpression.get().toString()).isEqualTo("_this instanceof Person"); // will be added as the first predicate
 
-        assertEquals("_this instanceof org.drools.modelcompiler.domain.Person" +
-                     " && org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(((org.drools.modelcompiler.domain.Person) _this).getName(), \"Mark\")",
-                     result.getExpr().toString());
+        assertThat(result.getExpr().toString()).isEqualTo("_this instanceof " + Person.class.getCanonicalName() +
+                " && org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(((" + Person.class.getCanonicalName() + ") _this).getName(), \"Mark\")");
     }
 
     @Test
@@ -87,33 +86,30 @@ public class ConstraintParserTest {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Object.class, "$o", "\"Mark\" == this.toString() || == this#Person.address.city");
 
         Optional<Expression> implicitCastExpression = result.getImplicitCastExpression();
-        assertTrue(implicitCastExpression.isPresent());
-        assertEquals("_this instanceof Person", implicitCastExpression.get().toString()); // will be added as the first predicate
+        assertThat(implicitCastExpression.isPresent()).isTrue();
+        assertThat(implicitCastExpression.get().toString()).isEqualTo("_this instanceof Person"); // will be added as the first predicate
 
         // instanceof check is done after the first constraint
-        assertEquals("\"Mark\" == _this.toString() || _this instanceof org.drools.modelcompiler.domain.Person && \"Mark\" == ((org.drools.modelcompiler.domain.Person) _this).getAddress().getCity()",
-                     result.getExpr().toString());
+        assertThat(result.getExpr().toString()).isEqualTo("\"Mark\" == _this.toString() || _this instanceof " + Person.class.getCanonicalName() + " && \"Mark\" == ((" + Person.class.getCanonicalName() + ") _this).getAddress().getCity()");
     }
 
     @Test
     public void testMultiplyStringIntWithBindVariableCompareToBigDecimal() {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "money == likes * 10"); // assuming likes contains number String
-
-        assertEquals("org.drools.modelcompiler.util.EvaluationUtil.equals(org.drools.modelcompiler.util.EvaluationUtil.toBigDecimal(_this.getMoney()), org.drools.modelcompiler.util.EvaluationUtil.toBigDecimal(Double.valueOf(_this.getLikes()) * 10))",
-                     result.getExpr().toString());
+        assertThat(result.getExpr().toString()).isEqualTo(EvaluationUtil.class.getCanonicalName() + ".equals(" + EvaluationUtil.class.getCanonicalName() + ".toBigDecimal(_this.getMoney()), " + EvaluationUtil.class.getCanonicalName() + ".toBigDecimal(Double.valueOf(_this.getLikes()) * 10))");
     }
 
     @Test
     public void testBigDecimalLiteralWithBindVariable() {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "$bd : 10.3B");
 
-        assertEquals("new java.math.BigDecimal(\"10.3\")", result.getExpr().toString());
+        assertThat(result.getExpr().toString()).isEqualTo("new java.math.BigDecimal(\"10.3\")");
     }
 
     @Test
     public void testBigIntegerLiteralWithBindVariable() {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "$bi : 10I");
 
-        assertEquals("new java.math.BigInteger(\"10\")", result.getExpr().toString());
+        assertThat(result.getExpr().toString()).isEqualTo("new java.math.BigInteger(\"10\")");
     }
 }

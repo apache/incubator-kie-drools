@@ -17,7 +17,7 @@ package org.drools.modelcompiler;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EnumTest extends BaseModelTest {
 
@@ -42,7 +42,7 @@ public class EnumTest extends BaseModelTest {
         Bus b = new Bus("red", 25, Bus.Maker.ISUZU);
         ksession.insert(b);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class EnumTest extends BaseModelTest {
         Bus b = new Bus("red", 25, Bus.Maker.ISUZU);
         ksession.insert(b);
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     public static class Bus {

@@ -44,9 +44,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class GeneratedClassNamesTest extends BaseModelTest {
 
@@ -90,7 +88,7 @@ public class GeneratedClassNamesTest extends BaseModelTest {
 
         KieModule kieModule = ((KieContainerImpl) kcontainer).getKieModuleForKBase("defaultKieBase");
 
-        assertTrue(kieModule instanceof CanonicalKieModule);
+        assertThat(kieModule instanceof CanonicalKieModule).isTrue();
 
         KieSession ksession = kcontainer.newKieSession();
 
@@ -101,7 +99,7 @@ public class GeneratedClassNamesTest extends BaseModelTest {
         ksession.insert(me);
         int fired = ksession.fireAllRules();
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     private void assertGeneratedClassNames(Set<String> generatedClassNames) {
@@ -237,7 +235,7 @@ public class GeneratedClassNamesTest extends BaseModelTest {
         ksession.insert(new Person("Mario"));
         ksession.insert(new Person("Luca"));
         int fired = ksession.fireAllRules();
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
         ksession.dispose();
     }
 
@@ -298,18 +296,18 @@ public class GeneratedClassNamesTest extends BaseModelTest {
 
         KieModule kieModule2 = ((KieContainerImpl) kcontainer).getKieModuleForKBase("defaultKieBase");
 
-        assertTrue(kieModule2 instanceof CanonicalKieModule);
+        assertThat(kieModule2 instanceof CanonicalKieModule).isTrue();
 
         KieSession ksession = kcontainer.newKieSession();
 
         Set<String> generatedClassNames = ((CanonicalKieModule) kieModule2).getGeneratedClassNames();
-        assertTrue(generatedClassNames.isEmpty());
+        assertThat(generatedClassNames.isEmpty()).isTrue();
 
         Person me = new Person("Mario", 40);
         ksession.insert(me);
         int fired = ksession.fireAllRules();
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
 }
