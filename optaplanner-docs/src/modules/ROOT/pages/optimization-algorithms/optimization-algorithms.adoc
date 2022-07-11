@@ -640,27 +640,26 @@ This example ensures it does not just terminate after finding a feasible solutio
 [[asynchronousTermination]]
 === Asynchronous termination from another thread
 
-Asynchronous termination from another thread occurs when a `Solver` needs to be terminated early from another thread, for example, due to a user action or a server restart.
-This cannot be configured by a `Termination` as it is impossible to predict when and if it will occur.
-Therefore the `Solver` interface has the following thread-safe methods:
+Asynchronous termination cannot be configured by a `Termination` as it is impossible to predict when and if it will occur.
+For example, a user action or a server restart could require a solver to terminate earlier than predicted.
+
+To terminate a solver from another thread asynchronously
+call the `terminateEarly()` method from another thread:
 
 [source,java,options="nowrap"]
 ----
-public interface Solver<Solution_> {
-    ...
-
-    boolean terminateEarly();
-    boolean isTerminateEarly();
-
-}
+solver.terminateEarly();
 ----
 
-When calling the `terminateEarly()` method from another thread, the `Solver` will terminate at its earliest convenience and the `solve(Solution)` method will return (in the original `Solver` thread).
+The solver then terminates at its earliest convenience.
+After termination, the `Solver.solve(Solution)` method returns in the solver thread (which is the original thread that called it).
 
 [NOTE]
 ====
-Interrupting the Solver thread (which is the thread that called `Solver.solve(Solution)`) has the same effect as calling `terminateEarly()` except that it leaves that thread in the interrupted state.
-This guarantees a graceful shutdown when an `ExecutorService` (such as a thread pool) is shutdown because that only interrupts all active threads in the pool.
+When an `ExecutorService` shuts down, it interrupts all threads in its thread pool.
+
+To guarantee a graceful shutdown of a thread pool that contains solver threads,
+an _interrupt_ of a solver thread has the same effect as calling `Solver.terminateEarly()` explicitly.
 ====
 
 
