@@ -1,10 +1,11 @@
 [id='dmn-gs-assigning-custom-datatypes-proc']
+[discrete]
 = Assigning custom data types to the DRD input and decision nodes
 
 After you create the DMN custom data types, assign them to the appropriate *DMN Input Data* and *DMN Decision* nodes in the traffic violations DRD.
 
 .Prerequisites
-* You have created the traffic violations DMN custom data types in {CENTRAL}.
+* You have created the traffic violations DMN custom data types in {DMN_EDITOR}.
 
 
 .Procedure

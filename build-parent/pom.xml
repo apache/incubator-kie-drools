@@ -58,7 +58,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.6.3</version.info.picocli>
     <version.io.micrometer>1.9.0</version.io.micrometer>
-    <version.io.quarkus>2.10.1.Final</version.io.quarkus>
+    <version.io.quarkus>2.10.2.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>2.1.22</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>

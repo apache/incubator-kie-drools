@@ -1,0 +1,108 @@
+[id='gs-evaluating-dmn_{context}']
+= Evaluating the traffic violations DMN model with {PRODUCT}
+
+The instructions to follow to evaluate the traffic violation DMN model depends on the chosen target deployment platform from the prerequisite.
+
+For more details about available options to evaluate DMN models depending on the target deployment platform, make reference to:
+<<dmn-execution-con_dmn-models>>.
+
+[id='evaluating-dmn-example-kogito_{context}']
+[discrete]
+== Example: Kogito as the target deployment platform
+
+The following examples assumes {KOGITO} is the chosen target deployment platform.
+
+The source code and detailed runtime instructions for the *Traffic_Violation* sample project are readily made available for {KOGITO} from the https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/dmn-quarkus-example[Kogito Examples GitHub repository].
+
+.Procedure
+. Determine the base URL for accessing the REST API endpoints. This requires knowing the following values (with the default local deployment values as an example):
++
+--
+* Host (`localhost`)
+* Port (`8080`)
+* REST path (none specific)
+
+Example base URL in local deployment for the traffic violations project:
+
+`\http://localhost:8080/Traffic Violation`
+
+--
+. Determine user authentication requirements.
++
+If users and roles are configured on the Kogito on Quarkus application, HTTP Basic authentication may be required with user name and password. Successful requests require that the user have the configured role.
++
+The following example demonstrates how to add credentials to a curl request:
++
+[source,sh]
+----
+curl -u username:password <request>
+----
++
+If the Kogito on Quarkus application is configured with {RH-SSO}, the request must include a bearer token:
++
+[source,java]
+----
+curl -H "Authorization: bearer $TOKEN" <request>
+----
+
+. Execute the DMN model:
++
+--
+*[POST]* `Traffic%20Violation`
+
+Example curl request:
+
+[source]
+----
+curl -L -X POST 'localhost:8080/Traffic Violation' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+--data-raw '{
+    "Driver": {
+        "Points": 2
+    },
+    "Violation": {
+        "Type": "speed",
+        "Actual Speed": 120,
+        "Speed Limit": 100
+    }
+}'
+----
+
+Example JSON request:
+
+[source,json]
+----
+{
+    "Driver": {
+        "Points": 2
+    },
+    "Violation": {
+        "Type": "speed",
+        "Actual Speed": 120,
+        "Speed Limit": 100
+    }
+}
+----
+
+Example JSON response:
+
+[source,json]
+----
+{
+    "Driver": {
+        "Points": 2
+    },
+    "Violation": {
+        "Type": "speed",
+        "Actual Speed": 120,
+        "Speed Limit": 100
+    },
+    "Fine": {
+        "Points": 3,
+        "Amount": 500
+    },
+    "Should the driver be suspended?": "No"
+}
+----
+--

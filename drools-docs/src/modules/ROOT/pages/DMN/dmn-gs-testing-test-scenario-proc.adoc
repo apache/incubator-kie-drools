@@ -1,17 +1,17 @@
 [id='dmn-gs-testing-test-scenario-proc']
+[discrete]
 = Testing the traffic violations using test scenarios
 
-Use the test scenarios designer in {CENTRAL} to test the DMN decision requirements diagrams (DRDs) and define decision logic for the traffic violations project.
+Use the test scenarios designer to test the DMN decision requirements diagrams (DRDs) and define decision logic for the traffic violations project.
 
 .Test scenario for the traffic violations example
 image::dmn/dmn-gs-traffic-violation-test-scenarios.png[Test scenario for the traffic violations example]
 
 .Prerequisites
-* You have successfully built the traffic violations project in {CENTRAL}.
+* You have successfully built the traffic violations project using {PRODUCT}.
 
 .Procedure
-. On the *traffic-violation* project's home screen, click *Add Asset* to open the *Add Asset* screen.
-. Click *Test Scenario* to open the *Create new Test Scenario* dialog.
+. Create a new Test Scenario file in your IDE.
 .. Enter `Violation Scenarios` in the *Test Scenario* field.
 .. From the *Package* list, select `com.myspace.traffic_violation`.
 .. Select `DMN` as the *Source type*.
