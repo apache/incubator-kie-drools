@@ -62,7 +62,7 @@ class DefaultTemplateColumn implements TemplateColumn {
     }
 
     private void createCellCondition(final Rule rule) {
-        StringBuffer conditionString = new StringBuffer();
+        StringBuilder conditionString = new StringBuilder();
         Column column = templateContainer.getColumn(columnName);
         column.getCondition(condition, index);
 

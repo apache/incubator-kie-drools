@@ -79,7 +79,7 @@ public class VerifierMessage extends VerifierMessageBase {
 
     @Override
     public String toString() {
-        StringBuffer str = new StringBuffer( severity.getSingular() );
+        StringBuilder str = new StringBuilder( severity.getSingular() );
 
         str.append( " id = " );
         str.append( id );
@@ -106,10 +106,10 @@ public class VerifierMessage extends VerifierMessageBase {
         return str.toString();
     }
 
-    private StringBuffer printCauses(int spaces,
+    private StringBuilder printCauses(int spaces,
                                      Collection<Cause> causes) {
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         for ( Cause cause : causes ) {
             for ( int i = 0; i < spaces; i++ ) {

@@ -100,7 +100,7 @@ public class RuleTemplate {
             final BufferedReader reader = new BufferedReader(new StringReader(
                     contents));
             String line = null;
-            final StringBuffer newLine = new StringBuffer();
+            final StringBuilder newLine = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 final Matcher matcher = pattern.matcher(line);
                 int optCols = 0;
