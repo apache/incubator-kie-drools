@@ -471,7 +471,7 @@ public class NamedEntryPoint
                     handle = this.objectStore.reconnect(handle);
                 }
                 if (handle == null) {
-                    // the handle doesn't exist. no op
+                    log.warn("The factHandle doesn't exist so cannot be deleted. " + factHandle.toExternalForm());
                     return;
                 }
 
