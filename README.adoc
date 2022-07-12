@@ -2,6 +2,13 @@
 :sonarBadge: image:https://sonarcloud.io/api/project_badges/measure?project={projectKey}
 :sonarLink: link="https://sonarcloud.io/dashboard?id={projectKey}"
 
+:branch: main
+
+:jenkinsUrl: https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner
+:branchJenkinsUrl: {jenkinsUrl}/job/{branch}
+:toolsFolderJenkinsUrl: {branchJenkinsUrl}/job/tools
+:releaseFolderJenkinsUrl: {branchJenkinsUrl}/job/release
+
 image::optaplanner-docs/src/modules/ROOT/images/shared/optaPlannerLogo.png[link="https://www.optaplanner.org/",OptaPlanner,150,150,align="center"]
 
 image:https://img.shields.io/maven-central/v/org.optaplanner/optaplanner-bom?logo=apache-maven&style=for-the-badge["Maven artifact", link="https://ossindex.sonatype.org/component/pkg:maven/org.optaplanner/optaplanner-bom"]
@@ -93,3 +100,14 @@ Use one of the following ways to build your OptaPlanner project:
 == OptaPlanner CI status
 
 You can check the CI status of the OptaPlanner repositories from the https://kiegroup.github.io/optaplanner/[Chain Status webpage].
+
+=== Jenkins CI Jobs (need VPN access) ===
+
+All Jenkins jobs can be found under the OptaPlanner folder: {jenkinsUrl}
+
+Interesting Jenkins CI jobs (need VPN access):
+
+- {toolsFolderJenkinsUrl}/job/update-quarkus-all/[Update Quarkus version]
+- {toolsFolderJenkinsUrl}/job/update-drools-optaplanner/[Update Drools version]
+- {releasefolderjenkinsurl}/job/optaplanner-release[Release pipeline] (only available on release branches)
+- {releasefolderjenkinsurl}/job/optaplanner-post-release[Post-Release pipeline] (only available on release branches)
