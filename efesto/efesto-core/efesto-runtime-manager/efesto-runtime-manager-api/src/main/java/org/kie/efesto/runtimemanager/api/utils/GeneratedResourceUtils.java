@@ -17,6 +17,7 @@ package org.kie.efesto.runtimemanager.api.utils;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,19 +50,21 @@ public class GeneratedResourceUtils {
     }
 
     public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, String modelType) {
-        return getIndexFile(modelType).flatMap(indexFile -> {
-            try {
-                GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
-                return generatedResources.stream()
-                        .filter(generatedResource -> generatedResource instanceof GeneratedExecutableResource &&
-                                ((GeneratedExecutableResource) generatedResource).getFri().equals(fri))
-                        .findFirst()
-                        .map(GeneratedExecutableResource.class::cast);
-            } catch (IOException e) {
-                logger.debug("Failed to read GeneratedResources from {}.", indexFile.getName(), e);
-                return Optional.empty();
-            }
-        });
+        return getIndexFile(modelType).flatMap(indexFile -> getGeneratedExecutableResource(fri, indexFile));
+    }
+
+    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, IndexFile indexFile) {
+        try {
+            GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
+            return generatedResources.stream()
+                    .filter(generatedResource -> generatedResource instanceof GeneratedExecutableResource &&
+                            ((GeneratedExecutableResource) generatedResource).getFri().equals(fri))
+                    .findFirst()
+                    .map(GeneratedExecutableResource.class::cast);
+        } catch (IOException e) {
+            logger.debug("Failed to read GeneratedResources from {}.", indexFile.getName(), e);
+            return Optional.empty();
+        }
     }
 
     public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(FRI fri, String modelType) {
@@ -81,18 +84,20 @@ public class GeneratedResourceUtils {
     }
 
     public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(String modelType) {
+        return getIndexFile(modelType).map(indexFile -> getAllGeneratedExecutableResources(indexFile)).orElse(Collections.EMPTY_SET);
+    }
+
+    public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(IndexFile indexFile) {
         Collection<GeneratedExecutableResource> toReturn = new HashSet<>();
-        getIndexFile(modelType).ifPresent(indexFile -> {
-            try {
-                GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
-                toReturn.addAll(generatedResources.stream()
-                                        .filter(generatedResource -> generatedResource instanceof GeneratedExecutableResource)
-                                        .map(GeneratedExecutableResource.class::cast)
-                                        .collect(Collectors.toSet()));
-            } catch (IOException e) {
-                logger.debug("Failed to read GeneratedClassResource from {}.", indexFile.getName(), e);
-            }
-        });
+        try {
+            GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
+            toReturn.addAll(generatedResources.stream()
+                                    .filter(generatedResource -> generatedResource instanceof GeneratedExecutableResource)
+                                    .map(GeneratedExecutableResource.class::cast)
+                                    .collect(Collectors.toSet()));
+        } catch (IOException e) {
+            logger.debug("Failed to read GeneratedClassResource from {}.", indexFile.getName(), e);
+        }
         return toReturn;
     }
 
@@ -102,9 +107,9 @@ public class GeneratedResourceUtils {
             try {
                 GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
                 toReturn.addAll(generatedResources.stream()
-                        .filter(generatedResource -> generatedResource instanceof GeneratedClassResource)
-                        .map(GeneratedClassResource.class::cast)
-                        .collect(Collectors.toSet()));
+                                        .filter(generatedResource -> generatedResource instanceof GeneratedClassResource)
+                                        .map(GeneratedClassResource.class::cast)
+                                        .collect(Collectors.toSet()));
             } catch (IOException e) {
                 logger.debug("Failed to read GeneratedClassResource from {}.", indexFile.getName(), e);
             }

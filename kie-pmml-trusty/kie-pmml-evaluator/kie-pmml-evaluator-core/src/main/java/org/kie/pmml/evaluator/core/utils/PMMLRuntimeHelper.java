@@ -132,6 +132,12 @@ public class PMMLRuntimeHelper {
         return toReturn;
     }
 
+    public static Collection<KiePMMLModelFactory> loadAllKiePMMLModelFactories(Collection<GeneratedExecutableResource> finalResources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        return finalResources
+                .stream().map(finalResource -> loadKiePMMLModelFactory(finalResource, memoryCompilerClassLoader))
+                .collect(Collectors.toSet());
+    }
+
     @SuppressWarnings("unchecked")
     static KiePMMLModelFactory loadKiePMMLModelFactory(FRI fri, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         GeneratedExecutableResource finalResource = getGeneratedExecutableResource(fri, PMML_STRING)
