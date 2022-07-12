@@ -261,7 +261,7 @@ public class LhsBuilder implements SourceBuilder {
     }
 
     public String getResult() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         if ( !isMultipleConstraints() ) {
             String nl = "";
             for ( String content : values ) {

@@ -86,7 +86,7 @@ public class RhsBuilder implements SourceBuilder {
     }
 
     public String getResult() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for ( Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {
             buf.append( iter.next() );
             if (iter.hasNext()) {

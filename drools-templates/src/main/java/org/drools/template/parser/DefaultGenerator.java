@@ -114,7 +114,7 @@ public class DefaultGenerator
      * @see org.kie.decisiontable.parser.Generator#getDrl()
      */
     public String getDrl() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for ( String rule : rules ) {
             sb.append( rule ).append( "\n" );
         }

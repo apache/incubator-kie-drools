@@ -16,7 +16,7 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Stack;
+import java.util.Collection;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.AccumulateNode;
@@ -35,7 +35,7 @@ public class AccumulateNodeVisitor extends AbstractNetworkNodeVisitor {
 
     @Override
     protected void doVisit(NetworkNode node,
-                           Stack<NetworkNode> nodeStack,
+                           Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         AccumulateNode an = (AccumulateNode) node;
         DefaultNodeInfo ni = info.getNodeInfo( node );

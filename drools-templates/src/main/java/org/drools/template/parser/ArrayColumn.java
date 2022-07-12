@@ -45,7 +45,7 @@ public class ArrayColumn extends AbstractColumn {
 
     public String getCondition(String condition, int index) {
         if (index == -1) {
-            StringBuffer conditionString = new StringBuffer("ArrayCell(row == r, column == $param");
+            StringBuilder conditionString = new StringBuilder("ArrayCell(row == r, column == $param");
             if (!StringUtils.isEmpty(condition)) {
                 conditionString.append(", value ").append(condition);
             }
