@@ -16,9 +16,10 @@ import org.kie.api.runtime.KieSession;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
-import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
-import static org.junit.Assert.assertEquals;
+
 
 // DROOLS-4188
 public class DeclaredTypeDifferentKJarIncludesTest extends BaseModelTest {
@@ -70,8 +71,8 @@ public class DeclaredTypeDifferentKJarIncludesTest extends BaseModelTest {
         newSuperKieBase.insert(10);
 
         int numberOfRulesFired = newSuperKieBase.fireAllRules();
-        assertEquals(2, numberOfRulesFired);
-        assertEquals(0, newSuperKieBase.getObjects().size());
+        assertThat(numberOfRulesFired).isEqualTo(2);
+        assertThat(newSuperKieBase.getObjects().size()).isEqualTo(0);
     }
 
     private KieBase createKieBase() {

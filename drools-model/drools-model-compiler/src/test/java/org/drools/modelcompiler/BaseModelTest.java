@@ -40,11 +40,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static java.util.Arrays.asList;
-
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {

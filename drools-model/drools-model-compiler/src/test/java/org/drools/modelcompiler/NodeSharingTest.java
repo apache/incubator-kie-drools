@@ -44,8 +44,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NodeSharingTest extends BaseModelTest {
 
@@ -82,12 +81,12 @@ public class NodeSharingTest extends BaseModelTest {
         ksession.insert( mario );
         ksession.fireAllRules();
 
-        assertTrue( result.contains( mark ) );
-        assertTrue( result.contains( mario ) );
+        assertThat(result.contains(mark)).isTrue();
+        assertThat(result.contains(mario)).isTrue();
 
         // Alpha node "name != Edson" should be shared between 3rd and 4th pattern.
         // therefore alpha nodes should be a total of 2: name == Edson, name != Edson
-        assertEquals( 2, ReteDumper.collectNodes( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(2);
     }
 
     @Test
@@ -105,7 +104,7 @@ public class NodeSharingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        assertEquals( 1, ReteDumper.collectNodes( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
@@ -127,7 +126,7 @@ public class NodeSharingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str1, str2 );
 
-        assertEquals( 1, ReteDumper.collectNodes( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
@@ -147,11 +146,11 @@ public class NodeSharingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        assertEquals( 1, ReteDumper.collectNodes( ksession ).stream().filter( BetaNode.class::isInstance ).count() );
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(BetaNode.class::isInstance).count()).isEqualTo(1);
 
         EntryPointNode epn = (( InternalKnowledgeBase ) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
         ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( Person.class ) );
-        assertEquals( 1, otn.getSinks().length );
+        assertThat(otn.getSinks().length).isEqualTo(1);
     }
 
     @Test
@@ -170,7 +169,7 @@ public class NodeSharingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        assertEquals( 1, ReteDumper.collectNodes( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
@@ -194,7 +193,7 @@ public class NodeSharingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        assertEquals( 2, ReteDumper.collectNodes( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(2);
 
         List<String> results = new ArrayList<>();
         ksession.setGlobal("list", results);
@@ -204,11 +203,11 @@ public class NodeSharingTest extends BaseModelTest {
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.fireAllRules();
 
-        assertEquals(4, results.size());
-        assertTrue(results.contains("Mark is 37"));
-        assertTrue(results.contains("Mark has 37 years"));
-        assertTrue(results.contains("Mario is 40"));
-        assertTrue(results.contains("Mario has 40 years"));
+        assertThat(results.size()).isEqualTo(4);
+        assertThat(results.contains("Mark is 37")).isTrue();
+        assertThat(results.contains("Mark has 37 years")).isTrue();
+        assertThat(results.contains("Mario is 40")).isTrue();
+        assertThat(results.contains("Mario has 40 years")).isTrue();
     }
 
     @Test
@@ -225,9 +224,9 @@ public class NodeSharingTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert(new Factor(10.0));
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
@@ -244,9 +243,9 @@ public class NodeSharingTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert(new Factor(25.0));
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
     }
 
     public static class Factor {
@@ -283,7 +282,7 @@ public class NodeSharingTest extends BaseModelTest {
         EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNodes().values().iterator().next();
         ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(Integer.class));
         LeftInputAdapterNode lian = (LeftInputAdapterNode) otn.getSinks()[0];
-        assertEquals(1, lian.getSinks().length);
+        assertThat(lian.getSinks().length).isEqualTo(1);
     }
 
     public void testShareFrom() {
@@ -315,10 +314,10 @@ public class NodeSharingTest extends BaseModelTest {
         p.getAddresses().add(new Address("GHI", 3, "Osaka"));
 
         ksession.insert(p);
-        assertEquals(4, ksession.fireAllRules());
-        assertEquals(4, list.size());
+        assertThat(ksession.fireAllRules()).isEqualTo(4);
+        assertThat(list.size()).isEqualTo(4);
 
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(FromNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(FromNode.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
@@ -347,13 +346,13 @@ public class NodeSharingTest extends BaseModelTest {
         ksession.insert(new Person("Edson", 35));
         ksession.insert(new Person("Mario", 40));
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(2, results.size());
-        assertEquals(77, results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.iterator().next().getValue()).isEqualTo(77);
 
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AccumulateNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AccumulateNode.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
@@ -382,13 +381,13 @@ public class NodeSharingTest extends BaseModelTest {
         ksession.insert(new Person("Edson", 35));
         ksession.insert(new Person("Mario", 40));
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(2, results.size());
-        assertEquals(77, results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.iterator().next().getValue()).isEqualTo(77);
 
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AccumulateNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(AccumulateNode.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
@@ -412,13 +411,13 @@ public class NodeSharingTest extends BaseModelTest {
         Person mario = new Person("Mario", 40);
 
         ksession.insert(mario);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(2, results.size());
-        assertEquals("ok", results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.iterator().next().getValue()).isEqualTo("ok");
 
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(ExistsNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(ExistsNode.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
@@ -442,13 +441,13 @@ public class NodeSharingTest extends BaseModelTest {
         Person mario = new Person("Mario", 40);
 
         ksession.insert(mario);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(2, results.size());
-        assertEquals("ok", results.iterator().next().getValue());
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.iterator().next().getValue()).isEqualTo("ok");
 
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(NotNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(NotNode.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
@@ -478,14 +477,14 @@ public class NodeSharingTest extends BaseModelTest {
         clock.advanceTime(6, TimeUnit.SECONDS);
         ksession.insert(new StockTick("ACME"));
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         clock.advanceTime(4, TimeUnit.SECONDS);
         ksession.insert(new StockTick("ACME"));
 
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(JoinNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(JoinNode.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
@@ -514,13 +513,13 @@ public class NodeSharingTest extends BaseModelTest {
         clock.advanceTime(6, TimeUnit.SECONDS);
         ksession.insert(new StockTick("ACME"));
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         clock.advanceTime(4, TimeUnit.SECONDS);
         ksession.insert(new StockTick("ACME"));
 
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(JoinNode.class::isInstance).count());
+        assertThat(ReteDumper.collectNodes(ksession).stream().filter(JoinNode.class::isInstance).count()).isEqualTo(1);
     }
 }

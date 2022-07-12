@@ -5,7 +5,7 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import org.junit.Test;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LambdaUtilTest {
 
@@ -18,7 +18,7 @@ public class LambdaUtilTest {
         Expression expected = parseExpression("(_this) -> _this.getTimeFieldAsDate().getTime()");
 
         Expression actual = LambdaUtil.appendNewLambdaToOld(l1, l2);
-        assertEquals(expected.toString(), actual.toString());
+        assertThat(actual.toString()).isEqualTo(expected.toString());
     }
 
     @Test
@@ -30,6 +30,6 @@ public class LambdaUtilTest {
         Expression expected = parseExpression("(_this) -> _this.getDueDate().getTime().getTime()");
 
         Expression actual = LambdaUtil.appendNewLambdaToOld(l1, l2);
-        assertEquals(expected.toString(), actual.toString());
+        assertThat(actual.toString()).isEqualTo(expected.toString());
     }
 }

@@ -42,9 +42,6 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class FromTest extends BaseModelTest {
 
@@ -67,12 +64,12 @@ public class FromTest extends BaseModelTest {
 
         ksession.setGlobal("list", strings);
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         List<String> results = getObjectsIntoList(ksession, String.class);
-        assertFalse(results.contains("a"));
-        assertTrue(results.contains("Hello World!"));
-        assertFalse(results.contains("xyz"));
+        assertThat(results.contains("a")).isFalse();
+        assertThat(results.contains("Hello World!")).isTrue();
+        assertThat(results.contains("xyz")).isFalse();
     }
 
     @Test
@@ -169,7 +166,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert( charlie ); // object has to be in the session in order to be modified, but it's retrieved with a FromNode
         ksession.fireAllRules();
 
-        assertEquals("Charlesx", charlie.getName());
+        assertThat(charlie.getName()).isEqualTo("Charlesx");
     }
 
     public static Integer getLength(String ignoredParameter, String s, Integer offset) {
@@ -244,8 +241,8 @@ public class FromTest extends BaseModelTest {
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "test", list.get(0) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("test");
     }
 
     @Test
@@ -265,7 +262,7 @@ public class FromTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        final List<String> list = new ArrayList<>();
+        final List<Person> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         ksession.insert( "Mario" );
@@ -273,8 +270,8 @@ public class FromTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( new Person("Mario", 44), list.get(0) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo(new Person("Mario", 44));
     }
 
     @Test
@@ -300,7 +297,7 @@ public class FromTest extends BaseModelTest {
         petPerson.setPets( petMap );
 
         ksession.insert( petPerson );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -329,7 +326,7 @@ public class FromTest extends BaseModelTest {
         petPerson.setPets( petMap );
 
         ksession.insert( petPerson );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -349,7 +346,7 @@ public class FromTest extends BaseModelTest {
 
         ksession.insert( new Pojo( Arrays.asList(1,2,3) ) );
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 2, rulesFired );
+        assertThat(rulesFired).isEqualTo(2);
     }
 
     @Test
@@ -369,7 +366,7 @@ public class FromTest extends BaseModelTest {
 
         ksession.insert( new Pojo( Arrays.asList(1,2,3) ) );
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 1, rulesFired );
+        assertThat(rulesFired).isEqualTo(1);
     }
 
     @Test
@@ -394,7 +391,7 @@ public class FromTest extends BaseModelTest {
         ksession.insert(p2);
         ksession.insert(p3);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -476,7 +473,7 @@ public class FromTest extends BaseModelTest {
 
         ksession.insert(john);
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -500,7 +497,7 @@ public class FromTest extends BaseModelTest {
         MyPerson john = new MyPerson("John");
         ksession.insert(john);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(list).containsExactlyInAnyOrder("Dummy");
     }
 
@@ -521,7 +518,7 @@ public class FromTest extends BaseModelTest {
         List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(list).containsExactlyInAnyOrder("Dummy");
     }
 
@@ -545,7 +542,7 @@ public class FromTest extends BaseModelTest {
 
         ksession.insert("John");
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(list).containsExactlyInAnyOrder("DummyJohn");
     }
 
@@ -623,7 +620,7 @@ public class FromTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -749,8 +746,8 @@ public class FromTest extends BaseModelTest {
 
         int ruleFired = ksession.fireAllRules();
 
-        assertEquals( 2, ruleFired );
-        assertEquals( "red", hashSet.iterator().next() );
+        assertThat(ruleFired).isEqualTo(2);
+        assertThat(hashSet.iterator().next()).isEqualTo("red");
     }
 
     @Test
@@ -785,8 +782,8 @@ public class FromTest extends BaseModelTest {
 
         int ruleFired = ksession.fireAllRules();
 
-        assertEquals( 1, ruleFired );
-        assertEquals( "red", hashSet.iterator().next() );
+        assertThat(ruleFired).isEqualTo(1);
+        assertThat(hashSet.iterator().next()).isEqualTo("red");
     }
 
     @Test
@@ -818,8 +815,8 @@ public class FromTest extends BaseModelTest {
 
         int ruleFired = ksession.fireAllRules();
 
-        assertEquals( 1, ruleFired );
-        assertEquals( "red", hashSet.iterator().next() );
+        assertThat(ruleFired).isEqualTo(1);
+        assertThat(hashSet.iterator().next()).isEqualTo("red");
     }
 
     public static class DummyService {
@@ -867,8 +864,8 @@ public class FromTest extends BaseModelTest {
 
         int ruleFired = ksession.fireAllRules();
 
-        assertEquals( 1, ruleFired );
-        assertEquals( "red", hashSet.iterator().next() );
+        assertThat(ruleFired).isEqualTo(1);
+        assertThat(hashSet.iterator().next()).isEqualTo("red");
     }
 
 
@@ -903,8 +900,8 @@ public class FromTest extends BaseModelTest {
 
         int ruleFired = ksession.fireAllRules();
 
-        assertEquals( 1, ruleFired );
-        assertEquals( "red", hashSet.iterator().next() );
+        assertThat(ruleFired).isEqualTo(1);
+        assertThat(hashSet.iterator().next()).isEqualTo("red");
     }
 
     @Test
@@ -935,8 +932,8 @@ public class FromTest extends BaseModelTest {
 
         int ruleFired = ksession.fireAllRules();
 
-        assertEquals( 1, ruleFired );
-        assertEquals( "red", hashSet.iterator().next() );
+        assertThat(ruleFired).isEqualTo(1);
+        assertThat(hashSet.iterator().next()).isEqualTo("red");
     }
 
     @Test
@@ -973,8 +970,8 @@ public class FromTest extends BaseModelTest {
 
         int ruleFired = ksession.fireAllRules();
 
-        assertEquals( 1, ruleFired );
-        assertEquals( "red", hashSet.iterator().next() );
+        assertThat(ruleFired).isEqualTo(1);
+        assertThat(hashSet.iterator().next()).isEqualTo("red");
     }
 
     @Test
@@ -1011,8 +1008,8 @@ public class FromTest extends BaseModelTest {
 
         int ruleFired = ksession.fireAllRules();
 
-        assertEquals( 1, ruleFired );
-        assertEquals( "red", hashSet.iterator().next() );
+        assertThat(ruleFired).isEqualTo(1);
+        assertThat(hashSet.iterator().next()).isEqualTo("red");
     }
 
     @Test
@@ -1053,7 +1050,7 @@ public class FromTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
 
         ksession.insert( "A" );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -1080,6 +1077,6 @@ public class FromTest extends BaseModelTest {
         ksession.insert("testtest");
 
         ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
     }
 }

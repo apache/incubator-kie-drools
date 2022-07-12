@@ -29,6 +29,7 @@ import java.util.Set;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
+
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -37,9 +38,6 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class MvelDialectTest extends BaseModelTest {
 
@@ -64,7 +62,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertTrue(results.contains("Hello World"));
+        assertThat(results.contains("Hello World")).isTrue();
     }
 
     @Test
@@ -100,11 +98,11 @@ public class MvelDialectTest extends BaseModelTest {
 
         ksession.insert(p);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         Map<String, String> itemsString = p.getItemsString();
 
-        assertEquals(4, itemsString.keySet().size());
+        assertThat(itemsString.keySet().size()).isEqualTo(4);
     }
 
     @Test
@@ -124,7 +122,8 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Person> results = getObjectsIntoList(ksession, Person.class);
-        assertEquals(1, results.iterator().next().getAge());
+        assertThat(results.iterator().next().getAge()).isEqualTo(1);
+
         results.forEach(System.out::println);
     }
 
@@ -163,8 +162,8 @@ public class MvelDialectTest extends BaseModelTest {
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
         System.out.println(results);
-        assertFalse(results.contains("Hello World"));
-        assertTrue(results.contains("Modified person age to 1 for: Matteo"));
+        assertThat(results.contains("Hello World")).isFalse();
+        assertThat(results.contains("Modified person age to 1 for: Matteo")).isTrue();
     }
 
     @Test
@@ -186,7 +185,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.fireAllRules();
 
         List<Address> results = getObjectsIntoList(ksession, Address.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
     }
 
     public static class TempDecl1 {}
@@ -245,7 +244,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.fireAllRules();
 
         List<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test
@@ -298,7 +297,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.fireAllRules();
 
         List<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test
@@ -332,7 +331,7 @@ public class MvelDialectTest extends BaseModelTest {
             ksession.setGlobal( "value", sb );
             ksession.fireAllRules();
 
-            assertEquals( "mario", sb.toString() );
+            assertThat(sb.toString()).isEqualTo("mario");
         } finally {
             ksession.dispose();
         }
@@ -371,7 +370,7 @@ public class MvelDialectTest extends BaseModelTest {
             ksession.setGlobal( "value", sb );
             ksession.fireAllRules();
 
-            assertEquals( "mario", sb.toString() );
+            assertThat(sb.toString()).isEqualTo("mario");
         } finally {
             ksession.dispose();
         }
@@ -398,8 +397,8 @@ public class MvelDialectTest extends BaseModelTest {
 
         Person john = new Person("John", 24);
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(1, john.getAge());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(john.getAge()).isEqualTo(1);
     }
 
     @Test
@@ -416,7 +415,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "end";
 
         Results results = createKieBuilder( drl ).getResults();
-        assertFalse(results.getMessages( Message.Level.ERROR ).isEmpty());
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
     @Test
@@ -438,8 +437,8 @@ public class MvelDialectTest extends BaseModelTest {
         john.setMoney( new BigDecimal( 70000 ) );
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 120000 ), john.getMoney());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(john.getMoney()).isEqualTo(new BigDecimal( 120000 ));
     }
 
     @Test
@@ -464,8 +463,9 @@ public class MvelDialectTest extends BaseModelTest {
         john.setMoney( new BigDecimal( 70000 ) );
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 70200 ), john.getMoney());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(john.getMoney()).isEqualTo(new BigDecimal( 70200 ));
+
     }
 
     @Test
@@ -495,7 +495,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         ksession.insert(john);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(results).containsExactly(valueOf(1), valueOf(2));
     }
 
@@ -527,8 +527,8 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         ksession.insert(mark);
 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 70000 ), results.iterator().next());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(results.iterator().next()).isEqualTo(new BigDecimal( 70000 ));
     }
 
     @Test
@@ -559,8 +559,8 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         ksession.insert(mark);
 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 80 ), results.iterator().next());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(results.iterator().next()).isEqualTo(new BigDecimal( 80 ));
     }
 
     @Test
@@ -599,7 +599,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         ksession.insert(mark);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(results).containsOnly(john);
         assertThat(results.iterator().next().getName()).isEqualTo("144");
     }
@@ -634,7 +634,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         ksession.insert(mark);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(results).containsExactly(john);
     }
 
@@ -668,7 +668,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         ksession.insert(mark);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(results).containsExactly(john);
     }
 
@@ -698,8 +698,8 @@ public class MvelDialectTest extends BaseModelTest {
         john.setMoney( new BigDecimal( 70000 ) );
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 400000 ), john.getMoney());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(john.getMoney()).isEqualTo(new BigDecimal( 400000 ));
     }
 
     @Test
@@ -736,8 +736,8 @@ public class MvelDialectTest extends BaseModelTest {
         john.setMoney( new BigDecimal( 70000 ) );
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 0 ), john.getMoney());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(john.getMoney()).isEqualTo(new BigDecimal( 0 ));
     }
 
     @Test
@@ -761,8 +761,8 @@ public class MvelDialectTest extends BaseModelTest {
         john.setOtherBigDecimalField(new BigDecimal("10"));
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 7002 ), john.getMoney());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(john.getMoney()).isEqualTo(new BigDecimal( 7002 ));
     }
 
     @Test
@@ -785,8 +785,8 @@ public class MvelDialectTest extends BaseModelTest {
         john.setMoney( new BigDecimal( 70000 ) );
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 140000 ), john.getMoney());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(john.getMoney()).isEqualTo(new BigDecimal( 140000 ));
     }
 
     @Test
@@ -816,8 +816,8 @@ public class MvelDialectTest extends BaseModelTest {
         john.setMoney( new BigDecimal( 70000 ) );
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 30000 ), john.getMoney());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(john.getMoney()).isEqualTo(new BigDecimal( 30000 ));
         assertThat(logMessages).containsExactly(
                 "before John, money = 70000",
                 "after John, money = 30000");
@@ -847,9 +847,10 @@ public class MvelDialectTest extends BaseModelTest {
         leonardo.setMoney( new BigDecimal( 500 ) );
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( "1000.23" ), john.getMoney());
-        assertEquals(new BigDecimal( 500 ), leonardo.getMoney());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(john.getMoney()).isEqualTo(new BigDecimal( "1000.23" ));
+        assertThat(leonardo.getMoney()).isEqualTo(new BigDecimal( 500 ));
+
     }
 
     @Test
@@ -871,8 +872,8 @@ public class MvelDialectTest extends BaseModelTest {
         john.setSalary( 70000 );
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(120000, (int) john.getSalary());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat((int) john.getSalary()).isEqualTo(120000);
     }
 
     @Test
@@ -894,8 +895,8 @@ public class MvelDialectTest extends BaseModelTest {
         john.setSalary( 70000 );
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(50000, (int) john.getSalary());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat((int) john.getSalary()).isEqualTo(50000);
     }
 
     @Test
@@ -926,7 +927,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         Arrays.asList(mario, luca, leonardo).forEach(ksession::insert);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
     }
 
@@ -971,7 +972,7 @@ public class MvelDialectTest extends BaseModelTest {
         Address a = new Address("Milan");
         ksession.insert(a);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
         assertThat(addresses).contains("Milan");
     }
@@ -995,9 +996,9 @@ public class MvelDialectTest extends BaseModelTest {
         Person mario = new Person();
         ksession.insert( mario );
 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals("Mario", mario.getName());
-        assertEquals(46, mario.getAge());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(mario.getName()).isEqualTo("Mario");
+        assertThat(mario.getAge()).isEqualTo(46);
     }
 
     @Test
@@ -1038,8 +1039,8 @@ public class MvelDialectTest extends BaseModelTest {
         john.setMoney( new BigDecimal( 70000 ) );
 
         ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 0 ), john.getMoney());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(john.getMoney()).isEqualTo(new BigDecimal( 0 ));
     }
 
     @Test
@@ -1061,7 +1062,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(47);
         ksession.fireAllRules();
 
-        assertTrue(result.contains("R"));
+        assertThat(result.contains("R")).isTrue();
     }
 
     @Test
@@ -1085,7 +1086,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(p);
         int fired = ksession.fireAllRules();
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test
@@ -1108,7 +1109,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         Person me = new Person( "Mario", 47 );
         ksession.insert( me );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -1132,7 +1133,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         Person me = new Person( "Mario", 47 );
         ksession.insert( me );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -1162,7 +1163,7 @@ public class MvelDialectTest extends BaseModelTest {
         me.addAddress(address);
 
         ksession.insert( me);
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         assertThat(results).containsOnly("Address");
     }
@@ -1225,7 +1226,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         ksession.insert(leonardo);
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         assertThat(results).containsOnly(leonardo);
     }
@@ -1268,7 +1269,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         ksession.insert(leonardo);
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         assertThat(results).containsExactly(valueOf(1012), valueOf(1012), valueOf(1012), valueOf(101212));
     }
@@ -1320,7 +1321,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(leonardo);
 
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 3, rulesFired);
+        assertThat(rulesFired).isEqualTo(3);
         assertThat(results).containsExactly("John");
     }
 
@@ -1467,7 +1468,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(p);
         ksession.fireAllRules();
 
-        assertTrue(p.getAgeInSeconds().equals(new BigInteger("10000")));
+        assertThat(p.getAgeInSeconds().equals(new BigInteger("10000"))).isTrue();
     }
 
     @Test
@@ -1488,7 +1489,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(p);
         ksession.fireAllRules();
 
-        assertTrue(p.getMoney().equals(new BigDecimal("10000")));
+        assertThat(p.getMoney().equals(new BigDecimal("10000"))).isTrue();
     }
 
     @Test
@@ -1509,7 +1510,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(p);
         int fired = ksession.fireAllRules();
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test
@@ -1536,8 +1537,8 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(p);
         int fired = ksession.fireAllRules();
 
-        assertEquals(20, p.getAge());
-        assertEquals(0, p.getAddresses().size());
-        assertEquals(1, fired);
+        assertThat(p.getAge()).isEqualTo(20);
+        assertThat(p.getAddresses().size()).isEqualTo(0);
+        assertThat(fired).isEqualTo(1);
     }
 }

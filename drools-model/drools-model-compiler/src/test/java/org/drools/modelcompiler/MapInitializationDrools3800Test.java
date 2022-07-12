@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class MapInitializationDrools3800Test extends BaseModelTest {
 
@@ -96,7 +95,7 @@ public class MapInitializationDrools3800Test extends BaseModelTest {
         fact.setName("TEST");
         ksession.insert(fact);
 
-        assertEquals(1, ksession.fireAllRules(3));
+        assertThat(ksession.fireAllRules(3)).isEqualTo(1);
 
         assertThat(fact.getResult()).isEqualTo("OK");
     }

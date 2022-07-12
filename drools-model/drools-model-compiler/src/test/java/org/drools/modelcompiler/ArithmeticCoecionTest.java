@@ -22,7 +22,7 @@ import org.drools.modelcompiler.domain.ValueHolder;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArithmeticCoecionTest extends BaseModelTest {
 
@@ -173,6 +173,6 @@ public class ArithmeticCoecionTest extends BaseModelTest {
         ksession.insert(holder);
         int fired = ksession.fireAllRules();
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 }
