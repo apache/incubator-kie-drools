@@ -46,59 +46,59 @@ public class PhreakExistsNode {
         }
     }
 
-public void doNormalNode(ExistsNode existsNode,
-                         LeftTupleSink sink,
-                         BetaMemory bm,
-                         ReteEvaluator reteEvaluator,
-                         TupleSets<LeftTuple> srcLeftTuples,
-                         TupleSets<LeftTuple> trgLeftTuples,
-                         TupleSets<LeftTuple> stagedLeftTuples) {
+    public void doNormalNode(ExistsNode existsNode,
+                             LeftTupleSink sink,
+                             BetaMemory bm,
+                             ReteEvaluator reteEvaluator,
+                             TupleSets<LeftTuple> srcLeftTuples,
+                             TupleSets<LeftTuple> trgLeftTuples,
+                             TupleSets<LeftTuple> stagedLeftTuples) {
 
-    TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
+        TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
-    if (srcLeftTuples.getDeleteFirst() != null) {
-        doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        if (srcLeftTuples.getDeleteFirst() != null) {
+            doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+        if (srcLeftTuples.getUpdateFirst() != null )  {
+            RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
+                                                                       srcLeftTuples);
+        }
+
+        if ( srcRightTuples.getUpdateFirst() != null ) {
+            RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
+                                                                        existsNode,
+                                                                        srcRightTuples); // this also preserves the next rightTuple
+        }
+
+        if (srcRightTuples.getInsertFirst() != null) {
+            // left deletes must come before right deletes. Otherwise right deletes could
+            // stage a deletion, that is later deleted in the rightDelete, causing potential problems
+            doRightInserts(existsNode, sink, bm, reteEvaluator, srcRightTuples, trgLeftTuples);
+        }
+
+        if (srcRightTuples.getUpdateFirst() != null) {
+            // must come after rightInserts and before rightDeletes, to avoid staging clash
+            doRightUpdates(existsNode, sink, bm, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+        if (srcRightTuples.getDeleteFirst() != null) {
+            // must come after rightUpdetes, to avoid staging clash
+            doRightDeletes(existsNode, bm, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+
+        if (srcLeftTuples.getUpdateFirst() != null) {
+            doLeftUpdates(existsNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+        if (srcLeftTuples.getInsertFirst() != null) {
+            doLeftInserts(existsNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples);
+        }
+
+        srcRightTuples.resetAll();
+        srcLeftTuples.resetAll();
     }
-
-    if (srcLeftTuples.getUpdateFirst() != null )  {
-        RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
-                                                                   srcLeftTuples);
-    }
-
-    if ( srcRightTuples.getUpdateFirst() != null ) {
-        RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
-                                                                    existsNode,
-                                                                    srcRightTuples); // this also preserves the next rightTuple
-    }
-
-    if (srcRightTuples.getInsertFirst() != null) {
-        // left deletes must come before right deletes. Otherwise right deletes could
-        // stage a deletion, that is later deleted in the rightDelete, causing potential problems
-        doRightInserts(existsNode, sink, bm, reteEvaluator, srcRightTuples, trgLeftTuples);
-    }
-
-    if (srcRightTuples.getUpdateFirst() != null) {
-        // must come after rightInserts and before rightDeletes, to avoid staging clash
-        doRightUpdates(existsNode, sink, bm, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-    }
-
-    if (srcRightTuples.getDeleteFirst() != null) {
-        // must come after rightUpdetes, to avoid staging clash
-        doRightDeletes(existsNode, bm, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-    }
-
-
-    if (srcLeftTuples.getUpdateFirst() != null) {
-        doLeftUpdates(existsNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-    }
-
-    if (srcLeftTuples.getInsertFirst() != null) {
-        doLeftInserts(existsNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples);
-    }
-
-    srcRightTuples.resetAll();
-    srcLeftTuples.resetAll();
-}
 
     public void doLeftInserts(ExistsNode existsNode,
                               LeftTupleSink sink,
@@ -451,17 +451,13 @@ public void doNormalNode(ExistsNode existsNode,
         for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
 
-            FastIterator it = existsNode.getRightIterator(rtm);
-
-            boolean useComparisonIndex = rtm.getIndexType().isComparison();
-            RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) it.next(rightTuple);
-
             if (rightTuple.getMemory() != null) {
                 // it may have been staged and never actually added
                 rtm.remove(rightTuple);
             }
 
             if (rightTuple.getBlocked() != null) {
+                FastIterator it = existsNode.getRightIterator(rtm);
 
                 for (LeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; ) {
                     LeftTuple temp = leftTuple.getBlockedNext();
@@ -474,13 +470,8 @@ public void doNormalNode(ExistsNode existsNode,
                         continue;
                     }
 
-                    constraints.updateFromTuple(contextEntry,
-                                                reteEvaluator,
-                                                leftTuple);
-
-                    if (useComparisonIndex) {
-                        rootBlocker = (RightTuple) rtm.getFirst(leftTuple);
-                    }
+                    constraints.updateFromTuple(contextEntry, reteEvaluator, leftTuple);
+                    RightTuple rootBlocker = (RightTuple) rtm.getFirst(leftTuple);
 
                     // we know that older tuples have been checked so continue previously
                     for (RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker)) {

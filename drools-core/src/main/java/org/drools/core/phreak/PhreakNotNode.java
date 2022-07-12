@@ -470,18 +470,13 @@ public class PhreakNotNode {
         for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
 
-            FastIterator it = notNode.getRightIterator(rtm);
-
-            // assign now, so we can remove from memory before doing any possible propagations
-            boolean useComparisonIndex = rtm.getIndexType().isComparison();
-            RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) it.next(rightTuple);
-
             if (rightTuple.getMemory() != null) {
                 // it may have been staged and never actually added
                 rtm.remove(rightTuple);
             }
 
             if (rightTuple.getBlocked() != null) {
+                FastIterator it = notNode.getRightIterator(rtm);
                 for (LeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; ) {
                     LeftTuple temp = leftTuple.getBlockedNext();
 
@@ -493,13 +488,8 @@ public class PhreakNotNode {
                         continue;
                     }
 
-                    constraints.updateFromTuple(contextEntry,
-                                                reteEvaluator,
-                                                leftTuple);
-
-                    if (useComparisonIndex) {
-                        rootBlocker = (RightTuple) rtm.getFirst(leftTuple);
-                    }
+                    constraints.updateFromTuple(contextEntry, reteEvaluator, leftTuple);
+                    RightTuple rootBlocker = (RightTuple) rtm.getFirst(leftTuple);
 
                     // we know that older tuples have been checked so continue next
                     for (RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker)) {
