@@ -17,15 +17,15 @@
 package org.drools.verifier.doc;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Vector;
 
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 
-
+import com.google.common.collect.Lists;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
@@ -202,7 +202,7 @@ public class DroolsDocsComponentFactory {
     }
     
     private static String[] splitFirst(String source, String splitter) {
-        Vector rv = new Vector();
+        java.util.List<String> rv = new ArrayList<>();
         int last = 0;
         int next = 0;
 
@@ -217,7 +217,6 @@ public class DroolsDocsComponentFactory {
         {
           rv.add(source.substring(last, source.length()));
         }
-
         return (String[]) rv.toArray(new String[rv.size()]);
       }
 

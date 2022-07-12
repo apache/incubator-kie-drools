@@ -16,8 +16,6 @@
 package org.kie.efesto.compilationmanager.api.service;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;

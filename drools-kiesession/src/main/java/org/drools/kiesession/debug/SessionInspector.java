@@ -16,15 +16,15 @@
 
 package org.drools.kiesession.debug;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -35,6 +35,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.KieSession;
 
 public class SessionInspector {
@@ -98,35 +99,35 @@ public class SessionInspector {
 
         info.setSession( session );
 
-        Stack<NetworkNode> nodeStack = new Stack<>();
+        Deque<NetworkNode> nodeList = new ArrayDeque<>();
         gatherNodeInfo( session.getKnowledgeBase().getRete(),
-                        nodeStack,
+                        nodeList,
                         info );
 
         return info;
     }
 
     private void gatherNodeInfo(NetworkNode parent,
-                                Stack<NetworkNode> nodeStack,
+                                Deque<NetworkNode> nodeList,
                                 StatefulKnowledgeSessionInfo info) {
         if ( !info.visited( parent ) ) {
-            nodeStack.push( parent );
+            nodeList.push( parent );
             NetworkNodeVisitor visitor = visitors.get( parent.getType() );
             if ( visitor != null ) {
                 visitor.visit( parent,
-                               nodeStack,
+                               nodeList,
                                info );
             } else {
                 throw new RuntimeException( "No visitor found for node class: " + parent.getClass()+" node: "+parent );
             }
             visitChildren( parent,
-                           nodeStack,
+                           nodeList,
                            info );
-            nodeStack.pop();
+            nodeList.pop();
         } else {
             // if already visited, then assign the same rules to the nodes currently in the stack
             Set<RuleImpl> rules = info.getNodeInfo( parent ).getRules();
-            for ( NetworkNode snode : nodeStack ) {
+            for ( NetworkNode snode : nodeList ) {
                 for ( RuleImpl rule : rules ) {
                     info.assign( snode,
                                  rule );
@@ -136,7 +137,7 @@ public class SessionInspector {
     }
 
     protected void visitChildren(NetworkNode parent,
-                                 Stack<NetworkNode> nodeStack,
+                                 Deque<NetworkNode> nodeStack,
                                  StatefulKnowledgeSessionInfo info) {
         if ( parent instanceof Rete ) {
             Rete rete = (Rete) parent;

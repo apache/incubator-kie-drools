@@ -45,7 +45,7 @@ abstract class ReportVisitor {
     }
 
     protected static String readFile(String fileName) {
-        StringBuffer str = new StringBuffer("");
+        StringBuilder str = new StringBuilder("");
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(ReportVisitor.class.getResourceAsStream(fileName), IoUtils.UTF8_CHARSET))) {
             String line;
@@ -63,7 +63,7 @@ abstract class ReportVisitor {
     }
 
     protected static String createStyleTag(String path) {
-        StringBuffer str = new StringBuffer("");
+        StringBuilder str = new StringBuilder("");
 
         str.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         str.append(path);

@@ -16,7 +16,7 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Stack;
+import java.util.Collection;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -31,7 +31,7 @@ public class QueryTerminalNodeVisitor extends AbstractNetworkNodeVisitor {
 
     @Override
     protected void doVisit(NetworkNode node,
-                           Stack<NetworkNode> nodeStack,
+                           Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         QueryTerminalNode rtn = (QueryTerminalNode) node;
         RuleImpl rule = rtn.getRule();
@@ -39,13 +39,6 @@ public class QueryTerminalNodeVisitor extends AbstractNetworkNodeVisitor {
         for( NetworkNode snode : nodeStack ) {
             info.assign( snode, rule );
         }
-
-        // Query Terminal Nodes no longer have memory
-        // TODO delete this
-//        final LinkedList<?> memory = (LinkedList<?>) info.getSession().getNodeMemory( rtn );
-//        final DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
-//        ni.setMemoryEnabled( true );
-//        ni.setTupleMemorySize( memory.size() );
     }
 
 }

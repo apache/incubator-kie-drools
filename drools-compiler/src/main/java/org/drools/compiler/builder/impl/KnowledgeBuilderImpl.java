@@ -15,6 +15,27 @@
 
 package org.drools.compiler.builder.impl;
 
+import static java.util.Arrays.asList;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.UncheckedIOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ForkJoinPool;
+import java.util.function.Supplier;
+
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
@@ -59,12 +80,12 @@ import org.drools.drl.parser.lang.ExpanderException;
 import org.drools.drl.parser.lang.dsl.DSLMappingFile;
 import org.drools.drl.parser.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.drools.util.IoUtils;
 import org.drools.io.BaseResource;
 import org.drools.io.InternalResource;
 import org.drools.io.ReaderResource;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
+import org.drools.util.IoUtils;
 import org.drools.wiring.api.ComponentsFactory;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -88,26 +109,6 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.UncheckedIOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
-import java.util.UUID;
-import java.util.concurrent.ForkJoinPool;
-import java.util.function.Supplier;
-
-import static java.util.Arrays.asList;
 
 public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDeclarationContext, GlobalVariableContext {
 
@@ -139,7 +140,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
 
-    private final Stack<List<Resource>> buildResources = new Stack<>();
+    private final Deque<List<Resource>> buildResources = new ArrayDeque<>();
 
     private AssetFilter assetFilter = null;
 

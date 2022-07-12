@@ -167,7 +167,7 @@ public class SnippetBuilder {
             return text;
         }
 
-        final StringBuffer buf = new StringBuffer( text.length() );
+        final StringBuilder buf = new StringBuilder( text.length() );
         int start = 0, end = 0;
         while ( ( end = text.indexOf( repl,
                                       start ) ) != -1 ) {
