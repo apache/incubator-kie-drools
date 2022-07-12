@@ -38,37 +38,19 @@ import static java.util.Arrays.asList;
 
 public class PackageDescrBuilder {
     private final BuildResultCollector buildResultCollector;
-    private final List<ResourceHandler> mappers;
-    private final List<ResourceType> orderedResourceTypes;
+    private ResourceHandlerManager handlerManager;
     private RuntimeException buildException;
 
     public PackageDescrBuilder(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, Supplier<DefaultExpander> dslExpander) {
         this.buildResultCollector = new BuildResultCollectorImpl();
-
-        this.mappers = asList(
-                new DrlResourceHandler(configuration),
-                new TemplateResourceHandler(configuration, releaseId, dslExpander),
-                new DslrResourceHandler(configuration, dslExpander) ,
-                new DecisionTableResourceHandler(configuration, releaseId));
-
-        this.orderedResourceTypes = asList(
-                ResourceType.DRL,
-                ResourceType.GDRL,
-                ResourceType.RDRL,
-                ResourceType.DESCR,
-                ResourceType.DSLR,
-                ResourceType.RDSLR,
-                ResourceType.DTABLE,
-                ResourceType.TDRL,
-                ResourceType.TEMPLATE);
-
+        this.handlerManager = new ResourceHandlerManager(configuration,releaseId,dslExpander);
     }
 
     public Collection<CompositePackageDescr> build(Map<ResourceType, List<CompositeKnowledgeBuilderImpl.ResourceDescr>> resourcesByType) {
         Map<String, CompositePackageDescr> packages = new HashMap<>();
 
-        for (ResourceType type : this.orderedResourceTypes) {
-            ResourceHandler mapper = handlerForType(type);
+        for (ResourceType type : this.handlerManager.getOrderedResourceTypes()) {
+            ResourceHandler mapper = this.handlerManager.handlerForType(type);
             buildResource(packages, type, mapper, resourcesByType);
         }
 
@@ -81,15 +63,6 @@ public class PackageDescrBuilder {
 
     public RuntimeException getBuildException() {
         return buildException;
-    }
-
-    private ResourceHandler handlerForType(ResourceType type) {
-        for (ResourceHandler mapper : mappers) {
-            if (mapper.handles(type)) {
-                return mapper;
-            }
-        }
-        throw new IllegalArgumentException("No registered mapper for type " + type);
     }
 
     private void buildResource(

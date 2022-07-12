@@ -17,7 +17,6 @@ package org.drools.compiler.builder.impl;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.PackageRegistryManager;
-import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.CompositePackageCompilationPhase;
@@ -27,12 +26,13 @@ import org.drools.compiler.builder.impl.processors.PackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
 import org.drools.compiler.builder.impl.processors.RuleCompiler;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
+import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
+import org.drools.compiler.builder.impl.resources.ResourceHandler;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.kie.builder.impl.BuildContext;
@@ -48,7 +48,6 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.drl.extensions.GuidedRuleTemplateFactory;
 import org.drools.drl.extensions.GuidedRuleTemplateProvider;
 import org.drools.drl.extensions.ResourceConversionResult;
@@ -79,7 +78,6 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -330,43 +328,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
     }
 
-    public void addPackageFromDecisionTable(Resource resource,
-                                            ResourceConfiguration configuration) throws DroolsParserException,
-            IOException {
-        addPackageWithResource(decisionTableToPackageDescr(resource, configuration), resource);
-    }
-
-    PackageDescr decisionTableToPackageDescr(Resource resource,
-                                             ResourceConfiguration configuration) throws DroolsParserException {
-        DecisionTableConfiguration dtableConfiguration = configuration instanceof DecisionTableConfiguration ?
-                (DecisionTableConfiguration) configuration :
-                new DecisionTableConfigurationImpl();
-
-        if (!dtableConfiguration.getRuleTemplateConfigurations().isEmpty()) {
-            List<String> generatedDrls = DecisionTableFactory.loadFromInputStreamWithTemplates(resource, dtableConfiguration);
-            if (generatedDrls.size() == 1) {
-                return generatedDrlToPackageDescr(resource, generatedDrls.get(0));
-            }
-            CompositePackageDescr compositePackageDescr = null;
-            for (String generatedDrl : generatedDrls) {
-                PackageDescr packageDescr = generatedDrlToPackageDescr(resource, generatedDrl);
-                if (packageDescr != null) {
-                    if (compositePackageDescr == null) {
-                        compositePackageDescr = new CompositePackageDescr(resource, packageDescr);
-                    } else {
-                        compositePackageDescr.addPackageDescr(resource, packageDescr);
-                    }
-                }
-            }
-            return compositePackageDescr;
-        }
-
-        dtableConfiguration.setTrimCell( this.configuration.isTrimCellsInDTable() );
-
-        String generatedDrl = DecisionTableFactory.loadFromResource(resource, dtableConfiguration);
-        return generatedDrlToPackageDescr(resource, generatedDrl);
-    }
-
     private PackageDescr generatedDrlToPackageDescr(Resource resource, String generatedDrl) throws DroolsParserException {
         // dump the generated DRL if the dump dir was configured
         if (this.configuration.getDumpDir() != null) {
@@ -438,11 +399,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         addPackageWithResource(new DrlResourceHandler(configuration).process(resource), resource);
     }
 
-    public void addPackageFromDslr(final Resource resource) throws DroolsParserException,
-            IOException {
-        addPackageWithResource(dslrToPackageDescr(resource), resource);
-    }
-
     PackageDescr dslrToPackageDescr(Resource resource) throws DroolsParserException,
             IOException {
         return dslrReaderToPackageDescr(resource, resource.getReader());
@@ -502,23 +458,12 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     /**
      * Add a ruleflow (.rfm) asset to this package.
      */
-    public void addRuleFlow(Reader processSource) {
-        addKnowledgeResource(
-                new ReaderResource(processSource, ResourceType.DRF),
-                ResourceType.DRF,
-                null);
-    }
-
     @Deprecated
     public void addProcessFromXml(Resource resource) {
         addKnowledgeResource(
                 resource,
                 resource.getResourceType(),
                 resource.getConfiguration());
-    }
-
-    public ProcessBuilder getProcessBuilder() {
-        return processBuilder;
     }
 
     @Deprecated
@@ -531,22 +476,23 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                                      ResourceConfiguration configuration) {
         try {
             ((InternalResource) resource).setResourceType(type);
-            if (ResourceType.DRL.equals(type)) {
-                addPackageFromDrl(resource);
-            } else if (ResourceType.GDRL.equals(type)) {
-                addPackageFromDrl(resource);
-            } else if (ResourceType.RDRL.equals(type)) {
-                addPackageFromDrl(resource);
-            } else if (ResourceType.DESCR.equals(type)) {
-                addPackageFromDrl(resource);
-            } else if (ResourceType.DSLR.equals(type)) {
-                addPackageFromDslr(resource);
-            } else if (ResourceType.RDSLR.equals(type)) {
-                addPackageFromDslr(resource);
+
+            if ((ResourceType.DRL.equals(type)) || (ResourceType.GDRL.equals(type)) || (ResourceType.RDRL.equals(type))
+                    || (ResourceType.DESCR.equals(type)) || (ResourceType.TDRL.equals(type))
+            || (ResourceType.DSLR.equals(type)) || (ResourceType.RDSLR.equals(type))
+            || ResourceType.TEMPLATE.equals(type)) {
+                ResourceHandlerManager handlerManager = new ResourceHandlerManager(this.getBuilderConfiguration(), this.releaseId, this::getDslExpander);
+                ResourceHandler handler = handlerManager.handlerForType(type);
+                PackageDescr descr = handler.process(resource,null);
+                this.results.addAll(handler.getResults());
+                addPackageWithResource(descr, resource);
             } else if (ResourceType.DSL.equals(type)) {
                 addDsl(resource);
             } else if (ResourceType.DTABLE.equals(type)) {
-                addPackageFromDecisionTable(resource, configuration);
+                DecisionTableResourceHandler handler = new DecisionTableResourceHandler(this.getBuilderConfiguration(), this.getReleaseId());
+                PackageDescr descr = handler.process(resource, configuration);
+                this.results.addAll(handler.getResults());
+                addPackageWithResource(descr, resource);
             } else if (ResourceType.XSD.equals(type)) {
                 addPackageFromXSD(resource, configuration);
             } else if (ResourceType.TDRL.equals(type)) {
@@ -950,10 +896,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public boolean hasWarnings() {
         return results.hasWarnings();
-    }
-
-    public boolean hasInfo() {
-        return results.hasInfo();
     }
 
     public List<DroolsWarning> getWarnings() {
