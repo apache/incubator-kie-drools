@@ -17,10 +17,6 @@
 
   <modules>
     <module>drools-drl-quarkus-util-deployment</module>
-    <module>drools-drl-quarkus</module>
-    <module>drools-drl-quarkus-deployment</module>
-    <module>drools-drl-quarkus-integration-test</module>
-    <module>drools-drl-quarkus-integration-test-hotreload</module>
   </modules>
 
   <dependencyManagement>
@@ -34,5 +30,22 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>drools-drl-quarkus</module>
+        <module>drools-drl-quarkus-deployment</module>
+        <module>drools-drl-quarkus-integration-test</module>
+        <module>drools-drl-quarkus-integration-test-hotreload</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
