@@ -50,9 +50,6 @@ import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class FactTemplateTest {
 
@@ -78,7 +75,7 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertTrue( hasFactTemplateObjectType( ksession, "Person" ) );
+        assertThat(hasFactTemplateObjectType(ksession, "Person")).isTrue();
 
         Fact mark = createMapBasedFact( personFact );
         mark.setFieldValue( "name", "Mark" );
@@ -121,7 +118,7 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertTrue( hasFactTemplateObjectType( ksession, "Person" ) );
+        assertThat(hasFactTemplateObjectType(ksession, "Person")).isTrue();
 
         Fact mark = createMapBasedFact( personFact );
         mark.setFieldValue( "name", "Mark" );
@@ -140,18 +137,18 @@ public class FactTemplateTest {
         FactHandle marioFH = ksession.insert(mario);
 
         ksession.fireAllRules();
-        assertEquals("Mario is older than Mark", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Mario is older than Mark");
 
         result.setValue( null );
         ksession.delete( marioFH );
         ksession.fireAllRules();
-        assertNull(result.getValue());
+        assertThat(result.getValue()).isNull();
 
         mark.setFieldValue( "age", 34 );
         ksession.update( markFH, mark );
 
         ksession.fireAllRules();
-        assertEquals("Edson is older than Mark", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Edson is older than Mark");
     }
 
     @Test
@@ -184,7 +181,7 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertTrue( hasFactTemplateObjectType( ksession, "FactPerson" ) );
+        assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
         
         Fact mark = createMapBasedFact( personFact );
         mark.setFieldValue( "name", "Mark" );

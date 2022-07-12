@@ -32,8 +32,6 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class NamedConsequencesTest extends BaseModelTest {
 
@@ -67,9 +65,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection results = (Collection)result.getValue();
-        assertEquals(2, results.size());
+        assertThat(results.size()).isEqualTo(2);
 
-        assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
+        assertThat(results.containsAll(asList("Found Mark", "Mario is older than Mark"))).isTrue();
     }
 
     @Test
@@ -105,9 +103,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection results = (Collection)result.getValue();
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
 
-        assertEquals( "Found Mark", results.iterator().next() );
+        assertThat(results.iterator().next()).isEqualTo("Found Mark");
     }
 
     @Test
@@ -143,9 +141,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection results = (Collection)result.getValue();
-        assertEquals(2, results.size());
+        assertThat(results.size()).isEqualTo(2);
 
-        assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
+        assertThat(results.containsAll(asList("Found Mark", "Mario is older than Mark"))).isTrue();
     }
 
     @Test
@@ -176,8 +174,8 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         List results = ( List )result.getValue();
-        assertEquals(1, results.size());
-        assertEquals("greater", results.get(0));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo("greater");
     }
 
     @Test
@@ -198,7 +196,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "end\n";
 
         Results results = createKieBuilder(str).getResults();
-        assertTrue(results.hasMessages(Level.ERROR));
+        assertThat(results.hasMessages(Level.ERROR)).isTrue();
     }
 
     @Test
@@ -232,9 +230,9 @@ public class NamedConsequencesTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals(2, results.size());
-        assertTrue(results.contains("cheddar"));
-        assertTrue(results.contains("STILTON"));
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains("cheddar")).isTrue();
+        assertThat(results.contains("STILTON")).isTrue();
     }
 
     @Test
@@ -253,7 +251,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "end\n";
 
         Results results = createKieBuilder(str).getResults();
-        assertTrue(results.hasMessages(Level.ERROR));
+        assertThat(results.hasMessages(Level.ERROR)).isTrue();
     }
 
     @Test
@@ -295,7 +293,7 @@ public class NamedConsequencesTest extends BaseModelTest {
         kSession.insert(2);
         kSession.fireAllRules();
 
-        assertEquals(2, counter.get());
+        assertThat(counter.get()).isEqualTo(2);
     }
 
     @Test
@@ -327,8 +325,8 @@ public class NamedConsequencesTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, results.size());
-        assertTrue(results.contains("STILTON"));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.contains("STILTON")).isTrue();
     }
 
     @Test
@@ -361,8 +359,8 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         System.out.println(results);
-        assertEquals(1, results.size());
-        assertTrue(results.contains("cheddar"));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.contains("cheddar")).isTrue();
     }
 
     @Test
@@ -403,9 +401,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.insert(new Person("Mario", 40));
         ksession.fireAllRules();
 
-        assertEquals(7, result.size());
+        assertThat(result.size()).isEqualTo(7);
 
-        assertTrue(result.containsAll(asList("Default", "Mark", "Edson", "Age35", "Age37")));
+        assertThat(result.containsAll(asList("Default", "Mark", "Edson", "Age35", "Age37"))).isTrue();
     }
 
     @Test
@@ -443,9 +441,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection results = (Collection) result.getValue();
-        assertEquals(7, results.size());
+        assertThat(results.size()).isEqualTo(7);
 
-        assertTrue(results.containsAll(asList("Default", "Mark", "Edson", "Age35", "Age37")));
+        assertThat(results.containsAll(asList("Default", "Mark", "Edson", "Age35", "Age37"))).isTrue();
     }
 
     @Test
@@ -485,9 +483,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection results = (Collection) result.getValue();
-        assertEquals(5, results.size());
+        assertThat(results.size()).isEqualTo(5);
 
-        assertTrue(results.containsAll(asList("DefaultMario", "Mark", "Edson", "Age35", "Age37")));
+        assertThat(results.containsAll(asList("DefaultMario", "Mark", "Edson", "Age35", "Age37"))).isTrue();
     }
 
     public void testModifyInNamedConsequence() {
@@ -518,8 +516,8 @@ public class NamedConsequencesTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, results.size());
-        assertTrue(results.contains("stilton"));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.contains("stilton")).isTrue();
     }
 
     @Test
@@ -549,7 +547,7 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.insert(cheddar);
 
         int fired = ksession.fireAllRules();
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
 
         assertThat(results).containsExactlyInAnyOrder(10, 15);
     }
@@ -585,9 +583,9 @@ public class NamedConsequencesTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals(2, results.size());
-        assertTrue(results.contains("cheddar"));
-        assertTrue(results.contains("stilton"));
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains("cheddar")).isTrue();
+        assertThat(results.contains("stilton")).isTrue();
     }
 
     public void testIfTrue() {
@@ -610,7 +608,7 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.insert(new Person("John", 37));
         ksession.fireAllRules();
 
-        assertEquals(2, result.size());
-        assertTrue(result.containsAll(asList("main", "t1")));
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.containsAll(asList("main", "t1"))).isTrue();
     }
 }

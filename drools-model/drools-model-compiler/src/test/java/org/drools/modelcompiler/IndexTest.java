@@ -36,9 +36,6 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class IndexTest extends BaseModelTest {
 
@@ -66,7 +63,7 @@ public class IndexTest extends BaseModelTest {
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 4) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -84,7 +81,7 @@ public class IndexTest extends BaseModelTest {
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 4) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static class ObjectWrapper {
@@ -128,7 +125,7 @@ public class IndexTest extends BaseModelTest {
         ksession.insert( new ObjectWrapper( 42 ) );
         ksession.insert( new IntegerWrapper( 42 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -158,7 +155,7 @@ public class IndexTest extends BaseModelTest {
         person.setBirthDay(DateUtils.parseDate("01-Nov-2000"));
         ksession.insert(person);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -188,7 +185,7 @@ public class IndexTest extends BaseModelTest {
         person.setBirthDay(DateUtils.parseDate("01-Nov-2000"));
         ksession.insert(person);
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     private void assertConstraintType(KieBase kbase, Class<?> factClass, String ruleName, ConstraintType expectedType) {
@@ -201,11 +198,11 @@ public class IndexTest extends BaseModelTest {
             Rule rule = alphaNode.getAssociatedRules()[0]; // assume that one rule has one AlphaNode
             if (rule.getName().equals(ruleName)) {
                 IndexableConstraint constraint = (IndexableConstraint) alphaNode.getConstraint();
-                assertEquals(expectedType, constraint.getConstraintType());
+                assertThat(constraint.getConstraintType()).isEqualTo(expectedType);
                 asserted = true;
             }
         }
-        assertTrue(asserted);
+        assertThat(asserted).isTrue();
     }
 
     @Test
@@ -225,13 +222,13 @@ public class IndexTest extends BaseModelTest {
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         // this beta index is only supported by executable model
-        assertEquals( this.testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
+        assertThat(beta.getRawConstraints().isIndexed()).isEqualTo(this.testRunType.isExecutableModel());
 
         ksession.insert( 5 );
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 9) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -252,7 +249,7 @@ public class IndexTest extends BaseModelTest {
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 9) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -273,7 +270,7 @@ public class IndexTest extends BaseModelTest {
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 9) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -294,7 +291,7 @@ public class IndexTest extends BaseModelTest {
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 9) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -309,7 +306,7 @@ public class IndexTest extends BaseModelTest {
                 "end";
 
         KieSession ksession = getKieSession( str );
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -330,14 +327,14 @@ public class IndexTest extends BaseModelTest {
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         // this beta index is only supported by executable model
-        assertEquals( this.testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
+        assertThat(beta.getRawConstraints().isIndexed()).isEqualTo(this.testRunType.isExecutableModel());
 
         ksession.insert( 2L );
         ksession.insert( 3 );
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 9) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -359,7 +356,7 @@ public class IndexTest extends BaseModelTest {
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         // this beta index is only supported by executable model
-        assertEquals( this.testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
+        assertThat(beta.getRawConstraints().isIndexed()).isEqualTo(this.testRunType.isExecutableModel());
 
         ksession.insert( (short)1 );
         ksession.insert( 1L );
@@ -367,7 +364,7 @@ public class IndexTest extends BaseModelTest {
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 9) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test

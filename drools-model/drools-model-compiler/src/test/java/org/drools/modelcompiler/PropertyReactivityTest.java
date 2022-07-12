@@ -36,9 +36,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class PropertyReactivityTest extends BaseModelTest {
 
@@ -63,7 +60,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -84,7 +81,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -104,7 +101,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -125,7 +122,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -145,7 +142,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -167,7 +164,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(10);
 
-        assertEquals(50, p.getAge());
+        assertThat(p.getAge()).isEqualTo(50);
     }
 
     @Test
@@ -192,7 +189,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( new Address( "Milan" ) );
         ksession.fireAllRules(10);
 
-        assertEquals(50, p.getAge());
+        assertThat(p.getAge()).isEqualTo(50);
     }
 
     @Test
@@ -218,7 +215,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(10);
 
-        assertEquals(50, p.getAge());
+        assertThat(p.getAge()).isEqualTo(50);
     }
 
     @Test
@@ -248,18 +245,18 @@ public class PropertyReactivityTest extends BaseModelTest {
         FactHandle marioFH = ksession.insert(mario);
 
         ksession.fireAllRules();
-        assertEquals("Mario is older than Mark", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Mario is older than Mark");
 
         result.setValue(null);
         ksession.delete(marioFH);
         ksession.fireAllRules();
-        assertNull(result.getValue());
+        assertThat(result.getValue()).isNull();
 
         mark.setAge(34);
         ksession.update(markFH, mark, "age");
 
         ksession.fireAllRules();
-        assertEquals("Edson is older than Mark", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Edson is older than Mark");
     }
 
     @Test
@@ -289,18 +286,18 @@ public class PropertyReactivityTest extends BaseModelTest {
         FactHandle marioFH = ksession.insert(mario);
 
         ksession.fireAllRules();
-        assertEquals("Mario is older than Mark", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Mario is older than Mark");
 
         result.setValue(null);
         ksession.delete(marioFH);
         ksession.fireAllRules();
-        assertNull(result.getValue());
+        assertThat(result.getValue()).isNull();
 
         mark.setAge(34);
         ksession.update(markFH, mark, "age");
 
         ksession.fireAllRules();
-        assertEquals("Edson is older than Mark", result.getValue());
+        assertThat(result.getValue()).isEqualTo("Edson is older than Mark");
     }
 
     @Test
@@ -318,7 +315,7 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         ksession.insert( 42 );
         ksession.insert( 42L );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
 
@@ -344,7 +341,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( order );
         ksession.fireAllRules();
 
-        assertEquals( 10, order.getPrice() );
+        assertThat(order.getPrice()).isEqualTo(10);
     }
 
     public static class Order {
@@ -410,7 +407,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
 
         ksession.insert( new Bean() );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -431,7 +428,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
 
         ksession.insert( new ArrayList() );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -449,7 +446,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
 
         ksession.insert(new AtomicInteger(0));
-        assertEquals( 3, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
     @Test(timeout = 10000L)
@@ -493,8 +490,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals( 41, p.getAge() );
-        assertTrue( p.getEmployed() );
+        assertThat(p.getAge()).isEqualTo(41);
+        assertThat(p.getEmployed()).isTrue();
     }
 
     @Test
@@ -525,7 +522,7 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        assertEquals( 5, ksession.fireAllRules(5) );
+        assertThat(ksession.fireAllRules(5)).isEqualTo(5);
     }
 
     @Test
@@ -556,7 +553,7 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        assertEquals( 2, ksession.fireAllRules(5) );
+        assertThat(ksession.fireAllRules(5)).isEqualTo(2);
     }
 
     @Test
@@ -582,7 +579,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals(42, p.getAge());
+        assertThat(p.getAge()).isEqualTo(42);
     }
 
     @Test
@@ -602,9 +599,9 @@ public class PropertyReactivityTest extends BaseModelTest {
         me.setAddress(new Address("street1", 2, "city1"));
         ksession.insert( me );
 
-        assertEquals(1, ksession.fireAllRules(10));
+        assertThat(ksession.fireAllRules(10)).isEqualTo(1);
 
-        assertEquals( "street1city1", me.getLikes() );
+        assertThat(me.getLikes()).isEqualTo("street1city1");
     }
 
     @Test
@@ -634,7 +631,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         pet.setAge(3);
 
         ksession.insert(pet);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -664,7 +661,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         pet.setAge(3);
 
         ksession.insert(pet);
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -685,8 +682,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert(p);
         int fired = ksession.fireAllRules(10);
 
-        assertEquals(1, fired);
-        assertEquals(41, p.getAge());
+        assertThat(fired).isEqualTo(1);
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -707,8 +704,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert(p);
         int fired = ksession.fireAllRules(10);
 
-        assertEquals(1, fired);
-        assertEquals(41, p.getAge());
+        assertThat(fired).isEqualTo(1);
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -738,9 +735,9 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         int fired = ksession.fireAllRules(10);
 
-        assertEquals(1, fired);
-        assertEquals(41, p.getAge());
-        assertEquals(20, a.getNumber());
+        assertThat(fired).isEqualTo(1);
+        assertThat(p.getAge()).isEqualTo(41);
+        assertThat(a.getNumber()).isEqualTo(20);
     }
 
     @Test
@@ -762,8 +759,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert(p);
         int fired = ksession.fireAllRules(10);
 
-        assertEquals(1, fired);
-        assertEquals(41, p.getAge());
+        assertThat(fired).isEqualTo(1);
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -785,8 +782,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert(p);
         int fired = ksession.fireAllRules(10);
 
-        assertEquals(1, fired);
-        assertEquals(41, p.getAge());
+        assertThat(fired).isEqualTo(1);
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -809,8 +806,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert(p);
         int fired = ksession.fireAllRules(10);
 
-        assertEquals(1, fired);
-        assertEquals(41, p.getAge());
+        assertThat(fired).isEqualTo(1);
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -835,8 +832,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         // this is not likely an expected loop but standard-drl considers getter+otherMethod modifies the prop "name".
         // anyway, such "read" method is not written like this (= without assigning to a variable or as an argument of other method)
         // This test is to ensure the same behavior on stadard-drl and executable-model.
-        assertEquals(10, fired);
-        assertEquals(41, p.getAge());
+        assertThat(fired).isEqualTo(10);
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -857,7 +854,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(5);
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     public static int dummy(int i) {
@@ -883,7 +880,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals(50, p.getAge());
+        assertThat(p.getAge()).isEqualTo(50);
     }
 
     @Test
@@ -905,7 +902,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(3);
 
-        assertEquals("Mario111", p.getName());
+        assertThat(p.getName()).isEqualTo("Mario111");
     }
 
     @Test
@@ -927,7 +924,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(3);
 
-        assertEquals("Mario1", p.getName());
+        assertThat(p.getName()).isEqualTo("Mario1");
     }
 
     @Test
@@ -968,7 +965,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.getAgenda().getAgendaGroup("group2").setFocus();
         ksession.fireAllRules();
 
-        assertEquals(20, p.getSalary().intValue()); // R2 should be cancelled
+        assertThat(p.getSalary().intValue()).isEqualTo(20); // R2 should be cancelled
     }
 
     @Test
@@ -1017,7 +1014,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.getAgenda().getAgendaGroup("group2").setFocus();
         ksession.fireAllRules();
 
-        assertEquals(10, p.getSalary().intValue()); // R2 should be cancelled
+        assertThat(p.getSalary().intValue()).isEqualTo(10); // R2 should be cancelled
     }
 
     public static class Fact {
@@ -1068,8 +1065,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         fact.setResult("NG");
 
         ksession.insert(fact);
-        assertEquals( 1, ksession.fireAllRules(3) );
-        assertEquals( "OK", fact.getResult() );
+        assertThat(ksession.fireAllRules(3)).isEqualTo(1);
+        assertThat(fact.getResult()).isEqualTo("OK");
     }
 
     @Test
@@ -1092,7 +1089,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         fact.setResult("NG");
 
         ksession.insert(fact);
-        assertEquals( 3, ksession.fireAllRules(3) );
+        assertThat(ksession.fireAllRules(3)).isEqualTo(3);
     }
 
     @Test
@@ -1113,7 +1110,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(3);
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -1134,7 +1131,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(3);
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -1155,7 +1152,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(3);
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -1176,7 +1173,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(3);
 
-        assertEquals(43, p.getAge());
+        assertThat(p.getAge()).isEqualTo(43);
     }
 
     @Test
@@ -1196,7 +1193,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(10);
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -1217,7 +1214,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(10);
 
-        assertEquals(41, p.getAge());
+        assertThat(p.getAge()).isEqualTo(41);
     }
 
     @Test
@@ -1237,7 +1234,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( l );
         int fired = ksession.fireAllRules(10);
 
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     public static class Light {
@@ -1289,7 +1286,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(3);
 
-        assertEquals(43, p.getAge());
+        assertThat(p.getAge()).isEqualTo(43);
     }
 
     @Test
@@ -1311,7 +1308,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(3);
 
-        assertEquals(43, p.getAge());
+        assertThat(p.getAge()).isEqualTo(43);
     }
 
     @Test
@@ -1332,7 +1329,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules(3);
 
-        assertEquals(43, p.getAge());
+        assertThat(p.getAge()).isEqualTo(43);
     }
 
     public static class AssessmentContext {
@@ -1408,7 +1405,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         ac1.setTopPhase(3);
         ksession.insert( ac1 );
 
-        assertEquals(2, ksession.fireAllRules(2));
+        assertThat(ksession.fireAllRules(2)).isEqualTo(2);
     }
 
     @Test
@@ -1436,8 +1433,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert(p);
         int fired = ksession.fireAllRules(10);
 
-        assertEquals(3, fired);
-        assertEquals(41, p.publicAge);
+        assertThat(fired).isEqualTo(3);
+        assertThat(p.publicAge).isEqualTo(41);
     }
 
     @Test
@@ -1458,7 +1455,7 @@ public class PropertyReactivityTest extends BaseModelTest {
                            "end\n";
 
         KieBuilder kbuilder = createKieBuilder(str);
-        assertTrue(kbuilder.getResults().hasMessages(Level.ERROR));
+        assertThat(kbuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
     @Test
@@ -1479,8 +1476,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert(cwv);
         int fired = ksession.fireAllRules(10);
 
-        assertEquals(1, fired);
-        assertEquals(1, cwv.getDoubleValues().size());
+        assertThat(fired).isEqualTo(1);
+        assertThat(cwv.getDoubleValues().size()).isEqualTo(1);
     }
 
     public class ClassWithValue {
@@ -1524,8 +1521,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals(41, p.getAge());
-        assertEquals(1, p.getId());
+        assertThat(p.getAge()).isEqualTo(41);
+        assertThat(p.getId()).isEqualTo(1);
     }
 
     @Test
@@ -1544,7 +1541,7 @@ public class PropertyReactivityTest extends BaseModelTest {
                 "end\n";
 
         KieBuilder kbuilder = createKieBuilder(str);
-        assertTrue(kbuilder.getResults().hasMessages(Level.ERROR));
+        assertThat(kbuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
     @Test
@@ -1572,8 +1569,8 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert( p );
         ksession.fireAllRules();
 
-        assertEquals(41, p.getAge());
-        assertEquals(1, ksession.getObjects((Object object) -> object.equals("ok")).size());
+        assertThat(p.getAge()).isEqualTo(41);
+        assertThat(ksession.getObjects((Object object) -> object.equals("ok")).size()).isEqualTo(1);
     }
 
     @Test

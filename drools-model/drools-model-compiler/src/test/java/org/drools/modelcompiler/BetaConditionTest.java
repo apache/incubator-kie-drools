@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 // DROOLS-5852
 public class BetaConditionTest extends BaseModelTest {
@@ -166,8 +165,8 @@ public class BetaConditionTest extends BaseModelTest {
         ksession.insert(edson);
         int rulesFired = ksession.fireAllRules();
 
-        assertEquals(numberOfResults, results.size());
-        assertEquals(numberOfResults, rulesFired);
+        assertThat(results.size()).isEqualTo(numberOfResults);
+        assertThat(rulesFired).isEqualTo(numberOfResults);
 
         assertThat(results.size()).isEqualTo(numberOfResults);
         assertThat(rulesFired).isEqualTo(numberOfResults);

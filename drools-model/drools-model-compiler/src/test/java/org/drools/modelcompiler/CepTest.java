@@ -47,8 +47,8 @@ import org.kie.api.time.Calendar;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.modelcompiler.util.EvaluationUtil.convertDate;
-import static org.junit.Assert.assertEquals;
 
 public class CepTest extends BaseModelTest {
 
@@ -84,12 +84,12 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -110,12 +110,12 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -136,15 +136,15 @@ public class CepTest extends BaseModelTest {
 
         clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.getEntryPoint( "ep1" ).insert( new StockTick( "ACME" ) );
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         clock.advanceTime( 1, TimeUnit.SECONDS );
         ksession.getEntryPoint( "ep2" ).insert( new StockTick( "ACME" ) );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
         ksession.getEntryPoint( "ep2" ).insert( new StockTick( "ACME" ) );
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 1, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "DROO" ) );
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -191,14 +191,14 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new StockTick("ACME") );
 
         clock.advanceTime( 10, TimeUnit.SECONDS );
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         ksession.insert( new StockTick("DROO") );
         clock.advanceTime( 3, TimeUnit.SECONDS );
         ksession.insert( new StockTick("ACME") );
 
         clock.advanceTime( 10, TimeUnit.SECONDS );
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -226,7 +226,7 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 2, TimeUnit.SECONDS );
         ksession.insert( new StockTick("DROO") );
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -256,7 +256,7 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 2, TimeUnit.SECONDS );
         ep.insert( new StockTick("DROO") );
 
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -280,7 +280,7 @@ public class CepTest extends BaseModelTest {
         ksession.insert( "ACME" );
         ksession.insert( "DROO" );
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -304,7 +304,7 @@ public class CepTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -328,7 +328,7 @@ public class CepTest extends BaseModelTest {
         ksession.insert( "ACME" );
         ksession.insert( "DROO" );
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -350,12 +350,12 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.insert( new StockFact( "ACME" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
         ksession.insert( new StockFact( "ACME" ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -389,7 +389,7 @@ public class CepTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, resultsAfter.size());
+        assertThat(resultsAfter.size()).isEqualTo(1);
     }
 
     @Test
@@ -428,7 +428,7 @@ public class CepTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, resultsAfter.size());
+        assertThat(resultsAfter.size()).isEqualTo(1);
     }
 
     @Test
@@ -455,11 +455,11 @@ public class CepTest extends BaseModelTest {
 
         clock.advanceTime(1, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(1, ksession.getObjects().size());
+        assertThat(ksession.getObjects().size()).isEqualTo(1);
 
         clock.advanceTime(2, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(0, ksession.getObjects().size());
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
     }
     
     @Test
@@ -490,11 +490,11 @@ public class CepTest extends BaseModelTest {
 
         clock.advanceTime(1, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(1, ksession.getObjects().size());
+        assertThat(ksession.getObjects().size()).isEqualTo(1);
 
         clock.advanceTime(2, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(0, ksession.getObjects().size());
+        assertThat(ksession.getObjects().size()).isEqualTo(0);
     }
 
     @Test
@@ -526,7 +526,7 @@ public class CepTest extends BaseModelTest {
                 "end";
 
         KieSession ksession = getKieSession(getCepKieModuleModel(), str);
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -552,27 +552,27 @@ public class CepTest extends BaseModelTest {
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         timeService.advanceTime(20, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         timeService.advanceTime(15, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         timeService.advanceTime(3, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         timeService.advanceTime(2, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(2, list.size());
+        assertThat(list.size()).isEqualTo(2);
 
         timeService.advanceTime(10, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(3, list.size());
+        assertThat(list.size()).isEqualTo(3);
     }
 
     @Test
@@ -593,12 +593,12 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -618,11 +618,11 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new StockTick( "DROO" ).setTimeField( 0 ) );
         ksession.insert( new StockTick( "ACME" ).setTimeField( 6 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.insert( new StockTick( "ACME" ).setTimeField( 10 ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -642,11 +642,11 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new StockTick( "DROO" ).setTimeField( 0 ) );
         ksession.insert( new StockTick( "ACME" ).setTimeField( 6 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.insert( new StockTick( "ACME" ).setTimeField( 10 ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -667,11 +667,11 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new StockTick( "DROO" ).setTimeField( 0 ) );
         ksession.insert( new StockTick( "ACME" ).setTimeField( 6 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.insert( new StockTick( "ACME" ).setTimeField( 10 ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -692,12 +692,12 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 6, TimeUnit.MILLISECONDS );
         ksession.insert( new StockTick( "ACME" ).setTimeField( 6 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         clock.advanceTime( 4, TimeUnit.MILLISECONDS );
         ksession.insert( new StockTick( "ACME" ).setTimeField( 10 ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -720,8 +720,8 @@ public class CepTest extends BaseModelTest {
             msg.setProperties(props);
 
             final EventFactHandle efh = (EventFactHandle) ksession.insert(msg);
-            assertEquals(98, efh.getStartTimestamp());
-            assertEquals(53, efh.getDuration());
+            assertThat(efh.getStartTimestamp()).isEqualTo(98);
+            assertThat(efh.getDuration()).isEqualTo(53);
         } finally {
             ksession.dispose();
         }
@@ -798,12 +798,12 @@ public class CepTest extends BaseModelTest {
             ksession.insert(event3);
 
             ksession.fireAllRules(); // Nothing Happens
-            assertEquals(1, counter.get());
+            assertThat(counter.get()).isEqualTo(1);
 
             sessionClock.advanceTime(10, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
-            assertEquals(0, counter.get());
+            assertThat(counter.get()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -949,7 +949,7 @@ public class CepTest extends BaseModelTest {
             ksession.insert( new Order("RHT", OrderType.BUY) );
             ksession.insert( new Order("RHT", OrderType.BUY) );
 
-            assertEquals( 1, ksession.fireAllRules() );
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         } finally {
             ksession.dispose();
@@ -974,12 +974,12 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "DROO" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "DROO" ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -1000,11 +1000,11 @@ public class CepTest extends BaseModelTest {
         ksession.insert(new StockTick("ACME").setTimeField(0));
         ksession.insert(new StockTick("DROO").setTimeField(6));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.insert(new StockTick("DROO").setTimeField(10));
 
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -1025,12 +1025,12 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "DROO" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "DROO" ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -1051,12 +1051,12 @@ public class CepTest extends BaseModelTest {
         clock.advanceTime( 6, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
         ksession.insert( new StockTick( "ACME" ) );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -1077,11 +1077,11 @@ public class CepTest extends BaseModelTest {
         ksession.insert(new StockTick("ACME").setTimeField(0));
         ksession.insert(new StockTick("DROO").setTimeField(6));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.insert(new StockTick("DROO").setTimeField(10));
 
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -1102,11 +1102,11 @@ public class CepTest extends BaseModelTest {
         ksession.insert(new StockTick("DROO").setTimeField(0));
         ksession.insert(new StockTick("ACME").setTimeField(6));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.insert(new StockTick("ACME").setTimeField(10));
 
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -1129,11 +1129,11 @@ public class CepTest extends BaseModelTest {
         ksession.insert(new StockTick("ACME").setTimeField(0));
         ksession.insert(new StockTickEx("DROO").setTimeFieldEx(6));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.insert(new StockTickEx("DROO").setTimeFieldEx(10));
 
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -1156,11 +1156,11 @@ public class CepTest extends BaseModelTest {
         ksession.insert(new StockTick("ACME").setTimeField(0));
         ksession.insert(new StockTickEx("DROO").setTimeFieldEx(6));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.insert(new StockTickEx("DROO").setTimeFieldEx(10));
 
-        assertEquals(0, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -1179,7 +1179,7 @@ public class CepTest extends BaseModelTest {
         long time = LocalDateTime.of(2020, 1, 1, 0, 0, 0).atZone(ZoneId.of("UTC")).toInstant().getEpochSecond() * 1000;
         ksession.insert(new StockTick("DROO").setTimeField(time));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -1198,7 +1198,7 @@ public class CepTest extends BaseModelTest {
         ksession.insert( new DateTimeHolder( ZonedDateTime.now() ) );
         ksession.insert( new DateTimeHolder( ZonedDateTime.now().plusSeconds(6) ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -1233,27 +1233,27 @@ public class CepTest extends BaseModelTest {
 
                 timeService.advanceTime(date.getTime(), TimeUnit.MILLISECONDS);
                 ksession.fireAllRules();
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 3
                 ksession.fireAllRules();
-                assertEquals(1, list.size());
+                assertThat(list.size()).isEqualTo(1);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(2, list.size());
+                assertThat(list.size()).isEqualTo(2);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);   // day 5
                 ksession.fireAllRules();
-                assertEquals(3, list.size());
+                assertThat(list.size()).isEqualTo(3);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(3, list.size());
+                assertThat(list.size()).isEqualTo(3);
             } finally {
                 ksession.dispose();
             }
@@ -1261,4 +1261,5 @@ public class CepTest extends BaseModelTest {
             Locale.setDefault(defaultLoc);
         }
     }
+
 }

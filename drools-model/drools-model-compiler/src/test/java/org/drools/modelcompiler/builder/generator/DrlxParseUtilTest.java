@@ -31,7 +31,6 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRemoveRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
-import static org.junit.Assert.assertEquals;
 
 public class DrlxParseUtilTest {
 
@@ -43,7 +42,7 @@ public class DrlxParseUtilTest {
 
         final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
 
-        assertEquals(THIS_PLACEHOLDER + ".getAddressName().startsWith(\"M\")", concatenated.toString());
+        assertThat(concatenated.toString()).isEqualTo(THIS_PLACEHOLDER + ".getAddressName().startsWith(\"M\")");
     }
 
     @Test
@@ -54,7 +53,7 @@ public class DrlxParseUtilTest {
 
         final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
 
-        assertEquals("((InternationalAddress) _this.getAddress()).getState()", concatenated.toString());
+        assertThat(concatenated.toString()).isEqualTo("((InternationalAddress) _this.getAddress()).getState()");
     }
 
     @Test
@@ -65,22 +64,22 @@ public class DrlxParseUtilTest {
 
         final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
 
-        assertEquals("((Person) _this).getName()", concatenated.toString());
+        assertThat(concatenated.toString()).isEqualTo("((Person) _this).getName()");
     }
 
     final TypeResolver typeResolver = new ClassTypeResolver(new HashSet<>(), getClass().getClassLoader());
 
     @Test
     public void getExpressionTypeTest() {
-        assertEquals(Double.class, getExpressionType(null, typeResolver, StaticJavaParser.parseExpression("new Double[]{2.0d, 3.0d}[1]"), null));
-        assertEquals(Float.class, getExpressionType(null, typeResolver, StaticJavaParser.parseExpression("new Float[]{2.0d, 3.0d}"), null));
-        assertEquals(boolean.class, getExpressionType(null, typeResolver, new BooleanLiteralExpr(true), null));
-        assertEquals(char.class, getExpressionType(null, typeResolver, new CharLiteralExpr('a'), null));
-        assertEquals(double.class, getExpressionType(null, typeResolver, new DoubleLiteralExpr(2.0d), null));
-        assertEquals(int.class, getExpressionType(null, typeResolver, new IntegerLiteralExpr(2), null));
-        assertEquals(long.class, getExpressionType(null, typeResolver, new LongLiteralExpr(2l), null));
-        assertEquals(MethodUtils.NullType.class, getExpressionType(null, typeResolver, new NullLiteralExpr(), null));
-        assertEquals(String.class, getExpressionType(null, typeResolver, new StringLiteralExpr(""), null));
+        assertThat(getExpressionType(null, typeResolver, StaticJavaParser.parseExpression("new Double[]{2.0d, 3.0d}[1]"), null)).isEqualTo(Double.class);
+        assertThat(getExpressionType(null, typeResolver, StaticJavaParser.parseExpression("new Float[]{2.0d, 3.0d}"), null)).isEqualTo(Float.class);
+        assertThat(getExpressionType(null, typeResolver, new BooleanLiteralExpr(true), null)).isEqualTo(boolean.class);
+        assertThat(getExpressionType(null, typeResolver, new CharLiteralExpr('a'), null)).isEqualTo(char.class);
+        assertThat(getExpressionType(null, typeResolver, new DoubleLiteralExpr(2.0d), null)).isEqualTo(double.class);
+        assertThat(getExpressionType(null, typeResolver, new IntegerLiteralExpr(2), null)).isEqualTo(int.class);
+        assertThat(getExpressionType(null, typeResolver, new LongLiteralExpr(2l), null)).isEqualTo(long.class);
+        assertThat(getExpressionType(null, typeResolver, new NullLiteralExpr(), null)).isEqualTo(MethodUtils.NullType.class);
+        assertThat(getExpressionType(null, typeResolver, new StringLiteralExpr(""), null)).isEqualTo(String.class);
     }
 
     @Test
@@ -90,9 +89,9 @@ public class DrlxParseUtilTest {
             DrlxParseUtil.forceCastForName("$my", StaticJavaParser.parseType("Integer"), expr);
             return expr.toString();
         };
-        assertEquals("ciao += ((Integer) $my)", c.apply("ciao += $my"));
-        assertEquals("ciao.add(((Integer) $my))", c.apply("ciao.add($my)"));
-        assertEquals("ciao.asd.add(((Integer) $my))", c.apply("ciao.asd.add($my)"));
+        assertThat(c.apply("ciao += $my")).isEqualTo("ciao += ((Integer) $my)");
+        assertThat(c.apply("ciao.add($my)")).isEqualTo("ciao.add(((Integer) $my))");
+        assertThat(c.apply("ciao.asd.add($my)")).isEqualTo("ciao.asd.add(((Integer) $my))");
     }
 
     @Test
@@ -102,8 +101,8 @@ public class DrlxParseUtilTest {
             DrlxParseUtil.rescopeNamesToNewScope(new NameExpr("nscope"), Arrays.asList("name", "surname"), expr);
             return expr.toString();
         };
-        assertEquals("nscope.name = \"John\"", c.apply("name = \"John\" "));
-        assertEquals("nscope.name = nscope.surname", c.apply("name = surname"));
+        assertThat(c.apply("name = \"John\" ")).isEqualTo("nscope.name = \"John\"");
+        assertThat(c.apply("name = surname")).isEqualTo("nscope.name = nscope.surname");
     }
 
     @Test
@@ -113,16 +112,16 @@ public class DrlxParseUtilTest {
             DrlxParseUtil.rescopeNamesToNewScope(new NameExpr("nscope"), Collections.singletonList("total"), expr);
             return expr.toString();
         };
-        assertEquals("new Integer(nscope.total)", c.apply("new Integer(total) "));
+        assertThat(c.apply("new Integer(total) ")).isEqualTo("new Integer(nscope.total)");
     }
 
     @Test
     public void removeRootNodeTest() {
-        assertEquals(new RemoveRootNodeResult(of(expr("sum")), expr("sum"), expr("sum")), findRemoveRootNodeViaScope(expr("sum")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$a")), expr("getAge()"), expr("getAge()")), findRemoveRootNodeViaScope(expr("$a.getAge()")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$c")), expr("convert($length)"), expr("convert($length)")), findRemoveRootNodeViaScope(expr("$c.convert($length)")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getValues().get(0)"), expr("getValues()")), findRemoveRootNodeViaScope(expr("$data.getValues().get(0)")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getIndexes().getValues().get(0)"), expr("getIndexes()")), findRemoveRootNodeViaScope(expr("$data.getIndexes().getValues().get(0)")));
+        assertThat(findRemoveRootNodeViaScope(expr("sum"))).isEqualTo(new RemoveRootNodeResult(of(expr("sum")), expr("sum"), expr("sum")));
+        assertThat(findRemoveRootNodeViaScope(expr("$a.getAge()"))).isEqualTo(new RemoveRootNodeResult(of(expr("$a")), expr("getAge()"), expr("getAge()")));
+        assertThat(findRemoveRootNodeViaScope(expr("$c.convert($length)"))).isEqualTo(new RemoveRootNodeResult(of(expr("$c")), expr("convert($length)"), expr("convert($length)")));
+        assertThat(findRemoveRootNodeViaScope(expr("$data.getValues().get(0)"))).isEqualTo(new RemoveRootNodeResult(of(expr("$data")), expr("getValues().get(0)"), expr("getValues()")));
+        assertThat(findRemoveRootNodeViaScope(expr("$data.getIndexes().getValues().get(0)"))).isEqualTo(new RemoveRootNodeResult(of(expr("$data")), expr("getIndexes().getValues().get(0)"), expr("getIndexes()")));
     }
 
     private Expression expr(String $a) {

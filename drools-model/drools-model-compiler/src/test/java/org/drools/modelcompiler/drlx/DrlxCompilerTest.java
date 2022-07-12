@@ -48,9 +48,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.parser.Providers.provider;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class DrlxCompilerTest {
 
@@ -59,7 +58,7 @@ public class DrlxCompilerTest {
         ParseStart<Expression> context = ParseStart.EXPRESSION;
         MvelParser mvelParser = new MvelParser(new ParserConfiguration(), false);
         ParseResult<Expression> result = mvelParser.parse(context, provider("1\n+1"));
-        assertEquals("1 + 1", result.getResult().get().toString());
+        assertThat(result.getResult().get().toString()).isEqualTo("1 + 1");
     }
 
     @Test
@@ -70,11 +69,10 @@ public class DrlxCompilerTest {
         DrlxCompiler drlxCompiler = new DrlxCompiler();
         drlxCompiler.toPackageDescr(r);
 
-        assertTrue("Should not have compiler errors\n" +
-                           drlxCompiler.getResults().stream()
-                                   .map(KnowledgeBuilderResult::toString)
-                                   .collect(Collectors.joining("\n")),
-                   drlxCompiler.getResults().isEmpty());
+        assertThat(drlxCompiler.getResults().isEmpty()).as("Should not have compiler errors\n" +
+                drlxCompiler.getResults().stream()
+                        .map(KnowledgeBuilderResult::toString)
+                        .collect(Collectors.joining("\n"))).isTrue();
     }
 
     @Test
@@ -85,7 +83,7 @@ public class DrlxCompilerTest {
         DrlxCompiler drlxCompiler = new DrlxCompiler();
         PackageDescr packageDescr = drlxCompiler.toPackageDescr(r);
 
-        assertTrue("Should not have compiler errors", drlxCompiler.getResults().isEmpty());
+        assertThat(drlxCompiler.getResults().isEmpty()).as("Should not have compiler errors").isTrue();
 
         KnowledgeBuilderImpl kbuilder = new KnowledgeBuilderImpl();
         PackageRegistry registry = kbuilder.getOrCreatePackageRegistry(packageDescr);
@@ -106,7 +104,7 @@ public class DrlxCompilerTest {
                 packageDescr,
                 packageModel);
 
-        assertEquals(1, packageModel.getRuleUnits().size());
+        assertThat(packageModel.getRuleUnits().size()).isEqualTo(1);
     }
 
     @Test
@@ -126,7 +124,7 @@ public class DrlxCompilerTest {
         RuleUnitExecutor executor = RuleUnitExecutor.newRuleUnitExecutor(kieContainer);
         executor.newDataSource("dates",
                                LocalDate.of(2021, 1, 1));
-        assertEquals(3, executor.run(Example.class));
+        assertThat(executor.run(Example.class)).isEqualTo(3);
     }
 
     private static String getPom(ReleaseId releaseId) {

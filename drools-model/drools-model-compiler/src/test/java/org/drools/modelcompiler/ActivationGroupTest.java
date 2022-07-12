@@ -30,7 +30,6 @@ import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class ActivationGroupTest extends OnlyPatternTest {
 
@@ -91,8 +90,8 @@ public class ActivationGroupTest extends OnlyPatternTest {
 
         List<?> outcome = (List<?>) result.getValue(LIST_OUTPUT_NAME);
         assertThat(outcome).isNotNull();
-        assertEquals(1, outcome.size());
+        assertThat(outcome.size()).isEqualTo(1);
 
-        assertEquals("Rule without activation group executed", outcome.get(0));
+        assertThat(outcome.get(0)).isEqualTo("Rule without activation group executed");
     }
 }

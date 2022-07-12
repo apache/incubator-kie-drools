@@ -19,8 +19,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PackagesIsolationTest extends BaseModelTest {
 
@@ -95,8 +94,8 @@ public class PackagesIsolationTest extends BaseModelTest {
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        assertTrue( list.containsAll( Arrays.asList( "R1", "R2" ) ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(Arrays.asList("R1", "R2"))).isTrue();
     }
 
 }

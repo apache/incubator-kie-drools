@@ -30,8 +30,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieBuilderTest {
 
@@ -44,7 +43,7 @@ public class KieBuilderTest {
     @Test
     public void testPatternModelBuild() throws Exception {
         KieSession ksession = checkKieSession( ExecutableModelProject.class );
-        assertTrue( getAlphaConstraint( ksession ) instanceof LambdaConstraint );
+        assertThat(getAlphaConstraint(ksession) instanceof LambdaConstraint).isTrue();
     }
 
     private KieSession checkKieSession(Class<? extends KieBuilder.ProjectType> projectClass) {
@@ -59,7 +58,7 @@ public class KieBuilderTest {
 
         int count = ksession.fireAllRules();
 
-        assertEquals( 1, count );
+        assertThat(count).isEqualTo(1);
         return ksession;
     }
 

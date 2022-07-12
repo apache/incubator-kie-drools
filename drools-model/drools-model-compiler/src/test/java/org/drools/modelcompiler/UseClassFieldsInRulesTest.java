@@ -3,7 +3,7 @@ package org.drools.modelcompiler;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UseClassFieldsInRulesTest extends BaseModelTest {
 
@@ -81,7 +81,7 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
 
         ksession.insert(new ClassWithFields());
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
                 "end ";
 
         KieSession ksession = getKieSession(str);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
                 "end ";
 
         KieSession ksession = getKieSession(str);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
                 "end ";
 
         KieSession ksession = getKieSession(str);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -137,6 +137,6 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
                 "end ";
 
         KieSession ksession = getKieSession(str);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

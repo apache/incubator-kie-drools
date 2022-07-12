@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.exchangeOf;
 import static org.drools.model.DSL.globalOf;
@@ -39,7 +40,6 @@ import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.receive;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.model.PatternDSL.send;
-import static org.junit.Assert.assertEquals;
 
 public class SendReceiveTest {
 
@@ -76,7 +76,7 @@ public class SendReceiveTest {
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "messages", list );
 
-        assertEquals( 1, AsyncMessagesCoordinator.get().getListeners().size() );
+        assertThat(AsyncMessagesCoordinator.get().getListeners().size()).isEqualTo(1);
 
         ksession.insert( 10 );
 
@@ -91,9 +91,9 @@ public class SendReceiveTest {
         ksession.halt();
         ksession.dispose();
 
-        assertEquals( 1, list.size());
-        assertEquals( "received message 'Hello World!' longer than 10", list.get(0));
-        assertEquals( 0, AsyncMessagesCoordinator.get().getListeners().size() );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("received message 'Hello World!' longer than 10");
+        assertThat(AsyncMessagesCoordinator.get().getListeners().size()).isEqualTo(0);
     }
 
     @Test
@@ -149,7 +149,7 @@ public class SendReceiveTest {
         ksession2.halt();
         ksession2.dispose();
 
-        assertEquals( 1, list.size());
-        assertEquals( "received message 'Hello World!' longer than 10", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("received message 'Hello World!' longer than 10");
     }
 }

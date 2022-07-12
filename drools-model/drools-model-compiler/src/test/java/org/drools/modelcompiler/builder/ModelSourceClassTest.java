@@ -29,8 +29,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ModelSourceClassTest {
 
@@ -44,7 +43,7 @@ public class ModelSourceClassTest {
         modelSourceClass.addGetModelsMethod(sb);
         String retrieved = sb.toString();
         String expected = "return java.util.Arrays.asList();";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
     }
 
     @Test
@@ -56,9 +55,9 @@ public class ModelSourceClassTest {
         modelSourceClass.addGetModelsMethod(sb);
         String retrieved = sb.toString();
         String expected = "return java.util.Arrays.asList();";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
         String unexpected = "return java.util.Arrays.asList(new ());";
-        assertFalse(retrieved.contains(unexpected));
+        assertThat(retrieved.contains(unexpected)).isFalse();
     }
 
     @Test
@@ -71,9 +70,9 @@ public class ModelSourceClassTest {
         modelSourceClass.addGetModelsMethod(sb);
         String retrieved = sb.toString();
         String expected = "return java.util.Arrays.asList(new ModelTest());";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
         String unexpected = "return java.util.Arrays.asList();";
-        assertFalse(retrieved.contains(unexpected));
+        assertThat(retrieved.contains(unexpected)).isFalse();
     }
 
     @Test
@@ -83,7 +82,7 @@ public class ModelSourceClassTest {
         modelSourceClass.addGetModelForKieBaseMethod(sb);
         String retrieved = sb.toString();
         String unexpected = "switch (kieBaseName) {";
-        assertFalse(retrieved.contains(unexpected));
+        assertThat(retrieved.contains(unexpected)).isFalse();
     }
 
     @Test
@@ -96,9 +95,9 @@ public class ModelSourceClassTest {
         modelSourceClass.addGetModelForKieBaseMethod(sb);
         String retrieved = sb.toString();
         String expected = "switch (kieBaseName) {";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
         expected = "case \"default-kie\": return getModels();";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
     }
 
     @Test
@@ -113,9 +112,9 @@ public class ModelSourceClassTest {
         modelSourceClass.addGetModelForKieBaseMethod(sb);
         String retrieved = sb.toString();
         String expected = "switch (kieBaseName) {";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
         expected = "case \"default-kie\": return getModels();";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
     }
 
     @Test
@@ -131,9 +130,9 @@ public class ModelSourceClassTest {
         modelSourceClass.addGetModelForKieBaseMethod(sb);
         String retrieved = sb.toString();
         String expected = "switch (kieBaseName) {";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
         expected = "case \"default-kie\": return java.util.Arrays.asList( new NotModelTest() );";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
     }
 
     @Test
@@ -149,9 +148,9 @@ public class ModelSourceClassTest {
         modelSourceClass.addGetModelForKieBaseMethod(sb);
         String retrieved = sb.toString();
         String expected = "switch (kieBaseName) {";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
         expected = "case \"default-kie\": return java.util.Arrays.asList( new ModelTest() );";
-        assertTrue(retrieved.contains(expected));
+        assertThat(retrieved.contains(expected)).isTrue();
     }
 
     private KieBaseModel getKieBaseModel(String modelName) {
