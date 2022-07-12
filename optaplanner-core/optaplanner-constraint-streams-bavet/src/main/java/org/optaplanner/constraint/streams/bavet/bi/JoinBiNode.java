@@ -26,13 +26,23 @@ final class JoinBiNode<A, B> extends AbstractJoinNode<UniTuple<A>, B, BiTuple<A,
     }
 
     @Override
-    protected IndexProperties createIndexProperties(UniTuple<A> aUniTuple) {
-        return mappingA.apply(aUniTuple.factA);
+    protected IndexProperties createIndexPropertiesLeft(UniTuple<A> leftTuple) {
+        return mappingA.apply(leftTuple.factA);
     }
 
     @Override
-    protected BiTuple<A, B> createOutTuple(UniTuple<A> aUniTuple, UniTuple<B> rightTuple) {
-        return new BiTuple<>(aUniTuple.factA, rightTuple.factA, outputStoreSize);
+    protected BiTuple<A, B> createOutTuple(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
+        return new BiTuple<>(leftTuple.factA, rightTuple.factA, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleLeft(BiTuple<A, B> outTuple, UniTuple<A> leftTuple) {
+        outTuple.factA = leftTuple.factA;
+    }
+
+    @Override
+    protected void updateOutTupleRight(BiTuple<A, B> outTuple, UniTuple<B> rightTuple) {
+        outTuple.factB = rightTuple.factA;
     }
 
     @Override

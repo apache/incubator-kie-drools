@@ -46,7 +46,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             throw new IllegalStateException("Impossible state: the input for the tuple (" + leftTuple
                     + ") was already added in the tupleStore.");
         }
-        IndexProperties indexProperties = createIndexProperties(leftTuple);
+        IndexProperties indexProperties = createIndexPropertiesLeft(leftTuple);
         tupleStore[inputStoreIndexLeft] = indexProperties;
 
         Map<UniTuple<Right_>, OutTuple_> outTupleMapLeft = new HashMap<>();
@@ -73,13 +73,14 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             insertLeft(leftTuple);
             return;
         }
-        IndexProperties newIndexProperties = createIndexProperties(leftTuple);
+        IndexProperties newIndexProperties = createIndexPropertiesLeft(leftTuple);
 
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
             // Still needed to propagate the update for downstream filters, matchWeighters, ...
             Map<UniTuple<Right_>, OutTuple_> outTupleMapLeft = indexerLeft.get(oldIndexProperties, leftTuple);
             for (OutTuple_ outTuple : outTupleMapLeft.values()) {
+                updateOutTupleLeft(outTuple, leftTuple);
                 updateTuple(outTuple);
             }
         } else {
@@ -146,6 +147,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             // Still needed to propagate the update for downstream filters, matchWeighters, ...
             indexerLeft.visit(oldIndexProperties, (leftTuple, outTupleMapLeft) -> {
                 OutTuple_ outTuple = outTupleMapLeft.get(rightTuple);
+                updateOutTupleRight(outTuple, rightTuple);
                 if (outTuple == null) {
                     throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
                             + ") with indexProperties (" + oldIndexProperties
@@ -185,9 +187,13 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         deindexRightTuple(indexProperties, rightTuple);
     }
 
-    protected abstract IndexProperties createIndexProperties(LeftTuple_ leftTuple);
+    protected abstract IndexProperties createIndexPropertiesLeft(LeftTuple_ leftTuple);
 
     protected abstract OutTuple_ createOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
+
+    protected abstract void updateOutTupleLeft(OutTuple_ outTuple, LeftTuple_ leftTuple);
+
+    protected abstract void updateOutTupleRight(OutTuple_ outTuple, UniTuple<Right_> rightTuple);
 
     private void updateTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {

@@ -28,13 +28,24 @@ final class JoinTriNode<A, B, C> extends AbstractJoinNode<BiTuple<A, B>, C, TriT
     }
 
     @Override
-    protected IndexProperties createIndexProperties(BiTuple<A, B> abBiTuple) {
-        return mappingAB.apply(abBiTuple.factA, abBiTuple.factB);
+    protected IndexProperties createIndexPropertiesLeft(BiTuple<A, B> leftTuple) {
+        return mappingAB.apply(leftTuple.factA, leftTuple.factB);
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(BiTuple<A, B> abBiTuple, UniTuple<C> rightTuple) {
-        return new TriTuple<>(abBiTuple.factA, abBiTuple.factB, rightTuple.factA, outputStoreSize);
+    protected TriTuple<A, B, C> createOutTuple(BiTuple<A, B> leftTuple, UniTuple<C> rightTuple) {
+        return new TriTuple<>(leftTuple.factA, leftTuple.factB, rightTuple.factA, outputStoreSize);
+    }
+
+    @Override
+    protected void updateOutTupleLeft(TriTuple<A, B, C> outTuple, BiTuple<A, B> leftTuple) {
+        outTuple.factA = leftTuple.factA;
+        outTuple.factB = leftTuple.factB;
+    }
+
+    @Override
+    protected void updateOutTupleRight(TriTuple<A, B, C> outTuple, UniTuple<C> rightTuple) {
+        outTuple.factC = rightTuple.factA;
     }
 
     @Override

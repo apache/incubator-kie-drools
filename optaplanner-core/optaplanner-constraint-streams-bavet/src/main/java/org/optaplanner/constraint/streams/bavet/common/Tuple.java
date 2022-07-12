@@ -7,7 +7,8 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 /**
  * A tuple must not implement equals()/hashCode() to fact equality,
  * because some stream operations ({@link UniConstraintStream#map(Function)}, ...)
- * might create 2 different tuple instances to contain the same facts.
+ * might create 2 different tuple instances to contain the same facts
+ * and because a tuple's origin may replace a tuple's fact.
  */
 public interface Tuple {
 

@@ -1,5 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
+import java.util.Objects;
+
 public final class Group<OutTuple_ extends Tuple, GroupKey_, ResultContainer_> {
 
     public final GroupKey_ groupKey;
@@ -11,6 +13,11 @@ public final class Group<OutTuple_ extends Tuple, GroupKey_, ResultContainer_> {
         this.groupKey = groupKey;
         this.resultContainer = resultContainer;
         this.outTuple = outTuple;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toString(groupKey);
     }
 
 }

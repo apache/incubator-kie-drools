@@ -28,8 +28,20 @@ final class JoinQuadNode<A, B, C, D> extends AbstractJoinNode<TriTuple<A, B, C>,
     }
 
     @Override
-    protected IndexProperties createIndexProperties(TriTuple<A, B, C> tuple) {
-        return mappingABC.apply(tuple.factA, tuple.factB, tuple.factC);
+    protected IndexProperties createIndexPropertiesLeft(TriTuple<A, B, C> leftTuple) {
+        return mappingABC.apply(leftTuple.factA, leftTuple.factB, leftTuple.factC);
+    }
+
+    @Override
+    protected void updateOutTupleLeft(QuadTuple<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
+        outTuple.factA = leftTuple.factA;
+        outTuple.factB = leftTuple.factB;
+        outTuple.factC = leftTuple.factC;
+    }
+
+    @Override
+    protected void updateOutTupleRight(QuadTuple<A, B, C, D> outTuple, UniTuple<D> rightTuple) {
+        outTuple.factD = rightTuple.factA;
     }
 
     @Override
