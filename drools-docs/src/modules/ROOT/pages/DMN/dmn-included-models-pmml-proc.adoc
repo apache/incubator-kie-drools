@@ -79,7 +79,7 @@ Example BOM dependency:
 --
 These artifacts are required to enable JPMML evaluation.
 
-IMPORTANT: Red Hat supports integration with the Java Evaluator API for PMML (JPMML) for PMML execution in {PRODUCT}. However, Red Hat does not support the JPMML libraries directly. If *you* include JPMML libraries in your {PRODUCT} distribution, see the https://openscoring.io/[Openscoring.io] licensing terms for JPMML.
+IMPORTANT: We provide these additional plug-in modules to support the integration with the Java Evaluator API for PMML (JPMML) for PMML execution in {PRODUCT}. However, we *do not* support the JPMML libraries directly. If *you* include JPMML libraries in your {PRODUCT} distribution, see the https://openscoring.io/[Openscoring.io] licensing terms for JPMML.
 
 --
 . In the {DMN_EDITOR}, click the *Included Models* tab.

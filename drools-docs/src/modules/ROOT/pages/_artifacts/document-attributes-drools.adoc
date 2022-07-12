@@ -28,3 +28,4 @@
 
 :KOGITO: Kogito
 :KIE_SERVER: KIE Server
+:OPENSHIFT: Openshift
