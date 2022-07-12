@@ -38,9 +38,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DeclaredTypesTest extends BaseModelTest {
 
@@ -75,16 +73,16 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
         Result r = results.iterator().next();
         Object result = r.getValue();
         Class<?> resultClass = result.getClass();
         Method name = resultClass.getMethod("getName");
-        assertEquals("defaultpkg.POJOPerson", resultClass.getName());
-        assertEquals("Mark", name.invoke(result));
+        assertThat(resultClass.getName()).isEqualTo("defaultpkg.POJOPerson");
+        assertThat(name.invoke(result)).isEqualTo("Mark");
 
         Constructor<?>[] constructors = resultClass.getConstructors();
-        assertEquals(2, constructors.length);
+        assertThat(constructors.length).isEqualTo(2);
 
         Object instance1 = resultClass.newInstance();
         Constructor<?> ctor = resultClass.getConstructor(String.class, String.class, int.class);
@@ -92,10 +90,10 @@ public class DeclaredTypesTest extends BaseModelTest {
         Method getName = resultClass.getMethod("getName");
         Method getAge = resultClass.getMethod("getAge");
 
-        assertEquals("Luca", getName.invoke(luca));
-        assertEquals(32, getAge.invoke(luca));
+        assertThat(getName.invoke(luca)).isEqualTo("Luca");
+        assertThat(getAge.invoke(luca)).isEqualTo(32);
 
-        assertEquals("POJOPerson( name=Luca, surname=null, age=32 )", luca.toString());
+        assertThat(luca.toString()).isEqualTo("POJOPerson( name=Luca, surname=null, age=32 )");
     }
 
     @Test
@@ -136,16 +134,16 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
         Result r = results.iterator().next();
         Object result = r.getValue();
         Class<?> resultClass = result.getClass();
         Method name = resultClass.getMethod("getName");
-        assertEquals("org.drools.pojo.model.POJOPerson", resultClass.getName());
-        assertEquals("Mark", name.invoke(result));
+        assertThat(resultClass.getName()).isEqualTo("org.drools.pojo.model.POJOPerson");
+        assertThat(name.invoke(result)).isEqualTo("Mark");
 
         Constructor<?>[] constructors = resultClass.getConstructors();
-        assertEquals(2, constructors.length);
+        assertThat(constructors.length).isEqualTo(2);
 
         Object instance1 = resultClass.newInstance();
         Constructor<?> ctor = resultClass.getConstructor(String.class, String.class, int.class);
@@ -153,10 +151,10 @@ public class DeclaredTypesTest extends BaseModelTest {
         Method getName = resultClass.getMethod("getName");
         Method getAge = resultClass.getMethod("getAge");
 
-        assertEquals("Luca", getName.invoke(luca));
-        assertEquals(32, getAge.invoke(luca));
+        assertThat(getName.invoke(luca)).isEqualTo("Luca");
+        assertThat(getAge.invoke(luca)).isEqualTo(32);
 
-        assertEquals("POJOPerson( name=Luca, surname=null, age=32 )", luca.toString());
+        assertThat(luca.toString()).isEqualTo("POJOPerson( name=Luca, surname=null, age=32 )");
     }
 
     @Test
@@ -220,16 +218,16 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
         Result r = results.iterator().next();
         Object result = r.getValue();
         Class<?> resultClass = result.getClass();
         Method name = resultClass.getMethod("getName");
-        assertEquals("defaultpkg.POJOPerson", resultClass.getName());
-        assertEquals("Mark", name.invoke(result));
+        assertThat(resultClass.getName()).isEqualTo("defaultpkg.POJOPerson");
+        assertThat(name.invoke(result)).isEqualTo("Mark");
 
         Constructor<?>[] constructors = resultClass.getConstructors();
-        assertEquals(2, constructors.length);
+        assertThat(constructors.length).isEqualTo(2);
 
         Object instance1 = resultClass.newInstance();
         Constructor<?> ctor = resultClass.getConstructor(String.class, String.class, int.class);
@@ -237,10 +235,10 @@ public class DeclaredTypesTest extends BaseModelTest {
         Method getName = resultClass.getMethod("getName");
         Method getAge = resultClass.getMethod("getAge");
 
-        assertEquals("Luca", getName.invoke(luca));
-        assertEquals(32, getAge.invoke(luca));
+        assertThat(getName.invoke(luca)).isEqualTo("Luca");
+        assertThat(getAge.invoke(luca)).isEqualTo(32);
 
-        assertEquals("POJOPerson( name=Luca, surname=null, age=32 )", luca.toString());
+        assertThat(luca.toString()).isEqualTo("POJOPerson( name=Luca, surname=null, age=32 )");
     }
 
     public static class MyNumber {
@@ -280,14 +278,14 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Integer> results = getObjectsIntoList(ksession, Integer.class);
-        assertTrue(results.contains(2));
+        assertThat(results.contains(2)).isTrue();
 
         ksession.insert(new MyNumber(1));
         ksession.fireAllRules();
 
         results = getObjectsIntoList(ksession, Integer.class);
-        assertTrue(results.contains(2));
-        assertFalse(results.contains(1)); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint.
+        assertThat(results.contains(2)).isTrue();
+        assertThat(results.contains(1)).isFalse(); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint.
     }
 
     @Test
@@ -305,14 +303,14 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Integer> results = getObjectsIntoList(ksession, Integer.class);
-        assertTrue(results.contains(2));
+        assertThat(results.contains(2)).isTrue();
 
         ksession.insert(new MyNumber(1));
         ksession.fireAllRules();
 
         results = getObjectsIntoList(ksession, Integer.class);
-        assertTrue(results.contains(2));
-        assertFalse(results.contains(1)); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint.
+        assertThat(results.contains(2)).isTrue();
+        assertThat(results.contains(1)).isFalse(); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint.
     }
 
     @Test
@@ -330,14 +328,14 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Integer> results = getObjectsIntoList(ksession, Integer.class);
-        assertTrue(results.contains(2));
+        assertThat(results.contains(2)).isTrue();
 
         ksession.insert(new MyNumber(1));
         ksession.fireAllRules();
 
         results = getObjectsIntoList(ksession, Integer.class);
-        assertTrue(results.contains(2));
-        assertTrue(results.contains(1)); // This is because MyNumber(1) would simply bind for "even" predicate/getter to $even variable, and not used as a constraint.
+        assertThat(results.contains(2)).isTrue();
+        assertThat(results.contains(1)).isTrue(); // This is because MyNumber(1) would simply bind for "even" predicate/getter to $even variable, and not used as a constraint.
     }
 
     @Test
@@ -363,7 +361,7 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         List<Object> results = getObjectsIntoList(ksession, Object.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test
@@ -390,11 +388,11 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.insert(name);
         ksession.fireAllRules();
 
-        assertEquals( "Mario", nameType.get( name, "VALUE" ) );
+        assertThat(nameType.get(name, "VALUE")).isEqualTo("Mario");
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next()).isEqualTo("Mario");
 
         EntryPointNode epn = (( KnowledgeBaseImpl ) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
         Iterator<ObjectTypeNode> otns = epn.getObjectTypeNodes().values().iterator();
@@ -405,7 +403,7 @@ public class DeclaredTypesTest extends BaseModelTest {
         AlphaNode alpha = (AlphaNode)otn.getSinks()[0];
         AlphaNodeFieldConstraint constraint = alpha.getConstraint();
         int index = (( IndexableConstraint ) constraint).getFieldExtractor().getIndex();
-        assertTrue( index >= 0 );
+        assertThat(index >= 0).isTrue();
     }
 
     @Test
@@ -433,11 +431,11 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.insert(name);
         ksession.fireAllRules();
 
-        assertEquals( "Mario", nameType.get( name, "value" ) );
+        assertThat(nameType.get(name, "value")).isEqualTo("Mario");
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next()).isEqualTo("Mario");
     }
 
     @Test
@@ -491,9 +489,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
         Person p = (Person) results.iterator().next().getValue();
-        assertEquals(11, p.getAge());
+        assertThat(p.getAge()).isEqualTo(11);
     }
 
     @Test
@@ -511,7 +509,7 @@ public class DeclaredTypesTest extends BaseModelTest {
         Object pojo = getObjectsIntoList(ksession, Object.class).iterator().next();
         Field f = pojo.getClass().getDeclaredField( "serialVersionUID" );
         f.setAccessible( true );
-        assertEquals(42L, (long)f.get( pojo ));
+        assertThat((long) f.get(pojo)).isEqualTo(42L);
     }
 
     @Test
@@ -545,7 +543,7 @@ public class DeclaredTypesTest extends BaseModelTest {
         factType.set(f1, "n", n1);
 
         ksession.insert(f1);
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -566,14 +564,14 @@ public class DeclaredTypesTest extends BaseModelTest {
         KieBase kbase = ksession.getKieBase();
 
         FactType factType = kbase.getFactType("org.test", "MyPerson");
-        assertEquals( String.class, factType.getField( "name" ).getType() );
-        assertEquals( String.class, factType.getField( "style" ).getType() );
+        assertThat(factType.getField("name").getType()).isEqualTo(String.class);
+        assertThat(factType.getField("style").getType()).isEqualTo(String.class);
 
         Object f1 = factType.newInstance();
         factType.set(f1, "name", "Mario");
         factType.set(f1, "style", "Steampunk");
 
         ksession.insert(f1);
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

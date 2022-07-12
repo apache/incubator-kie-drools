@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class MvelDialectMapTest extends BaseModelTest {
 
@@ -61,7 +60,7 @@ public class MvelDialectMapTest extends BaseModelTest {
 
         ksession.insert(p);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         assertThat(results).containsExactly(5); // item1.length()
     }
@@ -96,7 +95,7 @@ public class MvelDialectMapTest extends BaseModelTest {
 
         ksession.insert(luca);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         assertThat(results).containsExactly(8); // Leonardo.length()
     }

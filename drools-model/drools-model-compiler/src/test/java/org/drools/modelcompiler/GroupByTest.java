@@ -67,9 +67,6 @@ import org.kie.internal.event.rule.RuleEventManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.from;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class GroupByTest {
 
@@ -111,25 +108,25 @@ public class GroupByTest {
         FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 71, results.get("E") );
-        assertEquals( 126, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("E")).isEqualTo(71);
+        assertThat(results.get("M")).isEqualTo(126);
         results.clear();
 
         ksession.delete( meFH );
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( 81, results.get("M") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get("M")).isEqualTo(81);
         results.clear();
 
         ksession.update(geoffreyFH, new Person("Geoffrey", 40));
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 40, results.get("G") );
-        assertEquals( 119, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("G")).isEqualTo(40);
+        assertThat(results.get("M")).isEqualTo(119);
     }
 
     public static <A> SumAccumulator sumA(ToIntFunction<? super A> func) {
@@ -267,26 +264,26 @@ public class GroupByTest {
         FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
         ksession.fireAllRules();
 
-        assertEquals( 3, results.size() );
-        assertEquals( 35, results.get("G") );
-        assertEquals( 71, results.get("E") );
-        assertEquals( 126, results.get("M") );
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get("G")).isEqualTo(35);
+        assertThat(results.get("E")).isEqualTo(71);
+        assertThat(results.get("M")).isEqualTo(126);
         results.clear();
 
         ksession.delete( meFH );
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( 81, results.get("M") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get("M")).isEqualTo(81);
         results.clear();
 
         ksession.update(geoffreyFH, new Person("Geoffrey", 40));
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 40, results.get("G") );
-        assertEquals( 119, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("G")).isEqualTo(40);
+        assertThat(results.get("M")).isEqualTo(119);
 
     }
 
@@ -327,7 +324,7 @@ public class GroupByTest {
         FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
         ksession.fireAllRules();
 
-        assertEquals( 3, results.size() );
+        assertThat(results.size()).isEqualTo(3);
         assertThat(results)
                 .containsExactlyInAnyOrder("G", "E", "M");
         results.clear();
@@ -335,7 +332,7 @@ public class GroupByTest {
         ksession.delete( meFH );
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size()).isEqualTo(1);
         assertThat(results)
                 .containsExactlyInAnyOrder("M");
         results.clear();
@@ -344,7 +341,7 @@ public class GroupByTest {
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
+        assertThat(results.size()).isEqualTo(2);
         assertThat(results)
                 .containsExactlyInAnyOrder("G", "M");
     }
@@ -390,25 +387,25 @@ public class GroupByTest {
         FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 71, results.get("E") );
-        assertEquals( 126, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("E")).isEqualTo(71);
+        assertThat(results.get("M")).isEqualTo(126);
         results.clear();
 
         ksession.delete( meFH );
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( 81, results.get("M") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get("M")).isEqualTo(81);
         results.clear();
 
         ksession.update(geoffreyFH, new Person("Geoffrey", 40));
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 40, results.get("G") );
-        assertEquals( 119, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("G")).isEqualTo(40);
+        assertThat(results.get("M")).isEqualTo(119);
     }
 
     @Test
@@ -450,26 +447,26 @@ public class GroupByTest {
         FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
         ksession.fireAllRules();
 
-        assertEquals( 3, results.size() );
-        assertEquals( 35, results.get("G") );
-        assertEquals( 71, results.get("E") );
-        assertEquals( 126, results.get("M") );
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get("G")).isEqualTo(35);
+        assertThat(results.get("E")).isEqualTo(71);
+        assertThat(results.get("M")).isEqualTo(126);
         results.clear();
 
         ksession.delete( meFH );
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( 81, results.get("M") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get("M")).isEqualTo(81);
         results.clear();
 
         ksession.update(geoffreyFH, new Person("Geoffrey", 40));
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 40, results.get("G") );
-        assertEquals( 119, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("G")).isEqualTo(40);
+        assertThat(results.get("M")).isEqualTo(119);
     }
 
     @Test
@@ -522,26 +519,26 @@ public class GroupByTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 35, results.get("G") );
-        assertNull( results.get("E") );
-        assertEquals( 126, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("G")).isEqualTo(35);
+        assertThat(results.get("E")).isNull();
+        assertThat(results.get("M")).isEqualTo(126);
         results.clear();
 
         ksession.delete( meFH );
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( 81, results.get("M") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get("M")).isEqualTo(81);
         results.clear();
 
         ksession.update(geoffreyFH, new Person("Geoffrey", 40));
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 40, results.get("G") );
-        assertEquals( 119, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("G")).isEqualTo(40);
+        assertThat(results.get("M")).isEqualTo(119);
     }
 
     private static final class MyType {
@@ -632,9 +629,9 @@ public class GroupByTest {
         session.insert(2);
         session.fireAllRules();
 
-        assertEquals(2, global.size());
-        assertEquals(2, (int) global.get(1)); // -1 and 1 will map to the same key, and count twice.
-        assertEquals(1, (int) global.get(2)); // 2 maps to a key, and counts once.
+        assertThat(global.size()).isEqualTo(2);
+        assertThat((int) global.get(1)).isEqualTo(2); // -1 and 1 will map to the same key, and count twice.
+        assertThat((int) global.get(2)).isEqualTo(1); // 2 maps to a key, and counts once.
     }
 
     @Test
@@ -673,9 +670,9 @@ public class GroupByTest {
         session.insert(2);
         session.fireAllRules();
 
-        assertEquals(2, global.size());
-        assertEquals(2, (int) global.get(1)); // -1 and 1 will map to the same key, and count twice.
-        assertEquals(1, (int) global.get(2)); // 2 maps to a key, and counts once.
+        assertThat(global.size()).isEqualTo(2);
+        assertThat((int) global.get(1)).isEqualTo(2); // -1 and 1 will map to the same key, and count twice.
+        assertThat((int) global.get(2)).isEqualTo(1); // 2 maps to a key, and counts once.
     }
 
     @Test
@@ -723,32 +720,32 @@ public class GroupByTest {
         FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
         ksession.fireAllRules();
 
-        assertEquals( 6, results.size() );
-        assertEquals( 35, results.get("G4") );
-        assertEquals( 71, results.get("E4") );
-        assertEquals( 126, results.get("M4") );
-        assertEquals( 35, results.get("G5") );
-        assertEquals( 71, results.get("E5") );
-        assertEquals( 126, results.get("M5") );
+        assertThat(results.size()).isEqualTo(6);
+        assertThat(results.get("G4")).isEqualTo(35);
+        assertThat(results.get("E4")).isEqualTo(71);
+        assertThat(results.get("M4")).isEqualTo(126);
+        assertThat(results.get("G5")).isEqualTo(35);
+        assertThat(results.get("E5")).isEqualTo(71);
+        assertThat(results.get("M5")).isEqualTo(126);
         results.clear();
 
         ksession.delete( meFH );
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 81, results.get("M4") );
-        assertEquals( 81, results.get("M5") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("M4")).isEqualTo(81);
+        assertThat(results.get("M5")).isEqualTo(81);
         results.clear();
 
         ksession.update(geoffreyFH, new Person("Geoffrey", 40));
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
 
-        assertEquals( 4, results.size() );
-        assertEquals( 40, results.get("G4") );
-        assertEquals( 119, results.get("M4") );
-        assertEquals( 40, results.get("G5") );
-        assertEquals( 119, results.get("M5") );
+        assertThat(results.size()).isEqualTo(4);
+        assertThat(results.get("G4")).isEqualTo(40);
+        assertThat(results.get("M4")).isEqualTo(119);
+        assertThat(results.get("G5")).isEqualTo(40);
+        assertThat(results.get("M5")).isEqualTo(119);
     }
 
     @Test
@@ -844,26 +841,26 @@ public class GroupByTest {
         FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
         ksession.fireAllRules();
 
-        assertEquals( 3, results.size() );
-        assertEquals( 35, results.get("G") );
-        assertEquals( 71, results.get("E") );
-        assertEquals( 126, results.get("M") );
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get("G")).isEqualTo(35);
+        assertThat(results.get("E")).isEqualTo(71);
+        assertThat(results.get("M")).isEqualTo(126);
         results.clear();
 
         ksession.delete( meFH );
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( 81, results.get("M") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get("M")).isEqualTo(81);
         results.clear();
 
         ksession.update(geoffreyFH, new Person("Geoffrey", 40));
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 40, results.get("G") );
-        assertEquals( 119, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("G")).isEqualTo(40);
+        assertThat(results.get("M")).isEqualTo(119);
     }
 
     public static class CompositeKey {
@@ -1076,18 +1073,18 @@ public class GroupByTest {
         ksession.insert(new Person("Edoardo", 33));
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 73, results.get("E") );
-        assertEquals( 129, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("E")).isEqualTo(73);
+        assertThat(results.get("M")).isEqualTo(129);
         results.clear();
 
         me.setName("EMario");
         ksession.update(meFH, me);
         ksession.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( 119, results.get("E") );
-        assertEquals( 83, results.get("M") );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get("E")).isEqualTo(119);
+        assertThat(results.get("M")).isEqualTo(83);
     }
 
     @Test
@@ -1215,10 +1212,10 @@ public class GroupByTest {
          *   "(Geo, 35)" becomes "(Ge, 35)"
          */
 
-        assertEquals( 3, results.size() );
-        assertEquals( 87, results.get("Ma") );
-        assertEquals( 38, results.get("Ed") );
-        assertEquals( 35, results.get("Ge") );
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get("Ma")).isEqualTo(87);
+        assertThat(results.get("Ed")).isEqualTo(38);
+        assertThat(results.get("Ge")).isEqualTo(35);
         results.clear();
 
         ksession.delete( meFH );
@@ -1227,8 +1224,8 @@ public class GroupByTest {
 
         // No Mario anymore, so "(Mar, 42)" instead of "(Mar, 87)".
         // Therefore "(Ma, 42)".
-        assertEquals( 1, results.size() );
-        assertEquals( 42, results.get("Ma") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get("Ma")).isEqualTo(42);
         results.clear();
 
         // "(Geo, 35)" is gone.
@@ -1237,8 +1234,8 @@ public class GroupByTest {
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( 42, results.get("Ma") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get("Ma")).isEqualTo(42);
     }
 
     @Test
@@ -1303,10 +1300,10 @@ public class GroupByTest {
          *   "(Geo, 35)" becomes "(Ge, 35)"
          */
 
-        assertEquals( 3, results.size() );
-        assertEquals( 87, results.get("Ma") );
-        assertEquals( 38, results.get("Ed") );
-        assertEquals( 35, results.get("Ge") );
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get("Ma")).isEqualTo(87);
+        assertThat(results.get("Ed")).isEqualTo(38);
+        assertThat(results.get("Ge")).isEqualTo(35);
         results.clear();
 
         ksession.delete( meFH );
@@ -1315,8 +1312,8 @@ public class GroupByTest {
 
         // No Mario anymore, so "(Mar, 42)" instead of "(Mar, 87)".
         // Therefore "(Ma, 42)".
-        assertEquals( 1, results.size() );
-        assertEquals( 42, results.get("Ma") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get("Ma")).isEqualTo(42);
         results.clear();
 
         // "(Geo, 35)" is gone.
@@ -1325,8 +1322,8 @@ public class GroupByTest {
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( 42, results.get("Ma") );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get("Ma")).isEqualTo(42);
     }
 
     public static class Group {
@@ -1954,19 +1951,19 @@ public class GroupByTest {
         FactHandle fhMark = ksession.insert(new Person("Mark", 42));
         FactHandle fhEdoardo = ksession.insert(new Person("Edoardo", 33));
         ksession.fireAllRules();
-        assertTrue(results.contains(76));
+        assertThat(results.contains(76)).isTrue();
 
         ksession.insert(new Person("Edson", 38));
         ksession.fireAllRules();
-        assertTrue(results.contains(114));
+        assertThat(results.contains(114)).isTrue();
 
         ksession.delete(fhEdoardo);
         ksession.fireAllRules();
-        assertTrue(results.contains(81));
+        assertThat(results.contains(81)).isTrue();
 
         ksession.update(fhMark, new Person("Mark", 45));
         ksession.fireAllRules();
-        assertTrue(results.contains(84));
+        assertThat(results.contains(84)).isTrue();
     }
 
 }

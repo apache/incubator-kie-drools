@@ -18,24 +18,24 @@ package org.drools.modelcompiler.builder.generator;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.modelcompiler.util.StringUtil.toId;
-import static org.junit.Assert.assertEquals;
 
 public class StringUtilTest {
 
     @Test
     public void test() {
-        assertEquals("__123stella", toId("123stella") );
-        assertEquals("__123__stella", toId("123_stella") );
-        assertEquals("__stella", toId("_stella") );
-        assertEquals("__stella__123", toId("_stella_123") );
-        assertEquals("my_32stella", toId("my stella") );
-        assertEquals("$tella", toId("$tella") );
-        assertEquals("$tella_40123_41", toId("$tella(123)") );
-        assertEquals("my_45stella", toId("my-stella") );
-        assertEquals("my_43stella", toId("my+stella") );
-        assertEquals("o_39stella", toId("o'stella") );
-        assertEquals("stella_38you", toId("stella&you") );
-        assertEquals("stella_32_38_32Co_46", toId("stella & Co.") );
+        assertThat(toId("123stella")).isEqualTo("__123stella");
+        assertThat(toId("123_stella")).isEqualTo("__123__stella");
+        assertThat(toId("_stella")).isEqualTo("__stella");
+        assertThat(toId("_stella_123")).isEqualTo("__stella__123");
+        assertThat(toId("my stella")).isEqualTo("my_32stella");
+        assertThat(toId("$tella")).isEqualTo("$tella");
+        assertThat(toId("$tella(123)")).isEqualTo("$tella_40123_41");
+        assertThat(toId("my-stella")).isEqualTo("my_45stella");
+        assertThat(toId("my+stella")).isEqualTo("my_43stella");
+        assertThat(toId("o'stella")).isEqualTo("o_39stella");
+        assertThat(toId("stella&you")).isEqualTo("stella_38you");
+        assertThat(toId("stella & Co.")).isEqualTo("stella_32_38_32Co_46");
     }
 }

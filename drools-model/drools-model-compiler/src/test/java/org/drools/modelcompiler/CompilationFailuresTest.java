@@ -25,9 +25,6 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class CompilationFailuresTest extends BaseModelTest {
 
@@ -47,10 +44,10 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "end\n";
 
         Results results = getCompilationResults(drl);
-        assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
 
         // line = -1 even with STANDARD_FROM_DRL (PredicateDescr)
-        assertEquals(-1, results.getMessages().get(0).getLine());
+        assertThat(results.getMessages().get(0).getLine()).isEqualTo(-1);
     }
 
     @Test
@@ -63,9 +60,9 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "end\n";
 
         Results results = getCompilationResults(drl);
-        assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
 
-        assertEquals(3, results.getMessages().get(0).getLine());
+        assertThat(results.getMessages().get(0).getLine()).isEqualTo(3);
     }
 
     private Results getCompilationResults( String drl ) {
@@ -130,10 +127,10 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "end";
 
         Results results = getCompilationResults(drl);
-        assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
 
         // line = 1 with STANDARD_FROM_DRL (RuleDescr)
-        assertEquals(1, results.getMessages().get(0).getLine());
+        assertThat(results.getMessages().get(0).getLine()).isEqualTo(1);
     }
 
 
@@ -149,10 +146,10 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "end";
 
         Results results = getCompilationResults(drl);
-        assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
 
         // RHS error : line = 1 with STANDARD_FROM_DRL (RuleDescr)
-        assertEquals(1, results.getMessages().get(0).getLine());
+        assertThat(results.getMessages().get(0).getLine()).isEqualTo(1);
     }
 
     @Test
@@ -219,7 +216,7 @@ public class CompilationFailuresTest extends BaseModelTest {
         if (testRunType.isExecutableModel()) {
             assertThat(results.getMessages(Message.Level.ERROR).get(0).getText().contains("@typesafe(false) is not supported in executable model"));
         } else {
-            assertTrue(results.getMessages(Message.Level.ERROR).isEmpty());
+            assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isTrue();
         }
     }
 

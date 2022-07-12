@@ -22,9 +22,6 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class BindingTest extends BaseModelTest {
 
@@ -87,21 +84,21 @@ public class BindingTest extends BaseModelTest {
         ksession.insert( "test" );
         ksession.fireAllRules();
         System.out.println(result);
-        assertEquals( 5, result.size() );
+        assertThat(result.size()).isEqualTo(5);
 
-        assertTrue( result.contains( "R1" ) );
-        assertTrue( result.contains( "R2" ) );
+        assertThat(result.contains("R1")).isTrue();
+        assertThat(result.contains("R2")).isTrue();
 
         // an unary expression is used as a constrint only when not bound
-        assertFalse( result.contains( "R3" ) );
-        assertTrue( result.contains( "R4" ) );
+        assertThat(result.contains("R3")).isFalse();
+        assertThat(result.contains("R4")).isTrue();
 
-        assertTrue( result.contains( "R5" ) );
-        assertTrue( result.contains( "R6" ) );
+        assertThat(result.contains("R5")).isTrue();
+        assertThat(result.contains("R6")).isTrue();
 
         // an binary expression is used as a constrint regardless if it's bound or not
-        assertFalse( result.contains( "R7" ) );
-        assertFalse( result.contains( "R8" ) );
+        assertThat(result.contains("R7")).isFalse();
+        assertThat(result.contains("R8")).isFalse();
     }
 
     @Test
@@ -124,9 +121,9 @@ public class BindingTest extends BaseModelTest {
 
         ksession.insert( new Person("Mario", 47));
 
-        assertEquals( 1, ksession.fireAllRules() );
-        assertEquals( 1, result.size() );
-        assertEquals( 'r', (char) result.get(0) );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(result.size()).isEqualTo(1);
+        assertThat((char) result.get(0)).isEqualTo('r');
     }
 
     @Test

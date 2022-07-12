@@ -15,10 +15,9 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.modelcompiler.KJARUtils.getPom;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class AssemblerTest {
 
@@ -38,8 +37,8 @@ public class AssemblerTest {
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
 
         List<Message> results = kieBuilder.getResults().getMessages();
-        assertEquals(TestAssembler.BEFORE_RULES.getMessage(), results.get(0).getText());
-        assertEquals(TestAssembler.AFTER_RULES.getMessage(), results.get(1).getText());
+        assertThat(results.get(0).getText()).isEqualTo(TestAssembler.BEFORE_RULES.getMessage());
+        assertThat(results.get(1).getText()).isEqualTo(TestAssembler.AFTER_RULES.getMessage());
 
         // create the container to build the generated Package
         KieContainer kieContainer = ks.newKieContainer(releaseId);
@@ -51,7 +50,7 @@ public class AssemblerTest {
             fail("The PackageDescr has not been picked up by drools");
         } catch (Throwable ex) {
             // all good
-            assertTrue(ex.getCause() instanceof ClassNotFoundException);
+            assertThat(ex.getCause() instanceof ClassNotFoundException).isTrue();
         }
     }
 }

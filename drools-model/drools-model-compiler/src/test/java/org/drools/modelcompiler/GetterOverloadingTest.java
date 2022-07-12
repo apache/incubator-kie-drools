@@ -27,7 +27,6 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class GetterOverloadingTest extends BaseModelTest {
 
@@ -115,7 +114,7 @@ public class GetterOverloadingTest extends BaseModelTest {
 
         ksession.insert(c);
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     public static class ClassC {
@@ -158,7 +157,7 @@ public class GetterOverloadingTest extends BaseModelTest {
 
         ksession.insert(d);
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     public static interface InterfaceA {
@@ -211,7 +210,7 @@ public class GetterOverloadingTest extends BaseModelTest {
 
         ksession.insert(f);
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     public static interface InterfaceD {
@@ -263,7 +262,7 @@ public class GetterOverloadingTest extends BaseModelTest {
 
         ksession.insert(g);
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     public static class ClassG {
@@ -311,7 +310,7 @@ public class GetterOverloadingTest extends BaseModelTest {
 
         ksession.insert(i);
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     public static class ClassH {
@@ -363,7 +362,7 @@ public class GetterOverloadingTest extends BaseModelTest {
 
         ksession.insert(k);
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     public static class ClassJ {
@@ -414,7 +413,7 @@ public class GetterOverloadingTest extends BaseModelTest {
 
         ksession.insert(c);
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
 
     public static class ClassL {
