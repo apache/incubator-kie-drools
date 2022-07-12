@@ -17,16 +17,12 @@
   <description>Support for PMML-Encoded Predictive Models</description>
 
   <modules>
-    <module>kie-pmml-commons</module>
-    <module>kie-pmml-compiler</module>
-    <module>kie-pmml-evaluator</module>
-    <module>kie-pmml-models-archetype</module>
-    <module>kie-pmml-models-drools-archetype</module>
-    <module>kie-pmml-models</module>
-    <module>kie-pmml-benchmarks</module>
-    <module>kie-pmml-dependencies</module>
     <module>kie-pmml-api</module>
+    <module>kie-pmml-commons</module>
+    <module>kie-pmml-evaluator</module>
+    <module>kie-pmml-compiler</module>
     <module>kie-pmml-kie-internal</module>
+    <module>kie-pmml-models</module>
   </modules>
 
   <dependencyManagement>
@@ -47,11 +43,28 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kie-pmml-models-archetype</module>
+        <module>kie-pmml-models-drools-archetype</module>
+        <module>kie-pmml-benchmarks</module>
+        <module>kie-pmml-dependencies</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
