@@ -31,9 +31,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class MarshallingIssuesTest extends CommonTestMethodBase  {
 
@@ -141,7 +140,7 @@ public class MarshallingIssuesTest extends CommonTestMethodBase  {
 
         ksession = org.drools.mvel.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-        assertNotNull( ksession );
+        assertThat(ksession).isNotNull();
         ksession.dispose();
     }
 
@@ -178,6 +177,6 @@ public class MarshallingIssuesTest extends CommonTestMethodBase  {
         bais.close();
 
         KieBase kb2 = (KieBase) ois.readObject();
-        assertTrue( ReteComparator.areEqual( kb1, kb2 ) );
+        assertThat(ReteComparator.areEqual(kb1, kb2)).isTrue();
     }
 }

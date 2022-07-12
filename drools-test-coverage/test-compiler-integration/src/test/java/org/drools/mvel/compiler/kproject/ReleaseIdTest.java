@@ -27,15 +27,10 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.ReleaseIdComparator;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertSame;
 import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
 import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
-import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
 
 public class ReleaseIdTest {
 

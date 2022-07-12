@@ -42,10 +42,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class DroolsJaxbHelperTest {
@@ -94,7 +92,7 @@ public class DroolsJaxbHelperTest {
 
         // XSD that defines "Sub" class
         InputStream simpleXsdStream = getClass().getResourceAsStream(simpleXsdRelativePath);
-        assertNotNull("Could not find resource: " + simpleXsdRelativePath, simpleXsdStream);
+        assertThat(simpleXsdStream).as("Could not find resource: " + simpleXsdRelativePath).isNotNull();
         BaseResource xsdResource = new InputStreamResource(simpleXsdStream);
         xsdResource.setResourceType(ResourceType.XSD);
         xsdResource.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + simpleXsdRelativePath);
@@ -112,8 +110,8 @@ public class DroolsJaxbHelperTest {
         ks.fireAllRules();
 
         // Verify results
-        assertEquals( 2, list.size() );
-        assertTrue( list.containsAll( asList("Sub", "Message") ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(asList("Sub", "Message"))).isTrue();
 
         Collection<FactHandle> fhs = ks.getFactHandles();
 
@@ -133,21 +131,21 @@ public class DroolsJaxbHelperTest {
                 fail( "Unexpected FH class: " + dfh.getObjectClassName() );
             }
         }
-        assertNotNull( "No FactHandle for Sub found!", subFh );
-        assertNotNull( "No FactHandle for Message found!", msgFh );
+        assertThat(subFh).as("No FactHandle for Sub found!").isNotNull();
+        assertThat(msgFh).as("No FactHandle for Message found!").isNotNull();
 
         Object xsdObj = subFh.getObject();
 
         Class xsdClass = xsdObj.getClass();
         try {
             Method m2 = xsdClass.getMethod( "getFld" );
-            assertNotNull( m2 );
-            assertEquals( String.class, m2.getReturnType() );
+            assertThat(m2).isNotNull();
+            assertThat(m2.getReturnType()).isEqualTo(String.class);
 
-            assertEquals( 0, xsdClass.getFields().length );
+            assertThat(xsdClass.getFields().length).isEqualTo(0);
             java.lang.reflect.Field[] declaredFields = xsdClass.getDeclaredFields();
-            assertEquals( 1, declaredFields.length );
-            assertEquals( "fld", declaredFields[0].getName() );
+            assertThat(declaredFields.length).isEqualTo(1);
+            assertThat(declaredFields[0].getName()).isEqualTo("fld");
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( e.getMessage() );
@@ -159,13 +157,13 @@ public class DroolsJaxbHelperTest {
         xsdClass = xsdObj.getClass();
         try {
             Method m2 = xsdClass.getMethod( "getContent" );
-            assertNotNull( m2 );
-            assertEquals( List.class, m2.getReturnType() );
+            assertThat(m2).isNotNull();
+            assertThat(m2.getReturnType()).isEqualTo(List.class);
 
-            assertEquals( 0, xsdClass.getFields().length );
+            assertThat(xsdClass.getFields().length).isEqualTo(0);
             java.lang.reflect.Field[] declaredFields = xsdClass.getDeclaredFields();
-            assertEquals( 1, declaredFields.length );
-            assertEquals( "content", declaredFields[0].getName() );
+            assertThat(declaredFields.length).isEqualTo(1);
+            assertThat(declaredFields[0].getName()).isEqualTo("content");
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( e.getMessage() );

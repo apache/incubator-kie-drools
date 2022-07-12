@@ -30,10 +30,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ChangesetUndoTest {
 
@@ -118,15 +116,15 @@ public class ChangesetUndoTest {
         final KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add(new FileSystemResource(resources[0]), ResourceType.CHANGE_SET);
 
-        assertTrue(knowledgeBuilder.hasErrors());
+        assertThat(knowledgeBuilder.hasErrors()).isTrue();
 
         knowledgeBuilder.undo();
 
-        assertFalse(knowledgeBuilder.hasErrors());
+        assertThat(knowledgeBuilder.hasErrors()).isFalse();
 
         for (final KiePackage kp : knowledgeBuilder.getKnowledgePackages()) {
-            assertTrue(kp.getRules().isEmpty());
-            assertTrue(kp.getFactTypes().isEmpty());
+            assertThat(kp.getRules().isEmpty()).isTrue();
+            assertThat(kp.getFactTypes().isEmpty()).isTrue();
         }
     }
 
@@ -136,19 +134,19 @@ public class ChangesetUndoTest {
         knowledgeBuilder.add(new FileSystemResource(resources[1]), ResourceType.DRL);
         knowledgeBuilder.add(new FileSystemResource(resources[4]), ResourceType.CHANGE_SET);
 
-        assertTrue(knowledgeBuilder.hasErrors());
+        assertThat(knowledgeBuilder.hasErrors()).isTrue();
 
         knowledgeBuilder.undo();
 
-        assertFalse(knowledgeBuilder.hasErrors());
+        assertThat(knowledgeBuilder.hasErrors()).isFalse();
 
         for (final KiePackage kp : knowledgeBuilder.getKnowledgePackages()) {
             if ("org.drools.test1".equals(kp.getName())) {
-                assertEquals(1, kp.getRules().size());
-                assertEquals(1, kp.getFactTypes().size());
+                assertThat(kp.getRules().size()).isEqualTo(1);
+                assertThat(kp.getFactTypes().size()).isEqualTo(1);
             } else {
-                assertTrue(kp.getRules().isEmpty());
-                assertTrue(kp.getFactTypes().isEmpty());
+                assertThat(kp.getRules().isEmpty()).isTrue();
+                assertThat(kp.getFactTypes().isEmpty()).isTrue();
             }
         }
     }
