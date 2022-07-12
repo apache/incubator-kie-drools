@@ -24,7 +24,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -64,7 +63,7 @@ public class PetStoreExample {
 
     public void init(KieContainer kc, boolean exitOnClose) {
         //RuleB
-        Vector<Product> stock = new Vector<>();
+        List<Product> stock = new ArrayList<>();
         stock.add( new Product( "Gold Fish",
                                 5 ) );
         stock.add( new Product( "Fish Tank",
@@ -102,7 +101,7 @@ public class PetStoreExample {
          * @param listData
          * @param callback
          */
-        public PetStoreUI(Vector<Product> items,
+        public PetStoreUI(List<Product> items,
                           CheckoutCallback callback) {
             super( new BorderLayout() );
             this.callback = callback;
@@ -142,7 +141,7 @@ public class PetStoreExample {
 
             //Create JList for items, add to scroll pane and then add to parent
             // container
-            JList list = new JList( items );
+            JList list = new JList( items.toArray() );
             ListSelectionModel listSelectionModel = list.getSelectionModel();
             listSelectionModel.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
             //handler adds item to shopping cart
@@ -473,7 +472,7 @@ public class PetStoreExample {
         }
 
         public String toString() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
 
             buf.append( "ShoppingCart:" + newline );
 

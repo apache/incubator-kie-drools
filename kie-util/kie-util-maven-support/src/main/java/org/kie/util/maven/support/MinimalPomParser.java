@@ -50,6 +50,9 @@ public class MinimalPomParser extends DefaultHandler {
         MinimalPomParser handler = new MinimalPomParser();
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
+            //https://rules.sonarsource.com/java/RSPEC-2755
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             factory.setValidating( false );
             factory.setNamespaceAware( false );
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);

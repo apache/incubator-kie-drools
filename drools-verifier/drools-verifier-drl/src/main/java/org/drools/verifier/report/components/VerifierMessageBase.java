@@ -81,7 +81,7 @@ abstract public class VerifierMessageBase
 
     @Override
     public String toString() {
-        StringBuffer str = new StringBuffer( severity.singular );
+        StringBuilder str = new StringBuilder( severity.singular );
 
         str.append( " id = " );
         str.append( id );

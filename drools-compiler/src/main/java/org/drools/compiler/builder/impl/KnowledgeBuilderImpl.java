@@ -84,9 +84,11 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +129,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
 
-    private final Stack<List<Resource>> buildResources = new Stack<>();
+    private final Deque<List<Resource>> buildResources = new ArrayDeque<>();
 
     private AssetFilter assetFilter = null;
 

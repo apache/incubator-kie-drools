@@ -18,13 +18,11 @@
 package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.impl.GlobalVariableContext;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.GlobalError;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.kie.internal.builder.ResourceChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -32,7 +32,7 @@ public class PlainTextReportWriter
     public void writeReport(OutputStream out,
                             VerifierReport result) throws IOException {
 
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
 
         for ( Severity severity : Severity.values() ) {
             Collection<VerifierMessageBase> messages = result.getBySeverity( severity );
