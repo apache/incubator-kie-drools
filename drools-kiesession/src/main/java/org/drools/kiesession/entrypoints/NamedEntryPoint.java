@@ -424,6 +424,10 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
                 if (handle.isDisconnected()) {
                     handle = this.objectStore.reconnect(handle);
                 }
+                if (handle == null) {
+                    log.warn("The factHandle doesn't exist so cannot be deleted. " + factHandle.toExternalForm());
+                    return;
+                }
 
                 if (!handle.getEntryPointId().equals( entryPoint )) {
                     throw new IllegalArgumentException("Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPointId() + "' instead of '" + getEntryPointId() + "'");
