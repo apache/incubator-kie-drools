@@ -1,7 +1,5 @@
 package org.optaplanner.examples.common.experimental.impl;
 
-import java.util.Objects;
-
 import org.optaplanner.examples.common.experimental.api.IntervalBreak;
 import org.optaplanner.examples.common.experimental.api.IntervalCluster;
 
@@ -43,22 +41,6 @@ final class IntervalBreakImpl<Interval_, Point_ extends Comparable<Point_>, Diff
 
     void setLength(Difference_ length) {
         this.length = length;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        IntervalBreakImpl<?, ?, ?> that = (IntervalBreakImpl<?, ?, ?>) o;
-        return Objects.equals(previousCluster, that.previousCluster) && Objects
-                .equals(nextCluster, that.nextCluster) && Objects.equals(length, that.length);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(previousCluster, nextCluster, length);
     }
 
     @Override

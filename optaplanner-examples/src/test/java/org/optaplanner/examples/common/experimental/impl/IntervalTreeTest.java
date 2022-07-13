@@ -284,6 +284,48 @@ class IntervalTreeTest {
         }
     }
 
+    private static int intervalBreakCompare(IntervalBreak<TestInterval, Integer, Integer> a,
+            IntervalBreak<TestInterval, Integer, Integer> b) {
+        if (a == b) {
+            return 0;
+        }
+        if (a == null || b == null) {
+            return (a == null) ? -1 : 1;
+        }
+        boolean out = intervalClusterCompare(a.getPreviousIntervalCluster(), b.getPreviousIntervalCluster()) == 0 &&
+                intervalClusterCompare(a.getNextIntervalCluster(), b.getNextIntervalCluster()) == 0 &&
+                Objects.equals(a.getLength(), b.getLength());
+
+        if (out) {
+            return 0;
+        }
+        return a.hashCode() - b.hashCode();
+    }
+
+    private static int intervalClusterCompare(IntervalCluster<TestInterval, Integer, Integer> a,
+            IntervalCluster<TestInterval, Integer, Integer> b) {
+        if (a == b) {
+            return 0;
+        }
+        if (a == null || b == null) {
+            return (a == null) ? -1 : 1;
+        }
+
+        if (!(a instanceof IntervalClusterImpl) || !(b instanceof IntervalClusterImpl)) {
+            throw new IllegalArgumentException("Expected (" + a + ") and (" + b + ") to both be IntervalClusterImpl");
+        }
+
+        IntervalClusterImpl<TestInterval, Integer, Integer> first = (IntervalClusterImpl<TestInterval, Integer, Integer>) a;
+        IntervalClusterImpl<TestInterval, Integer, Integer> second = (IntervalClusterImpl<TestInterval, Integer, Integer>) b;
+
+        boolean out = first.getStartSplitPoint().compareTo(second.getStartSplitPoint()) == 0 &&
+                first.getEndSplitPoint().compareTo(second.getEndSplitPoint()) == 0;
+        if (out) {
+            return 0;
+        }
+        return first.hashCode() - second.hashCode();
+    }
+
     // Compare the mutable version with the recompute version
     @Test
     void testRandomIntervals() {
@@ -360,8 +402,12 @@ class IntervalTreeTest {
                 // Verify the mutable version matches the recompute version
                 verifyBreaks(tree);
                 assertThat(tree.getConsecutiveIntervalData().getIntervalClusters())
-                        .as(op + " interval " + interval + " to " + old).containsExactlyElementsOf(intervalClusterList);
-                assertThat(tree.getConsecutiveIntervalData().getBreaks()).as(op + " interval " + interval + " to " + old)
+                        .as(op + " interval " + interval + " to " + old)
+                        .usingElementComparator(IntervalTreeTest::intervalClusterCompare)
+                        .containsExactlyElementsOf(intervalClusterList);
+                assertThat(tree.getConsecutiveIntervalData().getBreaks())
+                        .as(op + " interval " + interval + " to " + old)
+                        .usingElementComparator(IntervalTreeTest::intervalBreakCompare)
                         .containsExactlyElementsOf(breakList);
             }
         }

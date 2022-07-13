@@ -2,7 +2,6 @@ package org.optaplanner.examples.common.experimental.impl;
 
 import java.util.Iterator;
 import java.util.NavigableSet;
-import java.util.Objects;
 import java.util.function.BiFunction;
 
 import org.optaplanner.examples.common.experimental.api.IntervalCluster;
@@ -127,21 +126,6 @@ final class IntervalClusterImpl<Interval_, Point_ extends Comparable<Point_>, Di
     @Override
     public Difference_ getLength() {
         return differenceFunction.apply(startSplitPoint.splitPoint, endSplitPoint.splitPoint);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        IntervalClusterImpl<?, ?, ?> that = (IntervalClusterImpl<?, ?, ?>) o;
-        return startSplitPoint.equals(that.startSplitPoint) && endSplitPoint.equals(that.endSplitPoint);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(startSplitPoint, endSplitPoint);
     }
 
     @Override
