@@ -74,7 +74,7 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
                 }
             }
         }
-        return new BavetConstraintSession<>(scoreInliner, declaredClassToNodeMap, nodeList.toArray(AbstractNode[]::new));
+        return new BavetConstraintSession<>(scoreInliner, declaredClassToNodeMap, nodeList.toArray(new AbstractNode[0]));
     }
 
 }

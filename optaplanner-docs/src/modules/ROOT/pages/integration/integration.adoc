@@ -562,18 +562,19 @@ Integration with OSGi is not supported.
 Android is not a complete JVM (because some JDK libraries are missing),
 but OptaPlanner works on Android with xref:score-calculation/score-calculation.adoc#easyJavaScoreCalculation[easy Java] or xref:score-calculation/score-calculation.adoc#incrementalJavaScoreCalculation[incremental Java] score calculation.
 The Drools rule engine does not work on Android yet,
-so xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation] doesn't work on Android and its dependencies need to be excluded.
+so xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation (Deprecated)] doesn't work on Android and its dependencies need to be excluded.
 
 *Workaround to use OptaPlanner on Android:*
 
-. Add a dependency to the `build.gradle` file in your Android project to exclude `org.drools` and `xmlpull` dependencies:
+. Add a dependency to the `build.gradle` file in your Android project to exclude OptaPlanner's `optaplanner-constraint-streams-drools` and `optaplanner-constraint-drl` modules:
 +
 [source,gradle]
 ----
 dependencies {
     ...
-    compile('org.optaplanner:optaplanner-core:...') {
-        exclude group: 'org.drools'
+    implementation('org.optaplanner:optaplanner-core:...') {
+        exclude group: 'org.optaplanner', module: 'optaplanner-constraint-streams-drools'
+        exclude group: 'org.optaplanner', module: 'optaplanner-constraint-drl'
     }
     ...
 }

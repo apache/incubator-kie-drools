@@ -49,7 +49,7 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
 
     @Override
     public Constraint[] getConstraints() {
-        return constraintList.toArray(Constraint[]::new);
+        return constraintList.toArray(new Constraint[0]);
     }
 
 }
