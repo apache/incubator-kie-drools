@@ -42,9 +42,6 @@ import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -81,8 +78,8 @@ public class MapConstraintTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertTrue(list.contains(map));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains(map)).isTrue();
     }
 
     @Test
@@ -103,8 +100,8 @@ public class MapConstraintTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertTrue(list.contains(map));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains(map)).isTrue();
     }
 
     // Drools does not support variables inside bindings yet... but we should...
@@ -122,7 +119,7 @@ public class MapConstraintTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -180,7 +177,7 @@ public class MapConstraintTest {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new MapContainerBean());
-        assertEquals(4, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(4);
         ksession.dispose();
     }
 
@@ -222,7 +219,7 @@ public class MapConstraintTest {
         ksession.insert(mark);
 
         int rules = ksession.fireAllRules();
-        assertEquals(0, rules);
+        assertThat(rules).isEqualTo(0);
 
         final Map<String, String> bob = new HashMap<>();
         bob.put("type", "Person");
@@ -231,7 +228,7 @@ public class MapConstraintTest {
         ksession.insert(bob);
 
         rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+        assertThat(rules).isEqualTo(1);
     }
 
     @Test
@@ -251,7 +248,7 @@ public class MapConstraintTest {
         ksession.insert(list);
         ksession.fireAllRules();
 
-        assertEquals(3, list.size());
+        assertThat(list.size()).isEqualTo(3);
     }
 
     @Test
@@ -282,4 +279,5 @@ public class MapConstraintTest {
 
         session.fireAllRules();
     }
+
 }

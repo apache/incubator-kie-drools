@@ -28,7 +28,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class InlineCastTest {
@@ -66,7 +66,7 @@ public class InlineCastTest {
         mark3.setAddress(new Address());
         ksession.insert(mark3);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -92,7 +92,7 @@ public class InlineCastTest {
         mark3.setAddress(new Address());
         ksession.insert(mark3);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -118,7 +118,7 @@ public class InlineCastTest {
         mark3.setAddress(new Address());
         ksession.insert(mark3);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -137,7 +137,7 @@ public class InlineCastTest {
         mark1.setAddress(new LongAddress("uk"));
         ksession.insert(mark1);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -158,7 +158,7 @@ public class InlineCastTest {
         ksession.insert(mark1);
         ksession.insert("uk");
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -179,7 +179,7 @@ public class InlineCastTest {
         ksession.insert(mark1);
         ksession.insert("uk");
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -205,7 +205,7 @@ public class InlineCastTest {
         mark3.setAddress(new Address());
         ksession.insert(mark3);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -232,7 +232,7 @@ public class InlineCastTest {
         mark3.setAddress(new Address());
         ksession.insert(mark3);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -259,7 +259,7 @@ public class InlineCastTest {
         mark3.setAddress(new Address());
         ksession.insert(mark3);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -285,7 +285,7 @@ public class InlineCastTest {
         mark3.setAddress(new LongAddress( null ) );
         ksession.insert(mark3);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -313,7 +313,7 @@ public class InlineCastTest {
         mark3.setAddress(new LongAddress( null ) );
         ksession.insert(mark3);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -342,7 +342,7 @@ public class InlineCastTest {
             mark3.setAddress(new LongAddress("Czech Republic"));
             ksession.insert(mark3);
 
-            assertEquals("wrong number of rules fired", 1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).as("wrong number of rules fired").isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -373,7 +373,7 @@ public class InlineCastTest {
             mark3.setAddress(new LongAddress("Czech Republic"));
             ksession.insert(mark3);
 
-            assertEquals("wrong number of rules fired", 2, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).as("wrong number of rules fired").isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -405,7 +405,7 @@ public class InlineCastTest {
             mark3.setAddress(new LongAddress("Czech Republic"));
             ksession.insert(mark3);
 
-            assertEquals( "wrong number of rules fired", 2, ksession.fireAllRules() );
+            assertThat(ksession.fireAllRules()).as("wrong number of rules fired").isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -427,7 +427,7 @@ public class InlineCastTest {
             ksession.insert( "United States" );
             ksession.insert( "United Kingdom" );
             ksession.insert( "Italy" );
-            assertEquals( "wrong number of rules fired", 2, ksession.fireAllRules() );
+            assertThat(ksession.fireAllRules()).as("wrong number of rules fired").isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -454,10 +454,10 @@ public class InlineCastTest {
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
         ksession.insert(mark1);
- 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(1, list.size());
-        assertEquals("k", list.get(0));
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("k");
  
         ksession.dispose();
     }

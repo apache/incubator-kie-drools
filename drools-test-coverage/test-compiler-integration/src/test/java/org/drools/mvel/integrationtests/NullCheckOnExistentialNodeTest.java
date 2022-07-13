@@ -28,7 +28,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // DROOLS-4295
 @RunWith(Parameterized.class)
@@ -80,7 +80,7 @@ public class NullCheckOnExistentialNodeTest {
         FactHandle fhA2 = kieSession.insert( a2 );
         kieSession.insert( "xxx" );
 
-        assertEquals( fire1, kieSession.fireAllRules() );
+        assertThat(kieSession.fireAllRules()).isEqualTo(fire1);
 
         a1.setB( null );
         kieSession.update( fhA1, a1 );
@@ -88,7 +88,7 @@ public class NullCheckOnExistentialNodeTest {
         a2.setB( new B( null ) );
         kieSession.update( fhA2, a2 );
 
-        assertEquals( fire2, kieSession.fireAllRules() );
+        assertThat(kieSession.fireAllRules()).isEqualTo(fire2);
     }
 
     @Test

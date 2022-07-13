@@ -37,8 +37,6 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.definition.rule.Rule;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class AnnotationsOnPatternTest {
@@ -101,9 +99,8 @@ public class AnnotationsOnPatternTest {
         final Pattern p = ((Pattern) ((RuleImpl ) kbase.getRule("org.drools.test", "Foo")).getLhs().getChildren().get(0));
         final AnnotationDefinition adef = p.getAnnotations().get(Outer.class.getName().replace("$", "."));
 
-        assertEquals(String.class, adef.getPropertyValue("klass"));
-        assertEquals( Arrays.asList(String.class, Integer.class),
-                Arrays.asList((Class[]) adef.getPropertyValue("klasses")));
+        assertThat(adef.getPropertyValue("klass")).isEqualTo(String.class);
+        assertThat(Arrays.asList((Class[]) adef.getPropertyValue("klasses"))).isEqualTo(Arrays.asList(String.class, Integer.class));
 
         assertThat(adef).isNotNull();
     }
@@ -124,17 +121,17 @@ public class AnnotationsOnPatternTest {
 
         final Pattern p = ((Pattern) ((RuleImpl) kbase.getRule("org.drools.test", "Foo")).getLhs().getChildren().get(0));
         final Map<String, AnnotationDefinition> defs = p.getAnnotations();
-        assertEquals(1, defs.size());
+        assertThat(defs.size()).isEqualTo(1);
 
         final AnnotationDefinition outer = defs.get(Outer.class.getName().replace("$", "."));
         assertThat(outer).isNotNull();
 
         final Object val = outer.getPropertyValue("value");
         assertThat(val).isNotNull();
-        assertTrue(val instanceof AnnotationDefinition);
+        assertThat(val instanceof AnnotationDefinition).isTrue();
 
         final AnnotationDefinition inner = (AnnotationDefinition) val;
-        assertEquals("world", inner.getPropertyValue("text"));
+        assertThat(inner.getPropertyValue("text")).isEqualTo("world");
     }
 
     @Test
@@ -153,14 +150,14 @@ public class AnnotationsOnPatternTest {
 
         final Pattern p = ((Pattern) ((RuleImpl) kbase.getRule("org.drools.test", "Foo")).getLhs().getChildren().get(0));
         final Map<String, AnnotationDefinition> defs = p.getAnnotations();
-        assertEquals(1, defs.size());
+        assertThat(defs.size()).isEqualTo(1);
 
         final AnnotationDefinition outer = defs.get(Outer.class.getName().replace("$", "."));
         assertThat(outer).isNotNull();
 
         final Object val = outer.getPropertyValue("values");
         assertThat(val).isNotNull();
-        assertTrue(val instanceof AnnotationDefinition[]);
+        assertThat(val instanceof AnnotationDefinition[]).isTrue();
     }
 
     @Test
@@ -177,13 +174,13 @@ public class AnnotationsOnPatternTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("annotations-test", kieBaseTestConfiguration, drl);
 
         final Rule rule = kbase.getRule("org.drools.test", "Foo");
-        assertTrue(rule.getMetaData().containsKey(Inner.class.getName().replace("$", ".")));
+        assertThat(rule.getMetaData().containsKey(Inner.class.getName().replace("$", "."))).isTrue();
 
         final Object obj = rule.getMetaData().get(Inner.class.getName().replace("$", "."));
         assertThat(obj).isNotNull();
-        assertTrue(obj instanceof Map);
-        assertEquals("b", ((Map) obj).get("test"));
-        assertEquals("a", ((Map) obj).get("text"));
+        assertThat(obj instanceof Map).isTrue();
+        assertThat(((Map) obj).get("test")).isEqualTo("b");
+        assertThat(((Map) obj).get("text")).isEqualTo("a");
     }
 
     @Test
@@ -201,13 +198,13 @@ public class AnnotationsOnPatternTest {
 
         final Pattern p = ((Pattern) ((RuleImpl) kbase.getRule("org.drools.test", "Foo")).getLhs().getChildren().get(0));
         final Map<String, AnnotationDefinition> defs = p.getAnnotations();
-        assertEquals(1, defs.size());
+        assertThat(defs.size()).isEqualTo(1);
 
         final AnnotationDefinition simple = defs.get(AnnotationsTest.Simple.class.getName().replace("$", "."));
         assertThat(simple).isNotNull();
 
         final Object val = simple.getPropertyValue("numbers");
-        assertTrue(val instanceof int[]);
+        assertThat(val instanceof int[]).isTrue();
     }
 
     @Test
@@ -238,11 +235,11 @@ public class AnnotationsOnPatternTest {
 
         final List<? extends RuleConditionElement> nested = ((Pattern) rule.getLhs().getChildren().get(0)).getSource().getNestedElements();
 
-        assertEquals(1, nested.size());
+        assertThat(nested.size()).isEqualTo(1);
 
         final Map<String, AnnotationDefinition> annotations = ((Pattern) nested.get(0)).getAnnotations();
 
-        assertEquals(1, annotations.size());
+        assertThat(annotations.size()).isEqualTo(1);
         assertThat(annotations.keySet().iterator().next()).isNotNull();
     }
 

@@ -51,8 +51,7 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.io.ResourceFactory;
 import org.xml.sax.SAXException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ChangeSetTest {
@@ -92,23 +91,17 @@ public class ChangeSetTest {
         StringReader reader = new StringReader( str );
         ChangeSet changeSet = xmlReader.read( reader );
 
-        assertEquals( 2,
-                      changeSet.getResourcesAdded().size() );
+        assertThat(changeSet.getResourcesAdded().size()).isEqualTo(2);
         UrlResource resource = ( UrlResource ) ((List)changeSet.getResourcesAdded()).get( 0 );
-        assertEquals( "http://www.domain.com/test.drl",
-                      resource.getURL().toString() );
-        assertEquals( ResourceType.DRL,
-                      resource.getResourceType() );
+        assertThat(resource.getURL().toString()).isEqualTo("http://www.domain.com/test.drl");
+        assertThat(resource.getResourceType()).isEqualTo(ResourceType.DRL);
 
         resource =  ( UrlResource ) ((List)changeSet.getResourcesAdded()).get( 1 );
-        
-        assertEquals( "http://www.domain.com/test.xls",
-                      resource.getURL().toString() );
-        assertEquals( ResourceType.DTABLE,
-                      resource.getResourceType() );
+
+        assertThat(resource.getURL().toString()).isEqualTo("http://www.domain.com/test.xls");
+        assertThat(resource.getResourceType()).isEqualTo(ResourceType.DTABLE);
         DecisionTableConfiguration dtConf = (DecisionTableConfiguration) resource.getConfiguration();
-        assertEquals( DecisionTableInputType.XLS,
-                      dtConf.getInputType() );
+        assertThat(dtConf.getInputType()).isEqualTo(DecisionTableInputType.XLS);
     }
 
     @Test
@@ -124,9 +117,8 @@ public class ChangeSetTest {
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals( 2,
-                      list.size() );
-        assertTrue( list.containsAll( Arrays.asList( new String[]{"rule1", "rule2"} ) ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(Arrays.asList(new String[]{"rule1", "rule2"}))).isTrue();
     }
 
     @Test(timeout = 10000)
@@ -159,6 +151,6 @@ public class ChangeSetTest {
             kbuilder.buildAll(DrlProject.class);
         }
         List<Message> errors = kbuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 }

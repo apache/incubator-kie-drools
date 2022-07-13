@@ -21,7 +21,9 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.within;
 
 public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final long VALUE     = 5;
@@ -52,9 +54,8 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetByteValue() {
         try {
-            assertEquals( LongClassFieldExtractorTest.VALUE,
-                                 this.extractor.getByteValue( null,
-                                                              this.bean ) );
+            assertThat(this.extractor.getByteValue(null,
+                    this.bean)).isEqualTo((byte)LongClassFieldExtractorTest.VALUE);
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -74,10 +75,8 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetDoubleValue() {
         try {
-            assertEquals( LongClassFieldExtractorTest.VALUE,
-                                 this.extractor.getDoubleValue( null,
-                                                                this.bean ),
-                                 0.01 );
+            assertThat(this.extractor.getDoubleValue(null,
+                    this.bean)).isCloseTo(LongClassFieldExtractorTest.VALUE, within(0.01));
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -86,10 +85,8 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetFloatValue() {
         try {
-            assertEquals( LongClassFieldExtractorTest.VALUE,
-                                 this.extractor.getFloatValue( null,
-                                                               this.bean ),
-                                 0.01 );
+            assertThat(this.extractor.getFloatValue(null,
+                    this.bean)).isCloseTo(LongClassFieldExtractorTest.VALUE, within(0.01f));
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -98,9 +95,8 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetIntValue() {
         try {
-            assertEquals( LongClassFieldExtractorTest.VALUE,
-                                 this.extractor.getIntValue( null,
-                                                             this.bean ) );
+            assertThat(this.extractor.getIntValue(null,
+                    this.bean)).isEqualTo(LongClassFieldExtractorTest.VALUE);
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -109,9 +105,8 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetLongValue() {
         try {
-            assertEquals( LongClassFieldExtractorTest.VALUE,
-                                 this.extractor.getLongValue( null,
-                                                              this.bean ) );
+            assertThat(this.extractor.getLongValue(null,
+                    this.bean)).isEqualTo(LongClassFieldExtractorTest.VALUE);
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -120,9 +115,8 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetShortValue() {
         try {
-            assertEquals( LongClassFieldExtractorTest.VALUE,
-                                 this.extractor.getShortValue( null,
-                                                               this.bean ) );
+            assertThat(this.extractor.getShortValue(null,
+                    this.bean)).isEqualTo((short)LongClassFieldExtractorTest.VALUE);
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -131,11 +125,10 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetValue() {
         try {
-            assertEquals( new Long( (short) LongClassFieldExtractorTest.VALUE ),
-                                 this.extractor.getValue( null,
-                                                          this.bean ) );
-            assertTrue( this.extractor.getValue( null,
-                                                        this.bean ) instanceof Long );
+            assertThat(this.extractor.getValue(null,
+                    this.bean)).isEqualTo(new Long( (short) LongClassFieldExtractorTest.VALUE ));
+            assertThat(this.extractor.getValue(null,
+                    this.bean) instanceof Long).isTrue();
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -144,8 +137,8 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testIsNullValue() {
         try {
-            assertFalse( this.extractor.isNullValue( null,
-                                                            this.bean ) );
+            assertThat(this.extractor.isNullValue(null,
+                    this.bean)).isFalse();
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }

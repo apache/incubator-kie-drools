@@ -38,7 +38,6 @@ import org.kie.internal.builder.ResourceChange.Type;
 import org.kie.internal.builder.ResourceChangeSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -229,11 +228,11 @@ public class ChangeSetBuilderTest {
         InternalKieModule kieJar2 = createKieJar( drl1 + drl3 );
 
         KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
-        assertEquals( 1, changes.getChanges().size() );
+        assertThat(changes.getChanges().size()).isEqualTo(1);
 
         ResourceChangeSet rcs = changes.getChanges().values().iterator().next();
-        assertEquals( 1, rcs.getChanges().size()  );
-        assertEquals( ChangeType.REMOVED, rcs.getChanges().get(0).getChangeType() );
+        assertThat(rcs.getChanges().size()).isEqualTo(1);
+        assertThat(rcs.getChanges().get(0).getChangeType()).isEqualTo(ChangeType.REMOVED);
     }    
     
     private InternalKieModule createKieJar( String... drls) {

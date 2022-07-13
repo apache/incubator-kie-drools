@@ -34,9 +34,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class InsertTest {
@@ -84,8 +82,8 @@ public class InsertTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertSame(p, list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isSameAs(p);
     }
 
     @Test
@@ -101,9 +99,9 @@ public class InsertTest {
         final Win win3 = new Win(3);
 
         ksession.fireAllRules();
-        assertEquals(2, results.size());
-        assertTrue(results.contains(win2));
-        assertTrue(results.contains(win3));
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains(win2)).isTrue();
+        assertThat(results.contains(win3)).isTrue();
 
         ksession.dispose();
         ksession = kbase.newKieSession();
@@ -114,9 +112,9 @@ public class InsertTest {
         ksession.insert(new Move(1, 2));
 
         ksession.fireAllRules();
-        assertEquals(2, results.size());
-        assertTrue(results.contains(win2));
-        assertTrue(results.contains(win3));
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains(win2)).isTrue();
+        assertThat(results.contains(win3)).isTrue();
     }
 
     @Test
@@ -133,6 +131,6 @@ public class InsertTest {
 
         ksession.insert(bob);
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 }

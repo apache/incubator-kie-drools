@@ -50,7 +50,6 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
 import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class KieContainerTest {
@@ -76,7 +75,7 @@ public class KieContainerTest {
 
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         KieModule kmodule = ((InternalKieContainer) kieContainer).getMainKieModule();
-        assertEquals( releaseId, kmodule.getReleaseId() );
+        assertThat(kmodule.getReleaseId()).isEqualTo(releaseId);
     }
 
     @Test
@@ -89,8 +88,8 @@ public class KieContainerTest {
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         Results results = kieContainer.updateToVersion( ks.newReleaseId( "org.kie", "test-release", "1.0.1" ) );
-        assertEquals( 1, results.getMessages( Level.ERROR ).size() );
-        assertEquals( "1.0.0", ( (InternalKieContainer) kieContainer ).getContainerReleaseId().getVersion() );
+        assertThat(results.getMessages(Level.ERROR).size()).isEqualTo(1);
+        assertThat(((InternalKieContainer) kieContainer).getContainerReleaseId().getVersion()).isEqualTo("1.0.0");
     }
     
     @Test
@@ -108,20 +107,20 @@ public class KieContainerTest {
 		KieContainer kieContainer = ks.newKieContainer(configuredReleaseId);
 
         InternalKieContainer iKieContainer = (InternalKieContainer) kieContainer;
-        assertEquals(configuredReleaseId, iKieContainer.getConfiguredReleaseId());
-        assertEquals(releaseId, iKieContainer.getResolvedReleaseId());
-        assertEquals(releaseId, iKieContainer.getReleaseId());
+        assertThat(iKieContainer.getConfiguredReleaseId()).isEqualTo(configuredReleaseId);
+        assertThat(iKieContainer.getResolvedReleaseId()).isEqualTo(releaseId);
+        assertThat(iKieContainer.getReleaseId()).isEqualTo(releaseId);
         // demonstrate internal API behavior, in the future shall this be enforced?
-        assertEquals(configuredReleaseId, iKieContainer.getContainerReleaseId());
+        assertThat(iKieContainer.getContainerReleaseId()).isEqualTo(configuredReleaseId);
 
         KieUtil.getKieModuleFromDrls(newReleaseId, kieBaseTestConfiguration, createDRL("ruleA"));
         iKieContainer.updateToVersion(newReleaseId);
-        
-        assertEquals(configuredReleaseId, iKieContainer.getConfiguredReleaseId());
-        assertEquals(newReleaseId, iKieContainer.getResolvedReleaseId());
-        assertEquals(newReleaseId, iKieContainer.getReleaseId());
+
+        assertThat(iKieContainer.getConfiguredReleaseId()).isEqualTo(configuredReleaseId);
+        assertThat(iKieContainer.getResolvedReleaseId()).isEqualTo(newReleaseId);
+        assertThat(iKieContainer.getReleaseId()).isEqualTo(newReleaseId);
         // demonstrate internal API behavior, in the future shall this be enforced?
-        assertEquals(newReleaseId, iKieContainer.getContainerReleaseId());
+        assertThat(iKieContainer.getContainerReleaseId()).isEqualTo(newReleaseId);
     }
 
     @Test
@@ -163,12 +162,12 @@ public class KieContainerTest {
         Class cls1 = kieContainer.getClassLoader().loadClass( "org.drools.test.Message");
         Constructor constructor = cls1.getConstructor(String.class);
         ksession.insert(constructor.newInstance("Hello World"));
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         Class cls2 = kieContainer2.getClassLoader().loadClass( "org.drools.test.Message");
         Constructor constructor2 = cls2.getConstructor(String.class);
         ksession2.insert(constructor2.newInstance("Hello World"));
-        assertEquals( 2, ksession2.fireAllRules() );
+        assertThat(ksession2.fireAllRules()).isEqualTo(2);
 
         // old CommonTestMethodBase.createAndDeployJar re-deploy MemoryKieModule into repository so results in different classloaders.
         // With new test API KieUtil, kieContainers shares the same classloader so this assert fails.
@@ -213,7 +212,7 @@ public class KieContainerTest {
         KieSession ksession2 = kieContainer2.newKieSession();
 
         insertMessageFromTypeDeclaration( ksession );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-delete", "1.0.1");
         KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, type, null, drl2);
@@ -223,20 +222,20 @@ public class KieContainerTest {
         // test with the old ksession ...
         ksession = kieContainer.newKieSession();
         insertMessageFromTypeDeclaration( ksession );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         // ... and with a brand new one
         ksession = kieContainer.newKieSession();
         insertMessageFromTypeDeclaration (ksession );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         // check that the second kieContainer hasn't been affected by the update of the first one
         insertMessageFromTypeDeclaration( ksession2 );
-        assertEquals( 2, ksession2.fireAllRules() );
+        assertThat(ksession2.fireAllRules()).isEqualTo(2);
 
         ksession2 = kieContainer2.newKieSession();
         insertMessageFromTypeDeclaration( ksession2 );
-        assertEquals( 2, ksession2.fireAllRules() );
+        assertThat(ksession2.fireAllRules()).isEqualTo(2);
     }
 
     private void insertMessageFromTypeDeclaration(KieSession ksession) throws InstantiationException, IllegalAccessException {
@@ -261,7 +260,7 @@ public class KieContainerTest {
         kieSession.setGlobal("list", list);
         kieSession.fireAllRules();
         kieSession.dispose();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         Thread t = new Thread(() -> {
             for (int i = 1; i < 10; i++) {
@@ -317,10 +316,10 @@ public class KieContainerTest {
         MemoryFileSystem memoryFileSystem = (( MemoryKieModule ) kieModule).getMemoryFileSystem();
         Folder rootFolder = memoryFileSystem.getFolder("");
         Object[] members = rootFolder.getMembers().toArray();
-        assertEquals(2, members.length);
+        assertThat(members.length).isEqualTo(2);
         Folder firstFolder = (Folder) members[0];
         Folder secondFolder = (Folder) members[1];
-        assertEquals(firstFolder.getParent(), secondFolder.getParent());
+        assertThat(secondFolder.getParent()).isEqualTo(firstFolder.getParent());
     }
 
     @Test
@@ -398,7 +397,7 @@ public class KieContainerTest {
 
         KieSessionModel sessionModel = kieContainer.getKieSessionModel(null);
         assertThat(sessionModel).isNotNull();
-        assertEquals("testKsession", sessionModel.getName());
+        assertThat(sessionModel.getName()).isEqualTo("testKsession");
     }
 
     @Test

@@ -40,8 +40,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class JavaDialectTest {
@@ -85,8 +84,8 @@ public class JavaDialectTest {
         
         AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
         PredicateConstraint c = ( PredicateConstraint ) alphanode.getConstraint();
-        assertTrue( c.getPredicateExpression() instanceof PredicateExpression );
-        assertTrue( c.getPredicateExpression() instanceof CompiledInvoker );
+        assertThat(c.getPredicateExpression() instanceof PredicateExpression).isTrue();
+        assertThat(c.getPredicateExpression() instanceof CompiledInvoker).isTrue();
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
@@ -94,7 +93,7 @@ public class JavaDialectTest {
         KieSession ksession = kbase.newKieSession();
         ksession.insert(new Person("xxx"));
         int fired = ksession.fireAllRules();
-        assertEquals(1, fired);
+        assertThat(fired).isEqualTo(1);
     }
     
 
@@ -127,7 +126,7 @@ public class JavaDialectTest {
         BetaNode betaanode = (BetaNode) node.getObjectSinkPropagator().getSinks()[0];
         BetaNodeFieldConstraint[] constraint = betaanode.getConstraints();
         PredicateConstraint c = ( PredicateConstraint ) constraint[0];
-        assertTrue( c.getPredicateExpression() instanceof PredicateExpression );
-        assertTrue( c.getPredicateExpression() instanceof CompiledInvoker );
+        assertThat(c.getPredicateExpression() instanceof PredicateExpression).isTrue();
+        assertThat(c.getPredicateExpression() instanceof CompiledInvoker).isTrue();
     }
 }

@@ -55,9 +55,6 @@ import org.mockito.ArgumentCaptor;
 import org.mvel2.MVEL;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -88,9 +85,9 @@ public class JBRULESTest {
         ksession.insert(new Cheese("muzzarella"));
         ksession.insert(new Person("bob", "stilton"));
         ksession.fireAllRules();
-        assertEquals(2, results.size());
-        assertEquals("stilton", results.get(0));
-        assertEquals("brie", results.get(1));
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get(0)).isEqualTo("stilton");
+        assertThat(results.get(1)).isEqualTo("brie");
 
     }
 
@@ -109,12 +106,12 @@ public class JBRULESTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
 
         ksession.update(aHandle, a);
 
         ksession.fireAllRules();
-        assertEquals(2, results.size());
+        assertThat(results.size()).isEqualTo(2);
     }
 
     @Test
@@ -124,9 +121,9 @@ public class JBRULESTest {
         final List<String> results = new ArrayList<String>();
         ksession.setGlobal("results", results);
         ksession.fireAllRules();
-        assertEquals(2, results.size());
-        assertTrue(results.contains("java"));
-        assertTrue(results.contains("mvel"));
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains("java")).isTrue();
+        assertThat(results.contains("mvel")).isTrue();
     }
 
     @Test
@@ -146,7 +143,7 @@ public class JBRULESTest {
         primitives.setClassAttr(String.class);
         ksession.insert(primitives);
         final int rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+        assertThat(rules).isEqualTo(1);
     }
 
     @Test
@@ -161,9 +158,9 @@ public class JBRULESTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(Level.ERROR);
-        assertEquals(1, errors.size());
+        assertThat(errors.size()).isEqualTo(1);
         final org.kie.api.builder.Message error = errors.get(0);
-        assertEquals(5, error.getLine());
+        assertThat(error.getLine()).isEqualTo(5);
     }
 
     @Test
@@ -178,7 +175,7 @@ public class JBRULESTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(Level.ERROR);
-        assertFalse(!errors.isEmpty());
+        assertThat(!errors.isEmpty()).isFalse();
     }
 
     @Test
@@ -223,7 +220,7 @@ public class JBRULESTest {
         ksession.addEventListener(ael);
 
         final int rulesFired = ksession.fireAllRules();
-        assertEquals(2, rulesFired);
+        assertThat(rulesFired).isEqualTo(2);
 
         final ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael, times(2)).afterMatchFired(captor.capture());
@@ -289,7 +286,7 @@ public class JBRULESTest {
             tehFoo.setBar(barList[magicBars[i]]);
             ksession.update(fooFactHandle, tehFoo);
             int fired = ksession.fireAllRules();
-            assertTrue(fired > 0); // it's fine if it doesn't throw NPE
+            assertThat(fired > 0).isTrue(); // it's fine if it doesn't throw NPE
         }
         ksession.dispose();
     }
@@ -309,7 +306,7 @@ public class JBRULESTest {
 
         ksession.insert(new Message("test"));
         final int rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+        assertThat(rules).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -345,7 +342,7 @@ public class JBRULESTest {
         final String header = "import fr.gouv.agriculture.dag.agorha.business.primes.SousPeriodePrimeAgent\n";
 
         kbuilder.add(ResourceFactory.newByteArrayResource(header.getBytes()), ResourceType.DRL);
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
 
         final String passingRule = "rule \"rule1\"\n"
                 + "dialect \"mvel\"\n"
@@ -362,9 +359,9 @@ public class JBRULESTest {
                 + "end\n";
 
         kbuilder.add(ResourceFactory.newByteArrayResource(passingRule.getBytes()), ResourceType.DRL);
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
 
         kbuilder.add(ResourceFactory.newByteArrayResource(failingRule.getBytes()), ResourceType.DRL);
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
     }
 }

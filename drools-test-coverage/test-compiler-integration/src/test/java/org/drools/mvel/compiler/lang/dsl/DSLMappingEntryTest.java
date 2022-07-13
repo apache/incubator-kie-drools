@@ -26,10 +26,9 @@ import org.drools.compiler.lang.dsl.DefaultDSLMapping;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+	
 public class DSLMappingEntryTest {
 
     // Due to a bug in JDK 5, a workaround for zero-width lookbehind has to be used.
@@ -66,14 +65,10 @@ public class DSLMappingEntryTest {
         final DSLMappingEntry entry = createEntry( inputKey,
                                                    inputValue );
 
-        assertEquals( inputKey,
-                      entry.getMappingKey() );
-        assertEquals( expectedKeyP,
-                      entry.getKeyPattern().pattern() );
-        assertEquals( inputValue,
-                      entry.getMappingValue() );
-        assertEquals( expectedValP,
-                      entry.getValuePattern() );
+        assertThat(entry.getMappingKey()).isEqualTo(inputKey);
+        assertThat(entry.getKeyPattern().pattern()).isEqualTo(expectedKeyP);
+        assertThat(entry.getMappingValue()).isEqualTo(inputValue);
+        assertThat(entry.getValuePattern()).isEqualTo(expectedValP);
     }
 
     @Test
@@ -87,14 +82,10 @@ public class DSLMappingEntryTest {
         final DSLMappingEntry entry = createEntry( inputKey,
                                                    inputValue );
 
-        assertEquals( inputKey,
-                      entry.getMappingKey() );
-        assertEquals( expectedKeyP,
-                      entry.getKeyPattern().pattern() );
-        assertEquals( inputValue,
-                      entry.getMappingValue() );
-        assertEquals( expectedValP,
-                      entry.getValuePattern() );
+        assertThat(entry.getMappingKey()).isEqualTo(inputKey);
+        assertThat(entry.getKeyPattern().pattern()).isEqualTo(expectedKeyP);
+        assertThat(entry.getMappingValue()).isEqualTo(inputValue);
+        assertThat(entry.getValuePattern()).isEqualTo(expectedValP);
 
     }
 
@@ -109,15 +100,10 @@ public class DSLMappingEntryTest {
         final DSLMappingEntry entry = createEntry( inputKey,
                                                    inputValue );
 
-        assertEquals( inputKey,
-                      entry.getMappingKey() );
-        assertEquals( entry.getKeyPattern().pattern(),
-                      expectedKeyP,
-                      entry.getKeyPattern().pattern() );
-        assertEquals( inputValue,
-                      entry.getMappingValue() );
-        assertEquals( expectedValP,
-                      entry.getValuePattern() );
+        assertThat(entry.getMappingKey()).isEqualTo(inputKey);
+        assertThat(entry.getKeyPattern().pattern()).as(entry.getKeyPattern().pattern()).isEqualTo(expectedKeyP);
+        assertThat(entry.getMappingValue()).isEqualTo(inputValue);
+        assertThat(entry.getValuePattern()).isEqualTo(expectedValP);
     }
 
     private DSLMappingEntry setupEntry() throws IOException {
@@ -159,7 +145,7 @@ public class DSLMappingEntryTest {
         String drl = ex.expand( dslr );
         
         for( String str: strs ){
-            assertTrue( drl.contains( '"' + str + '"' ) );
+            assertThat(drl.contains('"' + str + '"')).isTrue();
         }
     }
 
@@ -179,9 +165,9 @@ public class DSLMappingEntryTest {
         String drl = ex.expand( dslr );
         System.out.println( dslr );
         System.out.println( drl );
-        assertTrue( "failure type1", drl.contains( "type1 == ClientServiceType.TypeGOLD" ) );
-        assertTrue( "failure type2", drl.contains( "type2 != ClientServiceType.TypeGOLD" ) );
-        assertTrue( "failure type3", drl.contains( "type3 != ClientServiceType.TypeGOLD" ) );
+        assertThat(drl.contains("type1 == ClientServiceType.TypeGOLD")).as("failure type1").isTrue();
+        assertThat(drl.contains("type2 != ClientServiceType.TypeGOLD")).as("failure type2").isTrue();
+        assertThat(drl.contains("type3 != ClientServiceType.TypeGOLD")).as("failure type3").isTrue();
     }
 
 
@@ -198,27 +184,21 @@ public class DSLMappingEntryTest {
                                                    "applicant:Applicant(credit=={rating})" );
         DSLMappingEntry entry5 = this.createEntry( "When the credit rating is {rating:regex:\\d{3}}",
                                                    "applicant:Applicant(credit=={rating})" );
-        
-        assertEquals( lookbehind + "When\\s+the\\s+credit\\s+rating\\s+is\\s+(\\d{3})(?=\\W|$)",
-                      entry5.getKeyPattern().toString() );
-        assertEquals( "applicant:Applicant(credit=={rating})",
-                      entry5.getValuePattern() );
+
+        assertThat(entry5.getKeyPattern().toString()).isEqualTo(lookbehind + "When\\s+the\\s+credit\\s+rating\\s+is\\s+(\\d{3})(?=\\W|$)");
+        assertThat(entry5.getValuePattern()).isEqualTo("applicant:Applicant(credit=={rating})");
 
         DSLMappingEntry entry6 = this.createEntry( "This is a sentence with line breaks",
                                                    "Cheese\\n(price == 10)" );
-        
-        assertEquals( lookbehind + "This\\s+is\\s+a\\s+sentence\\s+with\\s+line\\s+breaks(?=\\W|$)",
-                      entry6.getKeyPattern().toString() );
-        assertEquals( "Cheese\n(price == 10)",
-                      entry6.getValuePattern());
+
+        assertThat(entry6.getKeyPattern().toString()).isEqualTo(lookbehind + "This\\s+is\\s+a\\s+sentence\\s+with\\s+line\\s+breaks(?=\\W|$)");
+        assertThat(entry6.getValuePattern()).isEqualTo("Cheese\n(price == 10)");
 
         DSLMappingEntry entry7 = this.createEntry( "Bedingung-\\#19-MKM4",
                                                    "eval ( $p.getTempVal(\"\\#UML-ATZ-1\") < $p.getZvUmlStfr() )" );
-        
-        assertEquals( lookbehind  + "Bedingung-#19-MKM4(?=\\W|$)",
-                      entry7.getKeyPattern().toString() );
-        assertEquals( "eval ( $p.getTempVal(\"#UML-ATZ-1\") < $p.getZvUmlStfr() )",
-                       entry7.getValuePattern());
+
+        assertThat(entry7.getKeyPattern().toString()).isEqualTo(lookbehind  + "Bedingung-#19-MKM4(?=\\W|$)");
+        assertThat(entry7.getValuePattern()).isEqualTo("eval ( $p.getTempVal(\"#UML-ATZ-1\") < $p.getZvUmlStfr() )");
   
         DefaultExpander ex = makeExpander( entry1, entry2, entry3, entry4,
                                            entry5, entry6, entry7 );
@@ -244,7 +224,7 @@ public class DSLMappingEntryTest {
                 "Cheese\n(price == 10)",
                 "eval ( $p.getTempVal(\"#UML-ATZ-1\") < $p.getZvUmlStfr() )" } ){
 
-            assertTrue( "failed to expand to: " + exp, drl.contains( exp ) );
+            assertThat(drl.contains(exp)).as("failed to expand to: " + exp).isTrue();
         }
     }
     

@@ -31,9 +31,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class MergePackageTest {
@@ -55,11 +54,11 @@ public class MergePackageTest {
         try {
             Collection<KiePackage> kpkgs1 = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_RuleNameClashes1.drl").getKiePackages();
             KiePackage kpkg1 = kpkgs1.stream().filter( pkg -> pkg.getName().equals( "org.drools.package1" ) ).findFirst().get();
-            assertEquals(1, kpkg1.getRules().size());
+            assertThat(kpkg1.getRules().size()).isEqualTo(1);
 
             Collection<KiePackage> kpkgs2 = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_RuleNameClashes2.drl").getKiePackages();
             KiePackage kpkg2 = kpkgs2.stream().filter( pkg -> pkg.getName().equals( "org.drools.package2" ) ).findFirst().get();
-            assertEquals(1, kpkg2.getRules().size());
+            assertThat(kpkg2.getRules().size()).isEqualTo(1);
 
             InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration);
             kbase.addPackages(kpkgs1);
@@ -74,9 +73,9 @@ public class MergePackageTest {
 
             ksession.fireAllRules();
 
-            assertEquals(results.toString(), 2, results.size());
-            assertTrue(results.contains("p1.r1"));
-            assertTrue(results.contains("p2.r1"));
+            assertThat(results.size()).as(results.toString()).isEqualTo(2);
+            assertThat(results.contains("p1.r1")).isTrue();
+            assertThat(results.contains("p2.r1")).isTrue();
         } catch (final Exception e) {
             e.printStackTrace();
             fail("unexpected exception: " + e.getMessage());
@@ -95,8 +94,8 @@ public class MergePackageTest {
         final List results = new ArrayList();
         ksession.setGlobal("results", results);
         ksession.fireAllRules();
-        assertEquals(1, results.size());
-        assertEquals("rule1 for the package2", results.get(0));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo("rule1 for the package2");
     }
 
     @Test
@@ -105,10 +104,10 @@ public class MergePackageTest {
         try {
             Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_RuleNameClashes1.drl", "test_RuleNameClashes2.drl").getKiePackages();
 
-            assertEquals(3, kpkgs.size());
+            assertThat(kpkgs.size()).isEqualTo(3);
             for (final KiePackage kpkg : kpkgs) {
                 if (kpkg.getName().equals("org.drools.package1")) {
-                    assertEquals("rule 1", kpkg.getRules().iterator().next().getName());
+                    assertThat(kpkg.getRules().iterator().next().getName()).isEqualTo("rule 1");
                 }
             }
         } catch (final RuntimeException e) {

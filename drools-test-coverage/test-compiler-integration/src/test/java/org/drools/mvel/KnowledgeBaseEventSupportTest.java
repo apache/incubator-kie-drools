@@ -59,7 +59,7 @@ import org.kie.api.event.kiebase.BeforeRuleAddedEvent;
 import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class KnowledgeBaseEventSupportTest {
@@ -167,83 +167,51 @@ public class KnowledgeBaseEventSupportTest {
 
     @Test
     public void testAddPackageEvents() throws Exception {
-        assertEquals( 0,
-                      listener1.getBeforePackageAdded() );
-        assertEquals( 0,
-                      listener1.getAfterPackageAdded() );
-        assertEquals( 0,
-                      listener2.getBeforePackageAdded() );
-        assertEquals( 0,
-                      listener2.getAfterPackageAdded() );
-        assertEquals( 0,
-                      listener1.getBeforeRuleAdded() );
-        assertEquals( 0,
-                      listener1.getAfterRuleAdded() );
-        assertEquals( 0,
-                      listener2.getBeforeRuleAdded() );
-        assertEquals( 0,
-                      listener2.getAfterRuleAdded() );
+        assertThat(listener1.getBeforePackageAdded()).isEqualTo(0);
+        assertThat(listener1.getAfterPackageAdded()).isEqualTo(0);
+        assertThat(listener2.getBeforePackageAdded()).isEqualTo(0);
+        assertThat(listener2.getAfterPackageAdded()).isEqualTo(0);
+        assertThat(listener1.getBeforeRuleAdded()).isEqualTo(0);
+        assertThat(listener1.getAfterRuleAdded()).isEqualTo(0);
+        assertThat(listener2.getBeforeRuleAdded()).isEqualTo(0);
+        assertThat(listener2.getAfterRuleAdded()).isEqualTo(0);
 
         this.kbase.addPackages( Collections.singleton( pkg ) );
 
-        assertEquals( 1,
-                      listener1.getBeforePackageAdded() );
-        assertEquals( 1,
-                      listener1.getAfterPackageAdded() );
-        assertEquals( 1,
-                      listener2.getBeforePackageAdded() );
-        assertEquals( 1,
-                      listener2.getAfterPackageAdded() );
-        assertEquals( 2,
-                      listener1.getBeforeRuleAdded() );
-        assertEquals( 2,
-                      listener1.getAfterRuleAdded() );
-        assertEquals( 2,
-                      listener2.getBeforeRuleAdded() );
-        assertEquals( 2,
-                      listener2.getAfterRuleAdded() );
+        assertThat(listener1.getBeforePackageAdded()).isEqualTo(1);
+        assertThat(listener1.getAfterPackageAdded()).isEqualTo(1);
+        assertThat(listener2.getBeforePackageAdded()).isEqualTo(1);
+        assertThat(listener2.getAfterPackageAdded()).isEqualTo(1);
+        assertThat(listener1.getBeforeRuleAdded()).isEqualTo(2);
+        assertThat(listener1.getAfterRuleAdded()).isEqualTo(2);
+        assertThat(listener2.getBeforeRuleAdded()).isEqualTo(2);
+        assertThat(listener2.getAfterRuleAdded()).isEqualTo(2);
     }
 
     @Test
     public void testRemovePackageEvents() throws Exception {
         this.kbase.addPackages( Collections.singleton( pkg ) );
 
-        assertEquals( 0,
-                      listener1.getBeforeKnowledgePackageRemoved() );
-        assertEquals( 0,
-                      listener1.getAfterKnowledgePackageRemoved() );
-        assertEquals( 0,
-                      listener2.getBeforeKnowledgePackageRemoved() );
-        assertEquals( 0,
-                      listener2.getAfterKnowledgePackageRemoved() );
+        assertThat(listener1.getBeforeKnowledgePackageRemoved()).isEqualTo(0);
+        assertThat(listener1.getAfterKnowledgePackageRemoved()).isEqualTo(0);
+        assertThat(listener2.getBeforeKnowledgePackageRemoved()).isEqualTo(0);
+        assertThat(listener2.getAfterKnowledgePackageRemoved()).isEqualTo(0);
 
-        assertEquals( 0,
-                      listener1.getBeforeRuleRemoved() );
-        assertEquals( 0,
-                      listener1.getAfterRuleRemoved() );
-        assertEquals( 0,
-                      listener2.getBeforeRuleRemoved() );
-        assertEquals( 0,
-                      listener2.getAfterRuleRemoved() );
+        assertThat(listener1.getBeforeRuleRemoved()).isEqualTo(0);
+        assertThat(listener1.getAfterRuleRemoved()).isEqualTo(0);
+        assertThat(listener2.getBeforeRuleRemoved()).isEqualTo(0);
+        assertThat(listener2.getAfterRuleRemoved()).isEqualTo(0);
 
         this.kbase.removeKiePackage( "org.drools.test1" );
 
-        assertEquals( 1,
-                      listener1.getBeforeKnowledgePackageRemoved() );
-        assertEquals( 1,
-                      listener1.getAfterKnowledgePackageRemoved() );
-        assertEquals( 1,
-                      listener2.getBeforeKnowledgePackageRemoved() );
-        assertEquals( 1,
-                      listener2.getAfterKnowledgePackageRemoved() );
-        assertEquals( 2,
-                      listener1.getBeforeRuleRemoved() );
-        assertEquals( 2,
-                      listener1.getAfterRuleRemoved() );
-        assertEquals( 2,
-                      listener2.getBeforeRuleRemoved() );
-        assertEquals( 2,
-                      listener2.getAfterRuleRemoved() );
+        assertThat(listener1.getBeforeKnowledgePackageRemoved()).isEqualTo(1);
+        assertThat(listener1.getAfterKnowledgePackageRemoved()).isEqualTo(1);
+        assertThat(listener2.getBeforeKnowledgePackageRemoved()).isEqualTo(1);
+        assertThat(listener2.getAfterKnowledgePackageRemoved()).isEqualTo(1);
+        assertThat(listener1.getBeforeRuleRemoved()).isEqualTo(2);
+        assertThat(listener1.getAfterRuleRemoved()).isEqualTo(2);
+        assertThat(listener2.getBeforeRuleRemoved()).isEqualTo(2);
+        assertThat(listener2.getAfterRuleRemoved()).isEqualTo(2);
 
     }
 

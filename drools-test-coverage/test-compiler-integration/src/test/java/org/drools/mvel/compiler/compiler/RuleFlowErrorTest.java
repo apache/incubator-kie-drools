@@ -19,9 +19,7 @@ import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.ProcessLoadError;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class RuleFlowErrorTest {
@@ -29,14 +27,14 @@ public class RuleFlowErrorTest {
     @Test
     public void testError() {
         ProcessLoadError err = new ProcessLoadError(null, "XXX", null);
-        assertEquals("XXX", err.getMessage());
+        assertThat(err.getMessage()).isEqualTo("XXX");
         
         Exception e = new RuntimeException("Q");
         err = new ProcessLoadError(null, "X", e);
-        
-        assertNotNull(err.getMessage());
-        
-        assertTrue(err instanceof DroolsError);
+
+        assertThat(err.getMessage()).isNotNull();
+
+        assertThat(err instanceof DroolsError).isTrue();
         
     }
     

@@ -21,7 +21,10 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.within;
+
 
 public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final float VALUE     = 6;
@@ -51,9 +54,8 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     @Test
     public void testGetByteValue() {
-            assertEquals((byte) FloatClassFieldExtractorTest.VALUE,
-                    this.reader.getByteValue(null,
-                            this.bean));
+        assertThat(this.reader.getByteValue(null,
+                this.bean)).isEqualTo((byte) FloatClassFieldExtractorTest.VALUE);
     }
 
     @Test
@@ -69,53 +71,45 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     @Test
     public void testGetDoubleValue() {
-            assertEquals(FloatClassFieldExtractorTest.VALUE,
-                    this.reader.getDoubleValue(null,
-                            this.bean),
-                    0.01);
+        assertThat(this.reader.getDoubleValue(null,
+                this.bean)).isCloseTo(FloatClassFieldExtractorTest.VALUE, within(0.01));
     }
 
     @Test
     public void testGetFloatValue() {
-            assertEquals(FloatClassFieldExtractorTest.VALUE,
-                    this.reader.getFloatValue(null,
-                            this.bean),
-                    0.01);
+        assertThat(this.reader.getFloatValue(null,
+                this.bean)).isCloseTo(FloatClassFieldExtractorTest.VALUE, within(0.01f));
     }
 
     @Test
     public void testGetIntValue() {
-            assertEquals((int) FloatClassFieldExtractorTest.VALUE,
-                    this.reader.getIntValue(null,
-                            this.bean));
+        assertThat(this.reader.getIntValue(null,
+                this.bean)).isEqualTo((int) FloatClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetLongValue() {
-            assertEquals((long) FloatClassFieldExtractorTest.VALUE,
-                    this.reader.getLongValue(null,
-                            this.bean));
+        assertThat(this.reader.getLongValue(null,
+                this.bean)).isEqualTo((long) FloatClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetShortValue() {
-            assertEquals((short) FloatClassFieldExtractorTest.VALUE,
-                    this.reader.getShortValue(null,
-                            this.bean));
+        assertThat(this.reader.getShortValue(null,
+                this.bean)).isEqualTo((short) FloatClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetValue() {
-            assertEquals(new Float(FloatClassFieldExtractorTest.VALUE),
-                    this.reader.getValue(null,
-                            this.bean));
-            assertTrue(this.reader.getValue(null,
-                    this.bean) instanceof Float);
+        assertThat(this.reader.getValue(null,
+                this.bean)).isEqualTo(new Float(FloatClassFieldExtractorTest.VALUE));
+        assertThat(this.reader.getValue(null,
+                this.bean) instanceof Float).isTrue();
     }
 
     @Test
     public void testIsNullValue() {
-            assertFalse(this.reader.isNullValue(null,
-                    this.bean));
+        assertThat(this.reader.isNullValue(null,
+                this.bean)).isFalse();
     }
 }

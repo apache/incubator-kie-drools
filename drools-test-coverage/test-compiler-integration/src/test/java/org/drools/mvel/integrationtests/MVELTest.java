@@ -59,10 +59,8 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class MVELTest {
@@ -94,14 +92,14 @@ public class MVELTest {
         final Cheese c = new Cheese("stilton", 10);
         ksession.insert(c);
         ksession.fireAllRules();
-        assertEquals(2, list.size());
-        assertEquals(BigInteger.valueOf(30), list.get(0));
-        assertEquals(22, list.get(1));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0)).isEqualTo(BigInteger.valueOf(30));
+        assertThat(list.get(1)).isEqualTo(22);
 
-        assertEquals("hello world", list2.get(0));
+        assertThat(list2.get(0)).isEqualTo("hello world");
 
         final Date dt = DateUtils.parseDate("10-Jul-1974");
-        assertEquals(dt, c.getUsedBy());
+        assertThat(c.getUsedBy()).isEqualTo(dt);
     }
 
     @Test
@@ -127,8 +125,8 @@ public class MVELTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(10, list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo(10);
     }
 
     @Test
@@ -154,8 +152,8 @@ public class MVELTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(new BigDecimal(1.5), list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo(new BigDecimal(1.5));
     }
 
     @Test
@@ -171,7 +169,7 @@ public class MVELTest {
 
         try {
             ksession.fireAllRules();
-            assertEquals("should have fired twice", 2, list.size());
+            assertThat(list.size()).as("should have fired twice").isEqualTo(2);
         } catch (final Exception e) {
             e.printStackTrace();
             fail("Should not raise any exception");
@@ -200,7 +198,7 @@ public class MVELTest {
     public void testDuplicateLocalVariableMVELConsequence() {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration, getClass(), false, "test_DuplicateLocalVariableMVELConsequence.drl");
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -226,13 +224,13 @@ public class MVELTest {
         final List<String> list = new ArrayList<String>();
         statelessKieSession.execute(new TestObject(list));
 
-        assertEquals(6, list.size());
-        assertTrue(list.containsAll( Arrays.asList("TestObject.checkHighestPriority: java|2",
-                                                   "TestObject.stayHasDaysOfWeek: java|false|[2008-04-01, 2008-04-10]",
-                                                   "TestObject.checkHighestPriority: mvel|2",
-                                                   "TestObject.stayHasDaysOfWeek: mvel|false|[2008-04-01, 2008-04-10]",
-                                                   "TestObject.applyValueAddPromo: 1|2|3|4|mvel",
-                                                   "TestObject.applyValueAddPromo: 1|2|3|4|java") ));
+        assertThat(list.size()).isEqualTo(6);
+        assertThat(list.containsAll(Arrays.asList("TestObject.checkHighestPriority: java|2",
+                "TestObject.stayHasDaysOfWeek: java|false|[2008-04-01, 2008-04-10]",
+                "TestObject.checkHighestPriority: mvel|2",
+                "TestObject.stayHasDaysOfWeek: mvel|false|[2008-04-01, 2008-04-10]",
+                "TestObject.applyValueAddPromo: 1|2|3|4|mvel",
+                "TestObject.applyValueAddPromo: 1|2|3|4|java"))).isTrue();
     }
     
     @Test
@@ -255,9 +253,9 @@ public class MVELTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         final int result = ksession.fireAllRules();
-        assertEquals(1, result);
+        assertThat(result).isEqualTo(1);
         final Collection<? extends Object> insertedObjects = ksession.getObjects();
-        assertEquals(3, insertedObjects.size());
+        assertThat(insertedObjects.size()).isEqualTo(3);
     }
     
     @Test
@@ -275,7 +273,7 @@ public class MVELTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
     
     
@@ -299,7 +297,7 @@ public class MVELTest {
         final Triangle t = new Triangle(Triangle.Type.ACUTE);
         ksession.insert(t);
         ksession.fireAllRules();
-        assertEquals(Triangle.Type.ACUTE, list.get(0));
+        assertThat(list.get(0)).isEqualTo(Triangle.Type.ACUTE);
     }
     
     @Test
@@ -326,7 +324,7 @@ public class MVELTest {
 
         ksession.insert(m);
         ksession.fireAllRules();
-        assertEquals("r1", list.get(0));
+        assertThat(list.get(0)).isEqualTo("r1");
     } 
     
     @Test
@@ -353,7 +351,7 @@ public class MVELTest {
 
         ksession.insert(p);
         ksession.fireAllRules();
-        assertEquals("r1", list.get(0));
+        assertThat(list.get(0)).isEqualTo("r1");
 
         // Check it was built with MVELReturnValueExpression constraint
         final List<ObjectTypeNode> nodes = ((InternalKnowledgeBase) kbase).getRete().getObjectTypeNodes();
@@ -369,7 +367,7 @@ public class MVELTest {
         final AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MVELConstraint) {
-            assertTrue(((MVELConstraint) constraint).getFieldExtractor() instanceof ClassFieldReader);
+            assertThat(((MVELConstraint) constraint).getFieldExtractor() instanceof ClassFieldReader).isTrue();
         }
     }         
     
@@ -397,7 +395,7 @@ public class MVELTest {
 
         ksession.insert(p);
         ksession.fireAllRules();
-        assertEquals("r1", list.get(0));
+        assertThat(list.get(0)).isEqualTo("r1");
 
         // Check it was built with MVELReturnValueExpression constraint
         final List<ObjectTypeNode> nodes = ((InternalKnowledgeBase) kbase).getRete().getObjectTypeNodes();
@@ -413,14 +411,14 @@ public class MVELTest {
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MVELConstraint) {
-            assertTrue(((MVELConstraint) constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader );
+            assertThat(((MVELConstraint) constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader).isTrue();
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
 
         if (constraint instanceof MVELConstraint) {
-            assertTrue(((MVELConstraint) constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertThat(((MVELConstraint) constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader).isTrue();
         }
     }    
     
@@ -449,7 +447,7 @@ public class MVELTest {
 
         ksession.insert(p);
         ksession.fireAllRules();
-        assertEquals("r1", list.get(0));
+        assertThat(list.get(0)).isEqualTo("r1");
 
         // Check it was built with MVELReturnValueExpression constraint
         final List<ObjectTypeNode> nodes = ((InternalKnowledgeBase) kbase).getRete().getObjectTypeNodes();
@@ -465,13 +463,13 @@ public class MVELTest {
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MVELConstraint) {
-            assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertThat(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader).isTrue();
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
         if (constraint instanceof MVELConstraint) {
-            assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertThat(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader).isTrue();
         }
     }       
     
@@ -502,7 +500,7 @@ public class MVELTest {
 
         ksession.fireAllRules();
 
-        assertEquals("r1", list.get(0));
+        assertThat(list.get(0)).isEqualTo("r1");
 
         // Check it was built with MVELReturnValueExpression constraint
         final List<ObjectTypeNode> nodes = ((InternalKnowledgeBase) kbase).getRete().getObjectTypeNodes();
@@ -518,14 +516,14 @@ public class MVELTest {
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MVELConstraint) {
-            assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertThat(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader).isTrue();
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
 
         if (constraint instanceof MVELConstraint) {
-            assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertThat(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader).isTrue();
         }
     }     
     
@@ -545,7 +543,7 @@ public class MVELTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty()); // This should fail as there are no generics for the List 
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse(); // This should fail as there are no generics for the List 
     }
     
     public static class DMap extends HashMap {
@@ -625,7 +623,7 @@ public class MVELTest {
             System.out.print(rule);
             KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, rule);
             List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-            assertTrue(errors.toString(), errors.isEmpty());
+            assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
         }
     }
 
@@ -679,7 +677,7 @@ public class MVELTest {
         final int rules = ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals(2, rules);
+        assertThat(rules).isEqualTo(2);
     }
 
     @Test
@@ -713,7 +711,7 @@ public class MVELTest {
 
         kSession.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -807,7 +805,7 @@ public class MVELTest {
 
         ksession.insert(c);
         ksession.fireAllRules();
-        assertEquals(42, c.getPrice());
+        assertThat(c.getPrice()).isEqualTo(42);
     }
 
     @Test
@@ -826,9 +824,9 @@ public class MVELTest {
         ksession.insert(nullCheese);
         ksession.insert(starCheese);
         ksession.fireAllRules();
-        assertEquals(42, foobarCheese.getPrice());
-        assertEquals(2, nullCheese.getPrice());
-        assertEquals(2, starCheese.getPrice());
+        assertThat(foobarCheese.getPrice()).isEqualTo(42);
+        assertThat(nullCheese.getPrice()).isEqualTo(2);
+        assertThat(starCheese.getPrice()).isEqualTo(2);
     }
 
     @Test
@@ -850,8 +848,8 @@ public class MVELTest {
         ksession.insert(cheesery);
         ksession.fireAllRules();
 
-        assertEquals(1, results.size());
-        assertEquals(cheesery, results.get(0));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo(cheesery);
     }
 
     @Test
@@ -888,7 +886,7 @@ public class MVELTest {
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
-        assertTrue(list.contains("OK"));
+        assertThat(list.contains("OK")).isTrue();
 
         ksession.dispose();
     }
@@ -906,7 +904,7 @@ public class MVELTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -931,7 +929,7 @@ public class MVELTest {
         Human h = new Human(2);
         ksession.insert(h);
         ksession.fireAllRules();
-        assertEquals( 10, h.getAge() );
+        assertThat(h.getAge()).isEqualTo(10);
     }
 
     @Test
@@ -957,7 +955,7 @@ public class MVELTest {
         Human h = new Human(2);
         ksession.insert(h);
         ksession.fireAllRules();
-        assertEquals( 10, h.getAge() );
+        assertThat(h.getAge()).isEqualTo(10);
     }
 
     public static class Human {
@@ -1018,8 +1016,8 @@ public class MVELTest {
         Fact f = new Fact();
         ksession.insert(f);
         ksession.fireAllRules();
-        assertEquals( "A#", f.getName() );
-        assertEquals( "B#", f.getValue() );
+        assertThat(f.getName()).isEqualTo("A#");
+        assertThat(f.getValue()).isEqualTo("B#");
     }
 
     public static class Fact {
@@ -1060,7 +1058,7 @@ public class MVELTest {
         Person p = new Person("Toshiya");
         ksession.insert(p);
         ksession.fireAllRules();
-        assertEquals(new BigDecimal(7.35d, MathContext.DECIMAL32), p.getBigDecimal().round(MathContext.DECIMAL32));
+        assertThat(p.getBigDecimal().round(MathContext.DECIMAL32)).isEqualTo(new BigDecimal(7.35d, MathContext.DECIMAL32));
     }
 
     @Test
@@ -1081,7 +1079,7 @@ public class MVELTest {
         f.setA(1);
         f.setB(2);
         ksession.insert(f);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static class IntFact {
@@ -1122,6 +1120,6 @@ public class MVELTest {
         FactA f = new FactA();
         f.setField3(new Float(15.1f));
         ksession.insert(f);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

@@ -39,7 +39,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.test.testcategory.TurtleTestCategory;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 @Category(TurtleTestCategory.class)
@@ -138,7 +138,7 @@ public class QueryConcurrencyTest {
                 exceptions.get(0).printStackTrace();
             }
 
-            assertEquals(0, exceptions.size());
+            assertThat(exceptions.size()).isEqualTo(0);
 
         } finally {
             System.clearProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY);

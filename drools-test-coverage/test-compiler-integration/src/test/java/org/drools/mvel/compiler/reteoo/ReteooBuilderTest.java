@@ -33,8 +33,9 @@ import org.drools.core.reteoo.ObjectSource;
 import org.junit.Test;
 import org.kie.api.KieBase;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
+
 
 public class ReteooBuilderTest {
 
@@ -93,13 +94,9 @@ public class ReteooBuilderTest {
 
     private void nodesEquals(final Object object1,
                              final Object object2) {
-        assertEquals( object1 + " is not of the same type as " + object2,
-                      object1.getClass(),
-                      object2.getClass() );
+        assertThat(object2.getClass()).as(object1 + " is not of the same type as " + object2).isEqualTo(object1.getClass());
 
-        assertEquals( object1 + " is not equal to " + object2,
-                      object1,
-                      object2 );
+        assertThat(object2).as(object1 + " is not equal to " + object2).isEqualTo(object1);
 
         if ( object1 instanceof ObjectSource) {
             final ObjectSource source1 = (ObjectSource) object1;
@@ -108,9 +105,7 @@ public class ReteooBuilderTest {
             final ObjectSink[] list1 = source1.getObjectSinkPropagator().getSinks();
             final ObjectSink[] list2 = source2.getObjectSinkPropagator().getSinks();
 
-            assertEquals( object1.getClass() + " nodes have different number of sinks",
-                          list1.length,
-                          list2.length );
+            assertThat(list2.length).as(object1.getClass() + " nodes have different number of sinks").isEqualTo(list1.length);
 
             for ( int i = 0, size = list1.length; i < size; i++ ) {
                 nodesEquals( list1[i],
@@ -123,9 +118,7 @@ public class ReteooBuilderTest {
             final LeftTupleSink[] list1 = source1.getSinkPropagator().getSinks();
             final LeftTupleSink[] list2 = source2.getSinkPropagator().getSinks();
 
-            assertEquals( object1.getClass() + " nodes have different number of sinks",
-                          list1.length,
-                          list2.length );
+            assertThat(list2.length).as(object1.getClass() + " nodes have different number of sinks").isEqualTo(list1.length);
 
             for ( int i = 0, size = list1.length; i < size; i++ ) {
                 nodesEquals( list1[i],

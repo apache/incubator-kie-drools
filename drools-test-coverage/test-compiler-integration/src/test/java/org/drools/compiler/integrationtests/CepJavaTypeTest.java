@@ -33,7 +33,6 @@ import org.kie.api.definition.type.Timestamp;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class CepJavaTypeTest {
@@ -116,16 +115,16 @@ public class CepJavaTypeTest {
         final KieSession ksession = kbase.newKieSession();
         try {
             ksession.insert(new MyMessage("ATrigger"));
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
             TimeUtil.sleepMillis(2L);
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
             while (ksession.getObjects().size() != 0) {
                 TimeUtil.sleepMillis(30L);
                 // Expire action is put into propagation queue by timer job, so there
                 // can be a race condition where it puts it there right after previous fireAllRules
                 // flushes the queue. So there needs to be another flush -> another fireAllRules
                 // to flush the queue.
-                assertEquals(0, ksession.fireAllRules());
+                assertThat(ksession.fireAllRules()).isEqualTo(0);
             }
         } finally {
             ksession.dispose();

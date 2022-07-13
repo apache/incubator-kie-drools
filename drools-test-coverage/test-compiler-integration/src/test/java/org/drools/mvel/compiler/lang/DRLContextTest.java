@@ -30,9 +30,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.compiler.compiler.DRLFactory.buildParser;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class DRLContextTest {
 
@@ -53,9 +52,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals( Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -69,9 +67,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -85,9 +82,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -101,9 +97,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -118,9 +113,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -136,9 +130,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -152,9 +145,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -169,9 +161,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -185,9 +176,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -201,9 +191,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     /** Inside of condition: start */
@@ -218,9 +207,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -234,9 +222,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -251,9 +238,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -268,9 +254,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -285,9 +270,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -301,9 +285,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -318,9 +301,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -338,14 +320,12 @@ public class DRLContextTest {
         DroolsToken token = (DroolsToken) parser.getEditorInterface().get(0)
                 .getContent().get(11);
 
-        assertEquals("c",
-                token.getText() );
-        assertEquals( DroolsEditorType.IDENTIFIER_VARIABLE, token
-                .getEditorType());
+        assertThat(token.getText()).isEqualTo("c");
+        assertThat(token
+                .getEditorType()).isEqualTo(DroolsEditorType.IDENTIFIER_VARIABLE);
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -359,9 +339,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -375,9 +354,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -391,9 +369,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     /** Inside of condition: Operator */
@@ -408,9 +385,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -424,9 +400,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -441,9 +416,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -458,9 +432,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -475,9 +448,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -492,9 +464,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -509,9 +480,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -526,9 +496,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -543,9 +512,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     /** Inside of condition: argument */
@@ -560,9 +528,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -576,9 +543,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -593,9 +559,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -610,9 +575,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -627,9 +591,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -644,9 +607,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -661,9 +623,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -678,9 +639,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -695,9 +655,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -712,9 +671,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -729,9 +687,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -746,9 +703,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -763,9 +719,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -779,9 +734,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test
@@ -796,9 +750,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -813,9 +766,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -831,9 +783,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -848,9 +799,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -865,9 +815,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -882,9 +831,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000) @Ignore
@@ -902,9 +850,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -919,9 +866,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -936,9 +882,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -953,9 +898,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -974,9 +918,8 @@ public class DRLContextTest {
 //        for (Object o: list) {
 //            System.out.println(o);
 //        }
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     /** EXISTS */
@@ -991,9 +934,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
     @Test(timeout=10*1000)
@@ -1007,9 +949,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
     @Test(timeout=10*1000)
@@ -1023,9 +964,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
     @Test(timeout=10*1000)
@@ -1039,9 +979,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
     @Test(timeout=10*1000)
@@ -1055,9 +994,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
     @Test(timeout=10*1000)
@@ -1071,9 +1009,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
     @Test(timeout=10*1000)
@@ -1087,9 +1024,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -1104,9 +1040,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     /** NOT */
@@ -1121,9 +1056,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT);
     }
 
     @Test(timeout=10*1000)
@@ -1137,9 +1071,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT);
     }
 
     @Test(timeout=10*1000)
@@ -1153,9 +1086,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
     @Test(timeout=10*1000)
@@ -1169,9 +1101,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
     @Test(timeout=10*1000)
@@ -1185,9 +1116,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -1201,9 +1131,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -1218,9 +1147,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -1235,9 +1163,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     /** AND */
@@ -1252,9 +1179,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1268,9 +1194,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1284,9 +1209,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1301,14 +1225,13 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
 
         DroolsToken token = (DroolsToken) parser.getEditorInterface().get(0)
                 .getContent().get(12);
-        assertEquals(DroolsEditorType.IDENTIFIER_VARIABLE, token
-                .getEditorType());
+        assertThat(token
+                .getEditorType()).isEqualTo(DroolsEditorType.IDENTIFIER_VARIABLE);
     }
 
     @Test(timeout=10*1000)
@@ -1323,9 +1246,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1339,9 +1261,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1356,9 +1277,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1373,9 +1293,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1390,9 +1309,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -1407,9 +1325,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -1424,9 +1341,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -1441,9 +1357,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -1458,9 +1373,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -1475,9 +1389,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -1492,9 +1405,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT);
     }
 
     @Test(timeout=10*1000)
@@ -1509,9 +1421,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
     @Test(timeout=10*1000)
@@ -1526,9 +1437,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     /** OR */
@@ -1543,9 +1453,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1559,9 +1468,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1575,9 +1483,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1592,9 +1499,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1609,9 +1515,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1625,9 +1530,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1642,9 +1546,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1659,9 +1562,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
     }
 
     @Test(timeout=10*1000)
@@ -1676,9 +1578,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -1693,9 +1594,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -1710,9 +1610,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -1727,9 +1626,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -1744,9 +1642,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT);
     }
 
     @Test(timeout=10*1000)
@@ -1761,9 +1658,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
     /** EVAL */
@@ -1778,9 +1674,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_EVAL,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_EVAL);
     }
 
     @Test(timeout=10*1000)
@@ -1794,9 +1689,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_EVAL,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_EVAL);
     }
 
     @Test(timeout=10*1000)
@@ -1810,9 +1704,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_EVAL,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_EVAL);
     }
 
     @Test(timeout=10*1000)
@@ -1826,9 +1719,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_EVAL,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_EVAL);
     }
 
     @Test(timeout=10*1000)
@@ -1843,9 +1735,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_EVAL,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_EVAL);
     }
 
     @Test(timeout=10*1000)
@@ -1860,9 +1751,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_EVAL,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_EVAL);
     }
 
     @Test(timeout=10*1000)
@@ -1877,9 +1767,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_EVAL,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_EVAL);
     }
 
     @Test(timeout=10*1000)
@@ -1894,9 +1783,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_EVAL,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_EVAL);
     }
 
     @Test(timeout=10*1000)
@@ -1910,9 +1798,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -1927,9 +1814,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -1944,9 +1830,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -1961,9 +1846,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_EVAL,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_EVAL);
     }
 
     @Test(timeout=10*1000)
@@ -1978,9 +1862,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -1995,9 +1878,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     /** MULTIPLE RESTRICTIONS */
@@ -2013,9 +1895,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -2030,9 +1911,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -2047,9 +1927,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -2064,9 +1943,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -2081,9 +1959,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -2098,9 +1975,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -2115,9 +1991,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -2132,9 +2007,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -2149,9 +2023,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -2166,9 +2039,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -2183,9 +2055,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -2200,9 +2071,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -2217,9 +2087,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -2234,9 +2103,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     @Test(timeout=10*1000)
@@ -2251,9 +2119,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
     /** FROM */
@@ -2269,9 +2136,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2286,9 +2152,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2303,8 +2168,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_LHS_FROM);
     }
 
     @Test(timeout=10*1000)
@@ -2319,8 +2184,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_LHS_FROM);
     }
 
     @Test(timeout=10*1000)
@@ -2335,8 +2200,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_LHS_FROM);
     }
 
     @Test(timeout=10*1000)
@@ -2352,9 +2217,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2370,9 +2234,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     /** FROM ACCUMULATE */
@@ -2388,9 +2251,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_ACCUMULATE);
     }
 
     @Test(timeout=10*1000)
@@ -2405,9 +2267,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_ACCUMULATE);
     }
 
     @Test(timeout=10*1000)
@@ -2427,9 +2288,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2445,9 +2305,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE);
     }
 
     @Test(timeout=10*1000)
@@ -2464,9 +2323,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE);
     }
 
     @Test(timeout=10*1000)
@@ -2483,9 +2341,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE);
     }
 
     @Test(timeout=10*1000)
@@ -2504,9 +2361,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE);
     }
 
     @Test(timeout=10*1000)
@@ -2523,9 +2379,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE);
     }
 
     @Test(timeout=10*1000)
@@ -2542,9 +2397,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE);
     }
 
     @Test(timeout=10*1000)
@@ -2563,9 +2417,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE);
     }
 
     @Test(timeout=10*1000)
@@ -2581,9 +2434,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -2599,9 +2451,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -2617,9 +2468,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     /** FROM COLLECT */
@@ -2635,9 +2485,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_COLLECT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_COLLECT);
     }
 
     @Test(timeout=10*1000)
@@ -2652,9 +2501,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM_COLLECT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_FROM_COLLECT);
     }
 
     @Test(timeout=10*1000)
@@ -2670,9 +2518,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2687,9 +2534,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -2705,9 +2551,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -2723,9 +2568,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     /** NESTED FROM */
@@ -2742,9 +2586,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2760,8 +2603,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_LHS_FROM);
     }
 
     @Test(timeout=10*1000)
@@ -2777,9 +2620,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2795,9 +2637,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2813,8 +2654,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_FROM, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_LHS_FROM);
     }
 
     /** FORALL */
@@ -2829,9 +2670,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2846,9 +2686,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -2863,9 +2702,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
     @Test(timeout=10*1000)
@@ -2880,9 +2718,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
     @Test(timeout=10*1000)
@@ -2897,9 +2734,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2915,9 +2751,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2933,9 +2768,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -2950,9 +2784,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -2967,9 +2800,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -2984,8 +2816,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_RHS, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_RHS);
     }
 
     @Test(timeout=10*1000)
@@ -3000,8 +2832,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_RHS, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_RHS);
     }
 
     @Test(timeout=10*1000)
@@ -3016,16 +2848,16 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_RHS, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_RHS);
 
         Object lastElement = parser.getEditorInterface().get(0).getContent().getLast();
 
-        assertTrue(lastElement instanceof Token);
+        assertThat(lastElement instanceof Token).isTrue();
 
         final Token lastToken = (Token) lastElement;
 
-        assertEquals("meth", lastToken.getText());
+        assertThat(lastToken.getText()).isEqualTo("meth");
     }
 
     @Test(timeout=10*1000)
@@ -3039,8 +2871,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_RULE_HEADER);
     }
 
     @Test(timeout=10*1000)
@@ -3056,12 +2888,11 @@ public class DRLContextTest {
 
         DroolsToken token = getLastTokenOnList(parser.getEditorInterface().get(
                 0).getContent());
-        assertEquals("group", token.getText().toLowerCase());
-        assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
+        assertThat(token.getText().toLowerCase()).isEqualTo("group");
+        assertThat(token.getEditorType()).isEqualTo(DroolsEditorType.KEYWORD);
 
-        assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_RULE_HEADER_KEYWORD);
     }
 
     @Test(timeout=10*1000)
@@ -3075,8 +2906,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_RULE_HEADER);
     }
 
     @Test(timeout=10*1000)
@@ -3090,8 +2921,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_RULE_HEADER);
     }
 
     @Test(timeout=10*1000)
@@ -3105,8 +2936,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_RULE_HEADER);
     }
 
     @Test(timeout=10*1000)
@@ -3122,12 +2953,11 @@ public class DRLContextTest {
 
         DroolsToken token = getLastTokenOnList(parser.getEditorInterface().get(
                 0).getContent());
-        assertEquals("dialect", token.getText().toLowerCase());
-        assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
+        assertThat(token.getText().toLowerCase()).isEqualTo("dialect");
+        assertThat(token.getEditorType()).isEqualTo(DroolsEditorType.KEYWORD);
 
-        assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_RULE_HEADER_KEYWORD);
     }
 
     @Test(timeout=10*1000)
@@ -3143,12 +2973,11 @@ public class DRLContextTest {
 
         DroolsToken token = getLastTokenOnList(parser.getEditorInterface().get(
                 0).getContent());
-        assertEquals("dialect", token.getText().toLowerCase());
-        assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
+        assertThat(token.getText().toLowerCase()).isEqualTo("dialect");
+        assertThat(token.getEditorType()).isEqualTo(DroolsEditorType.KEYWORD);
 
-        assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_RULE_HEADER_KEYWORD);
     }
 
     // TODO: add tests for dialect defined at package header level
@@ -3164,8 +2993,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_RULE_HEADER);
     }
 
     @Test(timeout=10*1000)
@@ -3179,8 +3008,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
-                .getEditorInterface().get(0).getContent()));
+        assertThat(getLastIntegerValue(parser
+                .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_RULE_HEADER);
     }
 
     @Test(timeout=10*1000)
@@ -3194,9 +3023,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
     @Test(timeout=10*1000)
@@ -3210,9 +3038,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @Test(timeout=10*1000)
@@ -3229,9 +3056,8 @@ public class DRLContextTest {
         } catch (Exception ex) {
         }
 
-        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
-                getLastIntegerValue(parser.getEditorInterface().get(0)
-                        .getContent()));
+        assertThat(getLastIntegerValue(parser.getEditorInterface().get(0)
+                .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
     @SuppressWarnings("unchecked")

@@ -41,9 +41,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests evaluation of a backward chaining family relationships example using
@@ -122,7 +120,7 @@ public class SeveralKieSessionsTest {
                   ResourceFactory.newClassPathResource(DRL_FILE_NAME, this.getClass()));
 
         final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertEquals(0, builder.getResults().getMessages().size());
+        assertThat(builder.getResults().getMessages().size()).isEqualTo(0);
 
         ks.getRepository().addKieModule(builder.getKieModule());
 
@@ -215,44 +213,44 @@ public class SeveralKieSessionsTest {
 
         // asserts
         List<String> manList = listHolder.getManList();
-        assertEquals(manList.size(), 4);
-        assertTrue(manList.contains("Adam"));
-        assertTrue(manList.contains("Kain"));
-        assertTrue(manList.contains("Abel"));
-        assertTrue(manList.contains("Josef"));
+        assertThat(4).isEqualTo(manList.size());
+        assertThat(manList.contains("Adam")).isTrue();
+        assertThat(manList.contains("Kain")).isTrue();
+        assertThat(manList.contains("Abel")).isTrue();
+        assertThat(manList.contains("Josef")).isTrue();
 
         List<String> personList = listHolder.getPersonList();
-        assertEquals(personList.size(), 5);
-        assertTrue(personList.contains("Adam"));
-        assertTrue(personList.contains("Kain"));
-        assertTrue(personList.contains("Abel"));
-        assertTrue(personList.contains("Josef"));
-        assertTrue(personList.contains("Eva"));
+        assertThat(5).isEqualTo(personList.size());
+        assertThat(personList.contains("Adam")).isTrue();
+        assertThat(personList.contains("Kain")).isTrue();
+        assertThat(personList.contains("Abel")).isTrue();
+        assertThat(personList.contains("Josef")).isTrue();
+        assertThat(personList.contains("Eva")).isTrue();
 
         List<String> parentList = listHolder.getParentList();
-        assertEquals(parentList.size(), 5);
-        assertTrue(parentList.contains("Adam"));
-        assertTrue(parentList.contains("Eva"));
-        assertTrue(parentList.contains("Abel"));
+        assertThat(5).isEqualTo(parentList.size());
+        assertThat(parentList.contains("Adam")).isTrue();
+        assertThat(parentList.contains("Eva")).isTrue();
+        assertThat(parentList.contains("Abel")).isTrue();
 
         List<String> motherList = listHolder.getMotherList();
-        assertEquals(motherList.size(), 2);
-        assertTrue(motherList.contains("Eva"));
+        assertThat(2).isEqualTo(motherList.size());
+        assertThat(motherList.contains("Eva")).isTrue();
 
         List<String> fatherList = listHolder.getFatherList();
-        assertEquals(fatherList.size(), 3);
-        assertTrue(fatherList.contains("Adam"));
-        assertTrue(fatherList.contains("Abel"));
-        assertFalse(fatherList.contains("Eva"));
-        assertFalse(fatherList.contains("Kain"));
-        assertFalse(fatherList.contains("Josef"));
+        assertThat(3).isEqualTo(fatherList.size());
+        assertThat(fatherList.contains("Adam")).isTrue();
+        assertThat(fatherList.contains("Abel")).isTrue();
+        assertThat(fatherList.contains("Eva")).isFalse();
+        assertThat(fatherList.contains("Kain")).isFalse();
+        assertThat(fatherList.contains("Josef")).isFalse();
 
         List<String> grandparentList = listHolder.getGrandparentList();
-        assertEquals(grandparentList.size(), 2);
-        assertTrue(grandparentList.contains("Eva"));
-        assertTrue(grandparentList.contains("Adam"));
+        assertThat(2).isEqualTo(grandparentList.size());
+        assertThat(grandparentList.contains("Eva")).isTrue();
+        assertThat(grandparentList.contains("Adam")).isTrue();
 
-        assertTrue(listHolder.isGrandmaBlessedAgeTriggered());
+        assertThat(listHolder.isGrandmaBlessedAgeTriggered()).isTrue();
     }
 
     /**

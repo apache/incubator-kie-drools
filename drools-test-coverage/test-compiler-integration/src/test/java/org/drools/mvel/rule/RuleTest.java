@@ -30,9 +30,7 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.mvel.expr.MVELSalienceExpression;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleTest {
 
@@ -42,22 +40,22 @@ public class RuleTest {
 
         final RuleImpl rule = new RuleImpl( "myrule" );
 
-        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isTrue();
 
         final Calendar earlier = Calendar.getInstance();
         earlier.setTimeInMillis( 10 );
 
         rule.setDateEffective( earlier );
 
-        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isTrue();
 
         final Calendar later = Calendar.getInstance();
         later.setTimeInMillis( later.getTimeInMillis() + 100000000 );
 
-        assertTrue( later.after( Calendar.getInstance() ) );
+        assertThat(later.after(Calendar.getInstance())).isTrue();
 
         rule.setDateEffective( later );
-        assertFalse( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isFalse();
 
     }
 
@@ -67,20 +65,20 @@ public class RuleTest {
         
         final RuleImpl rule = new RuleImpl( "myrule" );
 
-        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isTrue();
 
         final Calendar earlier = Calendar.getInstance();
         earlier.setTimeInMillis( 10 );
 
         rule.setDateExpires( earlier );
 
-        assertFalse( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isFalse();
 
         final Calendar later = Calendar.getInstance();
         later.setTimeInMillis( later.getTimeInMillis() + 100000000 );
 
         rule.setDateExpires( later );
-        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isTrue();
 
     }
 
@@ -99,17 +97,16 @@ public class RuleTest {
         rule.setDateEffective( past );
         rule.setDateExpires( future );
 
-        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isTrue();
 
         rule.setDateExpires( past );
-        assertFalse( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isFalse();
 
         rule.setDateExpires( future );
         rule.setDateEffective( future );
 
 
-
-        assertFalse( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isFalse();
 
     }
 
@@ -119,16 +116,16 @@ public class RuleTest {
         
         final RuleImpl rule = new RuleImpl( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_FALSE );
-        assertFalse( rule.isEffective( null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isFalse();
 
         final Calendar past = Calendar.getInstance();
         past.setTimeInMillis( 10 );
 
         rule.setDateEffective( past );
-        assertFalse( rule.isEffective( null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isFalse();
         rule.setEnabled( EnabledBoolean.ENABLED_TRUE );
 
-        assertTrue( rule.isEffective( null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isTrue();
     }
 
     @Test
@@ -142,16 +139,16 @@ public class RuleTest {
         
         final RuleImpl rule = new RuleImpl( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_TRUE );
-        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isTrue();
 
         
         future.setTimeInMillis( future.getTimeInMillis() + 100000000 );
         rule.setDateEffective(future);
-        assertFalse( rule.isEffective(null, new RuleTerminalNode(), wm ) );
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isFalse();
 
         ((PseudoClockScheduler)wm.getSessionClock()).advanceTime( 1000000000000L, TimeUnit.MILLISECONDS );
-        
-        assertTrue(rule.isEffective(null, new RuleTerminalNode(), wm ));
+
+        assertThat(rule.isEffective(null, new RuleTerminalNode(), wm)).isTrue();
     }
     
     @Test
@@ -161,9 +158,9 @@ public class RuleTest {
     	
     	Salience salience = new SalienceInteger(salienceValue);
     	rule.setSalience(salience);
-    	
-    	assertEquals(salienceValue, rule.getSalienceValue());
-    	assertFalse(rule.isSalienceDynamic());
+
+        assertThat(rule.getSalienceValue()).isEqualTo(salienceValue);
+        assertThat(rule.isSalienceDynamic()).isFalse();
     }
     
     @Test
@@ -172,8 +169,8 @@ public class RuleTest {
     	
     	Salience salience = new MVELSalienceExpression();
     	rule.setSalience(salience);
-    	
-    	assertTrue(rule.isSalienceDynamic());
+
+        assertThat(rule.isSalienceDynamic()).isTrue();
     }
 
 }

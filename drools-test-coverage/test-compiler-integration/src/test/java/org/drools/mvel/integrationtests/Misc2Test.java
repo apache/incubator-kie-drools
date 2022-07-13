@@ -99,7 +99,6 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
@@ -125,6 +124,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
@@ -136,12 +136,8 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -195,7 +191,7 @@ public class Misc2Test {
 
         int rulesFired = ksession.fireAllRules();
 
-        assertEquals( 0, rulesFired );
+        assertThat(rulesFired).isEqualTo(0);
 
         address.setStreet( "123" );
 
@@ -205,7 +201,7 @@ public class Misc2Test {
         rulesFired = ksession.fireAllRules();
 
         System.out.println( rulesFired );
-        assertEquals( 1, rulesFired );
+        assertThat(rulesFired).isEqualTo(1);
 
         ksession.dispose();
     }
@@ -233,7 +229,7 @@ public class Misc2Test {
         ksession.delete( b );
         int fired = ksession.fireAllRules( 1 );
 
-        assertEquals( 0, fired );
+        assertThat(fired).isEqualTo(0);
         ksession.dispose();
     }
 
@@ -258,7 +254,7 @@ public class Misc2Test {
 
         KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
         KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
-        assertTrue( ReteComparator.areEqual( kbase1, kbase2 ) );
+        assertThat(ReteComparator.areEqual( kbase1, kbase2)).isTrue();
     }
 
     @Test
@@ -294,7 +290,7 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -343,7 +339,7 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        assertEquals( 4, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(4);
     }
 
     @Test
@@ -475,9 +471,9 @@ public class Misc2Test {
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
         kbase.addEventListener( listener );
         kbase.addEventListener( listener );
-        assertEquals( 1, ( (KnowledgeBaseImpl) kbase ).getKieBaseEventListeners().size() );
+        assertThat(kbase.getKieBaseEventListeners().size()).isEqualTo(1);
         kbase.removeEventListener( listener );
-        assertEquals( 0, ( (KnowledgeBaseImpl) kbase ).getKieBaseEventListeners().size() );
+        assertThat(kbase.getKieBaseEventListeners().size()).isEqualTo(0);
     }
 
     @Test
@@ -539,7 +535,7 @@ public class Misc2Test {
         FactHandle fact1 = ksession.insert( new Person( "Mario", 38 ) );
         ( (InternalAgenda) ksession.getAgenda() ).activateRuleFlowGroup( "test" );
         ksession.fireAllRules();
-        assertEquals( 1, res.size() );
+        assertThat(res.size()).isEqualTo(1);
         res.clear();
 
         ksession.delete( fact1 );
@@ -553,13 +549,13 @@ public class Misc2Test {
         }
         ksession.delete( fact2 );
 
-        assertEquals( 0, res.size() );
+        assertThat(res.size()).isEqualTo(0);
 
         // try to reuse the ksession after the Exception
         FactHandle fact3 = ksession.insert( new Person( "Mario", 38 ) );
         ( (InternalAgenda) ksession.getAgenda() ).activateRuleFlowGroup( "test" );
         ksession.fireAllRules();
-        assertEquals( 1, res.size() );
+        assertThat(res.size()).isEqualTo(1);
         ksession.delete( fact3 );
 
         ksession.dispose();
@@ -597,7 +593,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     @Test
@@ -618,7 +614,7 @@ public class Misc2Test {
         p.setBigDecimal( new BigDecimal( "0" ) );
         ksession.insert( p );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
     }
 
@@ -689,7 +685,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( asList( 1, 2, 4, 5, 6 ), list );
+        assertThat(list).isEqualTo(asList(1, 2, 4, 5, 6));
     }
 
     @Test
@@ -723,7 +719,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( asList( 7, 6, 5, 4, 3, 2, 1 ), list );
+        assertThat(list).isEqualTo(asList(7, 6, 5, 4, 3, 2, 1));
     }
 
     @Test(timeout = 10000)
@@ -794,7 +790,7 @@ public class Misc2Test {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
-        assertEquals( 3, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
     @Test
@@ -862,7 +858,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
 
-        assertEquals( 2.0, ksession.getQueryResults( "getNeuron" ).iterator().next().get( "$value" ) );
+        assertThat(ksession.getQueryResults("getNeuron").iterator().next().get("$value")).isEqualTo(2.0);
     }
 
     @Test
@@ -885,8 +881,8 @@ public class Misc2Test {
         ksession.insert( foo1 );
         ksession.insert( foo2 );
         ksession.fireAllRules();
-        assertEquals( 1, foo1.x );
-        assertEquals( 1, foo2.x );
+        assertThat(foo1.x).isEqualTo(1);
+        assertThat(foo2.x).isEqualTo(1);
     }
 
     @Test
@@ -972,7 +968,7 @@ public class Misc2Test {
         ObjectTypeNode.Id letTupleOtnId = leftTuple.getInputOtnId();
         leftTuple = leftTuple.getHandleNext();
         while ( leftTuple != null ) {
-            assertTrue( letTupleOtnId.before( leftTuple.getInputOtnId() ) );
+            assertThat(letTupleOtnId.before(leftTuple.getInputOtnId())).isTrue();
             letTupleOtnId = leftTuple.getInputOtnId();
             leftTuple = leftTuple.getHandleNext();
         }
@@ -1077,7 +1073,7 @@ public class Misc2Test {
         data.setValues( values );
         ksession.insert( data );
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -1125,7 +1121,7 @@ public class Misc2Test {
 
         ksession.insert( new DataSample() );
 
-        assertEquals( 3, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
     public enum Parameter {PARAM_A, PARAM_B}
@@ -1219,7 +1215,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -1242,7 +1238,7 @@ public class Misc2Test {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     public static class StaticPerson {
@@ -1284,7 +1280,7 @@ public class Misc2Test {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -1354,7 +1350,7 @@ public class Misc2Test {
         ksession.insert( new IntegerWrapperImpl( 2 ) );
         ksession.insert( new IntegerWrapperImpl( 3 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     interface IntegerWraper {
@@ -1399,7 +1395,7 @@ public class Misc2Test {
         ksession.insert( new ComparableInteger( 2 ) );
         ksession.insert( new ComparableInteger( 3 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static class ComparableInteger implements Comparable {
@@ -1437,7 +1433,7 @@ public class Misc2Test {
         ksession.insert( new IntegerWrapperImpl2( 2 ) );
         ksession.insert( new IntegerWrapperImpl2( 3 ) );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     interface IntegerWraper2 extends Comparable<IntegerWraper2> {
@@ -1529,7 +1525,7 @@ public class Misc2Test {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -1567,7 +1563,7 @@ public class Misc2Test {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -1601,7 +1597,7 @@ public class Misc2Test {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -1641,7 +1637,7 @@ public class Misc2Test {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
-        assertEquals( 3, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
     @Test
@@ -1673,7 +1669,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -1714,7 +1710,7 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -1731,7 +1727,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -1786,7 +1782,7 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -1801,7 +1797,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "90201304122000000000000015", 38 ) );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -1825,7 +1821,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( "http://onefineday.123", l.get( 0 ) );
+        assertThat(l.get(0)).isEqualTo("http://onefineday.123");
     }
 
     @Test
@@ -1841,7 +1837,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Long( 6 ) );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
 
@@ -1912,7 +1908,7 @@ public class Misc2Test {
         ksession.insert( new Integer( 2 ) );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
     }
 
@@ -2002,7 +1998,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -2045,7 +2041,7 @@ public class Misc2Test {
         pD.setName( "BDD" );
         ksession.update( fhD, pD );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         pB.setAge( 30 );
         pB.setName( "BBB" );
@@ -2055,7 +2051,7 @@ public class Misc2Test {
         pD.setName( "DDD" );
         ksession.update( fhD, pD );
 
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -2087,8 +2083,8 @@ public class Misc2Test {
         FactHandle fh2 = ksession.insert( p2 );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( 31, (int) list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(31);
 
         list.clear();
 
@@ -2098,8 +2094,8 @@ public class Misc2Test {
         ksession.update( fh3, p3 );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( 31, (int) list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(31);
     }
 
     @Test
@@ -2123,14 +2119,14 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( Cheese.class ) ).size() );
+        assertThat(ksession.getObjects(new ClassObjectFilter( Cheese.class )).size()).isEqualTo(1);
 
         Person p2 = new Person( "A", 32 );
         FactHandle fh2 = ksession.insert( p2 );
 
         ksession.fireAllRules();
 
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( Cheese.class ) ).size() );
+        assertThat(ksession.getObjects(new ClassObjectFilter( Cheese.class )).size()).isEqualTo(1);
     }
 
     @Test
@@ -2158,7 +2154,7 @@ public class Misc2Test {
         messageType.set( message, "message", "Hello World" );
 
         ksession.insert( message );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         KieSession ksession2 = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
 
@@ -2167,7 +2163,7 @@ public class Misc2Test {
         messageType2.set( message2, "message", "Hello World" );
 
         ksession2.insert( message2 );
-        assertEquals( 1, ksession2.fireAllRules() );
+        assertThat(ksession2.fireAllRules()).isEqualTo(1);
     }
 
     public static class Lecture {
@@ -2257,23 +2253,23 @@ public class Misc2Test {
 
         ksession.fireAllRules(); // C gets blocked by B
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.containsAll( asList( "A", "B" ) ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(asList("A", "B"))).isTrue();
         list.clear();
 
         ksession.update( fhB, lB.setDay( 0 ).setIndex( 4 ) );
         ksession.update( fhC, lC.setDay( 0 ).setIndex( 3 ) );
         ksession.fireAllRules(); // B is still a valid blocker for C
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "B" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("B")).isTrue();
         list.clear();
 
         ksession.update( fhB, lB.setDay( 2 ).setIndex( 2 ) );
         ksession.fireAllRules(); // C doesn't find A as blocker
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "B" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("B")).isTrue();
     }
 
     @Test
@@ -2319,8 +2315,8 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.containsAll( asList( "A", "B" ) ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(asList("A", "B"))).isTrue();
         list.clear();
 
         ksession.update( fhB, lB.setAvailable( false ) );
@@ -2329,8 +2325,8 @@ public class Misc2Test {
         ksession.update( fhB, lB.setDay( 0 ).setIndex( 3 ) );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.containsAll( asList( "B", "C" ) ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(asList("B", "C"))).isTrue();
         list.clear();
     }
 
@@ -2367,7 +2363,7 @@ public class Misc2Test {
         ksession.insert( "x" );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test(timeout = 5000)
@@ -2394,7 +2390,7 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -2408,7 +2404,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
-        assertFalse("Should have any message", messages.isEmpty()); // Duplicate rule name
+        assertThat(messages.isEmpty()).as("Should have any message").isFalse(); // Duplicate rule name
     }
 
     @Test
@@ -2444,7 +2440,7 @@ public class Misc2Test {
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
 
         KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
     }
@@ -2474,7 +2470,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -2493,7 +2489,7 @@ public class Misc2Test {
         ksession.insert( 3 );
         ksession.insert( -3 );
 
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     public static class Conversation {
@@ -2569,7 +2565,7 @@ public class Misc2Test {
         FactHandle fh2 = ksession.insert( c2 );
 
         ksession.fireAllRules();
-        assertEquals( 1, conversations.size() );
+        assertThat(conversations.size()).isEqualTo(1);
         conversations.clear();
 
         c2.setTimeslot( 0 );
@@ -2591,7 +2587,7 @@ public class Misc2Test {
         c2.setTimeslot( 1 );
         ksession.update( fh2, c2 );
         ksession.fireAllRules();
-        assertEquals( 1, conversations.size() );
+        assertThat(conversations.size()).isEqualTo(1);
     }
 
     @Test
@@ -2607,7 +2603,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -2638,7 +2634,7 @@ public class Misc2Test {
         ksession.insert( new Foo2( 1 ) );
         ksession.fireAllRules();
 
-        assertEquals( 1, firedRules.size() );
+        assertThat(firedRules.size()).isEqualTo(1);
     }
 
     @Test
@@ -2669,7 +2665,7 @@ public class Misc2Test {
         ksession.insert( new Foo2( 1 ) );
         ksession.fireAllRules();
 
-        assertEquals( 1, firedRules.size() );
+        assertThat(firedRules.size()).isEqualTo(1);
     }
 
     public static class Foo {
@@ -2737,7 +2733,7 @@ public class Misc2Test {
         ksession.insert( foo );
         ksession.fireAllRules();
 
-        assertEquals( 2, foo.getX() );
+        assertThat(foo.getX()).isEqualTo(2);
     }
 
     @Test
@@ -2747,7 +2743,7 @@ public class Misc2Test {
         KieServices ks = KieServices.Factory.get();
         KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kbuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
 
         KieBase kbase = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
         KieSession ksession = kbase.newKieSession();
@@ -2807,13 +2803,13 @@ public class Misc2Test {
         ksession.execute( "1" );
         ksession.execute( "2" );
 
-        assertEquals( 2, firings.size() );
+        assertThat(firings.size()).isEqualTo(2);
 
         ksession.removeEventListener( agendaEventListener );
 
         ksession.execute( "3" );
 
-        assertEquals( 2, firings.size() );
+        assertThat(firings.size()).isEqualTo(2);
     }
 
     @Test
@@ -2838,7 +2834,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( 1 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(1));
     }
 
     @Test
@@ -2865,7 +2861,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( 1 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(1));
     }
 
     @Test
@@ -2892,7 +2888,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( 1 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(1));
     }
 
     @Test(timeout = 10000)
@@ -2935,9 +2931,9 @@ public class Misc2Test {
         ksession.insert( "fireRules" );
         ksession.fireAllRules();
 
-        assertEquals( ruleList.get( 0 ), "first" );
-        assertEquals( ruleList.get( 1 ), "second" );
-        assertEquals( ruleList.get( 2 ), "third" );
+        assertThat("first").isEqualTo(ruleList.get(0));
+        assertThat("second").isEqualTo(ruleList.get(1));
+        assertThat("third").isEqualTo(ruleList.get(2));
     }
 
     @Test
@@ -3055,7 +3051,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -3138,7 +3134,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( 50, 40, 30, 20, 10 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(50, 40, 30, 20, 10));
     }
 
     @Test
@@ -3195,10 +3191,10 @@ public class Misc2Test {
 
         System.out.println( list );
 
-        assertEquals( 11, ksession.getObjects().size() );
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "+" ) );
-        assertTrue( list.contains( "-" ) );
+        assertThat(ksession.getObjects().size()).isEqualTo(11);
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("+")).isTrue();
+        assertThat(list.contains("-")).isTrue();
     }
 
 
@@ -3231,7 +3227,7 @@ public class Misc2Test {
         } finally {
             ks.halt();
             ks.dispose();
-            assertEquals( N, list.size() );
+            assertThat(list.size()).isEqualTo(N);
         }
     }
 
@@ -3281,8 +3277,8 @@ public class Misc2Test {
         knowledgeSession.fireAllRules();
 
         Thread.sleep( 500 );
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "mark" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("mark")).isTrue();
     }
 
 
@@ -3331,7 +3327,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( "ok" ), list );
+        assertThat(list).isEqualTo(Arrays.asList("ok"));
     }
 
 
@@ -3377,7 +3373,7 @@ public class Misc2Test {
 
         Results results = kieBuilder.getResults();
         List<org.kie.api.builder.Message> errors = results.getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertEquals( 2, errors.size() );
+        assertThat(errors.size()).isEqualTo(2);
     }
 
     @Test
@@ -3439,9 +3435,9 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, map.size() );
-        assertEquals( 160, map.get( 4 ) );
-        assertEquals( 120, map.get( 3 ) );
+        assertThat(map.size()).isEqualTo(2);
+        assertThat(map.get(4)).isEqualTo(160);
+        assertThat(map.get(3)).isEqualTo(120);
 
     }
 
@@ -3569,21 +3565,21 @@ public class Misc2Test {
         TradeBooking tb = new TradeBookingImpl( new TradeHeaderImpl() );
 
         ks.insert( tb );
-        assertEquals( 1, ks.fireAllRules() );
+        assertThat(ks.fireAllRules()).isEqualTo(1);
 
-        assertEquals( 3, created.size() );
-        assertEquals( 2, cancelled.size() );
-        assertEquals( 1, fired.size() );
+        assertThat(created.size()).isEqualTo(3);
+        assertThat(cancelled.size()).isEqualTo(2);
+        assertThat(fired.size()).isEqualTo(1);
 
 
-        assertEquals( "Rule2", created.get( 0 ) );
-        assertEquals( "Rule1", created.get( 1 ) );
-        assertEquals( "Rule2", created.get( 2 ) );
+        assertThat(created.get(0)).isEqualTo("Rule2");
+        assertThat(created.get(1)).isEqualTo("Rule1");
+        assertThat(created.get(2)).isEqualTo("Rule2");
 
-        assertEquals( "Rule2", cancelled.get( 0 ) );
-        assertEquals( "Rule2", cancelled.get( 1 ) );
+        assertThat(cancelled.get(0)).isEqualTo("Rule2");
+        assertThat(cancelled.get(1)).isEqualTo("Rule2");
 
-        assertEquals( "Rule1", fired.get( 0 ) );
+        assertThat(fired.get(0)).isEqualTo("Rule1");
     }
 
     @Test
@@ -3638,20 +3634,20 @@ public class Misc2Test {
         TradeBooking tb = new TradeBookingImpl( new TradeHeaderImpl() );
 
         ks.insert( tb );
-        assertEquals( 2, ks.fireAllRules() );
+        assertThat(ks.fireAllRules()).isEqualTo(2);
 
-        assertEquals( 3, created.size() );
-        assertEquals( 1, cancelled.size() );
-        assertEquals( 2, fired.size() );
+        assertThat(created.size()).isEqualTo(3);
+        assertThat(cancelled.size()).isEqualTo(1);
+        assertThat(fired.size()).isEqualTo(2);
 
-        assertEquals( "Rule1", created.get( 0 ) );
-        assertEquals( "Rule1", created.get( 1 ) );
-        assertEquals( "Rule2", created.get( 2 ) );
+        assertThat(created.get(0)).isEqualTo("Rule1");
+        assertThat(created.get(1)).isEqualTo("Rule1");
+        assertThat(created.get(2)).isEqualTo("Rule2");
 
-        assertEquals( "Rule1", cancelled.get( 0 ) );
+        assertThat(cancelled.get(0)).isEqualTo("Rule1");
 
-        assertEquals( "Rule1", fired.get( 0 ) );
-        assertEquals( "Rule2", fired.get( 1 ) );
+        assertThat(fired.get(0)).isEqualTo("Rule1");
+        assertThat(fired.get(1)).isEqualTo("Rule2");
     }
 
     @Test
@@ -3691,8 +3687,8 @@ public class Misc2Test {
         ks.insert( p );
         ks.fireAllRules();
 
-        assertEquals( 44, p.getAge() );
-        assertEquals( "john", p.getName() );
+        assertThat(p.getAge()).isEqualTo(44);
+        assertThat(p.getName()).isEqualTo("john");
     }
 
     @Test
@@ -3731,8 +3727,8 @@ public class Misc2Test {
         ks.insert( p );
         ks.fireAllRules();
 
-        assertEquals( 44, p.getAge() );
-        assertEquals( "john", p.getName() );
+        assertThat(p.getAge()).isEqualTo(44);
+        assertThat(p.getName()).isEqualTo("john");
     }
 
     @Test
@@ -3745,7 +3741,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
 
     }
 
@@ -3786,7 +3782,7 @@ public class Misc2Test {
 
         // When build, duplicate is ERROR level
         List<org.kie.api.builder.Message> errors = results.getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty()); // Duplicate rule name
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse(); // Duplicate rule name
     }
 
 
@@ -3825,11 +3821,11 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertTrue( !list.isEmpty() );
-        assertEquals( 3, list.size() );
-        assertEquals( 3, list.get( 0 ) );
-        assertEquals( 4, list.get( 1 ) );
-        assertEquals( 4, list.get( 2 ) );
+        assertThat(!list.isEmpty()).isTrue();
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.get(0)).isEqualTo(3);
+        assertThat(list.get(1)).isEqualTo(4);
+        assertThat(list.get(2)).isEqualTo(4);
 
     }
 
@@ -3868,11 +3864,11 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertTrue( !list.isEmpty() );
-        assertEquals( 3, list.size() );
-        assertEquals( 3, list.get( 0 ) );
-        assertEquals( 4, list.get( 1 ) );
-        assertEquals( 4, list.get( 2 ) );
+        assertThat(!list.isEmpty()).isTrue();
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.get(0)).isEqualTo(3);
+        assertThat(list.get(1)).isEqualTo(4);
+        assertThat(list.get(2)).isEqualTo(4);
 
     }
 
@@ -3889,7 +3885,7 @@ public class Misc2Test {
         }
         RuleDescr r = packageDescr.getRules().get( 0 );
         PatternDescr pd = (PatternDescr) r.getLhs().getDescrs().get( 0 );
-        assertEquals( 1, pd.getConstraint().getDescrs().size() );
+        assertThat(pd.getConstraint().getDescrs().size()).isEqualTo(1);
     }
 
     @Test
@@ -3949,7 +3945,7 @@ public class Misc2Test {
 
         int num = ksession.fireAllRules();
         // only one rule should fire, but the partial propagation of the asserted facts should not cause a runtime NPE
-        assertEquals( 1, num );
+        assertThat(num).isEqualTo(1);
 
     }
 
@@ -4005,9 +4001,9 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( 2, list.get( 0 ).intValue() );
-        assertEquals( 2, list.get( 1 ).intValue() );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0).intValue()).isEqualTo(2);
+        assertThat(list.get(1).intValue()).isEqualTo(2);
 
     }
 
@@ -4061,7 +4057,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertTrue( list.isEmpty() );
+        assertThat(list.isEmpty()).isTrue();
         ksession.dispose();
     }
 
@@ -4082,15 +4078,15 @@ public class Misc2Test {
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         ksession.insert( "1" );
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
         ksession.insert( 1 );
         ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         ksession.dispose();
     }
@@ -4147,17 +4143,17 @@ public class Misc2Test {
 
         Message m1 = new Message( "msg1" );
         ksession.insert( m1 );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         Message m2 = (Message) ksession.getGlobal( "m2" );
 
-        assertEquals( "msg1", m1.getMessage() );
-        assertEquals( "msg2", m1.getMessage2() );
-        assertEquals( "msg3", m1.getMessage3() );
+        assertThat(m1.getMessage()).isEqualTo("msg1");
+        assertThat(m1.getMessage2()).isEqualTo("msg2");
+        assertThat(m1.getMessage3()).isEqualTo("msg3");
 
-        assertEquals( "msg1", m2.getMessage() );
-        assertEquals( "Two", m2.getMessage2() ); // r1 does not fire for m2
-        assertEquals( "Three", m2.getMessage3() );
+        assertThat(m2.getMessage()).isEqualTo("msg1");
+        assertThat(m2.getMessage2()).isEqualTo("Two"); // r1 does not fire for m2
+        assertThat(m2.getMessage3()).isEqualTo("Three");
     }
 
     @Test(timeout = 10000)
@@ -4194,8 +4190,8 @@ public class Misc2Test {
         ksession.fireAllRules();
 
         ksession.insert( new StepForwardCommand() );
-        assertEquals( 1, ksession.fireAllRules() );
-        assertEquals( 2, hero.getPos() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(hero.getPos()).isEqualTo(2);
     }
 
     @Test(timeout = 10000)
@@ -4233,8 +4229,8 @@ public class Misc2Test {
         ksession.fireAllRules();
 
         ksession.insert( new StepForwardCommand() );
-        assertEquals( 1, ksession.fireAllRules() );
-        assertEquals( 2, hero.getPos() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(hero.getPos()).isEqualTo(2);
     }
 
     @Test(timeout = 10000)
@@ -4284,13 +4280,13 @@ public class Misc2Test {
 
         ksession.insert( new StepForwardCommand() );
         ksession.fireAllRules();
-        assertEquals( 2, hero.getPos() );
+        assertThat(hero.getPos()).isEqualTo(2);
 
         ksession.insert( new ChangeDirectionCommand() );
         ksession.fireAllRules();
         ksession.insert( new StepForwardCommand() );
         ksession.fireAllRules();
-        assertEquals( 1, hero.getPos() );
+        assertThat(hero.getPos()).isEqualTo(1);
     }
 
     @Test(timeout = 10000)
@@ -4340,14 +4336,14 @@ public class Misc2Test {
 
         ksession.insert( new StepForwardCommand() );
         ksession.fireAllRules();
-        assertEquals( 2, hero.getPos() );
+        assertThat(hero.getPos()).isEqualTo(2);
 
 
         ksession.insert( new ChangeDirectionCommand() );
         ksession.fireAllRules();
         ksession.insert( new StepForwardCommand() );
         ksession.fireAllRules();
-        assertEquals( 1, hero.getPos() );
+        assertThat(hero.getPos()).isEqualTo(1);
     }
 
     @PropertyReactive
@@ -4416,10 +4412,10 @@ public class Misc2Test {
         ksession.fireAllRules();
 
         for ( SimpleMessage msg : msgs ) {
-            assertEquals( SimpleMessage.Status.FILTERED, msg.getStatus() );
+            assertThat(msg.getStatus()).isEqualTo(SimpleMessage.Status.FILTERED);
         }
 
-        assertEquals( 0, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(0);
     }
 
     public static class SimpleMessage {
@@ -4509,11 +4505,11 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 4, list.size() );
-        assertEquals( 160, list.get( 0 ) );
-        assertEquals( 4, list.get( 1 ) );
-        assertEquals( 120, list.get( 2 ) );
-        assertEquals( 3, list.get( 3 ) );
+        assertThat(list.size()).isEqualTo(4);
+        assertThat(list.get(0)).isEqualTo(160);
+        assertThat(list.get(1)).isEqualTo(4);
+        assertThat(list.get(2)).isEqualTo(120);
+        assertThat(list.get(3)).isEqualTo(3);
     }
 
     @Test
@@ -4558,7 +4554,7 @@ public class Misc2Test {
         ksession.insert( new SimpleEvent() );
         ksession.fireAllRules();
 
-        assertEquals( 1, i.get() );
+        assertThat(i.get()).isEqualTo(1);
     }
 
     @Test
@@ -4595,8 +4591,8 @@ public class Misc2Test {
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "working", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("working");
         ksession.dispose();
 
         ksession = kbase.newKieSession();
@@ -4605,8 +4601,8 @@ public class Misc2Test {
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "working", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("working");
         ksession.dispose();
     }
 
@@ -4703,7 +4699,7 @@ public class Misc2Test {
         ksession.insert( mario );
         ksession.fireAllRules();
 
-        assertEquals( 40, mario.getAge() );
+        assertThat(mario.getAge()).isEqualTo(40);
     }
 
     @Test
@@ -4843,7 +4839,7 @@ public class Misc2Test {
             ksession.fireAllRules();
         }
 
-        assertEquals( 100, list.size() );
+        assertThat(list.size()).isEqualTo(100);
     }
 
     @Test
@@ -4959,8 +4955,8 @@ public class Misc2Test {
         ksession.insert( new Strings( "2", "3" ) );
         ksession.fireAllRules();
 
-        assertEquals( 1, allList.size() );
-        assertEquals( 2, anyList.size() );
+        assertThat(allList.size()).isEqualTo(1);
+        assertThat(anyList.size()).isEqualTo(2);
     }
 
     public static class Strings {
@@ -5032,7 +5028,7 @@ public class Misc2Test {
         ksession.insert( "1234" );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     public static class EvallerBean {
@@ -5098,8 +5094,8 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( 42, (int) list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(42);
     }
 
     @Test
@@ -5128,8 +5124,8 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( 42, (int) list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(42);
     }
 
     @Test
@@ -5154,8 +5150,8 @@ public class Misc2Test {
         ksession.insert( new EvallerBean() );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( 42, (int) list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(42);
     }
 
     @Test
@@ -5181,8 +5177,8 @@ public class Misc2Test {
         ksession.insert( new EvallerBean() );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( 42, (int) list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(42);
     }
 
     @Test
@@ -5207,8 +5203,8 @@ public class Misc2Test {
         ksession.insert( "cdefg" );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.containsAll( Arrays.asList( "abcde", "bcdef" ) ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(Arrays.asList("abcde", "bcdef"))).isTrue();
     }
 
 
@@ -5234,7 +5230,7 @@ public class Misc2Test {
         ksession.insert( "abcde" );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -5267,7 +5263,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -5298,8 +5294,8 @@ public class Misc2Test {
         Foo2 f2 = new Foo2();
         ksession.insert( f1 );
         ksession.insert( f2 );
-        assertEquals( 2, ksession.fireAllRules() );
-        assertEquals( 3, f2.getX() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+        assertThat(f2.getX()).isEqualTo(3);
     }
 
     @Test
@@ -5350,7 +5346,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         int n = ksession.fireAllRules();
-        assertEquals( 7, n );
+        assertThat(n).isEqualTo(7);
     }
 
     @Test
@@ -5408,7 +5404,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         int n = ksession.fireAllRules();
-        assertEquals( 8, n );
+        assertThat(n).isEqualTo(8);
     }
 
     @Test
@@ -5429,7 +5425,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         int n = ksession.fireAllRules();
-        assertEquals( 1, n );
+        assertThat(n).isEqualTo(1);
     }
 
     @Test
@@ -5442,7 +5438,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
-        assertTrue(messages.toString(), messages.isEmpty());
+        assertThat(messages.isEmpty()).as(messages.toString()).isTrue();
     }
 
     public static class MyDate extends Date {
@@ -5489,8 +5485,8 @@ public class Misc2Test {
         ksession.insert( 1 );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( 0, (int) list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(0);
     }
 
     @Test
@@ -5515,7 +5511,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
-        assertTrue(messages.toString(), messages.isEmpty());
+        assertThat(messages.isEmpty()).as(messages.toString()).isTrue();
     }
 
     @Test
@@ -5572,7 +5568,7 @@ public class Misc2Test {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( pkgBuilderCfg );
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertFalse( kbuilder.hasErrors() );
+        assertThat(kbuilder.hasErrors()).isFalse();
     }
 
     @Test
@@ -5625,7 +5621,7 @@ public class Misc2Test {
         session.getAgenda().getAgendaGroup( "Start" ).setFocus();
 
         int x = session.fireAllRules( 10 );
-        assertEquals( 2, x );
+        assertThat(x).isEqualTo(2);
         session.dispose();
     }
 
@@ -5692,7 +5688,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, trailerList.size() );
+        assertThat(trailerList.size()).isEqualTo(2);
     }
 
 
@@ -5831,7 +5827,7 @@ public class Misc2Test {
         TypeD d = new TypeD();
         ksession.insert( d );
         ksession.fireAllRules();
-        assertEquals( 1, d.getValue() );
+        assertThat(d.getValue()).isEqualTo(1);
     }
 
     public static class Reading {
@@ -6092,7 +6088,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
-        assertTrue(messages.toString(), messages.isEmpty());
+        assertThat(messages.isEmpty()).as(messages.toString()).isTrue();
     }
 
     public static class Underscore {
@@ -6211,9 +6207,9 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "group by hello count is 2" ) );
-        assertTrue( list.contains( "group by hi count is 1" ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("group by hello count is 2")).isTrue();
+        assertThat(list.contains("group by hi count is 1")).isTrue();
     }
 
     @Test
@@ -6267,10 +6263,10 @@ public class Misc2Test {
         ksession.fireAllRules();
 
         System.out.println( list );
-        assertEquals( 3, list.size() );
-        assertTrue( list.contains( "F060b" ) );
-        assertTrue( list.contains( "F060c" ) );
-        assertTrue( list.contains( "F060d" ) );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains("F060b")).isTrue();
+        assertThat(list.contains("F060c")).isTrue();
+        assertThat(list.contains("F060d")).isTrue();
     }
 
     @Test
@@ -6302,9 +6298,9 @@ public class Misc2Test {
         kieSession.insert( 10 );
         kieSession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( 10, (int) list.get( 0 ) );
-        assertEquals( 10, (int) list.get( 1 ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat((int) list.get(0)).isEqualTo(10);
+        assertThat((int) list.get(1)).isEqualTo(10);
     }
 
     @Test
@@ -6338,9 +6334,9 @@ public class Misc2Test {
         kieSession.insert( 10 );
         kieSession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertEquals( 10, list.get( 0 ) );
-        assertEquals( "10", list.get( 1 ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0)).isEqualTo(10);
+        assertThat(list.get(1)).isEqualTo("10");
     }
 
     @Test
@@ -6402,7 +6398,7 @@ public class Misc2Test {
 
         session.fireAllRules();
 
-        assertEquals( Arrays.asList( 6, 5, 4, 3, 2, 1 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(6, 5, 4, 3, 2, 1));
     }
 
     @Test
@@ -6425,13 +6421,13 @@ public class Misc2Test {
         ksession.insert( "1" );
         FactHandle iFH = ksession.insert( 1 );
         FactHandle lFH = ksession.insert( 1L );
-        assertEquals( 0, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         ksession.delete( iFH );
         ksession.delete( lFH );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        assertEquals( 0, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(0);
     }
 
     @Test
@@ -6496,7 +6492,7 @@ public class Misc2Test {
         agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
-        assertEquals( Arrays.asList( 42 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(42));
 
         kieSession.delete( handle );
 
@@ -6506,7 +6502,7 @@ public class Misc2Test {
         agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
-        assertEquals( Arrays.asList( 42, 99 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(42, 99));
     }
 
     @Test
@@ -6566,7 +6562,7 @@ public class Misc2Test {
         agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
-        assertEquals( Arrays.asList( 42 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(42));
 
         //kieSession.delete( iFH );
         kieSession.delete( sFH );
@@ -6579,7 +6575,7 @@ public class Misc2Test {
         agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
-        assertEquals( Arrays.asList( 42, 99 ), list );
+        assertThat(list).isEqualTo(Arrays.asList(42, 99));
     }
 
     @Test
@@ -6630,8 +6626,8 @@ public class Misc2Test {
         kieSession.insert( 6 );
         kieSession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.containsAll( asList( 3, 6 ) ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(asList(3, 6))).isTrue();
     }
 
     @Test
@@ -6676,7 +6672,7 @@ public class Misc2Test {
 
         System.out.println( "Rule R2 is fired count - " + cc.getValue() );
 
-        assertEquals( "Rule 2 should be fired once as we have firing rule as one of criteria checking rule only fire once", 1, cc.getValue() );
+        assertThat(cc.getValue()).as("Rule 2 should be fired once as we have firing rule as one of criteria checking rule only fire once").isEqualTo(1);
     }
 
     public static class ValueContainer {
@@ -6727,9 +6723,9 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
         System.out.println( list );
-        assertTrue( list.containsAll( asList( String.class, Integer.class ) ) );
+        assertThat(list.containsAll(asList(String.class, Integer.class))).isTrue();
     }
 
     @Test
@@ -6777,7 +6773,7 @@ public class Misc2Test {
         ksession.update( swFH, sw );
         ksession.fireAllRules();
 
-        assertEquals( "040404", sb.toString() );
+        assertThat(sb.toString()).isEqualTo("040404");
     }
 
     public interface TestString<T extends TestString> extends Comparable<TestString<?>> { }
@@ -6827,7 +6823,7 @@ public class Misc2Test {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     @Test
@@ -6869,7 +6865,7 @@ public class Misc2Test {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kbase.newKieSession();
-        assertEquals( 1, ks.fireAllRules() );
+        assertThat(ks.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -6893,7 +6889,7 @@ public class Misc2Test {
             ks.fireAllRules();
             fail( "Should throw an exception" );
         } catch (Exception e) {
-            assertTrue( e.getMessage().contains( "hello person" ) );
+            assertThat(e.getMessage().contains("hello person")).isTrue();
         }
     }
 
@@ -6920,7 +6916,7 @@ public class Misc2Test {
             ks.fireAllRules();
             fail( "Should throw an exception" );
         } catch (Exception e) {
-            assertTrue( e.getMessage().contains( "hello person" ) );
+            assertThat(e.getMessage().contains("hello person")).isTrue();
         }
     }
 
@@ -6944,7 +6940,7 @@ public class Misc2Test {
         ksession.insert( asList( "Mario", "Mark" ) );
         ksession.insert( asList( "Julie", "Leiti" ) );
 
-        assertEquals( 4, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(4);
     }
 
     @Test
@@ -6963,7 +6959,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( 1 );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -7044,7 +7040,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new org.drools.mvel.compiler.Person( "Elizabeth2", 88 ) );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -7080,8 +7076,8 @@ public class Misc2Test {
         ksession.insert( 18 );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( 18, (int) list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(18);
     }
 
     @Test
@@ -7109,7 +7105,7 @@ public class Misc2Test {
         ksession.insert( "b" );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -7142,8 +7138,8 @@ public class Misc2Test {
         ksession.fireAllRules();
 
         ArrayList<String> list = (ArrayList<String>) ksession.getGlobal( "list" );
-        assertEquals( 1, list.size() );
-        assertEquals( "Rule without agenda group executed", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Rule without agenda group executed");
     }
 
     @Test
@@ -7175,8 +7171,8 @@ public class Misc2Test {
         ksession.fireAllRules();
 
         ArrayList<String> list = (ArrayList<String>) ksession.getGlobal( "list" );
-        assertEquals( 1, list.size() );
-        assertEquals( "Rule without agenda group executed", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Rule without agenda group executed");
     }
 
     public static class $X {
@@ -7208,14 +7204,14 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
-        List<String> list = new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( new $X.$Y( 42 ) );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( 42, list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo(42);
     }
 
     @Test
@@ -7250,8 +7246,8 @@ public class Misc2Test {
         kieSession.insert( "3" );
         kieSession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( "OK", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("OK");
     }
 
     public static int parseInt( String s ) {
@@ -7297,7 +7293,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, globalList.size() );
+        assertThat(globalList.size()).isEqualTo(1);
     }
 
     public static class NonStringConstructorClass {
@@ -7362,7 +7358,7 @@ public class Misc2Test {
                 }
             }
 
-            assertEquals( factsNr, list.size() );
+            assertThat(list.size()).isEqualTo(factsNr);
         } finally {
             ksession.halt();
             ksession.dispose();
@@ -7432,8 +7428,8 @@ public class Misc2Test {
         ksession.insert( new A1() );
         ksession.fireAllRules();
 
-        assertEquals( 3, list.size() );
-        assertTrue( list.containsAll( asList( "1", "2", "3" ) ) );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.containsAll(asList("1", "2", "3"))).isTrue();
     }
 
     @Test
@@ -7480,7 +7476,7 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -7509,8 +7505,8 @@ public class Misc2Test {
         ksession.insert( "mario.fusco@test.org" );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( "mario.fusco@test.org", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("mario.fusco@test.org");
     }
 
     public static class Parent {
@@ -7556,8 +7552,8 @@ public class Misc2Test {
         ksession.insert( childB );
         ksession.fireAllRules();
 
-        assertEquals( "Done!", childA.getValue() );
-        assertEquals( "Done!", childB.getValue() );
+        assertThat(childA.getValue()).isEqualTo("Done!");
+        assertThat(childB.getValue()).isEqualTo("Done!");
     }
 
     @Test
@@ -7582,8 +7578,8 @@ public class Misc2Test {
         ksession.insert( "d" );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( "a", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("a");
     }
 
     @Test
@@ -7608,8 +7604,8 @@ public class Misc2Test {
         ksession.insert( "d" );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( "a", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("a");
     }
 
     @Test
@@ -7655,7 +7651,7 @@ public class Misc2Test {
                 System.out.println( memory );
                 LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
                 System.out.println( deleteFirst );
-                assertNull( deleteFirst );
+                assertThat(deleteFirst).isNull();
             }
         }
     }
@@ -7709,7 +7705,7 @@ public class Misc2Test {
                 ecs.submit( s );
             }
             for ( int i = 0; i < parallelThreads; ++i ) {
-                assertTrue( ecs.take().get() );
+                assertThat(ecs.take().get()).isTrue();
             }
         } finally {
             executor.shutdownNow();
@@ -7746,7 +7742,7 @@ public class Misc2Test {
 
         KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
         KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
-        assertTrue( ReteComparator.areEqual( kbase1, kbase2 ) );
+        assertThat( ReteComparator.areEqual( kbase1, kbase2 ) ).isTrue();
     }
 
     public static class Container {
@@ -7774,7 +7770,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "\"#" );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -7790,7 +7786,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "\"!." );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -7822,8 +7818,8 @@ public class Misc2Test {
         List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
-        assertEquals( 4, list.size() );
-        assertTrue( list.containsAll( Arrays.asList(1, 2, 3, 4) ) );
+        assertThat(list.size()).isEqualTo(4);
+        assertThat(list.containsAll(Arrays.asList(1, 2, 3, 4))).isTrue();
     }
 
     @Test
@@ -7849,8 +7845,8 @@ public class Misc2Test {
         ksession.insert( new StringWrapper("bbb") );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "bbb", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("bbb");
     }
 
     @Test
@@ -7869,9 +7865,9 @@ public class Misc2Test {
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             Class<?> otnType = ( (ClassObjectType) otn.getObjectType() ).getClassType();
             if ( String.class == otnType ) {
-                assertEquals( 1, otn.getObjectSinkPropagator().size() );
+                assertThat(otn.getObjectSinkPropagator().size()).isEqualTo(1);
             } else if ( InitialFact.class.isAssignableFrom( otnType ) ) {
-                assertEquals( 0, otn.getObjectSinkPropagator().size() );
+                assertThat(otn.getObjectSinkPropagator().size()).isEqualTo(0);
             } else {
                 fail("There shouldn't be other OTNs");
             }
@@ -7899,8 +7895,8 @@ public class Misc2Test {
         ksession.insert( new Person("Bob") );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "Bob", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Bob");
     }
 
     @Test
@@ -7917,7 +7913,7 @@ public class Misc2Test {
         KieServices ks = KieServices.Factory.get();
         KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<org.kie.api.builder.Message> errors = kbuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
 
         KieSession ksession1 = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
 
@@ -7934,7 +7930,7 @@ public class Misc2Test {
 
         int fired1 = ksession1.fireAllRules();
 
-        assertEquals( 1, fired1 );
+        assertThat(fired1).isEqualTo(1);
         ksession1.dispose();
 
         // Force deepClone
@@ -7952,7 +7948,7 @@ public class Misc2Test {
 
         int fired2 = ksession2.fireAllRules();
 
-        assertEquals( 1, fired2 );
+        assertThat(fired2).isEqualTo(1);
         ksession2.dispose();
     }
 
@@ -7981,9 +7977,9 @@ public class Misc2Test {
         Person b5L = new Person("B5L");
         kieSession.insert(b5L);
 
-        assertFalse(b5L.isHappy());
+        assertThat(b5L.isHappy()).isFalse();
         kieSession.fireAllRules();
-        assertTrue(b5L.isHappy());
+        assertThat(b5L.isHappy()).isTrue();
     }
 
     @Test
@@ -8015,7 +8011,7 @@ public class Misc2Test {
 
         kieSession.insert( 42 );
         kieSession.insert( "test" );
-        assertEquals(1, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -8039,7 +8035,7 @@ public class Misc2Test {
         kieSession.insert( 42 );
         kieSession.insert( "test" );
         kieSession.insert( true );
-        assertEquals(4, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(4);
     }
 
     @Test
@@ -8107,7 +8103,7 @@ public class Misc2Test {
         KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( "test" );
-        assertEquals( 1, kieSession.fireAllRules() );
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -8133,7 +8129,7 @@ public class Misc2Test {
         KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( new AnswerGiver() );
-        assertEquals( 0, kieSession.fireAllRules() );
+        assertThat(kieSession.fireAllRules()).isEqualTo(0);
     }
 
     @Test
@@ -8163,7 +8159,7 @@ public class Misc2Test {
         KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( new AnswerGiver() );
-        assertEquals( 2, kieSession.fireAllRules() );
+        assertThat(kieSession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -8188,7 +8184,7 @@ public class Misc2Test {
 
         kieSession.insert( asList("test") );
         kieSession.insert( new AtomicBoolean( true ) );
-        assertEquals( 1, kieSession.fireAllRules() );
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -8204,7 +8200,7 @@ public class Misc2Test {
         KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( 1 );
-        assertEquals( 1, kieSession.fireAllRules() );
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -8235,13 +8231,13 @@ public class Misc2Test {
         KieSession ksession1 = kbase1.newKieSession();
         ksession1.insert( true );
         ksession1.insert( "test" );
-        assertEquals(1, ksession1.fireAllRules());
+        assertThat(ksession1.fireAllRules()).isEqualTo(1);
 
         KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
         KieSession ksession2 = kbase2.newKieSession();
         ksession2.insert( true );
         ksession2.insert( "test" );
-        assertEquals(1, ksession2.fireAllRules());
+        assertThat(ksession2.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -8312,9 +8308,9 @@ public class Misc2Test {
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "R1" ) );
-        assertTrue( list.contains( "R2" ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.contains("R1")).isTrue();
+        assertThat(list.contains("R2")).isTrue();
     }
 
     @Test
@@ -8355,13 +8351,13 @@ public class Misc2Test {
         kieSession.insert(table1);
         kieSession.insert(table2);
 
-        assertEquals(2, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(2);
 
         kieSession.update(fh3, seat3); // no change but the update is necessary to reproduce the bug
         kieSession.update(fh2, seat2.setTable(null));
         kieSession.update(fh1, seat1.setTable(table2));
 
-        assertEquals(0, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(0);
     }
 
     public static class Seat {
@@ -8430,7 +8426,7 @@ public class Misc2Test {
         FactHandle fh7 = kieSession.insert(shift7);
         FactHandle fh8 = kieSession.insert(shift8);
 
-        assertEquals( 0, kieSession.fireAllRules() );
+        assertThat(kieSession.fireAllRules()).isEqualTo(0);
 
         kieSession.update(fh1, shift1.setEmployee(x));
         kieSession.update(fh4, shift4);
@@ -8441,14 +8437,14 @@ public class Misc2Test {
         kieSession.update(fh6, shift6);
         kieSession.update(fh3, shift3.setEmployee(o));
 
-        assertEquals( 0, kieSession.fireAllRules() );
+        assertThat(kieSession.fireAllRules()).isEqualTo(0);
 
         kieSession.update(fh8, shift8.setEmployee(x));
         kieSession.update(fh4, shift4.setEmployee(x));
         kieSession.update(fh7, shift7.setEmployee(x));
         kieSession.update(fh6, shift6.setEmployee(x));
 
-        assertEquals( 0, kieSession.fireAllRules() );
+        assertThat(kieSession.fireAllRules()).isEqualTo(0);
     }
 
     public static class Shift {
@@ -8529,13 +8525,13 @@ public class Misc2Test {
         FactHandle fh5 = kieSession.insert(shift5);
         FactHandle fh6 = kieSession.insert(shift6);
 
-        assertEquals(2, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(2);
 
         kieSession.update(fh6, shift6.setEmployee(employeeA));
         kieSession.update(fh1, shift1.setEmployee(employeeA));
         kieSession.update(fh2, shift2.setEmployee(employeeC));
 
-        assertEquals(1, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
 
         kieSession.update(fh4, shift4.setEmployee(employeeB));
         kieSession.update(fh3, shift3.setEmployee(employeeB));
@@ -8606,7 +8602,7 @@ public class Misc2Test {
             kieSession.fireAllRules();
             fail("Evaluation with null must throw a NPE");
         } catch (Exception e) {
-            assertTrue( e.getMessage().contains( "name.startsWith(\"A\")" ) );
+            assertThat(e.getMessage().contains("name.startsWith(\"A\")")).isTrue();
         }
     }
 
@@ -8669,15 +8665,15 @@ public class Misc2Test {
 
         kSession.fireAllRules();
 
-        assertEquals( 4, list.size() );
-        assertTrue( list.contains( "NotLessThanCompare:5" ) );
-        assertTrue( list.contains( "NotLessThanCompare:null" ) );
-        assertTrue( list.contains( "NotGreaterThanCompare:5" ) );
-        assertTrue( list.contains( "NotGreaterThanCompare:null" ) );
-        assertFalse( list.contains( "LessThanCompare:5" ) );
-        assertFalse( list.contains( "LessThanCompare:null" ) );
-        assertFalse( list.contains( "GreaterThanCompare:5" ) );
-        assertFalse( list.contains( "GreaterThanCompare:null" ) );
+        assertThat(list.size()).isEqualTo(4);
+        assertThat(list.contains("NotLessThanCompare:5")).isTrue();
+        assertThat(list.contains("NotLessThanCompare:null")).isTrue();
+        assertThat(list.contains("NotGreaterThanCompare:5")).isTrue();
+        assertThat(list.contains("NotGreaterThanCompare:null")).isTrue();
+        assertThat(list.contains("LessThanCompare:5")).isFalse();
+        assertThat(list.contains("LessThanCompare:null")).isFalse();
+        assertThat(list.contains("GreaterThanCompare:5")).isFalse();
+        assertThat(list.contains("GreaterThanCompare:null")).isFalse();
     }
     
     @Test
@@ -8702,8 +8698,8 @@ public class Misc2Test {
         ksession.insert( new Cheese( "gauda", 42 ) );
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("42000", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("42000");
     }
     
     /**
@@ -8778,7 +8774,7 @@ public class Misc2Test {
         ksession.insert( new ElementOperation( new MyElement() ) );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -8800,7 +8796,7 @@ public class Misc2Test {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
 
-        assertTrue( kbuilder.getErrors().toString().contains( "StackOverflowError" ) );
+        assertThat(kbuilder.getErrors().toString().contains("StackOverflowError")).isTrue();
     }
 
     @Test
@@ -8851,7 +8847,7 @@ public class Misc2Test {
         ksession.insert(personHolder);
         int fired = ksession.fireAllRules();
 
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
     }
 
     @Test
@@ -8904,8 +8900,8 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue(list.contains("R1"));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("R1")).isTrue();
     }
 
     @Test
@@ -8932,7 +8928,7 @@ public class Misc2Test {
         ksession.insert( martin );
         ksession.fireAllRules();
 
-        assertEquals( 1, martin.getAddresses().size() );
+        assertThat(martin.getAddresses().size()).isEqualTo(1);
     }
 
     @Test
@@ -8948,12 +8944,12 @@ public class Misc2Test {
         KieContainer kieContainer = new KieHelper().addContent(drl, ResourceType.DRL)
                                                    .setReleaseId(releaseId)
                                                    .getKieContainer(null);
-        assertEquals(releaseId, kieContainer.getReleaseId());
+        assertThat(kieContainer.getReleaseId()).isEqualTo(releaseId);
 
         KieSession ksession = kieContainer.newKieSession();
 
         ksession.insert("Hello");
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -8981,6 +8977,6 @@ public class Misc2Test {
                 .verify();
 
         List<org.kie.api.builder.Message> errors = results.getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 }

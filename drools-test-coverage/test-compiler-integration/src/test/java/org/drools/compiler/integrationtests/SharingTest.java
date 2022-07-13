@@ -42,9 +42,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.Agenda;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class SharingTest {
@@ -111,7 +109,7 @@ public class SharingTest {
         final KieSession kieSession = kbase.newKieSession();
         try {
             kieSession.insert(new TestObject(1));
-            assertEquals(2, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(2);
         } finally {
             kieSession.dispose();
         }
@@ -123,16 +121,16 @@ public class SharingTest {
     }
 
     private void assertSinksSize(ObjectTypeNode otn, int expected) {
-        assertEquals(expected, otn.getSinks().length);
+        assertThat(otn.getSinks().length).isEqualTo(expected);
     }
 
     private void assertHashableSinksSize(ObjectTypeNode otn, int expected) {
         CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
 
         if (expected == 0) {
-            assertNull(sinkAdapter.getHashableSinks());
+            assertThat(sinkAdapter.getHashableSinks()).isNull();
         } else {
-            assertEquals(expected, sinkAdapter.getHashableSinks().size());
+            assertThat(sinkAdapter.getHashableSinks().size()).isEqualTo(expected);
         }
     }
 
@@ -142,9 +140,9 @@ public class SharingTest {
         AlphaNode alpha = (AlphaNode) sinkAdapter.getOtherSinks().get(0);
         AlphaNodeFieldConstraint constraint = alpha.getConstraint();
         if (constraint instanceof MVELConstraint) {
-            assertEquals(expected, ((MVELConstraint) constraint).getExpression());
+            assertThat(((MVELConstraint) constraint).getExpression()).isEqualTo(expected);
         } else if (constraint instanceof LambdaConstraint) {
-            assertEquals(expected, ((LambdaConstraint) constraint).getPredicateInformation().getStringConstraint());
+            assertThat(((LambdaConstraint) constraint).getPredicateInformation().getStringConstraint()).isEqualTo(expected);
         }
     }
 
@@ -178,7 +176,7 @@ public class SharingTest {
         final KieSession kieSession = kbase.newKieSession();
         try {
             kieSession.insert(new TestObject(1));
-            assertEquals(2, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(2);
         } finally {
             kieSession.dispose();
         }
@@ -219,7 +217,7 @@ public class SharingTest {
         final KieSession kieSession = kbase.newKieSession();
         try {
             kieSession.insert(new TestObject(1));
-            assertEquals(2, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(2);
         } finally {
             kieSession.dispose();
         }
@@ -257,7 +255,7 @@ public class SharingTest {
         final KieSession kieSession = kbase.newKieSession();
         try {
             kieSession.insert(new TestObject(1));
-            assertEquals(2, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(2);
         } finally {
             kieSession.dispose();
         }
@@ -292,7 +290,7 @@ public class SharingTest {
         final KieSession kieSession = kbase.newKieSession();
         try {
             kieSession.insert(new TestObject(TestEnum.AAA));
-            assertEquals(2, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(2);
         } finally {
             kieSession.dispose();
         }
@@ -327,7 +325,7 @@ public class SharingTest {
         final KieSession kieSession = kbase.newKieSession();
         try {
             kieSession.insert(new Person("John", 20, new BigDecimal("1")));
-            assertEquals(2, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(2);
         } finally {
             kieSession.dispose();
         }
@@ -363,7 +361,7 @@ public class SharingTest {
         final KieSession kieSession = kbase.newKieSession();
         try {
             kieSession.insert(new TestObject(1));
-            assertEquals(2, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(2);
         } finally {
             kieSession.dispose();
         }
@@ -402,7 +400,7 @@ public class SharingTest {
             final FactWithList factWithList = new FactWithList("test");
             kieSession.insert(factWithList);
 
-            assertEquals(2, kieSession.fireAllRules());
+            assertThat(kieSession.fireAllRules()).isEqualTo(2);
         } finally {
             kieSession.dispose();
         }
@@ -462,9 +460,9 @@ public class SharingTest {
 
             kieSession.fireAllRules();
 
-            assertEquals(2, list.size());
-            assertTrue(list.contains("R1"));
-            assertTrue(list.contains("R2"));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.contains("R1")).isTrue();
+            assertThat(list.contains("R2")).isTrue();
         } finally {
             kieSession.dispose();
         }

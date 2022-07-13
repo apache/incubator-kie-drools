@@ -47,10 +47,8 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Ignore
 public class PhreakConcurrencyTest extends CommonTestMethodBase {
@@ -120,11 +118,11 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
         }
 
-        assertTrue(success);
-        assertEquals(EP_NR, ksession.fireAllRules());
+        assertThat(success).isTrue();
+        assertThat(ksession.fireAllRules()).isEqualTo(EP_NR);
 
         for (int i = 0; i < EP_NR; i++) {
-            assertEquals(1, ((List) ksession.getGlobal("results" + i)).size());
+            assertThat(((List) ksession.getGlobal("results" + i)).size()).isEqualTo(1);
         }
 
         ksession.dispose();
@@ -213,13 +211,13 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                 }
             }
 
-            assertTrue(success);
+            assertThat(success).isTrue();
 
             ksession.fireAllRules();
             System.out.println(results);
-            assertEquals(3, results.size());
+            assertThat(results.size()).isEqualTo(3);
             for (String s : results) {
-                assertEquals("2", s);
+                assertThat(s).isEqualTo("2");
             }
         } finally {
             executor.shutdownNow();
@@ -345,7 +343,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                     }
                 }
 
-                assertTrue(success);
+                assertThat(success).isTrue();
 
                 new Thread(ksession::fireUntilHalt).start ();
                 try {
@@ -358,8 +356,8 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                     ksession.halt();
 
                     if (deleteIndex % 10 == 0) {
-                        assertEquals(3, results.size());
-                        assertTrue(results.containsAll(asList("R1", "R2", "R3")));
+                        assertThat(results.size()).isEqualTo(3);
+                        assertThat(results.containsAll(asList("R1", "R2", "R3"))).isTrue();
                     } else {
                         if (!results.isEmpty()) {
                             fail("Results should be empty with deleteIndex = " + deleteIndex + "; got " + results.size() + " items");
@@ -471,7 +469,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                         }
                     }
 
-                    assertTrue(success);
+                    assertThat(success).isTrue();
                 } finally {
                     executor.shutdownNow();
                 }
@@ -638,57 +636,57 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                 s4Mask |= 8;
             }
 
-            assertEquals(s0Mask, s0.getLinkedNodeMask());
-            assertEquals(s1Mask, s1.getLinkedNodeMask());
-            assertEquals(s2Mask, s2.getLinkedNodeMask());
-            assertEquals(s3Mask, s3.getLinkedNodeMask());
-            assertEquals(s4Mask, s4.getLinkedNodeMask());
+            assertThat(s0.getLinkedNodeMask()).isEqualTo(s0Mask);
+            assertThat(s1.getLinkedNodeMask()).isEqualTo(s1Mask);
+            assertThat(s2.getLinkedNodeMask()).isEqualTo(s2Mask);
+            assertThat(s3.getLinkedNodeMask()).isEqualTo(s3Mask);
+            assertThat(s4.getLinkedNodeMask()).isEqualTo(s4Mask);
 
             long p0Mask = 0;
             long p1Mask = 0;
             long p2Mask = 0;
 
             if ((s0Mask & 15) == 15) {
-                assertTrue(s0.isSegmentLinked());
+                assertThat(s0.isSegmentLinked()).isTrue();
                 p0Mask |= 1;
                 p1Mask |= 1;
                 p2Mask |= 1;
             } else {
-                assertFalse(s0.isSegmentLinked());
+                assertThat(s0.isSegmentLinked()).isFalse();
             }
 
             if ((s1Mask & 63) == 63) {
-                assertTrue(s1.isSegmentLinked());
+                assertThat(s1.isSegmentLinked()).isTrue();
                 p0Mask |= 2;
             } else {
-                assertFalse(s1.isSegmentLinked());
+                assertThat(s1.isSegmentLinked()).isFalse();
             }
 
             if ((s2Mask & 14) == 14) {
-                assertTrue(s2.isSegmentLinked());
+                assertThat(s2.isSegmentLinked()).isTrue();
                 p1Mask |= 2;
                 p2Mask |= 2;
             } else {
-                assertFalse(s2.isSegmentLinked());
+                assertThat(s2.isSegmentLinked()).isFalse();
             }
 
             if ((s3Mask & 7) == 7) {
-                assertTrue(s3.isSegmentLinked());
+                assertThat(s3.isSegmentLinked()).isTrue();
                 p1Mask |= 4;
             } else {
-                assertFalse(s3.isSegmentLinked());
+                assertThat(s3.isSegmentLinked()).isFalse();
             }
 
             if ((s4Mask & 14) == 14) {
-                assertTrue(s4.isSegmentLinked());
+                assertThat(s4.isSegmentLinked()).isTrue();
                 p2Mask |= 4;
             } else {
-                assertFalse(s4.isSegmentLinked());
+                assertThat(s4.isSegmentLinked()).isFalse();
             }
 
-            assertEquals(p0Mask == 3, pathMemories[0].isRuleLinked());
-            assertEquals(p1Mask == 7, pathMemories[1].isRuleLinked());
-            assertEquals(p2Mask == 7, pathMemories[2].isRuleLinked());
+            assertThat(pathMemories[0].isRuleLinked()).isEqualTo(p0Mask == 3);
+            assertThat(pathMemories[1].isRuleLinked()).isEqualTo(p1Mask == 7);
+            assertThat(pathMemories[2].isRuleLinked()).isEqualTo(p2Mask == 7);
         }
 
         private void initPathMemories() {
@@ -758,7 +756,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                 }
             }
 
-            assertEquals( N, list.size() );
+            assertThat(list.size()).isEqualTo(N);
 
             ks.dispose();
         }

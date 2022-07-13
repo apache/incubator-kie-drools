@@ -26,8 +26,6 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class KieRepositoryTest {
 
@@ -45,7 +43,7 @@ public class KieRepositoryTest {
             ReleaseId releaseId = ks.newReleaseId( "org.test", "kie-project-simple", "1.0.0" );
             KieModule kieModule = kieRepository.getKieModule( releaseId );
             assertThat(kieModule).isNotNull();
-            assertEquals( releaseId, kieModule.getReleaseId() );
+            assertThat(kieModule.getReleaseId()).isEqualTo(releaseId);
         } finally {
             Thread.currentThread().setContextClassLoader( cl );
         }
@@ -64,7 +62,7 @@ public class KieRepositoryTest {
             KieRepository kieRepository = ks.getRepository();
             ReleaseId releaseId = ks.newReleaseId( "org.test", "kie-project-simple", "1.0.1" );
             KieModule kieModule = kieRepository.getKieModule( releaseId );
-            assertNull( kieModule );
+            assertThat(kieModule).isNull();
         } finally {
             Thread.currentThread().setContextClassLoader( cl );
         }
@@ -83,7 +81,7 @@ public class KieRepositoryTest {
             KieRepository kieRepository = ks.getRepository();
             ReleaseId releaseId = ks.newReleaseId( "org.test", "only-jar-pojo-not-kjar-no-kmodule", "1.0.0" );
             KieModule kieModule = kieRepository.getKieModule( releaseId );
-            assertNull( kieModule );
+            assertThat(kieModule).isNull();
         } finally {
             Thread.currentThread().setContextClassLoader( cl );
         }

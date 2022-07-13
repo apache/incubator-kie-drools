@@ -63,8 +63,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class IncrementalCompilationCepTest {
@@ -175,8 +174,8 @@ public class IncrementalCompilationCepTest {
         ksession.insert(1);
         ksession.fireAllRules();
 
-        assertEquals("1. Initial run: no message expected after rule fired immediately after fireAllRules due to duration of 5 sec", 0, list.size());
-        assertEquals("1. Initial run: no message expected after rule fired immediately after fireAllRules due to duration of 5 sec", 0, list2.size());
+        assertThat(list.size()).as("1. Initial run: no message expected after rule fired immediately after fireAllRules due to duration of 5 sec").isEqualTo(0);
+        assertThat(list2.size()).as("1. Initial run: no message expected after rule fired immediately after fireAllRules due to duration of 5 sec").isEqualTo(0);
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.1");
         final String drl2 = "package org.drools.compiler\n" +
@@ -207,8 +206,8 @@ public class IncrementalCompilationCepTest {
         kc.updateToVersion(releaseId2);
         timeService.advanceTime(3200, TimeUnit.MILLISECONDS);
 
-        assertEquals("1. R1 is NOT preserved", 0, list.size());
-        assertEquals("1. RS is preserved", 1, list2.size());
+        assertThat(list.size()).as("1. R1 is NOT preserved").isEqualTo(0);
+        assertThat(list2.size()).as("1. RS is preserved").isEqualTo(1);
     }
 
     @Test
@@ -306,7 +305,7 @@ public class IncrementalCompilationCepTest {
         final KieContainer kc = ks.newKieContainer(releaseId1);
         final KieSession ksession = kc.newKieSession();
         ksession.insert(new FooEvent(0));
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         // Create a new jar for version 1.1.0
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
@@ -315,11 +314,11 @@ public class IncrementalCompilationCepTest {
         // try to update the container to version 1.1.0
         final Results results = kc.updateToVersion(releaseId2);
 
-        assertFalse("Errors detected on updateToVersion: " + results.getMessages(org.kie.api.builder.Message.Level.ERROR), results.hasMessages(org.kie.api.builder.Message.Level.ERROR));
+        assertThat(results.hasMessages(org.kie.api.builder.Message.Level.ERROR)).as("Errors detected on updateToVersion: " + results.getMessages(org.kie.api.builder.Message.Level.ERROR)).isFalse();
 
         // continue working with the session
         ksession.insert(new FooEvent(1));
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -366,12 +365,12 @@ public class IncrementalCompilationCepTest {
         clock.advanceTime(4, TimeUnit.SECONDS);
         ksession.insert(new MyEvent(3));
         ksession.fireAllRules();
-        assertEquals(3, result.get());
+        assertThat(result.get()).isEqualTo(3);
 
         // expires 1
         clock.advanceTime(3, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(2, result.get());
+        assertThat(result.get()).isEqualTo(2);
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_PSEUDO,
@@ -380,22 +379,22 @@ public class IncrementalCompilationCepTest {
 
         // shorter window: 2 is out
         ksession.fireAllRules();
-        assertEquals(1, result.get());
+        assertThat(result.get()).isEqualTo(1);
 
         ksession.insert(new MyEvent(4));
         ksession.insert(new MyEvent(5));
         ksession.fireAllRules();
-        assertEquals(3, result.get());
+        assertThat(result.get()).isEqualTo(3);
 
         // expires 3
         clock.advanceTime(3, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(2, result.get());
+        assertThat(result.get()).isEqualTo(2);
 
         // expires 4 & 5
         clock.advanceTime(3, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(0, result.get());
+        assertThat(result.get()).isEqualTo(0);
     }
 
     @Test
@@ -510,8 +509,8 @@ public class IncrementalCompilationCepTest {
         ksession.insert(new SimpleEvent("2", "MY_CODE", 5));
         ksession.fireAllRules();
 
-        assertEquals(2, counter1.get());
-        assertEquals(0, counter2.get());
+        assertThat(counter1.get()).isEqualTo(2);
+        assertThat(counter2.get()).isEqualTo(0);
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
         // the null drl placeholder is used to have the same drl with a different file name
@@ -526,11 +525,11 @@ public class IncrementalCompilationCepTest {
         ksession.fireAllRules();
 
         if (kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
-            assertEquals(3, counter1.get());
+            assertThat(counter1.get()).isEqualTo(3);
         } else {
-            assertEquals(5, counter1.get());
+            assertThat(counter1.get()).isEqualTo(5);
         }
-        assertEquals(1, counter2.get());
+        assertThat(counter2.get()).isEqualTo(1);
     }
 
     public static class SimpleEvent {
@@ -631,7 +630,7 @@ public class IncrementalCompilationCepTest {
         final PseudoClockScheduler scheduler = kieSession.getSessionClock();
         scheduler.setStartupTime(now);
         scheduler.advanceTime(1, TimeUnit.DAYS);
-        assertEquals(2, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(2);
     }
 
     public static class DummyEvent {
@@ -755,8 +754,8 @@ public class IncrementalCompilationCepTest {
         ksession.insert(new SimpleEvent("2", "YOUR_CODE", 0));
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("MY_CODE", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("MY_CODE");
         list.clear();
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-cep-upgrade", "1.1.2");
@@ -765,12 +764,12 @@ public class IncrementalCompilationCepTest {
         KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_PSEUDO,
                                      new HashMap<>(), drl1, drl2, drl3);
         final Results results = kc.updateToVersion(releaseId2);
-        assertEquals(0, results.getMessages().size());
+        assertThat(results.getMessages().size()).isEqualTo(0);
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals("YOUR_CODE", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("YOUR_CODE");
     }
 
     @Test
@@ -803,7 +802,7 @@ public class IncrementalCompilationCepTest {
                                      kieModuleConfigurationProperties, drl2);
 
         final Results results = container.updateToVersion(releaseId2);
-        assertEquals(0, results.getMessages().size());
+        assertThat(results.getMessages().size()).isEqualTo(0);
     }
 
     @Test
@@ -862,7 +861,7 @@ public class IncrementalCompilationCepTest {
 
         DummyEvent evt = new DummyEvent("evt");
         kieSession.insert(evt);
-        assertEquals(1, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "2.0.0");
         KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_PSEUDO,
@@ -873,7 +872,7 @@ public class IncrementalCompilationCepTest {
         kieSession.insert(evt);
         final OtherDummyEvent other = new OtherDummyEvent("evt");
         kieSession.insert(other);
-        assertEquals(1, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Role(Role.Type.EVENT)
@@ -1038,15 +1037,15 @@ public class IncrementalCompilationCepTest {
 
         //ParentEvent
         ObjectTypeNode parentEventOTN = objectTypeNodes.get(new ClassObjectType(ParentEvent.class));
-        assertEquals(-1L, parentEventOTN.getExpirationOffset());
+        assertThat(parentEventOTN.getExpirationOffset()).isEqualTo(-1L);
 
         //ChildEventA
         ObjectTypeNode childEventAOTN = objectTypeNodes.get(new ClassObjectType(ChildEventA.class));
-        assertEquals(Duration.of(3, ChronoUnit.DAYS).toMillis() + 1, childEventAOTN.getExpirationOffset());
+        assertThat(childEventAOTN.getExpirationOffset()).isEqualTo(Duration.of(3, ChronoUnit.DAYS).toMillis() + 1);
 
         //ChildEventB
         ObjectTypeNode childEventBOTN = objectTypeNodes.get(new ClassObjectType(ChildEventB.class));
-        assertEquals(Duration.of(30, ChronoUnit.DAYS).toMillis() + 1, childEventBOTN.getExpirationOffset());
+        assertThat(childEventBOTN.getExpirationOffset()).isEqualTo(Duration.of(30, ChronoUnit.DAYS).toMillis() + 1);
 
         //pseudo clock initialization
         long now = System.currentTimeMillis();
@@ -1062,7 +1061,7 @@ public class IncrementalCompilationCepTest {
         kieSession.fireAllRules();
 
         //ChildEventA is no longer in WM
-        assertEquals(0, kieSession.getFactCount());
+        assertThat(kieSession.getFactCount()).isEqualTo(0);
 
         kieSession.dispose();
 
@@ -1078,15 +1077,15 @@ public class IncrementalCompilationCepTest {
 
         //ParentEvent
         ObjectTypeNode parentEventOTN2 = objectTypeNodes2.get(new ClassObjectType(ParentEvent.class));
-        assertEquals(-1L, parentEventOTN2.getExpirationOffset());
+        assertThat(parentEventOTN2.getExpirationOffset()).isEqualTo(-1L);
 
         //ChildEventA
         ObjectTypeNode childEventAOTN2 = objectTypeNodes2.get(new ClassObjectType(ChildEventA.class));
-        assertEquals(Duration.of(3, ChronoUnit.DAYS).toMillis() + 1, childEventAOTN2.getExpirationOffset());
+        assertThat(childEventAOTN2.getExpirationOffset()).isEqualTo(Duration.of(3, ChronoUnit.DAYS).toMillis() + 1);
 
         //ChildEventB
         ObjectTypeNode childEventBOTN2 = objectTypeNodes2.get(new ClassObjectType(ChildEventB.class));
-        assertEquals(Duration.of(30, ChronoUnit.DAYS).toMillis() + 1, childEventBOTN2.getExpirationOffset());
+        assertThat(childEventBOTN2.getExpirationOffset()).isEqualTo(Duration.of(30, ChronoUnit.DAYS).toMillis() + 1);
 
         now = System.currentTimeMillis();
 
@@ -1101,7 +1100,7 @@ public class IncrementalCompilationCepTest {
         sessionClock2.advanceTime(Duration.of(4, ChronoUnit.DAYS).toMillis(), TimeUnit.MILLISECONDS);
 
         kieSession2.fireAllRules();
-        assertEquals(0, kieSession2.getFactCount());
+        assertThat(kieSession2.getFactCount()).isEqualTo(0);
 
         kieSession2.dispose();
     }

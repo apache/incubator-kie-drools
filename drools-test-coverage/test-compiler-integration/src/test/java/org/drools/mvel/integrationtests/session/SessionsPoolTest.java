@@ -56,11 +56,7 @@ import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class SessionsPoolTest {
@@ -95,8 +91,8 @@ public class SessionsPoolTest {
         KieSession ksession2 = pool.newKieSession();
 
         // using a pool with only one session so it should return the same one as before
-        assertSame( ksession, ksession2 );
-        assertNull( ksession2.getGlobal( "list" ) );
+        assertThat(ksession2).isSameAs(ksession);
+        assertThat(ksession2.getGlobal("list")).isNull();
         checkKieSession( ksession2 );
 
         pool.shutdown();
@@ -133,8 +129,8 @@ public class SessionsPoolTest {
         KieSession ksession2 = kBase.newKieSession();
 
         // using a pool with only one session so it should return the same one as before
-        assertSame( ksession, ksession2 );
-        assertNull( ksession2.getGlobal( "list" ) );
+        assertThat(ksession2).isSameAs(ksession);
+        assertThat(ksession2.getGlobal("list")).isNull();
         checkKieSession( ksession2 );
     }
 
@@ -170,7 +166,7 @@ public class SessionsPoolTest {
             for (int i = 0; i < THREAD_NR; i++) {
                 success = ecs.take().get() && success;
             }
-            assertTrue( success );
+            assertThat(success).isTrue();
         } finally {
             executor.shutdown();
         }
@@ -190,11 +186,11 @@ public class SessionsPoolTest {
         List<String> list = new ArrayList<>();
         session.setGlobal( "list", list );
         session.execute( "test" );
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         list.clear();
         session.execute( "test" );
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     private KieContainer getKieContainer() {
@@ -214,7 +210,7 @@ public class SessionsPoolTest {
         ksession.setGlobal( "list", list );
         ksession.insert( "test" );
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -260,7 +256,7 @@ public class SessionsPoolTest {
 
         ksession.dispose();
 
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         ksession = pool.newKieSession();
 
@@ -271,7 +267,7 @@ public class SessionsPoolTest {
 
         ksession.dispose();
 
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         pool.shutdown();
     }
@@ -311,7 +307,7 @@ public class SessionsPoolTest {
 
         try {
             createFactAndInsert(ksession);
-            assertEquals(1, ksession.fireAllRules()); // R1 is fired
+            assertThat(ksession.fireAllRules()).isEqualTo(1); // R1 is fired
         } finally {
             ksession.dispose();
         }
@@ -320,7 +316,7 @@ public class SessionsPoolTest {
 
         try {
             createFactAndInsert(ksession);
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -364,7 +360,7 @@ public class SessionsPoolTest {
 
         try {
             createFactAndInsert(ksession);
-            assertEquals(1, ksession.fireAllRules()); // R2 is fired
+            assertThat(ksession.fireAllRules()).isEqualTo(1); // R2 is fired
         } finally {
             ksession.dispose();
         }
@@ -373,7 +369,7 @@ public class SessionsPoolTest {
 
         try {
             createFactAndInsert(ksession);
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -424,13 +420,13 @@ public class SessionsPoolTest {
         commands.add(CommandFactory.newFireAllRules());
         ksession.execute(CommandFactory.newBatchExecution(commands));
 
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         list.clear();
 
         ksession.execute(CommandFactory.newBatchExecution(commands));
 
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         pool.shutdown();
     }

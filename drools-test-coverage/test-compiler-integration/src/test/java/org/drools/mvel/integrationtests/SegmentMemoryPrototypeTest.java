@@ -43,9 +43,7 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class SegmentMemoryPrototypeTest {
@@ -155,18 +153,18 @@ public class SegmentMemoryPrototypeTest {
         ksession.insert(room1);
         FactHandle fireFact1 = ksession.insert(new Fire(room1));
         ksession.fireAllRules();
-        assertEquals(1, events.size());
+        assertThat(events.size()).isEqualTo(1);
 
         // phase 2
         Sprinkler sprinkler1 = new Sprinkler(room1);
         ksession.insert(sprinkler1);
         ksession.fireAllRules();
-        assertEquals(2, events.size());
+        assertThat(events.size()).isEqualTo(2);
 
         // phase 3
         ksession.delete(fireFact1);
         ksession.fireAllRules();
-        assertEquals(5, events.size());
+        assertThat(events.size()).isEqualTo(5);
     }
 
     @Test
@@ -199,14 +197,14 @@ public class SegmentMemoryPrototypeTest {
         try {
             ksession.insert( asList(new Person() ) );
             ksession.insert("test");
-            assertEquals( 1, ksession.fireAllRules() );
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
             try {
                 ksession = kbase.newKieSession( conf, null );
                 ksession.insert( asList(new Person() ) );
                 ksession.insert("test");
-                assertEquals( 1, ksession.fireAllRules() );
+                assertThat(ksession.fireAllRules()).isEqualTo(1);
             } finally {
                 ksession.dispose();
             }
@@ -243,20 +241,20 @@ public class SegmentMemoryPrototypeTest {
         ksession.insert( 4L );
         ksession.insert( true );
         ksession.insert( "test" );
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
 
-        assertTrue( terminalNodes.stream().map( ksession::getNodeMemory ).map( PathMemory.class::cast )
-                .allMatch( PathMemory::isRuleLinked ) );
+        assertThat(terminalNodes.stream().map(ksession::getNodeMemory).map(PathMemory.class::cast)
+                .allMatch(PathMemory::isRuleLinked)).isTrue();
 
         ksession.reset();
 
-        assertFalse( terminalNodes.stream().map( ksession::getNodeMemory ).map( PathMemory.class::cast )
-                .anyMatch( PathMemory::isRuleLinked ) );
+        assertThat(terminalNodes.stream().map(ksession::getNodeMemory).map(PathMemory.class::cast)
+                .anyMatch(PathMemory::isRuleLinked)).isFalse();
 
         ksession.insert( 4 );
         ksession.insert( 4L );
         ksession.insert( "test" );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

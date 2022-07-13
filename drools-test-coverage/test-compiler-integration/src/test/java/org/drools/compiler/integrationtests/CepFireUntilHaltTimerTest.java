@@ -36,8 +36,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests proper timer firing using accumulate and fireUntilHalt() mode.
@@ -140,9 +139,9 @@ public class CepFireUntilHaltTimerTest {
             }
             TimeUtil.sleepMillis(500);
 
-            assertTrue( "The result does not contain at least 2 elements", result.size() >= 2);
-            assertEquals(ITEMS, (long) result.get(0));
-            assertEquals(0, (long) result.get(1));
+            assertThat(result.size() >= 2).as("The result does not contain at least 2 elements").isTrue();
+            assertThat((long) result.get(0)).isEqualTo(ITEMS);
+            assertThat((long) result.get(1)).isEqualTo(0);
         } finally {
             ksession.halt();
             // wait for the engine to finish and throw exception if any was thrown

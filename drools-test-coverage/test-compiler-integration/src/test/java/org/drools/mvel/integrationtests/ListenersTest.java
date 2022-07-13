@@ -44,8 +44,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests stateful/stateless KieSession listeners registration - DROOLS-818.
@@ -125,9 +124,9 @@ public class ListenersTest {
     }
 
     private void checkThatListenerFired(Collection listeners) {
-        assertTrue("Listener not registered.", listeners.size() >= 1);
+        assertThat(listeners.size() >= 1).as("Listener not registered.").isTrue();
         MarkingListener listener = getMarkingListener(listeners);
-        assertTrue("Expected listener to fire.", listener.hasFired());
+        assertThat(listener.hasFired()).as("Expected listener to fire.").isTrue();
     }
 
     private MarkingListener getMarkingListener(Collection listeners) {
@@ -174,7 +173,7 @@ public class ListenersTest {
                 ResourceFactory.newByteArrayResource(DRL.getBytes()));
 
         final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertEquals("Unexpected compilation errors", 0, builder.getResults().getMessages().size());
+        assertThat(builder.getResults().getMessages().size()).as("Unexpected compilation errors").isEqualTo(0);
 
         ks.getRepository().addKieModule(builder.getKieModule());
 

@@ -32,8 +32,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This is a sample class to launch a rule.
@@ -88,10 +87,9 @@ public class DateComparisonTest {
         ksession.insert( yesterday );
         ksession.insert( tomorrow );
         ksession.fireAllRules();
-        assertEquals( 2,
-                      results.size() );
-        assertTrue( results.contains( "test date greater than" ) );
-        assertTrue( results.contains( "test date less than" ) );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains("test date greater than")).isTrue();
+        assertThat(results.contains("test date less than")).isTrue();
     }
 
     @Test
@@ -130,10 +128,9 @@ public class DateComparisonTest {
         ksession.insert( yesterday );
         ksession.insert( tomorrow );
         ksession.fireAllRules();
-        assertEquals( 2,
-                      results.size() );
-        assertTrue( results.contains( "test date greater than" ) );
-        assertTrue( results.contains( "test date less than" ) );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains("test date greater than")).isTrue();
+        assertThat(results.contains("test date less than")).isTrue();
     }
 
     @Test
@@ -172,10 +169,9 @@ public class DateComparisonTest {
         ksession.insert( yesterday );
         ksession.insert( tomorrow );
         ksession.fireAllRules();
-        assertEquals( 2,
-                      results.size() );
-        assertTrue( results.contains( "test date greater than" ) );
-        assertTrue( results.contains( "test date less than" ) );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains("test date greater than")).isTrue();
+        assertThat(results.contains("test date less than")).isTrue();
     }
 
     private Date yesterday() {

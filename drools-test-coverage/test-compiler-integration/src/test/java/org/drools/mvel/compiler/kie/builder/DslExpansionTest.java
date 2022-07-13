@@ -31,9 +31,8 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test for DSL expansion with KieBuilder
@@ -71,7 +70,7 @@ public class DslExpansionTest {
                 System.out.println( m.getText() );
             }
         }
-        assertTrue( messages.isEmpty() );
+        assertThat(messages.isEmpty()).isTrue();
     }
 
     @Test
@@ -93,7 +92,7 @@ public class DslExpansionTest {
                 System.out.println( m.getText() );
             }
         }
-        assertFalse( messages.isEmpty() );
+        assertThat(messages.isEmpty()).isFalse();
     }
 
     private String createDSL() {

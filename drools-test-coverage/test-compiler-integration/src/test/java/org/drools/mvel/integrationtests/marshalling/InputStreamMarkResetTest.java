@@ -15,8 +15,6 @@
 
 package org.drools.mvel.integrationtests.marshalling;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +24,8 @@ import java.io.ObjectOutputStream;
 import java.util.Date;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Should Drools ever need it, this test shows who we can implement peak using a {@link BufferedInputStream} 
@@ -53,8 +53,8 @@ public class InputStreamMarkResetTest {
         DataObject unmaThingy = new DataObject();
         unmaThingy.type = stream.readChar();
         unmaThingy.time = stream.readLong();
-        
-        assertTrue( "Mark/reset is not supported", bis.markSupported() );
+
+        assertThat(bis.markSupported()).as("Mark/reset is not supported").isTrue();
         bis.mark(8);
         int [] intBytes = new int [4];
         intBytes[0] = bis.read();
@@ -66,7 +66,7 @@ public class InputStreamMarkResetTest {
         }
         unmaThingy.strCount = stream.readUTF();
 
-        assertTrue( thingy.equals(unmaThingy) );
+        assertThat(thingy.equals(unmaThingy)).isTrue();
     }
 
     private byte [] marshallThingy(DataObject thingy ) throws IOException { 

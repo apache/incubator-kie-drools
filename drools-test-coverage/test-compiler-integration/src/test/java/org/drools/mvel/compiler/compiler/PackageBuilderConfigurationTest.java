@@ -73,11 +73,6 @@ import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 public class PackageBuilderConfigurationTest {
 
@@ -116,18 +111,16 @@ public class PackageBuilderConfigurationTest {
     @Test
     public void testProgrammaticProperties() {
         KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
-        assertTrue(cfg.getDefaultDialect().equals("java"));
+        assertThat(cfg.getDefaultDialect().equals("java")).isTrue();
 
         Properties properties = new Properties();
         properties.setProperty("drools.dialect.default",
                                "mvel");
         KnowledgeBuilderConfigurationImpl cfg1 = new KnowledgeBuilderConfigurationImpl(properties);
-        assertEquals("mvel",
-                     cfg1.getDefaultDialect());
+        assertThat(cfg1.getDefaultDialect()).isEqualTo("mvel");
 
         final KnowledgeBuilderConfigurationImpl cfg2 = new KnowledgeBuilderConfigurationImpl(properties);
-        assertEquals(cfg1.getDefaultDialect().getClass(),
-                     cfg2.getDefaultDialect().getClass());
+        assertThat(cfg2.getDefaultDialect().getClass()).isEqualTo(cfg1.getDefaultDialect().getClass());
     }
 
     @Test
@@ -139,10 +132,8 @@ public class PackageBuilderConfigurationTest {
         cfg.setDialectConfiguration("java",
                                     javaConf);
         JavaForMvelDialectConfiguration javaConf2 = ( JavaForMvelDialectConfiguration ) cfg.getDialectConfiguration("java");
-        assertSame(javaConf,
-                   javaConf2);
-        assertEquals( JavaForMvelDialectConfiguration.CompilerType.ECLIPSE,
-                     javaConf2.getCompiler());
+        assertThat(javaConf2).isSameAs(javaConf);
+        assertThat(javaConf2.getCompiler()).isEqualTo(JavaForMvelDialectConfiguration.CompilerType.ECLIPSE);
     }
 
     @Test
@@ -150,11 +141,9 @@ public class PackageBuilderConfigurationTest {
         System.setProperty("drools.kbuilder.severity." + DuplicateFunction.KEY,
                            "ERROR");
         KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
-        assertEquals(cfg.getOptionKeys(KBuilderSeverityOption.class).size(),
-                     1);
-        assertEquals(cfg.getOption(KBuilderSeverityOption.class,
-                                   DuplicateFunction.KEY).getSeverity(),
-                     ResultSeverity.ERROR);
+        assertThat(1).isEqualTo(cfg.getOptionKeys(KBuilderSeverityOption.class).size());
+        assertThat(ResultSeverity.ERROR).isEqualTo(cfg.getOption(KBuilderSeverityOption.class,
+                DuplicateFunction.KEY).getSeverity());
     }
 
     @Test
@@ -162,11 +151,9 @@ public class PackageBuilderConfigurationTest {
         System.setProperty("drools.kbuilder.severity." + DuplicateFunction.KEY,
                            "FOO");
         KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
-        assertEquals(cfg.getOptionKeys(KBuilderSeverityOption.class).size(),
-                     1);
-        assertEquals(cfg.getOption(KBuilderSeverityOption.class,
-                                   DuplicateFunction.KEY).getSeverity(),
-                     ResultSeverity.INFO);
+        assertThat(1).isEqualTo(cfg.getOptionKeys(KBuilderSeverityOption.class).size());
+        assertThat(ResultSeverity.INFO).isEqualTo(cfg.getOption(KBuilderSeverityOption.class,
+                DuplicateFunction.KEY).getSeverity());
     }
 
     @Test
@@ -188,9 +175,8 @@ public class PackageBuilderConfigurationTest {
         DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();
         MockDialect mockDialect2 = (MockDialect) dialectRegistry.getDialect(cfg1.getDefaultDialect());
 
-        assertSame(pkg,
-                   mockDialect2.getPkg());
-        assertNull(mockDialect2.getRuleDescr());
+        assertThat(mockDialect2.getPkg()).isSameAs(pkg);
+        assertThat(mockDialect2.getRuleDescr()).isNull();
 
         RuleDescr ruleDescr = new RuleDescr("test rule");
         ruleDescr.addAttribute(new AttributeDescr("dialect",
@@ -209,20 +195,17 @@ public class PackageBuilderConfigurationTest {
 
         builder.addPackage(pkgDescr);
 
-        assertSame(ruleDescr,
-                   mockDialect2.getRuleDescr());
-        assertTrue(mockDialect2.getImport().contains("java.util.HashMap"));
-        assertTrue(mockDialect2.getStaticImport().contains("java.lang.System.currentTimeMillis"));
-        assertEquals("eval was built",
-                     evalDescr.getContent());
-        assertEquals("consequence was built",
-                     ruleDescr.getConsequence());
-        assertTrue(mockDialect2.isCompileAll());
+        assertThat(mockDialect2.getRuleDescr()).isSameAs(ruleDescr);
+        assertThat(mockDialect2.getImport().contains("java.util.HashMap")).isTrue();
+        assertThat(mockDialect2.getStaticImport().contains("java.lang.System.currentTimeMillis")).isTrue();
+        assertThat(evalDescr.getContent()).isEqualTo("eval was built");
+        assertThat(ruleDescr.getConsequence()).isEqualTo("consequence was built");
+        assertThat(mockDialect2.isCompileAll()).isTrue();
 
         assertThat(pkg.getRule("test rule")).isNotNull();
 
         // make sure there were no other general errors.
-        assertFalse(builder.hasErrors());
+        assertThat(builder.hasErrors()).isFalse();
     }
 
     public static class MockDialectConfiguration

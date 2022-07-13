@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class InstanceOfTest {
@@ -64,7 +64,7 @@ public class InstanceOfTest {
             mark.setAddress(new LongAddress("uk"));
             ksession.insert(mark);
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
