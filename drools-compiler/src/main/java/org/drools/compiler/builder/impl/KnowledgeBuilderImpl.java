@@ -33,6 +33,7 @@ import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.kie.builder.impl.BuildContext;
@@ -464,6 +465,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 resource,
                 resource.getResourceType(),
                 resource.getConfiguration());
+    }
+
+    public ProcessBuilder getProcessBuilder() {
+        return processBuilder;
     }
 
     @Deprecated
