@@ -35,7 +35,7 @@ import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class SubnetworkTest {
@@ -144,8 +144,8 @@ public class SubnetworkTest {
 
             kieSession.fireAllRules();
 
-            assertEquals(1, list.size());
-            assertEquals(4, list.get(0).intValue());
+            assertThat(list.size()).isEqualTo(1);
+            assertThat(list.get(0).intValue()).isEqualTo(4);
         } finally {
             kieSession.dispose();
         }
@@ -179,7 +179,7 @@ public class SubnetworkTest {
             kieSession.update(fh2, new Dimension(100, 100));
             kieSession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             kieSession.dispose();
         }
@@ -209,13 +209,13 @@ public class SubnetworkTest {
             FactHandle fh1 = kieSession.insert(new Dimension(100, 100));
             FactHandle fh2 = kieSession.insert(new Dimension(100, 200));
             kieSession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
             list.clear();;
 
             kieSession.update(fh2, new Dimension(100, 100));
             kieSession.delete(fhg);
             kieSession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
 
         } finally {
@@ -245,25 +245,25 @@ public class SubnetworkTest {
             kieSession.fireAllRules();
 
             QueryResults results = kieSession.getQueryResults("q1", "go");
-            assertEquals(0, results.size() );
+            assertThat(results.size()).isEqualTo(0);
 
             kieSession.update(fh2, new Dimension(100, 100));
             kieSession.fireAllRules();
 
             results = kieSession.getQueryResults("q1", "go");
-            assertEquals(1, results.size() );
+            assertThat(results.size()).isEqualTo(1);
 
             kieSession.update(fh1, new Dimension(100, 200));
             kieSession.fireAllRules();
 
             results = kieSession.getQueryResults("q1", "go");
-            assertEquals(0, results.size() );
+            assertThat(results.size()).isEqualTo(0);
 
             kieSession.update(fh1, new Dimension(100, 100));
             kieSession.fireAllRules();
 
             results = kieSession.getQueryResults("q1", "go");
-            assertEquals(1, results.size() );
+            assertThat(results.size()).isEqualTo(1);
 
         } finally {
             kieSession.dispose();
@@ -329,9 +329,9 @@ public class SubnetworkTest {
 
             kieSession.fireAllRules();
 
-            assertEquals(2, list.size());
-            assertEquals("R2", list.get(0));
-            assertEquals("R1", list.get(1));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(0)).isEqualTo("R2");
+            assertThat(list.get(1)).isEqualTo("R1");
         } finally {
             kieSession.dispose();
         }
@@ -402,9 +402,9 @@ public class SubnetworkTest {
 
             kieSession.fireAllRules();
 
-            assertEquals(2, list.size());
-            assertEquals("R2", list.get(0));
-            assertEquals("R1", list.get(1));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.get(0)).isEqualTo("R2");
+            assertThat(list.get(1)).isEqualTo("R1");
         } finally {
             kieSession.dispose();
         }

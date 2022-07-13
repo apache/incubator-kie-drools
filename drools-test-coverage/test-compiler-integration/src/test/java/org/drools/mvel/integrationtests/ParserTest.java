@@ -32,10 +32,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ParserTest {
 
@@ -49,30 +46,30 @@ public class ParserTest {
         kbuilder.add(ResourceFactory.newClassPathResource("errors_in_rule.drl", getClass()), ResourceType.DRL);
 
         final KnowledgeBuilderError[] errors = kbuilder.getErrors().toArray(new KnowledgeBuilderError[0]);
-        assertEquals(3, errors.length);
+        assertThat(errors.length).isEqualTo(3);
 
         final DescrBuildError stiltonError = (DescrBuildError) errors[0];
-        assertTrue(stiltonError.getMessage().contains("Stilton"));
+        assertThat(stiltonError.getMessage().contains("Stilton")).isTrue();
         assertThat(stiltonError.getDescr()).isNotNull();
-        assertTrue(stiltonError.getLine() != -1);
+        assertThat(stiltonError.getLine() != -1).isTrue();
 
         // check that its getting it from the ruleDescr
-        assertEquals(stiltonError.getLine(), stiltonError.getDescr().getLine());
+        assertThat(stiltonError.getDescr().getLine()).isEqualTo(stiltonError.getLine());
         // check the absolute error line number (there are more).
-        assertEquals(26, stiltonError.getLine());
+        assertThat(stiltonError.getLine()).isEqualTo(26);
 
         final DescrBuildError poisonError = (DescrBuildError) errors[1];
-        assertTrue(poisonError.getMessage().contains("Poison"));
-        assertEquals(28, poisonError.getLine());
+        assertThat(poisonError.getMessage().contains("Poison")).isTrue();
+        assertThat(poisonError.getLine()).isEqualTo(28);
 
         final KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
         final JavaConfiguration javaConf = (JavaConfiguration) cfg.getDialectConfiguration("java");
         switch (javaConf.getCompiler()) {
             case NATIVE:
-                assertTrue(errors[2].getMessage().contains("illegal"));
+                assertThat(errors[2].getMessage().contains("illegal")).isTrue();
                 break;
             case ECLIPSE:
-                assertTrue(errors[2].getMessage().contains("add"));
+                assertThat(errors[2].getMessage().contains("add")).isTrue();
                 break;
             default:
                 fail("Unknown compiler used");
@@ -81,20 +78,20 @@ public class ParserTest {
         // now check the RHS, not being too specific yet, as long as it has the
         // rules line number, not zero
         final DescrBuildError rhsError = (DescrBuildError) errors[2];
-        assertTrue(rhsError.getLine() >= 23 && rhsError.getLine() <= 32);
+        assertThat(rhsError.getLine() >= 23 && rhsError.getLine() <= 32).isTrue();
     }
 
     @Test
     public void testErrorsParser() throws Exception {
         final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
-        assertEquals(0, parser.getErrors().size());
+        assertThat(parser.getErrors().size()).isEqualTo(0);
         parser.parse(new InputStreamReader(getClass().getResourceAsStream("errors_parser_multiple.drl")));
-        assertTrue(parser.hasErrors());
-        assertTrue(parser.getErrors().size() > 0);
-        assertTrue(parser.getErrors().get(0) instanceof ParserError );
+        assertThat(parser.hasErrors()).isTrue();
+        assertThat(parser.getErrors().size() > 0).isTrue();
+        assertThat(parser.getErrors().get(0) instanceof ParserError).isTrue();
         final ParserError first = ((ParserError) parser.getErrors().get(0));
-        assertTrue(first.getMessage() != null);
-        assertFalse(first.getMessage().equals(""));
+        assertThat(first.getMessage() != null).isTrue();
+        assertThat(first.getMessage().equals("")).isFalse();
     }
 
 }

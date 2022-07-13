@@ -35,7 +35,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.services.KieAssemblersImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class PackageInMultipleResourcesTest {
@@ -65,7 +64,7 @@ public class PackageInMultipleResourcesTest {
             KiePackage kiePackage = kbase.getKiePackage("com.example.rules");
             List<String> ruleNames = kiePackage.getRules().stream().map(rule -> rule.getName()).collect(Collectors.toList());
 
-            assertEquals(3, ruleNames.size());
+            assertThat(ruleNames.size()).isEqualTo(3);
             assertThat(ruleNames).contains("RuleFlow-Split-example-xxx-DROOLS_DEFAULT", "Left Rule", "Right Rule");
         } finally {
             if (originalDRFAssemblerService == null) {
@@ -90,13 +89,13 @@ public class PackageInMultipleResourcesTest {
             KiePackage kiePackage = kbase.getKiePackage("com.example.rules");
             List<String> ruleNames = kiePackage.getRules().stream().map(rule -> rule.getName()).collect(Collectors.toList());
 
-            assertEquals(1, ruleNames.size());
+            assertThat(ruleNames.size()).isEqualTo(1);
             assertThat(ruleNames).contains("RuleFlow-Split-example-xxx-DROOLS_DEFAULT");
 
             KiePackage kiePackageDiffPkg = kbase.getKiePackage("com.example.rules.different.pkg");
             List<String> ruleNamesDiffPkg = kiePackageDiffPkg.getRules().stream().map(rule -> rule.getName()).collect(Collectors.toList());
 
-            assertEquals(2, ruleNamesDiffPkg.size());
+            assertThat(ruleNamesDiffPkg.size()).isEqualTo(2);
             assertThat(ruleNamesDiffPkg).contains("Left Rule", "Right Rule");
         } finally {
             if (originalDRFAssemblerService == null) {

@@ -16,52 +16,45 @@ package org.drools.mvel.rule;
 
 import org.drools.core.rule.FixedDuration;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FixedDurationTest {
     @Test
     public void testConstruct() throws Exception {
         FixedDuration dur = new FixedDuration();
 
-        assertEquals( 0,
-                      dur.getDuration( null ) );
+        assertThat(dur.getDuration(null)).isEqualTo(0);
 
         dur = new FixedDuration( 42000 );
 
-        assertEquals( 42000,
-                      dur.getDuration( null ) );
+        assertThat(dur.getDuration(null)).isEqualTo(42000);
     }
 
     @Test
     public void testAdd() throws Exception {
         final FixedDuration dur = new FixedDuration();
 
-        assertEquals( 0,
-                      dur.getDuration( null ) );
+        assertThat(dur.getDuration(null)).isEqualTo(0);
 
         dur.addSeconds( 42 );
 
-        assertEquals( 42000,
-                      dur.getDuration( null ) );
+        assertThat(dur.getDuration(null)).isEqualTo(42000);
 
         dur.addMinutes( 2 );
 
-        assertEquals( 162000,
-                      dur.getDuration( null ) );
+        assertThat(dur.getDuration(null)).isEqualTo(162000);
 
         dur.addHours( 2 );
 
-        assertEquals( 7362000,
-                      dur.getDuration( null ) );
+        assertThat(dur.getDuration(null)).isEqualTo(7362000);
 
         dur.addDays( 2 );
 
-        assertEquals( 180162000,
-                      dur.getDuration( null ) );
+        assertThat(dur.getDuration(null)).isEqualTo(180162000);
 
         dur.addWeeks( 2 );
 
-        assertEquals( 1389762000,
-                      dur.getDuration( null ) );
+        assertThat(dur.getDuration(null)).isEqualTo(1389762000);
     }
 }

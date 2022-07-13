@@ -20,9 +20,10 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -217,10 +218,10 @@ public class AlphaNodeSharingWithDiffPackageNameTest {
 
             ksession.fireAllRules();
 
-            Assert.assertTrue(a.getFirings().contains("R1 Fired"));
-            Assert.assertTrue(a.getFirings().contains("R2 Fired"));
-            Assert.assertTrue(a.getFirings().contains("R3 Fired"));
-            Assert.assertTrue(a.getFirings().contains("R4 Fired"));
+            assertThat(a.getFirings().contains("R1 Fired")).isTrue();
+            assertThat(a.getFirings().contains("R2 Fired")).isTrue();
+            assertThat(a.getFirings().contains("R3 Fired")).isTrue();
+            assertThat(a.getFirings().contains("R4 Fired")).isTrue();
         } finally {
             ksession.dispose();
         }

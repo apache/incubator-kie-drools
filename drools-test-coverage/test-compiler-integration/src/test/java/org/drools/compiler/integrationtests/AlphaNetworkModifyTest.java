@@ -36,7 +36,6 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class AlphaNetworkModifyTest {
@@ -107,17 +106,17 @@ public class AlphaNetworkModifyTest {
             assertThat(otnCheese).isNotNull();
             assertThat(otnPet).isNotNull();
 
-            assertEquals( 0, otnPerson.getOtnIdCounter() );
-            assertEquals( 0, otnCheese.getOtnIdCounter() );
-            assertEquals( 0, otnPet.getOtnIdCounter() );
+            assertThat(otnPerson.getOtnIdCounter()).isEqualTo(0);
+            assertThat(otnCheese.getOtnIdCounter()).isEqualTo(0);
+            assertThat(otnPet.getOtnIdCounter()).isEqualTo(0);
             wm.insert( new Person() );
             wm.insert( new Pet("yyy") );
             wm.insert( new Cheese() );
             wm.fireAllRules();
 
-            assertEquals( 2, otnPerson.getOtnIdCounter() );
-            assertEquals( 4, otnCheese.getOtnIdCounter() );
-            assertEquals( 2, otnPet.getOtnIdCounter() );
+            assertThat(otnPerson.getOtnIdCounter()).isEqualTo(2);
+            assertThat(otnCheese.getOtnIdCounter()).isEqualTo(4);
+            assertThat(otnPet.getOtnIdCounter()).isEqualTo(2);
         } finally {
             wm.dispose();
         }
@@ -166,9 +165,9 @@ public class AlphaNetworkModifyTest {
 
             final LeftTupleSink[] sinks = liaNode.getSinkPropagator().getSinks();
 
-            assertEquals(2, sinks.length );
-            assertEquals(0, sinks[0].getLeftInputOtnId().getId() );
-            assertEquals(1, sinks[1].getLeftInputOtnId().getId() );
+            assertThat(sinks.length).isEqualTo(2);
+            assertThat(sinks[0].getLeftInputOtnId().getId()).isEqualTo(0);
+            assertThat(sinks[1].getLeftInputOtnId().getId()).isEqualTo(1);
         } finally {
             wm.dispose();
         }
@@ -222,22 +221,22 @@ public class AlphaNetworkModifyTest {
 
             final LeftTupleSink[] sinks = liaNode.getSinkPropagator().getSinks();
 
-            assertEquals(0, sinks[0].getLeftInputOtnId().getId() );
-            assertEquals(1, sinks[1].getLeftInputOtnId().getId() );
-            assertEquals(2, sinks[2].getLeftInputOtnId().getId() );
+            assertThat(sinks[0].getLeftInputOtnId().getId()).isEqualTo(0);
+            assertThat(sinks[1].getLeftInputOtnId().getId()).isEqualTo(1);
+            assertThat(sinks[2].getLeftInputOtnId().getId()).isEqualTo(2);
 
             final ObjectTypeNode otnPerson = getObjectTypeNode(kbase, "Person" );
             final ObjectTypeNode otnCheese = getObjectTypeNode(kbase, "Cheese" );
             assertThat(otnPerson).isNotNull();
             assertThat(otnCheese).isNotNull();
-            assertEquals( 0, otnPerson.getOtnIdCounter() );
-            assertEquals( 0, otnCheese.getOtnIdCounter() );
+            assertThat(otnPerson.getOtnIdCounter()).isEqualTo(0);
+            assertThat(otnCheese.getOtnIdCounter()).isEqualTo(0);
             wm.insert( new Person() );
             wm.insert( new Cheese() );
             wm.fireAllRules();
 
-            assertEquals( 3, otnPerson.getOtnIdCounter() );
-            assertEquals( 2, otnCheese.getOtnIdCounter() );
+            assertThat(otnPerson.getOtnIdCounter()).isEqualTo(3);
+            assertThat(otnCheese.getOtnIdCounter()).isEqualTo(2);
         } finally {
             wm.dispose();
         }

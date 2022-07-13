@@ -31,8 +31,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ArrayTest {
@@ -74,7 +73,7 @@ public class ArrayTest {
             ksession.insert(p1);
 
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -518,12 +517,12 @@ public class ArrayTest {
         final FactHandle p1h = kieSession.insert(p1);
         kieSession.insert(p2);
         kieSession.fireAllRules();
-        assertEquals(1, resultsList.size());
+        assertThat(resultsList.size()).isEqualTo(1);
 
         kieSession.delete(p1h);
         kieSession.insert(p1);
         kieSession.fireAllRules();
-        assertEquals(2, resultsList.size());
+        assertThat(resultsList.size()).isEqualTo(2);
     }
 
     @Test
@@ -576,10 +575,10 @@ public class ArrayTest {
             session.insert(p1);
             session.fireAllRules();
 
-            assertEquals(3, result.size());
-            assertEquals(3, ((Integer) result.get(0)).intValue());
-            assertEquals(2, ((Integer) result.get(1)).intValue());
-            assertEquals(3, ((Integer) result.get(2)).intValue());
+            assertThat(result.size()).isEqualTo(3);
+            assertThat(((Integer) result.get(0)).intValue()).isEqualTo(3);
+            assertThat(((Integer) result.get(1)).intValue()).isEqualTo(2);
+            assertThat(((Integer) result.get(2)).intValue()).isEqualTo(3);
         } finally {
             session.dispose();
         }
@@ -623,11 +622,11 @@ public class ArrayTest {
                 ksession.fireAllRules();
             }
 
-            assertEquals(4, list.size());
-            assertTrue(list.contains("x1_0"));
-            assertTrue(list.contains("x1_1"));
-            assertTrue(list.contains("x2_0"));
-            assertTrue(list.contains("x2_1"));
+            assertThat(list.size()).isEqualTo(4);
+            assertThat(list.contains("x1_0")).isTrue();
+            assertThat(list.contains("x1_1")).isTrue();
+            assertThat(list.contains("x2_0")).isTrue();
+            assertThat(list.contains("x2_1")).isTrue();
         } finally {
             ksession.dispose();
         }

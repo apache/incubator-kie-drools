@@ -27,16 +27,10 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.ReleaseIdComparator;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertSame;
 import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
 import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertSame;
-import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
-import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
 
 public class ReleaseIdTest {
 
@@ -71,54 +65,54 @@ public class ReleaseIdTest {
     public void testDefaultSort() {
         List<ReleaseId> list = newUnsortedList();
         list.sort(new ReleaseIdComparator());
-        assertSame(gav0, list.get(0));
-        assertSame(gav1, list.get(1));
-        assertSame(gav2, list.get(2));
-        assertSame(gav3, list.get(3));
-        assertSame(gav4, list.get(4));
-        assertSame(gav5, list.get(5));
-        assertSame(gav6, list.get(6));
-        assertSame(gav7, list.get(7));
+        assertThat(list.get(0)).isSameAs(gav0);
+        assertThat(list.get(1)).isSameAs(gav1);
+        assertThat(list.get(2)).isSameAs(gav2);
+        assertThat(list.get(3)).isSameAs(gav3);
+        assertThat(list.get(4)).isSameAs(gav4);
+        assertThat(list.get(5)).isSameAs(gav5);
+        assertThat(list.get(6)).isSameAs(gav6);
+        assertThat(list.get(7)).isSameAs(gav7);
     }
 
     @Test
     public void testAscendingSort() {
         List<ReleaseId> list = newUnsortedList();
         list.sort(new ReleaseIdComparator(ASCENDING));
-        assertSame(gav0, list.get(0));
-        assertSame(gav1, list.get(1));
-        assertSame(gav2, list.get(2));
-        assertSame(gav3, list.get(3));
-        assertSame(gav4, list.get(4));
-        assertSame(gav5, list.get(5));
-        assertSame(gav6, list.get(6));
-        assertSame(gav7, list.get(7));
+        assertThat(list.get(0)).isSameAs(gav0);
+        assertThat(list.get(1)).isSameAs(gav1);
+        assertThat(list.get(2)).isSameAs(gav2);
+        assertThat(list.get(3)).isSameAs(gav3);
+        assertThat(list.get(4)).isSameAs(gav4);
+        assertThat(list.get(5)).isSameAs(gav5);
+        assertThat(list.get(6)).isSameAs(gav6);
+        assertThat(list.get(7)).isSameAs(gav7);
     }
 
     @Test
     public void testDecendingSort() {
         List<ReleaseId> list = newUnsortedList();
         list.sort(new ReleaseIdComparator(DESCENDING));
-        assertSame(gav7, list.get(0));
-        assertSame(gav6, list.get(1));
-        assertSame(gav5, list.get(2));
-        assertSame(gav4, list.get(3));
-        assertSame(gav3, list.get(4));
-        assertSame(gav2, list.get(5));
-        assertSame(gav1, list.get(6));
-        assertSame(gav0, list.get(7));
+        assertThat(list.get(0)).isSameAs(gav7);
+        assertThat(list.get(1)).isSameAs(gav6);
+        assertThat(list.get(2)).isSameAs(gav5);
+        assertThat(list.get(3)).isSameAs(gav4);
+        assertThat(list.get(4)).isSameAs(gav3);
+        assertThat(list.get(5)).isSameAs(gav2);
+        assertThat(list.get(6)).isSameAs(gav1);
+        assertThat(list.get(7)).isSameAs(gav0);
     }
 
     @Test
     public void testGetEarliest() {
         List<ReleaseId> list = newUnsortedList();
-        assertSame(gav0, ReleaseIdComparator.getEarliest(list));
+        assertThat(ReleaseIdComparator.getEarliest(list)).isSameAs(gav0);
     }
 
     @Test
     public void testGetLatest() {
         List<ReleaseId> list = newUnsortedList();
-        assertSame(gav7, ReleaseIdComparator.getLatest(list));
+        assertThat(ReleaseIdComparator.getLatest(list)).isSameAs(gav7);
     }
 
     @Test

@@ -34,7 +34,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AlphaTest {
@@ -65,7 +65,7 @@ public class AlphaTest {
         try {
             ksession.insert(new Person("mark", 50));
             final int rules = ksession.fireAllRules();
-            assertEquals(1, rules);
+            assertThat(rules).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -106,9 +106,9 @@ public class AlphaTest {
 
             ksession.fireAllRules();
 
-            assertEquals(2, results.size());
-            assertEquals("1", results.get(0));
-            assertEquals("2", results.get(1));
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(results.get(0)).isEqualTo("1");
+            assertThat(results.get(1)).isEqualTo("2");
         } finally {
             ksession.dispose();
         }
@@ -139,7 +139,7 @@ public class AlphaTest {
             ksession.insert(bob);
             ksession.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -163,7 +163,7 @@ public class AlphaTest {
         final KieSession ksession = kbase.newKieSession();
         try {
             ksession.insert( new Person( "Mario", 38 ) );
-            assertEquals( 3, ksession.fireAllRules() );
+            assertThat(ksession.fireAllRules()).isEqualTo(3);
         } finally {
             ksession.dispose();
         }
@@ -203,13 +203,13 @@ public class AlphaTest {
 
             session.fireAllRules();
 
-            assertEquals("should not have fired", 0, list.size());
+            assertThat(list.size()).as("should not have fired").isEqualTo(0);
 
             cheese2.setType("stilton");
             session.update(p, bob);
             session.fireAllRules();
 
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
         } finally {
             session.dispose();
         }

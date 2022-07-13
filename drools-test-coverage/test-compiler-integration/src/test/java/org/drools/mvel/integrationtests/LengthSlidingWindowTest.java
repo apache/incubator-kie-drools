@@ -38,7 +38,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 @RunWith(Parameterized.class)
 public class LengthSlidingWindowTest {
@@ -128,8 +129,8 @@ public class LengthSlidingWindowTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( expectedPrice, (double)list.get(0), 0.01 );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((double) list.get(0)).isCloseTo(expectedPrice, within(0.01));
     }
 
     @Test
@@ -152,6 +153,6 @@ public class LengthSlidingWindowTest {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertEquals(1, kieBuilder.getResults().getMessages().size());
+        assertThat(kieBuilder.getResults().getMessages().size()).isEqualTo(1);
     }
 }

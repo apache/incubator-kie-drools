@@ -33,7 +33,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ShadowProxyTest {
@@ -73,9 +73,9 @@ public class ShadowProxyTest {
             ksession.insert(cheesery);
 
             ksession.fireAllRules();
-            assertEquals(1, results.size());
-            assertEquals(1, cheesery.getCheeses().size());
-            assertEquals(results.get(0), cheesery.getCheeses().get(0));
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(cheesery.getCheeses().size()).isEqualTo(1);
+            assertThat(cheesery.getCheeses().get(0)).isEqualTo(results.get(0));
         } finally {
             ksession.dispose();
         }
@@ -102,8 +102,8 @@ public class ShadowProxyTest {
 
             ksession.fireAllRules();
 
-            assertEquals(1, results.size());
-            assertEquals("show", objectWithSet.getMessage());
+            assertThat(results.size()).isEqualTo(1);
+            assertThat(objectWithSet.getMessage()).isEqualTo("show");
         } finally {
             ksession.dispose();
         }

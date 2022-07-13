@@ -45,11 +45,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.rule.Match;
 
-import static junit.framework.TestCase.assertNotSame;
-import static junit.framework.TestCase.assertSame;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 @RunWith(Parameterized.class)
 public class RemoveRuleTest {
@@ -94,24 +90,24 @@ public class RemoveRuleTest {
         wm.fireAllRules();
 
         BetaMemory bMem = ( BetaMemory ) sm.getNodeMemories().get(1);
-        assertEquals( 1, bMem.getLeftTupleMemory().size() );
-        assertEquals( 1, bMem.getRightTupleMemory().size() );
+        assertThat(bMem.getLeftTupleMemory().size()).isEqualTo(1);
+        assertThat(bMem.getRightTupleMemory().size()).isEqualTo(1);
 
         BetaMemory eMem = ( BetaMemory ) sm.getNodeMemories().get(4);
-        assertEquals( 1, eMem.getLeftTupleMemory().size() );
-        assertEquals( 1, eMem.getRightTupleMemory().size() );
+        assertThat(eMem.getLeftTupleMemory().size()).isEqualTo(1);
+        assertThat(eMem.getRightTupleMemory().size()).isEqualTo(1);
 
         NodeMemories nms = wm.getNodeMemories();
-        assertEquals( 12, countNodeMemories(nms));
+        assertThat(countNodeMemories(nms)).isEqualTo(12);
 
-        assertNull(sm.getStagedLeftTuples().getInsertFirst());
-        assertEquals(1, list.size() );
+        assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNull();
+        assertThat(list.size()).isEqualTo(1);
 
-        assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
+        assertThat(((Match) list.get(0)).getRule().getName()).isEqualTo("r1");
 
         kbase.removeRule("org.kie", "r1");
 
-        assertEquals( 6, countNodeMemories(nms)); // still has OTN
+        assertThat(countNodeMemories(nms)).isEqualTo(6); // still has OTN
     }
 
     @Test
@@ -133,14 +129,14 @@ public class RemoveRuleTest {
         wm.setGlobal("list", list);
 
         wm.fireAllRules();
-        assertEquals(2, list.size() );
-        assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
-        assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(((Match) list.get(0)).getRule().getName()).isEqualTo("r1");
+        assertThat(((Match) list.get(1)).getRule().getName()).isEqualTo("r1");
 
         kbase.removeRule("org.kie", "r1");
         wm.insert(new A(1));
         wm.fireAllRules();
-        assertEquals(2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
     }
 
     private int countNodeMemories(NodeMemories nms) {
@@ -172,7 +168,7 @@ public class RemoveRuleTest {
         wm.insert(new E(1));
         wm.fireAllRules();
 
-        assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B() C(2;) X() E()\n") );
         wm.fireAllRules();
@@ -188,30 +184,30 @@ public class RemoveRuleTest {
         SegmentMemory sm = lm.getSegmentMemory();
 
         BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
-        assertSame( sm.getFirst(), c1Mem.getSegmentMemory());
-        assertEquals( 3, c1Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, c1Mem.getRightTupleMemory().size() );
+        assertThat(c1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
+        assertThat(c1Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(c1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
         BetaMemory c2Mem = ( BetaMemory ) wm.getNodeMemory(c2Node);
         SegmentMemory c2Smem =  sm.getFirst().getNext();
-        assertSame( c2Smem, c2Mem.getSegmentMemory());
-        assertEquals( 3, c2Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, c2Mem.getRightTupleMemory().size() );
-        assertEquals(6, list.size() );
+        assertThat(c2Mem.getSegmentMemory()).isSameAs(c2Smem);
+        assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(c2Mem.getRightTupleMemory().size()).isEqualTo(1);
+        assertThat(list.size()).isEqualTo(6);
 
 
         kbase1.removeRule("org.kie", "r2");
-        assertEquals( 10, countNodeMemories(wm.getNodeMemories()));
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(10);
 
-        assertNull( sm.getFirst());
+        assertThat(sm.getFirst()).isNull();
 
-        assertSame( sm, c1Mem.getSegmentMemory()); // c1SMem repoints back to original Smem
+        assertThat(c1Mem.getSegmentMemory()).isSameAs(sm); // c1SMem repoints back to original Smem
 
         wm.insert(new A(1));
         wm.fireAllRules();
 
-        assertEquals( "r1", ((Match)list.get(6)).getRule().getName() );
-        assertEquals(7, list.size() ); // only one more added, as second rule as removed
+        assertThat(((Match) list.get(6)).getRule().getName()).isEqualTo("r1");
+        assertThat(list.size()).isEqualTo(7); // only one more added, as second rule as removed
     }
 
     @Test
@@ -232,7 +228,7 @@ public class RemoveRuleTest {
         wm.insert(new E(1));
         wm.fireAllRules();
 
-        assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   a:A() B() eval(1==1) eval(1==1) C(2;) \n") );
         wm.fireAllRules();
@@ -251,30 +247,30 @@ public class RemoveRuleTest {
         SegmentMemory sm = lm.getSegmentMemory();
 
         BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
-        assertSame( sm.getFirst(), c1Mem.getSegmentMemory());
-        assertEquals( 3, c1Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, c1Mem.getRightTupleMemory().size() );
+        assertThat(c1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
+        assertThat(c1Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(c1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
         BetaMemory c2Mem = ( BetaMemory ) wm.getNodeMemory(c2Node);
         SegmentMemory c2Smem =  sm.getFirst().getNext();
-        assertSame( c2Smem, c2Mem.getSegmentMemory());
-        assertEquals( 3, c2Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, c2Mem.getRightTupleMemory().size() );
-        assertEquals(6, list.size() );
+        assertThat(c2Mem.getSegmentMemory()).isSameAs(c2Smem);
+        assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(c2Mem.getRightTupleMemory().size()).isEqualTo(1);
+        assertThat(list.size()).isEqualTo(6);
 
 
         kbase1.removeRule("org.kie", "r2");
-        assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(8);
 
-        assertNull( sm.getFirst());
+        assertThat(sm.getFirst()).isNull();
 
-        assertSame( sm, c1Mem.getSegmentMemory()); // c1SMem repoints back to original Smem
+        assertThat(c1Mem.getSegmentMemory()).isSameAs(sm); // c1SMem repoints back to original Smem
 
         wm.insert(new A(1));
         wm.fireAllRules();
 
-        assertEquals( "r1", ((Match)list.get(6)).getRule().getName() );
-        assertEquals(7, list.size() ); // only one more added, as second rule as removed
+        assertThat(((Match) list.get(6)).getRule().getName()).isEqualTo("r1");
+        assertThat(list.size()).isEqualTo(7); // only one more added, as second rule as removed
     }
 
     @Test
@@ -294,12 +290,12 @@ public class RemoveRuleTest {
         wm.insert(new E(1));
 
         wm.fireAllRules();
-        assertEquals( 3, list.size() );
-        assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B(2;) C() X() E()\n") );
         wm.fireAllRules();
-        assertEquals( 17, countNodeMemories(wm.getNodeMemories()));
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(17);
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
@@ -311,42 +307,42 @@ public class RemoveRuleTest {
         SegmentMemory sm = lm.getSegmentMemory();
 
         BetaMemory b1Mem = ( BetaMemory ) wm.getNodeMemory(b1Node);
-        assertSame( sm.getFirst(), b1Mem.getSegmentMemory());
-        assertEquals( 3, b1Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, b1Mem.getRightTupleMemory().size() );
+        assertThat(b1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
+        assertThat(b1Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(b1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
         BetaMemory b2Mem = ( BetaMemory ) wm.getNodeMemory(b2Node);
         SegmentMemory b2Smem =  sm.getFirst().getNext();
-        assertSame( b2Smem, b2Mem.getSegmentMemory());
-        assertEquals( 3, b2Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, b2Mem.getRightTupleMemory().size() );
-        assertEquals(6, list.size() );
+        assertThat(b2Mem.getSegmentMemory()).isSameAs(b2Smem);
+        assertThat(b2Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(b2Mem.getRightTupleMemory().size()).isEqualTo(1);
+        assertThat(list.size()).isEqualTo(6);
 
         BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
-        assertSame( b1Mem.getSegmentMemory(), c1Mem.getSegmentMemory() );
-        assertNotSame(b1Mem.getSegmentMemory(), b2Mem.getSegmentMemory());
+        assertThat(c1Mem.getSegmentMemory()).isSameAs(b1Mem.getSegmentMemory());
+        assertThat(b2Mem.getSegmentMemory()).isNotSameAs(b1Mem.getSegmentMemory());
 
         wm.fireAllRules();
-        assertEquals(6, list.size() );
-        assertEquals( 17, countNodeMemories(wm.getNodeMemories()));
+        assertThat(list.size()).isEqualTo(6);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(17);
 
         kbase1.removeRule("org.kie", "r2");
-        assertEquals( 12, countNodeMemories(wm.getNodeMemories()));
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(12);
 
-        assertSame( sm, b1Mem.getSegmentMemory());
-        assertSame( sm, c1Mem.getSegmentMemory());
-        assertNull(sm.getFirst());
-        assertEquals( 3, b1Mem.getLeftTupleMemory().size() );
-        assertEquals( 1, b1Mem.getRightTupleMemory().size() );
+        assertThat(b1Mem.getSegmentMemory()).isSameAs(sm);
+        assertThat(c1Mem.getSegmentMemory()).isSameAs(sm);
+        assertThat(sm.getFirst()).isNull();
+        assertThat(b1Mem.getLeftTupleMemory().size()).isEqualTo(3);
+        assertThat(b1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
         //SegmentMemory b2Smem =  sm.getFirst().remove();
-        assertSame( b2Smem, b2Mem.getSegmentMemory());
+        assertThat(b2Mem.getSegmentMemory()).isSameAs(b2Smem);
 
         wm.insert(new A(1));
         wm.fireAllRules();
 
-        assertEquals( "r1", ((Match)list.get(6)).getRule().getName() );
-        assertEquals(7, list.size() ); // only one more added, as second rule as removed
+        assertThat(((Match) list.get(6)).getRule().getName()).isEqualTo("r1");
+        assertThat(list.size()).isEqualTo(7); // only one more added, as second rule as removed
     }
 
     @Test
@@ -362,23 +358,23 @@ public class RemoveRuleTest {
         InternalFactHandle fh2 = (InternalFactHandle) wm.insert(a2);
 
         wm.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   a : A()\n") );
         wm.fireAllRules();
-        assertEquals( 4, list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
         kbase1.removeRule("org.kie", "r1");
         kbase1.removeRule("org.kie", "r2");
         list.clear();
 
-        assertNull( fh1.getFirstLeftTuple() );
-        assertNull( fh2.getFirstLeftTuple() );
+        assertThat(fh1.getFirstLeftTuple()).isNull();
+        assertThat(fh2.getFirstLeftTuple()).isNull();
         wm.update( fh1,a1 );
         wm.update( fh2,a2 );
         wm.fireAllRules();
 
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
     }
 
     @Test
@@ -396,13 +392,13 @@ public class RemoveRuleTest {
         wm.insert(new E(1));
 
         wm.fireAllRules();
-        assertEquals( 2, list.size() );
-        assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   A() B() C() X() E()\n") );
         wm.fireAllRules();
-        assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
-        assertEquals(4, list.size() );
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(8);
+        assertThat(list.size()).isEqualTo(4);
 
         RuleTerminalNode rtn1 = getRtn("org.kie.r1", kbase1);
         RuleTerminalNode rtn2 = getRtn("org.kie.r2", kbase1);
@@ -411,35 +407,35 @@ public class RemoveRuleTest {
 
         SegmentMemory[] smems1 = pmem1.getSegmentMemories();
         SegmentMemory[] smems2 = pmem2.getSegmentMemories();
-        assertEquals(2, smems1.length );
-        assertEquals(2, smems2.length );
+        assertThat(smems1.length).isEqualTo(2);
+        assertThat(smems2.length).isEqualTo(2);
 
-        assertSame( smems1[0], smems2[0] );
-        assertNotSame( smems1[1], smems2[1] );
+        assertThat(smems2[0]).isSameAs(smems1[0]);
+        assertThat(smems2[1]).isNotSameAs(smems1[1]);
 
         SegmentMemory sm = smems1[0];
-        assertEquals( smems1[1], sm.getFirst() );
+        assertThat(sm.getFirst()).isEqualTo(smems1[1]);
 
         JoinNode eNode1 = ( JoinNode ) rtn1.getLeftTupleSource();
         JoinNode eNode2 = ( JoinNode ) rtn2.getLeftTupleSource();
-        assertSame( eNode1, eNode2 );
+        assertThat(eNode2).isSameAs(eNode1);
 
         pmem1 = ( PathMemory ) wm.getNodeMemory(rtn1);
         kbase1.removeRule("org.kie", "r2");
         System.out.println( "---" );
-        assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
-        assertNull( sm.getFirst() );
+        assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
+        assertThat(sm.getFirst()).isNull();
 
         pmem1 = ( PathMemory ) wm.getNodeMemory(rtn1);
         smems1 = pmem1.getSegmentMemories();
-        assertEquals(1, smems1.length );
-        assertSame( sm, smems1[0]);
+        assertThat(smems1.length).isEqualTo(1);
+        assertThat(smems1[0]).isSameAs(sm);
 
         wm.insert(new A(1));
         wm.fireAllRules();
 
-        assertEquals( "r1", ((Match)list.get(4)).getRule().getName() );
-        assertEquals(5, list.size() ); // only one more added, as second rule as removed
+        assertThat(((Match) list.get(4)).getRule().getName()).isEqualTo("r1");
+        assertThat(list.size()).isEqualTo(5); // only one more added, as second rule as removed
 
     }
 
@@ -462,13 +458,13 @@ public class RemoveRuleTest {
         InternalFactHandle fh10 =  (InternalFactHandle) wm.insert(new E(1));
 
         wm.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
         kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
         wm.fireAllRules();
-        assertEquals( 5, list.size() );
+        assertThat(list.size()).isEqualTo(5);
 
 
         kbase1.removeRule("org.kie", "r1");
@@ -486,7 +482,7 @@ public class RemoveRuleTest {
         wm.update( fh10, fh10.getObject() );
 
         wm.fireAllRules();
-        assertEquals( 3, list.size() );
+        assertThat(list.size()).isEqualTo(3);
     }
 
     @Test
@@ -508,13 +504,13 @@ public class RemoveRuleTest {
         InternalFactHandle fh10 =  (InternalFactHandle) wm.insert(new E(1));
 
         wm.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
         kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
         wm.fireAllRules();
-        assertEquals( 5, list.size() );
+        assertThat(list.size()).isEqualTo(5);
 
 
         kbase1.removeRule("org.kie", "r2");
@@ -532,7 +528,7 @@ public class RemoveRuleTest {
         wm.update( fh10, fh10.getObject() );
 
         wm.fireAllRules();
-        assertEquals( 3, list.size() );
+        assertThat(list.size()).isEqualTo(3);
     }
 
     @Test
@@ -554,13 +550,13 @@ public class RemoveRuleTest {
         InternalFactHandle fh10 =  (InternalFactHandle) wm.insert(new E(1));
 
         wm.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
         kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
         wm.fireAllRules();
-        assertEquals( 5, list.size() );
+        assertThat(list.size()).isEqualTo(5);
 
 
         kbase1.removeRule("org.kie", "r3");
@@ -578,7 +574,7 @@ public class RemoveRuleTest {
         wm.update( fh10, fh10.getObject() );
 
         wm.fireAllRules();
-        assertEquals( 4, list.size() );
+        assertThat(list.size()).isEqualTo(4);
     }
 
     @Test
@@ -597,11 +593,11 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
 
-        assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );
-        assertEquals( 1, wm.getNodeMemory(rtn2).getSegmentMemories().length );
+        assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn2).getSegmentMemories().length).isEqualTo(1);
 
         kbase1.removeRule("org.kie", "r2");
-        assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );
+        assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
     }
 
     @Test
@@ -614,11 +610,11 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
 
-        assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );
-        assertEquals( 1, wm.getNodeMemory(rtn2).getSegmentMemories().length );
+        assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn2).getSegmentMemories().length).isEqualTo(1);
 
         kbase1.removeRule("org.kie", "r2");
-        assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );
+        assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
     }
 
     @Test
@@ -643,34 +639,34 @@ public class RemoveRuleTest {
 
         PathMemory pm1 = (PathMemory) wm.getNodeMemory(rtn1);
         SegmentMemory[] smems = pm1.getSegmentMemories();
-        assertEquals(4, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[1]);
-        assertNull( smems[3]);
+        assertThat(smems.length).isEqualTo(4);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[1]).isNull();
+        assertThat(smems[3]).isNull();
         SegmentMemory sm = smems[2];
-        assertEquals( 2, sm.getPos() );
-        assertEquals( 4, sm.getSegmentPosMaskBit() );
-        assertEquals( 4, pm1.getLinkedSegmentMask() );
+        assertThat(sm.getPos()).isEqualTo(2);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(4);
+        assertThat(pm1.getLinkedSegmentMask()).isEqualTo(4);
 
         kbase1.addPackages( buildKnowledgePackage("r5",  "   A(1;)  A(2;) B(1;) B(2;) \n") );
 
         smems = pm1.getSegmentMemories();
-        assertEquals(5, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[1]);
-        assertNull( smems[2]);
+        assertThat(smems.length).isEqualTo(5);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[1]).isNull();
+        assertThat(smems[2]).isNull();
 
         sm = smems[3];
-        assertEquals( 3, sm.getPos() );
-        assertEquals( 8, sm.getSegmentPosMaskBit() );
-        assertEquals( 8, pm1.getLinkedSegmentMask() );
+        assertThat(sm.getPos()).isEqualTo(3);
+        assertThat(sm.getSegmentPosMaskBit()).isEqualTo(8);
+        assertThat(pm1.getLinkedSegmentMask()).isEqualTo(8);
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
         PathMemory pm5 = (PathMemory) wm.getNodeMemory(rtn5);
         smems = pm5.getSegmentMemories();
-        assertEquals(2, smems.length);
-        assertNull( smems[0]);
-        assertNull( smems[1]);
+        assertThat(smems.length).isEqualTo(2);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[1]).isNull();
     }
 
     private RuleTerminalNode getRtn(String ruleName, InternalKnowledgeBase kbase) {

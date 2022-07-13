@@ -38,8 +38,6 @@ import org.kie.api.builder.Message;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 @RunWith(Parameterized.class)
 public class DrlParserTest {
@@ -106,11 +104,10 @@ public class DrlParserTest {
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         PackageDescr pkgDescr = parser.parse( null, drl );
         TypeDeclarationDescr bean1Type = pkgDescr.getTypeDeclarations().get( 0 );
-        assertNull( bean1Type.getSuperTypeName() );
+        assertThat(bean1Type.getSuperTypeName()).isNull();
 
         TypeDeclarationDescr bean2Type = pkgDescr.getTypeDeclarations().get( 1 );
-        assertEquals( "Bean1",
-                      bean2Type.getSuperTypeName() );
+        assertThat(bean2Type.getSuperTypeName()).isEqualTo("Bean1");
     }
     
     @Test
@@ -269,8 +266,6 @@ public class DrlParserTest {
     private void createKBuilderAddDrlAndAssertHasNoErrors(String drl) {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertEquals("Expected no build errors, but got: " + errors.toString(),
-                     0,
-                     errors.size());
+        assertThat(errors.size()).as("Expected no build errors, but got: " + errors.toString()).isEqualTo(0);
     }
 }

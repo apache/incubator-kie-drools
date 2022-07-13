@@ -38,9 +38,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -92,14 +90,14 @@ public class BindTest {
             verify(wmel, times(2)).objectUpdated(arg.capture());
 
             org.kie.api.event.rule.ObjectUpdatedEvent event = arg.getAllValues().get(0);
-            assertSame(cheddarHandle, event.getFactHandle());
-            assertSame(cheddar, event.getOldObject());
-            assertSame(cheddar, event.getObject());
+            assertThat(event.getFactHandle()).isSameAs(cheddarHandle);
+            assertThat(cheddar).isSameAs(event.getOldObject());
+            assertThat(cheddar).isSameAs(event.getObject());
 
             event = arg.getAllValues().get(1);
-            assertSame(bigCheeseHandle, event.getFactHandle());
-            assertSame(bigCheese, event.getOldObject());
-            assertSame(bigCheese, event.getObject());
+            assertThat(bigCheeseHandle).isSameAs(event.getFactHandle());
+            assertThat(bigCheese).isSameAs(event.getOldObject());
+            assertThat(bigCheese).isSameAs(event.getObject());
         } finally {
             ksession.dispose();
         }
@@ -187,9 +185,9 @@ public class BindTest {
 
             ksession.fireAllRules();
 
-            assertEquals(2, results.size());
-            assertEquals("stilton", results.get(0));
-            assertEquals(15, results.get(1));
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(results.get(0)).isEqualTo("stilton");
+            assertThat(results.get(1)).isEqualTo(15);
         } finally {
             ksession.dispose();
         }
@@ -223,9 +221,9 @@ public class BindTest {
             ksession.insert(stilton);
 
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
-            assertEquals(bob, list.get(0));
+            assertThat(list.get(0)).isEqualTo(bob);
         } finally {
             ksession.dispose();
         }

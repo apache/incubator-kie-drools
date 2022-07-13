@@ -42,9 +42,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class SerializedPackageMergeTest {
 
@@ -82,8 +81,7 @@ public class SerializedPackageMergeTest {
 
         session.execute( getObject() );
 
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
     }
 
     private Message getObject() throws ParseException {
@@ -103,9 +101,8 @@ public class SerializedPackageMergeTest {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             kbuilder.add( ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(drl)),
                           ResourceType.DRL );
-            
-            assertFalse( kbuilder.getErrors().toString(),
-                         kbuilder.hasErrors() );
+
+            assertThat(kbuilder.hasErrors()).as(kbuilder.getErrors().toString()).isFalse();
             
             Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
 
@@ -185,7 +182,7 @@ public class SerializedPackageMergeTest {
             ksession.insert(new org.drools.mvel.compiler.Person("Paul"));
             ksession.fireAllRules();
 
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }

@@ -25,32 +25,30 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.compiler.io.memory.MemoryFolder;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemoryFolderTest {
     
     @Test
     public void testGetParentWithLeadingAndTrailingSlash() {
         MemoryFileSystem mfs = new MemoryFileSystem();
-        assertEquals( "", new MemoryFolder( mfs, "/src" ).getParent().getPath().toPortableString() );
-        
-        assertEquals( "", new MemoryFolder( mfs, "src/" ).getParent().getPath().toPortableString() );
-        
-        assertEquals( "", new MemoryFolder( mfs, "/src/" ).getParent().getPath().toPortableString() );
-        
-        assertEquals( "src", new MemoryFolder( mfs, "/src/main" ).getParent().getPath().toPortableString() );
-        
-        assertEquals( "src", new MemoryFolder( mfs, "src/main/" ).getParent().getPath().toPortableString() );
-        
-        assertEquals( "src", new MemoryFolder( mfs, "/src/main/" ).getParent().getPath().toPortableString() ); 
-        
-        assertEquals( "src/main", new MemoryFolder( mfs, "/src/main/java" ).getParent().getPath().toPortableString() );
-        
-        assertEquals( "src/main", new MemoryFolder( mfs, "src/main/java/" ).getParent().getPath().toPortableString() );
-        
-        assertEquals( "src/main", new MemoryFolder( mfs, "/src/main/java/" ).getParent().getPath().toPortableString() );                
+       assertThat(new MemoryFolder( mfs, "/src" ).getParent().getPath().toPortableString()).isEqualTo("");
+
+        assertThat(new MemoryFolder( mfs, "src/" ).getParent().getPath().toPortableString()).isEqualTo("");
+
+        assertThat(new MemoryFolder( mfs, "/src/" ).getParent().getPath().toPortableString()).isEqualTo("");
+
+        assertThat(new MemoryFolder( mfs, "/src/main" ).getParent().getPath().toPortableString()).isEqualTo("src");
+
+        assertThat(new MemoryFolder( mfs, "src/main/" ).getParent().getPath().toPortableString()).isEqualTo("src");
+
+        assertThat(new MemoryFolder( mfs, "/src/main/" ).getParent().getPath().toPortableString()).isEqualTo("src");
+
+        assertThat(new MemoryFolder( mfs, "/src/main/java" ).getParent().getPath().toPortableString()).isEqualTo("src/main");
+
+        assertThat(new MemoryFolder( mfs, "src/main/java/" ).getParent().getPath().toPortableString()).isEqualTo("src/main");
+
+        assertThat(new MemoryFolder( mfs, "/src/main/java/" ).getParent().getPath().toPortableString()).isEqualTo("src/main");
     }
     
     
@@ -59,15 +57,15 @@ public class MemoryFolderTest {
         FileSystem fs = new MemoryFileSystem();
         
         Folder mres = fs.getFolder( "src/main/resources" );
-        assertFalse( mres.exists() );
+        assertThat(mres.exists()).isFalse();
         mres.create();
-        assertTrue( mres.exists() );
+        assertThat(mres.exists()).isTrue();
         
         Folder fld = fs.getFolder( "src/main" );
-        assertTrue( fld.exists() );  
+        assertThat(fld.exists()).isTrue();  
         
         Folder src = fs.getFolder( "src" );
-        assertTrue( src.exists() );         
+        assertThat(src.exists()).isTrue();         
     }
     
     @Test
@@ -76,10 +74,8 @@ public class MemoryFolderTest {
         
         Folder mres = fs.getFolder( "src/main/resources" );
         mres.create();
-        
-        assertEquals( "src/main", mres.getParent().getPath().toPortableString() );
-        
-        assertEquals( "src", mres.getParent().getParent().getPath().toPortableString() );
+        assertThat(mres.getParent().getPath().toPortableString()).isEqualTo("src/main");
+        assertThat(mres.getParent().getParent().getPath().toPortableString()).isEqualTo("src");
         
     }    
     
@@ -93,7 +89,7 @@ public class MemoryFolderTest {
         f1.create();
         f2.create();
         
-        assertEquals( "org", f2.getPath().toRelativePortableString( f1.getPath() ) );
+        assertThat(f2.getPath().toRelativePortableString(f1.getPath())).isEqualTo("org");
         
         fs = new MemoryFileSystem();
         
@@ -103,7 +99,7 @@ public class MemoryFolderTest {
         f1.create();
         f2.create();
         
-        assertEquals( "org/drools/reteoo", f2.getPath().toRelativePortableString( f1.getPath() ) );                
+        assertThat(f2.getPath().toRelativePortableString(f1.getPath())).isEqualTo("org/drools/reteoo");                
     }    
     
     @Test
@@ -116,7 +112,7 @@ public class MemoryFolderTest {
         f1.create();
         f2.create();
         
-        assertEquals( "..", f2.getPath().toRelativePortableString( f1.getPath() ) );
+        assertThat(f2.getPath().toRelativePortableString(f1.getPath())).isEqualTo("..");
         
         fs = new MemoryFileSystem();
         
@@ -126,7 +122,7 @@ public class MemoryFolderTest {
         f1.create();
         f2.create();
         
-        assertEquals( "../../..", f2.getPath().toRelativePortableString( f1.getPath() ) );                
+        assertThat(f2.getPath().toRelativePortableString(f1.getPath())).isEqualTo("../../..");                
     }
     
     @Test
@@ -139,7 +135,7 @@ public class MemoryFolderTest {
         f1.create();
         f2.create();
         
-        assertEquals( "../resources", f2.getPath().toRelativePortableString( f1.getPath() ) );
+        assertThat(f2.getPath().toRelativePortableString(f1.getPath())).isEqualTo("../resources");
         
         fs = new MemoryFileSystem();
         
@@ -149,7 +145,7 @@ public class MemoryFolderTest {
         f1.create();
         f2.create();
         
-        assertEquals( "../../../resources/org/drools/reteoo", f2.getPath().toRelativePortableString( f1.getPath() ) );                
+        assertThat(f2.getPath().toRelativePortableString( f1.getPath() ) ).isEqualTo("../../../resources/org/drools/reteoo");                
     }     
     
     @Test
@@ -174,31 +170,31 @@ public class MemoryFolderTest {
         
         fld = fs.getFolder( "src/main/resources/org/domain" );
         file = fld.getFile( "MyClass4.java" );                
-        file.create( new ByteArrayInputStream( "ABC5".getBytes() ) );                        
+        file.create( new ByteArrayInputStream( "ABC5".getBytes() ) );
 
-        assertTrue( fs.getFolder( "src/main" ).exists() );
-        assertTrue( fs.getFile( "src/main/MyClass1.java" ).exists() );
-        assertTrue( fs.getFile( "src/main/MyClass2.java" ).exists() );
-        assertTrue( fs.getFile( "src/main/resources/org/MyClass3.java" ).exists() );
-        assertTrue( fs.getFile( "src/main/resources/org/MyClass4.java" ).exists() );        
-        assertTrue( fs.getFile( "src/main/resources/org/domain/MyClass4.java" ).exists() );
+        assertThat(fs.getFolder("src/main").exists()).isTrue();
+        assertThat(fs.getFile("src/main/MyClass1.java").exists()).isTrue();
+        assertThat(fs.getFile("src/main/MyClass2.java").exists()).isTrue();
+        assertThat(fs.getFile("src/main/resources/org/MyClass3.java").exists()).isTrue();
+        assertThat(fs.getFile("src/main/resources/org/MyClass4.java").exists()).isTrue();
+        assertThat(fs.getFile("src/main/resources/org/domain/MyClass4.java").exists()).isTrue();
                 
         fs.remove( fs.getFolder( "src/main" ) );
-        
-        assertFalse( fs.getFolder( "src/main" ).exists() );
-        assertFalse( fs.getFile( "src/main/MyClass1.java" ).exists() );
-        assertFalse( fs.getFile( "src/main/MyClass2.java" ).exists() );
-        assertFalse( fs.getFile( "src/main/resources/org/MyClass3.java" ).exists() );
-        assertFalse( fs.getFile( "src/main/resources/org/MyClass4.java" ).exists() );        
-        assertFalse( fs.getFile( "src/main/resources/org/domain/MyClass4.java" ).exists() );
+
+        assertThat(fs.getFolder("src/main").exists()).isFalse();
+        assertThat(fs.getFile("src/main/MyClass1.java").exists()).isFalse();
+        assertThat(fs.getFile("src/main/MyClass2.java").exists()).isFalse();
+        assertThat(fs.getFile("src/main/resources/org/MyClass3.java").exists()).isFalse();
+        assertThat(fs.getFile("src/main/resources/org/MyClass4.java").exists()).isFalse();
+        assertThat(fs.getFile("src/main/resources/org/domain/MyClass4.java").exists()).isFalse();
     }
 
     @Test
     public void trimLeadingAndTrailing() {
-        assertEquals("", MemoryFolder.trimLeadingAndTrailing(""));
-        assertEquals("src/main", MemoryFolder.trimLeadingAndTrailing("/src/main"));
-        assertEquals("src/main", MemoryFolder.trimLeadingAndTrailing("src/main/"));
-        assertEquals("src/main", MemoryFolder.trimLeadingAndTrailing("/src/main/"));
+        assertThat(MemoryFolder.trimLeadingAndTrailing("")).isEqualTo("");
+        assertThat(MemoryFolder.trimLeadingAndTrailing("/src/main")).isEqualTo("src/main");
+        assertThat(MemoryFolder.trimLeadingAndTrailing("src/main/")).isEqualTo("src/main");
+        assertThat(MemoryFolder.trimLeadingAndTrailing("/src/main/")).isEqualTo("src/main");
     }
 
     @Test

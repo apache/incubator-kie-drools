@@ -44,11 +44,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public class CompositeObjectSinkAdapterTest {
@@ -243,8 +239,8 @@ public class CompositeObjectSinkAdapterTest {
         final AlphaNode al3 = createAlphaNode(cheeseCharTypeEqualsTo(67));
         ad.addObjectSink( al3 );
 
-        assertSame( al2, ad.getHashedSinkMap().get(keyForCheeseCharType('B')));
-        assertNull( ad.getHashedSinkMap().get(keyForCheeseCharType('X')));
+        assertThat(ad.getHashedSinkMap().get(keyForCheeseCharType('B'))).isSameAs(al2);
+        assertThat(ad.getHashedSinkMap().get(keyForCheeseCharType('X'))).isNull();
     }
 
  
@@ -258,8 +254,8 @@ public class CompositeObjectSinkAdapterTest {
         final AlphaNode al3 = createAlphaNode(cheeseCharObjectTypeEqualsTo(67));
         ad.addObjectSink( al3 );
 
-        assertSame( al2, ad.getHashedSinkMap().get(keyForCheeseCharObjectType('B')));
-        assertNull( ad.getHashedSinkMap().get(keyForCheeseCharObjectType('X')));
+        assertThat(ad.getHashedSinkMap().get(keyForCheeseCharObjectType('B'))).isSameAs(al2);
+        assertThat(ad.getHashedSinkMap().get(keyForCheeseCharObjectType('X'))).isNull();
     }
 
     @Test
@@ -285,7 +281,7 @@ public class CompositeObjectSinkAdapterTest {
 
         ad.addObjectSink( al2 );
 
-        assertNull( ad.getRangeIndexMap() );
+        assertThat(ad.getRangeIndexMap()).isNull();
         rangeIndexableSinksAre(al1, al2);
     }
 
@@ -320,7 +316,7 @@ public class CompositeObjectSinkAdapterTest {
         ad.removeObjectSink( al2 );
         
         rangeIndexableSinksAre(al1, al3);
-        assertNull( ad.getRangeIndexMap() );
+        assertThat(ad.getRangeIndexMap()).isNull();
     }
     
     
@@ -341,15 +337,15 @@ public class CompositeObjectSinkAdapterTest {
         cheese.setPrice(25);
 
         Collection<AlphaNode> matchingAlphaNodes = ad.getRangeIndexMap().get(fieldIndex).getMatchingAlphaNodes(cheese);
-        assertEquals(2, matchingAlphaNodes.size());
-        assertTrue(matchingAlphaNodes.contains(al1));
-        assertTrue(matchingAlphaNodes.contains(al2));
+        assertThat(matchingAlphaNodes.size()).isEqualTo(2);
+        assertThat(matchingAlphaNodes.contains(al1)).isTrue();
+        assertThat(matchingAlphaNodes.contains(al2)).isTrue();
 
         // should not find this one
         cheese.setPrice(5);
 
         matchingAlphaNodes = ad.getRangeIndexMap().get(fieldIndex).getMatchingAlphaNodes(cheese);
-        assertTrue(matchingAlphaNodes.isEmpty());
+        assertThat(matchingAlphaNodes.isEmpty()).isTrue();
     }
 
     
@@ -447,71 +443,71 @@ public class CompositeObjectSinkAdapterTest {
 	}
 	
 	private void sinksAre(ObjectSink... objectSinks) {
-		assertEquals(objectSinks.length, ad.getSinks().length);
+        assertThat(ad.getSinks().length).isEqualTo(objectSinks.length);
 		for (int i = 0; i < objectSinks.length; i++) {
-			assertEquals(objectSinks[i], ad.getSinks()[i]);
+            assertThat(ad.getSinks()[i]).isEqualTo(objectSinks[i]);
 		}
 	}
 	
 	private void sinksAreEmpty() {
-		assertEquals(0, ad.getSinks().length);
+        assertThat(ad.getSinks().length).isEqualTo(0);
 	}
 	
 	private void otherSinksAre(ObjectSink... objectSinks) {
-		assertEquals(objectSinks.length, ad.getOtherSinks().size());
+        assertThat(ad.getOtherSinks().size()).isEqualTo(objectSinks.length);
 		for (int i = 0; i < objectSinks.length; i++) {
-			assertEquals(objectSinks[i], ad.getOtherSinks().get(i));
+            assertThat(ad.getOtherSinks().get(i)).isEqualTo(objectSinks[i]);
 		}
 	}
 
 	private void otherSinksAreEmpty() {
-		assertNull(ad.getOtherSinks());
+        assertThat(ad.getOtherSinks()).isNull();
 	}
 	
 	private void hashableSinksAre(ObjectSink... objectSinks) {
-		assertEquals(objectSinks.length, ad.getHashableSinks().size());
+        assertThat(ad.getHashableSinks().size()).isEqualTo(objectSinks.length);
 		for (int i = 0; i < objectSinks.length; i++) {
-			assertTrue(ad.getHashableSinks().contains(objectSinks[i]));
+            assertThat(ad.getHashableSinks().contains(objectSinks[i])).isTrue();
 		}
 	}
 	
 	private void rangeIndexableSinksAre(ObjectSink... rangeIndexableSinks) {
-		assertEquals(rangeIndexableSinks.length, ad.getRangeIndexableSinks().size());
+        assertThat(ad.getRangeIndexableSinks().size()).isEqualTo(rangeIndexableSinks.length);
 		for (int i = 0; i < rangeIndexableSinks.length; i++) {
-			assertTrue(ad.getRangeIndexableSinks().contains(rangeIndexableSinks[i]));
+            assertThat(ad.getRangeIndexableSinks().contains(rangeIndexableSinks[i])).isTrue();
 		}
 	}
 	
 	private void rangeIndexableSinksIsEmpty(ObjectSink... rangeIndexableSinks) {
-		assertNull(ad.getRangeIndexableSinks());
+        assertThat(ad.getRangeIndexableSinks()).isNull();
 		
 	}
 
 	private void hashedFieldIndexesAre(Integer... fieldIndexes) {
-		assertEquals(fieldIndexes.length, ad.getHashedFieldIndexes().size());
+        assertThat(ad.getHashedFieldIndexes().size()).isEqualTo(fieldIndexes.length);
 		List<Integer> hashedFieldIndexes = Arrays.asList(fieldIndexes);
 		for (int i = 0; i < fieldIndexes.length; i++) {
-			assertTrue(hashedFieldIndexes.contains(ad.getHashedFieldIndexes().get(i).getIndex()));
+            assertThat(hashedFieldIndexes.contains(ad.getHashedFieldIndexes().get(i).getIndex())).isTrue();
 		}
 	}
 	
 	private void hashedFieldIndexesAreEmpty() {
-		assertNull(ad.getHashedFieldIndexes());
+        assertThat(ad.getHashedFieldIndexes()).isNull();
 	}
 	
 
 	private void hashableSinksAreEmpty() {
-		assertNull(ad.getHashableSinks());
+        assertThat(ad.getHashableSinks()).isNull();
 	}
 	
 	private void hashedSinkMapIs(AlphaNode... nodes) {
-		assertEquals(nodes.length, ad.getHashedSinkMap().size());
+        assertThat(ad.getHashedSinkMap().size()).isEqualTo(nodes.length);
 		for (int i = 0; i < nodes.length; i++) {
-			assertTrue(ad.getHashedSinkMap().containsValue(nodes[i]));
+            assertThat(ad.getHashedSinkMap().containsValue(nodes[i])).isTrue();
 		}
 	}
 	
 	private void hashedSinkMapIsEmpty() {
-		assertNull(ad.getHashedSinkMap());
+        assertThat(ad.getHashedSinkMap()).isNull();
 	}
 }

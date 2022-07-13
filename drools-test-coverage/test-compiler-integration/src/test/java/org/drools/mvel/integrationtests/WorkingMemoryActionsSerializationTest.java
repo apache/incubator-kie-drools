@@ -26,7 +26,6 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,7 +36,8 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Ignore
 @RunWith(Parameterized.class)
@@ -167,7 +167,7 @@ public class WorkingMemoryActionsSerializationTest {
      * Checks that the rule names passed in are called the number of times passed in.
      */
     private void checkExecutions(final List<String> rules, final List<Integer> expected) {
-        Assert.assertEquals("Wrong config passed. Rules doesn't match times", rules.size(), expected.size());
+        assertThat(expected.size()).as("Wrong config passed. Rules doesn't match times").isEqualTo(rules.size());
         synchronized (ruleCalls) {
             for (int i = 0; i < rules.size(); i++) {
                 final String ruleName = rules.get(i);
@@ -175,8 +175,7 @@ public class WorkingMemoryActionsSerializationTest {
                 if (actualTimes == null) {
                     actualTimes = 0;
                 }
-                Assert.assertEquals(
-                        "Ruled " + ruleName + " is not called as often as expected.", expected.get(i), actualTimes);
+                assertThat(actualTimes).as("Ruled " + ruleName + " is not called as often as expected.").isEqualTo(expected.get(i));
             }
         }
     }
@@ -192,7 +191,7 @@ public class WorkingMemoryActionsSerializationTest {
         try {
             Thread.sleep(time);
         } catch (InterruptedException e) {
-            fail();
+            fail("Unexpected error");
         }
     }
 

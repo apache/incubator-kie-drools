@@ -33,7 +33,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MatchesTest {
@@ -76,7 +76,7 @@ public class MatchesTest {
 
             session.fireAllRules();
 
-            assertEquals(1, results.size());
+            assertThat(results.size()).isEqualTo(1);
         } finally {
             session.dispose();
         }
@@ -117,7 +117,7 @@ public class MatchesTest {
             ksession.insert(map);
             final int fired = ksession.fireAllRules();
 
-            assertEquals(2, fired);
+            assertThat(fired).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -135,7 +135,7 @@ public class MatchesTest {
             ksession.insert(map);
             final int fired = ksession.fireAllRules();
 
-            assertEquals(1, fired);
+            assertThat(fired).isEqualTo(1);
         } finally {
             ksession.dispose();
         }
@@ -209,12 +209,12 @@ public class MatchesTest {
 
             ksession.fireAllRules();
 
-            assertEquals(4, list.size());
+            assertThat(list.size()).isEqualTo(4);
 
-            assertEquals(stilton, list.get(0));
-            assertEquals(brie, list.get(1));
-            assertEquals(agedStilton, list.get(2));
-            assertEquals(provolone, list.get(3));
+            assertThat(list.get(0)).isEqualTo(stilton);
+            assertThat(list.get(1)).isEqualTo(brie);
+            assertThat(list.get(2)).isEqualTo(agedStilton);
+            assertThat(list.get(3)).isEqualTo(provolone);
         } finally {
             ksession.dispose();
         }
@@ -250,7 +250,7 @@ public class MatchesTest {
             ksession.insert(p);
 
             final int rules = ksession.fireAllRules();
-            assertEquals(expectedFireCount, rules);
+            assertThat(rules).isEqualTo(expectedFireCount);
         } finally {
             ksession.dispose();
         }

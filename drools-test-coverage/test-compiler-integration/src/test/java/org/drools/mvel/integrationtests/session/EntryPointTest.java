@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class EntryPointTest {
@@ -75,6 +75,6 @@ public class EntryPointTest {
 
         ksession.fireAllRules();
         ksession.dispose();
-        assertTrue(res.contains(10));
+        assertThat(res.contains(10)).isTrue();
     }
 }

@@ -38,7 +38,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 /** Run all the tests with the ReteOO engine implementation */
 @RunWith(Parameterized.class)

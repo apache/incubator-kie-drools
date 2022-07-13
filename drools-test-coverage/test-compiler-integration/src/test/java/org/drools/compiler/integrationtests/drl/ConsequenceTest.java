@@ -40,8 +40,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -81,10 +80,8 @@ public class ConsequenceTest {
                 ksession.fireAllRules();
                 fail("Should throw an Exception from the Consequence");
             } catch (final org.kie.api.runtime.rule.ConsequenceException e) {
-                assertEquals("Throw Consequence Exception",
-                             e.getMatch().getRule().getName());
-                assertEquals("this should throw an exception",
-                             e.getCause().getMessage());
+                assertThat(e.getMatch().getRule().getName()).isEqualTo("Throw Consequence Exception");
+                assertThat(e.getCause().getMessage()).isEqualTo("this should throw an exception");
             }
         } finally {
             ksession.dispose();
@@ -147,9 +144,9 @@ public class ConsequenceTest {
             results = (List) session.getGlobal("results");
 
             session.fireAllRules();
-            assertEquals(2, results.size());
-            assertEquals("bar", results.get(0));
-            assertEquals("bar2", results.get(1));
+            assertThat(results.size()).isEqualTo(2);
+            assertThat(results.get(0)).isEqualTo("bar");
+            assertThat(results.get(1)).isEqualTo("bar2");
         } finally {
             session.dispose();
         }
@@ -180,8 +177,8 @@ public class ConsequenceTest {
             session.setGlobal("list", list);
             session.fireAllRules();
 
-            assertEquals(1, ((List) session.getGlobal("list")).size());
-            assertEquals("first", ((List) session.getGlobal("list")).get(0));
+            assertThat(((List) session.getGlobal("list")).size()).isEqualTo(1);
+            assertThat(((List) session.getGlobal("list")).get(0)).isEqualTo("first");
         } finally {
             session.dispose();
         }
@@ -214,8 +211,7 @@ public class ConsequenceTest {
             final FactHandle petFH = ksession.insert(new Pet("Toni"));
 
             final int fired = ksession.fireAllRules();
-            assertEquals(1,
-                         fired);
+            assertThat(fired).isEqualTo(1);
 
             // capture the arguments and check that the retracts happened
             final ArgumentCaptor<ObjectDeletedEvent> retracts = ArgumentCaptor.forClass(ObjectDeletedEvent.class);

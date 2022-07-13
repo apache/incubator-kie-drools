@@ -30,8 +30,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class PassivePatternTest {
@@ -67,16 +66,16 @@ public class PassivePatternTest {
             ksession.insert(1);
             ksession.insert("2");
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert("1");
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             ksession.insert(2);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
-            assertTrue(list.containsAll(asList(1, 2)));
+            assertThat(list.size()).isEqualTo(2);
+            assertThat(list.containsAll(asList(1, 2))).isTrue();
         } finally {
             ksession.dispose();
         }

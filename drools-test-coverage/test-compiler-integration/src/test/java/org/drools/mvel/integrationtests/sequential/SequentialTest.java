@@ -32,7 +32,6 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -59,8 +58,6 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class SequentialTest {
@@ -171,13 +168,13 @@ public class SequentialTest {
 
         ksession.execute( CommandFactory.newInsertElements(Arrays.asList( new Object[]{new A(1)} )) );
 
-        assertEquals( 6, list.size() );
-        assertEquals( "r1", list.get(0));
-        assertEquals( "r3", list.get(1));
-        assertEquals( "r4", list.get(2));
-        assertEquals( "r7", list.get(3));
-        assertEquals( "r8", list.get(4));
-        assertEquals( "r9", list.get(5));
+        assertThat(list.size()).isEqualTo(6);
+        assertThat(list.get(0)).isEqualTo("r1");
+        assertThat(list.get(1)).isEqualTo("r3");
+        assertThat(list.get(2)).isEqualTo("r4");
+        assertThat(list.get(3)).isEqualTo("r7");
+        assertThat(list.get(4)).isEqualTo("r8");
+        assertThat(list.get(5)).isEqualTo("r9");
     }
 
     @Test
@@ -222,8 +219,8 @@ public class SequentialTest {
 
         ksession.execute( CommandFactory.newInsertElements(Arrays.asList( new Object[]{new A(5)} )) );
 
-        assertEquals( 1, list.size() );
-        assertEquals( "r9", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("r9");
     }
 
     @Test
@@ -250,8 +247,7 @@ public class SequentialTest {
 
         ksession.execute( CommandFactory.newInsertElements( Arrays.asList( new Object[]{p1, stilton, p2, cheddar, p3} ) ) );
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
     }
 
     @Test
@@ -266,12 +262,11 @@ public class SequentialTest {
 
         ksession.execute( new Person( "pob")  );
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
-        assertEquals( "rule 3", list.get( 0 ));
-        assertEquals( "rule 2", list.get( 1 ) );
-        assertEquals( "rule 1", list.get( 2 ) );
+        assertThat(list.get(0)).isEqualTo("rule 3");
+        assertThat(list.get(1)).isEqualTo("rule 2");
+        assertThat(list.get(2)).isEqualTo("rule 1");
     }
 
     @Test
@@ -386,7 +381,7 @@ public class SequentialTest {
 
         ksession.execute( new Message( "help" ) );
 
-        assertEquals( 4, list.size() );
+        assertThat(list.size()).isEqualTo(4);
     }
 
 
@@ -410,15 +405,15 @@ public class SequentialTest {
         Person person  = new Person("bop");
         ksession.execute(person);
 
-        assertEquals( 7, list.size() );
+        assertThat(list.size()).isEqualTo(7);
 
-        assertEquals( "rule 3", list.get( 0 ));
-        assertEquals( "rule 2", list.get( 1 ));
-        assertEquals( "rule 1", list.get( 2 ));
-        assertEquals( "rule 3", list.get( 3 ) );
-        assertEquals( "rule 2", list.get( 4 ) );
-        assertEquals( "rule 1", list.get( 5 ) );
-        assertEquals( person, list.get( 6 ));
+        assertThat(list.get(0)).isEqualTo("rule 3");
+        assertThat(list.get(1)).isEqualTo("rule 2");
+        assertThat(list.get(2)).isEqualTo("rule 1");
+        assertThat(list.get(3)).isEqualTo("rule 3");
+        assertThat(list.get(4)).isEqualTo("rule 2");
+        assertThat(list.get(5)).isEqualTo("rule 1");
+        assertThat(list.get(6)).isEqualTo(person);
     }
 
     @Test
@@ -510,7 +505,7 @@ public class SequentialTest {
             long start = System.currentTimeMillis();
             ksession.execute( CommandFactory.newInsertElements(Arrays.asList(data)));
             System.out.println( "Time for " + message + ":" + (System.currentTimeMillis() - start) );
-            assertTrue( list.size() > 0 );
+            assertThat(list.size() > 0).isTrue();
 
         } else {
             //lots of shots
@@ -554,11 +549,11 @@ public class SequentialTest {
         StatelessKieSession sequentialKsession = kbase.newStatelessKieSession();
 
         List result = (List) sequentialKsession.execute( CommandFactory.newInsertElements(Arrays.asList("test", new Message())));
-        assertEquals( 2, result.size() );
+        assertThat(result.size()).isEqualTo(2);
 
         StatelessKieSession ksession = kieContainer.getKieBase().newStatelessKieSession();
         result = (List) ksession.execute( CommandFactory.newInsertElements(Arrays.asList("test", new Message())));
-        assertEquals( 2, result.size() );
+        assertThat(result.size()).isEqualTo(2);
     }
 
     @Test

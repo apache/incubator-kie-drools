@@ -53,11 +53,9 @@ import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.mvel.compiler.oopath.model.BodyMeasurement.CHEST;
 import static org.drools.mvel.compiler.oopath.model.BodyMeasurement.RIGHT_FOREARM;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class OOPathReactiveTest {
@@ -204,28 +202,28 @@ public class OOPathReactiveTest {
 
         ksession.insert( school );
         ksession.fireAllRules();
-        assertTrue(ksession.getObjects().contains(charlie));
-        assertFalse(ksession.getObjects().contains(debbie));
+        assertThat(ksession.getObjects().contains(charlie)).isTrue();
+        assertThat(ksession.getObjects().contains(debbie)).isFalse();
 
         school.addChild( debbie );
         ksession.fireAllRules();
-        assertTrue(ksession.getObjects().contains(charlie));
-        assertTrue(ksession.getObjects().contains(debbie));
+        assertThat(ksession.getObjects().contains(charlie)).isTrue();
+        assertThat(ksession.getObjects().contains(debbie)).isTrue();
 
         school.getChildren().remove( debbie );
         ksession.fireAllRules();
-        assertTrue(ksession.getObjects().contains(charlie));
-        assertFalse(ksession.getObjects().contains(debbie));
+        assertThat(ksession.getObjects().contains(charlie)).isTrue();
+        assertThat(ksession.getObjects().contains(debbie)).isFalse();
 
         school.addChild( debbie );
         ksession.fireAllRules();
-        assertTrue(ksession.getObjects().contains(charlie));
-        assertTrue(ksession.getObjects().contains(debbie));
+        assertThat(ksession.getObjects().contains(charlie)).isTrue();
+        assertThat(ksession.getObjects().contains(debbie)).isTrue();
 
         debbie.setAge( 20 );
         ksession.fireAllRules();
-        assertTrue(ksession.getObjects().contains(charlie));
-        assertFalse(ksession.getObjects().contains(debbie));
+        assertThat(ksession.getObjects().contains(charlie)).isTrue();
+        assertThat(ksession.getObjects().contains(debbie)).isFalse();
     }
 
     @Test
@@ -254,26 +252,26 @@ public class OOPathReactiveTest {
         ksession.insert( x );
         ksession.insert( y );
         ksession.fireAllRules();
-        assertFalse (factsCollection(ksession).contains("X.Ada"));
-        assertFalse (factsCollection(ksession).contains("X.Bea"));
-        assertFalse (factsCollection(ksession).contains("Y.Ada"));
-        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        assertThat(factsCollection(ksession).contains("X.Ada")).isFalse();
+        assertThat(factsCollection(ksession).contains("X.Bea")).isFalse();
+        assertThat(factsCollection(ksession).contains("Y.Ada")).isFalse();
+        assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
 
         ada.setAge( 20 );
         ksession.fireAllRules();
         ksession.getObjects().forEach(System.out::println);
-        assertTrue  (factsCollection(ksession).contains("X.Ada"));
-        assertFalse (factsCollection(ksession).contains("X.Bea"));
-        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
-        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        assertThat(factsCollection(ksession).contains("X.Ada")).isTrue();
+        assertThat(factsCollection(ksession).contains("X.Bea")).isFalse();
+        assertThat(factsCollection(ksession).contains("Y.Ada")).isTrue();
+        assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
 
         y.removePerson(bea);
         bea.setAge( 20 );
         ksession.fireAllRules();
-        assertTrue  (factsCollection(ksession).contains("X.Ada"));
-        assertTrue  (factsCollection(ksession).contains("X.Bea"));
-        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
-        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        assertThat(factsCollection(ksession).contains("X.Ada")).isTrue();
+        assertThat(factsCollection(ksession).contains("X.Bea")).isTrue();
+        assertThat(factsCollection(ksession).contains("Y.Ada")).isTrue();
+        assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
     }
 
     @Test
@@ -307,40 +305,40 @@ public class OOPathReactiveTest {
 
         ksession.insert(school);
         ksession.fireAllRules();
-        assertTrue(ksession.getObjects().contains(flu));
-        assertTrue(ksession.getObjects().contains(asthma));
-        assertTrue(ksession.getObjects().contains(diabetes));
+        assertThat(ksession.getObjects().contains(flu)).isTrue();
+        assertThat(ksession.getObjects().contains(asthma)).isTrue();
+        assertThat(ksession.getObjects().contains(diabetes)).isTrue();
 
         charlie.getDiseases().remove(flu);
         ksession.fireAllRules();
-        assertFalse(ksession.getObjects().contains(flu));
-        assertTrue(ksession.getObjects().contains(asthma));
-        assertTrue(ksession.getObjects().contains(diabetes));
+        assertThat(ksession.getObjects().contains(flu)).isFalse();
+        assertThat(ksession.getObjects().contains(asthma)).isTrue();
+        assertThat(ksession.getObjects().contains(diabetes)).isTrue();
 
         charlie.getDiseases().remove(asthma);
         ksession.fireAllRules();
-        assertFalse(ksession.getObjects().contains(flu));
-        assertFalse(ksession.getObjects().contains(asthma));
-        assertTrue(ksession.getObjects().contains(diabetes));
+        assertThat(ksession.getObjects().contains(flu)).isFalse();
+        assertThat(ksession.getObjects().contains(asthma)).isFalse();
+        assertThat(ksession.getObjects().contains(diabetes)).isTrue();
 
         debbie.getDiseases().remove(diabetes);
         ksession.fireAllRules();
-        assertFalse(ksession.getObjects().contains(flu));
-        assertFalse(ksession.getObjects().contains(asthma));
-        assertFalse(ksession.getObjects().contains(diabetes));
+        assertThat(ksession.getObjects().contains(flu)).isFalse();
+        assertThat(ksession.getObjects().contains(asthma)).isFalse();
+        assertThat(ksession.getObjects().contains(diabetes)).isFalse();
 
         charlie.addDisease(flu);
         ksession.fireAllRules();
-        assertTrue(ksession.getObjects().contains(flu));
-        assertFalse(ksession.getObjects().contains(asthma));
-        assertFalse(ksession.getObjects().contains(diabetes));
+        assertThat(ksession.getObjects().contains(flu)).isTrue();
+        assertThat(ksession.getObjects().contains(asthma)).isFalse();
+        assertThat(ksession.getObjects().contains(diabetes)).isFalse();
 
         charlie.addDisease(asthma);
         debbie.addDisease(diabetes);
         ksession.fireAllRules();
-        assertTrue(ksession.getObjects().contains(flu));
-        assertTrue(ksession.getObjects().contains(asthma));
-        assertTrue(ksession.getObjects().contains(diabetes));
+        assertThat(ksession.getObjects().contains(flu)).isTrue();
+        assertThat(ksession.getObjects().contains(asthma)).isTrue();
+        assertThat(ksession.getObjects().contains(diabetes)).isTrue();
     }
 
     /**
@@ -379,26 +377,26 @@ public class OOPathReactiveTest {
         ksession.insert( x );
         ksession.insert( y );
         ksession.fireAllRules();
-        assertFalse (factsCollection(ksession).contains("X.Ada"));
-        assertFalse (factsCollection(ksession).contains("X.Bea"));
-        assertFalse (factsCollection(ksession).contains("Y.Ada"));
-        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        assertThat(factsCollection(ksession).contains("X.Ada")).isFalse();
+        assertThat(factsCollection(ksession).contains("X.Bea")).isFalse();
+        assertThat(factsCollection(ksession).contains("Y.Ada")).isFalse();
+        assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
 
         ada.setAge( 20 );
         ksession.fireAllRules();
         ksession.getObjects().forEach(System.out::println);
-        assertTrue  (factsCollection(ksession).contains("X.Ada"));
-        assertFalse (factsCollection(ksession).contains("X.Bea"));
-        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
-        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        assertThat(factsCollection(ksession).contains("X.Ada")).isTrue();
+        assertThat(factsCollection(ksession).contains("X.Bea")).isFalse();
+        assertThat(factsCollection(ksession).contains("Y.Ada")).isTrue();
+        assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
 
         y.removePerson(bea);
         bea.setAge( 20 );
         ksession.fireAllRules();
-        assertTrue  (factsCollection(ksession).contains("X.Ada"));
-        assertTrue  (factsCollection(ksession).contains("X.Bea"));
-        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
-        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        assertThat(factsCollection(ksession).contains("X.Ada")).isTrue();
+        assertThat(factsCollection(ksession).contains("X.Bea")).isTrue();
+        assertThat(factsCollection(ksession).contains("Y.Ada")).isTrue();
+        assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
     }
 
     @Test
@@ -722,7 +720,7 @@ public class OOPathReactiveTest {
                         "end\n";
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        assertTrue(kieBuilder.getResults().hasMessages(Message.Level.ERROR));
+        assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isTrue();
     }
 
     @Test

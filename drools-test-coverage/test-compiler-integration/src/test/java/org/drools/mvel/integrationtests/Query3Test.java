@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class Query3Test {
@@ -92,8 +92,7 @@ public class Query3Test {
                 handle2 = knowledgeSession.insert( o2 );
             }
             QueryResults queryResults = knowledgeSession.getQueryResults( query );
-            assertEquals( expected,
-                          queryResults.size() );
+            assertThat(queryResults.size()).isEqualTo(expected);
         } finally {
             knowledgeSession.dispose();
         }

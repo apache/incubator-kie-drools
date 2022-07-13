@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DateCoercionTest {
@@ -73,8 +73,8 @@ public class DateCoercionTest {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "working", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("working");
     }
 
     @Test
@@ -104,8 +104,8 @@ public class DateCoercionTest {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "working", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("working");
     }
 
     @Test
@@ -132,8 +132,8 @@ public class DateCoercionTest {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "working", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("working");
     }
 
     public static class DateContainer {
@@ -171,7 +171,7 @@ public class DateCoercionTest {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "working", list.get( 0 ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("working");
     }
 }

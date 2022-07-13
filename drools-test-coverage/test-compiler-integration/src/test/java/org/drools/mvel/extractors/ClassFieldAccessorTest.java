@@ -29,7 +29,9 @@ import org.drools.core.util.asm.TestInterfaceImpl;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.within;
 
 public class ClassFieldAccessorTest {
 
@@ -52,21 +54,18 @@ public class ClassFieldAccessorTest {
 
         final ClassFieldReader ext = store.getReader( TestBean.class,
                                                       "blah" );
-        assertEquals( false,
-                      ((Boolean) ext.getValue( null,
-                                               obj )).booleanValue() );
+        assertThat(((Boolean) ext.getValue(null,
+                obj)).booleanValue()).isEqualTo(false);
 
         final ClassFieldReader ext2 = store.getReader( TestBean.class,
                                                        "fooBar" );
-        assertEquals( "fooBar",
-                      ext2.getValue( null,
-                                     obj ) );
+        assertThat(ext2.getValue(null,
+                obj)).isEqualTo("fooBar");
 
         final ClassFieldReader ext3 = store.getReader( TestBean.class,
                                                        "objArray" );
-        assertEquals( objArray,
-                      ext3.getValue( null,
-                                     obj ) );
+        assertThat(ext3.getValue(null,
+                obj)).isEqualTo(objArray);
 
     }
 
@@ -77,9 +76,8 @@ public class ClassFieldAccessorTest {
         final ClassFieldReader ext = store.getReader( TestInterface.class,
                                                       "something" );
 
-        assertEquals( "foo",
-                      (String) ext.getValue( null,
-                                             obj ) );
+        assertThat((String) ext.getValue(null,
+                obj)).isEqualTo("foo");
 
     }
 
@@ -89,9 +87,8 @@ public class ClassFieldAccessorTest {
         final ClassFieldReader ext = store.getReader( TestAbstract.class,
                                                       "something" );
         final TestAbstract obj = new TestAbstractImpl();
-        assertEquals( "foo",
-                      (String) ext.getValue( null,
-                                             obj ) );
+        assertThat((String) ext.getValue(null,
+                obj)).isEqualTo("foo");
 
     }
 
@@ -100,9 +97,8 @@ public class ClassFieldAccessorTest {
         final ClassFieldReader ext = store.getReader( BeanInherit.class,
                                                       "text" );
         final BeanInherit obj = new BeanInherit();
-        assertEquals( "hola",
-                      (String) ext.getValue( null,
-                                             obj ) );
+        assertThat((String) ext.getValue(null,
+                obj)).isEqualTo("hola");
 
     }
 
@@ -111,9 +107,8 @@ public class ClassFieldAccessorTest {
         final ConcreteChild obj = new ConcreteChild();
         final ClassFieldReader ext = store.getReader( InterfaceChild.class,
                                                       "foo" );
-        assertEquals( 42,
-                      ((Number) ext.getValue( null,
-                                              obj )).intValue() );
+        assertThat(((Number) ext.getValue(null,
+                obj)).intValue()).isEqualTo(42);
     }
 
     @Test
@@ -121,9 +116,8 @@ public class ClassFieldAccessorTest {
         final ClassFieldReader ext = store.getReader( TestBean.class,
                                                       "longField" );
         final TestBean bean = new TestBean();
-        assertEquals( 424242,
-                      ((Number) ext.getValue( null,
-                                              bean )).longValue() );
+        assertThat(((Number) ext.getValue(null,
+                bean)).longValue()).isEqualTo(424242);
     }
 
     @Test
@@ -137,7 +131,7 @@ public class ClassFieldAccessorTest {
 
         ClassFieldReader ext = store.getReader( TestBean.class,
                                                 "xyz" );
-        assertNull(ext);
+        assertThat(ext).isNull();
     }
 
     @Test
@@ -154,36 +148,20 @@ public class ClassFieldAccessorTest {
             instance.setIntAttr( 10 );
             instance.setStrAttr( testString1 );
 
-            assertEquals( "Error reading int attr",
-                                 10,
-                                 ((Integer) intAccessor.getValue( instance )).intValue() );
-            assertEquals( "Error reading int attr",
-                                 10,
-                                 intAccessor.getIntValue( instance ) );
-            assertEquals( "Error reading String attr",
-                                 testString1,
-                                 strAccessor.getValue( instance ) );
+            assertThat(((Integer) intAccessor.getValue(instance)).intValue()).as("Error reading int attr").isEqualTo(10);
+            assertThat(strAccessor.getValue(instance)).as("Error reading String attr").isEqualTo(testString1);
 
             intAccessor.setValue( instance,
                                   new Integer( 50 ) );
             strAccessor.setValue( instance,
                                   testString2 );
 
-            assertEquals( "Error setting int attr",
-                                 50,
-                                 instance.getIntAttr() );
-            assertEquals( "Error setting String attr",
-                                 testString2,
-                                 instance.getStrAttr() );
+            assertThat(instance.getIntAttr()).as("Error setting int attr").isEqualTo(50);
+            assertThat(instance.getStrAttr()).as("Error setting String attr").isEqualTo(testString2);
 
-            intAccessor.setIntValue( instance,
-                                     40 );
-            assertEquals( "Error reading int attr",
-                                 40,
-                                 intAccessor.getIntValue( instance ) );
-            assertEquals( "Error reading String attr",
-                                 testString2,
-                                 strAccessor.getValue( instance ) );
+            intAccessor.setIntValue(instance, 40 );
+            assertThat(intAccessor.getValue(instance)).as("Error reading int attr").isEqualTo(40);
+            assertThat(strAccessor.getValue(instance)).as("Error reading String attr").isEqualTo(testString2);
 
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -244,63 +222,25 @@ public class ClassFieldAccessorTest {
             shortAccessor.setValue( instance,
                                     null );
 
-            assertEquals( "Error setting attr",
-                                 0,
-                                 instance.getIntAttr() );
-            assertNull( "Error setting attr",
-                               instance.getStrAttr() );
-            assertEquals( "Error setting attr",
-                                 0,
-                                 instance.getByteAttr() );
-            assertEquals( "Error setting attr",
-                                 false,
-                                 instance.isBooleanAttr() );
-            assertEquals( "Error setting attr",
-                                 '\0',
-                                 instance.getCharAttr() );
-            assertEquals( "Error setting attr",
-                                 0.0d,
-                                 instance.getDoubleAttr(),
-                                 0.1d );
-            assertEquals( "Error setting attr",
-                                 0.0f,
-                                 instance.getFloatAttr(),
-                                 0.1f );
-            assertEquals( "Error setting attr",
-                                 0l,
-                                 instance.getLongAttr() );
-            assertEquals( "Error setting attr",
-                                 (short) 0,
-                                 instance.getShortAttr() );
+            assertThat(instance.getIntAttr()).as("Error setting attr").isEqualTo(0);
+            assertThat(instance.getStrAttr()).as("Error setting attr").isNull();
+            assertThat(instance.getByteAttr()).as("Error setting attr").isEqualTo((byte)0);
+            assertThat(instance.isBooleanAttr()).as("Error setting attr").isEqualTo(false);
+            assertThat(instance.getCharAttr()).as("Error setting attr").isEqualTo('\0');
+            assertThat(instance.getDoubleAttr()).as("Error setting attr").isCloseTo(0.0d, within(0.1d));
+            assertThat(instance.getFloatAttr()).as("Error setting attr").isCloseTo(0.0f, within(0.1f));
+            assertThat(instance.getLongAttr()).as("Error setting attr").isEqualTo(0l);
+            assertThat(instance.getShortAttr()).as("Error setting attr").isEqualTo((short) 0);
 
-            assertEquals( "Error reading int attr",
-                                 0,
-                                 ((Integer) intAccessor.getValue( instance )).intValue() );
-            assertNull( "Error reading String attr",
-                               strAccessor.getValue( instance ) );
-            assertEquals( "Error reading attr",
-                                 0,
-                                 ((Byte) byteAccessor.getValue( instance )).byteValue() );
-            assertEquals( "Error reading attr",
-                                 false,
-                                 ((Boolean) booleanAccessor.getValue( instance )).booleanValue() );
-            assertEquals( "Error reading attr",
-                                 '\0',
-                                 ((Character) charAccessor.getValue( instance )).charValue() );
-            assertEquals( "Error reading attr",
-                                 0.0d,
-                                 ((Double) doubleAccessor.getValue( instance )).doubleValue(),
-                                 0.1d );
-            assertEquals( "Error reading attr",
-                                 0.0f,
-                                 ((Float) floatAccessor.getValue( instance )).floatValue(),
-                                 0.1f );
-            assertEquals( "Error reading attr",
-                                 0l,
-                                 ((Long) longAccessor.getValue( instance )).longValue() );
-            assertEquals( "Error reading attr",
-                                 (short) 0,
-                                 ((Short) shortAccessor.getValue( instance )).shortValue() );
+            assertThat(((Integer) intAccessor.getValue(instance)).intValue()).as("Error reading int attr").isEqualTo(0);
+            assertThat(strAccessor.getValue(instance)).as("Error reading String attr").isNull();
+            assertThat(((Byte) byteAccessor.getValue(instance)).byteValue()).as("Error reading attr").isEqualTo((byte)0);
+            assertThat(((Boolean) booleanAccessor.getValue(instance)).booleanValue()).as("Error reading attr").isEqualTo(false);
+            assertThat(((Character) charAccessor.getValue(instance)).charValue()).as("Error reading attr").isEqualTo('\0');
+            assertThat(((Double) doubleAccessor.getValue(instance)).doubleValue()).as("Error reading attr").isCloseTo(0.0d, within(0.1d));
+            assertThat(((Float) floatAccessor.getValue(instance)).floatValue()).as("Error reading attr").isCloseTo(0.0f, within(0.1f));
+            assertThat(((Long) longAccessor.getValue(instance)).longValue()).as("Error reading attr").isEqualTo(0l);
+            assertThat(((Short) shortAccessor.getValue(instance)).shortValue()).as("Error reading attr").isEqualTo((short) 0);
 
         } catch ( Exception e ) {
             e.printStackTrace();

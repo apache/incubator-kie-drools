@@ -43,7 +43,6 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 
 @RunWith(Parameterized.class)
@@ -91,7 +90,7 @@ public class ExpirationTest {
 
         sessionClock.advanceTime( 10, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
-        assertEquals(2, counter.get());
+        assertThat(counter.get()).isEqualTo(2);
     }
 
     @Test
@@ -131,7 +130,7 @@ public class ExpirationTest {
         sessionClock.advanceTime( 10, TimeUnit.MILLISECONDS );
 
         ksession.fireAllRules();
-        assertEquals(2, counter.get());
+        assertThat(counter.get()).isEqualTo(2);
     }
 
     @Test
@@ -167,7 +166,7 @@ public class ExpirationTest {
         ksession.insert( new B(1) );
 
         ksession.fireAllRules();
-        assertEquals(0, counter.get());
+        assertThat(counter.get()).isEqualTo(0);
     }
 
     @Test
@@ -203,7 +202,7 @@ public class ExpirationTest {
         ksession.insert( new A(1) );
 
         ksession.fireAllRules();
-        assertEquals(0, counter.get());
+        assertThat(counter.get()).isEqualTo(0);
     }
 
     @Test
@@ -243,7 +242,7 @@ public class ExpirationTest {
         ksession.insert( new C(1) );
 
         ksession.fireAllRules();
-        assertEquals(0, counter.get());
+        assertThat(counter.get()).isEqualTo(0);
     }
 
     public class A {
@@ -342,33 +341,33 @@ public class ExpirationTest {
         clock.advanceTime( 5, TimeUnit.SECONDS );
         ksession.fireAllRules();
 
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventA.class ) ).size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventB.class ) ).size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventC.class ) ).size() );
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventA.class )).size()).isEqualTo(1);
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventB.class )).size()).isEqualTo(1);
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventC.class )).size()).isEqualTo(1);
 
         clock.advanceTime( 10, TimeUnit.SECONDS );
         ksession.fireAllRules();
 
         // t=15 -> hard expiration of A
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventA.class ) ).size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventB.class ) ).size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventC.class ) ).size() );
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventA.class )).size()).isEqualTo(0);
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventB.class )).size()).isEqualTo(1);
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventC.class )).size()).isEqualTo(1);
 
         clock.advanceTime( 10, TimeUnit.SECONDS );
         ksession.fireAllRules();
 
         // t=25 -> implicit expiration of B
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventA.class ) ).size() );
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventB.class ) ).size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventC.class ) ).size() );
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventA.class )).size()).isEqualTo(0);
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventB.class )).size()).isEqualTo(0);
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventC.class )).size()).isEqualTo(1);
 
         clock.advanceTime( 10, TimeUnit.SECONDS );
         ksession.fireAllRules();
 
         // t=35 -> soft expiration of C
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventA.class ) ).size() );
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventB.class ) ).size() );
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventC.class ) ).size() );
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventA.class )).size()).isEqualTo(0);
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventB.class )).size()).isEqualTo(0);
+        assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventC.class )).size()).isEqualTo(0);
     }
 
     @Test
@@ -406,33 +405,33 @@ public class ExpirationTest {
         clock.advanceTime( 5, TimeUnit.SECONDS );
         ksession.fireAllRules();
 
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( A.class ) ).size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( B.class ) ).size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( C.class ) ).size() );
+        assertThat(ksession.getObjects(new ClassObjectFilter( A.class )).size()).isEqualTo(1);
+        assertThat(ksession.getObjects(new ClassObjectFilter( B.class )).size()).isEqualTo(1);
+        assertThat(ksession.getObjects(new ClassObjectFilter( C.class )).size()).isEqualTo(1);
 
         clock.advanceTime( 10, TimeUnit.SECONDS );
         ksession.fireAllRules();
 
         // t=15 -> hard expiration of A
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( A.class ) ).size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( B.class ) ).size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( C.class ) ).size() );
+        assertThat(ksession.getObjects(new ClassObjectFilter( A.class )).size()).isEqualTo(0);
+        assertThat(ksession.getObjects(new ClassObjectFilter( B.class )).size()).isEqualTo(1);
+        assertThat(ksession.getObjects(new ClassObjectFilter( C.class )).size()).isEqualTo(1);
 
         clock.advanceTime( 10, TimeUnit.SECONDS );
         ksession.fireAllRules();
 
         // t=25 -> implicit expiration of B
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( A.class ) ).size() );
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( B.class ) ).size() );
-        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( C.class ) ).size() );
+        assertThat(ksession.getObjects(new ClassObjectFilter( A.class )).size()).isEqualTo(0);
+        assertThat(ksession.getObjects(new ClassObjectFilter( B.class )).size()).isEqualTo(0);
+        assertThat(ksession.getObjects(new ClassObjectFilter( C.class )).size()).isEqualTo(1);
 
         clock.advanceTime( 10, TimeUnit.SECONDS );
         ksession.fireAllRules();
 
         // t=35 -> soft expiration of C
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( A.class ) ).size() );
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( B.class ) ).size() );
-        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( C.class ) ).size() );
+        assertThat(ksession.getObjects(new ClassObjectFilter( A.class )).size()).isEqualTo(0);
+        assertThat(ksession.getObjects(new ClassObjectFilter( B.class )).size()).isEqualTo(0);
+        assertThat(ksession.getObjects(new ClassObjectFilter( C.class )).size()).isEqualTo(0);
     }
 
     @Test
@@ -893,8 +892,8 @@ public class ExpirationTest {
         kieSession.insert(event1);
         kieSession.insert(event2);
 
-        assertEquals(2, kieSession.fireAllRules());
-        assertEquals(2 - expiredNumber, kieSession.getObjects().size());
+        assertThat(kieSession.fireAllRules()).isEqualTo(2);
+        assertThat(kieSession.getObjects().size()).isEqualTo(2 - expiredNumber);
     }
 
     @Test
@@ -977,8 +976,8 @@ public class ExpirationTest {
         kieSession.insert(dummyEvent);
         kieSession.insert(otherEvent);
 
-        assertEquals(2, kieSession.fireAllRules());
-        assertEquals(isExpired ? 0 : 2, kieSession.getObjects().size());
+        assertThat(kieSession.fireAllRules()).isEqualTo(2);
+        assertThat(kieSession.getObjects().size()).isEqualTo(isExpired ? 0 : 2);
     }
 
     @Test

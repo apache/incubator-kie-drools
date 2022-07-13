@@ -34,7 +34,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ContainsTest {
@@ -95,10 +95,10 @@ public class ContainsTest {
 
             ksession.fireAllRules();
 
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
-            assertEquals(stilton, list.get(0));
-            assertEquals(brie, list.get(1));
+            assertThat(list.get(0)).isEqualTo(stilton);
+            assertThat(list.get(1)).isEqualTo(brie);
         } finally {
             ksession.dispose();
         }
@@ -140,10 +140,10 @@ public class ContainsTest {
 
             ksession.fireAllRules();
 
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
-            assertEquals("ok1", list.get(0));
-            assertEquals("ok2", list.get(1));
+            assertThat(list.get(0)).isEqualTo("ok1");
+            assertThat(list.get(1)).isEqualTo("ok2");
         } finally {
             ksession.dispose();
         }
@@ -179,12 +179,12 @@ public class ContainsTest {
 
             // should not fire, as item11 is contained in order1.items
             int rules = ksession.fireAllRules();
-            assertEquals(0, rules);
+            assertThat(rules).isEqualTo(0);
 
             // should fire as item21 is not contained in order1.items
             ksession.insert(item21);
             rules = ksession.fireAllRules();
-            assertEquals(1, rules);
+            assertThat(rules).isEqualTo(1);
         } finally {
             ksession.dispose();
         }

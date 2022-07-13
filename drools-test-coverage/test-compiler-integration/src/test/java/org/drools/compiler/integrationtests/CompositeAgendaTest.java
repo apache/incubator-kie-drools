@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.LongAdder;
 
 import org.drools.testcoverage.common.model.A;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,6 +33,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
 import org.kie.test.testcategory.TurtleTestCategory;
+
+import static org.assertj.core.api.Assertions.fail;
 
 @Category(TurtleTestCategory.class)
 public class CompositeAgendaTest {
@@ -127,7 +128,7 @@ public class CompositeAgendaTest {
                     }
                 } catch (final InterruptedException e) {
                     e.printStackTrace();
-                    Assert.fail(e.getMessage());
+                    fail(e.getMessage());
                 }
             }
         }

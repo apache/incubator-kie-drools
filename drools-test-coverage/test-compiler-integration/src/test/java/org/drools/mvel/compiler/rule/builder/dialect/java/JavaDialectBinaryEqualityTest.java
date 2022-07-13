@@ -39,8 +39,6 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 
 
 @RunWith(Parameterized.class)
@@ -76,13 +74,13 @@ public class JavaDialectBinaryEqualityTest{
         Pattern p2 = ( Pattern ) rule2.getLhs().getChildren().get( 0 );        
         Constraint rvc2 = p2.getConstraints().get( 0 );
         
-        assertNotSame( rvc1, rvc2 );
-        assertEquals( rvc1, rvc2 );
+        assertThat(rvc2).isNotSameAs(rvc1);
+        assertThat(rvc2).isEqualTo(rvc1);
         
         Pattern p3 = ( Pattern ) rule3.getLhs().getChildren().get( 0 );
         Constraint rvc3 = p3.getConstraints().get( 0 );
         
-        assertNotSame( rvc1, rvc3 );
+        assertThat(rvc1).isNotSameAs(rvc3);
         assertThat(rvc1).isNotEqualTo(rvc3);
         
         // test inline eval
@@ -91,12 +89,12 @@ public class JavaDialectBinaryEqualityTest{
 
         PredicateConstraint pc2 = getPredicateConstraint(p2);
         PredicateExpression pe2 = ( PredicateExpression ) pc2.getPredicateExpression();
-        assertNotSame( pe1, pe2 );
-        assertEquals( pe1, pe2 );
+        assertThat(pe2).isNotSameAs(pe1);
+        assertThat(pe2).isEqualTo(pe1);
         
         PredicateConstraint pc3 = getPredicateConstraint(p3);
         PredicateExpression pe3 = ( PredicateExpression ) pc3.getPredicateExpression();
-        assertNotSame( pe1, pe3 );
+        assertThat(pe1).isNotSameAs(pe3);
         assertThat(pe1).isNotEqualTo(pe3);
         
        // test eval
@@ -105,25 +103,25 @@ public class JavaDialectBinaryEqualityTest{
 
         EvalCondition ec2 = ( EvalCondition ) rule2.getLhs().getChildren().get( 1 );
         EvalExpression ee2 =( EvalExpression) ec2.getEvalExpression();
-        assertNotSame( ee1, ee2 );
-        assertEquals(ee1, ee2 );
+        assertThat(ee2).isNotSameAs(ee1);
+        assertThat(ee2).isEqualTo(ee1);
         
         EvalCondition ec3 = ( EvalCondition ) rule3.getLhs().getChildren().get( 1 );
         EvalExpression ee3 =( EvalExpression) ec3.getEvalExpression();
-        assertNotSame( ee1,ee3 );
+        assertThat(ee1).isNotSameAs(ee3);
         assertThat(ee1).isNotEqualTo(ee3);
         
         // test consequence
-        assertNotSame( rule1.getConsequence(), rule2.getConsequence() );
-        assertEquals(rule1.getConsequence(), rule2.getConsequence() );
-        assertNotSame( rule1.getConsequence(), rule3.getConsequence() );
+        assertThat(rule2.getConsequence()).isNotSameAs(rule1.getConsequence());
+        assertThat(rule2.getConsequence()).isEqualTo(rule1.getConsequence());
+        assertThat(rule1.getConsequence()).isNotSameAs(rule3.getConsequence());
         assertThat(rule1.getConsequence()).isNotEqualTo(rule3.getConsequence());
         
         // check LHS equals
-        assertNotSame(  rule1.getLhs(), rule2.getLhs() );
-        assertEquals( rule1.getLhs(), rule2.getLhs() );
+        assertThat(rule2.getLhs()).isNotSameAs(rule1.getLhs());
+        assertThat(rule2.getLhs()).isEqualTo(rule1.getLhs());
         
-        assertNotSame( rule1.getLhs(), rule3.getLhs() );
+        assertThat(rule1.getLhs()).isNotSameAs(rule3.getLhs());
         assertThat(rule1.getLhs()).isNotEqualTo(rule3.getLhs());
     }
 
@@ -155,8 +153,8 @@ public class JavaDialectBinaryEqualityTest{
         ksession.setGlobal( "list", list );
         ksession.insert( new Person("darth", 34) );
         ksession.fireAllRules();
-        
-        assertEquals( new Person( "darth", 34 ), list.get( 0 ) );
+
+        assertThat(list.get(0)).isEqualTo(new Person( "darth", 34 ));
         
         return kbase.getKiePackage( "org.drools.mvel.compiler.test" );
 
@@ -185,8 +183,8 @@ public class JavaDialectBinaryEqualityTest{
         ksession.setGlobal( "list", list );
         ksession.insert( new Person("darth", 36) );
         ksession.fireAllRules();
-        
-        assertEquals( new Person( "darth", 36 ), list.get( 0 ) );
+
+        assertThat(list.get(0)).isEqualTo(new Person( "darth", 36 ));
 
         return kbase.getKiePackage( "org.drools.mvel.compiler.test" );
     }

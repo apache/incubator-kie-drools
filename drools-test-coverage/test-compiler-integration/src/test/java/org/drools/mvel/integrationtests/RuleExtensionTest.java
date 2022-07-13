@@ -32,9 +32,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class RuleExtensionTest {
@@ -73,7 +71,7 @@ public class RuleExtensionTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
     @Test
@@ -107,12 +105,12 @@ public class RuleExtensionTest {
         knowledgeSession.setGlobal( "list", list );
 
         knowledgeSession.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         knowledgeSession.insert( "go" );
         knowledgeSession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
 
@@ -148,12 +146,12 @@ public class RuleExtensionTest {
         knowledgeSession.setGlobal( "list", list );
 
         knowledgeSession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         knowledgeSession.insert( "go" );
         knowledgeSession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -183,7 +181,7 @@ public class RuleExtensionTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str, str2);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
 
@@ -220,12 +218,12 @@ public class RuleExtensionTest {
         knowledgeSession.setGlobal( "list", list );
 
         knowledgeSession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         knowledgeSession.insert( "go" );
         knowledgeSession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -255,7 +253,7 @@ public class RuleExtensionTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str, str2);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
 
@@ -286,11 +284,11 @@ public class RuleExtensionTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str, str2);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
 
         System.out.println( errors );
-        assertFalse( errors.toString().contains( "Circular" ) );
-        assertTrue( errors.toString().contains( "Base" ) );
+        assertThat(errors.toString().contains("Circular")).isFalse();
+        assertThat(errors.toString().contains("Base")).isTrue();
     }
 
     @Test
@@ -325,12 +323,12 @@ public class RuleExtensionTest {
         knowledgeSession.setGlobal( "list", list );
 
         knowledgeSession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         knowledgeSession.insert( "go" );
         knowledgeSession.fireAllRules();
 
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -371,14 +369,14 @@ public class RuleExtensionTest {
         knowledgeSession.setGlobal( "list", list );
 
         knowledgeSession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         knowledgeSession.insert( 4 );
         knowledgeSession.insert( 6 );
         knowledgeSession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( 10, (int)list.get(0) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(10);
     }
 
     @Test
@@ -418,9 +416,9 @@ public class RuleExtensionTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1, str2, str3);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
+        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
 
-        assertEquals( 1, errors.size() );
-        assertTrue( errors.iterator().next().toString().contains("Circular") );
+        assertThat(errors.size()).isEqualTo(1);
+        assertThat(errors.iterator().next().toString().contains("Circular")).isTrue();
     }
 }

@@ -32,9 +32,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DynamicRuleRemovalTest {
@@ -63,20 +61,20 @@ public class DynamicRuleRemovalTest {
 
         ksession.insert("2");
         ksession.fireAllRules();
-        assertEquals(3, rulesList.size());
-        assertTrue(rulesList.contains("rule1"));
-        assertTrue(rulesList.contains("rule2"));
-        assertTrue(rulesList.contains("rule3"));
+        assertThat(rulesList.size()).isEqualTo(3);
+        assertThat(rulesList.contains("rule1")).isTrue();
+        assertThat(rulesList.contains("rule2")).isTrue();
+        assertThat(rulesList.contains("rule3")).isTrue();
 
         removeRule(kbase, "rule1");
 
         rulesList.clear();
         ksession.insert("3");
         ksession.fireAllRules();
-        assertEquals(2, rulesList.size());
-        assertFalse(rulesList.contains("rule1"));
-        assertTrue(rulesList.contains("rule2"));
-        assertTrue(rulesList.contains("rule3"));
+        assertThat(rulesList.size()).isEqualTo(2);
+        assertThat(rulesList.contains("rule1")).isFalse();
+        assertThat(rulesList.contains("rule2")).isTrue();
+        assertThat(rulesList.contains("rule3")).isTrue();
     }
 
     private void addRule(InternalKnowledgeBase kbase, String ruleName) {

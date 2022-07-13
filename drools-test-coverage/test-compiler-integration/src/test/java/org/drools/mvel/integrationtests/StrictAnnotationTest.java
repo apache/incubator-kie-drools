@@ -50,7 +50,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class StrictAnnotationTest {
@@ -86,7 +86,7 @@ public class StrictAnnotationTest {
                                                  .toXML());
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         Results results = kieBuilder.getResults();
-        assertEquals(1, results.getMessages().size());
+        assertThat(results.getMessages().size()).isEqualTo(1);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class StrictAnnotationTest {
                                                  .toXML());
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         Results results = kieBuilder.getResults();
-        assertEquals(0, results.getMessages().size());
+        assertThat(results.getMessages().size()).isEqualTo(0);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class StrictAnnotationTest {
             ksession.addEventListener(agendaEventListener);
 
             ksession.insert("test");
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -170,7 +170,7 @@ public class StrictAnnotationTest {
             MyClass myClass = new MyClass("test", 1);
             ksession.insert(myClass);
             ksession.fireAllRules();
-            assertEquals(2, myClass.getValue());
+            assertThat(myClass.getValue()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -196,7 +196,7 @@ public class StrictAnnotationTest {
                                                  .toXML());
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         Results results = kieBuilder.getResults();
-        assertEquals(1, results.getMessages().size());
+        assertThat(results.getMessages().size()).isEqualTo(1);
     }
 
     @Test
@@ -230,8 +230,8 @@ public class StrictAnnotationTest {
             ksession.insert(instance);
             ksession.fireAllRules();
 
-            assertEquals(1, names.size());
-            assertEquals("Mark", names.get(0));
+            assertThat(names.size()).isEqualTo(1);
+            assertThat(names.get(0)).isEqualTo("Mark");
         } finally {
             ksession.dispose();
         }
@@ -255,10 +255,8 @@ public class StrictAnnotationTest {
             msg.setDuration( 1000l );
 
             EventFactHandle efh = (EventFactHandle) ksession.insert( msg );
-            assertEquals( 10000,
-                          efh.getStartTimestamp() );
-            assertEquals( 1000,
-                          efh.getDuration() );
+            assertThat(efh.getStartTimestamp()).isEqualTo(10000);
+            assertThat(efh.getDuration()).isEqualTo(1000);
         } finally {
             ksession.dispose();
         }

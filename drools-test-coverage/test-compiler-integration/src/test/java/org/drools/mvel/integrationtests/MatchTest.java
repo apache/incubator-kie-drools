@@ -31,9 +31,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MatchTest {
@@ -85,8 +83,8 @@ public class MatchTest {
         ksession.insert(renaultEspace);
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertTrue(list.contains(lotusElise));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains(lotusElise)).isTrue();
 
         ksession.dispose();
     }
@@ -128,9 +126,9 @@ public class MatchTest {
         ksession.insert(renaultEspace);
 
         ksession.fireAllRules();
-        assertTrue(list.contains(miniVanType));
-        assertTrue(list.contains(kieCarnival));
-        assertTrue(list.contains(renaultEspace));
+        assertThat(list.contains(miniVanType)).isTrue();
+        assertThat(list.contains(kieCarnival)).isTrue();
+        assertThat(list.contains(renaultEspace)).isTrue();
 
         ksession.dispose();
     }
@@ -156,7 +154,7 @@ public class MatchTest {
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
-        assertTrue(list.contains(0L));
+        assertThat(list.contains(0L)).isTrue();
 
         ksession.dispose();
     }
@@ -198,13 +196,13 @@ public class MatchTest {
         ksession.insert(renaultEspace);
 
         ksession.fireAllRules();
-        assertTrue(list.contains(roadsterType));
-        assertTrue(list.contains(bmwZ4));
-        assertTrue(list.contains(lotusElise));
-        assertTrue(list.contains(mazdaMx5));
-        assertFalse(list.contains(miniVanType));
-        assertFalse(list.contains(kiaCarnival));
-        assertFalse(list.contains(renaultEspace));
+        assertThat(list.contains(roadsterType)).isTrue();
+        assertThat(list.contains(bmwZ4)).isTrue();
+        assertThat(list.contains(lotusElise)).isTrue();
+        assertThat(list.contains(mazdaMx5)).isTrue();
+        assertThat(list.contains(miniVanType)).isFalse();
+        assertThat(list.contains(kiaCarnival)).isFalse();
+        assertThat(list.contains(renaultEspace)).isFalse();
 
         ksession.dispose();
     }
@@ -235,8 +233,8 @@ public class MatchTest {
         ksession.setGlobal( "list", list );
         ksession.insert("");
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( 0.0, list.get(0) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo(0.0);
     }
 
     @Test
@@ -275,8 +273,8 @@ public class MatchTest {
 
         kieSession.fireAllRules();
 
-        assertTrue(list.contains(comp));
-        assertTrue(list.contains(5));
+        assertThat(list.contains(comp)).isTrue();
+        assertThat(list.contains(5)).isTrue();
 
         kieSession.dispose();
     }
@@ -349,10 +347,10 @@ public class MatchTest {
         ksession.insert(renaultEspace);
 
         ksession.fireAllRules();
-        assertTrue(list.contains(roadsterType));
-        assertTrue(list.contains(bmwZ4));
-        assertTrue(list.contains(lotusElise));
-        assertTrue(list.contains(mazdaMx5));
+        assertThat(list.contains(roadsterType)).isTrue();
+        assertThat(list.contains(bmwZ4)).isTrue();
+        assertThat(list.contains(lotusElise)).isTrue();
+        assertThat(list.contains(mazdaMx5)).isTrue();
 
         ksession.dispose();
     }
@@ -397,13 +395,13 @@ public class MatchTest {
         ksession.insert(renaultEspace);
 
         ksession.fireAllRules();
-        assertTrue(list.contains(roadsterType));
-        assertFalse(list.contains(bmwZ4));
-        assertFalse(list.contains(lotusElise));
-        assertFalse(list.contains(mazdaMx5));
-        assertTrue(list.contains(miniVanType));
-        assertTrue(list.contains(kiaCarnival));
-        assertTrue(list.contains(renaultEspace));
+        assertThat(list.contains(roadsterType)).isTrue();
+        assertThat(list.contains(bmwZ4)).isFalse();
+        assertThat(list.contains(lotusElise)).isFalse();
+        assertThat(list.contains(mazdaMx5)).isFalse();
+        assertThat(list.contains(miniVanType)).isTrue();
+        assertThat(list.contains(kiaCarnival)).isTrue();
+        assertThat(list.contains(renaultEspace)).isTrue();
 
         ksession.dispose();
     }

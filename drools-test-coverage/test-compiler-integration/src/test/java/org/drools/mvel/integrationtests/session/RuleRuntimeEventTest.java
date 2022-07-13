@@ -33,7 +33,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -65,17 +65,17 @@ public class RuleRuntimeEventTest {
 
         final ArgumentCaptor<ObjectInsertedEvent> oic = ArgumentCaptor.forClass(org.kie.api.event.rule.ObjectInsertedEvent.class);
         verify(wmel).objectInserted(oic.capture());
-        assertSame(stiltonHandle, oic.getValue().getFactHandle());
+        assertThat(oic.getValue().getFactHandle()).isSameAs(stiltonHandle);
 
         wm.update(stiltonHandle, stilton);
         final ArgumentCaptor<org.kie.api.event.rule.ObjectUpdatedEvent> ouc = ArgumentCaptor.forClass(org.kie.api.event.rule.ObjectUpdatedEvent.class);
         verify(wmel).objectUpdated(ouc.capture());
-        assertSame(stiltonHandle, ouc.getValue().getFactHandle());
+        assertThat(ouc.getValue().getFactHandle()).isSameAs(stiltonHandle);
 
         wm.delete(stiltonHandle);
         final ArgumentCaptor<ObjectDeletedEvent> orc = ArgumentCaptor.forClass(ObjectDeletedEvent.class);
         verify(wmel).objectDeleted(orc.capture());
-        assertSame(stiltonHandle, orc.getValue().getFactHandle());
+        assertThat(orc.getValue().getFactHandle()).isSameAs(stiltonHandle);
 
     }
 

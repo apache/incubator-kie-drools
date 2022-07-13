@@ -36,7 +36,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class PropertyReactivityBlockerTest {
@@ -83,8 +83,8 @@ public class PropertyReactivityBlockerTest {
         ksession.update(fh_mario, mario, "age");
         
         int x = ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("t0", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("t0");
     }
     
     @Test()
@@ -126,8 +126,8 @@ public class PropertyReactivityBlockerTest {
         FactHandle fh_mario = ksession.insert(mario);
         ksession.insert(mark);
         int x = ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("t0", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("t0");
     }
     
     @Test()
@@ -161,8 +161,8 @@ public class PropertyReactivityBlockerTest {
         ksession.update(fh_mario, mario, "age");
         
         int x = ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("t0", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("t0");
     }
     
     @Test()
@@ -203,8 +203,8 @@ public class PropertyReactivityBlockerTest {
         FactHandle fh_mario = ksession.insert(mario);
         ksession.insert(mark);
         int x = ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("t0", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("t0");
     }
     
     @Test()
@@ -268,7 +268,7 @@ public class PropertyReactivityBlockerTest {
         System.out.println("c0: "+c0);
         System.out.println("c1: "+c1);
         System.out.println("n:" +n);
-        assertEquals(1, list.size());
-        assertEquals("C", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("C");
     }
 }
