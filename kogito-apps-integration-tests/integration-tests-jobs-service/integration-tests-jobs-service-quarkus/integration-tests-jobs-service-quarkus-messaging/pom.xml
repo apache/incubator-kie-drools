@@ -17,6 +17,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-jobs-messaging</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
