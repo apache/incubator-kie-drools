@@ -15,10 +15,10 @@
  */
 package org.kie.pmml.api.identifiers;
 
-import org.kie.efesto.identifiers.api.application.Id;
-import org.kie.efesto.identifiers.api.application.LocalId;
-import org.kie.efesto.identifiers.api.application.LocalUri;
-import org.kie.efesto.identifiers.api.application.LocalUriId;
+import org.kie.efesto.common.api.identifiers.Id;
+import org.kie.efesto.common.api.identifiers.LocalId;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.LocalUriId;
 
 public class LocalPredictionId extends LocalUriId implements Id {
     public static final String PREFIX = "predictions";

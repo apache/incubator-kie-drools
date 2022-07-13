@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.efesto.identifiers.api.rules;
+package org.kie.drl.api.identifiers;
 
-import org.kie.efesto.identifiers.api.application.ComponentRoot;
+import org.kie.efesto.common.api.identifiers.ComponentRoot;
 
 public class RuleUnitIds implements ComponentRoot {
     public RuleUnitId get(Class<?> ruleUnitDefinition) {

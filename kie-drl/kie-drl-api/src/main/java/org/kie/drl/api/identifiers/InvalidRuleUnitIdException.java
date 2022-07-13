@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.efesto.identifiers.api.rules;
+package org.kie.drl.api.identifiers;
 
-import org.kie.efesto.identifiers.api.application.LocalId;
+import org.kie.efesto.common.api.identifiers.LocalId;
 
 public class InvalidRuleUnitIdException extends IllegalArgumentException {
     public InvalidRuleUnitIdException(LocalId id) {

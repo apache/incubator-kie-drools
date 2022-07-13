@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.efesto.identifiers.api.rules;
+package org.kie.drl.api.identifiers;
 
 public class QueryIds {
     private final RuleUnitId ruleUnitId;

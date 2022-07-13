@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.efesto.identifiers.api.rules;
+package org.kie.drl.api.identifiers;
 
-import org.kie.efesto.identifiers.api.application.LocalId;
-import org.kie.efesto.identifiers.api.application.LocalUriId;
+import org.kie.efesto.common.api.identifiers.LocalId;
+import org.kie.efesto.common.api.identifiers.LocalUriId;
 
 public class InstanceQueryId extends LocalUriId implements LocalId {
     public static final String PREFIX = "queries";

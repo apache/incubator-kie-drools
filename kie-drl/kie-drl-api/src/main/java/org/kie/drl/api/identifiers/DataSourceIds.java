@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.efesto.identifiers.api.rules;
+package org.kie.drl.api.identifiers;
 
-import org.kie.efesto.identifiers.api.rules.data.DataSourceId;
+import org.kie.drl.api.identifiers.data.DataSourceId;
 
 public class DataSourceIds {
     private final RuleUnitInstanceId ruleUnitInstanceId;

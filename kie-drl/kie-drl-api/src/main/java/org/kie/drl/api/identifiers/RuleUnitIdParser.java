@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.efesto.identifiers.api.rules;
+package org.kie.drl.api.identifiers;
 
 import java.util.StringTokenizer;
 
-import org.kie.efesto.identifiers.api.application.LocalId;
+import org.kie.efesto.common.api.identifiers.LocalId;
 
 public class RuleUnitIdParser {
     public static LocalId parse(String id) {

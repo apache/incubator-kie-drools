@@ -16,9 +16,9 @@
 
 package org.kie.dmn.api.identifiers;
 
-import org.kie.efesto.identifiers.api.application.Id;
-import org.kie.efesto.identifiers.api.application.LocalId;
-import org.kie.efesto.identifiers.api.application.LocalUriId;
+import org.kie.efesto.common.api.identifiers.Id;
+import org.kie.efesto.common.api.identifiers.LocalId;
+import org.kie.efesto.common.api.identifiers.LocalUriId;
 
 public class LocalDecisionServiceId extends LocalUriId implements LocalId {
     public static final String PREFIX = "services";

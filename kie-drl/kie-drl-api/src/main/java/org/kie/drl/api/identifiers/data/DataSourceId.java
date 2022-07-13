@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.efesto.identifiers.api.rules.data;
+package org.kie.drl.api.identifiers.data;
 
-import org.kie.efesto.identifiers.api.application.LocalId;
-import org.kie.efesto.identifiers.api.application.LocalUriId;
-import org.kie.efesto.identifiers.api.rules.RuleUnitInstanceId;
+import org.kie.drl.api.identifiers.RuleUnitInstanceId;
+import org.kie.efesto.common.api.identifiers.LocalId;
+import org.kie.efesto.common.api.identifiers.LocalUriId;
 
 public class DataSourceId extends LocalUriId implements LocalId {
     public static final String PREFIX = "data-sources";
