@@ -17,12 +17,19 @@
 package org.drools.model.codegen.execmodel;
 
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.math3.util.Pair;
+import org.assertj.core.api.Assertions;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.internal.event.rule.RuleEventListener;
+import org.kie.internal.event.rule.RuleEventManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.codegen.execmodel.CepTest.getCepKieModuleModel;
@@ -319,5 +326,64 @@ public class ExisistentialTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( drl1 );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+
+    @Test
+    public void testExistsWithAJoin() {
+        // DROOLS-7065
+        final String drl1 =
+                "package org.drools.compiler\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Pair.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  Pair($right: value)\n" +
+                "  exists Person(name != null, this == $right)\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        AtomicInteger matchCount = new AtomicInteger(0); // Atomic only so that I get an effectively-final int.
+        ((RuleEventManager) ksession).addEventListener(new RuleEventListener() {
+            @Override
+            public void onAfterMatchFire(Match match) {
+                System.out.println("Fired " + match.getObjects());
+                matchCount.incrementAndGet();
+            }
+
+            @Override
+            public void onDeleteMatch(Match match) {
+                System.out.println("Deleted " + match.getObjects());
+                matchCount.decrementAndGet();
+            }
+
+        });
+
+        Person lukas = new Person( "Lukas", 37 );
+        Person mario = new Person( "Mario", 40 );
+        Person mark = new Person( "Mark", 37 );
+        Pair<Person, Person> pair = Pair.create(mario, lukas);
+        Pair<Person, Person> pair2 = Pair.create(mark, lukas);
+
+        ksession.insert(pair);
+        ksession.insert(pair2);
+        FactHandle lukasFh = ksession.insert(lukas);
+        FactHandle marioFh = ksession.insert(mario);
+        ksession.insert(mark);
+        ksession.fireAllRules();
+        Assertions.assertThat(matchCount).hasValue(2);
+        // Now we have two matches Mario+Lukas, Mark+Lukas.
+
+        mario.setName("Also Mario");
+        ksession.update(marioFh, mario); // If we don't make this update, the test passes.
+        lukas.setName(null);
+        ksession.update(lukasFh, lukas);
+        ksession.fireAllRules();
+        // We have set Lukas' name to null,
+        // therefore "exists Person(getName() != null)" no longer matches,
+        // therefore both matches should have been removed.
+        Assertions.assertThat(matchCount).hasValue(0);
+        // Yet only one was removed.
     }
 }
