@@ -83,5 +83,9 @@
        <groupId>io.grpc</groupId>
        <artifactId>grpc-stub</artifactId>
      </dependency>
-  </dependencies>
+     <dependency>
+       <groupId>com.google.protobuf</groupId>
+       <artifactId>protobuf-java-util</artifactId>
+     </dependency>
+   </dependencies>
 </project>

@@ -22,7 +22,8 @@
             "refName": "sayHello",
             "arguments": {
               "name": ".name",
-              "language": ".language"
+              "language": ".language",
+              "innerHello" : {"unknown": ".unknown"}
             }
           }
         }
