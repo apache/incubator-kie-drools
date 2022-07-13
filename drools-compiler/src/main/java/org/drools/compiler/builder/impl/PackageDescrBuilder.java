@@ -15,11 +15,7 @@
  */
 package org.drools.compiler.builder.impl;
 
-import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
-import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
-import org.drools.compiler.builder.impl.resources.DslrResourceHandler;
 import org.drools.compiler.builder.impl.resources.ResourceHandler;
-import org.drools.compiler.builder.impl.resources.TemplateResourceHandler;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
@@ -34,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static java.util.Arrays.asList;
 
 public class PackageDescrBuilder {
     private final BuildResultCollector buildResultCollector;
