@@ -887,9 +887,6 @@ public class RuleNetworkEvaluator {
         if ( rtm.getIndexType() != TupleMemory.IndexType.NONE) {
             for ( RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext() ) {
                 rtm.remove( rightTuple );
-                if (rightTuple.getBlocked() != null) {
-                    rightTuple.removeBlocked(rightTuple.getBlocked());
-                }
             }
         }
 
