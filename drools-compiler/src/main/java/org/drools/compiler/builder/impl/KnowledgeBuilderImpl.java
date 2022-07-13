@@ -329,114 +329,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
     }
 
-    private PackageDescr generatedDrlToPackageDescr(Resource resource, String generatedDrl) throws DroolsParserException {
-        // dump the generated DRL if the dump dir was configured
-        if (this.configuration.getDumpDir() != null) {
-            dumpDrlGeneratedFromDTable(this.configuration.getDumpDir(), generatedDrl, resource.getSourcePath());
-        }
-
-        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-        PackageDescr pkg = parser.parse(resource, new StringReader(generatedDrl));
-        this.results.addAll(parser.getErrors());
-        if (pkg == null) {
-            addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
-        } else {
-            pkg.setResource(resource);
-        }
-        return parser.hasErrors() ? null : pkg;
-    }
-
-    PackageDescr generatedDslrToPackageDescr(Resource resource, String dslr) throws DroolsParserException {
-        return dslrReaderToPackageDescr(resource, new StringReader(dslr));
-    }
-
-    private void dumpDrlGeneratedFromDTable(File dumpDir, String generatedDrl, String srcPath) {
-        String fileName = srcPath != null ? srcPath : "decision-table-" + UUID.randomUUID();
-        if (releaseId != null) {
-            fileName = releaseId.getGroupId() + "_" + releaseId.getArtifactId() + "_" + fileName;
-        }
-        File dumpFile = createDumpDrlFile(dumpDir, fileName, ".drl");
-        try {
-            IoUtils.write(dumpFile, generatedDrl.getBytes(IoUtils.UTF8_CHARSET));
-        } catch (IOException ex) {
-            // nothing serious, just failure when writing the generated DRL to file, just log the exception and continue
-            logger.warn("Can't write the DRL generated from decision table to file " + dumpFile.getAbsolutePath() + "!\n" +
-                                Arrays.toString(ex.getStackTrace()));
-        }
-    }
-
     public static File createDumpDrlFile(File dumpDir, String fileName, String extension) {
         return new File(dumpDir, fileName.replaceAll("[^a-zA-Z0-9\\.\\-_]+", "_") + extension);
-    }
-
-    public void addPackageFromTemplate(Resource resource) throws DroolsParserException,
-            IOException {
-        addPackageWithResource(templateToPackageDescr(resource), resource);
-    }
-
-    PackageDescr templateToPackageDescr(Resource resource) throws DroolsParserException, IOException {
-        GuidedRuleTemplateProvider guidedRuleTemplateProvider = GuidedRuleTemplateFactory.getGuidedRuleTemplateProvider();
-        if (guidedRuleTemplateProvider == null) {
-            throw new MissingImplementationException(resource, "drools-workbench-models-guided-template");
-        }
-        ResourceConversionResult conversionResult = guidedRuleTemplateProvider.loadFromInputStream(resource.getInputStream());
-        return conversionResultToPackageDescr(resource, conversionResult);
-    }
-
-    private PackageDescr conversionResultToPackageDescr(Resource resource, ResourceConversionResult resourceConversionResult)
-            throws DroolsParserException {
-        ResourceType resourceType = resourceConversionResult.getType();
-        if (ResourceType.DSLR.equals(resourceType)) {
-            return generatedDslrToPackageDescr(resource, resourceConversionResult.getContent());
-        } else if (ResourceType.DRL.equals(resourceType)) {
-            return generatedDrlToPackageDescr(resource, resourceConversionResult.getContent());
-        } else {
-            throw new RuntimeException("Converting generated " + resourceType + " into PackageDescr is not supported!");
-        }
-    }
-
-    public void addPackageFromDrl(Resource resource) throws DroolsParserException,
-            IOException {
-        addPackageWithResource(new DrlResourceHandler(configuration).process(resource), resource);
-    }
-
-    PackageDescr dslrToPackageDescr(Resource resource) throws DroolsParserException,
-            IOException {
-        return dslrReaderToPackageDescr(resource, resource.getReader());
-    }
-
-    private PackageDescr dslrReaderToPackageDescr(Resource resource, Reader dslrReader) throws DroolsParserException {
-        boolean hasErrors;
-        PackageDescr pkg;
-
-        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-        DefaultExpander expander = getDslExpander();
-
-        try {
-            try {
-                if (expander == null) {
-                    expander = new DefaultExpander();
-                }
-                String str = expander.expand(dslrReader);
-                if (expander.hasErrors()) {
-                    for (ExpanderException error : expander.getErrors()) {
-                        error.setResource(resource);
-                        addBuilderResult(error);
-                    }
-                }
-
-                pkg = parser.parse(resource, str);
-                this.results.addAll(parser.getErrors());
-                hasErrors = parser.hasErrors();
-            } finally {
-                if (dslrReader != null) {
-                    dslrReader.close();
-                }
-            }
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
-        }
-        return hasErrors ? null : pkg;
     }
 
     public void addDsl(Resource resource) throws IOException {
@@ -459,6 +353,13 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     /**
      * Add a ruleflow (.rfm) asset to this package.
      */
+    public void addRuleFlow(Reader processSource) {
+        addKnowledgeResource(
+                new ReaderResource(processSource, ResourceType.DRF),
+                ResourceType.DRF,
+                null);
+    }
+
     @Deprecated
     public void addProcessFromXml(Resource resource) {
         addKnowledgeResource(
@@ -500,10 +401,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 addPackageWithResource(descr, resource);
             } else if (ResourceType.XSD.equals(type)) {
                 addPackageFromXSD(resource, configuration);
-            } else if (ResourceType.TDRL.equals(type)) {
-                addPackageFromDrl(resource);
-            } else if (ResourceType.TEMPLATE.equals(type)) {
-                addPackageFromTemplate(resource);
             } else {
                 addPackageForExternalType(resource, type, configuration);
             }
