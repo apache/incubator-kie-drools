@@ -32,7 +32,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.command.CommandFactory;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class RegisterWorkItemHandlerTest {
@@ -80,7 +80,7 @@ public class RegisterWorkItemHandlerTest {
                 
             }
         },  "wihandler" ) );
-        
-        assertTrue( answer[0] );
+
+        assertThat(answer[0]).isTrue();
     }
 }

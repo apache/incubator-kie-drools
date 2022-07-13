@@ -38,8 +38,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class PassiveQueryTest {
@@ -79,16 +78,16 @@ public class PassiveQueryTest {
         ksession.insert(1);
         ksession.insert("2");
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         ksession.insert("1");
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         ksession.insert(2);
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals(2, (int)list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(2);
     }
 
     @Test
@@ -114,7 +113,7 @@ public class PassiveQueryTest {
         ksession.insert(1);
         ksession.insert("1");
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -140,7 +139,7 @@ public class PassiveQueryTest {
         ksession.insert(1);
         ksession.insert("1");
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
     }
 
     @Test
@@ -166,7 +165,7 @@ public class PassiveQueryTest {
         ksession.insert(1);
         ksession.insert("1");
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test
@@ -194,7 +193,7 @@ public class PassiveQueryTest {
         ksession.insert(2);
         ksession.insert("2");
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
     }
 
     @Test
@@ -226,8 +225,8 @@ public class PassiveQueryTest {
         ksession.insert(1);
         ksession.insert("1");
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("R2", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("R2");
     }
 
     @Test
@@ -272,8 +271,8 @@ public class PassiveQueryTest {
         ksession.insert(1L);
         ksession.insert("1");
         ksession.fireAllRules();
-        assertEquals(2, list.size());
-        assertTrue(list.containsAll(asList("R2a", "R2b")));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(asList("R2a", "R2b"))).isTrue();
     }
 
     @Test
@@ -331,17 +330,17 @@ public class PassiveQueryTest {
         wm.flushPropagations();
 
         Memory memory1 = wm.getNodeMemory(q1);
-        assertTrue(memory1.getSegmentMemory().getStagedLeftTuples().isEmpty());
+        assertThat(memory1.getSegmentMemory().getStagedLeftTuples().isEmpty()).isTrue();
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("R2", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("R2");
 
         list.clear();
 
         ksession.delete(fh);
         ksession.insert(1);
         ksession.fireAllRules();
-        assertEquals(3, list.size());
+        assertThat(list.size()).isEqualTo(3);
     }
 }

@@ -25,10 +25,8 @@ import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class MVELClassFieldExtractorTest {
 
@@ -174,11 +172,10 @@ public class MVELClassFieldExtractorTest {
     @Test
     public void testGetValue() {
         try {
-            assertEquals( home[0].getStreet(),
-                                 this.extractor.getValue( null,
-                                                          this.person[0] ) );
-            assertTrue( this.extractor.getValue( null,
-                                                        this.person[0] ) instanceof String );
+            assertThat(this.extractor.getValue(null,
+                    this.person[0])).isEqualTo(home[0].getStreet());
+            assertThat(this.extractor.getValue(null,
+                    this.person[0]) instanceof String).isTrue();
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -187,8 +184,8 @@ public class MVELClassFieldExtractorTest {
     @Test
     public void testIsNullValue() {
         try {
-            assertFalse( this.extractor.isNullValue( null,
-                                                     this.person[0] ) );
+            assertThat(this.extractor.isNullValue(null,
+                    this.person[0])).isFalse();
             
             MVELObjectClassFieldReader nullExtractor =  ( MVELObjectClassFieldReader ) store.getMVELReader(  Person.class.getPackage().getName(),
                                                                                                              Person.class.getName(),
@@ -199,13 +196,13 @@ public class MVELClassFieldExtractorTest {
             data.addImport( Person.class.getSimpleName(), Person.class );
             data.onAdd( null, ProjectClassLoader.createProjectClassLoader() );
             
-            nullExtractor.compile( data );            
+            nullExtractor.compile( data );
 //
 //            InternalReadAccessor nullExtractor = store.getReader( Person.class,
 //                                                                  "addresses['business'].phone",
 //                                                                  getClass().getClassLoader() );
-            assertTrue( nullExtractor.isNullValue( null,
-                                                   this.person[0] ) );
+            assertThat(nullExtractor.isNullValue(null,
+                    this.person[0])).isTrue();
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }

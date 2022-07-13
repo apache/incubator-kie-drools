@@ -45,8 +45,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.builder.KieModule;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class NodesPartitioningTest {
@@ -104,25 +103,25 @@ public class NodesPartitioningTest {
 
     private void checkNode(NetworkNode node) {
         if (node instanceof EntryPointNode) {
-            assertSame( RuleBasePartitionId.MAIN_PARTITION, node.getPartitionId() );
+            assertThat(node.getPartitionId()).isSameAs(RuleBasePartitionId.MAIN_PARTITION);
         } else if (node instanceof ObjectTypeNode) {
-            assertSame( RuleBasePartitionId.MAIN_PARTITION, node.getPartitionId() );
+            assertThat(node.getPartitionId()).isSameAs(RuleBasePartitionId.MAIN_PARTITION);
             checkPartitionedSinks((ObjectTypeNode) node);
         } else if (node instanceof ObjectSource ) {
             ObjectSource source = ( (ObjectSource) node ).getParentObjectSource();
             if ( !(source instanceof ObjectTypeNode) ) {
-                assertSame( source.getPartitionId(), node.getPartitionId() );
+                assertThat(node.getPartitionId()).isSameAs(source.getPartitionId());
             }
         } else if (node instanceof BetaNode ) {
             ObjectSource rightInput = ( (BetaNode) node ).getRightInput();
             if ( !(rightInput instanceof ObjectTypeNode) ) {
-                assertSame( rightInput.getPartitionId(), node.getPartitionId() );
+                assertThat(node.getPartitionId()).isSameAs(rightInput.getPartitionId());
             }
             LeftTupleSource leftInput = ( (BetaNode) node ).getLeftTupleSource();
-            assertSame( leftInput.getPartitionId(), node.getPartitionId() );
+            assertThat(node.getPartitionId()).isSameAs(leftInput.getPartitionId());
         } else if (node instanceof TerminalNode ) {
             LeftTupleSource leftInput = ( (TerminalNode) node ).getLeftTupleSource();
-            assertSame( leftInput.getPartitionId(), node.getPartitionId() );
+            assertThat(node.getPartitionId()).isSameAs(leftInput.getPartitionId());
         }
     }
 
@@ -136,8 +135,7 @@ public class NodesPartitioningTest {
                                              new ObjectSinkPropagator[] { sinkPropagator };
         for (int i = 0; i < propagators.length; i++) {
             for (ObjectSink sink : propagators[i].getSinks()) {
-                assertEquals( sink + " on " + sink.getPartitionId() + " is expcted to be on propagator " + i,
-                              i, sink.getPartitionId().getId() % propagators.length );
+                assertThat(sink.getPartitionId().getId() % propagators.length).as(sink + " on " + sink.getPartitionId() + " is expcted to be on propagator " + i).isEqualTo(i);
             }
         }
     }

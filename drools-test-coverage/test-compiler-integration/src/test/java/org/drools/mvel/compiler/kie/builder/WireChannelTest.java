@@ -37,9 +37,8 @@ import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class WireChannelTest {
@@ -69,9 +68,9 @@ public class WireChannelTest {
 
         KieSession ksession = kieContainer.newKieSession();
         ksession.fireAllRules();
-        
-        assertEquals(1, channelMessages.size());
-        assertEquals("Test Message", channelMessages.get(0));
+
+        assertThat(channelMessages.size()).isEqualTo(1);
+        assertThat(channelMessages.get(0)).isEqualTo("Test Message");
     }
 
     private void build(KieServices ks, ReleaseId releaseId) throws IOException {
@@ -87,7 +86,7 @@ public class WireChannelTest {
            .write("src/main/resources/KBase1/rules.drl", createDRL());
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertTrue(kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages().isEmpty()).isTrue();
     }
 
     private String createDRL() {

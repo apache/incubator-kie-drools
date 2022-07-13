@@ -28,8 +28,7 @@ import org.drools.core.test.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DeclarationTest {
 
@@ -55,17 +54,13 @@ public class DeclarationTest {
                                                          extractor,
                                                          pattern );
 
-        assertEquals( "typeOfCheese",
-                      declaration.getIdentifier() );
+        assertThat(declaration.getIdentifier()).isEqualTo("typeOfCheese");
 
-        assertSame( String.class,
-                    declaration.getDeclarationClass() );
+        assertThat(declaration.getDeclarationClass()).isSameAs(String.class);
 
-        assertSame( extractor,
-                    declaration.getExtractor() );
+        assertThat(declaration.getExtractor()).isSameAs(extractor);
 
-        assertEquals( 5,
-                      declaration.getPattern().getPatternId());
+        assertThat(declaration.getPattern().getPatternId()).isEqualTo(5);
 
     }
 
@@ -88,9 +83,8 @@ public class DeclarationTest {
                                            5 );
 
         // Check we can extract Declarations correctly
-        assertEquals( "cheddar",
-                      declaration.getValue( null,
-                                            cheddar ) );
+        assertThat(declaration.getValue(null,
+                cheddar)).isEqualTo("cheddar");
     }
 
     public static int getIndex(final Class clazz,

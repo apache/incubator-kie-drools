@@ -31,19 +31,13 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.testcoverage.common.model.Address;
-import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.EvaluatorOption;
-
-import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class CustomOperatorOnlyDrlTest {

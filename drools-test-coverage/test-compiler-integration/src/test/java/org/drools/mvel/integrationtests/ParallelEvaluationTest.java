@@ -59,9 +59,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class ParallelEvaluationTest {
@@ -90,10 +87,10 @@ public class ParallelEvaluationTest {
 
         EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNode( EntryPointId.DEFAULT );
         ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( Integer.class ) );
-        assertTrue( ( (CompositePartitionAwareObjectSinkAdapter) otn.getObjectSinkPropagator() ).isHashed() );
+        assertThat(((CompositePartitionAwareObjectSinkAdapter) otn.getObjectSinkPropagator()).isHashed()).isTrue();
 
         KieSession ksession = kbase.newKieSession();
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
@@ -105,7 +102,7 @@ public class ParallelEvaluationTest {
 
         ksession.fireAllRules();
 
-        assertEquals(10, list.size());
+        assertThat(list.size()).isEqualTo(10);
     }
 
     @Test(timeout = 40000L)
@@ -122,7 +119,7 @@ public class ParallelEvaluationTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession();
 
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
@@ -134,7 +131,7 @@ public class ParallelEvaluationTest {
 
         ksession.fireAllRules();
 
-        assertEquals(ruleNr, list.size());
+        assertThat(list.size()).isEqualTo(ruleNr);
     }
 
     @Test(timeout = 40000L)
@@ -152,7 +149,7 @@ public class ParallelEvaluationTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession();
 
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
@@ -164,7 +161,7 @@ public class ParallelEvaluationTest {
 
         ksession.fireAllRules();
 
-        assertEquals(20, list.size());
+        assertThat(list.size()).isEqualTo(20);
     }
 
     @Test(timeout = 40000L)
@@ -181,7 +178,7 @@ public class ParallelEvaluationTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession();
 
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
         StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl) ksession;
 
@@ -195,7 +192,7 @@ public class ParallelEvaluationTest {
 
         ksession.fireAllRules();
 
-        assertEquals(ruleNr, list.size());
+        assertThat(list.size()).isEqualTo(ruleNr);
     }
 
     private String getRule(int i, String rhs) {
@@ -233,7 +230,7 @@ public class ParallelEvaluationTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession();
 
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
         CountDownLatch done = new CountDownLatch(1);
 
@@ -257,7 +254,7 @@ public class ParallelEvaluationTest {
                 throw new RuntimeException( e );
             }
 
-            assertEquals(10, list.size());
+            assertThat(list.size()).isEqualTo(10);
         } finally {
             ksession.halt();
             ksession.dispose();
@@ -287,7 +284,7 @@ public class ParallelEvaluationTest {
         for (int loop = 0; loop < 10; loop++) {
             System.out.println("Starting loop " + loop);
             KieSession ksession = kbase.newKieSession();
-            assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+            assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
             CountDownLatch done = new CountDownLatch( 1 );
             ksession.setGlobal( "done", done );
@@ -313,7 +310,7 @@ public class ParallelEvaluationTest {
                     throw new RuntimeException( e );
                 }
 
-                assertEquals( fireNr, counter.get() );
+                assertThat(counter.get()).isEqualTo(fireNr);
             } finally {
                 ksession.halt();
                 ksession.dispose();
@@ -380,7 +377,7 @@ public class ParallelEvaluationTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession();
 
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
         StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl) ksession;
 
@@ -406,7 +403,7 @@ public class ParallelEvaluationTest {
                 throw new RuntimeException( e );
             }
 
-            assertEquals(10, list.size());
+            assertThat(list.size()).isEqualTo(10);
         } finally {
             ksession.halt();
             ksession.dispose();
@@ -436,7 +433,7 @@ public class ParallelEvaluationTest {
         InternalWorkingMemory session = (InternalWorkingMemory) ksession;
 
         // since there is only one partition the multithread evaluation should be disabled and run with the DefaultAgenda
-        assertFalse( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isFalse();
     }
 
     @Test(timeout = 40000L)
@@ -457,7 +454,7 @@ public class ParallelEvaluationTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
         PseudoClockScheduler sessionClock = ksession.getSessionClock();
         sessionClock.setStartupTime(0);
@@ -471,16 +468,16 @@ public class ParallelEvaluationTest {
 
         ksession.fireAllRules();
 
-        assertEquals(10, list.size());
-        assertEquals( 10L, ksession.getFactCount() );
+        assertThat(list.size()).isEqualTo(10);
+        assertThat(ksession.getFactCount()).isEqualTo(10L);
 
         sessionClock.advanceTime( 29, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
-        assertEquals( 5L, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(5L);
 
         sessionClock.advanceTime( 12, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
-        assertEquals( 0L, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(0L);
     }
 
     @Test(timeout = 40000L)
@@ -500,7 +497,7 @@ public class ParallelEvaluationTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
@@ -511,7 +508,7 @@ public class ParallelEvaluationTest {
 
         ksession.fireAllRules();
 
-        assertEquals(10, list.size());
+        assertThat(list.size()).isEqualTo(10);
     }
 
      public static class MyEvent {
@@ -585,7 +582,7 @@ public class ParallelEvaluationTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
         PseudoClockScheduler sessionClock = ksession.getSessionClock();
         sessionClock.setStartupTime(0);
@@ -609,7 +606,7 @@ public class ParallelEvaluationTest {
                 throw new RuntimeException( e );
             }
 
-            assertEquals( 10, list.size() );
+            assertThat(list.size()).isEqualTo(10);
             list.clear();
 
             CountDownLatch done2 = new CountDownLatch(1);
@@ -626,7 +623,7 @@ public class ParallelEvaluationTest {
                 throw new RuntimeException( e );
             }
 
-            assertEquals( 5, list.size() );
+            assertThat(list.size()).isEqualTo(5);
             list.clear();
 
             CountDownLatch done3 = new CountDownLatch(1);
@@ -641,7 +638,7 @@ public class ParallelEvaluationTest {
                 throw new RuntimeException( e );
             }
 
-            assertEquals( 5, list.size() );
+            assertThat(list.size()).isEqualTo(5);
         } finally {
             ksession.halt();
             ksession.dispose();
@@ -696,7 +693,7 @@ public class ParallelEvaluationTest {
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         try {
-            assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+            assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
             PseudoClockScheduler sessionClock = ksession.getSessionClock();
             sessionClock.setStartupTime( 0 );
@@ -716,7 +713,7 @@ public class ParallelEvaluationTest {
             }
 
             fireLatch.await();
-            assertEquals( eventsNr * 4, counter.get() );
+            assertThat(counter.get()).isEqualTo(eventsNr * 4);
         } finally {
             ksession.halt();
             ksession.dispose();
@@ -735,7 +732,7 @@ public class ParallelEvaluationTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession();
 
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
@@ -748,7 +745,7 @@ public class ParallelEvaluationTest {
         }
 
         ksession.fireAllRules();
-        assertEquals(10, list.size());
+        assertThat(list.size()).isEqualTo(10);
 
         list.clear();
 
@@ -757,7 +754,7 @@ public class ParallelEvaluationTest {
         }
 
         ksession.fireAllRules();
-        assertEquals(10, list.size());
+        assertThat(list.size()).isEqualTo(10);
     }
 
     @Test(timeout = 40000L)
@@ -779,7 +776,7 @@ public class ParallelEvaluationTest {
         KieSession ksession = kbase.newKieSession();
 
         // multithread evaluation is not allowed when using agenda-groups
-        assertFalse( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isFalse();
 
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
@@ -791,7 +788,7 @@ public class ParallelEvaluationTest {
 
         ksession.fireAllRules();
 
-        assertEquals(10, list.size());
+        assertThat(list.size()).isEqualTo(10);
     }
 
     @Test(timeout = 40000L)
@@ -808,7 +805,7 @@ public class ParallelEvaluationTest {
         KieSession ksession = kbase.newKieSession();
 
         // multithread evaluation is not allowed when using salience
-        assertFalse( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+        assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isFalse();
 
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
@@ -820,8 +817,8 @@ public class ParallelEvaluationTest {
 
         ksession.fireAllRules();
 
-        assertEquals(10, list.size());
-        assertEquals( list, Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1, 0) );
+        assertThat(list.size()).isEqualTo(10);
+        assertThat(Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)).isEqualTo(list);
     }
 
     @Test(timeout = 40000L)
@@ -853,7 +850,7 @@ public class ParallelEvaluationTest {
         return new Callable<Void>() {
             @Override public Void call() {
                 KieSession ksession = kBase.newKieSession();
-                assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+                assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
                 List<Integer> list = new DebugList<Integer>();
                 ksession.setGlobal( "list", list );
@@ -861,7 +858,7 @@ public class ParallelEvaluationTest {
                 insertFacts(ksession, 10);
 
                 ksession.fireAllRules();
-                assertEquals(ruleNr, list.size());
+                assertThat(list.size()).isEqualTo(ruleNr);
 
                 return null;
             }

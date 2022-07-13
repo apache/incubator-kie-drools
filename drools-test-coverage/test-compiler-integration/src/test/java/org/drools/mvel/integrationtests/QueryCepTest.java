@@ -39,7 +39,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class QueryCepTest {
@@ -102,7 +102,7 @@ public class QueryCepTest {
     @Test
     public void noResultTest() {
         QueryResults results = ksession.getQueryResults("EventsFromStream");
-        assertEquals(0, results.size());
+        assertThat(results.size()).isEqualTo(0);
     }
     
     @Test
@@ -119,8 +119,8 @@ public class QueryCepTest {
 
         secondEntryPoint.insert(new TestEvent("three"));
         QueryResults results = ksession.getQueryResults("ZeroToNineteenSeconds");
-        
-        assertEquals(1, results.size());
+
+        assertThat(results.size()).isEqualTo(1);
     }
     
     @Test
@@ -138,8 +138,8 @@ public class QueryCepTest {
 
         secondEntryPoint.insert(new TestEvent("three"));
         QueryResults results = ksession.getQueryResults("ZeroToNineteenSeconds");
-        
-        assertEquals(0, results.size());
+
+        assertThat(results.size()).isEqualTo(0);
     }
     
     @After

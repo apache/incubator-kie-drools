@@ -33,11 +33,9 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.mvel.compiler.Person;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.core.util.StringUtils.generateUUID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class PackageDescrTest {
 
@@ -57,14 +55,14 @@ public class PackageDescrTest {
         desc.addRule( rule );
         
         List pkgAts = desc.getAttributes();
-        assertEquals("bar", ((AttributeDescr)pkgAts.get( 0 )).getValue());
-        assertEquals("default", ((AttributeDescr)pkgAts.get( 1 )).getValue());
+        assertThat(((AttributeDescr) pkgAts.get(0)).getValue()).isEqualTo("bar");
+        assertThat(((AttributeDescr) pkgAts.get(1)).getValue()).isEqualTo("default");
 
         desc.afterRuleAdded( rule );
         
         Map<String, AttributeDescr> ruleAts = rule.getAttributes();
-        assertEquals("overridden", ((AttributeDescr)ruleAts.get( "foo" )).getValue());
-        assertEquals("default", ((AttributeDescr)ruleAts.get( "foo2" )).getValue());
+        assertThat(((AttributeDescr) ruleAts.get("foo")).getValue()).isEqualTo("overridden");
+        assertThat(((AttributeDescr) ruleAts.get("foo2")).getValue()).isEqualTo("default");
         
     }
 
@@ -78,7 +76,7 @@ public class PackageDescrTest {
         ImportDescr importDescr = new ImportDescr(className);
         ImportDescr badImportDescr = new ImportDescr(null);
 
-        assertTrue(descr.getImports().contains(importDescr));
+        assertThat(descr.getImports().contains(importDescr)).isTrue();
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -89,10 +87,10 @@ public class PackageDescrTest {
             PackageDescr newDescr = new PackageDescr();
             newDescr.readExternal(in);
 
-            assertFalse(newDescr.getImports().contains(badImportDescr));
-            assertTrue(newDescr.getImports().contains(importDescr));
+            assertThat(newDescr.getImports().contains(badImportDescr)).isFalse();
+            assertThat(newDescr.getImports().contains(importDescr)).isTrue();
 
-            assertFalse(newDescr.getPreferredPkgUUID().isPresent());
+            assertThat(newDescr.getPreferredPkgUUID().isPresent()).isFalse();
         } catch (IOException | ClassNotFoundException e) {
             fail(e.getMessage());
         }
@@ -115,8 +113,8 @@ public class PackageDescrTest {
             PackageDescr newDescr = new PackageDescr();
             newDescr.readExternal(in);
 
-            assertTrue(newDescr.getPreferredPkgUUID().isPresent());
-            assertEquals(pkgUUID, newDescr.getPreferredPkgUUID().get());
+            assertThat(newDescr.getPreferredPkgUUID().isPresent()).isTrue();
+            assertThat(newDescr.getPreferredPkgUUID().get()).isEqualTo(pkgUUID);
         } catch (IOException | ClassNotFoundException e) {
             fail(e.getMessage());
         }
@@ -125,10 +123,10 @@ public class PackageDescrTest {
     @Test
     public void testGetPreferredPkgUUID() {
         PackageDescr descr = new PackageDescr();
-        assertFalse(descr.getPreferredPkgUUID().isPresent());
+        assertThat(descr.getPreferredPkgUUID().isPresent()).isFalse();
         String pkgUUID = generateUUID();
         descr.setPreferredPkgUUID(pkgUUID);
-        assertTrue(descr.getPreferredPkgUUID().isPresent());
-        assertEquals(pkgUUID, descr.getPreferredPkgUUID().get());
+        assertThat(descr.getPreferredPkgUUID().isPresent()).isTrue();
+        assertThat(descr.getPreferredPkgUUID().get()).isEqualTo(pkgUUID);
     }
 }

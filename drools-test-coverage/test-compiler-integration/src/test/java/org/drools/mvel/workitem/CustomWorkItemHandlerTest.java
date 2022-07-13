@@ -27,8 +27,6 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class CustomWorkItemHandlerTest {
 
@@ -47,8 +45,8 @@ public class CustomWorkItemHandlerTest {
         
         Map<String, WorkItemHandler> handlers = ((SessionConfiguration)config).getWorkItemHandlers();
         assertThat(handlers).isNotNull();
-        assertEquals(1, handlers.size());
-        assertTrue(handlers.containsKey("Custom"));
+        assertThat(handlers.size()).isEqualTo(1);
+        assertThat(handlers.containsKey("Custom")).isTrue();
     }
 
 }

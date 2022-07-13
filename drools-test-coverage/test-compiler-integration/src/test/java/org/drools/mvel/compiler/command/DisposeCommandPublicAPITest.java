@@ -2,7 +2,6 @@ package org.drools.mvel.compiler.command;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.command.assertion.AssertEquals;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -11,11 +10,12 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DisposeCommandPublicAPITest {
     @Test
@@ -54,7 +54,7 @@ public class DisposeCommandPublicAPITest {
         try {
             session.insert("whatever");
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "Illegal method call. This session was previously disposed.");
+            assertThat("Illegal method call. This session was previously disposed.").isEqualTo(e.getMessage());
 
         }
 

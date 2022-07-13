@@ -35,8 +35,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AddRuleTest {
@@ -116,7 +115,7 @@ public class AddRuleTest {
         names.add("Mark");
         ksession.setGlobal("names", names);
 
-        final List<String> list = new ArrayList<>();
+        final List<Person> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         final Person p = new Person("Mark");
@@ -128,8 +127,8 @@ public class AddRuleTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertSame(p, list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isSameAs(p);
         ksession.dispose();
     }
 
@@ -157,7 +156,7 @@ public class AddRuleTest {
         session.insert(5);
         session.fireAllRules();
 
-        assertEquals(5, list.get(0));
+        assertThat(list.get(0)).isEqualTo(5);
 
         rule = "package org.drools.compiler.test\n" +
                 "global java.util.List list\n" +
@@ -170,7 +169,7 @@ public class AddRuleTest {
 
         session.fireAllRules();
 
-        assertEquals("x", list.get(1));
+        assertThat(list.get(1)).isEqualTo("x");
     }
 
     public static class RuleTime {

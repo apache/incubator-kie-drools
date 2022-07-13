@@ -14,6 +14,9 @@
 
 package org.drools.mvel.extractors;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TestBean;
@@ -21,10 +24,9 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
-import static org.junit.Assert.*;
 
 public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
@@ -130,17 +132,16 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     @Test
     public void testGetValue() {
-        assertEquals( Collections.EMPTY_LIST,
-                             this.reader.getValue( null,
-                                                   this.bean ) );
-        assertTrue( this.reader.getValue( null,
-                                                 this.bean ) instanceof List );
+        assertThat(this.reader.getValue(null,
+                this.bean)).isEqualTo(Collections.EMPTY_LIST);
+        assertThat(this.reader.getValue(null,
+                this.bean) instanceof List).isTrue();
     }
 
     @Test
     public void testIsNullValue() {
-        assertFalse( this.reader.isNullValue( null,
-                                                     this.bean ) );
+        assertThat(this.reader.isNullValue(null,
+                this.bean)).isFalse();
 
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
@@ -148,8 +149,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
         InternalReadAccessor nullExtractor = store.getReader( TestBean.class,
                                                               "nullAttr" );
-        assertTrue( nullExtractor.isNullValue( null,
-                                                      this.bean ) );
+        assertThat(nullExtractor.isNullValue(null,
+                this.bean)).isTrue();
 
     }
 }

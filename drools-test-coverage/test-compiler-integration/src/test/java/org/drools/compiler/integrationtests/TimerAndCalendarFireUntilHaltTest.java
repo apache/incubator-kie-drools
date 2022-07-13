@@ -16,9 +16,7 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.time.Duration;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -41,8 +39,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarFireUntilHaltTest {
@@ -182,7 +180,7 @@ public class TimerAndCalendarFireUntilHaltTest {
     	for (int i=0; i < 100; i++) {
     		if (!predicate.call().booleanValue()) {
     			System.out.println("False again");
-    			fail();
+    			fail("Unexpected condition");
     		}
     		Thread.sleep(10);
 			System.out.println("Still true");

@@ -55,9 +55,7 @@ import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AgendaEventSupportTest {
@@ -133,58 +131,58 @@ public class AgendaEventSupportTest {
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
             public void matchCancelled(MatchCancelledEvent event) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 agendaList.add( event );
             }
 
             public void matchCreated(MatchCreatedEvent event) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 agendaList.add( event );
             }
 
             public void afterMatchFired(AfterMatchFiredEvent event) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 agendaList.add( event );
             }
 
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 agendaList.add( event );
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 agendaList.add( event );
             }
 
             public void beforeMatchFired(BeforeMatchFiredEvent event) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 agendaList.add( event );
             }
 
             public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 agendaList.add( event );
             }
 
             public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 agendaList.add( event );
             }
 
             public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 agendaList.add( event );
             }
 
             public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                assertNotNull( event.getKieRuntime() );
+                assertThat(event.getKieRuntime()).isNotNull();
                 agendaList.add( event ); 
             }
         };
         ksession.addEventListener( agendaEventListener );
-        
-        assertEquals( 1, ksession.getAgendaEventListeners().size() );
+
+        assertThat(ksession.getAgendaEventListeners().size()).isEqualTo(1);
 
         // assert the cheese fact
         final Cheese cheddar = new Cheese( "cheddar",
@@ -195,17 +193,14 @@ public class AgendaEventSupportTest {
         agenda.evaluateEagerList();
 
         // should be one MatchCreatedEvent
-        assertEquals(1,
-                     agendaList.size());
+        assertThat(agendaList.size()).isEqualTo(1);
         MatchCreatedEvent createdEvent = (MatchCreatedEvent) agendaList.get( 0 );
-        assertSame( cheddarHandle,
-                    createdEvent.getMatch().getFactHandles().toArray()[0] );
+        assertThat(createdEvent.getMatch().getFactHandles().toArray()[0]).isSameAs(cheddarHandle);
 
         // clear the agenda to check CLEAR events occur
         ksession.getAgenda().clear();
         MatchCancelledEvent cancelledEvent = (MatchCancelledEvent) agendaList.get( 1 );
-        assertEquals( MatchCancelledCause.CLEAR,
-                      cancelledEvent.getCause() );
+        assertThat(cancelledEvent.getCause()).isEqualTo(MatchCancelledCause.CLEAR);
 
         agendaList.clear();
 
@@ -216,19 +211,16 @@ public class AgendaEventSupportTest {
 
         agenda.evaluateEagerList();
 
-        assertEquals( 1,
-                      agendaList.size() );
+        assertThat(agendaList.size()).isEqualTo(1);
         createdEvent = (MatchCreatedEvent) agendaList.get( 0 );
-        assertSame( cheddarHandle,
-                    createdEvent.getMatch().getFactHandles().toArray()[0] );
+        assertThat(createdEvent.getMatch().getFactHandles().toArray()[0]).isSameAs(cheddarHandle);
         agendaList.clear();
 
         // update should not result in cancelation+activation events
         cheddar.setPrice( 14 );
         ksession.update( cheddarHandle,
                          cheddar );
-        assertEquals( 0,
-                      agendaList.size() );
+        assertThat(agendaList.size()).isEqualTo(0);
         //cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
         //assertEquals( ActivationCancelledCause.WME_MODIFY, cancelledEvent.getCause() );
 //        assertSame( cheddarHandle,
@@ -240,11 +232,10 @@ public class AgendaEventSupportTest {
 
         // retract results in a ActivationCancelledEvent, note the object is not resolveable now as it no longer exists
         ksession.retract( cheddarHandle );
-        assertEquals( 1,
-                      agendaList.size() );
+        assertThat(agendaList.size()).isEqualTo(1);
         cancelledEvent = (MatchCancelledEvent) agendaList.get( 0 );
         // invalidated handles no longer set the object to null
-        assertNotNull( ((InternalFactHandle) cancelledEvent.getMatch().getFactHandles().toArray()[0]).getObject() );
+        assertThat(((InternalFactHandle) cancelledEvent.getMatch().getFactHandles().toArray()[0]).getObject()).isNotNull();
 
         // re-assert the fact so we can test the agenda group events
         cheddarHandle = ksession.insert( cheddar );
@@ -252,27 +243,21 @@ public class AgendaEventSupportTest {
 
         // setFocus results in an AgendaGroupPushedEvent
         ksession.getAgenda().getAgendaGroup( "test group" ).setFocus();
-        assertEquals( 1,
-                      agendaList.size() );
+        assertThat(agendaList.size()).isEqualTo(1);
         final AgendaGroupPushedEvent pushedEvent = (AgendaGroupPushedEvent) agendaList.get( 0 );
-        assertEquals( "test group",
-                      pushedEvent.getAgendaGroup().getName() );
+        assertThat(pushedEvent.getAgendaGroup().getName()).isEqualTo("test group");
         agendaList.clear();
 
         // fireAllRules results in a BeforeActivationFiredEvent and an AfterActivationFiredEvent
         // the AgendaGroup becomes empty, which results in a popped event.
         ksession.fireAllRules();
-        assertEquals( 3,
-                      agendaList.size() );
+        assertThat(agendaList.size()).isEqualTo(3);
         final BeforeMatchFiredEvent beforeEvent = (BeforeMatchFiredEvent) agendaList.get( 0 );
-        assertSame( cheddarHandle,
-                    beforeEvent.getMatch().getFactHandles().toArray()[0] );
+        assertThat(beforeEvent.getMatch().getFactHandles().toArray()[0]).isSameAs(cheddarHandle);
         final AfterMatchFiredEvent afterEvent = (AfterMatchFiredEvent) agendaList.get( 1 );
-        assertSame( cheddarHandle,
-                    afterEvent.getMatch().getFactHandles().toArray()[0] );
+        assertThat(afterEvent.getMatch().getFactHandles().toArray()[0]).isSameAs(cheddarHandle);
         final AgendaGroupPoppedEvent poppedEvent = (AgendaGroupPoppedEvent) agendaList.get( 2 );
-        assertEquals( "test group",
-                      poppedEvent.getAgendaGroup().getName() );
+        assertThat(poppedEvent.getAgendaGroup().getName()).isEqualTo("test group");
     }
 
 }

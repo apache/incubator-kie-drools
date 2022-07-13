@@ -30,8 +30,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class OOPathOnGraphTest {
@@ -72,8 +71,8 @@ public class OOPathOnGraphTest {
         ksession.insert( library );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "Mario" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("Mario")).isTrue();
         list.clear();
 
         Vertex<?> book = library.getOutVs().get(0);
@@ -81,8 +80,8 @@ public class OOPathOnGraphTest {
         book.connectTo( alan );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "Alan" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("Alan")).isTrue();
     }
 
     @Test
@@ -110,17 +109,17 @@ public class OOPathOnGraphTest {
         ksession.insert( library );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "Mario" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("Mario")).isTrue();
         list.clear();
 
         Person raoul = (Person)library.getOutVs().get(0).getOutVs().get(0).getIt();
-        assertEquals( "Raoul", raoul.getName() );
+        assertThat(raoul.getName()).isEqualTo("Raoul");
         raoul.setAge( raoul.getAge() + 1 );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "Raoul" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("Raoul")).isTrue();
     }
 
     @Test
@@ -148,17 +147,17 @@ public class OOPathOnGraphTest {
         ksession.insert( library );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "Mario" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("Mario")).isTrue();
         list.clear();
 
         Person raoul = (Person)library.getOutVs().get(0).getOutVs().get(0).getIt();
-        assertEquals( "Raoul", raoul.getName() );
+        assertThat(raoul.getName()).isEqualTo("Raoul");
         raoul.setAge( raoul.getAge() + 1 );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "Raoul" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("Raoul")).isTrue();
     }
 
     @Test
@@ -186,16 +185,16 @@ public class OOPathOnGraphTest {
         ksession.insert( library );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "Mario" ) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.contains("Mario")).isTrue();
         list.clear();
 
         Person raoul = (Person)library.getOutVs().get(0).getOutVs().get(0).getIt();
-        assertEquals( "Raoul", raoul.getName() );
+        assertThat(raoul.getName()).isEqualTo("Raoul");
         raoul.setAge( raoul.getAge() + 1 );
 
         ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
     }
 
     private Vertex<Library> getGraph() {

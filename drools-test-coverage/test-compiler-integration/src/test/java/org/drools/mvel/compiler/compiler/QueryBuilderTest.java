@@ -36,7 +36,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class QueryBuilderTest extends DroolsTestCase {
 
@@ -162,24 +162,20 @@ public class QueryBuilderTest extends DroolsTestCase {
 
         QueryResults results = session.getQueryResults( "query1",
                                                         "stilton" );
-        assertEquals( 1,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(1);
 
         Object object = results.iterator().next().get("stilton");
-        assertEquals( new Cheese( "stilton",
-                                  15 ),
-                      object );
+        assertThat(object).isEqualTo(new Cheese( "stilton",
+                15 ));
 
         results = session.getQueryResults( "query1",
                                            new Object[]{"cheddar"} );
-        assertEquals( 0,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(0);
 
         session.insert(new Cheese("dolcelatte",
                                   20));
         results = session.getQueryResults( "query2",
                                            new Object[]{} );
-        assertEquals( 2,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(2);
     }
 }

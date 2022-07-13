@@ -19,9 +19,10 @@ package org.drools.mvel.integrationtests;
 import java.util.Collection;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -77,6 +78,6 @@ public class ExistentialOperatorTest {
         kieSession.insert(fact);
 
         int n = kieSession.fireAllRules();
-        Assert.assertEquals(1, n);
+        assertThat(n).isEqualTo(1);
     }
 }

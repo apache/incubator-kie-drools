@@ -33,7 +33,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests queries using temporal operators on events from two entry points.
@@ -101,9 +101,8 @@ public class CepQueryTest {
         this.eventsInitialization();
         final QueryResults results = ksession.getQueryResults("EventsAfterZeroToNineSeconds");
 
-        assertEquals("Unexpected query result length", 1, results.size());
-        assertEquals("Unexpected query result content", 
-                "one", ((TestEvent) results.iterator().next().get("$result")).getName());
+        assertThat(results.size()).as("Unexpected query result length").isEqualTo(1);
+        assertThat(((TestEvent) results.iterator().next().get("$result")).getName()).as("Unexpected query result content").isEqualTo("one");
     }
 
     /**

@@ -21,7 +21,9 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.within;
 
 public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final short VALUE = 3;
@@ -52,9 +54,8 @@ public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetByteValue() {
         try {
-            assertEquals( ShortClassFieldExtractorTest.VALUE,
-                                 this.reader.getByteValue( null,
-                                                              this.bean ) );
+            assertThat(this.reader.getByteValue(null,
+                    this.bean)).isEqualTo((byte)ShortClassFieldExtractorTest.VALUE);
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -73,51 +74,43 @@ public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     @Test
     public void testGetDoubleValue() {
-            assertEquals( ShortClassFieldExtractorTest.VALUE,
-                                 this.reader.getDoubleValue( null,
-                                                                this.bean ),
-                                 0.01 );
+        assertThat(this.reader.getDoubleValue(null,
+                this.bean)).isCloseTo(ShortClassFieldExtractorTest.VALUE, within(0.01));
     }
 
     @Test
     public void testGetFloatValue() {
-            assertEquals( ShortClassFieldExtractorTest.VALUE,
-                                 this.reader.getFloatValue( null,
-                                                               this.bean ),
-                                 0.01 );
+        assertThat(this.reader.getFloatValue(null,
+                this.bean)).isCloseTo(ShortClassFieldExtractorTest.VALUE, within(0.01f));
     }
 
     @Test
     public void testGetIntValue() {
-        assertEquals( ShortClassFieldExtractorTest.VALUE,
-                             this.reader.getIntValue( null,
-                                                         this.bean ) );
+        assertThat(this.reader.getIntValue(null,
+                this.bean)).isEqualTo(ShortClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetLongValue() {
-        assertEquals( ShortClassFieldExtractorTest.VALUE,
-                             this.reader.getLongValue( null,
-                                                          this.bean ) );
+        assertThat(this.reader.getLongValue(null,
+                this.bean)).isEqualTo(ShortClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetShortValue() {
-        assertEquals( ShortClassFieldExtractorTest.VALUE,
-                             this.reader.getShortValue( null,
-                                                           this.bean ) );
+        assertThat(this.reader.getShortValue(null,
+                this.bean)).isEqualTo(ShortClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetValue() {
-        assertEquals( ShortClassFieldExtractorTest.VALUE,
-                             ((Number) this.reader.getValue( null,
-                                                                this.bean )).shortValue() );
+        assertThat(((Number) this.reader.getValue(null,
+                this.bean)).shortValue()).isEqualTo(ShortClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testIsNullValue() {
-        assertFalse( this.reader.isNullValue( null,
-                                                        this.bean ) );
+        assertThat(this.reader.isNullValue(null,
+                this.bean)).isFalse();
     }
 }

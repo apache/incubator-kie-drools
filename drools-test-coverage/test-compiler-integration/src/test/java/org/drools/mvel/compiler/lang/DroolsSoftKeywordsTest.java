@@ -19,8 +19,7 @@ import org.drools.compiler.lang.DroolsSoftKeywords;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DroolsSoftKeywordsTest {
 
@@ -33,21 +32,21 @@ public class DroolsSoftKeywordsTest {
         new EvaluatorRegistry();
 
         // test the registry
-        assertTrue( DroolsSoftKeywords.isOperator("matches", false) );
-        assertTrue( DroolsSoftKeywords.isOperator("matches", true) );
-        assertTrue( DroolsSoftKeywords.isOperator("contains", false) );
-        assertTrue( DroolsSoftKeywords.isOperator("contains", true) );
-        assertTrue( DroolsSoftKeywords.isOperator("after", false) );
-        assertTrue( DroolsSoftKeywords.isOperator("after", true) );
-        assertTrue( DroolsSoftKeywords.isOperator("before", false) );
-        assertTrue( DroolsSoftKeywords.isOperator("before", true) );
-        assertTrue( DroolsSoftKeywords.isOperator("finishes", false) );
-        assertTrue( DroolsSoftKeywords.isOperator("finishes", true) );
-        assertTrue( DroolsSoftKeywords.isOperator("overlappedby", false) );
-        assertTrue( DroolsSoftKeywords.isOperator("overlappedby", true) );
+        assertThat(DroolsSoftKeywords.isOperator("matches", false)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("matches", true)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("contains", false)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("contains", true)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("after", false)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("after", true)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("before", false)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("before", true)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("finishes", false)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("finishes", true)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("overlappedby", false)).isTrue();
+        assertThat(DroolsSoftKeywords.isOperator("overlappedby", true)).isTrue();
 
-        assertFalse( DroolsSoftKeywords.isOperator("xyz", false) );
-        assertFalse( DroolsSoftKeywords.isOperator("xyz", true) );
+        assertThat(DroolsSoftKeywords.isOperator("xyz", false)).isFalse();
+        assertThat(DroolsSoftKeywords.isOperator("xyz", true)).isFalse();
 
     }
 

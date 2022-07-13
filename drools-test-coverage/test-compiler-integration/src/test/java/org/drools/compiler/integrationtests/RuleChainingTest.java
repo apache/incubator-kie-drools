@@ -36,7 +36,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -109,7 +108,7 @@ public class RuleChainingTest {
             ksession.addEventListener(ael);
 
             final int fired = ksession.fireAllRules();
-            assertEquals(3, fired);
+            assertThat(fired).isEqualTo(3);
 
             // capture the arguments and check that the rules fired in the proper sequence
             final ArgumentCaptor<AfterMatchFiredEvent> actvs = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);

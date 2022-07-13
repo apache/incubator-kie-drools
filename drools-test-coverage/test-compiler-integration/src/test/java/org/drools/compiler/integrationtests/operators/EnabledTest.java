@@ -39,8 +39,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -119,10 +118,10 @@ public class EnabledTest {
             results = (List) session.getGlobal("results");
 
             session.fireAllRules();
-            assertEquals(3, results.size());
-            assertTrue(results.contains("1"));
-            assertTrue(results.contains("2"));
-            assertTrue(results.contains("3"));
+            assertThat(results.size()).isEqualTo(3);
+            assertThat(results.contains("1")).isTrue();
+            assertThat(results.contains("2")).isTrue();
+            assertThat(results.contains("3")).isTrue();
         } finally {
             session.dispose();
         }
@@ -155,24 +154,24 @@ public class EnabledTest {
         try {
             ksession.addEventListener(ael);
             ksession.insert(new MyFact("R1", null));
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
             ksession.dispose();
 
             ArgumentCaptor<AfterMatchFiredEvent> event = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
             verify(ael).afterMatchFired(event.capture());
-            assertEquals("R1", event.getValue().getMatch().getRule().getName());
+            assertThat(event.getValue().getMatch().getRule().getName()).isEqualTo("R1");
 
             ael = mock(AgendaEventListener.class);
             ksession.dispose();
             ksession = kc.newKieSession();
             ksession.addEventListener(ael);
             ksession.insert(new MyFact("R2", null));
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
             ksession.dispose();
 
             event = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
             verify(ael).afterMatchFired(event.capture());
-            assertEquals("R2", event.getValue().getMatch().getRule().getName());
+            assertThat(event.getValue().getMatch().getRule().getName()).isEqualTo("R2");
         } finally {
             ksession.dispose();
         }
