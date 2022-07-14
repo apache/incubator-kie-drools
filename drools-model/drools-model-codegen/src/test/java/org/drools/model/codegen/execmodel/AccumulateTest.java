@@ -4147,15 +4147,15 @@ public class AccumulateTest extends BaseModelTest {
     public void testAccumulateWithBetaConstraint() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "import " + Result.class.getCanonicalName() + ";" +
-                        "rule X when\n" +
-                        "  $i : Integer()" +
-                        "  accumulate ( $p: Person ( name.length >= $i ); \n" +
-                        "                $sum : sum($p.getAge())  \n" +
-                        "              )                          \n" +
-                        "then\n" +
-                        "  insert(new Result($sum + \":\" + $i));\n" +
-                        "end";
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  $i : Integer()" +
+                "  accumulate ( $p: Person ( name.length >= $i ); \n" +
+                "                $sum : sum($p.getAge())  \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum + \":\" + $i));\n" +
+                "end";
 
         KieSession ksession = getKieSession( str );
 

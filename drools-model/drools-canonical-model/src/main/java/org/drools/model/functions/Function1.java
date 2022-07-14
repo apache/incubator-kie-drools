@@ -22,6 +22,10 @@ import java.io.Serializable;
 public interface Function1<T, R> extends Serializable {
     R apply(T t);
 
+    static <T> Function1<T, T> identity() {
+        return a -> a;
+    }
+
     class Impl<T,R> extends IntrospectableLambda implements Function1<T, R> {
 
         private final Function1<T,R> function;

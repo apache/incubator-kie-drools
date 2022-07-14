@@ -9,7 +9,10 @@ import org.drools.ruleunits.api.SingletonStore;
 
 import static org.drools.model.Index.ConstraintType.EQUAL;
 import static org.drools.model.Index.ConstraintType.GREATER_THAN;
+import static org.drools.model.Index.ConstraintType.NOT_EQUAL;
+import static org.drools.model.functions.Function1.identity;
 import static org.drools.ruleunits.dsl.Accumulators.avg;
+import static org.drools.ruleunits.dsl.Accumulators.max;
 import static org.drools.ruleunits.dsl.Accumulators.sum;
 
 public class AccumulateUnit implements RuleUnitDefinition {
@@ -36,6 +39,10 @@ public class AccumulateUnit implements RuleUnitDefinition {
         return results;
     }
 
+    public SingletonStore<Integer> getThreshold() {
+        return threshold;
+    }
+
     @Override
     public void defineRules(RulesFactory rulesFactory) {
         RuleFactory ruleFactory1 = rulesFactory.addRule();
@@ -45,12 +52,15 @@ public class AccumulateUnit implements RuleUnitDefinition {
             )
             .execute(results, (r, sum) -> r.add("Sum of length of Strings starting with A is " + sum));
 
-        RuleFactory ruleFactory2 = rulesFactory.addRule();
-        ruleFactory2.from(threshold)
-                .join( ruleFactory2.accumulate(
-                                ruleFactory2.from(strings).filter(s -> s.substring(0, 1), EQUAL, "A"),
-                                avg(String::length)
-                     )).filter(GREATER_THAN, Integer::doubleValue)
+        rulesFactory.addRule()
+                .from(strings).filter(s -> s.substring(0, 1), NOT_EQUAL, "A")
+                .accumulate(max(String::length))
+                .execute(results, (r, max) -> r.add("Max length of Strings not starting with A is " + max));
+
+        rulesFactory.addRule().from(threshold)
+                .join(strings)
+                .filter(String::length, GREATER_THAN, identity())
+                .accumulate(avg(String::length))
                 .execute(results, (r, t, avg) -> r.add("Average length of Strings longer than threshold " + t + " is " + avg));
     }
 }

@@ -11,7 +11,7 @@ import org.drools.model.functions.Block2;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.ruleunits.api.DataSource;
-import org.drools.ruleunits.dsl.RuleFactory;
+import org.drools.ruleunits.dsl.accumulate.Accumulator1;
 import org.drools.ruleunits.dsl.constraints.AlphaConstraint;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
 
@@ -58,5 +58,9 @@ public class Pattern1<A> extends PatternDefinition<A> {
     public <V> Pattern1<A> filter(String fieldName, Function1<A, V> extractor, Index.ConstraintType constraintType, V rightValue) {
         constraints.add(new AlphaConstraint<>(variable, fieldName, extractor, constraintType, rightValue));
         return this;
+    }
+
+    public <B> Pattern1<B> accumulate(Accumulator1<A, B> acc) {
+        return rule.accumulate(this, acc);
     }
 }

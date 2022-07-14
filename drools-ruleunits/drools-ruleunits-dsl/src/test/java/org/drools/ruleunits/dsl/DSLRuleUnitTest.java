@@ -23,8 +23,7 @@ import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DSLRuleUnitTest {
 
@@ -34,14 +33,13 @@ public class DSLRuleUnitTest {
         unit.getStrings().add("Hello World");
 
         RuleUnitInstance<HelloWorld> unitInstance = DSLRuleUnit.instance(unit);
-        assertEquals(2, unitInstance.fire());
-        assertTrue(unit.getResults().contains("it worked!"));
-        assertTrue(unit.getResults().contains("it also worked with HELLO WORLD"));
+        assertThat(unitInstance.fire()).isEqualTo(2);
+        assertThat(unit.getResults()).containsExactlyInAnyOrder("it worked!", "it also worked with HELLO WORLD");
 
         unit.getResults().clear();
         unit.getInts().add(11);
-        assertEquals(1, unitInstance.fire());
-        assertEquals("String 'Hello World' is 11 characters long", unit.getResults().get(0));
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).containsExactly("String 'Hello World' is 11 characters long");
     }
 
     @Test
@@ -50,7 +48,7 @@ public class DSLRuleUnitTest {
         unit.getStrings().add("test");
 
         RuleUnitInstance<InferenceUnit> unitInstance = DSLRuleUnit.instance(unit);
-        assertEquals(0, unitInstance.fire());
+        assertThat(unitInstance.fire()).isEqualTo(0);
 
         AtomicBoolean success = new AtomicBoolean(false);
         unit.getStrings().subscribe(new DataProcessor<String>() {
@@ -74,8 +72,8 @@ public class DSLRuleUnitTest {
         });
 
         unit.getStrings().add("this is just a test");
-        assertEquals(2, unitInstance.fire());
-        assertTrue(success.get());
+        assertThat(unitInstance.fire()).isEqualTo(2);
+        assertThat(success.get()).isTrue();
     }
 
     @Test
@@ -86,8 +84,8 @@ public class DSLRuleUnitTest {
         unit.getStrings().add("xyz");
 
         RuleUnitInstance<SelfJoin> unitInstance = DSLRuleUnit.instance(unit);
-        assertEquals(1, unitInstance.fire());
-        assertEquals("Found 'abc' and 'bcd'", unit.getResults().get(0));
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).containsExactly("Found 'abc' and 'bcd'");
     }
 
     @Test
@@ -97,9 +95,21 @@ public class DSLRuleUnitTest {
         unit.getStrings().add("A123");
         unit.getStrings().add("B12");
         unit.getStrings().add("ABCDEF");
+        unit.getStrings().add("BCDEF");
+        unit.getStrings().add("Cx");
 
         RuleUnitInstance<AccumulateUnit> unitInstance = DSLRuleUnit.instance(unit);
-        assertEquals(1, unitInstance.fire());
-        assertEquals("Sum of length of Strings starting with A is 12", unit.getResults().get(0));
+
+        assertThat(unitInstance.fire()).isEqualTo(2);
+        assertThat(unit.getResults()).containsExactlyInAnyOrder(
+                "Sum of length of Strings starting with A is 12",
+                "Max length of Strings not starting with A is 5"
+        );
+
+        unit.getResults().clear();
+
+        unit.getThreshold().set(4);
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).containsExactly("Average length of Strings longer than threshold 4 is 5.5");
     }
 }
