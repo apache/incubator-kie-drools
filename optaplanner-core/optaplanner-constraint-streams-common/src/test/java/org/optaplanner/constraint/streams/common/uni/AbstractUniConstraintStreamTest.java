@@ -369,8 +369,9 @@ public abstract class AbstractUniConstraintStreamTest
                 assertMatch(entity3, entity3));
     }
 
+    @Override
     @TestTemplate
-    public void joinOfGroupBy() {
+    public void joinAfterGroupBy() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);
@@ -900,8 +901,9 @@ public abstract class AbstractUniConstraintStreamTest
                 assertMatch(solution.getFirstEntity()));
     }
 
+    @Override
     @TestTemplate
-    public void ifExistsOfGroupBy() {
+    public void ifExistsAfterGroupBy() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);

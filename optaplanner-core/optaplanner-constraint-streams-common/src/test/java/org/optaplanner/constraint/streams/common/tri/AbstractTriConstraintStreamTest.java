@@ -301,6 +301,55 @@ public abstract class AbstractTriConstraintStreamTest
         assertScore(scoreDirector);
     }
 
+    @Override
+    @TestTemplate
+    public void joinAfterGroupBy() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
+        TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
+        solution.getValueList().add(value1);
+        TestdataLavishValue value2 = new TestdataLavishValue("MyValue 2", solution.getFirstValueGroup());
+        solution.getValueList().add(value2);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", solution.getFirstEntityGroup(), value1);
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(), value1);
+        solution.getEntityList().add(entity2);
+        TestdataLavishExtra extra1 = new TestdataLavishExtra("MyExtra 1");
+        solution.getExtraList().add(extra1);
+        TestdataLavishExtra extra2 = new TestdataLavishExtra("MyExtra 2");
+        solution.getExtraList().add(extra2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.forEach(TestdataLavishEntity.class)
+                    .groupBy(countDistinct(TestdataLavishEntity::getValue),
+                            countDistinct(TestdataLavishEntity::getValue),
+                            countDistinct(TestdataLavishEntity::getValue))
+                    .join(TestdataLavishExtra.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(1, 1, 1, extra1),
+                assertMatch(1, 1, 1, extra2));
+
+        // Incremental
+        scoreDirector.beforeVariableChanged(entity2, "value");
+        entity2.setValue(value2);
+        scoreDirector.afterVariableChanged(entity2, "value");
+        assertScore(scoreDirector,
+                assertMatch(2, 2, 2, extra1),
+                assertMatch(2, 2, 2, extra2));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity2);
+        solution.getEntityList().remove(entity2);
+        scoreDirector.afterEntityRemoved(entity2);
+        assertScore(scoreDirector,
+                assertMatch(1, 1, 1, extra1),
+                assertMatch(1, 1, 1, extra2));
+    }
+
     // ************************************************************************
     // If (not) exists
     // ************************************************************************
@@ -759,6 +808,52 @@ public abstract class AbstractTriConstraintStreamTest
                 assertMatch(solution.getFirstEntity(), entity1, entity2),
                 assertMatch(solution.getFirstEntity(), entity2, entity1),
                 assertMatch(entity1, entity2, solution.getFirstEntity()));
+    }
+
+    @Override
+    @TestTemplate
+    public void ifExistsAfterGroupBy() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
+        TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
+        solution.getValueList().add(value1);
+        TestdataLavishValue value2 = new TestdataLavishValue("MyValue 2", solution.getFirstValueGroup());
+        solution.getValueList().add(value2);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", solution.getFirstEntityGroup(), value1);
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(), value1);
+        solution.getEntityList().add(entity2);
+        TestdataLavishExtra extra1 = new TestdataLavishExtra("MyExtra 1");
+        solution.getExtraList().add(extra1);
+        TestdataLavishExtra extra2 = new TestdataLavishExtra("MyExtra 2");
+        solution.getExtraList().add(extra2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.forEach(TestdataLavishEntity.class)
+                    .groupBy(countDistinct(TestdataLavishEntity::getValue),
+                            countDistinct(TestdataLavishEntity::getValue),
+                            countDistinct(TestdataLavishEntity::getValue))
+                    .ifExists(TestdataLavishExtra.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(1, 1, 1));
+
+        // Incremental
+        scoreDirector.beforeVariableChanged(entity2, "value");
+        entity2.setValue(value2);
+        scoreDirector.afterVariableChanged(entity2, "value");
+        assertScore(scoreDirector,
+                assertMatch(2, 2, 2));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity2);
+        solution.getEntityList().remove(entity2);
+        scoreDirector.afterEntityRemoved(entity2);
+        assertScore(scoreDirector,
+                assertMatch(1, 1, 1));
     }
 
     // ************************************************************************

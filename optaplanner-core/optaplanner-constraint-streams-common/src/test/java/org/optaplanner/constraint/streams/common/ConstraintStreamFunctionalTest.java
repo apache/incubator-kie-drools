@@ -26,6 +26,10 @@ public interface ConstraintStreamFunctionalTest {
         // Quads don't have joins, so don't force it.
     }
 
+    default void joinAfterGroupBy() {
+        // Quads don't have joins, so don't force it.
+    }
+
     // ************************************************************************
     // If (not) exists
     // ************************************************************************
@@ -59,6 +63,8 @@ public interface ConstraintStreamFunctionalTest {
 
     @Deprecated(forRemoval = true)
     void ifNotExistsIncludesNullVarsWithFrom();
+
+    void ifExistsAfterGroupBy();
 
     // ************************************************************************
     // Group by
