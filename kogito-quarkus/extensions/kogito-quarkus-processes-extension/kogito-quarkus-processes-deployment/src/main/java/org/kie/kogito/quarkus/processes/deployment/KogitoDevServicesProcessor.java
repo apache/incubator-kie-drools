@@ -37,6 +37,7 @@ import org.kie.kogito.quarkus.processes.devservices.DataIndexInMemoryContainer;
 import org.kie.kogito.quarkus.processes.devservices.DevModeWorkflowLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
@@ -125,8 +126,9 @@ public class KogitoDevServicesProcessor {
 
         if (configuration.devServicesEnabled && isDockerWorking.getAsBoolean()) {
             additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DataIndexEventPublisher.class).build());
-            String port = ConfigProvider.getConfig().getOptionalValue("quarkus.http.port", String.class).orElse("8080");
-            systemProperties.produce(new SystemPropertyBuildItem("kogito.service.url", "http://localhost:" + port));
+            Integer port = ConfigProvider.getConfig().getOptionalValue("quarkus.http.port", Integer.class).orElse(8080);
+            Testcontainers.exposeHostPorts(port);
+            systemProperties.produce(new SystemPropertyBuildItem("kogito.service.url", "http://host.testcontainers.internal:" + port));
         }
 
         LOGGER.info("Dev Services for Kogito Data Index using image {}", configuration.imageName);
