@@ -367,7 +367,11 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     @Override
     public <ResultB_> BiConstraintStream<A, ResultB_> flattenLast(Function<B, Iterable<ResultB_>> mapping) {
-        throw new UnsupportedOperationException();
+        BavetFlattenLastBridgeBiConstraintStream<Solution_, A, B, ResultB_> bridge = shareAndAddChild(
+                new BavetFlattenLastBridgeBiConstraintStream<>(constraintFactory, this, mapping));
+        return constraintFactory.share(
+                new BavetFlattenLastBiConstraintStream<>(constraintFactory, bridge),
+                bridge::setFlattenLastStream);
     }
 
     // ************************************************************************

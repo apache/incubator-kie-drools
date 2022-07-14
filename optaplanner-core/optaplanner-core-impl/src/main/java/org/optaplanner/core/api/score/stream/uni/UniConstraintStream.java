@@ -1392,7 +1392,10 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * a stream of {@code [USER, ADMIN, USER, ADMIN, AUDITOR]}.
      *
      * @param mapping never null, function to convert the original tuple into {@link Iterable}
-     * @param <ResultA_> the type of facts in the resulting tuples
+     * @param <ResultA_> the type of facts in the resulting tuples.
+     *        It is recommended that this type be deeply immutable.
+     *        Not following this recommendation may lead to hard-to-debug hashing issues down the stream,
+     *        especially if this value is ever used as a group key.
      * @return never null
      */
     <ResultA_> UniConstraintStream<ResultA_> flattenLast(Function<A, Iterable<ResultA_>> mapping);

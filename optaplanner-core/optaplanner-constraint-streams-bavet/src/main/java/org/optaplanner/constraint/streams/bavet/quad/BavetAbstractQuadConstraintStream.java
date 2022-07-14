@@ -344,7 +344,11 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public <ResultD_> QuadConstraintStream<A, B, C, ResultD_> flattenLast(Function<D, Iterable<ResultD_>> mapping) {
-        throw new UnsupportedOperationException();
+        BavetFlattenLastBridgeQuadConstraintStream<Solution_, A, B, C, D, ResultD_> bridge = shareAndAddChild(
+                new BavetFlattenLastBridgeQuadConstraintStream<>(constraintFactory, this, mapping));
+        return constraintFactory.share(
+                new BavetFlattenLastQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setFlattenLastStream);
     }
 
     // ************************************************************************

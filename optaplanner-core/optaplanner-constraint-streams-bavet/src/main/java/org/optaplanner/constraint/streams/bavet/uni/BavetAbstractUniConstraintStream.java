@@ -369,7 +369,11 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> flattenLast(Function<A, Iterable<ResultA_>> mapping) {
-        throw new UnsupportedOperationException();
+        BavetFlattenLastBridgeUniConstraintStream<Solution_, A, ResultA_> bridge = shareAndAddChild(
+                new BavetFlattenLastBridgeUniConstraintStream<>(constraintFactory, this, mapping));
+        return constraintFactory.share(
+                new BavetFlattenLastUniConstraintStream<>(constraintFactory, bridge),
+                bridge::setFlattenLastStream);
     }
 
     // ************************************************************************

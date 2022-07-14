@@ -377,7 +377,11 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public <ResultC_> TriConstraintStream<A, B, ResultC_> flattenLast(Function<C, Iterable<ResultC_>> mapping) {
-        throw new UnsupportedOperationException();
+        BavetFlattenLastBridgeTriConstraintStream<Solution_, A, B, C, ResultC_> bridge = shareAndAddChild(
+                new BavetFlattenLastBridgeTriConstraintStream<>(constraintFactory, this, mapping));
+        return constraintFactory.share(
+                new BavetFlattenLastTriConstraintStream<>(constraintFactory, bridge),
+                bridge::setFlattenLastStream);
     }
 
     // ************************************************************************

@@ -20,6 +20,9 @@ import org.optaplanner.core.api.score.stream.ConstraintStream;
  * @param <B> the type of the second fact of the tuple in the source {@link BiConstraintStream}
  * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
  * @param <Result_> the type of the fact of the tuple in the destination {@link ConstraintStream}
+ *        It is recommended that this type be deeply immutable.
+ *        Not following this recommendation may lead to hard-to-debug hashing issues down the stream,
+ *        especially if this value is ever used as a group key.
  * @see ConstraintCollectors
  */
 public interface BiConstraintCollector<A, B, ResultContainer_, Result_> {
