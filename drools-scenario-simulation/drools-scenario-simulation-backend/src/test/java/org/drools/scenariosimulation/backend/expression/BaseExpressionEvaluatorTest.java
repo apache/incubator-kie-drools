@@ -31,10 +31,6 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class BaseExpressionEvaluatorTest {
 
@@ -44,21 +40,21 @@ public class BaseExpressionEvaluatorTest {
     @Test
     public void evaluateLiteralExpression() {
         String raw = "";
-        assertEquals(raw, expressionEvaluator.evaluateLiteralExpression(raw, Object.class.getCanonicalName(), Collections.emptyList()));
+        assertThat(expressionEvaluator.evaluateLiteralExpression(raw, Object.class.getCanonicalName(), Collections.emptyList())).isEqualTo(raw);
 
         raw = "SimpleString";
-        assertEquals(raw, expressionEvaluator.evaluateLiteralExpression(raw, String.class.getCanonicalName(), Collections.emptyList()));
+        assertThat(expressionEvaluator.evaluateLiteralExpression(raw, String.class.getCanonicalName(), Collections.emptyList())).isEqualTo(raw);
 
         raw = "= SimpleString";
-        assertEquals("SimpleString", expressionEvaluator.evaluateLiteralExpression(raw, String.class.getCanonicalName(), Collections.emptyList()));
+        assertThat(expressionEvaluator.evaluateLiteralExpression(raw, String.class.getCanonicalName(), Collections.emptyList())).isEqualTo("SimpleString");
 
-        assertNull(expressionEvaluator.evaluateLiteralExpression(null, String.class.getCanonicalName(), Collections.emptyList()));
+        assertThat(expressionEvaluator.evaluateLiteralExpression(null, String.class.getCanonicalName(), Collections.emptyList())).isNull();
     }
 
     @Test
     public void createObjectTest() {
         assertThat(expressionEvaluator.createObject(String.class.getCanonicalName(), Collections.emptyList())).isNotNull();
-        assertTrue(expressionEvaluator.createObject(Map.class.getCanonicalName(), Arrays.asList(String.class.getCanonicalName(), String.class.getCanonicalName())) instanceof Map);
+        assertThat(expressionEvaluator.createObject(Map.class.getCanonicalName(), Arrays.asList(String.class.getCanonicalName(), String.class.getCanonicalName())) instanceof Map).isTrue();
 
         assertThatThrownBy(() -> expressionEvaluator.createObject("com.invalid.class.Name", Collections.emptyList())).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Impossible to instantiate com.invalid.class.Name");
@@ -66,22 +62,22 @@ public class BaseExpressionEvaluatorTest {
 
     @Test
     public void verifyNullTest() {
-        assertTrue(expressionEvaluator.verifyResult("[]", null, null).isSuccessful());
-        assertFalse(expressionEvaluator.verifyResult("[{\"" + VALUE + "\" : \"result\"}]", null, null).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult("[]", null, null).isSuccessful()).isTrue();
+        assertThat(expressionEvaluator.verifyResult("[{\"" + VALUE + "\" : \"result\"}]", null, null).isSuccessful()).isFalse();
     }
 
     @Test
     public void nullResultTest() {
-        assertFalse(expressionEvaluator.evaluateUnaryExpression("> 1", null, null).isSuccessful());
-        assertTrue(expressionEvaluator.evaluateUnaryExpression("", null, null).isSuccessful());
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(null, null, null).isSuccessful());
+        assertThat(expressionEvaluator.evaluateUnaryExpression("> 1", null, null).isSuccessful()).isFalse();
+        assertThat(expressionEvaluator.evaluateUnaryExpression("", null, null).isSuccessful()).isTrue();
+        assertThat(expressionEvaluator.evaluateUnaryExpression(null, null, null).isSuccessful()).isTrue();
 
-        assertTrue(expressionEvaluator.evaluateUnaryExpression("{}", null, Map.class).isSuccessful());
-        assertTrue(expressionEvaluator.evaluateUnaryExpression("[]", null, List.class).isSuccessful());
+        assertThat(expressionEvaluator.evaluateUnaryExpression("{}", null, Map.class).isSuccessful()).isTrue();
+        assertThat(expressionEvaluator.evaluateUnaryExpression("[]", null, List.class).isSuccessful()).isTrue();
 
         String mapOfListJson = "{\"key1\" : [{\"" + VALUE + "\" : \"value1\"}, {\"" + VALUE + "\" : \"value2\"}]}";
         Map<String, List<String>> mapOfListToCheck = new HashMap<>();
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(mapOfListJson, mapOfListToCheck, Map.class).isSuccessful());
+        assertThat(expressionEvaluator.evaluateUnaryExpression(mapOfListJson, mapOfListToCheck, Map.class).isSuccessful()).isFalse();
     }
 
     @SuppressWarnings("unchecked")
@@ -94,9 +90,9 @@ public class BaseExpressionEvaluatorTest {
         genericClasses.add(String.class.getCanonicalName());
         Map<String, String> parsedWorkbench = ((Map<String, String>) expressionEvaluator.convertResult(givenWorkbenchMapString, Map.class.getCanonicalName(), genericClasses));
 
-        assertEquals(1, parsedWorkbench.size());
+        assertThat(parsedWorkbench.size()).isEqualTo(1);
         assertThat(parsedWorkbench.get("Home")).isNotNull();
-        assertEquals("123 Any Street", parsedWorkbench.get("Home"));
+        assertThat(parsedWorkbench.get("Home")).isEqualTo("123 Any Street");
 
         String givenWorkbenchMapInteger = "{ \"Home\": { \"" + VALUE + "\": \"100\" } }";
         genericClasses.clear();
@@ -104,9 +100,9 @@ public class BaseExpressionEvaluatorTest {
         genericClasses.add(Integer.class.getCanonicalName());
         Map<String, Integer> parsedIntegerFromMap = ((Map<String, Integer>) expressionEvaluator.convertResult(givenWorkbenchMapInteger, Map.class.getCanonicalName(), genericClasses));
 
-        assertEquals(1, parsedIntegerFromMap.size());
+        assertThat(parsedIntegerFromMap.size()).isEqualTo(1);
         assertThat(parsedIntegerFromMap.get("Home")).isNotNull();
-        assertEquals(100, parsedIntegerFromMap.get("Home").intValue());
+        assertThat(parsedIntegerFromMap.get("Home").intValue()).isEqualTo(100);
 
         String expectWorkbenchMapInteger = "{ \"Home\": { \"" + VALUE + "\": \"> 100\" } }";
         genericClasses.clear();
@@ -114,22 +110,22 @@ public class BaseExpressionEvaluatorTest {
         genericClasses.add(Integer.class.getCanonicalName());
         Map<String, Integer> resultToTest = new HashMap<>();
         resultToTest.put("Home", 120);
-        assertTrue(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest, null).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest, null).isSuccessful()).isTrue();
         resultToTest.put("Home", 20);
-        assertFalse(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest, null).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, resultToTest, null).isSuccessful()).isFalse();
 
         String mapOfStringJson = "{\"key1\" : {\"" + VALUE + "\" : \"value1\"}, \"key2\" : {\"" + VALUE + "\" : \"value2\"}}";
         Map<String, String> mapStringStringToCheck = new HashMap<>();
         mapStringStringToCheck.put("key1", "value1");
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson, mapStringStringToCheck, Map.class).isSuccessful());
+        assertThat(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson, mapStringStringToCheck, Map.class).isSuccessful()).isFalse();
         mapStringStringToCheck.put("key2", "value2");
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson, mapStringStringToCheck, Map.class).isSuccessful());
+        assertThat(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson, mapStringStringToCheck, Map.class).isSuccessful()).isTrue();
 
         String mapOfStringJson1 = "{\"key1\" : {\"" + VALUE + "\" : \"\"}}";
         Map<String, String> mapStringStringToCheck1 = new HashMap<>();
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, mapStringStringToCheck1, Map.class).isSuccessful());
+        assertThat(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, mapStringStringToCheck1, Map.class).isSuccessful()).isTrue();
         mapStringStringToCheck1.put("key1", "value1");
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, mapStringStringToCheck1, Map.class).isSuccessful());
+        assertThat(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, mapStringStringToCheck1, Map.class).isSuccessful()).isTrue();
     }
 
     @SuppressWarnings("unchecked")
@@ -139,21 +135,21 @@ public class BaseExpressionEvaluatorTest {
         Map<String, ListMapClass> parsedMap = (Map<String, ListMapClass>) expressionEvaluator.convertResult(mapJsonString, Map.class.getCanonicalName(),
                                                                                                             Collections.singletonList(ListMapClass.class.getCanonicalName()));
 
-        assertEquals(1, parsedMap.size());
-        assertEquals("John", parsedMap.get("first").getName());
+        assertThat(parsedMap.size()).isEqualTo(1);
+        assertThat(parsedMap.get("first").getName()).isEqualTo("John");
 
         mapJsonString = "{\"first\": {\"siblings\": [{\"name\" : \"John\"}]}}";
         parsedMap = (Map<String, ListMapClass>) expressionEvaluator.convertResult(mapJsonString, Map.class.getCanonicalName(),
                                                                                   Collections.singletonList(ListMapClass.class.getCanonicalName()));
-        assertEquals(1, parsedMap.size());
-        assertEquals("John", parsedMap.get("first").getSiblings().get(0).getName());
+        assertThat(parsedMap.size()).isEqualTo(1);
+        assertThat(parsedMap.get("first").getSiblings().get(0).getName()).isEqualTo("John");
 
         mapJsonString = "{\"first\": {\"phones\": {\"number\" : \"1\"}}}";
         parsedMap = (Map<String, ListMapClass>) expressionEvaluator.convertResult(mapJsonString, Map.class.getCanonicalName(),
                                                                                   Collections.singletonList(ListMapClass.class.getCanonicalName()));
 
-        assertEquals(1, parsedMap.size());
-        assertEquals((Integer) 1, parsedMap.get("first").getPhones().get("number"));
+        assertThat(parsedMap.size()).isEqualTo(1);
+        assertThat(parsedMap.get("first").getPhones().get("number")).isEqualTo((Integer) 1);
 
         mapJsonString = "{\"first\": {\"phones\": {\"number\" : \"> 1\"}}}";
 
@@ -164,9 +160,9 @@ public class BaseExpressionEvaluatorTest {
         element.setPhones(phones);
         toCheck.put("first", element);
 
-        assertTrue(expressionEvaluator.verifyResult(mapJsonString, toCheck, null).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(mapJsonString, toCheck, null).isSuccessful()).isTrue();
         phones.put("number", -1);
-        assertFalse(expressionEvaluator.verifyResult(mapJsonString, toCheck, null).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(mapJsonString, toCheck, null).isSuccessful()).isFalse();
     }
 
     @SuppressWarnings("unchecked")
@@ -179,14 +175,14 @@ public class BaseExpressionEvaluatorTest {
         List<ListMapClass> parsedValue = (List<ListMapClass>) expressionEvaluator.convertResult(listJsonString, List.class.getCanonicalName(),
                                                                                                 Collections.singletonList(ListMapClass.class.getCanonicalName()));
 
-        assertEquals(2, parsedValue.size());
-        assertEquals(2, parsedValue.get(1).getNames().size());
-        assertTrue(parsedValue.get(1).getNames().contains("Anna"));
+        assertThat(parsedValue.size()).isEqualTo(2);
+        assertThat(parsedValue.get(1).getNames().size()).isEqualTo(2);
+        assertThat(parsedValue.get(1).getNames().contains("Anna")).isTrue();
 
-        assertTrue(expressionEvaluator.verifyResult(listJsonString, parsedValue, null).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(listJsonString, parsedValue, null).isSuccessful()).isTrue();
 
         parsedValue.get(1).setNames(new ArrayList<>());
-        assertFalse(expressionEvaluator.verifyResult(listJsonString, parsedValue, null).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(listJsonString, parsedValue, null).isSuccessful()).isFalse();
     }
 
     @SuppressWarnings("unchecked")
@@ -196,32 +192,32 @@ public class BaseExpressionEvaluatorTest {
 
         List<Integer> result = (List<Integer>) expressionEvaluator.convertResult(listJsonString, List.class.getCanonicalName(), Collections.singletonList(Integer.class.getCanonicalName()));
 
-        assertEquals(2, result.size());
-        assertTrue(result.contains(10));
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.contains(10)).isTrue();
 
         listJsonString = "[{\"" + VALUE + "\" : \"> 10\"}]";
         List<Integer> toCheck = Collections.singletonList(13);
 
-        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck, null).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(listJsonString, toCheck, null).isSuccessful()).isTrue();
 
         listJsonString = "[{\"" + VALUE + "\" : \"> 100\"}]";
-        assertFalse(expressionEvaluator.verifyResult(listJsonString, toCheck, null).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(listJsonString, toCheck, null).isSuccessful()).isFalse();
 
         listJsonString = "[{\"" + VALUE + "\" : \"\"}]";
-        assertTrue(expressionEvaluator.verifyResult(listJsonString, toCheck, null).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(listJsonString, toCheck, null).isSuccessful()).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void expressionListVerifyResultTest() {
         String expressionCollectionJsonString = new TextNode("10").toString();
         List<BigDecimal> contextValue = Collections.singletonList(BigDecimal.valueOf(10));
-        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, List.class).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, List.class).isSuccessful()).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void expressionMapVerifyResultTest() {
         String expressionCollectionJsonString = new TextNode("{key_a : 1}").toString();
         Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
-        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, Map.class).isSuccessful());
+        assertThat(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, Map.class).isSuccessful()).isTrue();
     }
 }

@@ -27,8 +27,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.Tuple;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -77,7 +76,7 @@ public class MarshalledActivationSortTest {
             as.add(a);
         }
         as.sort( ProtobufOutputMarshaller.ActivationsSorter.INSTANCE );
-        assertEquals( "ActivationEntry{ruleName='ExcCh', ids=[579, null, 564]}", as.get(0).toString() );
+        assertThat(as.get(0).toString()).isEqualTo("ActivationEntry{ruleName='ExcCh', ids=[579, null, 564]}");
     }
 
     private static class ActivationEntry {
@@ -125,7 +124,7 @@ public class MarshalledActivationSortTest {
             tuple4 = mockTuple(line.ids.get(3));
             when(tuple3.getParent()).thenReturn(tuple4);
         }
-        assertTrue(line.ids.size() < 5);
+        assertThat(line.ids.size() < 5).isTrue();
         return a;
 
     }

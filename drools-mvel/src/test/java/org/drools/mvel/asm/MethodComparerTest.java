@@ -21,7 +21,7 @@ import org.drools.core.util.asm.MethodCompareB;
 import org.junit.Test;
 import org.mvel2.asm.ClassReader;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MethodComparerTest {
 
@@ -32,43 +32,37 @@ public class MethodComparerTest {
                                           new ClassReader( getClassData( MethodCompareA.class ) ),
                                           "evaluate",
                                           new ClassReader( getClassData( MethodCompareB.class ) ) );
-        assertEquals( true,
-                      result );
+        assertThat(result).isEqualTo(true);
 
         result = comp.equivalent( "evaluate",
                                   new ClassReader( getClassData( MethodCompareA.class ) ),
                                   "evaluate2",
                                   new ClassReader( getClassData( MethodCompareA.class ) ) );
-        assertEquals( false,
-                      result );
+        assertThat(result).isEqualTo(false);
 
         result = comp.equivalent( "evaluate",
                                   new ClassReader( getClassData( MethodCompareB.class ) ),
                                   "evaluate2",
                                   new ClassReader( getClassData( MethodCompareA.class ) ) );
-        assertEquals( false,
-                      result );
+        assertThat(result).isEqualTo(false);
 
         result = comp.equivalent( "evaluate",
                                   new ClassReader( getClassData( MethodCompareB.class ) ),
                                   "evaluate",
                                   new ClassReader( getClassData( MethodCompareA.class ) ) );
-        assertEquals( true,
-                      result );
+        assertThat(result).isEqualTo(true);
 
         result = comp.equivalent( "evaluate",
                                   new ClassReader( getClassData( MethodCompareA.class ) ),
                                   "evaluate",
                                   new ClassReader( getClassData( MethodCompareA.class ) ) );
-        assertEquals( true,
-                      result );
+        assertThat(result).isEqualTo(true);
 
         result = comp.equivalent( "evaluate",
                                   new ClassReader( getClassData( MethodCompareA.class ) ),
                                   "askew",
                                   new ClassReader( getClassData( MethodCompareA.class ) ) );
-        assertEquals( false,
-                      result );
+        assertThat(result).isEqualTo(false);
 
     }
 

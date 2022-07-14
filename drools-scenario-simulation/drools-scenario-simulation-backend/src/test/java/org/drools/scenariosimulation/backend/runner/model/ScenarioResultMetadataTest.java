@@ -9,9 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNDecisionResult;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class ScenarioResultMetadataTest {
@@ -30,26 +29,26 @@ public class ScenarioResultMetadataTest {
 
     @Test
     public void addAuditMessage() {
-        assertTrue(scenarioResultMetadata.getAuditLogLines().isEmpty());
+        assertThat(scenarioResultMetadata.getAuditLogLines().isEmpty()).isTrue();
         int index = 1;
         String decisionName = "decisionName";
         String result = DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED.toString();
         scenarioResultMetadata.addAuditMessage(index, decisionName, result);
         final List<AuditLogLine> retrieved = scenarioResultMetadata.getAuditLogLines();
-        assertEquals(1, retrieved.size());
+        assertThat(retrieved.size()).isEqualTo(1);
         commonCheckAuditLogLine(retrieved.get(0), decisionName, result, null);
     }
 
     @Test
     public void addAuditMessageWithErrorMessage() {
-        assertTrue(scenarioResultMetadata.getAuditLogLines().isEmpty());
+        assertThat(scenarioResultMetadata.getAuditLogLines().isEmpty()).isTrue();
         int index = 1;
         String decisionName = "decisionName";
         String result =  DMNDecisionResult.DecisionEvaluationStatus.FAILED.toString();
         String message = "Message";
         scenarioResultMetadata.addAuditMessage(index, decisionName, result, message);
         final List<AuditLogLine> retrieved = scenarioResultMetadata.getAuditLogLines();
-        assertEquals(1, retrieved.size());
+        assertThat(retrieved.size()).isEqualTo(1);
         commonCheckAuditLogLine(retrieved.get(0), decisionName, result, message);
     }
 }

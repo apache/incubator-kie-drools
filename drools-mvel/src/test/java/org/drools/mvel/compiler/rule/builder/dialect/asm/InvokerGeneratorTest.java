@@ -23,14 +23,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.rule.Declaration;
-import org.drools.mvel.asm.ClassGenerator;
 import org.drools.core.rule.builder.dialect.asm.InvokerStub;
+import org.drools.mvel.asm.ClassGenerator;
 import org.drools.mvel.asm.InvokerContext;
 import org.drools.mvel.asm.InvokerGenerator;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InvokerGeneratorTest {
 
@@ -55,15 +54,15 @@ public class InvokerGeneratorTest {
         generator.setInterfaces(InvokerStub.class);
 
         InvokerStub stub = generator.newInstance();
-        assertEquals("pkg", stub.getPackageName());
-        assertEquals("TestRule", stub.getRuleClassName());
-        assertEquals("testMethod", stub.getMethodName());
-        assertEquals("TestInvokerGenerated", stub.getGeneratedInvokerClassName());
-        assertEquals(111, stub.hashCode());
-        assertTrue(Arrays.equals(new String[] { "globalList" }, stub.getGlobals()));
-        assertTrue(Arrays.equals(new String[] { "java/util/List" }, stub.getGlobalTypes()));
+        assertThat(stub.getPackageName()).isEqualTo("pkg");
+        assertThat(stub.getRuleClassName()).isEqualTo("TestRule");
+        assertThat(stub.getMethodName()).isEqualTo("testMethod");
+        assertThat(stub.getGeneratedInvokerClassName()).isEqualTo("TestInvokerGenerated");
+        assertThat(stub.hashCode()).isEqualTo(111);
+        assertThat(Arrays.equals(new String[]{"globalList"}, stub.getGlobals())).isTrue();
+        assertThat(Arrays.equals(new String[]{"java/util/List"}, stub.getGlobalTypes())).isTrue();
         List<String> importList = Arrays.asList(stub.getPackageImports());
-        assertTrue(importList.contains("p1"));
-        assertTrue(importList.contains("p2"));
+        assertThat(importList.contains("p1")).isTrue();
+        assertThat(importList.contains("p2")).isTrue();
     }
 }

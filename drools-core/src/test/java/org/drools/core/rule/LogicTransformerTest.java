@@ -23,10 +23,9 @@ import java.io.IOException;
 import java.util.Collections;
 
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.spi.ObjectType;
-
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

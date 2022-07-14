@@ -44,7 +44,7 @@ import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.expr.MVELCompileable;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MVELAccumulateBuilderTest {
 
@@ -120,11 +120,10 @@ public class MVELAccumulateBuilderTest {
                         f2,
                         ksession );
 
-        assertEquals( new Integer( 18 ),
-                      acc.getResult( wmContext,
-                                     accContext,
-                                     tuple,
-                                     ksession ) );
+        assertThat(acc.getResult(wmContext,
+                accContext,
+                tuple,
+                ksession)).isEqualTo(new Integer( 18 ));
 
         LeftTuple match = new FromNodeLeftTuple();
         match.setContextObject(value1);
@@ -136,11 +135,10 @@ public class MVELAccumulateBuilderTest {
                        match,
                        ksession);
 
-        assertEquals( new Integer( 8 ),
-                      acc.getResult( wmContext,
-                                     accContext,
-                                     tuple,
-                                     ksession ) );
+        assertThat(acc.getResult(wmContext,
+                accContext,
+                tuple,
+                ksession)).isEqualTo(new Integer( 8 ));
     }
 
 }

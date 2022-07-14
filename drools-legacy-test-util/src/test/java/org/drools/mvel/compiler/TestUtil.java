@@ -20,8 +20,7 @@ import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestUtil {
 
@@ -30,9 +29,9 @@ public class TestUtil {
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         org.kie.api.builder.Results results = ks.newKieBuilder( kfs ).buildAll( DrlProject.class).getResults();
         if ( errorNr > 0 ) {
-            assertEquals( errorNr, results.getMessages().size() );
+            assertThat(results.getMessages().size()).isEqualTo(errorNr);
         } else {
-            assertTrue( results.getMessages().size() > 0 );
+            assertThat(results.getMessages().size() > 0).isTrue();
         }
     }
 }

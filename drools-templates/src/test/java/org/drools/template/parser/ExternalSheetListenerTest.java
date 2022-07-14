@@ -43,7 +43,7 @@ import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExternalSheetListenerTest {
 
@@ -63,7 +63,7 @@ public class ExternalSheetListenerTest {
     @Test
     public void testRenderDrl() {
         String drl = esl.renderDRL();
-        assertEquals("Test Template Header\nTest Generated DRL\n", drl);
+        assertThat(drl).isEqualTo("Test Template Header\nTest Generated DRL\n");
     }
 
     @Test
@@ -81,15 +81,15 @@ public class ExternalSheetListenerTest {
         esl.newCell(2, 1, "row2col1", 0);
         esl.newCell(2, 2, "row2col2", 0);
         esl.finishSheet();
-        assertEquals(2, assertedRows.size());
+        assertThat(assertedRows.size()).isEqualTo(2);
         for (Map.Entry<Row, List<StringCell>> entry : assertedRows.entrySet()) {
             Row row = entry.getKey();
             List<StringCell> cells = entry.getValue();
             // first column is not part of the decision table
             int i = 1;
             for (StringCell cell : cells) {
-                assertEquals("row" + row.getRowNumber() + "col" + i, cell.getValue());
-                assertEquals("Pattern " + i, cell.getColumn().getName());
+                assertThat(cell.getValue()).isEqualTo("row" + row.getRowNumber() + "col" + i);
+                assertThat(cell.getColumn().getName()).isEqualTo("Pattern " + i);
                 i++;
             }
         }
@@ -119,7 +119,7 @@ public class ExternalSheetListenerTest {
         esl.newCell(4, 2, "", 0);
 
         esl.finishSheet();
-        assertEquals(2, assertedRows.size());
+        assertThat(assertedRows.size()).isEqualTo(2);
     }
 
     private class TestTemplateRuleBase implements TemplateRuleBase {

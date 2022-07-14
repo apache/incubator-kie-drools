@@ -34,8 +34,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class AlphaNetworkCompilerTest extends BaseModelTest {
 
@@ -88,11 +86,11 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, resultsM.size() );
-        assertEquals( mario, resultsM.iterator().next() );
+        assertThat(resultsM.size()).isEqualTo(1);
+        assertThat(resultsM.iterator().next()).isEqualTo(mario);
 
-        assertEquals( 1, resultsL.size() );
-        assertEquals( luca, resultsL.iterator().next() );
+        assertThat(resultsL.size()).isEqualTo(1);
+        assertThat(resultsL.iterator().next()).isEqualTo(luca);
     }
 
     @Test
@@ -128,11 +126,11 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         CompositeObjectSinkAdapter sinkAdaptor = (CompositeObjectSinkAdapter) objectSinkPropagator;
 
         assertThat(sinkAdaptor.getHashedSinkMap()).isNotNull();
-        assertEquals(3, sinkAdaptor.getHashedSinkMap().size());
+        assertThat(sinkAdaptor.getHashedSinkMap().size()).isEqualTo(3);
 
         final Person p = new Person("Toshiya", 45);
         ksession.insert(p);
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -170,8 +168,8 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( luca33, results.iterator().next() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next()).isEqualTo(luca33);
 
     }
 
@@ -208,11 +206,11 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1, resultsM.size() );
-        assertEquals( mario, resultsM.iterator().next() );
+        assertThat(resultsM.size()).isEqualTo(1);
+        assertThat(resultsM.iterator().next()).isEqualTo(mario);
 
-        assertEquals( 1, resultsL.size() );
-        assertEquals( luca, resultsL.iterator().next() );
+        assertThat(resultsL.size()).isEqualTo(1);
+        assertThat(resultsL.iterator().next()).isEqualTo(luca);
     }
 
     @Test
@@ -229,7 +227,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         ksession.insert("Luca");
         ksession.insert("Asdrubale");
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -257,7 +255,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         ksession.insert(new Person("Luca"));
         ksession.insert(new Person("Asdrubale"));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     /*
@@ -289,7 +287,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         ksession.insert(new Person("Luca", new BigDecimal(0)));
         ksession.insert(new Person("Asdrubale", new BigDecimal(10)));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -317,7 +315,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         ksession.insert(new Person("Luca"));
         ksession.insert(new Person("Asdrubale"));
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -344,7 +342,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         ksession.insert("Luca");
         ksession.insert("Asdrubale");
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -368,7 +366,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
         ksession.insert(new ChildFactWithEnum1(1, 3, EnumFact1.FIRST));
         ksession.insert(new ChildFactWithEnum1(1, 3, EnumFact1.SECOND));
-        assertEquals(2, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
     @Test
@@ -390,10 +388,10 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.fireAllRules();
-        assertEquals("Asdrubale is greater than 4 and smaller than 10", results.iterator().next());
+        assertThat(results.iterator().next()).isEqualTo("Asdrubale is greater than 4 and smaller than 10");
     }
 
     @Test
@@ -412,10 +410,10 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         final Person luca = new Person("Luca", 30);
         ksession.insert(luca);
 
-        assertEquals(1, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.fireAllRules();
-        assertEquals("Luca30", luca.getName());
+        assertThat(luca.getName()).isEqualTo("Luca30");
     }
 
     @Test
@@ -438,10 +436,10 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
-        assertEquals(10, ksession.fireAllRules());
+        assertThat(ksession.fireAllRules()).isEqualTo(10);
 
         ksession.fireAllRules();
-        assertTrue(luca.getAge() == 40);
+        assertThat(luca.getAge() == 40).isTrue();
     }
 
     @Test
@@ -456,7 +454,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
         try {
             ksession.insert(new Person("Mario", 45));
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -510,7 +508,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         if(this.testRunType.isAlphaNetworkCompiler()) {
             this.assertReteIsAlphaNetworkCompiled(ksession);
         }
-        assertEquals( 2, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
@@ -525,7 +523,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
             this.assertReteIsAlphaNetworkCompiled(ksession2);
         }
 
-        assertEquals( 3, ksession2.fireAllRules() );
+        assertThat(ksession2.fireAllRules()).isEqualTo(3);
 
         // Create a new jar for version 1.2.0
         ReleaseId releaseId3 = ks.newReleaseId( "org.kie", "test-upgrade", "1.2.0" );
@@ -541,8 +539,8 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         List<String> list = new ArrayList<>();
         ksession2.setGlobal( "list", list );
         ksession2.fireAllRules();
-        assertEquals( 1, list.size() );
-        assertEquals( "Hello World", list.get(0) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Hello World");
     }
 
 }

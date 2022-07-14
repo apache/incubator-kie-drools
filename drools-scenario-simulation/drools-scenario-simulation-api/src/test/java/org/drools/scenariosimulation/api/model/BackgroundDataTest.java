@@ -20,9 +20,7 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BackgroundDataTest {
 
@@ -45,20 +43,20 @@ public class BackgroundDataTest {
     public void removeFactMappingValueByIdentifiersTest() {
         backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "test value");
         Optional<FactMappingValue> retrieved = backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved.isPresent()).isTrue();
         backgroundData.removeFactMappingValueByIdentifiers(factIdentifier, expressionIdentifier);
         retrieved = backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved.isPresent()).isFalse();
     }
 
     @Test
     public void removeFactMappingValue() {
         backgroundData.addMappingValue(factIdentifier, expressionIdentifier, "test value");
         Optional<FactMappingValue> retrieved = backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved.isPresent()).isTrue();
         backgroundData.removeFactMappingValue(retrieved.get());
         retrieved = backgroundData.getFactMappingValue(factIdentifier, expressionIdentifier);
-        assertFalse(retrieved.isPresent());
+        assertThat(retrieved.isPresent()).isFalse();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -70,15 +68,15 @@ public class BackgroundDataTest {
 
     @Test
     public void getDescriptionTest() {
-        assertEquals("", backgroundData.getDescription());
+        assertThat(backgroundData.getDescription()).isEqualTo("");
 
         String description = "Test Description";
         backgroundData.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, description);
-        assertEquals(description, backgroundData.getDescription());
+        assertThat(backgroundData.getDescription()).isEqualTo(description);
 
         BackgroundData scenarioWithDescriptionNull = background.addData();
         scenarioWithDescriptionNull.setDescription(null);
-        assertEquals("", scenarioWithDescriptionNull.getDescription());
+        assertThat(scenarioWithDescriptionNull.getDescription()).isEqualTo("");
     }
 
     @Test
@@ -86,9 +84,9 @@ public class BackgroundDataTest {
         Object value1 = "Test 1";
         Object value2 = "Test 2";
         FactMappingValue factMappingValue = backgroundData.addMappingValue(factIdentifier, expressionIdentifier, value1);
-        assertEquals(factMappingValue.getRawValue(), value1);
+        assertThat(value1).isEqualTo(factMappingValue.getRawValue());
         FactMappingValue factMappingValue1 = backgroundData.addOrUpdateMappingValue(factIdentifier, expressionIdentifier, value2);
-        assertEquals(factMappingValue, factMappingValue1);
-        assertEquals(factMappingValue1.getRawValue(), value2);
+        assertThat(factMappingValue1).isEqualTo(factMappingValue);
+        assertThat(value2).isEqualTo(factMappingValue1.getRawValue());
     }
 }

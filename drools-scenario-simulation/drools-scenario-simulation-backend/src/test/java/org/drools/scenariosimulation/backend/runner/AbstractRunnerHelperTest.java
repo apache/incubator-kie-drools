@@ -39,11 +39,8 @@ import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.junit.Test;
 import org.kie.api.runtime.KieContainer;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -83,10 +80,10 @@ public class AbstractRunnerHelperTest {
         ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("MyProperty", FactMappingType.GIVEN);
 
         FactMappingValue factMappingValueWithValidValue = new FactMappingValue(factIdentifier, expressionIdentifier, VALUE);
-        assertFalse(abstractRunnerHelper.isFactMappingValueToSkip(factMappingValueWithValidValue));
+        assertThat(abstractRunnerHelper.isFactMappingValueToSkip(factMappingValueWithValidValue)).isFalse();
 
         FactMappingValue factMappingValueWithoutValue = new FactMappingValue(factIdentifier, expressionIdentifier, null);
-        assertTrue(abstractRunnerHelper.isFactMappingValueToSkip(factMappingValueWithoutValue));
+        assertThat(abstractRunnerHelper.isFactMappingValueToSkip(factMappingValueWithoutValue)).isTrue();
     }
 
     @Test
@@ -100,14 +97,14 @@ public class AbstractRunnerHelperTest {
 
         // Success
         resultWrapperAtomicReference.set(ValueWrapper.of(VALUE));
-        assertTrue(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult());
+        assertThat(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult()).isTrue();
         verify(expectedResultSpy, times(1)).resetStatus();
 
         reset(expectedResultSpy);
 
         // Fail with expected value
         resultWrapperAtomicReference.set(ValueWrapper.errorWithValidValue(VALUE, "value1"));
-        assertFalse(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult());
+        assertThat(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult()).isFalse();
         verify(expectedResultSpy, times(1)).setErrorValue(VALUE);
 
         reset(expectedResultSpy);
@@ -116,7 +113,7 @@ public class AbstractRunnerHelperTest {
         resultWrapperAtomicReference.set(ValueWrapper.errorWithValidValue(VALUE, "value1"));
         ExpressionEvaluator expressionEvaluatorMock = mock(ExpressionEvaluator.class);
         when(expressionEvaluatorMock.fromObjectToExpression(any())).thenThrow(new IllegalArgumentException("Error"));
-        assertFalse(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluatorMock).getResult());
+        assertThat(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluatorMock).getResult()).isFalse();
         verify(expectedResultSpy, times(1)).setExceptionMessage("Error");
 
         reset(expectedResultSpy);
@@ -124,13 +121,13 @@ public class AbstractRunnerHelperTest {
         // Fail in collection case
         List<String> pathToValue = Arrays.asList("field1", "fields2");
         resultWrapperAtomicReference.set(ValueWrapper.errorWithCollectionPathToValue(VALUE, pathToValue));
-        assertFalse(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult());
+        assertThat(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult()).isFalse();
         verify(expectedResultSpy, times(1)).setCollectionPathToValue(pathToValue);
         verify(expectedResultSpy, times(1)).setErrorValue(VALUE);
 
         // Fail with exception
         resultWrapperAtomicReference.set(ValueWrapper.errorWithMessage("detailedError"));
-        assertFalse(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult());
+        assertThat(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult()).isFalse();
         verify(expectedResultSpy, times(1)).setExceptionMessage("detailedError");
     }
 
@@ -146,61 +143,61 @@ public class AbstractRunnerHelperTest {
         // case 1: succeed
         when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(ExpressionEvaluatorResult.ofSuccessful());
         ValueWrapper valueWrapper = abstractRunnerHelper.getResultWrapper(String.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, String.class);
-        assertTrue(valueWrapper.isValid());
-        assertNull(valueWrapper.getCollectionPathToValue());
+        assertThat(valueWrapper.isValid()).isTrue();
+        assertThat(valueWrapper.getCollectionPathToValue()).isNull();
 
         // case 2: failed with actual value
         when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(ExpressionEvaluatorResult.ofFailed());
         valueWrapper = abstractRunnerHelper.getResultWrapper(String.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, String.class);
-        assertFalse(valueWrapper.isValid());
-        assertEquals(resultRaw, valueWrapper.getValue());
-        assertNull(valueWrapper.getCollectionPathToValue());
+        assertThat(valueWrapper.isValid()).isFalse();
+        assertThat(valueWrapper.getValue()).isEqualTo(resultRaw);
+        assertThat(valueWrapper.getCollectionPathToValue()).isNull();
 
         // case 3: failed without actual value (list)
         valueWrapper = abstractRunnerHelper.getResultWrapper(List.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, List.class);
-        assertFalse(valueWrapper.getErrorMessage().isPresent());
-        assertTrue(valueWrapper.getCollectionPathToValue().isEmpty());
-        assertNull(valueWrapper.getValue());
+        assertThat(valueWrapper.getErrorMessage().isPresent()).isFalse();
+        assertThat(valueWrapper.getCollectionPathToValue().isEmpty()).isTrue();
+        assertThat(valueWrapper.getValue()).isNull();
 
         // case 4: failed without actual value (map)
         valueWrapper = abstractRunnerHelper.getResultWrapper(Map.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
-        assertFalse(valueWrapper.getErrorMessage().isPresent());
-        assertTrue(valueWrapper.getCollectionPathToValue().isEmpty());
-        assertNull(valueWrapper.getValue());
+        assertThat(valueWrapper.getErrorMessage().isPresent()).isFalse();
+        assertThat(valueWrapper.getCollectionPathToValue().isEmpty()).isTrue();
+        assertThat(valueWrapper.getValue()).isNull();
 
         // case 5: failed with wrong value (list)
         ExpressionEvaluatorResult result = ExpressionEvaluatorResult.ofFailed(collectionWrongValue, collectionValuePath);
         when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(result);
         valueWrapper = abstractRunnerHelper.getResultWrapper(List.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, List.class);
-        assertFalse(valueWrapper.getErrorMessage().isPresent());
-        assertEquals(1, valueWrapper.getCollectionPathToValue().size());
-        assertEquals(collectionWrongValue, valueWrapper.getValue());
+        assertThat(valueWrapper.getErrorMessage().isPresent()).isFalse();
+        assertThat(valueWrapper.getCollectionPathToValue().size()).isEqualTo(1);
+        assertThat(valueWrapper.getValue()).isEqualTo(collectionWrongValue);
 
         // case 6: failed without actual value (map)
         valueWrapper = abstractRunnerHelper.getResultWrapper(Map.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
-        assertFalse(valueWrapper.getErrorMessage().isPresent());
-        assertEquals(1, valueWrapper.getCollectionPathToValue().size());
-        assertEquals(collectionWrongValue, valueWrapper.getValue());
+        assertThat(valueWrapper.getErrorMessage().isPresent()).isFalse();
+        assertThat(valueWrapper.getCollectionPathToValue().size()).isEqualTo(1);
+        assertThat(valueWrapper.getValue()).isEqualTo(collectionWrongValue);
 
         // case 7: failed without wrong value (list)
         result = ExpressionEvaluatorResult.ofFailed(null, collectionValuePath);
         when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(result);
         valueWrapper = abstractRunnerHelper.getResultWrapper(List.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, List.class);
-        assertFalse(valueWrapper.getErrorMessage().isPresent());
-        assertEquals(1, valueWrapper.getCollectionPathToValue().size());
-        assertNull(valueWrapper.getValue());
+        assertThat(valueWrapper.getErrorMessage().isPresent()).isFalse();
+        assertThat(valueWrapper.getCollectionPathToValue().size()).isEqualTo(1);
+        assertThat(valueWrapper.getValue()).isNull();
 
         // case 8: failed without actual value (map)
         valueWrapper = abstractRunnerHelper.getResultWrapper(Map.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
-        assertFalse(valueWrapper.getErrorMessage().isPresent());
-        assertEquals(1, valueWrapper.getCollectionPathToValue().size());
-        assertNull(valueWrapper.getValue());
+        assertThat(valueWrapper.getErrorMessage().isPresent()).isFalse();
+        assertThat(valueWrapper.getCollectionPathToValue().size()).isEqualTo(1);
+        assertThat(valueWrapper.getValue()).isNull();
 
         // case 9: failed with generic exception
         when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenThrow(new IllegalArgumentException(genericErrorMessage));
         FactMappingValue expectedResult5 = new FactMappingValue();
         valueWrapper = abstractRunnerHelper.getResultWrapper(Map.class.getCanonicalName(), expectedResult5, expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
-        assertEquals(genericErrorMessage, valueWrapper.getErrorMessage().get());
-        assertEquals(genericErrorMessage, expectedResult5.getExceptionMessage());
+        assertThat(valueWrapper.getErrorMessage().get()).isEqualTo(genericErrorMessage);
+        assertThat(expectedResult5.getExceptionMessage()).isEqualTo(genericErrorMessage);
     }
 }

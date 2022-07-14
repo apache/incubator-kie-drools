@@ -23,22 +23,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import org.drools.core.base.ClassObjectType;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.ObjectType;
+import org.junit.Before;
+import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.drools.core.impl.KnowledgeBaseFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CrossProductTest {
     private InternalKnowledgePackage pkg;

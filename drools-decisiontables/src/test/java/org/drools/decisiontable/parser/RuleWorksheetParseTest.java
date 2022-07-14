@@ -34,10 +34,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  *
@@ -57,8 +54,8 @@ public class RuleWorksheetParseTest {
 
         final CaseInsensitiveMap props = listener.getProperties();
         assertThat(props).isNotNull();
-        assertEquals( "data", props.getSingleProperty( "RuleSet" ) );
-        assertEquals( "someMisc",  props.getSingleProperty( "misc" ) );
+        assertThat(props.getSingleProperty("RuleSet")).isEqualTo("data");
+        assertThat(props.getSingleProperty("misc")).isEqualTo("someMisc");
         /*
          * System.out.println("Here are the global properties...");
          * listener.getProperties().list(System.out);
@@ -73,7 +70,7 @@ public class RuleWorksheetParseTest {
         final CaseInsensitiveMap props = listener.getProperties();
         assertThat(props).isNotNull();
         final String ruleSetName = props.getSingleProperty( "RuleSet" );
-        assertEquals( "data", ruleSetName );
+        assertThat(ruleSetName).isEqualTo("data");
     }
 
     @Test
@@ -86,37 +83,36 @@ public class RuleWorksheetParseTest {
 
         final Rule firstRule = (Rule) ruleset.getRules().get( 0 );
         assertThat(firstRule.getSalience()).isNotNull();
-        assertTrue( Integer.parseInt( firstRule.getSalience() ) > 0 );
+        assertThat(Integer.parseInt(firstRule.getSalience()) > 0).isTrue();
 
         // System.out.println(ruleset.toXML());
 
-        assertEquals( "data", ruleset.getName() );
-        assertEquals( 3, ruleset.getImports().size() );
-        assertEquals( 6, ruleset.getRules().size() );
+        assertThat(ruleset.getName()).isEqualTo("data");
+        assertThat(ruleset.getImports().size()).isEqualTo(3);
+        assertThat(ruleset.getRules().size()).isEqualTo(6);
 
         // check imports
         Import imp = (Import) ruleset.getImports().get( 0 );
-        assertEquals( "blah.class1", imp.getClassName() );
+        assertThat(imp.getClassName()).isEqualTo("blah.class1");
         imp = (Import) ruleset.getImports().get( 1 );
-        assertEquals( "blah.class2", imp.getClassName() );
+        assertThat(imp.getClassName()).isEqualTo("blah.class2");
         imp = (Import) ruleset.getImports().get( 2 );
-        assertEquals( "lah.di.dah", imp.getClassName() );
+        assertThat(imp.getClassName()).isEqualTo("lah.di.dah");
 
         // check rules
         Rule rule = (Rule) ruleset.getRules().get( 0 );
         Condition cond = (Condition) rule.getConditions().get( 0 );
-        assertEquals( "Foo(myObject.getColour().equals(colors.get(\"red\")), myObject.size () > 12\\\")",
-                cond.getSnippet() );
+        assertThat(cond.getSnippet()).isEqualTo("Foo(myObject.getColour().equals(colors.get(\"red\")), myObject.size () > 12\\\")");
 
         Consequence cons = (Consequence) rule.getConsequences().get( 0 );
         assertThat(cons).isNotNull();
-        assertEquals( "myObject.setIsValid(Y);", cons.getSnippet() );
+        assertThat(cons.getSnippet()).isEqualTo("myObject.setIsValid(Y);");
 
         rule = (Rule) ruleset.getRules().get( 5 );
         cond = (Condition) rule.getConditions().get( 1 );
-        assertEquals( "myObject.size () > 7", cond.getSnippet() );
+        assertThat(cond.getSnippet()).isEqualTo("myObject.size () > 7");
         cons = (Consequence) rule.getConsequences().get( 0 );
-        assertEquals( "myObject.setIsValid(10-Jul-1974)", cons.getSnippet() );
+        assertThat(cons.getSnippet()).isEqualTo("myObject.setIsValid(10-Jul-1974)");
 
     }
 
@@ -167,7 +163,7 @@ public class RuleWorksheetParseTest {
         } catch( DecisionTableParseException e ) {
             String badCell = RuleSheetParserUtil.rc2name( 11, 5 );
             System.err.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( badCell ) );
+            assertThat(e.getMessage().contains(badCell)).isTrue();
         }
     }
 
@@ -185,7 +181,7 @@ public class RuleWorksheetParseTest {
         } catch( DecisionTableParseException e ) {
             String badCell = RuleSheetParserUtil.rc2name( 11, 5 );
             System.err.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( badCell ) );
+            assertThat(e.getMessage().contains(badCell)).isTrue();
         }
     }
 
@@ -203,7 +199,7 @@ public class RuleWorksheetParseTest {
         } catch( DecisionTableParseException e ) {
             String badCell = RuleSheetParserUtil.rc2name( 11, 4 );
             System.err.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( badCell ) );
+            assertThat(e.getMessage().contains(badCell)).isTrue();
         }
     }
 
@@ -222,7 +218,7 @@ public class RuleWorksheetParseTest {
         } catch( DecisionTableParseException e ) {
             String badCell = RuleSheetParserUtil.rc2name( 12, 1 );
             System.err.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( badCell ) );
+            assertThat(e.getMessage().contains(badCell)).isTrue();
         }
     }
 
@@ -243,7 +239,7 @@ public class RuleWorksheetParseTest {
         } catch( DecisionTableParseException e ) {
             String badCell = RuleSheetParserUtil.rc2name( 13, 4 );
             System.err.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( badCell ) );
+            assertThat(e.getMessage().contains(badCell)).isTrue();
         }
     }
 
@@ -264,7 +260,7 @@ public class RuleWorksheetParseTest {
         } catch( DecisionTableParseException e ) {
             String badCell = RuleSheetParserUtil.rc2name( 15, 3 );
             System.err.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( badCell ) );
+            assertThat(e.getMessage().contains(badCell)).isTrue();
         }
     }
 
@@ -285,7 +281,7 @@ public class RuleWorksheetParseTest {
         } catch( DecisionTableParseException e ) {
             String badCell = RuleSheetParserUtil.rc2name( 13, 3 );
             System.err.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( badCell ) );
+            assertThat(e.getMessage().contains(badCell)).isTrue();
         }
     }
 
@@ -307,8 +303,8 @@ public class RuleWorksheetParseTest {
         p.renderDRL(dout);
         String drl = dout.getDRL();
         // System.out.println( drl );
-        assertTrue( drl.contains( "agenda-group \"foo bar\"" ) );
-        assertTrue( drl.contains( "agenda-group \"10\\\" group\"" ) );
+        assertThat(drl.contains("agenda-group \"foo bar\"")).isTrue();
+        assertThat(drl.contains("agenda-group \"10\\\" group\"")).isTrue();
     }
 
     /**
@@ -334,7 +330,7 @@ public class RuleWorksheetParseTest {
             fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
             System.err.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( "C3, C4" ) );
+            assertThat(e.getMessage().contains("C3, C4")).isTrue();
         }
     }
 
@@ -357,8 +353,8 @@ public class RuleWorksheetParseTest {
         p.renderDRL(dout);
         String drl = dout.getDRL();
         // System.out.println( drl );
-        assertTrue( drl.contains( "no-loop true" ) );
-        assertTrue( drl.contains( "agenda-group \"agroup\"" ) );
+        assertThat(drl.contains("no-loop true")).isTrue();
+        assertThat(drl.contains("agenda-group \"agroup\"")).isTrue();
     }
 
     /**
@@ -384,7 +380,7 @@ public class RuleWorksheetParseTest {
         } catch( DecisionTableParseException e ) {
             String badCell = RuleSheetParserUtil.rc2name( 13, 2 );
             System.err.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( badCell ) );
+            assertThat(e.getMessage().contains(badCell)).isTrue();
         }
     }
 
@@ -403,10 +399,10 @@ public class RuleWorksheetParseTest {
         p.renderDRL(dout);
         String drl = dout.getDRL();
 
-        assertTrue( drl.contains( "@Author(J.W.Goethe)" ) );
-        assertTrue( drl.contains( "@Version(3-14)" ) );
-        assertFalse( drl.contains( "@Author()" ) );
-        assertFalse( drl.contains( "@Version(-)" ) );
+        assertThat(drl.contains("@Author(J.W.Goethe)")).isTrue();
+        assertThat(drl.contains("@Version(3-14)")).isTrue();
+        assertThat(drl.contains("@Author()")).isFalse();
+        assertThat(drl.contains("@Version(-)")).isFalse();
     }
 
     @Test
@@ -424,8 +420,7 @@ public class RuleWorksheetParseTest {
         // check rules
         Rule rule = ruleset.getRules().get( 0 );
         Condition cond = rule.getConditions().get( 0 );
-        assertEquals( "Foo(myObject.getColour().equals(red), myObject.size () > 12\\\")",
-                cond.getSnippet() );
+        assertThat(cond.getSnippet()).isEqualTo("Foo(myObject.getColour().equals(red), myObject.size () > 12\\\")");
     }
 
     @Test
@@ -443,12 +438,10 @@ public class RuleWorksheetParseTest {
         // check rules
         Rule rule = (Rule) ruleset.getRules().get( 0 );
         Condition cond = (Condition) rule.getConditions().get( 0 );
-        assertEquals( "Foo(myObject.getColour().equals(red), myObject.size () > \"12\")",
-                cond.getSnippet() );
+        assertThat(cond.getSnippet()).isEqualTo("Foo(myObject.getColour().equals(red), myObject.size () > \"12\")");
         rule = ruleset.getRules().get( 1 );
         cond = rule.getConditions().get( 0 );
-        assertEquals( "Foo(myObject.getColour().equals(blue), myObject.size () > 12\")",
-                cond.getSnippet() );
+        assertThat(cond.getSnippet()).isEqualTo("Foo(myObject.getColour().equals(blue), myObject.size () > 12\")");
     }
 
     @Test
@@ -466,10 +459,8 @@ public class RuleWorksheetParseTest {
 
         // check rules
         List<Rule> rules = ruleset.getRules();
-        assertEquals( "10000",
-                      rules.get(0).getSalience() );
-        assertEquals( "9999",
-                      rules.get(1).getSalience() );
+        assertThat(rules.get(0).getSalience()).isEqualTo("10000");
+        assertThat(rules.get(1).getSalience()).isEqualTo("9999");
     }
 
     @Test
@@ -507,25 +498,25 @@ public class RuleWorksheetParseTest {
         final RuleSheetListener listener = getRuleSheetListener( stream );
 
         final Package ruleset = listener.getRuleSet();
-        assertEquals( 6, ruleset.getRules().size() );
-        assertEquals( 0, ruleset.getImports().size() );
+        assertThat(ruleset.getRules().size()).isEqualTo(6);
+        assertThat(ruleset.getImports().size()).isEqualTo(0);
 
         Rule rule = (Rule) ruleset.getRules().get( 0 );
-        assertEquals( 3, rule.getConditions().size() );
-        assertEquals( 2, rule.getConsequences().size() );
+        assertThat(rule.getConditions().size()).isEqualTo(3);
+        assertThat(rule.getConsequences().size()).isEqualTo(2);
         final Consequence cons = (Consequence) rule.getConsequences().get( 1 );
-        assertEquals( "myObject.setIsValid(1, 2)", cons.getSnippet() );
+        assertThat(cons.getSnippet()).isEqualTo("myObject.setIsValid(1, 2)");
         final Condition con = (Condition) rule.getConditions().get( 2 );
-        assertEquals( "myObject.size() < $3.00", con.getSnippet() );
+        assertThat(con.getSnippet()).isEqualTo("myObject.size() < $3.00");
 
         rule = (Rule) ruleset.getRules().get( 4 );
 
         // this should have less conditions
-        assertEquals( 1, rule.getConditions().size() );
+        assertThat(rule.getConditions().size()).isEqualTo(1);
 
         rule = (Rule) ruleset.getRules().get( 5 );
-        assertEquals( 2, rule.getConditions().size() );
-        assertEquals( 1, rule.getConsequences().size() );
+        assertThat(rule.getConditions().size()).isEqualTo(2);
+        assertThat(rule.getConsequences().size()).isEqualTo(1);
     }
 
     @Test
@@ -544,7 +535,7 @@ public class RuleWorksheetParseTest {
         // check rules
         Rule rule = (Rule) ruleset.getRules().get( 0 );
         Condition cond = (Condition) rule.getConditions().get( 0 );
-        assertEquals( "Cheese(price == 6600)", cond.getSnippet() );
+        assertThat(cond.getSnippet()).isEqualTo("Cheese(price == 6600)");
     }
 
     /**

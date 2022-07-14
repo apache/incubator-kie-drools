@@ -30,8 +30,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,13 +39,13 @@ public class RuleScenarioExecutableBuilderTest {
     @Test
     public void createBuilder() {
         RuleScenarioExecutableBuilder builder = RuleScenarioExecutableBuilder.createBuilder(null, null, true);
-        assertTrue(builder instanceof RuleStatelessScenarioExecutableBuilder);
+        assertThat(builder instanceof RuleStatelessScenarioExecutableBuilder).isTrue();
 
         builder = RuleScenarioExecutableBuilder.createBuilder(null, null, false);
-        assertTrue(builder instanceof RuleStatefulScenarioExecutableBuilder);
+        assertThat(builder instanceof RuleStatefulScenarioExecutableBuilder).isTrue();
 
         builder = RuleScenarioExecutableBuilder.createBuilder(null);
-        assertTrue(builder instanceof RuleStatefulScenarioExecutableBuilder);
+        assertThat(builder instanceof RuleStatefulScenarioExecutableBuilder).isTrue();
     }
 
     @Test
@@ -68,13 +67,13 @@ public class RuleScenarioExecutableBuilderTest {
         RuleScenarioExecutableBuilder builder = RuleScenarioExecutableBuilder.createBuilder(null, null, false);
 
         Set<String> agenda1 = builder.getAvailableRules(createKieBaseMock(packagesToRules, ruleToAgendaGroup, queryToRules), "agenda1");
-        assertEquals(5, agenda1.size());
+        assertThat(agenda1.size()).isEqualTo(5);
 
         Set<String> agenda2 = builder.getAvailableRules(createKieBaseMock(packagesToRules, ruleToAgendaGroup, queryToRules), "agenda2");
-        assertEquals(3, agenda2.size());
+        assertThat(agenda2.size()).isEqualTo(3);
 
         Set<String> noAgenda = builder.getAvailableRules(createKieBaseMock(packagesToRules, ruleToAgendaGroup, queryToRules), null);
-        assertEquals(2, noAgenda.size());
+        assertThat(noAgenda.size()).isEqualTo(2);
     }
 
     private KieBase createKieBaseMock(Map<String, List<String>> packagesToRules, Map<String, String> ruleToAgendaGroup, Map<String, List<String>> packagesToQueries) {

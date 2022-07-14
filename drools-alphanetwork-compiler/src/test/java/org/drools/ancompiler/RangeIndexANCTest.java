@@ -28,7 +28,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class RangeIndexANCTest extends BaseModelTest {
 
@@ -56,11 +55,11 @@ public class RangeIndexANCTest extends BaseModelTest {
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
 
         ksession.insert(new Person("Paul", 60));
         fired = ksession.fireAllRules();
-        assertEquals(2, fired);
+        assertThat(fired).isEqualTo(2);
     }
 
     private KieBase createKieBaseWithRangeIndexThresholdValue(String drl, int rangeIndexThresholdValue) {

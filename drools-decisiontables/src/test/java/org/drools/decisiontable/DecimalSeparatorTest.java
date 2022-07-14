@@ -26,7 +26,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A class to test decimal separated value in action column with different locales.
@@ -48,8 +48,7 @@ public class DecimalSeparatorTest {
         kfs.write( ks.getResources().newClassPathResource( "decimalSeparator.xls",
                                                            this.getClass() ) ); // README when path is set then test works
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 0,
-                      kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
 
         ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
     }
@@ -66,8 +65,7 @@ public class DecimalSeparatorTest {
         Locale.setDefault( Locale.FRENCH );
         init();
         ksession.insert( "Hello" );
-        assertEquals( 1,
-                      ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -75,8 +73,7 @@ public class DecimalSeparatorTest {
         Locale.setDefault( Locale.ENGLISH );
         init();
         ksession.insert( "Hello" );
-        assertEquals( 1,
-                      ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
 }

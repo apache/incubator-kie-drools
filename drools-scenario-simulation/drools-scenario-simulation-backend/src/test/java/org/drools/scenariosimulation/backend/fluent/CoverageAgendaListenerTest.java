@@ -21,8 +21,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CoverageAgendaListenerTest extends AbstractRuleCoverageTest {
 
@@ -31,15 +30,15 @@ public class CoverageAgendaListenerTest extends AbstractRuleCoverageTest {
     @Test
     public void beforeMatchFired() {
         CoverageAgendaListener coverageAgendaListener = new CoverageAgendaListener();
-        assertTrue(coverageAgendaListener.getRuleExecuted().isEmpty());
-        assertTrue(coverageAgendaListener.getAuditsMessages().isEmpty());
+        assertThat(coverageAgendaListener.getRuleExecuted().isEmpty()).isTrue();
+        assertThat(coverageAgendaListener.getAuditsMessages().isEmpty()).isTrue();
         BeforeMatchFiredEvent beforeMatchFiredEvent = createBeforeMatchFiredEventMock(RULE_NAME);
         coverageAgendaListener.beforeMatchFired(beforeMatchFiredEvent);
         Map<String, Integer> ruleExecuted = coverageAgendaListener.getRuleExecuted();
-        assertEquals(1, ruleExecuted.size());
-        assertEquals((Integer) 1, ruleExecuted.get(RULE_NAME));
+        assertThat(ruleExecuted.size()).isEqualTo(1);
+        assertThat(ruleExecuted.get(RULE_NAME)).isEqualTo((Integer) 1);
         List<String> auditMessages = coverageAgendaListener.getAuditsMessages();
-        assertEquals(1, auditMessages.size());
-        assertEquals(RULE_NAME, auditMessages.get(0));
+        assertThat(auditMessages.size()).isEqualTo(1);
+        assertThat(auditMessages.get(0)).isEqualTo(RULE_NAME);
     }
 }

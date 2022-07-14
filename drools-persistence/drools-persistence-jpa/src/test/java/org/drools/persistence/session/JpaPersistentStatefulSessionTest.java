@@ -23,17 +23,18 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
+
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.drools.mvel.compiler.Address;
-import org.drools.mvel.compiler.Person;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.FireAllRulesInterceptor;
 import org.drools.core.command.impl.LoggingInterceptor;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.runtime.ChainableRunner;
+import org.drools.mvel.compiler.Address;
+import org.drools.mvel.compiler.Person;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
@@ -55,8 +56,12 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.drools.persistence.util.DroolsPersistenceUtil.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {

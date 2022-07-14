@@ -32,8 +32,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
@@ -76,7 +75,7 @@ public class ResultSetGeneratorTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        assertFalse(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isFalse();
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
@@ -90,7 +89,7 @@ public class ResultSetGeneratorTest {
 
         kSession.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
     }
 

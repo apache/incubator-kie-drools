@@ -22,32 +22,29 @@ import org.drools.core.util.DateUtils;
 import org.drools.mvel.expr.MVELDateCoercion;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MVELDateCoercionTest {
 
     @Test
     public void testDate() {
         MVELDateCoercion co = new MVELDateCoercion();
-        assertTrue(co.canConvertFrom( Date.class ));
-        assertFalse(co.canConvertFrom( Number.class ));
+        assertThat(co.canConvertFrom(Date.class)).isTrue();
+        assertThat(co.canConvertFrom(Number.class)).isFalse();
 
         Date d = new Date();
-        assertSame(d, co.convertFrom( d ));
+        assertThat(co.convertFrom(d)).isSameAs(d);
     }
 
     @Test
     public void testString() throws Exception {
         MVELDateCoercion co = new MVELDateCoercion();
-        assertTrue(co.canConvertFrom( Date.class ));
+        assertThat(co.canConvertFrom(Date.class)).isTrue();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.UK);
 
         String dt = df.format(df.parse("10-Jul-1974"));
         Date dt_ = DateUtils.parseDate(dt);
-        assertEquals(dt_, co.convertFrom( dt ));
+        assertThat(co.convertFrom(dt)).isEqualTo(dt_);
     }
 
 }

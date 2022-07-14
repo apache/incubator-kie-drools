@@ -58,10 +58,8 @@ import static java.util.Arrays.asList;
 
 import static org.appformer.maven.integration.MavenRepository.getMavenRepository;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
@@ -299,13 +297,13 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
         InternalKieScanner scanner = (InternalKieScanner) ks.newKieScanner(kieContainer);
-        assertEquals(releaseId1, scanner.getCurrentReleaseId());
-        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
+        assertThat(scanner.getCurrentReleaseId()).isEqualTo(releaseId1);
+        assertThat(scanner.getStatus()).isEqualTo(InternalKieScanner.Status.STOPPED);
 
         // scan the maven repo to get the new kjar version and deploy it on the kcontainer
         scanner.scanNow();
-        assertEquals(releaseId2, scanner.getCurrentReleaseId());
-        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
+        assertThat(scanner.getCurrentReleaseId()).isEqualTo(releaseId2);
+        assertThat(scanner.getStatus()).isEqualTo(InternalKieScanner.Status.STOPPED);
 
         // create a ksesion and check it works as expected
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
@@ -363,13 +361,13 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         repository.installArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId2));
 
         // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
-        assertEquals(releaseId1, scanner.getCurrentReleaseId());
-        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
+        assertThat(scanner.getCurrentReleaseId()).isEqualTo(releaseId1);
+        assertThat(scanner.getStatus()).isEqualTo(InternalKieScanner.Status.STOPPED);
 
         // scan the maven repo to get the new kjar version and deploy it on the kcontainer
         scanner.scanNow();
-        assertEquals(releaseId2, scanner.getCurrentReleaseId());
-        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
+        assertThat(scanner.getCurrentReleaseId()).isEqualTo(releaseId2);
+        assertThat(scanner.getStatus()).isEqualTo(InternalKieScanner.Status.STOPPED);
 
         // create a ksesion and check it works as expected
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
@@ -377,15 +375,15 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         
         assertThat( events).contains(new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING));
         assertThat( events).contains(new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING));
-        assertTrue( events.get(2) instanceof KieScannerUpdateResultsEventImpl );
-        assertFalse( ((KieScannerUpdateResultsEventImpl)events.get(2)).getResults().hasMessages(Message.Level.ERROR) );
+        assertThat(events.get(2) instanceof KieScannerUpdateResultsEventImpl).isTrue();
+        assertThat(((KieScannerUpdateResultsEventImpl) events.get(2)).getResults().hasMessages(Message.Level.ERROR)).isFalse();
         events.clear();
 
         ks.getRepository().removeKieModule(releaseId1);
         ks.getRepository().removeKieModule(releaseId2);
         
         scanner.removeListener( listener );
-        assertEquals( 0, scanner.getListeners().size() );
+        assertThat(scanner.getListeners().size()).isEqualTo(0);
         repository.removeLocalArtifact( releaseId1 );
         repository.removeLocalArtifact( releaseId2 );
     }
@@ -455,30 +453,30 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         LOG.info("Writing to temp file: {}", tempPom);
         FileUtils.writeStringToFile(tempPom, pomContent, "UTF-8");
         repository.installArtifact(releaseId2, tempJar, tempPom);
-        
-        assertEquals(releaseId1, scanner.getCurrentReleaseId());
-        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
+
+        assertThat(scanner.getCurrentReleaseId()).isEqualTo(releaseId1);
+        assertThat(scanner.getStatus()).isEqualTo(InternalKieScanner.Status.STOPPED);
 
         // scan the maven repo to get the new kjar version and deploy it on the kcontainer
         scanner.scanNow();
-        
+
         // Keeping at previous release
-        assertEquals(releaseId1, scanner.getCurrentReleaseId());
-        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
+        assertThat(scanner.getCurrentReleaseId()).isEqualTo(releaseId1);
+        assertThat(scanner.getStatus()).isEqualTo(InternalKieScanner.Status.STOPPED);
 
         // there should be no update performed.
         
         assertThat( events).contains(new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING));
         assertThat( events).contains(new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING));
-        assertTrue( events.get(2) instanceof KieScannerUpdateResultsEventImpl );
-        assertTrue( ((KieScannerUpdateResultsEventImpl)events.get(2)).getResults().hasMessages(Message.Level.ERROR) );
+        assertThat(events.get(2) instanceof KieScannerUpdateResultsEventImpl).isTrue();
+        assertThat(((KieScannerUpdateResultsEventImpl) events.get(2)).getResults().hasMessages(Message.Level.ERROR)).isTrue();
         events.clear();
 
         ks.getRepository().removeKieModule(releaseId1);
         ks.getRepository().removeKieModule(releaseId2);
         
         scanner.removeListener( listener );
-        assertEquals( 0, scanner.getListeners().size() );
+        assertThat(scanner.getListeners().size()).isEqualTo(0);
         repository.removeLocalArtifact( releaseId1 );
         repository.removeLocalArtifact( releaseId2 );
     }
@@ -601,8 +599,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ksession.setGlobal( "list", list );
         ksession.insert("111");
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("XXX:111", list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("XXX:111");
         list.clear();
 
         InternalKieModule kJar2 = createKieJarFromDrl(ks, releaseId, drl2);
@@ -612,8 +610,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         ksession.insert("222");
         ksession.fireAllRules();
-        assertEquals(2, list.size());
-        assertTrue(list.containsAll(asList("YYY:111", "YYY:222")));
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.containsAll(asList("YYY:111", "YYY:222"))).isTrue();
 
         ks.getRepository().removeKieModule(releaseId);
     }
@@ -625,7 +623,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         kfs.write("src/main/resources/KBase1/rule1.drl", drl);
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
@@ -817,7 +815,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         kfs.writePomXML( getPom(releaseId) );
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         return ( InternalKieModule ) kieBuilder.getKieModule();
     }
 
@@ -829,7 +827,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         kieBuilder.buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.getResults().getMessages().isEmpty()).isTrue();
         return ( InternalKieModule ) kieBuilder.getKieModule();
     }
 
@@ -879,8 +877,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
-        assertEquals(1, messages.size());
-        assertTrue(messages.get(0).toString().contains("missing-dep"));
+        assertThat(messages.size()).isEqualTo(1);
+        assertThat(messages.get(0).toString().contains("missing-dep")).isTrue();
 
         ks.getRepository().removeKieModule(releaseId);
     }
@@ -905,7 +903,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         kfs.writePomXML(getPom(containerReleaseId, includedReleaseId));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         InternalKieModule containerKJar = (InternalKieModule) kieBuilder.getKieModule();
         repository.installArtifact(containerReleaseId, containerKJar, createKPom(fileManager, containerReleaseId, includedReleaseId));
 
@@ -980,7 +978,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         kfs.writePomXML(getPom(containerReleaseId, includedReleaseId));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
@@ -1019,8 +1017,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ksession.insert( "Mario" );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( "Hello Mario", list.get(0) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Hello Mario");
         list.clear();
 
         ksession.dispose();
@@ -1045,8 +1043,8 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ksession.insert( "Mario" );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( "Hi Mario", list.get(0) );
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Hi Mario");
         list.clear();
 
         ksession.dispose();
@@ -1062,7 +1060,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         kfs.write("src/main/resources/global.gdrl", "global java.util.List list;");
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
@@ -1182,7 +1180,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
            .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
@@ -1248,7 +1246,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         kfs1.write("src/main/resources/org/test/rule1.drl", createDRL("rule1"));
 
         KieBuilder kieBuilder1 = ks.newKieBuilder(kfs1);
-        assertTrue(kieBuilder1.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder1.buildAll().getResults().getMessages().isEmpty()).isTrue();
         InternalKieModule kJar1 = (InternalKieModule) kieBuilder1.getKieModule();
         repository.installArtifact(depReleaseId, kJar1, createKPom(fileManager, depReleaseId));
 
@@ -1261,7 +1259,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         kfs2.write("src/main/resources/org/test/rule2.drl", createDRL("rule2"));
 
         KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2);
-        assertTrue(kieBuilder2.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder2.buildAll().getResults().getMessages().isEmpty()).isTrue();
         InternalKieModule kJar2 = (InternalKieModule) kieBuilder2.getKieModule();
         repository.installArtifact(topReleaseId, kJar2, createKPom(fileManager, topReleaseId, depReleaseId));
 
