@@ -16,13 +16,13 @@
 package org.kie.kogito.incubation.rules;
 
 import org.junit.jupiter.api.Test;
-import org.kie.efesto.identifiers.api.rules.InstanceQueryId;
-import org.kie.efesto.identifiers.api.rules.QueryId;
-import org.kie.efesto.identifiers.api.rules.RuleUnitId;
-import org.kie.efesto.identifiers.api.rules.RuleUnitIdParser;
-import org.kie.efesto.identifiers.api.rules.RuleUnitInstanceId;
+import org.kie.drl.api.identifiers.InstanceQueryId;
+import org.kie.drl.api.identifiers.QueryId;
+import org.kie.drl.api.identifiers.RuleUnitId;
+import org.kie.drl.api.identifiers.RuleUnitIdParser;
+import org.kie.drl.api.identifiers.RuleUnitInstanceId;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RuleUnitIdParserTest {
 
