@@ -26,8 +26,7 @@ import org.kie.api.builder.Message;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IncrementalCompilationTest {
 
@@ -55,7 +54,7 @@ public class IncrementalCompilationTest {
 
             //Check errors on a full build
             List<Message> messages = ks.newKieBuilder( kfs ).buildAll().getResults().getMessages();
-            assertFalse( messages.isEmpty() );
+            assertThat(messages.isEmpty()).isFalse();
 
         } finally {
             if ( in1 != null ) {
@@ -87,7 +86,7 @@ public class IncrementalCompilationTest {
 
             //Expect no errors
             KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-            assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+            assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
 
             //Add the same XLS decision table again as a different resource
             in2 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.xls" );
@@ -96,12 +95,12 @@ public class IncrementalCompilationTest {
             IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/incrementalBuild2.dtable.xls" ).build();
 
             //Expect duplicate rule errors
-            assertEquals( 1, addResults.getAddedMessages().size() );
-            assertEquals( 0, addResults.getRemovedMessages().size() );
+            assertThat(addResults.getAddedMessages().size()).isEqualTo(1);
+            assertThat(addResults.getRemovedMessages().size()).isEqualTo(0);
 
             //Check errors on a full build
             List<Message> messages = ks.newKieBuilder( kfs ).buildAll().getResults().getMessages();
-            assertFalse( messages.isEmpty() );
+            assertThat(messages.isEmpty()).isFalse();
 
         } finally {
             if ( in1 != null ) {

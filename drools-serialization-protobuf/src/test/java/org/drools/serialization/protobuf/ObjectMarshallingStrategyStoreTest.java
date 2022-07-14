@@ -26,7 +26,6 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
@@ -39,6 +38,9 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ObjectMarshallingStrategyStoreTest { 
 
@@ -106,9 +108,9 @@ public class ObjectMarshallingStrategyStoreTest {
 		try{
 			ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller(kbase, strats);
 			// Here ocurrs the bug that shows that NamedObjectMarshallingStrategies are required.
-			Assert.fail( "A runtime error must be thrown while found strategies with same name" );
+			fail( "A runtime error must be thrown while found strategies with same name" );
 		}catch( RuntimeException re ){
-			Assert.assertTrue( re.getMessage().contains( "Multiple" ) );
+            assertThat(re.getMessage().contains("Multiple")).isTrue();
 		}
 	}
 	
@@ -174,14 +176,14 @@ public class ObjectMarshallingStrategyStoreTest {
 			try{
 				ksession2 = marshaller.unmarshall(bais, ks.getSessionConfiguration(), ks.getEnvironment());
 				Collection items = ksession2.getFactHandles();
-				Assert.assertTrue( items.size() == 2 );
+                assertThat(items.size() == 2).isTrue();
 				for( Object item : items ){
 					FactHandle factHandle = (FactHandle)item;
-					Assert.assertTrue( srcItems.contains( ((DefaultFactHandle)factHandle).getObject() ) );
+                    assertThat(srcItems.contains(((DefaultFactHandle) factHandle).getObject())).isTrue();
 				}
 			}catch( RuntimeException npe ){
 				// Here ocurrs the bug that shows that NamedObjectMarshallingStrategies are required.
-				Assert.fail( "This error only happens if identity ObjectMarshallingStrategy use old name" );
+				fail( "This error only happens if identity ObjectMarshallingStrategy use old name" );
 			}finally{
 				bais.close();
 			}

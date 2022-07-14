@@ -24,7 +24,7 @@ import org.drools.mvel.expr.MVELConsequence;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MVELDebugTest {
 
@@ -41,7 +41,7 @@ public class MVELDebugTest {
         MVELConsequence consequence = (MVELConsequence) pkg.getRule("myRule").getConsequence();
         String ruleName = ruleDescr.getNamespace() + "." + ruleDescr.getClassName();
         System.out.println(ruleName);
-        assertEquals("com.sample.Rule_myRule", ruleName);
+        assertThat(ruleName).isEqualTo("com.sample.Rule_myRule");
     }
 
 }

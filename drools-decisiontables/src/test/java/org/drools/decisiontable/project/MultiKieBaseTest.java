@@ -25,8 +25,7 @@ import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultiKieBaseTest {
 
@@ -59,14 +58,14 @@ public class MultiKieBaseTest {
         sessionRules.insert( res1 );
         sessionRules.insert( new Person("Mario", 45) );
         sessionRules.fireAllRules();
-        assertEquals("Hello Mario", res1.toString());
+        assertThat(res1.toString()).isEqualTo("Hello Mario");
 
         KieSession sessionDtable = kc.newKieSession( "dtable" );
         Result res2 = new Result();
         sessionDtable.insert( res2 );
         sessionDtable.insert( new Person("Mario", 45) );
         sessionDtable.fireAllRules();
-        assertEquals("Mario can drink", res2.toString());
+        assertThat(res2.toString()).isEqualTo("Mario can drink");
     }
 
     @Test
@@ -98,13 +97,13 @@ public class MultiKieBaseTest {
         sessionRules.insert( res1 );
         sessionRules.insert( new Person("Mario", 45) );
         sessionRules.fireAllRules();
-        assertNull(res1.toString());
+        assertThat(res1.toString()).isNull();
 
         KieSession sessionDtable = kc.newKieSession( "dtable" );
         Result res2 = new Result();
         sessionDtable.insert( res2 );
         sessionDtable.insert( new Person("Mario", 45) );
         sessionDtable.fireAllRules();
-        assertNull(res2.toString());
+        assertThat(res2.toString()).isNull();
     }
 }

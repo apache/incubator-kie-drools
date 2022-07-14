@@ -38,8 +38,7 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MarshallerTest {
@@ -75,17 +74,17 @@ public class MarshallerTest {
             ksession.insert("y");
             ksession.insert("z");
 
-            assertEquals(3, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(3);
 
             ReadSessionResult serialisedStatefulKnowledgeSession = SerializationHelper.getSerialisedStatefulKnowledgeSessionWithMessage(ksession, ksession.getKieBase(), true);
             ksession = serialisedStatefulKnowledgeSession.getSession();
 
             ProtobufMessages.KnowledgeSession deserializedMessage = serialisedStatefulKnowledgeSession.getDeserializedMessage();
 
-            assertEquals(0, ksession.fireAllRules());
-            assertFalse(deserializedMessage.getRuleData().getAgenda().getMatchList().stream().anyMatch(ml -> {
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
+            assertThat(deserializedMessage.getRuleData().getAgenda().getMatchList().stream().anyMatch(ml -> {
                 return ml.getTuple().getObjectList().size() > 0;
-            }));
+            })).isFalse();
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -106,11 +105,11 @@ public class MarshallerTest {
         KieSession ksession = null;
         try {
             ksession = kbase.newKieSession(null, env);
-            assertEquals(3, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(3);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -134,7 +133,7 @@ public class MarshallerTest {
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(3, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(3);
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -155,11 +154,11 @@ public class MarshallerTest {
         KieSession ksession = null;
         try {
             ksession = kbase.newKieSession(null, env);
-            assertEquals(2, ksession.fireAllRules(2));
+            assertThat(ksession.fireAllRules(2)).isEqualTo(2);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -181,11 +180,11 @@ public class MarshallerTest {
         KieSession ksession = null;
         try {
             ksession = kbase.newKieSession(null, env);
-            assertEquals(5, ksession.fireAllRules(5));
+            assertThat(ksession.fireAllRules(5)).isEqualTo(5);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(4, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(4);
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -208,11 +207,11 @@ public class MarshallerTest {
         try {
             ksession = kbase.newKieSession(null, env);
             ksession.insert( 42 );
-            assertEquals(2, ksession.fireAllRules(2));
+            assertThat(ksession.fireAllRules(2)).isEqualTo(2);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -242,11 +241,11 @@ public class MarshallerTest {
             ksession.insert(new Person("Edson", 35));
             ksession.insert(new Person("Mario", 40));
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -278,7 +277,7 @@ public class MarshallerTest {
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -308,11 +307,11 @@ public class MarshallerTest {
             ksession.insert(new Person("Edson", 35));
             ksession.insert(new Person("Mario", 40));
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -342,7 +341,7 @@ public class MarshallerTest {
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
@@ -350,7 +349,7 @@ public class MarshallerTest {
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -378,14 +377,14 @@ public class MarshallerTest {
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
 
             ksession.insert("Mario");
             ksession.insert(11);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -407,18 +406,18 @@ public class MarshallerTest {
             ksession = kbase.newKieSession(null, env);
             InternalFactHandle fh1 = ( InternalFactHandle ) ksession.insert( 1 );
 
-            assertEquals(2, ksession.fireAllRules(2));
+            assertThat(ksession.fireAllRules(2)).isEqualTo(2);
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
 
             // old FH should keep its id
             InternalFactHandle intFH = ( InternalFactHandle ) ksession.getFactHandles().iterator().next();
-            assertEquals( fh1.getId(), intFH.getId() );
+            assertThat(intFH.getId()).isEqualTo(fh1.getId());
 
             // serialization/deserialization of derived FHs shouldn't consume more FH ids
-            assertEquals( fh1.getId() + 4, (( InternalFactHandle ) ksession.insert( 2 )).getId() );
+            assertThat(((InternalFactHandle) ksession.insert(2)).getId()).isEqualTo(fh1.getId() + 4);
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -509,9 +508,9 @@ public class MarshallerTest {
             longFacts.getFacts().add(new LongFact(123456));
             ksession.insert( longFacts );
 
-            assertEquals(1, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
-            assertEquals(0, ksession.fireAllRules());
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         } finally {
             if (ksession != null) {

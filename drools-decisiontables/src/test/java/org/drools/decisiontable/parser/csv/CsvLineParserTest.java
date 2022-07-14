@@ -21,7 +21,8 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CsvLineParserTest {
 
@@ -30,15 +31,11 @@ public class CsvLineParserTest {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,b,c";
         final List<String> list = parser.parse( s );
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
-        assertEquals( "a",
-                      list.get( 0 ) );
-        assertEquals( "b",
-                      list.get( 1 ) );
-        assertEquals( "c",
-                      list.get( 2 ) );
+        assertThat(list.get(0)).isEqualTo("a");
+        assertThat(list.get(1)).isEqualTo("b");
+        assertThat(list.get(2)).isEqualTo("c");
     }
 
     @Test
@@ -46,15 +43,11 @@ public class CsvLineParserTest {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,\"b\",c";
         final List<String> list = parser.parse( s );
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
-        assertEquals( "a",
-                      list.get( 0 ) );
-        assertEquals( "b",
-                      list.get( 1 ) );
-        assertEquals( "c",
-                      list.get( 2 ) );
+        assertThat(list.get(0)).isEqualTo("a");
+        assertThat(list.get(1)).isEqualTo("b");
+        assertThat(list.get(2)).isEqualTo("c");
     }
 
     @Test
@@ -62,15 +55,11 @@ public class CsvLineParserTest {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,\"\"\"b\"\"\",c";
         final List<String> list = parser.parse( s );
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
-        assertEquals( "a",
-                      list.get( 0 ) );
-        assertEquals( "\"b\"",
-                      list.get( 1 ) );
-        assertEquals( "c",
-                      list.get( 2 ) );
+        assertThat(list.get(0)).isEqualTo("a");
+        assertThat(list.get(1)).isEqualTo("\"b\"");
+        assertThat(list.get(2)).isEqualTo("c");
     }
 
 }

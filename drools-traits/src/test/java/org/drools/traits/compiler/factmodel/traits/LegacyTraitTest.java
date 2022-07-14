@@ -43,9 +43,9 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.traits.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class LegacyTraitTest extends CommonTraitTest {
@@ -290,8 +290,8 @@ public class LegacyTraitTest extends CommonTraitTest {
         int n = ks.fireAllRules();
 
         System.out.println( list );
-        assertEquals( Arrays.asList( 1, 2, 3 ), list );
-        assertEquals( 3, n );
+        assertThat(list).isEqualTo(Arrays.asList(1, 2, 3));
+        assertThat(n).isEqualTo(3);
     }
 
 
@@ -302,8 +302,8 @@ public class LegacyTraitTest extends CommonTraitTest {
         try {
             SomeInterface r = (SomeInterface) factory.don( new SomeClass(), SomeInterface.class );
             r.prepare();
-            assertEquals( 42, r.getFoo() );
-            assertEquals( "I did that", r.doThis( "that" ) );
+            assertThat(r.getFoo()).isEqualTo(42);
+            assertThat(r.doThis("that")).isEqualTo("I did that");
         } catch ( LogicalTypeInconsistencyException e ) {
             e.printStackTrace();
             fail( e.getMessage() );
@@ -328,7 +328,7 @@ public class LegacyTraitTest extends CommonTraitTest {
         KieHelper kh = new KieHelper();
         kh.addContent( s1, ResourceType.DRL );
 
-        assertEquals( 0, kh.verify().getMessages(Message.Level.ERROR ).size() );
+        assertThat(kh.verify().getMessages(Message.Level.ERROR).size()).isEqualTo(0);
     }
 
 }

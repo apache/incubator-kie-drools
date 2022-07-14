@@ -26,10 +26,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  *
@@ -41,8 +38,7 @@ public class RuleSheetParserUtilTest {
     public void testRuleName() {
         final String row = "  RuleTable       This is my rule name";
         final String result = RuleSheetParserUtil.getRuleName( row );
-        assertEquals( "This is my rule name",
-                result );
+        assertThat(result).isEqualTo("This is my rule name");
     }
 
     /**
@@ -62,14 +58,14 @@ public class RuleSheetParserUtilTest {
 
     @Test
     public void testIsStringMeaningTrue() {
-        assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "true" ) );
-        assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "TRUE" ) );
-        assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "yes" ) );
-        assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "oN" ) );
+        assertThat(RuleSheetParserUtil.isStringMeaningTrue("true")).isTrue();
+        assertThat(RuleSheetParserUtil.isStringMeaningTrue("TRUE")).isTrue();
+        assertThat(RuleSheetParserUtil.isStringMeaningTrue("yes")).isTrue();
+        assertThat(RuleSheetParserUtil.isStringMeaningTrue("oN")).isTrue();
 
-        assertFalse( RuleSheetParserUtil.isStringMeaningTrue( "no" ) );
-        assertFalse( RuleSheetParserUtil.isStringMeaningTrue( "false" ) );
-        assertFalse( RuleSheetParserUtil.isStringMeaningTrue( null ) );
+        assertThat(RuleSheetParserUtil.isStringMeaningTrue("no")).isFalse();
+        assertThat(RuleSheetParserUtil.isStringMeaningTrue("false")).isFalse();
+        assertThat(RuleSheetParserUtil.isStringMeaningTrue(null)).isFalse();
     }
 
     @Test
@@ -78,18 +74,18 @@ public class RuleSheetParserUtilTest {
 
         List<Import> list = RuleSheetParserUtil.getImportList( cellVals );
         assertThat(list).isNotNull();
-        assertEquals( 0, list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         cellVals = new ArrayList<String>();
         cellVals.add( "" );
-        assertEquals( 0, RuleSheetParserUtil.getImportList( cellVals ).size() );
+        assertThat(RuleSheetParserUtil.getImportList(cellVals).size()).isEqualTo(0);
 
         cellVals.add( 0, "com.something.Yeah, com.something.No,com.something.yeah.*" );
         list = RuleSheetParserUtil.getImportList( cellVals );
-        assertEquals( 3, list.size() );
-        assertEquals( "com.something.Yeah",   (list.get( 0 )).getClassName() );
-        assertEquals( "com.something.No",     (list.get( 1 )).getClassName() );
-        assertEquals( "com.something.yeah.*", (list.get( 2 )).getClassName() );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat((list.get(0)).getClassName()).isEqualTo("com.something.Yeah");
+        assertThat((list.get(1)).getClassName()).isEqualTo("com.something.No");
+        assertThat((list.get(2)).getClassName()).isEqualTo("com.something.yeah.*");
     }
 
     @Test
@@ -98,16 +94,12 @@ public class RuleSheetParserUtilTest {
         varCells.add( "Var1 var1, Var2 var2,Var3 var3" );
         final List<Global> varList = RuleSheetParserUtil.getVariableList( varCells );
         assertThat(varList).isNotNull();
-        assertEquals( 3,
-                varList.size() );
+        assertThat(varList.size()).isEqualTo(3);
         Global var = varList.get( 0 );
-        assertEquals( "Var1",
-                var.getClassName() );
+        assertThat(var.getClassName()).isEqualTo("Var1");
         var = varList.get( 2 );
-        assertEquals( "Var3",
-                var.getClassName() );
-        assertEquals( "var3",
-                var.getIdentifier() );
+        assertThat(var.getClassName()).isEqualTo("Var3");
+        assertThat(var.getIdentifier()).isEqualTo("var3");
     }
 
     @Test
@@ -125,18 +117,18 @@ public class RuleSheetParserUtilTest {
     @Test
     public void testRowColumnToCellNAme() {
         String cellName = RuleSheetParserUtil.rc2name( 0, 0 );
-        assertEquals( "A1", cellName );
+        assertThat(cellName).isEqualTo("A1");
 
         cellName = RuleSheetParserUtil.rc2name( 0, 10 );
-        assertEquals( "K1", cellName );
+        assertThat(cellName).isEqualTo("K1");
 
         cellName = RuleSheetParserUtil.rc2name( 0, 42 );
-        assertEquals( "AQ1", cellName );
+        assertThat(cellName).isEqualTo("AQ1");
 
         cellName = RuleSheetParserUtil.rc2name( 9, 27 );
-        assertEquals( "AB10", cellName );
+        assertThat(cellName).isEqualTo("AB10");
 
         cellName = RuleSheetParserUtil.rc2name( 99, 53 );
-        assertEquals( "BB100", cellName );
+        assertThat(cellName).isEqualTo("BB100");
     }
 }

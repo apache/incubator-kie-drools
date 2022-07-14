@@ -33,12 +33,9 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.Test;
 
 import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class AbstractExpressionEvaluatorTest {
 
@@ -84,16 +81,16 @@ public class AbstractExpressionEvaluatorTest {
 
     @Test
     public void evaluateLiteralExpression() {
-        assertNull(expressionEvaluatorLocal.evaluateLiteralExpression(null, String.class.getCanonicalName(), null));
-        assertNull(expressionEvaluatorLocal.evaluateLiteralExpression(null, List.class.getCanonicalName(), null));
-        assertNull(expressionEvaluatorLocal.evaluateLiteralExpression(null, Map.class.getCanonicalName(), null));
+        assertThat(expressionEvaluatorLocal.evaluateLiteralExpression(null, String.class.getCanonicalName(), null)).isNull();
+        assertThat(expressionEvaluatorLocal.evaluateLiteralExpression(null, List.class.getCanonicalName(), null)).isNull();
+        assertThat(expressionEvaluatorLocal.evaluateLiteralExpression(null, Map.class.getCanonicalName(), null)).isNull();
     }
 
     @Test
     public void evaluateUnaryExpression() {
-        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, String.class).isSuccessful());
-        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, Map.class).isSuccessful());
-        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, List.class).isSuccessful());
+        assertThat(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, String.class).isSuccessful()).isTrue();
+        assertThat(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, Map.class).isSuccessful()).isTrue();
+        assertThat(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, List.class).isSuccessful()).isTrue();
     }
 
     @Test
@@ -108,7 +105,7 @@ public class AbstractExpressionEvaluatorTest {
                                                                           new ArrayList<>(),
                                                                           List.class.getCanonicalName(),
                                                                           Collections.singletonList(String.class.getCanonicalName()));
-        assertEquals("data", objects.get(0));
+        assertThat(objects.get(0)).isEqualTo("data");
     }
 
     @SuppressWarnings("unchecked")
@@ -127,11 +124,11 @@ public class AbstractExpressionEvaluatorTest {
                                                                       new HashMap<>(),
                                                                       Map.class.getCanonicalName(),
                                                                       Collections.singletonList(String.class.getCanonicalName()));
-        assertTrue(result instanceof Map);
+        assertThat(result instanceof Map).isTrue();
         Map<String, Object> resultMap = (Map<String, Object>) result;
-        assertEquals(2, resultMap.size());
-        assertEquals("Polissena", resultMap.get("key1"));
-        assertEquals("Antonia", resultMap.get("key2"));
+        assertThat(resultMap.size()).isEqualTo(2);
+        assertThat(resultMap.get("key1")).isEqualTo("Polissena");
+        assertThat(resultMap.get("key2")).isEqualTo("Antonia");
 
         // single level
         objectNode.removeAll();
@@ -142,12 +139,12 @@ public class AbstractExpressionEvaluatorTest {
                                                               Map.class.getCanonicalName(),
                                                               Collections.singletonList(String.class.getCanonicalName()));
 
-        assertTrue(result instanceof Map);
+        assertThat(result instanceof Map).isTrue();
         resultMap = (Map<String, Object>) result;
 
-        assertEquals("1", resultMap.get("age"));
-        assertEquals("FS", resultMap.get("name"));
-        assertEquals(2, resultMap.size());
+        assertThat(resultMap.get("age")).isEqualTo("1");
+        assertThat(resultMap.get("name")).isEqualTo("FS");
+        assertThat(resultMap.size()).isEqualTo(2);
 
         // nested object
         objectNode.removeAll();
@@ -160,13 +157,13 @@ public class AbstractExpressionEvaluatorTest {
                                                               String.class.getCanonicalName(),
                                                               emptyList());
 
-        assertTrue(result instanceof Map);
+        assertThat(result instanceof Map).isTrue();
         resultMap = (Map<String, Object>) result;
 
-        assertEquals(1, resultMap.size());
+        assertThat(resultMap.size()).isEqualTo(1);
         Map<String, Object> nested = (Map<String, Object>) resultMap.get("nested");
-        assertEquals(1, nested.size());
-        assertEquals("fieldValue", nested.get("field"));
+        assertThat(nested.size()).isEqualTo(1);
+        assertThat(nested.get("field")).isEqualTo("fieldValue");
 
         // nested list
         objectNode.removeAll();
@@ -179,27 +176,27 @@ public class AbstractExpressionEvaluatorTest {
                                                               String.class.getCanonicalName(),
                                                               emptyList());
 
-        assertTrue(result instanceof Map);
+        assertThat(result instanceof Map).isTrue();
         resultMap = (Map<String, Object>) result;
 
-        assertEquals(1, resultMap.size());
+        assertThat(resultMap.size()).isEqualTo(1);
         List<Map<String, Object>> nestedList = (List<Map<String, Object>>) resultMap.get("listField");
-        assertEquals(1, nestedList.size());
-        assertEquals("fieldValue", nestedList.get(0).get("field"));
+        assertThat(nestedList.size()).isEqualTo(1);
+        assertThat(nestedList.get(0).get("field")).isEqualTo("fieldValue");
     }
 
     @Test
     public void isSimpleTypeNode() {
-        assertFalse(expressionEvaluatorLocal.isSimpleTypeNode(new ArrayNode(factory)));
+        assertThat(expressionEvaluatorLocal.isSimpleTypeNode(new ArrayNode(factory))).isFalse();
 
         ObjectNode jsonNode = new ObjectNode(factory);
 
         jsonNode.set(VALUE, new TextNode("test"));
-        assertTrue(expressionEvaluatorLocal.isSimpleTypeNode(jsonNode));
+        assertThat(expressionEvaluatorLocal.isSimpleTypeNode(jsonNode)).isTrue();
 
         jsonNode.set("otherField", new TextNode("testValue"));
 
-        assertFalse(expressionEvaluatorLocal.isSimpleTypeNode(jsonNode));
+        assertThat(expressionEvaluatorLocal.isSimpleTypeNode(jsonNode)).isFalse();
     }
 
     @Test
@@ -211,72 +208,72 @@ public class AbstractExpressionEvaluatorTest {
         ObjectNode jsonNode = new ObjectNode(factory);
 
         jsonNode.set(VALUE, new TextNode("testValue"));
-        assertEquals("testValue", expressionEvaluatorLocal.getSimpleTypeNodeTextValue(jsonNode));
+        assertThat(expressionEvaluatorLocal.getSimpleTypeNodeTextValue(jsonNode)).isEqualTo("testValue");
 
         jsonNode.set(VALUE, new IntNode(10));
-        assertNull(expressionEvaluatorLocal.getSimpleTypeNodeTextValue(jsonNode));
+        assertThat(expressionEvaluatorLocal.getSimpleTypeNodeTextValue(jsonNode)).isNull();
     }
 
     @Test
     public void isNodeEmpty() {
         ObjectNode objectNode = new ObjectNode(factory);
-        assertTrue(expressionEvaluatorLocal.isNodeEmpty(objectNode));
+        assertThat(expressionEvaluatorLocal.isNodeEmpty(objectNode)).isTrue();
         objectNode.set("empty array", new ArrayNode(factory));
-        assertTrue(expressionEvaluatorLocal.isNodeEmpty(objectNode));
+        assertThat(expressionEvaluatorLocal.isNodeEmpty(objectNode)).isTrue();
         objectNode.set("key", new TextNode(VALUE));
-        assertFalse(expressionEvaluatorLocal.isNodeEmpty(objectNode));
+        assertThat(expressionEvaluatorLocal.isNodeEmpty(objectNode)).isFalse();
 
         ArrayNode arrayNode = new ArrayNode(factory);
-        assertTrue(expressionEvaluatorLocal.isNodeEmpty(arrayNode));
+        assertThat(expressionEvaluatorLocal.isNodeEmpty(arrayNode)).isTrue();
         arrayNode.add(new TextNode(VALUE));
-        assertFalse(expressionEvaluatorLocal.isNodeEmpty(arrayNode));
+        assertThat(expressionEvaluatorLocal.isNodeEmpty(arrayNode)).isFalse();
 
-        assertTrue(expressionEvaluatorLocal.isNodeEmpty(new TextNode("")));
-        assertTrue(expressionEvaluatorLocal.isNodeEmpty(new TextNode(null)));
-        assertFalse(expressionEvaluatorLocal.isNodeEmpty(new TextNode(VALUE)));
+        assertThat(expressionEvaluatorLocal.isNodeEmpty(new TextNode(""))).isTrue();
+        assertThat(expressionEvaluatorLocal.isNodeEmpty(new TextNode(null))).isTrue();
+        assertThat(expressionEvaluatorLocal.isNodeEmpty(new TextNode(VALUE))).isFalse();
     }
 
     @Test
     public void isListEmpty() {
         ArrayNode json = new ArrayNode(factory);
-        assertTrue(expressionEvaluatorLocal.isListEmpty(json));
+        assertThat(expressionEvaluatorLocal.isListEmpty(json)).isTrue();
         ObjectNode nestedNode = new ObjectNode(factory);
         json.add(nestedNode);
-        assertTrue(expressionEvaluatorLocal.isListEmpty(json));
+        assertThat(expressionEvaluatorLocal.isListEmpty(json)).isTrue();
         nestedNode.set("emptyField", new TextNode(""));
-        assertTrue(expressionEvaluatorLocal.isListEmpty(json));
+        assertThat(expressionEvaluatorLocal.isListEmpty(json)).isTrue();
         nestedNode.set("notEmptyField", new TextNode("text"));
-        assertFalse(expressionEvaluatorLocal.isListEmpty(json));
+        assertThat(expressionEvaluatorLocal.isListEmpty(json)).isFalse();
     }
 
     @Test
     public void isObjectEmpty() {
         ObjectNode json = new ObjectNode(factory);
-        assertTrue(expressionEvaluatorLocal.isObjectEmpty(json));
+        assertThat(expressionEvaluatorLocal.isObjectEmpty(json)).isTrue();
         ObjectNode nestedNode = new ObjectNode(factory);
         json.set("emptyField", nestedNode);
-        assertTrue(expressionEvaluatorLocal.isObjectEmpty(json));
+        assertThat(expressionEvaluatorLocal.isObjectEmpty(json)).isTrue();
         nestedNode.set("notEmptyField", new TextNode("text"));
-        assertFalse(expressionEvaluatorLocal.isObjectEmpty(json));
+        assertThat(expressionEvaluatorLocal.isObjectEmpty(json)).isFalse();
     }
 
     @Test
     public void isEmptyText() {
-        assertTrue(expressionEvaluatorLocal.isEmptyText(new TextNode("")));
-        assertFalse(expressionEvaluatorLocal.isEmptyText(new TextNode(VALUE)));
-        assertTrue(expressionEvaluatorLocal.isEmptyText(new ObjectNode(factory)));
+        assertThat(expressionEvaluatorLocal.isEmptyText(new TextNode(""))).isTrue();
+        assertThat(expressionEvaluatorLocal.isEmptyText(new TextNode(VALUE))).isFalse();
+        assertThat(expressionEvaluatorLocal.isEmptyText(new ObjectNode(factory))).isTrue();
     }
 
     @Test
     public void isStructuredInput() {
-        assertTrue(expressionEvaluatorLocal.isStructuredInput(List.class.getCanonicalName()));
-        assertTrue(expressionEvaluatorLocal.isStructuredInput(ArrayList.class.getCanonicalName()));
-        assertTrue(expressionEvaluatorLocal.isStructuredInput(LinkedList.class.getCanonicalName()));
-        assertTrue(expressionEvaluatorLocal.isStructuredInput(Map.class.getCanonicalName()));
-        assertTrue(expressionEvaluatorLocal.isStructuredInput(HashMap.class.getCanonicalName()));
-        assertTrue(expressionEvaluatorLocal.isStructuredInput(LinkedHashMap.class.getCanonicalName()));
-        assertFalse(expressionEvaluatorLocal.isStructuredInput(Set.class.getCanonicalName()));
-        assertFalse(expressionEvaluatorLocal.isStructuredInput(Integer.class.getCanonicalName()));
-        assertFalse(expressionEvaluatorLocal.isStructuredInput(String.class.getCanonicalName()));
+        assertThat(expressionEvaluatorLocal.isStructuredInput(List.class.getCanonicalName())).isTrue();
+        assertThat(expressionEvaluatorLocal.isStructuredInput(ArrayList.class.getCanonicalName())).isTrue();
+        assertThat(expressionEvaluatorLocal.isStructuredInput(LinkedList.class.getCanonicalName())).isTrue();
+        assertThat(expressionEvaluatorLocal.isStructuredInput(Map.class.getCanonicalName())).isTrue();
+        assertThat(expressionEvaluatorLocal.isStructuredInput(HashMap.class.getCanonicalName())).isTrue();
+        assertThat(expressionEvaluatorLocal.isStructuredInput(LinkedHashMap.class.getCanonicalName())).isTrue();
+        assertThat(expressionEvaluatorLocal.isStructuredInput(Set.class.getCanonicalName())).isFalse();
+        assertThat(expressionEvaluatorLocal.isStructuredInput(Integer.class.getCanonicalName())).isFalse();
+        assertThat(expressionEvaluatorLocal.isStructuredInput(String.class.getCanonicalName())).isFalse();
     }
 }

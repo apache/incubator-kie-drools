@@ -26,9 +26,8 @@ import org.drools.mvel.java.JavaAnalysisResult;
 import org.drools.mvel.java.JavaExprAnalyzer;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class JavaExprAnalyzerTest {
 
@@ -49,10 +48,10 @@ public class JavaExprAnalyzerTest {
             
             JavaAnalysisResult analysis = analyzer.analyzeBlock( codeBlock, new BoundIdentifiers( new HashMap<String, Class<?>>(), null ) );
             Set<String> vars = analysis.getLocalVariables();
-            assertEquals( 3, vars.size() );
-            assertTrue( vars.contains( "x" ));
-            assertTrue( vars.contains( "cheese" ));
-            assertTrue( vars.contains( "thisIsAGoodVar" ));
+            assertThat(vars.size()).isEqualTo(3);
+            assertThat(vars.contains("x")).isTrue();
+            assertThat(vars.contains("cheese")).isTrue();
+            assertThat(vars.contains("thisIsAGoodVar")).isTrue();
             
         } catch ( RecognitionException e ) {
             e.printStackTrace();

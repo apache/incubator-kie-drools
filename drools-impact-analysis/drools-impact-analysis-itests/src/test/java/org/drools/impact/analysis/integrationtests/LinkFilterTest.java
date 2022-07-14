@@ -28,7 +28,7 @@ import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LinkFilterTest extends AbstractGraphTest {
 
@@ -178,23 +178,23 @@ public class LinkFilterTest extends AbstractGraphTest {
         Graph impactedSubGraph = impactFilter.filterImpactedNodes(graph, "mypkg.R1");
 
         assertLink(impactedSubGraph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R3"));
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R4"));
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R3")).isNull();
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R4")).isNull();
 
         graph = converter.toGraph(analysisModel);
         impactFilter = new ImpactAnalysisHelper(LinkFilter.NEGATIVE);
         impactedSubGraph = impactFilter.filterImpactedNodes(graph, "mypkg.R1");
 
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R2"));
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R2")).isNull();
         assertLink(impactedSubGraph, "mypkg.R1", "mypkg.R3", ReactivityType.NEGATIVE);
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R4"));
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R4")).isNull();
 
         graph = converter.toGraph(analysisModel);
         impactFilter = new ImpactAnalysisHelper(LinkFilter.UNKNOWN);
         impactedSubGraph = impactFilter.filterImpactedNodes(graph, "mypkg.R1");
 
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R2"));
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R3"));
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R2")).isNull();
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R3")).isNull();
         assertLink(impactedSubGraph, "mypkg.R1", "mypkg.R4", ReactivityType.UNKNOWN);
 
         graph = converter.toGraph(analysisModel);
@@ -203,21 +203,21 @@ public class LinkFilterTest extends AbstractGraphTest {
 
         assertLink(impactedSubGraph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
         assertLink(impactedSubGraph, "mypkg.R1", "mypkg.R3", ReactivityType.NEGATIVE);
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R4"));
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R4")).isNull();
 
         graph = converter.toGraph(analysisModel);
         impactFilter = new ImpactAnalysisHelper(LinkFilter.POSITIVE_UNKNOWN);
         impactedSubGraph = impactFilter.filterImpactedNodes(graph, "mypkg.R1");
 
         assertLink(impactedSubGraph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R3"));
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R3")).isNull();
         assertLink(impactedSubGraph, "mypkg.R1", "mypkg.R4", ReactivityType.UNKNOWN);
 
         graph = converter.toGraph(analysisModel);
         impactFilter = new ImpactAnalysisHelper(LinkFilter.NEGATIVE_UNKNOWN);
         impactedSubGraph = impactFilter.filterImpactedNodes(graph, "mypkg.R1");
 
-        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R2"));
+        assertThat(impactedSubGraph.getNodeMap().get("mypkg.R2")).isNull();
         assertLink(impactedSubGraph, "mypkg.R1", "mypkg.R3", ReactivityType.NEGATIVE);
         assertLink(impactedSubGraph, "mypkg.R1", "mypkg.R4", ReactivityType.UNKNOWN);
 

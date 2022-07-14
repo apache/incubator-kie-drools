@@ -15,6 +15,9 @@
 
 package org.drools.decisiontable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
@@ -23,12 +26,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ChangeSetTest {
     
@@ -36,7 +35,7 @@ public class ChangeSetTest {
     public void testIntegration() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml", getClass()), ResourceType.CHANGE_SET );
-        assertFalse( kbuilder.hasErrors() );
+        assertThat(kbuilder.hasErrors()).isFalse();
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
         KieSession ksession = kbase.newKieSession();
@@ -51,23 +50,20 @@ public class ChangeSetTest {
         
         ksession.fireAllRules();
         ksession.dispose();
-        
-        assertEquals( 3, list.size() );
-  
-        assertEquals( "Young man cheddar",
-                      list.get( 0 ) );
-        
-        assertEquals( "rule1",
-                      list.get( 1 ) );
-        assertEquals( "rule2",
-                      list.get( 2 ) );
+
+        assertThat(list.size()).isEqualTo(3);
+
+        assertThat(list.get(0)).isEqualTo("Young man cheddar");
+
+        assertThat(list.get(1)).isEqualTo("rule1");
+        assertThat(list.get(2)).isEqualTo("rule2");
     }
 
     @Test
     public void multipleSheets() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "multipleSheetsChangeSet.xml", getClass()), ResourceType.CHANGE_SET );
-        assertFalse( kbuilder.hasErrors() );
+        assertThat(kbuilder.hasErrors()).isFalse();
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
         KieSession ksession = kbase.newKieSession();
@@ -86,20 +82,20 @@ public class ChangeSetTest {
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals( 2, list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
-        assertTrue(list.contains("Young man cheddar"));
-        assertTrue(list.contains("Jane eats cheddar"));
+        assertThat(list.contains("Young man cheddar")).isTrue();
+        assertThat(list.contains("Jane eats cheddar")).isTrue();
     }
 
     @Test
     public void testCSV() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "changeSetTestCSV.xml", getClass()), ResourceType.CHANGE_SET );
-        assertFalse( kbuilder.hasErrors() );
+        assertThat(kbuilder.hasErrors()).isFalse();
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
-        assertEquals(1, kbase.getKiePackages().size());
-        assertEquals(3, kbase.getKiePackages().iterator().next().getRules().size());
+        assertThat(kbase.getKiePackages().size()).isEqualTo(1);
+        assertThat(kbase.getKiePackages().iterator().next().getRules().size()).isEqualTo(3);
     }
 }

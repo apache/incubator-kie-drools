@@ -59,10 +59,8 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * This contains methods common to many of the tests in drools-compiler. </p>
@@ -305,7 +303,7 @@ public class CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             logger.warn(kbuilder.getErrors().toString());
         }
-        assertTrue(kbuilder.hasErrors());
+        assertThat(kbuilder.hasErrors()).isTrue();
     }
 
     public static byte[] createJar(KieServices ks,
@@ -319,8 +317,7 @@ public class CommonTestMethodBase {
             }
         }
         KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
-        assertFalse(kb.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).toString(),
-                kb.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR));
+        assertThat(kb.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR)).as(kb.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).toString()).isFalse();
         InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
                 .getKieModule(releaseId);
         byte[] jar = kieModule.getBytes();
@@ -487,7 +484,7 @@ public class CommonTestMethodBase {
                 System.err.println( error );
             }
         }
-        assertEquals(numerrors, errors.size() );
+        assertThat(errors.size()).isEqualTo(numerrors);
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 

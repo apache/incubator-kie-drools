@@ -23,7 +23,6 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.core.util.FileManager;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -34,8 +33,7 @@ import org.kie.scanner.AbstractKieCiTest;
 import org.kie.scanner.KieMavenRepository;
 import org.kie.scanner.KieRepositoryScannerImpl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class KieScannerMBeanTest extends AbstractKieCiTest {
@@ -75,20 +73,20 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
         KieRepositoryScannerImpl scanner = (KieRepositoryScannerImpl) ks.newKieScanner(kieContainer);
         KieScannerMBeanImpl mBean = (KieScannerMBeanImpl) scanner.getMBean();
         ObjectName mbeanName = mBean.getMBeanName();
-        
+
         // we want to check that the mbean is register in the server and exposing the correct attribute values
         // so we fetch the attributes from the server
-        Assert.assertEquals( releaseId.toExternalForm(), MBeanUtils.getAttribute( mbeanName, "ScannerReleaseId") );
-        Assert.assertEquals( releaseId.toExternalForm(), MBeanUtils.getAttribute( mbeanName, "CurrentReleaseId") );
-        Assert.assertEquals( InternalKieScanner.Status.STOPPED.toString(), MBeanUtils.getAttribute( mbeanName, "Status") );
+        assertThat(MBeanUtils.getAttribute(mbeanName, "ScannerReleaseId")).isEqualTo(releaseId.toExternalForm());
+        assertThat(MBeanUtils.getAttribute(mbeanName, "CurrentReleaseId")).isEqualTo(releaseId.toExternalForm());
+        assertThat(MBeanUtils.getAttribute(mbeanName, "Status")).isEqualTo(InternalKieScanner.Status.STOPPED.toString());
         
         MBeanUtils.invoke(mbeanName, "start", new Object[] { Long.valueOf(10000) }, new String[] { "long" } );
-        
-        Assert.assertEquals( InternalKieScanner.Status.RUNNING.toString(), MBeanUtils.getAttribute( mbeanName, "Status") );
+
+        assertThat(MBeanUtils.getAttribute(mbeanName, "Status")).isEqualTo(InternalKieScanner.Status.RUNNING.toString());
 
         MBeanUtils.invoke(mbeanName, "stop", new Object[] {}, new String[] {} );
-        
-        Assert.assertEquals( InternalKieScanner.Status.STOPPED.toString(), MBeanUtils.getAttribute( mbeanName, "Status") );
+
+        assertThat(MBeanUtils.getAttribute(mbeanName, "Status")).isEqualTo(InternalKieScanner.Status.STOPPED.toString());
         
         // create a new kjar
         InternalKieModule kJar2 = createKieJar(ks, releaseId, "rule2", "rule3");
@@ -102,8 +100,8 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
         checkKSession(ksession2, "rule2", "rule3");
         
         MBeanUtils.invoke(mbeanName, "shutdown", new Object[] {}, new String[] {} );
-        
-        Assert.assertEquals( InternalKieScanner.Status.SHUTDOWN.toString(), MBeanUtils.getAttribute( mbeanName, "Status") );
+
+        assertThat(MBeanUtils.getAttribute(mbeanName, "Status")).isEqualTo(InternalKieScanner.Status.SHUTDOWN.toString());
         
         ks.getRepository().removeKieModule(releaseId);
     }
@@ -114,9 +112,9 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals(results.length, list.size());
+        assertThat(list.size()).isEqualTo(results.length);
         for (Object result : results) {
-            assertTrue( list.contains( result ) );
+            assertThat(list.contains(result)).isTrue();
         }
     }
 
