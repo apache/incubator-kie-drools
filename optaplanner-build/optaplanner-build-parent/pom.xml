@@ -144,12 +144,6 @@
         <artifactId>jfreechart</artifactId>
         <version>${version.org.jfree.jfreechart}</version>
       </dependency>
-      <dependency>
-        <!-- TODO: remove after Quarkus version upgrade -->
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>2.1.210</version>
-      </dependency>
       <!-- optaplanner-operator -->
       <dependency>
         <groupId>io.quarkiverse.operatorsdk</groupId>

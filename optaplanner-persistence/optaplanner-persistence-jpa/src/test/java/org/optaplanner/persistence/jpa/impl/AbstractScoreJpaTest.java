@@ -2,7 +2,14 @@ package org.optaplanner.persistence.jpa.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
@@ -25,15 +32,53 @@ import org.optaplanner.core.api.score.Score;
 
 public abstract class AbstractScoreJpaTest {
 
+    private static final String DATASOURCE_PROPERTIES = "/datasource.properties";
+
     protected Map<String, Object> context;
     protected EntityManagerFactory entityManagerFactory;
     protected TransactionManager transactionManager;
 
     @BeforeEach
     public void setUp() throws Exception {
+        createH2DatabaseIfNeeded();
         context = PersistenceUtil.setupWithPoolingDataSource("org.optaplanner.persistence.jpa.test");
         entityManagerFactory = (EntityManagerFactory) context.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
         transactionManager = InitialContext.doLookup("java:comp/TransactionManager");
+    }
+
+    private void createH2DatabaseIfNeeded() throws Exception {
+        Properties databaseProperties = readDatabaseProperties();
+        String jdbcUrl = databaseProperties.getProperty("url", "");
+        if (jdbcUrl.startsWith("jdbc:h2")) {
+            final String regex = ":\\/\\/\\w+\\/(.*)";
+
+            final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+            final Matcher matcher = pattern.matcher(jdbcUrl);
+
+            if (!matcher.find()) {
+                throw new IllegalStateException("Unable to detect H2 database name. Cannot setup the test environment.");
+            }
+
+            String embeddedH2Url = "jdbc:h2:" + matcher.group(1);
+            try (Connection connection = DriverManager.getConnection(embeddedH2Url)) {
+                // Opening a connection to an embedded H2 creates a database that can be used in the Server mode later.
+            }
+        }
+    }
+
+    private Properties readDatabaseProperties() {
+        Properties properties = new Properties();
+        try (InputStream propertiesInputStream = PersistenceUtil.class.getResourceAsStream(DATASOURCE_PROPERTIES)) {
+            if (propertiesInputStream == null) {
+                throw new IllegalStateException("Unable to locate " + DATASOURCE_PROPERTIES
+                        + ". Cannot setup the test environment.");
+            }
+            properties.load(propertiesInputStream);
+            return properties;
+        } catch (IOException ioe) {
+            throw new IllegalStateException("Unable to open " + DATASOURCE_PROPERTIES
+                    + ". Cannot setup the test environment.");
+        }
     }
 
     @AfterEach
