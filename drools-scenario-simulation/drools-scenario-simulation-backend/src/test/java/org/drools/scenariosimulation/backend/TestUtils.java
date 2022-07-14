@@ -29,9 +29,6 @@ import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +45,7 @@ public class TestUtils {
                 .orElse(null);
         assertThat(filePath).isNotNull();
         File sourceFile = new File(filePath);
-        assertTrue(sourceFile.exists());
+        assertThat(sourceFile.exists()).isTrue();
         return new String(Files.readAllBytes(sourceFile.toPath()));
     }
 
@@ -61,12 +58,12 @@ public class TestUtils {
 
     public static void commonCheckAuditLogLine(AuditLogLine toCheck, String expectedDecisionOrRuleName, String expectedResult, String expectedMessage) {
         assertThat(toCheck).isNotNull();
-        assertEquals(expectedDecisionOrRuleName, toCheck.getDecisionOrRuleName());
-        assertEquals(expectedResult, toCheck.getResult());
+        assertThat(toCheck.getDecisionOrRuleName()).isEqualTo(expectedDecisionOrRuleName);
+        assertThat(toCheck.getResult()).isEqualTo(expectedResult);
         if (expectedMessage == null) {
-            assertFalse(toCheck.getMessage().isPresent());
+            assertThat(toCheck.getMessage().isPresent()).isFalse();
         } else {
-            assertEquals(expectedMessage, toCheck.getMessage().get());
+            assertThat(toCheck.getMessage().get()).isEqualTo(expectedMessage);
         }
     }
 

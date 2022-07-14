@@ -27,9 +27,6 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.traits.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class StandaloneTest {
 
@@ -64,15 +61,15 @@ public class StandaloneTest {
 
         System.out.println( student.getName() );
         System.out.println( student.getSchool() );
-        assertEquals( "john doe", student.getName() );
-        assertNull( student.getSchool() );
+        assertThat(student.getName()).isEqualTo("john doe");
+        assertThat(student.getSchool()).isNull();
 
         IPerson p = (IPerson) factory.don( core, IPerson.class );
 
         student.setName( "alan ford" );
 
         System.out.println( p.getName() );
-        assertEquals( "alan ford", p.getName() );
+        assertThat(p.getName()).isEqualTo("alan ford");
     }
 
 
@@ -95,8 +92,8 @@ public class StandaloneTest {
         System.out.println( foo.getName() );
         System.out.println( foo instanceof Thing );
 
-        assertEquals( "john doe", foo.getName() );
-        assertTrue( foo instanceof Thing );
+        assertThat(foo.getName()).isEqualTo("john doe");
+        assertThat(foo instanceof Thing).isTrue();
     }
 
 

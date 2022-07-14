@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class CompilerTest {
 

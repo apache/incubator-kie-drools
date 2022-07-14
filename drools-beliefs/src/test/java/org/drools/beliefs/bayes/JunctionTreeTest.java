@@ -25,12 +25,12 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.beliefs.bayes.GraphTest.addNode;
 import static org.drools.beliefs.bayes.GraphTest.bitSet;
 import static org.drools.beliefs.bayes.GraphTest.connectParentToChildren;
 import static org.drools.beliefs.bayes.PotentialMultiplier.indexToKey;
 import static org.drools.beliefs.bayes.PotentialMultiplier.keyToIndex;
-import static org.junit.Assert.assertEquals;
 
 public class JunctionTreeTest {
 
@@ -44,7 +44,7 @@ public class JunctionTreeTest {
         int numberOfStates = PotentialMultiplier.createNumberOfStates(vars);
         int[] indexMultipliers = PotentialMultiplier.createIndexMultipliers(vars, numberOfStates);
 
-        assertEquals( 4, numberOfStates );
+        assertThat(numberOfStates).isEqualTo(4);
         assertIndexToKeyMapping(numberOfStates, indexMultipliers);
     }
 
@@ -58,7 +58,7 @@ public class JunctionTreeTest {
         int numberOfStates = PotentialMultiplier.createNumberOfStates(vars);
         int[] indexMultipliers = PotentialMultiplier.createIndexMultipliers(vars, numberOfStates);
 
-        assertEquals( 9, numberOfStates );
+        assertThat(numberOfStates).isEqualTo(9);
         assertIndexToKeyMapping(numberOfStates, indexMultipliers);
     }
 
@@ -74,7 +74,7 @@ public class JunctionTreeTest {
         int numberOfStates = PotentialMultiplier.createNumberOfStates(vars);
         int[] indexMultipliers = PotentialMultiplier.createIndexMultipliers(vars, numberOfStates);
 
-        assertEquals( 108, numberOfStates);
+        assertThat(numberOfStates).isEqualTo(108);
         assertIndexToKeyMapping(numberOfStates, indexMultipliers);
     }
 
@@ -89,7 +89,7 @@ public class JunctionTreeTest {
         int numberOfStates = PotentialMultiplier.createNumberOfStates(vars);
         int[] multipliers = PotentialMultiplier.createIndexMultipliers(vars, numberOfStates);
 
-        assertEquals( 4, numberOfStates);
+        assertThat(numberOfStates).isEqualTo(4);
         assertIndexToKeyMapping(numberOfStates, multipliers);
 
         double[] potentials = new double[numberOfStates];
@@ -126,7 +126,7 @@ public class JunctionTreeTest {
         int numberOfStates = PotentialMultiplier.createNumberOfStates(vars);
         int[] multipliers = PotentialMultiplier.createIndexMultipliers(vars, numberOfStates);
 
-        assertEquals( 16, numberOfStates);
+        assertThat(numberOfStates).isEqualTo(16);
         assertIndexToKeyMapping(numberOfStates, multipliers);
 
         double[] potentials = new double[numberOfStates];
@@ -162,7 +162,7 @@ public class JunctionTreeTest {
         int numberOfStates = PotentialMultiplier.createNumberOfStates(vars);
         int[] multipliers = PotentialMultiplier.createIndexMultipliers(vars, numberOfStates);
 
-        assertEquals( 16, numberOfStates);
+        assertThat(numberOfStates).isEqualTo(16);
         assertIndexToKeyMapping(numberOfStates, multipliers);
 
         double[] potentials = new double[numberOfStates];
@@ -250,7 +250,7 @@ public class JunctionTreeTest {
         for (int i = 0; i < numberOfStates; i++) {
             int[] key = indexToKey(i, indexMultipliers);
             int index = keyToIndex(key, indexMultipliers);
-            assertEquals(i, index);
+            assertThat(index).isEqualTo(i);
         }
     }
 

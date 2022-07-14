@@ -34,8 +34,7 @@ import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class UnicodeInCSVTest {
 
@@ -69,8 +68,8 @@ public class UnicodeInCSVTest {
 
         // people with age greater than 18 should be added to list of adults
         assertThat(kbase.getRule("org.drools.decisiontable", "přidej k dospělým")).isNotNull();
-        assertEquals(dospělí.size(), 5);
-        assertEquals(dospělí.iterator().next().getJméno(), "Řehoř");
+        assertThat(5).isEqualTo(dospělí.size());
+        assertThat("Řehoř").isEqualTo(dospělí.iterator().next().getJméno());
 
         assertThat(kbase.getRule("org.drools.decisiontable", "привет мир")).isNotNull();
         assertThat(kbase.getRule("org.drools.decisiontable", "你好世界")).isNotNull();

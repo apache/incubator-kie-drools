@@ -15,12 +15,12 @@
 
 package org.drools.decisiontable;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import org.kie.api.time.SessionPseudoClock;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class CalendarTimerResourcesTest {
         kfs.writeKModuleXML(kmodule.toXML());
         kfs.write(ks.getResources().newClassPathResource("calendar_timer.xls", this.getClass())); // README when path is set then test works
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
 
         ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
 

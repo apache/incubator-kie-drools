@@ -18,22 +18,21 @@ package org.kie.scanner;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieModuleMetaDataImplTest {
 
     @Test
     public void testIsProcessFile() {
-        assertTrue(KieModuleMetaDataImpl.isProcessFile("abc.bpmn"));
-        assertTrue(KieModuleMetaDataImpl.isProcessFile("abc.bpmn2"));
-        assertTrue(KieModuleMetaDataImpl.isProcessFile("abc.bpmn-cm"));
-        assertFalse(KieModuleMetaDataImpl.isProcessFile("abc.bpmn2-cm"));
+        assertThat(KieModuleMetaDataImpl.isProcessFile("abc.bpmn")).isTrue();
+        assertThat(KieModuleMetaDataImpl.isProcessFile("abc.bpmn2")).isTrue();
+        assertThat(KieModuleMetaDataImpl.isProcessFile("abc.bpmn-cm")).isTrue();
+        assertThat(KieModuleMetaDataImpl.isProcessFile("abc.bpmn2-cm")).isFalse();
     }
 
     @Test
     public void testIsFormFile() {
-        assertTrue(KieModuleMetaDataImpl.isFormFile("abc.frm"));
-        assertFalse(KieModuleMetaDataImpl.isFormFile("abc.form"));
+        assertThat(KieModuleMetaDataImpl.isFormFile("abc.frm")).isTrue();
+        assertThat(KieModuleMetaDataImpl.isFormFile("abc.form")).isFalse();
     }
 }

@@ -73,7 +73,6 @@ import org.drools.mvel.compiler.Message;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Primitives;
 import org.drools.mvel.integrationtests.IteratorToList;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -106,12 +105,9 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.serialization.protobuf.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class MarshallingTest extends CommonTestMethodBase {
 
@@ -131,17 +127,12 @@ public class MarshallingTest extends CommonTestMethodBase {
         kbase = map.get( "x" );
 
         final org.kie.api.definition.rule.Rule[] rules = kbase.getKiePackages().iterator().next().getRules().toArray( new org.kie.api.definition.rule.Rule[0] );
-        assertEquals( 4,
-                      rules.length );
+        assertThat(rules.length).isEqualTo(4);
 
-        assertEquals( "match Person 1",
-                      rules[0].getName() );
-        assertEquals( "match Person 2",
-                      rules[1].getName() );
-        assertEquals( "match Person 3",
-                      rules[2].getName() );
-        assertEquals( "match Integer",
-                      rules[3].getName() );
+        assertThat(rules[0].getName()).isEqualTo("match Person 1");
+        assertThat(rules[1].getName()).isEqualTo("match Person 2");
+        assertThat(rules[2].getName()).isEqualTo("match Person 3");
+        assertThat(rules[3].getName()).isEqualTo("match Integer");
 
         KieSession ksession = kbase.newKieSession();
 
@@ -154,29 +145,24 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                                               true );
 
-        assertEquals( 1,
-                      ksession.getFactCount() );
-        assertEquals( bob,
-                      ksession.getObjects().iterator().next() );
+        assertThat(ksession.getFactCount()).isEqualTo(1);
+        assertThat(ksession.getObjects().iterator().next()).isEqualTo(bob);
 
-        assertEquals( 2,
-                      ((InternalAgenda) ksession.getAgenda()).agendaSize() );
+        assertThat(((InternalAgenda) ksession.getAgenda()).agendaSize()).isEqualTo(2);
 
         ksession.fireAllRules();
 
         List list = (List) ksession.getGlobal( "list" );
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertEquals( new Integer( 4 ),
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo(new Integer( 4 ));
 
         // need to create a new collection or otherwise the collection will be identity based
         List< ? > objects = new ArrayList<Object>( ksession.getObjects() );
-        assertEquals( 2, objects.size() );
-        assertTrue( objects.contains( bob ) );
-        assertTrue( objects.contains( new Person( "help" ) ) );
+        assertThat(objects.size()).isEqualTo(2);
+        assertThat(objects.contains(bob)).isTrue();
+        assertThat(objects.contains(new Person( "help" ))).isTrue();
     }
 
     @Test
@@ -208,39 +194,30 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getPackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
 
-        assertEquals( 4,
-                      rules.length );
+        assertThat(rules.length).isEqualTo(4);
 
-        assertEquals( "match Person 1",
-                      rules[0].getName() );
-        assertEquals( "match Person 2",
-                      rules[1].getName() );
-        assertEquals( "match Person 3",
-                      rules[2].getName() );
-        assertEquals( "match Integer",
-                      rules[3].getName() );
+        assertThat(rules[0].getName()).isEqualTo("match Person 1");
+        assertThat(rules[1].getName()).isEqualTo("match Person 2");
+        assertThat(rules[2].getName()).isEqualTo("match Person 3");
+        assertThat(rules[3].getName()).isEqualTo("match Integer");
 
-        assertEquals(1, session.getObjects().size());
-        Assert.assertEquals( bob,
-                      IteratorToList.convert( session.getObjects().iterator() ).get(0) );
+        assertThat(session.getObjects().size()).isEqualTo(1);
+        assertThat(IteratorToList.convert(session.getObjects().iterator()).get(0)).isEqualTo(bob);
 
-        assertEquals(2,
-                     ((InternalAgenda) session.getAgenda()).agendaSize());
+        assertThat(((InternalAgenda) session.getAgenda()).agendaSize()).isEqualTo(2);
 
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
         session.fireAllRules();
 
         final List list = (List) session.getGlobal( "list" );
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertEquals( new Integer( 4 ),
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo(new Integer( 4 ));
 
-        assertEquals( 2, session.getObjects().size() );
-        assertTrue(IteratorToList.convert(session.getObjects().iterator()).contains(bob));
-        assertTrue(IteratorToList.convert(session.getObjects().iterator()).contains( new Person( "help" ) ) );
+        assertThat(session.getObjects().size()).isEqualTo(2);
+        assertThat(IteratorToList.convert(session.getObjects().iterator()).contains(bob)).isTrue();
+        assertThat(IteratorToList.convert(session.getObjects().iterator()).contains(new Person( "help" ))).isTrue();
 
     }
 
@@ -273,40 +250,30 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getPackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
 
-        assertEquals( 4,
-                      rules.length );
+        assertThat(rules.length).isEqualTo(4);
 
-        assertEquals( "match Person 1",
-                      rules[0].getName() );
-        assertEquals( "match Person 2",
-                      rules[1].getName() );
-        assertEquals( "match Person 3",
-                      rules[2].getName() );
-        assertEquals( "match Integer",
-                      rules[3].getName() );
+        assertThat(rules[0].getName()).isEqualTo("match Person 1");
+        assertThat(rules[1].getName()).isEqualTo("match Person 2");
+        assertThat(rules[2].getName()).isEqualTo("match Person 3");
+        assertThat(rules[3].getName()).isEqualTo("match Integer");
 
-        assertEquals(1,
-                     session.getObjects().size());
-        Assert.assertEquals( bob,
-                      IteratorToList.convert( session.getObjects().iterator() ).get( 0 ) );
+        assertThat(session.getObjects().size()).isEqualTo(1);
+        assertThat(IteratorToList.convert(session.getObjects().iterator()).get(0)).isEqualTo(bob);
 
-        assertEquals( 2,
-                      ((InternalAgenda) session.getAgenda()).agendaSize() );
+        assertThat(((InternalAgenda) session.getAgenda()).agendaSize()).isEqualTo(2);
 
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
         session.fireAllRules();
 
         final List list = (List) session.getGlobal( "list" );
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertEquals( new Integer( 4 ),
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo(new Integer( 4 ));
 
-        assertEquals( 2, session.getObjects().size() );
-        assertTrue( IteratorToList.convert( session.getObjects().iterator() ).contains( bob ) );
-        assertTrue(IteratorToList.convert( session.getObjects().iterator() ).contains( new Person( "help" ) ) );
+        assertThat(session.getObjects().size()).isEqualTo(2);
+        assertThat(IteratorToList.convert(session.getObjects().iterator()).contains(bob)).isTrue();
+        assertThat(IteratorToList.convert(session.getObjects().iterator()).contains(new Person( "help" ))).isTrue();
     }
 
     @Test
@@ -337,25 +304,17 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getPackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
 
-        assertEquals( 4,
-                      rules.length );
+        assertThat(rules.length).isEqualTo(4);
 
-        assertEquals( "match Person 1",
-                      rules[0].getName() );
-        assertEquals( "match Person 2",
-                      rules[1].getName() );
-        assertEquals( "match Person 3",
-                      rules[2].getName() );
-        assertEquals( "match Integer",
-                      rules[3].getName() );
+        assertThat(rules[0].getName()).isEqualTo("match Person 1");
+        assertThat(rules[1].getName()).isEqualTo("match Person 2");
+        assertThat(rules[2].getName()).isEqualTo("match Person 3");
+        assertThat(rules[3].getName()).isEqualTo("match Integer");
 
-        assertEquals( 1,
-                      session.getObjects().size() );
-        Assert.assertEquals( bob,
-                      IteratorToList.convert( session.getObjects().iterator() ).get( 0 ) );
+        assertThat(session.getObjects().size()).isEqualTo(1);
+        assertThat(IteratorToList.convert(session.getObjects().iterator()).get(0)).isEqualTo(bob);
 
-        assertEquals( 2,
-                      ((InternalAgenda) session.getAgenda()).agendaSize() );
+        assertThat(((InternalAgenda) session.getAgenda()).agendaSize()).isEqualTo(2);
 
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
 
@@ -363,15 +322,13 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         final List list = (List) session.getGlobal( "list" );
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertEquals( new Integer( 4 ),
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo(new Integer( 4 ));
 
-        assertEquals( 2, session.getObjects().size() );
-        assertTrue( IteratorToList.convert( session.getObjects().iterator() ).contains( bob ) );
-        assertTrue(IteratorToList.convert( session.getObjects().iterator() ).contains( new Person( "help" ) ) );
+        assertThat(session.getObjects().size()).isEqualTo(2);
+        assertThat(IteratorToList.convert(session.getObjects().iterator()).contains(bob)).isTrue();
+        assertThat(IteratorToList.convert(session.getObjects().iterator()).contains(new Person( "help" ))).isTrue();
     }
 
     @Test
@@ -393,20 +350,16 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                                    10 ) );
         session.fireAllRules();
 
-        assertEquals( list.size(),
-                      1 );
-        assertEquals( "stilton",
-                      list.get( 0 ) );
+        assertThat(1).isEqualTo(list.size());
+        assertThat(list.get(0)).isEqualTo("stilton");
 
         // now recreate the rulebase, deserialize the session and test it
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
         list = (List) session.getGlobal( "list" );
 
         assertThat(list).isNotNull();
-        assertEquals( list.size(),
-                      1 );
-        assertEquals( "stilton",
-                      list.get( 0 ) );
+        assertThat(1).isEqualTo(list.size());
+        assertThat(list.get(0)).isEqualTo("stilton");
 
         kpkgs = loadKnowledgePackages("test_Dynamic3.drl" );
         kpkgs = SerializationHelper.serializeObject( kpkgs );
@@ -420,12 +373,9 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                                   30 ) );
         session.fireAllRules();
 
-        assertEquals( list.size(),
-                      3 );
-        assertEquals( bob.getObject(),
-                      list.get( 2 ) );
-        assertEquals( "stilton",
-                      list.get( 1 ) );
+        assertThat(3).isEqualTo(list.size());
+        assertThat(list.get(2)).isEqualTo(bob.getObject());
+        assertThat(list.get(1)).isEqualTo("stilton");
 
         session.dispose();
 
@@ -445,7 +395,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         map = SerializationHelper.serializeObject( map );
         kBase = (InternalKnowledgeBase) map.get( "x" );
         org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getPackage("org.drools.compiler").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
-        assertEquals( 3, rules.length );
+        assertThat(rules.length).isEqualTo(3);
 
         KieSession session = kBase.newKieSession();
 
@@ -460,28 +410,21 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
-        assertEquals( 1,
-                      session.getObjects().size() );
-        Assert.assertEquals( p,
-                      IteratorToList.convert( session.getObjects().iterator() ).get( 0 ) );
+        assertThat(session.getObjects().size()).isEqualTo(1);
+        assertThat(IteratorToList.convert(session.getObjects().iterator()).get(0)).isEqualTo(p);
 
-        assertEquals( 3,
-                      ((InternalAgenda) session.getAgenda()).agendaSize() );
+        assertThat(((InternalAgenda) session.getAgenda()).agendaSize()).isEqualTo(3);
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
         session.fireAllRules();
 
         final List list = (List) session.getGlobal( "list" );
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertEquals( "1",
-                      list.get( 0 ) );
-        assertEquals( "2",
-                      list.get( 1 ) );
-        assertEquals( "3",
-                      list.get( 2 ) );
+        assertThat(list.get(0)).isEqualTo("1");
+        assertThat(list.get(1)).isEqualTo("2");
+        assertThat(list.get(2)).isEqualTo("3");
 
     }
 
@@ -515,10 +458,8 @@ public class MarshallingTest extends CommonTestMethodBase {
         // fire rules
         session.fireAllRules();
         // check the results are correct
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( stilton1.getObject(),
-                      results.get( 0 ) );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo(stilton1.getObject());
 
 
         // serialize session and rulebase
@@ -540,17 +481,13 @@ public class MarshallingTest extends CommonTestMethodBase {
         session.fireAllRules();
 
         results = (List) session.getGlobal( "results" );
-        assertEquals( 4,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(4);
 
-        assertEquals( stilton2.getObject(),
-                      results.get( 1 ) );
+        assertThat(results.get(1)).isEqualTo(stilton2.getObject());
 
-        assertEquals( bob.getObject(),
-                      results.get( 2 ) );
+        assertThat(results.get(2)).isEqualTo(bob.getObject());
 
-        assertEquals( mark.getObject(),
-                      results.get( 3 ) );
+        assertThat(results.get(3)).isEqualTo(mark.getObject());
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -606,15 +543,13 @@ public class MarshallingTest extends CommonTestMethodBase {
         InternalFactHandle brie3 = (InternalFactHandle) session.insert( new Cheese( "brie",
                                                                                     30 ) );
         session.fireAllRules();
-        assertEquals( 5,
-                      results.size() );
+        assertThat(results.size()).isEqualTo(5);
 
-        assertEquals( stilton2.getObject(),
-                      results.get( 1 ) );
+        assertThat(results.get(1)).isEqualTo(stilton2.getObject());
 
-        assertTrue( results.contains( brie1.getObject() ) );
-        assertTrue( results.contains( brie3.getObject() ) );
-        assertTrue( results.contains( brie3.getObject() ) );
+        assertThat(results.contains(brie1.getObject())).isTrue();
+        assertThat(results.contains(brie3.getObject())).isTrue();
+        assertThat(results.contains(brie3.getObject())).isTrue();
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -646,10 +581,8 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                                     10 ) );
         session.fireAllRules();
 
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( stilton1.getObject(),
-                      results.get( 0 ) );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo(stilton1.getObject());
 
         // serialize session and rulebase
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -671,12 +604,10 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                                    30 ) );
         session.fireAllRules();
 
-        assertEquals( 4,
-                      results.size() );
-        assertEquals( stilton2.getObject(),
-                      results.get( 1 ) );
-        assertTrue( results.contains( bob2.getObject() ) );
-        assertTrue( results.contains( bob1.getObject() ) );
+        assertThat(results.size()).isEqualTo(4);
+        assertThat(results.get(1)).isEqualTo(stilton2.getObject());
+        assertThat(results.contains(bob2.getObject())).isTrue();
+        assertThat(results.contains(bob1.getObject())).isTrue();
 
         // serialize session and rulebase
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -701,16 +632,12 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         session.fireAllRules();
 
-        assertEquals( 9,
-                      results.size() );
-        assertEquals( stilton3.getObject(),
-                      results.get( 4 ) );
-        assertEquals( bob4.getObject(),
-                      results.get( 5 ) );
-        assertEquals( bob3.getObject(),
-                      results.get( 6 ) );
-        assertTrue( results.contains( addr2.getObject() ) );
-        assertTrue( results.contains( addr1.getObject() ) );
+        assertThat(results.size()).isEqualTo(9);
+        assertThat(results.get(4)).isEqualTo(stilton3.getObject());
+        assertThat(results.get(5)).isEqualTo(bob4.getObject());
+        assertThat(results.get(6)).isEqualTo(bob3.getObject());
+        assertThat(results.contains(addr2.getObject())).isTrue();
+        assertThat(results.contains(addr1.getObject())).isTrue();
 
         // serialize session and rulebase
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -729,16 +656,12 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         session.fireAllRules();
 
-        assertEquals( 14,
-                      results.size() );
-        assertEquals( stilton4.getObject(),
-                      results.get( 9 ) );
-        assertEquals( bob6.getObject(),
-                      results.get( 10 ) );
-        assertEquals( bob5.getObject(),
-                      results.get( 11 ) );
-        assertTrue( results.contains( addr4.getObject() ) );
-        assertTrue( results.contains( addr3.getObject() ) );
+        assertThat(results.size()).isEqualTo(14);
+        assertThat(results.get(9)).isEqualTo(stilton4.getObject());
+        assertThat(results.get(10)).isEqualTo(bob6.getObject());
+        assertThat(results.get(11)).isEqualTo(bob5.getObject());
+        assertThat(results.contains(addr4.getObject())).isTrue();
+        assertThat(results.contains(addr3.getObject())).isTrue();
 
         // serialize session and rulebase
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -776,10 +699,8 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                                     10 ) );
         session.fireAllRules();
 
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( stilton1.getObject(),
-                      results.get( 0 ) );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo(stilton1.getObject());
 
         // serialize session and rulebase
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -803,12 +724,10 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                                    30 ) );
         session.fireAllRules();
 
-        assertEquals( 3,
-                      results.size() );
-        assertEquals( stilton2.getObject(),
-                      results.get( 0 ) );
-        assertTrue( results.contains( bob1.getObject() ) );
-        assertTrue( results.contains( bob2.getObject() ) );
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get(0)).isEqualTo(stilton2.getObject());
+        assertThat(results.contains(bob1.getObject())).isTrue();
+        assertThat(results.contains(bob2.getObject())).isTrue();
 
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
@@ -828,10 +747,9 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                                    30 ) );
         session.fireAllRules();
 
-        assertEquals( 2,
-                      results.size() );
-        assertTrue( results.contains( bob3.getObject() ) );
-        assertTrue( results.contains( bob4.getObject() ) );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains(bob3.getObject())).isTrue();
+        assertThat(results.contains(bob4.getObject())).isTrue();
 
         // now recreate the rulebase, deserialize the session and test it
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -851,10 +769,9 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                                    30 ) );
         session.fireAllRules();
 
-        assertEquals( 2,
-                      results.size() );
-        assertTrue( results.contains( bob5.getObject() ) );
-        assertTrue( results.contains( bob6.getObject() ) );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains(bob5.getObject())).isTrue();
+        assertThat(results.contains(bob6.getObject())).isTrue();
 
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
@@ -873,10 +790,9 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                                    40 ) );
         session.fireAllRules();
 
-        assertEquals( 2,
-                      results.size() );
-        assertTrue( results.contains( bob7.getObject() ) );
-        assertTrue( results.contains( bob8.getObject() ) );
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.contains(bob7.getObject())).isTrue();
+        assertThat(results.contains(bob8.getObject())).isTrue();
 
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
@@ -1074,12 +990,9 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         // Make sure the rete node map is created correctly
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap((InternalKnowledgeBase) kBase);
-        assertEquals( 2,
-                      nodes.size() );
-        assertEquals( "InitialFactImpl",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
-        assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 4 )).getRule().getName() );
+        assertThat(nodes.size()).isEqualTo(2);
+        assertThat(((ClassObjectType) ((ObjectTypeNode) nodes.get(2)).getObjectType()).getClassType().getSimpleName()).isEqualTo("InitialFactImpl");
+        assertThat(((RuleTerminalNode) nodes.get(4)).getRule().getName()).isEqualTo("Rule 1");
 
         KieSession session = kBase.newKieSession();
 
@@ -1093,10 +1006,8 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
-        assertEquals( 1,
-                      ((List) session.getGlobal( "list" )).size() );
-        assertEquals( "fired",
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
+        assertThat(((List) session.getGlobal("list")).size()).isEqualTo(1);
+        assertThat(((List) session.getGlobal("list")).get(0)).isEqualTo("fired");
     }
 
     @Test
@@ -1123,12 +1034,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap((InternalKnowledgeBase) kBase);
 
         // Make sure the rete node map is created correctly
-        assertEquals( 2,
-                      nodes.size() );
-        assertEquals( "InitialFactImpl",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
-        assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 4 )).getRule().getName() );
+        assertThat(nodes.size()).isEqualTo(2);
+        assertThat(((ClassObjectType) ((ObjectTypeNode) nodes.get(2)).getObjectType()).getClassType().getSimpleName()).isEqualTo("InitialFactImpl");
+        assertThat(((RuleTerminalNode) nodes.get(4)).getRule().getName()).isEqualTo("Rule 1");
 
         KieSession session = kBase.newKieSession();
 
@@ -1138,8 +1046,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KieSession session1 = getSerialisedStatefulKnowledgeSession( session, kBase, false );
         session1.fireAllRules();
 
-        assertEquals( 1,
-                      ((List) session1.getGlobal( "list" )).size() );
+        assertThat(((List) session1.getGlobal("list")).size()).isEqualTo(1);
 
         KieSession session2 = getSerialisedStatefulKnowledgeSession( session1, kBase, false );
 
@@ -1152,12 +1059,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         session2.fireAllRules();
         System.out.println(session2.getGlobal( "list" ));
 
-        assertEquals( 2,
-                      ((List) session2.getGlobal( "list" )).size() );
-        assertEquals( "fired1",
-                      ((List) session2.getGlobal( "list" )).get( 0 ) );
-        assertEquals( "fired2",
-                      ((List) session2.getGlobal( "list" )).get( 1 ) );
+        assertThat(((List) session2.getGlobal("list")).size()).isEqualTo(2);
+        assertThat(((List) session2.getGlobal("list")).get(0)).isEqualTo("fired1");
+        assertThat(((List) session2.getGlobal("list")).get(1)).isEqualTo("fired2");
     }
 
     @Test
@@ -1176,12 +1080,9 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         // Make sure the rete node map is created correctly
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap((InternalKnowledgeBase) kBase);
-        assertEquals( 3,
-                      nodes.size() );
-        assertEquals( "Person",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
-        assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 5 )).getRule().getName() );
+        assertThat(nodes.size()).isEqualTo(3);
+        assertThat(((ClassObjectType) ((ObjectTypeNode) nodes.get(3)).getObjectType()).getClassType().getSimpleName()).isEqualTo("Person");
+        assertThat(((RuleTerminalNode) nodes.get(5)).getRule().getName()).isEqualTo("Rule 1");
 
         KieSession session = kBase.newKieSession();
 
@@ -1196,10 +1097,8 @@ public class MarshallingTest extends CommonTestMethodBase {
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
         session.fireAllRules();
 
-        assertEquals( 1,
-                      ((List) session.getGlobal( "list" )).size() );
-        assertEquals( p,
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
+        assertThat(((List) session.getGlobal("list")).size()).isEqualTo(1);
+        assertThat(((List) session.getGlobal("list")).get(0)).isEqualTo(p);
     }
 
     @Test
@@ -1221,15 +1120,11 @@ public class MarshallingTest extends CommonTestMethodBase {
         // Make sure the rete node map is created correctly
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap( (InternalKnowledgeBase) kBase );
 
-        assertEquals( 5,
-                      nodes.size() );
-        assertEquals( "Cheese",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
-        assertEquals( "Person",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 5 )).getObjectType()).getClassType().getSimpleName() );
-        assertTrue( "Should end with JoinNode",  nodes.get( 6 ).getClass().getSimpleName().endsWith( "JoinNode") );
-        assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 7 )).getRule().getName() );
+        assertThat(nodes.size()).isEqualTo(5);
+        assertThat(((ClassObjectType) ((ObjectTypeNode) nodes.get(3)).getObjectType()).getClassType().getSimpleName()).isEqualTo("Cheese");
+        assertThat(((ClassObjectType) ((ObjectTypeNode) nodes.get(5)).getObjectType()).getClassType().getSimpleName()).isEqualTo("Person");
+        assertThat(nodes.get(6).getClass().getSimpleName().endsWith("JoinNode")).as("Should end with JoinNode").isTrue();
+        assertThat(((RuleTerminalNode) nodes.get(7)).getRule().getName()).isEqualTo("Rule 1");
 
         KieSession session = kBase.newKieSession();
 
@@ -1257,10 +1152,8 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         session.fireAllRules();
 
-        assertEquals( 1,
-                      ((List) session.getGlobal( "list" )).size() );
-        assertEquals( bobba,
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
+        assertThat(((List) session.getGlobal("list")).size()).isEqualTo(1);
+        assertThat(((List) session.getGlobal("list")).get(0)).isEqualTo(bobba);
 
         Person c3po = new Person( "c3p0",
                                   32 );
@@ -1271,10 +1164,8 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         session.fireAllRules();
 
-        assertEquals( 2,
-                      ((List) session.getGlobal( "list" )).size() );
-        assertEquals( c3po,
-                      ((List) session.getGlobal( "list" )).get( 1 ) );
+        assertThat(((List) session.getGlobal("list")).size()).isEqualTo(2);
+        assertThat(((List) session.getGlobal("list")).get(1)).isEqualTo(c3po);
 
         Person r2d2 = new Person( "r2d2",
                                   32 );
@@ -1285,10 +1176,8 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         session.fireAllRules();
 
-        assertEquals( 3,
-                      ((List) session.getGlobal( "list" )).size() );
-        assertEquals( r2d2,
-                      ((List) session.getGlobal( "list" )).get( 2 ) );
+        assertThat(((List) session.getGlobal("list")).size()).isEqualTo(3);
+        assertThat(((List) session.getGlobal("list")).get(2)).isEqualTo(r2d2);
     }
 
     @Test
@@ -1375,11 +1264,10 @@ public class MarshallingTest extends CommonTestMethodBase {
         session.fireAllRules();
 
         list = (List) session.getGlobal( "list" );
-        assertEquals( 3,
-                      list.size() );
-        assertTrue( list.contains( r2d2 ) );
-        assertTrue( list.contains( c3po ) );
-        assertTrue( list.contains( bobba ) );
+        assertThat(list.size()).isEqualTo(3);
+        assertThat(list.contains(r2d2)).isTrue();
+        assertThat(list.contains(c3po)).isTrue();
+        assertThat(list.contains(bobba)).isTrue();
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
@@ -1392,10 +1280,9 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         session.fireAllRules();
 
-        assertEquals( 5,
-                      list.size() );
-        assertTrue( list.contains( cell30 ) );
-        assertTrue( list.contains( cell58 ) );
+        assertThat(list.size()).isEqualTo(5);
+        assertThat(list.contains(cell30)).isTrue();
+        assertThat(list.contains(cell58)).isTrue();
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
@@ -1411,10 +1298,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         session.fireAllRules();
         session.fireAllRules();
 
-        assertEquals( 7,
-                      list.size() );
-        assertTrue( list.contains( factC52 ) );
-        assertTrue( list.contains( factC27 ) );
+        assertThat(list.size()).isEqualTo(7);
+        assertThat(list.contains(factC52)).isTrue();
+        assertThat(list.contains(factC27)).isTrue();
     }
 
     @Test
@@ -1457,8 +1343,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
         // add another person, no cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
@@ -1469,8 +1354,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         // add cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
@@ -1481,8 +1365,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         // remove cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
@@ -1491,8 +1374,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 4,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
         // put 2 cheeses back in
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
@@ -1504,32 +1386,28 @@ public class MarshallingTest extends CommonTestMethodBase {
                                   18 );
         ksession.insert( brie );
         ksession.fireAllRules();
-        assertEquals( 4,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
         // now remove a cheese, should be no change
         ksession.retract( ksession.getFactHandle( stilton ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 4,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
         // now remove a person, should be no change
         ksession.retract( ksession.getFactHandle( bobba ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 4,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
         //removal remaining cheese, should increase by one, as one person left
         ksession.retract( ksession.getFactHandle( brie ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 5,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(5);
     }
 
     @Test
@@ -1572,8 +1450,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         // add another person, no cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
@@ -1584,8 +1461,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
 
         // add cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
@@ -1596,8 +1472,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         // remove cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
@@ -1606,8 +1481,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         // put 2 cheeses back in
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
@@ -1619,40 +1493,35 @@ public class MarshallingTest extends CommonTestMethodBase {
                                   18 );
         ksession.insert( brie );
         ksession.fireAllRules();
-        assertEquals( 4,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
         // now remove a cheese, should be no change
         ksession.retract( ksession.getFactHandle( stilton ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 4,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
         // now remove a person, should be no change
         ksession.retract( ksession.getFactHandle( bobba ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 4,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
         //removal remaining cheese, no
         ksession.retract( ksession.getFactHandle( brie ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 4,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(4);
 
         // put one cheese back in, with one person should increase by one
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.insert( stilton );
         ksession.fireAllRules();
-        assertEquals( 5,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(5);
     }
 
     @Test
@@ -1707,28 +1576,24 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.setGlobal( "list",
                            list );
         ksession.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
 
         ksession.fireAllRules();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
         // should not grow any further
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
     }
 
     @Test
@@ -1802,12 +1667,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
         ksession.fireAllRules();
 
-        assertEquals( 2,
-                      list.size() );
-        assertEquals( "rule2",
-                      list.get( 0 ) );
-        assertEquals( "rule4",
-                      list.get( 1 ) );
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0)).isEqualTo("rule2");
+        assertThat(list.get(1)).isEqualTo("rule4");
     }
 
     @Test
@@ -1882,20 +1744,17 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.getAgenda().getAgendaGroup("agenda-group-1" ).setFocus( );
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
         ksession.fireAllRules();
-        assertEquals( "rule2",
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo("rule2");
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
         ksession.getAgenda().getAgendaGroup("agenda-group-2" ).setFocus( );
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
         ksession.fireAllRules();
-        assertEquals( "rule3",
-                      list.get( 1 ) );
+        assertThat(list.get(1)).isEqualTo("rule3");
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
         ksession.fireAllRules();
-        assertEquals( "rule1",
-                      list.get( 2 ) );
+        assertThat(list.get(2)).isEqualTo("rule1");
     }
 
     @Test
@@ -1970,20 +1829,17 @@ public class MarshallingTest extends CommonTestMethodBase {
         ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup( "ruleflow-group-1" );
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true  );
         ksession.fireAllRules();
-        assertEquals( "rule2",
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo("rule2");
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true  );
         ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup( "ruleflow-group-2" );
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true  );
         ksession.fireAllRules();
-        assertEquals( "rule3",
-                      list.get( 1 ) );
+        assertThat(list.get(1)).isEqualTo("rule3");
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true  );
         ksession.fireAllRules();
-        assertEquals( "rule1",
-                      list.get( 2 ) );
+        assertThat(list.get(2)).isEqualTo("rule1");
     }
 
     @Test
@@ -2015,8 +1871,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.insert( new Message() );
         ksession.insert( new Message() );
         ksession.fireAllRules();
-        assertEquals( 3,
-                      ((Number) results.get( 0 )).intValue() );
+        assertThat(((Number) results.get(0)).intValue()).isEqualTo(3);
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
 
@@ -2024,11 +1879,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.insert( new Message() );
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
 
-        assertEquals( 1,
-                      ((InternalAgenda) ksession.getAgenda()).agendaSize() );
+        assertThat(((InternalAgenda) ksession.getAgenda()).agendaSize()).isEqualTo(1);
         ksession.fireAllRules();
-        assertEquals( 5,
-                      ((Number) results.get( 1 )).intValue() );
+        assertThat(((Number) results.get(1)).intValue()).isEqualTo(5);
     }
 
     @Test
@@ -2052,8 +1905,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.insert( new Message() );
         ((InternalWorkingMemory)ksession).flushPropagations();
 
-        assertEquals( 1,
-                      ((InternalAgenda) ksession.getAgenda()).agendaSize()  );
+        assertThat(((InternalAgenda) ksession.getAgenda()).agendaSize()).isEqualTo(1);
     }
 
     @Test
@@ -2082,10 +1934,8 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( 25,
-                      results.get( 0 ).intValue() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0).intValue()).isEqualTo(25);
     }
 
     /**
@@ -2111,9 +1961,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         Person bob = new Person();
         session.insert( bob );
 
-        assertSame( "these two object references should be same",
-                    bob,
-                    session.getObjects().iterator().next() );
+        assertThat(bob).as("these two object references should be same").isSameAs(session.getObjects().iterator().next());
 
         Marshaller marshaller = createSerializableMarshaller( kbase );
 
@@ -2132,9 +1980,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         marshaller = createSerializableMarshaller( kbase );
         session = (StatefulKnowledgeSession) marshaller.unmarshall( in );
 
-        assertSame( "these two object references should be same",
-                    deserializedBob,
-                    session.getObjects().iterator().next() );
+        assertThat(deserializedBob).as("these two object references should be same").isSameAs(session.getObjects().iterator().next());
         in.close();
     }
 
@@ -2185,10 +2031,8 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( 3,
-                      results.get( 0 ).size() );
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0).size()).isEqualTo(3);
     }
 
     @Test
@@ -2258,8 +2102,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = marsallStatefulKnowledgeSession( ksession );
 
         ksession.fireAllRules();
-        assertEquals( 2,
-                      ksession.getObjects().size() );
+        assertThat(ksession.getObjects().size()).isEqualTo(2);
     }
 
     @Test @Ignore("This test is suspicious to say the least...")
@@ -2297,13 +2140,13 @@ public class MarshallingTest extends CommonTestMethodBase {
         Marshaller marshaller = MarshallerFactory.newMarshaller( knowledgeBase );
 
         ksession.insert( "cheese" );
-        assertTrue( fired.isEmpty() );
+        assertThat(fired.isEmpty()).isTrue();
         //marshall, then unmarshall session
         readWrite( knowledgeBase, ksession, config );
         //the activations should fire after 10 seconds
-        assertTrue( fired.isEmpty() );
+        assertThat(fired.isEmpty()).isTrue();
         scheduler.advanceTime( 12, TimeUnit.SECONDS );
-        assertFalse( fired.isEmpty() );
+        assertThat(fired.isEmpty()).isFalse();
 
     }
 
@@ -2409,17 +2252,16 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
         aep = ksession.getEntryPoint( "a-ep" );
-        assertEquals( 1, aep.getFactHandles().size() );
+        assertThat(aep.getFactHandles().size()).isEqualTo(1);
 
         bep = ksession.getEntryPoint( "b-ep" );
-        assertEquals( 1, bep.getFactHandles().size() );
+        assertThat(bep.getFactHandles().size()).isEqualTo(1);
 
         cep = ksession.getEntryPoint( "c-ep" );
-        assertEquals( 1, cep.getFactHandles().size() );
+        assertThat(cep.getFactHandles().size()).isEqualTo(1);
 
         PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
         timeService.advanceTime( 11, TimeUnit.SECONDS );
@@ -2431,13 +2273,13 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = marsallStatefulKnowledgeSession( ksession );
 
         aep = ksession.getEntryPoint( "a-ep" );
-        assertEquals( 0, aep.getFactHandles().size() );
+        assertThat(aep.getFactHandles().size()).isEqualTo(0);
 
         bep = ksession.getEntryPoint( "b-ep" );
-        assertEquals( 0, bep.getFactHandles().size() );
+        assertThat(bep.getFactHandles().size()).isEqualTo(0);
 
         cep = ksession.getEntryPoint( "c-ep" );
-        assertEquals( 1, cep.getFactHandles().size() );
+        assertThat(cep.getFactHandles().size()).isEqualTo(1);
     }
 
     @Test
@@ -2490,8 +2332,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        assertEquals( 0,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(0);
     }
 
     @Test @Ignore("beta4 phreak")
@@ -2541,7 +2382,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         list.clear();
         ksession.fireAllRules();
         ksession = marsallStatefulKnowledgeSession( ksession );
-        assertEquals( 2, ((List) list.get( 0 )).size() );
+        assertThat(((List) list.get(0)).size()).isEqualTo(2);
 
         PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
         timeService.advanceTime( 15, TimeUnit.SECONDS );
@@ -2558,7 +2399,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         list.clear();
         ksession.fireAllRules();
         ksession = marsallStatefulKnowledgeSession( ksession );
-        assertEquals( 4, ((List) list.get( 0 )).size() );
+        assertThat(((List) list.get(0)).size()).isEqualTo(4);
 
         timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
         timeService.advanceTime( 20, TimeUnit.SECONDS );
@@ -2566,7 +2407,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         list.clear();
         ksession.fireAllRules();
-        assertEquals( 2, ((List) list.get( 0 )).size() );
+        assertThat(((List) list.get(0)).size()).isEqualTo(2);
     }
 
     @Test
@@ -2616,7 +2457,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         list.clear();
         ksession.fireAllRules();
         ksession = marsallStatefulKnowledgeSession( ksession );
-        assertEquals( 2, ((List) list.get( 0 )).size() );
+        assertThat(((List) list.get(0)).size()).isEqualTo(2);
 
         aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
@@ -2629,7 +2470,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         list.clear();
         ksession.fireAllRules();
         ksession = marsallStatefulKnowledgeSession( ksession );
-        assertEquals( 3, ((List) list.get( 0 )).size() );
+        assertThat(((List) list.get(0)).size()).isEqualTo(3);
     }
 
     @Test
@@ -2644,28 +2485,22 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        assertEquals( 1,
-                      ksession.getFactCount() );
-        assertEquals( bob,
-                      ksession.getObjects().iterator().next() );
+        assertThat(ksession.getFactCount()).isEqualTo(1);
+        assertThat(ksession.getObjects().iterator().next()).isEqualTo(bob);
 
         int fired = ksession.fireAllRules();
 
-        assertEquals( 3,
-                      fired );
+        assertThat(fired).isEqualTo(3);
 
         List list = (List) ksession.getGlobal( "list" );
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertEquals( new Integer( 4 ),
-                      list.get( 0 ) );
+        assertThat(list.get(0)).isEqualTo(new Integer( 4 ));
 
         Collection<? extends Object> facts = ksession.getObjects();
         System.out.println( new ArrayList( facts ) );
-        assertEquals( 2,
-                      facts.size() );
+        assertThat(facts.size()).isEqualTo(2);
     }
 
     private KieSession marsallStatefulKnowledgeSession(KieSession ksession) throws IOException,
@@ -2772,25 +2607,25 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession.insert( "ATrigger" );
 
-        assertEquals( 1, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(1);
         ksession.fireAllRules();
-        assertEquals( 2, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(2);
 
         SessionPseudoClock clock = ksession.getSessionClock();
         clock.advanceTime( 4, TimeUnit.SECONDS );
 
-        assertEquals( 2, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(2);
         ksession.fireAllRules();
-        assertEquals( 2, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(2);
 
         ksession = marshallAndUnmarshall( kbase, ksession, sessionConfig);
         clock = ksession.getSessionClock();
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
 
-        assertEquals( 2, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(2);
         ksession.fireAllRules();
-        assertEquals( 0, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(0);
     }
 
     @Test
@@ -2822,9 +2657,9 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession.insert( "ATrigger" );
 
-        assertEquals( 1, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(1);
         ksession.fireAllRules();
-        assertEquals( 2, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(2);
 
         try {
             Thread.sleep( 4000L );
@@ -2832,9 +2667,9 @@ public class MarshallingTest extends CommonTestMethodBase {
             throw new RuntimeException( e );
         }
 
-        assertEquals( 2, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(2);
         ksession.fireAllRules();
-        assertEquals( 2, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(2);
 
         ksession = marshallAndUnmarshall( kbase, ksession, null);
 
@@ -2844,9 +2679,9 @@ public class MarshallingTest extends CommonTestMethodBase {
             throw new RuntimeException( e );
         }
 
-        assertEquals( 2, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(2);
         ksession.fireAllRules();
-        assertEquals( 0, ksession.getFactCount() );
+        assertThat(ksession.getFactCount()).isEqualTo(0);
     }
 
     public static KieSession marshallAndUnmarshall(KieBase kbase, KieSession ksession, KieSessionConfiguration sessionConfig) {
@@ -2933,8 +2768,8 @@ public class MarshallingTest extends CommonTestMethodBase {
         for (int i = 0; i < 6; i++) {
             timeService2.advanceTime(5050, TimeUnit.MILLISECONDS);
             accumulatedSleepTime += 5050;
-            assertEquals( i < 1 ? 0 : 1, list.size() );
-            assertEquals( i < 3 ? 0 : 1, list2.size() );
+            assertThat(list.size()).isEqualTo(i < 1 ? 0 : 1);
+            assertThat(list2.size()).isEqualTo(i < 3 ? 0 : 1);
         }
     }
 
@@ -3015,7 +2850,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.insert( new Promotion( "Claire", "Scientist" ) );
         int result = ksession.fireAllRules();
 
-        assertEquals( 1, result );
+        assertThat(result).isEqualTo(1);
     }
 
     public static class Promotion {

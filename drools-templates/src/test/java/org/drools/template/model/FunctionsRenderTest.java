@@ -18,7 +18,7 @@ package org.drools.template.model;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FunctionsRenderTest {
 
@@ -29,15 +29,13 @@ public class FunctionsRenderTest {
         DRLOutput out = new DRLOutput();
         func.renderDRL(out);
 
-        assertEquals("",
-                     out.toString());
+        assertThat(out.toString()).isEqualTo("");
 
         func.setFunctionsListing("function myFunction() {}");
         out = new DRLOutput();
         func.renderDRL(out);
         final String s = out.toString();
-        assertEquals("function myFunction() {}\n",
-                     s);
+        assertThat(s).isEqualTo("function myFunction() {}\n");
     }
 
 }

@@ -21,7 +21,6 @@ import java.io.FilenameFilter;
 import org.apache.commons.io.FileUtils;
 import org.drools.core.util.IoUtils;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -35,6 +34,9 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.DumpDirOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class DumpGeneratedDrlTest {
 
@@ -75,7 +77,7 @@ public class DumpGeneratedDrlTest {
         resource.setSourcePath("some/source/path/dummy-dtable.csv");
         kbuilder.add(resource, ResourceType.DTABLE, dtconf);
         if (kbuilder.hasErrors()) {
-            Assert.fail("Unexpected Drools compilation errors: " + kbuilder.getErrors().toString());
+            fail("Unexpected Drools compilation errors: " + kbuilder.getErrors().toString());
         }
         assertGeneratedDrlExists(dumpDir, "some_source_path_dummy-dtable.csv.drl");
     }
@@ -88,7 +90,7 @@ public class DumpGeneratedDrlTest {
         Resource resource = ResourceFactory.newByteArrayResource(DUMMY_DTABLE_CSV_SOURCE.getBytes(IoUtils.UTF8_CHARSET));
         kbuilder.add(resource, ResourceType.DTABLE, dtconf);
         if (kbuilder.hasErrors()) {
-            Assert.fail("Unexpected Drools compilation errors: " + kbuilder.getErrors().toString());
+            fail("Unexpected Drools compilation errors: " + kbuilder.getErrors().toString());
         }
         assertGeneratedDrlExists(dumpDir, null);
     }
@@ -108,16 +110,16 @@ public class DumpGeneratedDrlTest {
     }
 
     private void assertGeneratedDrlExists(File dumpDir, String expectedFilename) {
-        Assert.assertTrue("Dump dir should exist!", dumpDir.exists());
+        assertThat(dumpDir.exists()).as("Dump dir should exist!").isTrue();
         File[] generatedDrls = dumpDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String filename) {
                 return filename.endsWith(".drl");
             }
         });
-        Assert.assertEquals("There should be exactly one generated DRL file!", 1, generatedDrls.length);
+        assertThat(generatedDrls.length).as("There should be exactly one generated DRL file!").isEqualTo(1);
         if (expectedFilename != null) {
-            Assert.assertEquals("Unexpected name of the file with generated DRL!", expectedFilename, generatedDrls[0].getName());
+            assertThat(generatedDrls[0].getName()).as("Unexpected name of the file with generated DRL!").isEqualTo(expectedFilename);
         }
     }
 

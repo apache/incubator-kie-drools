@@ -23,10 +23,10 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConditionFilterTest {
 
@@ -37,11 +37,11 @@ public class ConditionFilterTest {
         ScenarioResult scenarioResult = new ScenarioResult(factMappingValue);
         ConditionFilter conditionFilter = new ConditionFilter(singletonList(new FactCheckerHandle(String.class, alwaysMatchFunction, scenarioResult)));
 
-        Assert.assertFalse(conditionFilter.accept(1));
-        Assert.assertTrue(conditionFilter.accept("String"));
+        assertThat(conditionFilter.accept(1)).isFalse();
+        assertThat(conditionFilter.accept("String")).isTrue();
 
         Function<Object, ValueWrapper> alwaysNotMatchFunction = object -> ValueWrapper.errorWithValidValue(null, null);
         ConditionFilter conditionFilterFail = new ConditionFilter(singletonList(new FactCheckerHandle(String.class, alwaysNotMatchFunction, scenarioResult)));
-        Assert.assertFalse(conditionFilterFail.accept("String"));
+        assertThat(conditionFilterFail.accept("String")).isFalse();
     }
 }

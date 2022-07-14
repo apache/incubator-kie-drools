@@ -25,9 +25,6 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.test.util.filesystem.ResourceHelper.getResourcesByExtension;
 import static org.kie.test.util.filesystem.ResourceHelper.getResourcesFromDirectory;
 
@@ -67,7 +64,7 @@ public class ResourceHelperTest {
     public void getClassPathElements() {
         String[] retrieved = ResourceHelper.getClassPathElements();
         assertThat(retrieved).isNotNull();
-        assertFalse(retrieved.length == 0);
+        assertThat(retrieved.length == 0).isFalse();
     }
 
     @Test
@@ -90,11 +87,11 @@ public class ResourceHelperTest {
         assertThat(toVerify).isNotNull();
         final List<File> retrieved = toVerify.collect(Collectors.toList());
         if (expectedFile != null) {
-            assertEquals(1, retrieved.size());
-            assertTrue(retrieved.get(0).exists());
-            assertEquals(expectedFile, retrieved.get(0).getName());
+            assertThat(retrieved.size()).isEqualTo(1);
+            assertThat(retrieved.get(0).exists()).isTrue();
+            assertThat(retrieved.get(0).getName()).isEqualTo(expectedFile);
         } else {
-            assertTrue(retrieved.isEmpty());
+            assertThat(retrieved.isEmpty()).isTrue();
         }
     }
 }

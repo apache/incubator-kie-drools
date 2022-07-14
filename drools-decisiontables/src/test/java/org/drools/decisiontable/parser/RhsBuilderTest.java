@@ -18,7 +18,8 @@ package org.drools.decisiontable.parser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RhsBuilderTest {
 
@@ -27,13 +28,13 @@ public class RhsBuilderTest {
         RhsBuilder builder = new RhsBuilder( ActionType.Code.ACTION, 9, 1, "foo");
         builder.addTemplate( 10, 1, "setFoo($param)");
         builder.addCellValue( 10,1, "42" );
-        
-        
-        assertEquals("foo.setFoo(42);", builder.getResult());
+
+
+        assertThat(builder.getResult()).isEqualTo("foo.setFoo(42);");
         
         builder.clearValues();
         builder.addCellValue( 10, 1, "33" );
-        assertEquals("foo.setFoo(33);", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("foo.setFoo(33);");
     }
     
     @Test
@@ -43,11 +44,11 @@ public class RhsBuilderTest {
         builder.addTemplate( 10, 2, "drools.clearAgenda();" );
                 
         builder.addCellValue( 12, 1, "42" );
-        
-        assertEquals("p.setSomething(42);", builder.getResult());
+
+        assertThat(builder.getResult()).isEqualTo("p.setSomething(42);");
                 
         builder.addCellValue( 12, 2, "Y" );
-        assertEquals("p.setSomething(42);\ndrools.clearAgenda();", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("p.setSomething(42);\ndrools.clearAgenda();");
     }
 
     @Test
@@ -56,18 +57,18 @@ public class RhsBuilderTest {
         builder.addTemplate( 10, 1, "Author($param)" );
                 
         builder.addCellValue( 12, 1, "A. U. Thor" );
-        assertEquals("Author(A. U. Thor)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Author(A. U. Thor)");
         builder.clearValues();
         
         builder.addCellValue( 13, 1, "P. G. Wodehouse" );
-        assertEquals("Author(P. G. Wodehouse)", builder.getResult());
+        assertThat(builder.getResult()).isEqualTo("Author(P. G. Wodehouse)");
     }
 
     @Test
     public void testEmptyCellData() {
         RhsBuilder builder = new RhsBuilder( ActionType.Code.ACTION, 9, 1, "Foo");
         builder.addTemplate( 10, 1, "p.setSomething($param);" );
-        assertFalse(builder.hasValues());
+        assertThat(builder.hasValues()).isFalse();
     }
     
 }

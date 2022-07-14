@@ -25,8 +25,6 @@ import org.junit.Test;
 import org.kie.api.runtime.Environment;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class TransactionManagerFactoryTest {
 
@@ -42,7 +40,7 @@ public class TransactionManagerFactoryTest {
     @Test
     public void defaultsToJtaTransactionManagerFactory() throws Exception {
 
-        assertTrue(transactionManagerFactory.get() instanceof JtaTransactionManagerFactory);
+        assertThat(transactionManagerFactory.get() instanceof JtaTransactionManagerFactory).isTrue();
     }
 
     @Test
@@ -51,8 +49,7 @@ public class TransactionManagerFactoryTest {
                            TestTransactionManagerFactory.class.getName());
         transactionManagerFactory.resetInstance();
 
-        assertEquals(TestTransactionManagerFactory.class.getName(),
-                     transactionManagerFactory.get().getClass().getName());
+        assertThat(transactionManagerFactory.get().getClass().getName()).isEqualTo(TestTransactionManagerFactory.class.getName());
     }
 
     @Test
@@ -62,36 +59,31 @@ public class TransactionManagerFactoryTest {
 
         transactionManagerFactory.resetInstance();
 
-        assertEquals(TestTransactionManagerFactory.class.getName(),
-                     transactionManagerFactory.get().getClass().getName());
+        assertThat(transactionManagerFactory.get().getClass().getName()).isEqualTo(TestTransactionManagerFactory.class.getName());
 
         System.setProperty("org.kie.txm.factory.class",
                            TestTransactionManagerFactoryTwo.class.getName());
 
         transactionManagerFactory.resetInstance();
 
-        assertEquals(TestTransactionManagerFactoryTwo.class.getName(),
-                     transactionManagerFactory.get().getClass().getName());
+        assertThat(transactionManagerFactory.get().getClass().getName()).isEqualTo(TestTransactionManagerFactoryTwo.class.getName());
         transactionManagerFactory.resetInstance();
     }
 
     @Test
     public void createsJtaTransactionManager() throws Exception {
-        assertEquals(JtaTransactionManager.class.getName(),
-                     transactionManagerFactory.newTransactionManager().getClass().getName());
+        assertThat(transactionManagerFactory.newTransactionManager().getClass().getName()).isEqualTo(JtaTransactionManager.class.getName());
     }
 
     @Test
     public void createsJtaTransactionManagerWithEnvironment() throws Exception {
         Environment env = EnvironmentFactory.newEnvironment();
 
-        assertEquals(JtaTransactionManagerFactory.class.getName(),
-                     transactionManagerFactory.get().getClass().getName());
+        assertThat(transactionManagerFactory.get().getClass().getName()).isEqualTo(JtaTransactionManagerFactory.class.getName());
 
         assertThat(transactionManagerFactory.newTransactionManager(env)).isNotNull();
 
-        assertEquals(JtaTransactionManager.class.getName(),
-                     transactionManagerFactory.newTransactionManager(env).getClass().getName());
+        assertThat(transactionManagerFactory.newTransactionManager(env).getClass().getName()).isEqualTo(JtaTransactionManager.class.getName());
     }
 
     private TransactionManagerFactory getTransactionManagerFactory() {

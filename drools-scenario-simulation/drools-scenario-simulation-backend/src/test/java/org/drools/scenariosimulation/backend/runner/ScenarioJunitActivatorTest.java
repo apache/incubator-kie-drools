@@ -33,7 +33,7 @@ import org.kie.api.runtime.KieContainer;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -75,11 +75,11 @@ public class ScenarioJunitActivatorTest {
 
     @Test
     public void getChildrenTest() throws InitializationError {
-        assertEquals(0, getScenarioJunitActivator().getChildren().size());
+        assertThat(getScenarioJunitActivator().getChildren().size()).isEqualTo(0);
 
         settingsLocal.setSkipFromBuild(false);
 
-        assertEquals(1, getScenarioJunitActivator().getChildren().size());
+        assertThat(getScenarioJunitActivator().getChildren().size()).isEqualTo(1);
     }
 
     @Test

@@ -67,9 +67,6 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTEN
 import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
@@ -139,15 +136,13 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(1);
 
         value.addAndGet(1);
         ksession.update(atomicFH, value);
         ksession.fireAllRules();
-        
-        assertEquals( 2,
-                list.size() );
+
+        assertThat(list.size()).isEqualTo(2);
         String externalForm = atomicFH.toExternalForm();
         
         ksession = ks.getStoreServices().loadKieSession(ksession.getIdentifier(), kbase, null, env);
@@ -160,9 +155,8 @@ public class JpaPersistentStatefulSessionTest {
         ksession.fireAllRules();
         
         list = (List<?>) ksession.getGlobal("list");
-        
-        assertEquals( 3,
-                list.size() );
+
+        assertThat(list.size()).isEqualTo(3);
         
     }
     
@@ -198,8 +192,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 3,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(3);
 
     }
 
@@ -251,8 +244,7 @@ public class JpaPersistentStatefulSessionTest {
         ut.begin();
         ksession.fireAllRules();
         ut.commit();
-        assertEquals( 2,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(2);
 
         // insert and commit
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
@@ -270,8 +262,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 4,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(4);
         
         // now load the ksession
         ksession = ks.getStoreServices().loadKieSession( ksession.getIdentifier(), kbase, null, env );
@@ -284,8 +275,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals( 6,
-                      list.size() );
+        assertThat(list.size()).isEqualTo(6);
     }
 
     @Test
@@ -320,7 +310,7 @@ public class JpaPersistentStatefulSessionTest {
         ksession.insert( 2 );
         ksession.insert( 3 );
         ksession.getWorkItemManager().completeWorkItem(0, null);
-        assertEquals( 3, list.size() );
+        assertThat(list.size()).isEqualTo(3);
     }
 
     @Test
@@ -356,9 +346,8 @@ public class JpaPersistentStatefulSessionTest {
         ksession.getAgenda().getAgendaGroup("badfocus").setFocus();
     
         ksession.fireAllRules();
-    
-        assertEquals( 3,
-                      list.size() );
+
+        assertThat(list.size()).isEqualTo(3);
     }
     
     @Test
@@ -373,7 +362,7 @@ public class JpaPersistentStatefulSessionTest {
         test.add( x );
         test2.add( x );
 
-        assertSame( test.get( 0 ), test2.get( 0 ) );
+        assertThat(test2.get(0)).isSameAs(test.get(0));
 
         ksession.insert( test );
         ksession.insert( test2 );
@@ -385,7 +374,7 @@ public class JpaPersistentStatefulSessionTest {
         List ref1 = (List) c.next();
         List ref2 = (List) c.next();
 
-        assertSame( ref1.get( 0 ), ref2.get( 0 ) );
+        assertThat(ref2.get(0)).isSameAs(ref1.get(0));
 
     }
 
@@ -417,7 +406,7 @@ public class JpaPersistentStatefulSessionTest {
         KieSession ksession = ks.getStoreServices().newKieSession( kbase, config, env );
         SessionConfiguration sessionConfig = (SessionConfiguration)ksession.getSessionConfiguration();
 
-        assertEquals("com.example.CustomJPAProcessInstanceManagerFactory", sessionConfig.getProcessInstanceManagerFactory());
+        assertThat(sessionConfig.getProcessInstanceManagerFactory()).isEqualTo("com.example.CustomJPAProcessInstanceManagerFactory");
     }
     
     @Test
@@ -739,8 +728,8 @@ public class JpaPersistentStatefulSessionTest {
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
         KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
 
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(1, ksession.getFactCount());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(ksession.getFactCount()).isEqualTo(1);
     }
 
     public static class Door implements Serializable {
@@ -823,10 +812,10 @@ public class JpaPersistentStatefulSessionTest {
         KieContainer kcontainer = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() );
 
         KieSessionConfiguration conf = kcontainer.getKieSessionConfiguration( "ksession1" );
-        assertEquals( "pseudo", conf.getOption( ClockTypeOption.class ).getClockType() );
+        assertThat(conf.getOption(ClockTypeOption.class).getClockType()).isEqualTo("pseudo");
 
         KieSession ksession = ks.getStoreServices().newKieSession( kcontainer.getKieBase("kbase1"), conf, env );
-        assertTrue(ksession.getSessionClock() instanceof SessionPseudoClock);
+        assertThat(ksession.getSessionClock() instanceof SessionPseudoClock).isTrue();
     }
 
     @Test
@@ -851,7 +840,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.insert( "A" );
         ksession.fireAllRules();
-        assertEquals(2, ksession.getFactCount());
+        assertThat(ksession.getFactCount()).isEqualTo(2);
 
         for (FactHandle fh : ksession.getFactHandles()) {
             System.out.println(fh);
@@ -861,6 +850,6 @@ public class JpaPersistentStatefulSessionTest {
         }
 
         ksession.fireAllRules();
-        assertEquals(0, ksession.getFactCount());
+        assertThat(ksession.getFactCount()).isEqualTo(0);
     }
 }

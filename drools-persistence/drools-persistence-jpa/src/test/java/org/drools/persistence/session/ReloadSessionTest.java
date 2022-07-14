@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Random;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -49,8 +50,11 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import static org.drools.persistence.util.DroolsPersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 @RunWith(Parameterized.class)
@@ -139,7 +143,7 @@ public class ReloadSessionTest {
         Environment env = createEnvironment();
         KieBase kbase = initializeKnowledgeBase(simpleRule);
         StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        assertTrue("There should be NO facts present in a new (empty) knowledge session.", commandKSession.getFactHandles().isEmpty());
+        assertThat(commandKSession.getFactHandles().isEmpty()).as("There should be NO facts present in a new (empty) knowledge session.").isTrue();
         
         // Persist a facthandle to the database
         Integer integerFact = (new Random()).nextInt(Integer.MAX_VALUE-1) + 1;
@@ -148,10 +152,9 @@ public class ReloadSessionTest {
         // At this point in the code, the fact has been persisted to the database
         //  (within a transaction via the PersistableRunner)
         Collection<FactHandle> factHandles =  commandKSession.getFactHandles();
-        assertTrue("At least one fact should have been inserted by the ksession.insert() method above.", !factHandles.isEmpty());
+        assertThat(!factHandles.isEmpty()).as("At least one fact should have been inserted by the ksession.insert() method above.").isTrue();
         FactHandle origFactHandle = factHandles.iterator().next();
-        assertTrue("The stored fact should contain the same number as the value inserted (but does not).", 
-                Integer.parseInt(((DefaultFactHandle) origFactHandle).getObject().toString()) == integerFact.intValue() );
+        assertThat(Integer.parseInt(((DefaultFactHandle) origFactHandle).getObject().toString()) == integerFact.intValue()).as("The stored fact should contain the same number as the value inserted (but does not).").isTrue();
         
         // Save the sessionInfo id in order to retrieve it later
         long sessionInfoId = commandKSession.getIdentifier();
@@ -173,19 +176,16 @@ public class ReloadSessionTest {
        
         // Test that the session has been successfully reinitialized
         factHandles =  newCommandKSession.getFactHandles();
-        assertTrue("At least one fact should have been persisted by the ksession.insert above.", 
-                !factHandles.isEmpty() && factHandles.size() == 1);
+        assertThat(!factHandles.isEmpty() && factHandles.size() == 1).as("At least one fact should have been persisted by the ksession.insert above.").isTrue();
         FactHandle retrievedFactHandle = factHandles.iterator().next();
-        assertTrue("If the retrieved and original FactHandle object are the same, then the knowledge session has NOT been reloaded!", 
-                origFactHandle != retrievedFactHandle);
-        assertTrue("The retrieved fact should contain the same info as the original (but does not).", 
-                Integer.parseInt(((DefaultFactHandle) retrievedFactHandle).getObject().toString()) == integerFact.intValue() );
+        assertThat(origFactHandle != retrievedFactHandle).as("If the retrieved and original FactHandle object are the same, then the knowledge session has NOT been reloaded!").isTrue();
+        assertThat(Integer.parseInt(((DefaultFactHandle) retrievedFactHandle).getObject().toString()) == integerFact.intValue()).as("The retrieved fact should contain the same info as the original (but does not).").isTrue();
         
         // Test to see if the (retrieved) facts can be processed
         ArrayList<Object>list = new ArrayList<Object>();
         newCommandKSession.setGlobal( "list", list );
         newCommandKSession.fireAllRules();
-        assertEquals( 1, list.size() );
+        assertThat(list.size()).isEqualTo(1);
     }
 
     @Test @Ignore
@@ -198,13 +198,13 @@ public class ReloadSessionTest {
         ksession.addEventListener(new DefaultAgendaEventListener());
         ksession.addEventListener(new DefaultRuleRuntimeEventListener());
 
-        assertEquals(1, ksession.getRuleRuntimeEventListeners().size());
-        assertEquals(1, ksession.getAgendaEventListeners().size());
+        assertThat(ksession.getRuleRuntimeEventListeners().size()).isEqualTo(1);
+        assertThat(ksession.getAgendaEventListeners().size()).isEqualTo(1);
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getIdentifier(), kbase, null, env);
 
-        assertEquals(1, ksession.getRuleRuntimeEventListeners().size());
-        assertEquals(1, ksession.getAgendaEventListeners().size());
+        assertThat(ksession.getRuleRuntimeEventListeners().size()).isEqualTo(1);
+        assertThat(ksession.getAgendaEventListeners().size()).isEqualTo(1);
     }
 
     @Test
@@ -212,13 +212,13 @@ public class ReloadSessionTest {
         final Environment env = createEnvironment();
         final KieBase kbase = initializeKnowledgeBase( RULE_WITH_EP );
         KieSession kieSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        assertTrue("There should be NO facts present in a new (empty) knowledge session.", kieSession.getFactHandles().isEmpty());
+        assertThat(kieSession.getFactHandles().isEmpty()).as("There should be NO facts present in a new (empty) knowledge session.").isTrue();
 
         kieSession.insert(Integer.valueOf(10));
         kieSession = reloadSession(kieSession, env);
 
         Collection<? extends Object> objects = kieSession.getObjects();
-        assertEquals("Reloaded working memory should contain the fact.", 1, objects.size());
+        assertThat(objects.size()).as("Reloaded working memory should contain the fact.").isEqualTo(1);
     }
 
     @Test
@@ -227,13 +227,13 @@ public class ReloadSessionTest {
         final Environment env = createEnvironment();
         final KieBase kbase = initializeKnowledgeBase(RULE_WITH_EP);
         KieSession kieSession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
-        assertTrue("There should be NO facts present in a new (empty) knowledge session.", kieSession.getFactHandles().isEmpty());
+        assertThat(kieSession.getFactHandles().isEmpty()).as("There should be NO facts present in a new (empty) knowledge session.").isTrue();
 
         kieSession.getEntryPoint(ENTRY_POINT).insert(Integer.valueOf(10));
         kieSession = reloadSession(kieSession, env);
 
         Collection<? extends Object> objects = kieSession.getEntryPoint(ENTRY_POINT).getObjects();
-        assertEquals("Reloaded working memory should contain the fact in the entry point.", 1, objects.size());
+        assertThat(objects.size()).as("Reloaded working memory should contain the fact in the entry point.").isEqualTo(1);
     }
 
     private KieSession reloadSession(final KieSession kieSession, final Environment environment) {

@@ -34,9 +34,9 @@ import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGeneratedDMNMessageList;
-import static org.junit.Assert.assertEquals;
 
 public class SimulationRunMetadataBuilderTest {
 
@@ -76,17 +76,17 @@ public class SimulationRunMetadataBuilderTest {
         builder.addScenarioResultMetadata(result2);
         SimulationRunMetadata build = builder.build();
 
-        assertEquals(3, build.getAvailable());
-        assertEquals(3, build.getExecuted());
-        assertEquals(100, build.getCoveragePercentage(), 0.1);
-        assertEquals(2, build.getOutputCounter().get("d1"), 0.1);
-        assertEquals(1, build.getOutputCounter().get("d2"), 0.1);
-        assertEquals(2, build.getScenarioCounter().get(scenarioWithIndex1).size(), 0.1);
+        assertThat(build.getAvailable()).isEqualTo(3);
+        assertThat(build.getExecuted()).isEqualTo(3);
+        assertThat(build.getCoveragePercentage()).isCloseTo(100, within(0.1));
+        assertThat(build.getOutputCounter().get("d1")).isEqualTo(2);
+        assertThat(build.getOutputCounter().get("d2")).isEqualTo(1);
+        assertThat(build.getScenarioCounter().get(scenarioWithIndex1).size()).isEqualTo(2);
         AuditLog retrieved = build.getAuditLog();
         assertThat(retrieved).isNotNull();
         final List<AuditLogLine> auditLogLines = retrieved.getAuditLogLines();
         assertThat(auditLogLines).isNotNull();
-        assertEquals(auditLogLines.size(), messagesResult1decision1.size() + messagesResult1decision2.size() + messagesResult2decision1.size() + messagesResult2decision3.size());
+        assertThat(messagesResult1decision1.size() + messagesResult1decision2.size() + messagesResult2decision1.size() + messagesResult2decision3.size()).isEqualTo(auditLogLines.size());
 
         checkAuditLogLine(auditLogLines, expectedResult1Decision1, expectedResult1Decision2, expectedResult2Decision1, expectedResult2Decision3);
     }

@@ -23,27 +23,24 @@ import org.drools.core.util.DateUtils;
 import org.drools.mvel.expr.MVELCalendarCoercion;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MVELCalendarCoercionTest {
 
     @Test
     public void testCalendar() {
         MVELCalendarCoercion co = new MVELCalendarCoercion();
-        assertTrue(co.canConvertFrom( Calendar.class ));
-        assertFalse(co.canConvertFrom( Number.class ));
+        assertThat(co.canConvertFrom(Calendar.class)).isTrue();
+        assertThat(co.canConvertFrom(Number.class)).isFalse();
 
         Calendar d = Calendar.getInstance();
-        assertSame(d, co.convertFrom( d ));
+        assertThat(co.convertFrom(d)).isSameAs(d);
     }
 
     @Test
     public void testString() throws Exception {
         MVELCalendarCoercion co = new MVELCalendarCoercion();
-        assertTrue(co.canConvertFrom( Calendar.class ));
+        assertThat(co.canConvertFrom(Calendar.class)).isTrue();
 
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.UK);
 
@@ -52,7 +49,7 @@ public class MVELCalendarCoercionTest {
         Date dt_ = DateUtils.parseDate(dt);
         Calendar cal = Calendar.getInstance();
         cal.setTime( dt_ );
-        assertEquals(cal, co.convertFrom( dt ));
+        assertThat(co.convertFrom(dt)).isEqualTo(cal);
     }
 
 }

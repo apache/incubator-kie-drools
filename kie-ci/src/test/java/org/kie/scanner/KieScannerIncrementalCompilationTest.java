@@ -32,7 +32,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
@@ -89,7 +89,7 @@ public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
         ksession.dispose();
-        assertTrue("Expected:<" + value + "> but was:<" + list.get(0)  + ">", list.get(0) == value);
+        assertThat(list.get(0) == value).as("Expected:<" + value + "> but was:<" + list.get(0)  + ">").isTrue();
     }
 
     private InternalKieModule createKieJarWithClass(KieServices ks, ReleaseId releaseId, int value, boolean useJavaInDrl) throws IOException {
@@ -104,7 +104,7 @@ public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
         kfs.write("src/main/java/org/kie/test/Value.java", createJavaSource(value));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue("", kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll().getResults().getMessages().isEmpty()).as("").isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
