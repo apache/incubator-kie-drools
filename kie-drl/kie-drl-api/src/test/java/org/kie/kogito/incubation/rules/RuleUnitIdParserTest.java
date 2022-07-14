@@ -22,7 +22,7 @@ import org.kie.drl.api.identifiers.RuleUnitId;
 import org.kie.drl.api.identifiers.RuleUnitIdParser;
 import org.kie.drl.api.identifiers.RuleUnitInstanceId;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RuleUnitIdParserTest {
 
