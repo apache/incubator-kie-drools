@@ -82,7 +82,11 @@ public final class DrlNameExpr extends NameExpr implements NodeWithSimpleName<Na
 
     @Override
     public <A> void accept(VoidVisitor<A> v, A arg) {
-        ((DrlVoidVisitor<A>) v).visit(this, arg);
+        if (v instanceof DrlVoidVisitor) {
+            ((DrlVoidVisitor<A>) v).visit(this, arg);
+        } else {
+            v.visit(this, arg);
+        }
     }
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
