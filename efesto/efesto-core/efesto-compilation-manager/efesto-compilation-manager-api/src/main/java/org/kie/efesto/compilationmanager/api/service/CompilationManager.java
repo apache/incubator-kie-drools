@@ -20,7 +20,6 @@ import java.util.Collection;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
-import org.kie.memorycompiler.KieMemoryCompiler;
 
 public interface CompilationManager {
 

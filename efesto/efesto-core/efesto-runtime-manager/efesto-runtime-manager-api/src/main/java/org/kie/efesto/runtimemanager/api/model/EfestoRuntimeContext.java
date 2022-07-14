@@ -55,7 +55,7 @@ public class EfestoRuntimeContext implements EfestoContext {
 
     public void addGeneratedClasses(FRI fri, Map<String, byte[]> generatedClasses) {
         GeneratedClassesRepository.INSTANCE.addGeneratedClasses(fri, generatedClasses);
-    };
+    }
 
     public boolean containsKey(FRI fri) {
         return GeneratedClassesRepository.INSTANCE.containsKey(fri);

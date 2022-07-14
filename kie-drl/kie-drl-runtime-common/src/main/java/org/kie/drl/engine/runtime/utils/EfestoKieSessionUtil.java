@@ -67,7 +67,7 @@ public class EfestoKieSessionUtil {
         // populate memoryCompilerClassLoader with generatedClasses stored in context (Actually, in GeneratedClassesRepository)
         if (notFound && context.containsKey(fri)) {
             Map<String, byte[]> generatedClasses = context.getGeneratedClasses(fri);
-            generatedClasses.forEach((name, bytes) -> memoryCompilerClassLoader.addCode(name, bytes));
+            generatedClasses.forEach(memoryCompilerClassLoader::addCode);
         }
     }
 

@@ -31,7 +31,7 @@ public interface EfestoContext<T extends EfestoListener> {
      */
     default void addEfestoListener(final T toAdd) {
         throw new UnsupportedOperationException();
-    };
+    }
 
     /**
      * Remove the given <code>EfestoListener</code> from the current <code>Context</code>.
