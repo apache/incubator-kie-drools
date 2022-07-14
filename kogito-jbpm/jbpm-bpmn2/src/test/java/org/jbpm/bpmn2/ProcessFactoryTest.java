@@ -371,7 +371,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "java.lang.RuntimeException", "Unknown error", "Status code 400", "(.*)code 4[0-9]{2}" })
+    @ValueSource(strings = { "java.lang.RuntimeException", "Unknown error", "(?i)Status code 400", "(.*)code 4[0-9]{2}", "code 4[0-9]{2}" })
     public void testBoundaryErrorEvent(String errorCode) throws Exception {
         final String boundaryErrorEvent = "BoundaryErrorEvent";
         final String processId = "myProcess";

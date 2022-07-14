@@ -15,12 +15,25 @@
  */
 package org.jbpm.process.core.context.exception;
 
-public class MessageContentExceptionPolicy extends AbstractHierarchyExceptionPolicy {
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class MessageContentRegexExceptionPolicy extends AbstractHierarchyExceptionPolicy {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageContentRegexExceptionPolicy.class);
+
     @Override
     protected boolean verify(String errorCode, Throwable exception) {
         String msg = exception.getMessage();
         if (msg != null) {
-            return msg.toLowerCase().contains(errorCode.toLowerCase()) || msg.matches(errorCode);
+            try {
+                return Pattern.compile(errorCode).matcher(msg).find();
+            } catch (PatternSyntaxException ex) {
+                LOGGER.debug("Failure parsing regular expression: {}", errorCode, ex);
+            }
         }
         return false;
     }
