@@ -32,7 +32,7 @@ import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 class TestRuntimeManagerImpl {
 
@@ -58,7 +58,7 @@ class TestRuntimeManagerImpl {
                 Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, toProcess);
                 assertThat(retrieved).isNotNull().hasSize(1);
             } catch (Exception e) {
-                fail(e);
+                fail("Failed assertion on evaluateInput", e);
             }
         });
         Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader,
@@ -74,7 +74,7 @@ class TestRuntimeManagerImpl {
                 EfestoInput toAdd = managedInput.getDeclaredConstructor().newInstance();
                 toProcess.add(toAdd);
             } catch (Exception e) {
-                fail(e);
+                fail("Failed assertion on evaluateInput", e);
             }
         });
         toProcess.add(new MockEfestoInputD());
