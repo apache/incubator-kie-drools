@@ -11,8 +11,4 @@ class NurseRosteringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<Nur
         return new NurseRosteringApp();
     }
 
-    @Override
-    protected boolean supportsBavet() {
-        return false;
-    }
 }

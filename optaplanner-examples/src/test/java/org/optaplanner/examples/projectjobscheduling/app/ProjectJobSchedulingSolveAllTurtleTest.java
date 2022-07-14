@@ -11,8 +11,4 @@ class ProjectJobSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTe
         return new ProjectJobSchedulingApp();
     }
 
-    @Override
-    protected boolean supportsBavet() {
-        return false;
-    }
 }
