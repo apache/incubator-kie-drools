@@ -4142,4 +4142,32 @@ public class AccumulateTest extends BaseModelTest {
         ksession.insert("String2");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
+
+    @Test
+    public void testAccumulateWithBetaConstraint() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  $i : Integer()" +
+                        "  accumulate ( $p: Person ( name.length >= $i ); \n" +
+                        "                $sum : sum($p.getAge())  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert(new Result($sum + \":\" + $i));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(5);
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("75:5");
+    }
 }
