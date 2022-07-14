@@ -7,13 +7,14 @@ import org.drools.model.functions.Block3;
 import org.drools.model.functions.Function1;
 import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.constraints.BetaConstraint;
+import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 public class Pattern2<A, B> extends PatternDefinition<B> {
 
     private final Pattern1<A> patternA;
     private final Pattern1<B> patternB;
 
-    public Pattern2(RuleFactory.RuleDefinition rule, Pattern1<A> patternA, Pattern1<B> patternB) {
+    public Pattern2(RuleDefinition rule, Pattern1<A> patternA, Pattern1<B> patternB) {
         super(rule, patternB.variable);
         this.patternA = patternA;
         this.patternB = patternB;

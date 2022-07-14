@@ -13,10 +13,11 @@ import org.drools.model.functions.Predicate1;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.constraints.AlphaConstraint;
+import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 public class Pattern1<A> extends PatternDefinition<A> {
 
-    public Pattern1(RuleFactory.RuleDefinition rule, Variable<A> variable) {
+    public Pattern1(RuleDefinition rule, Variable<A> variable) {
         super(rule, variable);
     }
 

@@ -73,7 +73,7 @@ public class RulesFactory {
             return globals;
         }
 
-        <T> Global asGlobal(T globalObject) {
+        public <T> Global asGlobal(T globalObject) {
             return globals.computeIfAbsent(globalObject, o -> globalOf(o.getClass(), unit.getClass().getCanonicalName(), UUID.randomUUID().toString()));
         }
     }

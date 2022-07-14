@@ -7,17 +7,17 @@ import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.functions.Block1;
-import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.constraints.Constraint;
+import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 import static org.drools.model.PatternDSL.pattern;
 
 public abstract class PatternDefinition<A> {
-    protected final RuleFactory.RuleDefinition rule;
+    protected final RuleDefinition rule;
     protected final Variable<A> variable;
     protected final List<Constraint> constraints = new ArrayList<>();
 
-    protected PatternDefinition(RuleFactory.RuleDefinition rule, Variable<A> variable) {
+    protected PatternDefinition(RuleDefinition rule, Variable<A> variable) {
         this.rule = rule;
         this.variable = variable;
     }

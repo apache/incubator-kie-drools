@@ -3,8 +3,8 @@ package org.drools.ruleunits.dsl.accumulate;
 import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
-import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.patterns.Pattern1;
+import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.accumulate;
@@ -15,7 +15,7 @@ public class AccumulatePattern1<A, B> extends Pattern1<B> {
     private final Pattern1<A> pattern;
     private final Accumulator1<A, B> acc;
 
-    public AccumulatePattern1(RuleFactory.RuleDefinition rule, Pattern1<A> pattern, Accumulator1<A, B> acc) {
+    public AccumulatePattern1(RuleDefinition rule, Pattern1<A> pattern, Accumulator1<A, B> acc) {
         super(rule, declarationOf( (Class<B>) acc.getAccClass() ));
         this.pattern = pattern;
         this.acc = acc;
