@@ -16,6 +16,7 @@ import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_
 public class DrlTestUtils {
 
     private static final String SRC_MAIN_RESOURCES = "src/main/resources";
+    private static final String TARGET_CLASSES = "target/classes"; // for the case running tests without maven
 
     private DrlTestUtils() {}
 
@@ -24,7 +25,7 @@ public class DrlTestUtils {
      */
     public static void refreshDrlIndexFile() {
         IndexFile source = new IndexFile(SRC_MAIN_RESOURCES, "drl");
-        String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY);
+        String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, TARGET_CLASSES);
         IndexFile target = new IndexFile(parentPath, "drl");
 
         Path sourcePath = source.getAbsoluteFile().toPath();

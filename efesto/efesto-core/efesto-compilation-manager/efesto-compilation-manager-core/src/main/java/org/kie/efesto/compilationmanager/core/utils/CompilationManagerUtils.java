@@ -33,6 +33,7 @@ import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceExcept
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
 import org.kie.efesto.compilationmanager.api.model.EfestoClassesContainer;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
@@ -55,7 +56,8 @@ public class CompilationManagerUtils {
     private CompilationManagerUtils() {
     }
 
-    public static Set<IndexFile> getIndexFilesWithProcessedResource(EfestoResource toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static Set<IndexFile> getIndexFilesWithProcessedResource(EfestoResource toProcess, EfestoCompilationContext context) {
+        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader = context.getMemoryCompilerClassLoader();
         Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
@@ -68,10 +70,12 @@ public class CompilationManagerUtils {
                 toPopulate.add(indexFile);
                 populateIndexFile(indexFile, compilationOutput);
                 if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
-                    loadClasses(((EfestoCallableOutputClassesContainer) compilationOutput).getCompiledClassesMap(), memoryCompilerClassLoader);
+                    EfestoCallableOutputClassesContainer classesContainer = (EfestoCallableOutputClassesContainer) compilationOutput;
+                    loadClasses(classesContainer.getCompiledClassesMap(), memoryCompilerClassLoader);
+                    context.addGeneratedClasses(classesContainer.getFri(), classesContainer.getCompiledClassesMap());
                 }
             } else if (compilationOutput instanceof EfestoResource) {
-                toPopulate.addAll(getIndexFilesWithProcessedResource((EfestoResource) compilationOutput, memoryCompilerClassLoader));
+                toPopulate.addAll(getIndexFilesWithProcessedResource((EfestoResource) compilationOutput, context));
             }
         }
         return toPopulate;

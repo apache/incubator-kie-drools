@@ -16,6 +16,7 @@
 package org.kie.drl.engine.runtime.utils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.model.Model;
@@ -25,18 +26,23 @@ import org.kie.api.runtime.KieSession;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.memorycompiler.KieMemoryCompiler.MemoryCompilerClassLoader;
 
 public class EfestoKieSessionUtil {
 
     private EfestoKieSessionUtil() {
     }
 
-    public static KieSession loadKieSession(FRI fri, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static KieSession loadKieSession(FRI fri, EfestoRuntimeContext context) {
         GeneratedExecutableResource finalResource = GeneratedResourceUtils.getGeneratedExecutableResource(fri, "drl")
                 .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource for " + fri));
-        List<Model> models = finalResource.getFullClassNames().stream().map(className -> loadModel(className, memoryCompilerClassLoader)).collect(Collectors.toList());
+        prepareClassLoader(finalResource, context);
+        List<Model> models = finalResource.getFullClassNames().stream()
+                        .map(className -> loadModel(className, context.getMemoryCompilerClassLoader()))
+                        .collect(Collectors.toList());
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(models);
 
         KieSession toReturn = kieBase.newKieSession();
@@ -44,6 +50,26 @@ public class EfestoKieSessionUtil {
         return toReturn;
     }
 
+    private static void prepareClassLoader(GeneratedExecutableResource finalResource, EfestoRuntimeContext context) {
+        FRI fri = finalResource.getFri();
+        List<String> fullClassNames = finalResource.getFullClassNames();
+        MemoryCompilerClassLoader memoryCompilerClassLoader = context.getMemoryCompilerClassLoader();
+
+        boolean notFound = false;
+        for (String name : fullClassNames) {
+            try {
+                memoryCompilerClassLoader.loadClass(name);
+            } catch (ClassNotFoundException e) {
+                notFound = true;
+            }
+        }
+
+        // populate memoryCompilerClassLoader with generatedClasses stored in context (Actually, in GeneratedClassesRepository)
+        if (notFound && context.containsKey(fri)) {
+            Map<String, byte[]> generatedClasses = context.getGeneratedClasses(fri);
+            generatedClasses.forEach((name, bytes) -> memoryCompilerClassLoader.addCode(name, bytes));
+        }
+    }
 
     static Model loadModel(String fullModelResourcesSourceClassName, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         try {

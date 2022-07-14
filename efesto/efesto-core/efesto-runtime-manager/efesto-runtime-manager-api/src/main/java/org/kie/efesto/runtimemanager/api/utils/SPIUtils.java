@@ -22,9 +22,9 @@ import java.util.ServiceLoader;
 
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +41,9 @@ public class SPIUtils {
 
     private static final ServiceLoader<KieRuntimeService> kieRuntimeServiceLoader = ServiceLoader.load(KieRuntimeService.class);
 
-    public static Optional<KieRuntimeService> getKieRuntimeService(EfestoInput<?> input, boolean refresh, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static Optional<KieRuntimeService> getKieRuntimeService(EfestoInput<?> input, boolean refresh, EfestoRuntimeContext context) {
         logger.debug("getKieRuntimeService {} {}", input, refresh);
-        return findAtMostOne(getKieRuntimeServices(refresh), service -> service.canManageInput(input, memoryCompilerClassLoader),
+        return findAtMostOne(getKieRuntimeServices(refresh), service -> service.canManageInput(input, context),
                 (s1, s2) -> new KieRuntimeServiceException("Found more than one compiler services: " + s1 + " and " + s2));
     }
 

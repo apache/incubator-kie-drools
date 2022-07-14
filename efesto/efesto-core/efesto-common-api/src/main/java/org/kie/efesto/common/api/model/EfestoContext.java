@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.efesto.runtimemanager.api.model;
+package org.kie.efesto.common.api.model;
 
 import java.util.Set;
 
-import org.kie.efesto.runtimemanager.api.listener.EfestoListener;
+import org.kie.efesto.common.api.listener.EfestoListener;
 
 /**
  * The context of an execution
@@ -29,17 +29,23 @@ public interface EfestoContext<T extends EfestoListener> {
      * Add the given <code>EfestoListener</code> to the current <code>Context</code>
      * @param toAdd
      */
-    void addEfestoListener(final T toAdd);
+    default void addEfestoListener(final T toAdd) {
+        throw new UnsupportedOperationException();
+    };
 
     /**
      * Remove the given <code>EfestoListener</code> from the current <code>Context</code>.
      * @param toRemove
      */
-    void removeEfestoListener(final T toRemove);
+    default void removeEfestoListener(final T toRemove) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Returns an <b>unmodifiable set</b> of the <code>EfestoListener</code>s registered with the
      * current instance
      */
-    Set<T> getEfestoListeners();
+    default Set<T> getEfestoListeners() {
+        throw new UnsupportedOperationException();
+    }
 }
