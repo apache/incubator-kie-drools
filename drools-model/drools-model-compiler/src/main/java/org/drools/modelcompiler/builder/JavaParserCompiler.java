@@ -37,6 +37,7 @@ import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
+import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
@@ -145,7 +146,7 @@ public class JavaParserCompiler {
             cu.getImports().add( new ImportDeclaration(new Name(i), true, false ) );
         }
         cu.addType(pojo);
-        return getPrettyPrinter().print(cu);
+        return PrintUtil.printNode(cu);
     }
 
     static class InternalClassLoader extends ClassLoader {
