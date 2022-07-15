@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,22 +19,22 @@ package org.kie.kogito.index.resources;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.index.testcontainers.DataIndexPostgreSqlContainer;
+import org.kie.kogito.index.testcontainers.DataIndexOracleContainer;
 import org.kie.kogito.index.testcontainers.KogitoKafkaContainerWithoutBridge;
 import org.kie.kogito.test.resources.TestResource;
-import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
+import org.kie.kogito.testcontainers.KogitoOracleSqlContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 
-public class DataIndexPostgreSqlResource implements TestResource {
+public class DataIndexOracleResource implements TestResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexPostgreSqlResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexOracleResource.class);
 
     KogitoKafkaContainerWithoutBridge kafka = new KogitoKafkaContainerWithoutBridge();
-    KogitoPostgreSqlContainer postgresql = new KogitoPostgreSqlContainer();
-    DataIndexPostgreSqlContainer dataIndex = new DataIndexPostgreSqlContainer();
+    KogitoOracleSqlContainer oracle = new KogitoOracleSqlContainer();
+    DataIndexOracleContainer dataIndex = new DataIndexOracleContainer();
     Map<String, String> properties = new HashMap<>();
 
     @Override
@@ -44,14 +44,16 @@ public class DataIndexPostgreSqlResource implements TestResource {
 
     @Override
     public void start() {
-        LOGGER.debug("Starting PostgreSQL Quarkus test resource");
+        LOGGER.debug("Starting Oracle Quarkus test resource");
         properties.clear();
         Network network = Network.newNetwork();
-        postgresql.withInitScript("data_index_postgresql_create.sql");
-        postgresql.withNetwork(network);
-        postgresql.withNetworkAliases("postgresql");
-        postgresql.waitingFor(Wait.forListeningPort());
-        postgresql.start();
+        oracle.withInitScript("data_index_oracle_create.sql");
+        oracle.withNetwork(network);
+        oracle.withNetworkAliases("oracle");
+        oracle.withUsername("kogito");
+        oracle.withPassword("kogito");
+        oracle.waitingFor(Wait.forListeningPort());
+        oracle.start();
         kafka.withNetwork(network);
         kafka.withNetworkAliases("kafka");
         kafka.waitingFor(Wait.forListeningPort());
@@ -62,20 +64,19 @@ public class DataIndexPostgreSqlResource implements TestResource {
 
         dataIndex.addProtoFileFolder();
         dataIndex.withNetwork(network);
-        dataIndex
-                .setPostgreSqlURL("jdbc:postgresql://postgresql:5432/" + postgresql.getDatabaseName(), postgresql.getUsername(),
-                        postgresql.getPassword());
+        dataIndex.setDatabaseURL("jdbc:oracle:thin:@oracle:1521/" + oracle.getDatabaseName(),
+                oracle.getUsername(), oracle.getPassword());
         dataIndex.setKafkaURL("kafka:29092");
         dataIndex.start();
-        LOGGER.debug("PostgreSQL Quarkus test resource started");
+        LOGGER.debug("Oracle Quarkus test resource started");
     }
 
     @Override
     public void stop() {
         dataIndex.stop();
-        postgresql.stop();
+        oracle.stop();
         kafka.stop();
-        LOGGER.debug("PostgreSQL Quarkus test resource stopped");
+        LOGGER.debug("Oracle Quarkus test resource stopped");
     }
 
     @Override

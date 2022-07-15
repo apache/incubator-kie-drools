@@ -1,2 +1,2 @@
 src/main/resources/**/*.bpmn
-src/main/resources/data_index_create.sql
+src/main/resources/*create.sql

@@ -687,7 +687,7 @@ public abstract class AbstractProcessDataIndexIT {
 
     public static String readFileContent(String file) throws URISyntaxException, IOException {
         Path path = Paths.get(Thread.currentThread().getContextClassLoader().getResource(file).toURI());
-        return new String(Files.readAllBytes(path));
+        return Files.readString(path);
     }
 
     public String getTestFileContentByFilename(String fileName) throws Exception {

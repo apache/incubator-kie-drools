@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.index.mongodb;
+package org.kie.kogito.index.oracle;
 
 import org.kie.kogito.index.AbstractProcessDataIndexIT;
-import org.kie.kogito.index.quarkus.DataIndexMongoDBQuarkusTestResource;
-import org.kie.kogito.index.quarkus.MongoDBTestProfile;
+import org.kie.kogito.index.quarkus.DataIndexOracleQuarkusTestResource;
+import org.kie.kogito.index.quarkus.OracleTestProfile;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.TestProfile;
 
 @QuarkusIntegrationTest
-@TestProfile(MongoDBTestProfile.class)
-public class ProcessDataIndexMongoDBIT extends AbstractProcessDataIndexIT {
+@TestProfile(OracleTestProfile.class)
+public class ProcessDataIndexOracleIT extends AbstractProcessDataIndexIT {
 
-    @QuarkusTestProperty(name = DataIndexMongoDBQuarkusTestResource.KOGITO_DATA_INDEX_SERVICE_URL)
+    @QuarkusTestProperty(name = DataIndexOracleQuarkusTestResource.KOGITO_DATA_INDEX_SERVICE_URL)
     String dataIndex;
 
     @Override
@@ -36,7 +36,7 @@ public class ProcessDataIndexMongoDBIT extends AbstractProcessDataIndexIT {
     }
 
     @Override
-    public boolean validateGetProcessInstanceSource() {
-        return true;
+    public boolean validateDomainData() {
+        return false;
     }
 }

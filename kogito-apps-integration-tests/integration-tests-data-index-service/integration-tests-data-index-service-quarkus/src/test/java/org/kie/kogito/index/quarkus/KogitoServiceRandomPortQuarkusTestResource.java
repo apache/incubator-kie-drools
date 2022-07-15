@@ -15,12 +15,13 @@
  */
 package org.kie.kogito.index.quarkus;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.kogito.index.resources.KogitoServiceRandomPortTestResource;
 import org.kie.kogito.test.resources.ConditionalQuarkusTestResource;
 
-import static java.util.Collections.singletonMap;
+import static org.kie.kogito.index.resources.KogitoServiceRandomPortTestResource.KOGITO_SERVICE_URL;
 
 public class KogitoServiceRandomPortQuarkusTestResource extends ConditionalQuarkusTestResource {
 
@@ -40,7 +41,14 @@ public class KogitoServiceRandomPortQuarkusTestResource extends ConditionalQuark
 
     @Override
     protected Map<String, String> getProperties() {
+        Map<String, String> properties = new HashMap<>();
         System.setProperty(QUARKUS_SERVICE_HTTP_PORT, String.valueOf(getTestResource().getMappedPort()));
-        return singletonMap(QUARKUS_SERVICE_HTTP_PORT, String.valueOf(getTestResource().getMappedPort()));
+
+        properties.put(QUARKUS_SERVICE_HTTP_PORT, String.valueOf(getTestResource().getMappedPort()));
+        properties.put(KOGITO_SERVICE_URL, "http://host.testcontainers.internal:" + getTestResource().getMappedPort());
+        properties.put("mp.messaging.outgoing.kogito-processinstances-events.connector", "smallrye-kafka");
+        properties.put("mp.messaging.outgoing.kogito-usertaskinstances-events.connector", "smallrye-kafka");
+        properties.put("mp.messaging.outgoing.kogito-variables-events.connector", "smallrye-kafka");
+        return properties;
     }
 }

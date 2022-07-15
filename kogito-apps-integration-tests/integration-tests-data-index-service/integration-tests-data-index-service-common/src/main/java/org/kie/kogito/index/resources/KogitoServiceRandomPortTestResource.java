@@ -23,7 +23,7 @@ public class KogitoServiceRandomPortTestResource implements TestResource {
 
     public static final String NAME = "kogito-service";
 
-    private static final String KOGITO_SERVICE_URL = "kogito.service.url";
+    public static final String KOGITO_SERVICE_URL = "kogito.service.url";
 
     private int httpPort;
 

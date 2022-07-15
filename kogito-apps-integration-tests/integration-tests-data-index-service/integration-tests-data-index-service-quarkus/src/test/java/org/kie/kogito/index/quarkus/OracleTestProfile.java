@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.index.mongodb;
 
-import org.junit.jupiter.api.Disabled;
+package org.kie.kogito.index.quarkus;
 
-import io.quarkus.test.junit.NativeImageTest;
+import java.util.Arrays;
+import java.util.List;
 
-@NativeImageTest
-@Disabled("see https://issues.redhat.com/browse/KOGITO-4983")
-public class NativeProcessDataIndexMongoDBIT extends ProcessDataIndexMongoDBIT {
+import io.quarkus.test.junit.QuarkusTestProfile;
+
+public class OracleTestProfile implements QuarkusTestProfile {
+
+    @Override
+    public List<TestResourceEntry> testResources() {
+        return Arrays.asList(new TestResourceEntry(KogitoServiceRandomPortQuarkusTestResource.class),
+                new TestResourceEntry(DataIndexOracleQuarkusTestResource.class));
+    }
 
 }
