@@ -106,7 +106,7 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testAbortProcessInstance() {
         setupIdentityMock();
-        when(webClientMock.delete(any())).thenReturn(httpRequestMock);
+        when(webClientMock.delete(anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ACTIVE);
 
@@ -123,7 +123,7 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testRetryProcessInstance() {
         setupIdentityMock();
-        when(webClientMock.post(any())).thenReturn(httpRequestMock);
+        when(webClientMock.post(anyString())).thenReturn(httpRequestMock);
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
         client.retryProcessInstance(SERVICE_URL, pI);
@@ -139,7 +139,7 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testSkipProcessInstance() {
         setupIdentityMock();
-        when(webClientMock.post(any())).thenReturn(httpRequestMock);
+        when(webClientMock.post(anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
@@ -156,7 +156,7 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testUpdateProcessInstanceVariables() {
         setupIdentityMock();
-        when(webClientMock.put(any())).thenReturn(httpRequestMock);
+        when(webClientMock.put(anyString())).thenReturn(httpRequestMock);
         when(httpRequestMock.putHeader(eq("Content-Type"), anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
@@ -175,7 +175,7 @@ public class KogitoRuntimeClientTest {
     public void testTriggerNodeInstance() {
         String nodeDefId = "nodeDefId";
         setupIdentityMock();
-        when(webClientMock.post(any())).thenReturn(httpRequestMock);
+        when(webClientMock.post(anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
@@ -192,7 +192,7 @@ public class KogitoRuntimeClientTest {
     public void testRetriggerNodeInstance() {
         String nodeInstanceId = "nodeInstanceId";
         setupIdentityMock();
-        when(webClientMock.post(any())).thenReturn(httpRequestMock);
+        when(webClientMock.post(anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
@@ -210,7 +210,7 @@ public class KogitoRuntimeClientTest {
     public void testCancelNodeInstance() {
         String nodeInstanceId = "nodeInstanceId";
         setupIdentityMock();
-        when(webClientMock.delete(any())).thenReturn(httpRequestMock);
+        when(webClientMock.delete(anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
@@ -227,7 +227,7 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testCancelJob() {
         setupIdentityMock();
-        when(webClientMock.delete(any())).thenReturn(httpRequestMock);
+        when(webClientMock.delete(anyString())).thenReturn(httpRequestMock);
 
         Job job = createJob(JOB_ID, PROCESS_INSTANCE_ID, "SCHEDULED");
         client.cancelJob(SERVICE_URL, job);
@@ -244,7 +244,7 @@ public class KogitoRuntimeClientTest {
     public void testRescheduleJob() {
         String newJobData = "{ }";
         setupIdentityMock();
-        when(webClientMock.put(any())).thenReturn(httpRequestMock);
+        when(webClientMock.put(anyString())).thenReturn(httpRequestMock);
         when(httpRequestMock.putHeader(eq("Content-Type"), anyString())).thenReturn(httpRequestMock);
 
         Job job = createJob(JOB_ID, PROCESS_INSTANCE_ID, "SCHEDULED");
@@ -262,7 +262,7 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testGetProcessInstanceDiagram() {
         setupIdentityMock();
-        when(webClientMock.get(any())).thenReturn(httpRequestMock);
+        when(webClientMock.get(anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
@@ -280,7 +280,7 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testGetProcessInstanceNodeDefinitions() {
         setupIdentityMock();
-        when(webClientMock.get(any())).thenReturn(httpRequestMock);
+        when(webClientMock.get(anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
@@ -309,7 +309,7 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testGetProcessInstanceSource() {
         setupIdentityMock();
-        when(webClientMock.get(any())).thenReturn(httpRequestMock);
+        when(webClientMock.get(anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
@@ -327,7 +327,7 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testGetUserTaskSchema() {
         setupIdentityMock();
-        when(webClientMock.get(any())).thenReturn(httpRequestMock);
+        when(webClientMock.get(anyString())).thenReturn(httpRequestMock);
 
         UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
 
@@ -343,7 +343,7 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testUpdateUserTaskInstance() {
         setupIdentityMock();
-        when(webClientMock.patch(any())).thenReturn(httpRequestMock);
+        when(webClientMock.patch(anyString())).thenReturn(httpRequestMock);
 
         UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
         Map taskInfo = new HashMap();
@@ -367,7 +367,7 @@ public class KogitoRuntimeClientTest {
     public void testCreateUserTaskInstanceComment() {
         String commentInfo = "newComment";
         setupIdentityMock();
-        when(webClientMock.post(any())).thenReturn(httpRequestMock);
+        when(webClientMock.post(anyString())).thenReturn(httpRequestMock);
         when(httpRequestMock.putHeader(eq("Content-Type"), anyString())).thenReturn(httpRequestMock);
 
         UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
@@ -386,7 +386,7 @@ public class KogitoRuntimeClientTest {
         String attachmentUri = "nhttps://drive.google.com/file/d/AttachmentUri";
         String attachmentName = "newAttachmentName";
         setupIdentityMock();
-        when(webClientMock.post(any())).thenReturn(httpRequestMock);
+        when(webClientMock.post(anyString())).thenReturn(httpRequestMock);
         when(httpRequestMock.putHeader(eq("Content-Type"), anyString())).thenReturn(httpRequestMock);
 
         UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
@@ -408,7 +408,7 @@ public class KogitoRuntimeClientTest {
         String commentInfo = "NewCommentContent";
         String commentId = "commentId";
         setupIdentityMock();
-        when(webClientMock.put(any())).thenReturn(httpRequestMock);
+        when(webClientMock.put(anyString())).thenReturn(httpRequestMock);
         when(httpRequestMock.putHeader(eq("Content-Type"), anyString())).thenReturn(httpRequestMock);
 
         UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
@@ -428,7 +428,7 @@ public class KogitoRuntimeClientTest {
     public void testDeleteTaskInstanceComment() {
         String commentId = "commentId";
         setupIdentityMock();
-        when(webClientMock.delete(any())).thenReturn(httpRequestMock);
+        when(webClientMock.delete(anyString())).thenReturn(httpRequestMock);
 
         UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
 
@@ -447,7 +447,7 @@ public class KogitoRuntimeClientTest {
         String attachmentContent = "NewAttachmentContent";
         String attachmentId = "attachmentId";
         setupIdentityMock();
-        when(webClientMock.put(any())).thenReturn(httpRequestMock);
+        when(webClientMock.put(anyString())).thenReturn(httpRequestMock);
         when(httpRequestMock.putHeader(eq("Content-Type"), anyString())).thenReturn(httpRequestMock);
 
         UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
@@ -471,7 +471,7 @@ public class KogitoRuntimeClientTest {
     public void testDeleteTaskInstanceAttachment() {
         String attachmentId = "attachmentId";
         setupIdentityMock();
-        when(webClientMock.delete(any())).thenReturn(httpRequestMock);
+        when(webClientMock.delete(anyString())).thenReturn(httpRequestMock);
 
         UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
 
