@@ -1,0 +1,25 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Runtime Execution Plan Coordinated by Runtime Manager
+
+autonumber 1
+!include puml/EfestoInventorySD.puml
+
+Input_provider -> Runtime_Manager: execute (EfestoInput)
+Runtime_Manager -> KieRuntimeService: canManageInput (EfestoInput)
+return true
+Runtime_Manager -> KieRuntimeService: getExecutionPlan (EfestoInput)
+return executionPlan
+
+group executionStep [loop until final output]
+Runtime_Manager -> KieRuntimeService__: canManageInput (EfestoInput/ExecutionStep)
+return true
+Runtime_Manager -> KieRuntimeService__: evaluateInput (EfestoInput/ExecutionStep/PreviousOutput)
+return Optional<EfestoOutput>
+end
+
+Runtime_Manager -> Input_provider: Optional<EfestoOutput>
+
+
+@enduml
