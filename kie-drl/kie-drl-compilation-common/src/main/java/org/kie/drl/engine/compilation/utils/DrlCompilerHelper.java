@@ -46,12 +46,8 @@ import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceExcept
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.memorycompiler.JavaConfiguration;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 
 public class DrlCompilerHelper {
 
@@ -139,8 +135,4 @@ public class DrlCompilerHelper {
             throw new KieCompilerServiceException(e);
         }
     }
-
-//    private static Map<String, byte[]> compileClasses(Map<String, String> sourcesMap, EfestoCompilationContext context) {
-//        return KieMemoryCompiler.compileNoLoad(sourcesMap, context.getMemoryCompilerClassLoader(), JavaConfiguration.CompilerType.NATIVE);
-//    }
 }

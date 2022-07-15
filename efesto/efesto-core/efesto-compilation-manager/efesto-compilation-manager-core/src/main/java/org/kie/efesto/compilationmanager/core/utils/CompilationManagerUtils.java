@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,8 +36,6 @@ import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
-import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.memorycompiler.KieMemoryCompilerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
