@@ -46,7 +46,7 @@ class EfestoKieSessionUtilTest {
 
     @Test
     void loadModel() {
-        Model retrieved = EfestoKieSessionUtil.loadModel(fullModelResourcesSourceClassName, context.getMemoryCompilerClassLoader());
+        Model retrieved = EfestoKieSessionUtil.loadModel(fullModelResourcesSourceClassName, context);
         assertThat(retrieved).isNotNull();
     }
 }

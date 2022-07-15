@@ -16,6 +16,7 @@
 
 package org.kie.efesto.common.api.model;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.kie.efesto.common.api.listener.EfestoListener;
@@ -47,5 +48,32 @@ public interface EfestoContext<T extends EfestoListener> {
      */
     default Set<T> getEfestoListeners() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Get previously generated classes with the key {@code fri}
+     * @param fri
+     * @return generatedClasses
+     */
+    default Map<String, byte[]> getGeneratedClasses(FRI fri) {
+        return GeneratedClassesRepository.INSTANCE.getGeneratedClasses(fri);
+    }
+
+    /**
+     * Add generated classes with the key {@code fri}
+     * @param fri
+     * @param generatedClasses
+     */
+    default void addGeneratedClasses(FRI fri, Map<String, byte[]> generatedClasses) {
+        GeneratedClassesRepository.INSTANCE.addGeneratedClasses(fri, generatedClasses);
+    }
+
+    /**
+     * Returns {@code true} if this map contains a mapping for the {@code fri}
+     * @param fri
+     * @return {@code true} if this map contains a mapping for the {@code fri}
+     */
+    default boolean containsKey(FRI fri) {
+        return GeneratedClassesRepository.INSTANCE.containsKey(fri);
     }
 }

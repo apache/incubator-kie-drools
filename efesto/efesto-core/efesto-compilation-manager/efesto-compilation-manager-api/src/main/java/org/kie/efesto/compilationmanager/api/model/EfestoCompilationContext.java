@@ -17,9 +17,9 @@ package org.kie.efesto.compilationmanager.api.model;
 
 import java.util.Map;
 
+import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
-import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.common.api.model.GeneratedClassesRepository;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 /**
@@ -27,41 +27,19 @@ import org.kie.memorycompiler.KieMemoryCompiler;
  * Wrap MemoryCompilerClassLoader and convey generated classes to be used by other CompilationManager or RuntimeManager
  *
  */
-public class EfestoCompilationContext implements EfestoContext {
-
-    private KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
-
-    private EfestoCompilationContext() {}
+public interface EfestoCompilationContext extends EfestoContext<EfestoListener> {
 
     public static EfestoCompilationContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
-        EfestoCompilationContext context = new EfestoCompilationContext();
-        context.setMemoryCompilerClassLoader(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
-        return context;
+        return new EfestoCompilationContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
     }
 
     public static EfestoCompilationContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        EfestoCompilationContext context = new EfestoCompilationContext();
-        context.memoryCompilerClassLoader = memoryCompilerClassLoader;
-        return context;
+        return new EfestoCompilationContextImpl(memoryCompilerClassLoader);
     }
 
-    public KieMemoryCompiler.MemoryCompilerClassLoader getMemoryCompilerClassLoader() {
-        return memoryCompilerClassLoader;
-    }
+    KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration();
 
-    public void setMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        this.memoryCompilerClassLoader = memoryCompilerClassLoader;
-    }
+    Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
 
-    public Map<String, byte[]> getGeneratedClasses(FRI fri) {
-        return GeneratedClassesRepository.INSTANCE.getGeneratedClasses(fri);
-    }
-
-    public void addGeneratedClasses(FRI fri, Map<String, byte[]> generatedClasses) {
-        GeneratedClassesRepository.INSTANCE.addGeneratedClasses(fri, generatedClasses);
-    }
-
-    public boolean containsKey(FRI fri) {
-        return GeneratedClassesRepository.INSTANCE.containsKey(fri);
-    }
+    void loadClasses(Map<String, byte[]> compiledClassesMap);
 }

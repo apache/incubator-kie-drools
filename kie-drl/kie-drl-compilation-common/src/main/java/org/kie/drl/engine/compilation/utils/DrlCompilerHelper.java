@@ -43,6 +43,7 @@ import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.memorycompiler.JavaConfiguration;
@@ -59,27 +60,28 @@ public class DrlCompilerHelper {
     private DrlCompilerHelper() {
     }
 
-    public static ExecutableModelClassesContainer dTableToDrl(DecisionTableFileSetResource resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static ExecutableModelClassesContainer dTableToDrl(DecisionTableFileSetResource resources, EfestoCompilationContext context) {
         // TODO {mfusco}
         throw new KieCompilerServiceException("Not implemented, yet");
     }
 
-    public static DrlPackageDescrSetResource drlToPackageDescrs(DrlFileSetResource resources, ClassLoader classLoader) {
-        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(classLoader);
+    public static DrlPackageDescrSetResource drlToPackageDescrs(DrlFileSetResource resources, EfestoCompilationContext context) {
+        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
         Set<PackageDescr> packageDescrSet = buildCompositePackageDescrs(resources, conf).stream().collect(Collectors.toSet());
         return new DrlPackageDescrSetResource(packageDescrSet, resources.getBasePath());
     }
 
-    public static ExecutableModelClassesContainer pkgDescrToExecModel(EfestoSetResource<PackageDescr> resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        return pkgDescrToExecModel(toCompositePackageDescrs(resources.getContent()), resources.getBasePath(), new KnowledgeBuilderConfigurationImpl(), memoryCompilerClassLoader);
+    public static ExecutableModelClassesContainer pkgDescrToExecModel(EfestoSetResource<PackageDescr> resources, EfestoCompilationContext context) {
+        return pkgDescrToExecModel(toCompositePackageDescrs(resources.getContent()), resources.getBasePath(), new KnowledgeBuilderConfigurationImpl(), context);
     }
 
-    public static ExecutableModelClassesContainer drlToExecutableModel(DrlFileSetResource resources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(memoryCompilerClassLoader);
-        return pkgDescrToExecModel(buildCompositePackageDescrs(resources, conf), resources.getBasePath(), conf, memoryCompilerClassLoader);
+    public static ExecutableModelClassesContainer drlToExecutableModel(DrlFileSetResource resources, EfestoCompilationContext context) {
+        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
+
+        return pkgDescrToExecModel(buildCompositePackageDescrs(resources, conf), resources.getBasePath(), conf, context);
     }
 
-    public static ExecutableModelClassesContainer pkgDescrToExecModel(Collection<CompositePackageDescr> packages, String basePath, KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static ExecutableModelClassesContainer pkgDescrToExecModel(Collection<CompositePackageDescr> packages, String basePath, KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, EfestoCompilationContext context) {
         ExplicitCanonicalModelCompiler<KogitoPackageSources> compiler =
                 ExplicitCanonicalModelCompiler.of( packages, knowledgeBuilderConfiguration, KogitoPackageSources::dumpSources );
 
@@ -109,7 +111,7 @@ public class DrlCompilerHelper {
                                 .replace(File.separatorChar, '.'),
                         generatedFile -> new String(generatedFile.getData(), StandardCharsets.UTF_8)));
 
-        Map<String, byte[]> compiledClasses = compileClasses(sourceCode, memoryCompilerClassLoader);
+        Map<String, byte[]> compiledClasses = context.compileClasses(sourceCode);
         return new ExecutableModelClassesContainer(new FRI(basePath, "drl"), generatedRulesModels, compiledClasses);
     }
 
@@ -138,7 +140,7 @@ public class DrlCompilerHelper {
         }
     }
 
-    private static Map<String, byte[]> compileClasses(Map<String, String> sourcesMap, KieMemoryCompiler.MemoryCompilerClassLoader memoryClassLoader) {
-        return KieMemoryCompiler.compileNoLoad(sourcesMap, memoryClassLoader, JavaConfiguration.CompilerType.NATIVE);
-    }
+//    private static Map<String, byte[]> compileClasses(Map<String, String> sourcesMap, EfestoCompilationContext context) {
+//        return KieMemoryCompiler.compileNoLoad(sourcesMap, context.getMemoryCompilerClassLoader(), JavaConfiguration.CompilerType.NATIVE);
+//    }
 }

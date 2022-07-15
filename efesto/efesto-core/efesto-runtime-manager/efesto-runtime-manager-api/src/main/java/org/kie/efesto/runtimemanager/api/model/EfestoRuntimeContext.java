@@ -16,48 +16,22 @@
 
 package org.kie.efesto.runtimemanager.api.model;
 
-import java.util.Map;
-
+import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
-import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.common.api.model.GeneratedClassesRepository;
+import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
-public class EfestoRuntimeContext implements EfestoContext {
-
-    private KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
-
-    private EfestoRuntimeContext() {}
+public interface EfestoRuntimeContext extends EfestoContext<EfestoListener> {
 
     public static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
-        EfestoRuntimeContext context = new EfestoRuntimeContext();
-        context.setMemoryCompilerClassLoader(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
-        return context;
+        return new EfestoRuntimeContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
     }
 
     public static EfestoRuntimeContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        EfestoRuntimeContext context = new EfestoRuntimeContext();
-        context.memoryCompilerClassLoader = memoryCompilerClassLoader;
-        return context;
+        return new EfestoRuntimeContextImpl(memoryCompilerClassLoader);
     }
 
-    public KieMemoryCompiler.MemoryCompilerClassLoader getMemoryCompilerClassLoader() {
-        return memoryCompilerClassLoader;
-    }
+    void prepareClassLoader(GeneratedExecutableResource finalResource);
 
-    public void setMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        this.memoryCompilerClassLoader = memoryCompilerClassLoader;
-    }
-
-    public Map<String, byte[]> getGeneratedClasses(FRI fri) {
-        return GeneratedClassesRepository.INSTANCE.getGeneratedClasses(fri);
-    }
-
-    public void addGeneratedClasses(FRI fri, Map<String, byte[]> generatedClasses) {
-        GeneratedClassesRepository.INSTANCE.addGeneratedClasses(fri, generatedClasses);
-    }
-
-    public boolean containsKey(FRI fri) {
-        return GeneratedClassesRepository.INSTANCE.containsKey(fri);
-    }
+    Class<?> loadClass(String className) throws ClassNotFoundException;
 }

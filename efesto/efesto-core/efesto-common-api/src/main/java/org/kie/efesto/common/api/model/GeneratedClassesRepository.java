@@ -15,19 +15,17 @@
  */
 package org.kie.efesto.common.api.model;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Singleton repository to cache generated classes to be accessed by EfestoContext
+ * package private Singleton repository to cache generated classes. Accessed by EfestoContext
  */
-public class GeneratedClassesRepository {
+enum GeneratedClassesRepository {
 
-    private Map<FRI, Map<String, byte[]>> generatedClassesMap = new HashMap<>();
+    INSTANCE;
 
-    public static final GeneratedClassesRepository INSTANCE = new GeneratedClassesRepository();
-
-    private GeneratedClassesRepository() {}
+    private Map<FRI, Map<String, byte[]>> generatedClassesMap = new ConcurrentHashMap<>();
 
     public void addGeneratedClasses(FRI fri, Map<String, byte[]> generatedClasses) {
         generatedClassesMap.put(fri, generatedClasses);

@@ -37,6 +37,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.core.service.RuntimeManagerImpl;
+import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,7 +45,7 @@ public class OnTheFlyDrlTest {
 
     private static RuntimeManager runtimeManager;
     private static CompilationManager compilationManager;
-    
+
     @BeforeAll
     static void setUp() {
         DrlTestUtils.refreshDrlIndexFile();
@@ -57,11 +58,12 @@ public class OnTheFlyDrlTest {
         String onTheFlyPath = "OnTheFlyPathReuseMemoryClassLoader";
         Set<File> files = DrlTestUtils.collectDrlFiles("src/test/resources/org/drools/model/project/codegen");
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, onTheFlyPath);
-        EfestoCompilationContext compilationContext = EfestoCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        EfestoCompilationContext compilationContext = EfestoCompilationContext.buildWithMemoryCompilerClassLoader(memoryCompilerClassLoader);
         Collection<IndexFile> indexFiles = compilationManager.processResource(compilationContext, toProcess);
 
-        // Reuse MemoryCompilerClassLoader in the previous compilationContext
-        EfestoRuntimeContext runtimeContext = EfestoRuntimeContext.buildWithMemoryCompilerClassLoader(compilationContext.getMemoryCompilerClassLoader());
+        // Reuse MemoryCompilerClassLoader in the previous compilation
+        EfestoRuntimeContext runtimeContext = EfestoRuntimeContext.buildWithMemoryCompilerClassLoader(memoryCompilerClassLoader);
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(onTheFlyPath, "drl"), "");
         Collection<EfestoOutput> output = runtimeManager.evaluateInput(runtimeContext, toEvaluate);
         assertThat(output).isNotNull().hasSize(1);

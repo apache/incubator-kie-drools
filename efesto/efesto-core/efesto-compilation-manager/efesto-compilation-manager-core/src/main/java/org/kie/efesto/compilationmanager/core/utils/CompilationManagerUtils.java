@@ -53,25 +53,23 @@ public class CompilationManagerUtils {
     private static final Logger logger = LoggerFactory.getLogger(CompilationManagerUtils.class.getName());
     private static final String DEFAULT_INDEXFILE_DIRECTORY = "./target/classes";
 
-    private CompilationManagerUtils() {
-    }
+    private CompilationManagerUtils() {}
 
     public static Set<IndexFile> getIndexFilesWithProcessedResource(EfestoResource toProcess, EfestoCompilationContext context) {
-        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader = context.getMemoryCompilerClassLoader();
         Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
             return Collections.emptySet();
         }
         Set<IndexFile> toPopulate = new HashSet<>();
-        for (EfestoCompilationOutput compilationOutput : retrieved.get().processResource(toProcess, memoryCompilerClassLoader)) {
+        for (EfestoCompilationOutput compilationOutput : retrieved.get().processResource(toProcess, context)) {
             if (compilationOutput instanceof EfestoCallableOutput) {
                 IndexFile indexFile = CompilationManagerUtils.getIndexFile((EfestoCallableOutput) compilationOutput);
                 toPopulate.add(indexFile);
                 populateIndexFile(indexFile, compilationOutput);
                 if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
                     EfestoCallableOutputClassesContainer classesContainer = (EfestoCallableOutputClassesContainer) compilationOutput;
-                    loadClasses(classesContainer.getCompiledClassesMap(), memoryCompilerClassLoader);
+                    context.loadClasses(classesContainer.getCompiledClassesMap());
                     context.addGeneratedClasses(classesContainer.getFri(), classesContainer.getCompiledClassesMap());
                 }
             } else if (compilationOutput instanceof EfestoResource) {
@@ -127,24 +125,12 @@ public class CompilationManagerUtils {
 
     static List<GeneratedResource> getGeneratedResources(EfestoClassesContainer finalOutput) {
         return finalOutput.getCompiledClassesMap().keySet().stream()
-                .map(CompilationManagerUtils::getGeneratedClassResource)
-                .collect(Collectors.toList());
+                          .map(CompilationManagerUtils::getGeneratedClassResource)
+                          .collect(Collectors.toList());
     }
 
     static GeneratedClassResource getGeneratedClassResource(String fullClassName) {
         return new GeneratedClassResource(fullClassName);
     }
 
-    static void loadClasses(Map<String, byte[]> compiledClassesMap, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        for (Map.Entry<String, byte[]> entry : compiledClassesMap.entrySet()) {
-            memoryCompilerClassLoader.addCode(entry.getKey(), entry.getValue());
-            try {
-                memoryCompilerClassLoader.loadClass(entry.getKey());
-            } catch (ClassNotFoundException e) {
-                throw new KieMemoryCompilerException(e.getMessage(), e);
-            }
-        }
-    }
 }
-
-
