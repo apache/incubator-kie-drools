@@ -9,4 +9,4 @@ The following DMN modelers are supported:
 +
 To install the VSCode extension directly in VS Code, select the *Extensions* menu option in VS Code and search for and install the *Red Hat Business Automation Bundle* extension.
 
-* *Business Modeler standalone editors*: Enable you to view and design DMN models embedded in your web applications. To download the necessary files, you can either use the NPM artifacts from the https://www.npmjs.com/package/@kogito-tooling/kie-editors-standalone[Kogito tooling repository] or download the JavaScript files directly for the DMN standalone editor library at `https://kiegroup.github.io/kogito-online/standalone/dmn/index.js`.
+* *Business Modeler standalone editors*: Enable you to view and design DMN models embedded in your web applications. To download the necessary files, you can either use the NPM artifacts from the https://www.npmjs.com/package/@kie-tools/kie-editors-standalone[Kogito tooling repository] or download the JavaScript files directly for the DMN standalone editor library at `https://kiegroup.github.io/kogito-online/standalone/dmn/index.js`.

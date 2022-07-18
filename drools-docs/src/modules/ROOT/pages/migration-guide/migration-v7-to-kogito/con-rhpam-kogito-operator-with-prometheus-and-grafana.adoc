@@ -1,5 +1,5 @@
 [id="con-rhpam-kogito-operator-with-prometheus-and-grafana_{context}"]
-= Red Hat Process Automation Manager Kogito Operator interaction with Prometheus and Grafana
+= {PRODUCT_PAM} Kogito Operator interaction with Prometheus and Grafana
 
 {KOGITO} in {PRODUCT} provides a `monitoring-prometheus-addon` add-on that enables Prometheus metrics monitoring for {KOGITO} microservices and generates Grafana dashboards that consume the default metrics exported by the add-on. The RHPAM Kogito Operator uses the  https://github.com/coreos/prometheus-operator[Prometheus Operator] to expose the metrics from your project for Prometheus to scrape. Due to this dependency, the Prometheus Operator must be installed in the same namespace as your project.
 
@@ -23,7 +23,7 @@ If you want to enable the Prometheus metrics monitoring for your {KOGITO} micros
 </dependency>
 ----
 
-When you deploy a {KOGITO} microservice that uses the `monitoring-prometheus-addon` add-on and the Prometheus Operator is installed, the Red Hat Process Automation Manager Kogito Operator creates a `ServiceMonitor` custom resource to expose the metrics for Prometheus, as shown in the following example:
+When you deploy a {KOGITO} microservice that uses the `monitoring-prometheus-addon` add-on and the Prometheus Operator is installed, the {PRODUCT_PAM} Kogito Operator creates a `ServiceMonitor` custom resource to expose the metrics for Prometheus, as shown in the following example:
 
 .Example `ServiceMonitor` resource for Prometheus
 [source,yaml]
