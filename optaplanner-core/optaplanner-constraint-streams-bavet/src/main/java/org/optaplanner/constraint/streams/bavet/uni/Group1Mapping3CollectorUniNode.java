@@ -6,11 +6,12 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.quad.QuadTupleImpl;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.util.Triple;
 
 final class Group1Mapping3CollectorUniNode<OldA, A, B, C, D, ResultContainerB_, ResultContainerC_, ResultContainerD_>
-        extends AbstractGroupUniNode<OldA, QuadTuple<A, B, C, D>, A, Object, Triple<B, C, D>> {
+        extends AbstractGroupUniNode<OldA, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>, A, Object, Triple<B, C, D>> {
 
     private final int outputStoreSize;
 
@@ -26,12 +27,12 @@ final class Group1Mapping3CollectorUniNode<OldA, A, B, C, D, ResultContainerB_, 
     }
 
     @Override
-    protected QuadTuple<A, B, C, D> createOutTuple(A a) {
-        return new QuadTuple<>(a, null, null, null, outputStoreSize);
+    protected QuadTupleImpl<A, B, C, D> createOutTuple(A a) {
+        return new QuadTupleImpl<>(a, null, null, null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(QuadTuple<A, B, C, D> outTuple, Triple<B, C, D> result) {
+    protected void updateOutTupleToResult(QuadTupleImpl<A, B, C, D> outTuple, Triple<B, C, D> result) {
         outTuple.factB = result.getA();
         outTuple.factC = result.getB();
         outTuple.factD = result.getC();

@@ -17,16 +17,16 @@ final class FlattenLastBiNode<A, B, NewB> extends AbstractFlattenLastNode<BiTupl
 
     @Override
     protected BiTuple<A, NewB> createTuple(BiTuple<A, B> originalTuple, NewB newB) {
-        return new BiTuple<>(originalTuple.factA, newB, outputStoreSize);
+        return new BiTupleImpl<>(originalTuple.getFactA(), newB, outputStoreSize);
     }
 
     @Override
     protected B getEffectiveFactIn(BiTuple<A, B> tuple) {
-        return tuple.factB;
+        return tuple.getFactB();
     }
 
     @Override
     protected NewB getEffectiveFactOut(BiTuple<A, NewB> outTuple) {
-        return outTuple.factB;
+        return outTuple.getFactB();
     }
 }

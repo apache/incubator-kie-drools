@@ -4,10 +4,12 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.quad.QuadTupleImpl;
 import org.optaplanner.core.impl.util.Quadruple;
 
 final class Group4Mapping0CollectorUniNode<OldA, A, B, C, D>
-        extends AbstractGroupUniNode<OldA, QuadTuple<A, B, C, D>, Quadruple<A, B, C, D>, Void, Void> {
+        extends
+        AbstractGroupUniNode<OldA, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>, Quadruple<A, B, C, D>, Void, Void> {
 
     private final int outputStoreSize;
 
@@ -23,7 +25,7 @@ final class Group4Mapping0CollectorUniNode<OldA, A, B, C, D>
     private static <A, B, C, D, OldA> Quadruple<A, B, C, D> createGroupKey(Function<OldA, A> groupKeyMappingA,
             Function<OldA, B> groupKeyMappingB, Function<OldA, C> groupKeyMappingC, Function<OldA, D> groupKeyMappingD,
             UniTuple<OldA> tuple) {
-        OldA oldA = tuple.factA;
+        OldA oldA = tuple.getFactA();
         A a = groupKeyMappingA.apply(oldA);
         B b = groupKeyMappingB.apply(oldA);
         C c = groupKeyMappingC.apply(oldA);
@@ -32,12 +34,12 @@ final class Group4Mapping0CollectorUniNode<OldA, A, B, C, D>
     }
 
     @Override
-    protected QuadTuple<A, B, C, D> createOutTuple(Quadruple<A, B, C, D> groupKey) {
-        return new QuadTuple<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), groupKey.getD(), outputStoreSize);
+    protected QuadTupleImpl<A, B, C, D> createOutTuple(Quadruple<A, B, C, D> groupKey) {
+        return new QuadTupleImpl<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), groupKey.getD(), outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(QuadTuple<A, B, C, D> outTuple, Void unused) {
+    protected void updateOutTupleToResult(QuadTupleImpl<A, B, C, D> outTuple, Void unused) {
         throw new IllegalStateException("Impossible state: collector is null.");
     }
 

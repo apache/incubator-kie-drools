@@ -18,7 +18,8 @@ final class IfExistsUniWithUniNode<A, B> extends AbstractIfExistsNode<UniTuple<A
             Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
             int inputStoreIndexA, int inputStoreIndexB,
             TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle,
-            Indexer<UniTuple<A>, Counter<UniTuple<A>>> indexerA, Indexer<UniTuple<B>, Set<Counter<UniTuple<A>>>> indexerB,
+            Indexer<UniTuple<A>, Counter<UniTuple<A>>> indexerA,
+            Indexer<UniTuple<B>, Set<Counter<UniTuple<A>>>> indexerB,
             BiPredicate<A, B> filtering) {
         super(shouldExist, mappingB, inputStoreIndexA, inputStoreIndexB, nextNodesTupleLifecycle, indexerA, indexerB);
         this.mappingA = mappingA;
@@ -26,8 +27,8 @@ final class IfExistsUniWithUniNode<A, B> extends AbstractIfExistsNode<UniTuple<A
     }
 
     @Override
-    protected IndexProperties createIndexProperties(UniTuple<A> aUniTuple) {
-        return mappingA.apply(aUniTuple.factA);
+    protected IndexProperties createIndexProperties(UniTuple<A> leftTuple) {
+        return mappingA.apply(leftTuple.getFactA());
     }
 
     @Override
@@ -36,8 +37,8 @@ final class IfExistsUniWithUniNode<A, B> extends AbstractIfExistsNode<UniTuple<A
     }
 
     @Override
-    protected boolean isFiltered(UniTuple<A> aUniTuple, UniTuple<B> rightTuple) {
-        return filtering.test(aUniTuple.factA, rightTuple.factA);
+    protected boolean isFiltered(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
+        return filtering.test(leftTuple.getFactA(), rightTuple.getFactA());
     }
 
     @Override

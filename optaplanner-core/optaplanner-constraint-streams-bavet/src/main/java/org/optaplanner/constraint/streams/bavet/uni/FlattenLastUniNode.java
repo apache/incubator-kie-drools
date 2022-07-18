@@ -17,17 +17,17 @@ final class FlattenLastUniNode<A, NewA> extends AbstractFlattenLastNode<UniTuple
 
     @Override
     protected UniTuple<NewA> createTuple(UniTuple<A> originalTuple, NewA item) {
-        return new UniTuple<>(item, outputStoreSize);
+        return new UniTupleImpl<>(item, outputStoreSize);
     }
 
     @Override
     protected A getEffectiveFactIn(UniTuple<A> tuple) {
-        return tuple.factA;
+        return tuple.getFactA();
     }
 
     @Override
     protected NewA getEffectiveFactOut(UniTuple<NewA> outTuple) {
-        return outTuple.factA;
+        return outTuple.getFactA();
     }
 
 }

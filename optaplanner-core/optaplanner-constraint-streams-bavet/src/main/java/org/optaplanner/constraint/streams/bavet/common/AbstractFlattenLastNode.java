@@ -47,7 +47,6 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
     private void addTuple(InTuple_ originalTuple, FlattenedItem_ item, List<OutTuple_> outTupleList) {
         OutTuple_ tuple = createTuple(originalTuple, item);
         outTupleList.add(tuple);
-        tuple.setState(BavetTupleState.CREATING);
         dirtyTupleQueue.add(tuple);
     }
 

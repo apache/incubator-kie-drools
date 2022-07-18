@@ -30,8 +30,8 @@ final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriT
     }
 
     @Override
-    protected IndexProperties createIndexProperties(TriTuple<A, B, C> abcTriTuple) {
-        return mappingABC.apply(abcTriTuple.factA, abcTriTuple.factB, abcTriTuple.factC);
+    protected IndexProperties createIndexProperties(TriTuple<A, B, C> leftTuple) {
+        return mappingABC.apply(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC());
     }
 
     @Override
@@ -40,8 +40,8 @@ final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriT
     }
 
     @Override
-    protected boolean isFiltered(TriTuple<A, B, C> abcTriTuple, UniTuple<D> rightTuple) {
-        return filtering.test(abcTriTuple.factA, abcTriTuple.factB, abcTriTuple.factC, rightTuple.factA);
+    protected boolean isFiltered(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
+        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA());
     }
 
     @Override

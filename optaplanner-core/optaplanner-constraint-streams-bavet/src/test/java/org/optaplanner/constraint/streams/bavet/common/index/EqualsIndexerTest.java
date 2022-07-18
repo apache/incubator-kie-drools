@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
 import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.core.api.score.stream.Joiners;
 
@@ -63,7 +64,7 @@ class EqualsIndexerTest extends AbstractIndexerTest {
     }
 
     private static UniTuple<String> newTuple(String factA) {
-        return new UniTuple<>(factA, 0);
+        return new UniTupleImpl<>(factA, 0);
     }
 
 }

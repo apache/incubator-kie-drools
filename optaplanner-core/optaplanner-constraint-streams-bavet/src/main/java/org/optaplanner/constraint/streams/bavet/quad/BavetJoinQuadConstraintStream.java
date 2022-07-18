@@ -63,7 +63,7 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
         int inputStoreIndexC = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>> node = new JoinQuadNode<>(
+        AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>> node = new JoinQuadNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexAB, inputStoreIndexC,
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),

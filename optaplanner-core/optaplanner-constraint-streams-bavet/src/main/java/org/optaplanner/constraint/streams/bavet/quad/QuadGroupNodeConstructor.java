@@ -6,7 +6,7 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 @FunctionalInterface
 interface QuadGroupNodeConstructor<A, B, C, D, Tuple_ extends Tuple> {
 
-    AbstractGroupQuadNode<A, B, C, D, Tuple_, ?, ?, ?> apply(int inputStoreIndex,
+    AbstractGroupQuadNode<A, B, C, D, Tuple_, ?, ?, ?, ?> apply(int inputStoreIndex,
             TupleLifecycle<Tuple_> nextNodesTupleLifecycle, int outputStoreSize);
 
 }

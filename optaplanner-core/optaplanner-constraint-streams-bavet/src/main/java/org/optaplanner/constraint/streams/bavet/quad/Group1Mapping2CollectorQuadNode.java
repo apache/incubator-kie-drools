@@ -1,15 +1,16 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
-import static org.optaplanner.constraint.streams.bavet.quad.Group1Mapping0CollectorQuadNode.*;
+import static org.optaplanner.constraint.streams.bavet.quad.Group1Mapping0CollectorQuadNode.createGroupKey;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
+import org.optaplanner.constraint.streams.bavet.tri.TriTupleImpl;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group1Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, ResultContainerB_, ResultContainerC_>
-        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, TriTuple<A, B, C>, A, Object, Pair<B, C>> {
+        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, A, Object, Pair<B, C>> {
 
     private final int outputStoreSize;
 
@@ -24,12 +25,12 @@ final class Group1Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, Res
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(A a) {
-        return new TriTuple<>(a, null, null, outputStoreSize);
+    protected TriTupleImpl<A, B, C> createOutTuple(A a) {
+        return new TriTupleImpl<>(a, null, null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, Pair<B, C> result) {
+    protected void updateOutTupleToResult(TriTupleImpl<A, B, C> outTuple, Pair<B, C> result) {
         outTuple.factB = result.getKey();
         outTuple.factC = result.getValue();
     }

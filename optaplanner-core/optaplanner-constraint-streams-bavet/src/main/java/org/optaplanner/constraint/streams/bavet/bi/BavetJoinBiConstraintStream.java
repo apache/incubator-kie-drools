@@ -60,7 +60,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractJoinNode<UniTuple<A>, B, BiTuple<A, B>> node = new JoinBiNode<>(
+        AbstractJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> node = new JoinBiNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),

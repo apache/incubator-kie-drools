@@ -18,6 +18,6 @@ final class BiScorer<A, B> extends AbstractScorer<BiTuple<A, B>> {
 
     @Override
     protected UndoScoreImpacter impact(BiTuple<A, B> tuple) {
-        return scoreImpacter.apply(tuple.factA, tuple.factB);
+        return scoreImpacter.apply(tuple.getFactA(), tuple.getFactB());
     }
 }

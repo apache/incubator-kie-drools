@@ -1,13 +1,14 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
+import org.optaplanner.constraint.streams.bavet.bi.BiTupleImpl;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group0Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, ResultContainerA_, ResultContainerB_>
-        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, BiTuple<A, B>, Void, Object, Pair<A, B>> {
+        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, BiTuple<A, B>, BiTupleImpl<A, B>, Void, Object, Pair<A, B>> {
 
     private final int outputStoreSize;
 
@@ -28,12 +29,12 @@ final class Group0Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, Result
     }
 
     @Override
-    protected BiTuple<A, B> createOutTuple(Void groupKey) {
-        return new BiTuple<>(null, null, outputStoreSize);
+    protected BiTupleImpl<A, B> createOutTuple(Void groupKey) {
+        return new BiTupleImpl<>(null, null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(BiTuple<A, B> outTuple, Pair<A, B> result) {
+    protected void updateOutTupleToResult(BiTupleImpl<A, B> outTuple, Pair<A, B> result) {
         outTuple.factA = result.getKey();
         outTuple.factB = result.getValue();
     }

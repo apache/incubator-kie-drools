@@ -6,7 +6,7 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 @FunctionalInterface
 interface BiGroupNodeConstructor<A, B, Tuple_ extends Tuple> {
 
-    AbstractGroupBiNode<A, B, Tuple_, ?, ?, ?> apply(int inputStoreIndex, TupleLifecycle<Tuple_> tupleLifecycle,
+    AbstractGroupBiNode<A, B, Tuple_, ?, ?, ?, ?> apply(int inputStoreIndex, TupleLifecycle<Tuple_> tupleLifecycle,
             int outputStoreSize);
 
 }

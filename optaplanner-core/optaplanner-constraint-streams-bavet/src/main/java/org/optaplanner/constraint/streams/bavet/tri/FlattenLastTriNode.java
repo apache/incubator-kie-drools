@@ -18,16 +18,16 @@ final class FlattenLastTriNode<A, B, C, NewC>
 
     @Override
     protected TriTuple<A, B, NewC> createTuple(TriTuple<A, B, C> originalTuple, NewC newC) {
-        return new TriTuple<>(originalTuple.factA, originalTuple.factB, newC, outputStoreSize);
+        return new TriTupleImpl<>(originalTuple.getFactA(), originalTuple.getFactB(), newC, outputStoreSize);
     }
 
     @Override
     protected C getEffectiveFactIn(TriTuple<A, B, C> tuple) {
-        return tuple.factC;
+        return tuple.getFactC();
     }
 
     @Override
     protected NewC getEffectiveFactOut(TriTuple<A, B, NewC> outTuple) {
-        return outTuple.factC;
+        return outTuple.getFactC();
     }
 }

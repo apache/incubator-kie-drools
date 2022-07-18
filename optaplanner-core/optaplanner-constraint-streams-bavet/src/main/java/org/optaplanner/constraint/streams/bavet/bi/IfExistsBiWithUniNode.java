@@ -29,8 +29,8 @@ final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTuple<
     }
 
     @Override
-    protected IndexProperties createIndexProperties(BiTuple<A, B> abBiTuple) {
-        return mappingAB.apply(abBiTuple.factA, abBiTuple.factB);
+    protected IndexProperties createIndexProperties(BiTuple<A, B> leftTuple) {
+        return mappingAB.apply(leftTuple.getFactA(), leftTuple.getFactB());
     }
 
     @Override
@@ -39,8 +39,8 @@ final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTuple<
     }
 
     @Override
-    protected boolean isFiltered(BiTuple<A, B> abBiTuple, UniTuple<C> rightTuple) {
-        return filtering.test(abBiTuple.factA, abBiTuple.factB, rightTuple.factA);
+    protected boolean isFiltered(BiTuple<A, B> leftTuple, UniTuple<C> rightTuple) {
+        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), rightTuple.getFactA());
     }
 
     @Override

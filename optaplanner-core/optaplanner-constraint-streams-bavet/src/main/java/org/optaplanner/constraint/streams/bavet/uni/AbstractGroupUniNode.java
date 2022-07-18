@@ -8,8 +8,8 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-abstract class AbstractGroupUniNode<OldA, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
-        extends AbstractGroupNode<UniTuple<OldA>, OutTuple_, GroupKey_, ResultContainer_, Result_> {
+abstract class AbstractGroupUniNode<OldA, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_, GroupKey_, ResultContainer_, Result_>
+        extends AbstractGroupNode<UniTuple<OldA>, OutTuple_, MutableOutTuple_, GroupKey_, ResultContainer_, Result_> {
 
     private final BiFunction<ResultContainer_, OldA, Runnable> accumulator;
 
@@ -26,6 +26,6 @@ abstract class AbstractGroupUniNode<OldA, OutTuple_ extends Tuple, GroupKey_, Re
 
     @Override
     protected final Runnable accumulate(ResultContainer_ resultContainer, UniTuple<OldA> tuple) {
-        return accumulator.apply(resultContainer, tuple.factA);
+        return accumulator.apply(resultContainer, tuple.getFactA());
     }
 }

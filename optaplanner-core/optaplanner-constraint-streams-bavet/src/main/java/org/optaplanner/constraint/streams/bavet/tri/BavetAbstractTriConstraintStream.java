@@ -185,7 +185,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         return buildUniGroupBy(nodeConstructor);
     }
 
-    private <NewA> UniConstraintStream<NewA> buildUniGroupBy(TriGroupNodeConstructor<A, B, C, UniTuple<NewA>> nodeConstructor) {
+    private <NewA> UniConstraintStream<NewA>
+            buildUniGroupBy(TriGroupNodeConstructor<A, B, C, UniTuple<NewA>> nodeConstructor) {
         BavetUniGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA> bridge = shareAndAddChild(
                 new BavetUniGroupBridgeTriConstraintStream<>(constraintFactory, this, nodeConstructor));
         return constraintFactory.share(

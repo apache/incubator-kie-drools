@@ -29,8 +29,8 @@ final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<
     }
 
     @Override
-    protected IndexProperties createIndexProperties(QuadTuple<A, B, C, D> tuple) {
-        return mappingABCD.apply(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
+    protected IndexProperties createIndexProperties(QuadTuple<A, B, C, D> leftTuple) {
+        return mappingABCD.apply(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), leftTuple.getFactD());
     }
 
     @Override
@@ -40,7 +40,8 @@ final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<
 
     @Override
     protected boolean isFiltered(QuadTuple<A, B, C, D> leftTuple, UniTuple<E> rightTuple) {
-        return filtering.test(leftTuple.factA, leftTuple.factB, leftTuple.factC, leftTuple.factD, rightTuple.factA);
+        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), leftTuple.getFactD(),
+                rightTuple.getFactA());
     }
 
     @Override

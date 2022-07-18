@@ -15,6 +15,6 @@ final class ConditionalQuadTupleLifecycle<A, B, C, D> extends AbstractConditiona
 
     @Override
     protected boolean test(QuadTuple<A, B, C, D> tuple) {
-        return predicate.test(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
+        return predicate.test(tuple.getFactA(), tuple.getFactB(), tuple.getFactC(), tuple.getFactD());
     }
 }

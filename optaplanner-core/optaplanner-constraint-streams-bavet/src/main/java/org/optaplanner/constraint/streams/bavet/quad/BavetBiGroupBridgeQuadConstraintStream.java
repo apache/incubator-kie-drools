@@ -56,7 +56,7 @@ final class BavetBiGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA, 
         TupleLifecycle<BiTuple<NewA, NewB>> tupleLifecycle =
                 buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<QuadTuple<A, B, C, D>, BiTuple<NewA, NewB>, ?, ?, ?> node =
+        AbstractGroupNode<QuadTuple<A, B, C, D>, BiTuple<NewA, NewB>, ?, ?, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, tupleLifecycle, outputStoreSize);
         buildHelper.addNode(node, this);
     }

@@ -11,7 +11,7 @@ import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
-final class JoinTriNode<A, B, C> extends AbstractJoinNode<BiTuple<A, B>, C, TriTuple<A, B, C>> {
+final class JoinTriNode<A, B, C> extends AbstractJoinNode<BiTuple<A, B>, C, TriTuple<A, B, C>, TriTupleImpl<A, B, C>> {
 
     private final BiFunction<A, B, IndexProperties> mappingAB;
     private final int outputStoreSize;
@@ -20,8 +20,8 @@ final class JoinTriNode<A, B, C> extends AbstractJoinNode<BiTuple<A, B>, C, TriT
             int inputStoreIndexAB, int inputStoreIndexC,
             TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle,
             int outputStoreSize,
-            Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB,
-            Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC) {
+            Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTupleImpl<A, B, C>>> indexerAB,
+            Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTupleImpl<A, B, C>>> indexerC) {
         super(mappingC, inputStoreIndexAB, inputStoreIndexC, nextNodesTupleLifecycle, indexerAB, indexerC);
         this.mappingAB = mappingAB;
         this.outputStoreSize = outputStoreSize;
@@ -29,23 +29,23 @@ final class JoinTriNode<A, B, C> extends AbstractJoinNode<BiTuple<A, B>, C, TriT
 
     @Override
     protected IndexProperties createIndexPropertiesLeft(BiTuple<A, B> leftTuple) {
-        return mappingAB.apply(leftTuple.factA, leftTuple.factB);
+        return mappingAB.apply(leftTuple.getFactA(), leftTuple.getFactB());
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(BiTuple<A, B> leftTuple, UniTuple<C> rightTuple) {
-        return new TriTuple<>(leftTuple.factA, leftTuple.factB, rightTuple.factA, outputStoreSize);
+    protected TriTupleImpl<A, B, C> createOutTuple(BiTuple<A, B> leftTuple, UniTuple<C> rightTuple) {
+        return new TriTupleImpl<>(leftTuple.getFactA(), leftTuple.getFactB(), rightTuple.getFactA(), outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleLeft(TriTuple<A, B, C> outTuple, BiTuple<A, B> leftTuple) {
-        outTuple.factA = leftTuple.factA;
-        outTuple.factB = leftTuple.factB;
+    protected void updateOutTupleLeft(TriTupleImpl<A, B, C> outTuple, BiTuple<A, B> leftTuple) {
+        outTuple.factA = leftTuple.getFactA();
+        outTuple.factB = leftTuple.getFactB();
     }
 
     @Override
-    protected void updateOutTupleRight(TriTuple<A, B, C> outTuple, UniTuple<C> rightTuple) {
-        outTuple.factC = rightTuple.factA;
+    protected void updateOutTupleRight(TriTupleImpl<A, B, C> outTuple, UniTuple<C> rightTuple) {
+        outTuple.factC = rightTuple.getFactA();
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 
 final class Group1Mapping0CollectorUniNode<OldA, A>
-        extends AbstractGroupUniNode<OldA, UniTuple<A>, A, Void, Void> {
+        extends AbstractGroupUniNode<OldA, UniTuple<A>, UniTupleImpl<A>, A, Void, Void> {
 
     private final int outputStoreSize;
 
@@ -16,16 +16,16 @@ final class Group1Mapping0CollectorUniNode<OldA, A>
     }
 
     static <A, OldA> A createGroupKey(Function<OldA, A> groupKeyMapping, UniTuple<OldA> tuple) {
-        return groupKeyMapping.apply(tuple.factA);
+        return groupKeyMapping.apply(tuple.getFactA());
     }
 
     @Override
-    protected UniTuple<A> createOutTuple(A a) {
-        return new UniTuple<>(a, outputStoreSize);
+    protected UniTupleImpl<A> createOutTuple(A a) {
+        return new UniTupleImpl<>(a, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(UniTuple<A> aUniTuple, Void unused) {
+    protected void updateOutTupleToResult(UniTupleImpl<A> aUniTuple, Void unused) {
         throw new IllegalStateException("Impossible state: collector is null.");
     }
 
