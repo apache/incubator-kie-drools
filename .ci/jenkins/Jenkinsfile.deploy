@@ -14,8 +14,8 @@ pipeline {
     }
 
     tools {
-        maven 'kie-maven-3.8.1'
-        jdk 'kie-jdk11'
+        maven env.BUILD_MAVEN_TOOL
+        jdk env.BUILD_JDK_TOOL
     }
 
     options {
@@ -190,7 +190,7 @@ pipeline {
 }
 
 void saveReports() {
-    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml, **/target/invoker-reports/**/TEST-*.xml', allowEmptyResults: true
 }
 
 void checkoutRepo() {

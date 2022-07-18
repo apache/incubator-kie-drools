@@ -19,8 +19,6 @@ import java.util.List;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.CompoundPredicate;
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.False;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.Predicate;

@@ -20,8 +20,7 @@ import org.junit.Test;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompositeMaxDurationTimerTest {
     
@@ -33,10 +32,10 @@ public class CompositeMaxDurationTimerTest {
         timer.addDurationTimer( new DurationTimer( 70 ) );
         Date timestamp = new Date();
         Trigger trigger = timer.createTrigger( timestamp.getTime(), null, null, null, null, null, null );
-        
-        assertEquals( new Date( timestamp.getTime() + 70 ), trigger.hasNextFireTime() );
-        assertNull( trigger.nextFireTime() );
-        assertNull( trigger.hasNextFireTime() );
+
+        assertThat(trigger.hasNextFireTime()).isEqualTo(new Date( timestamp.getTime() + 70 ));
+        assertThat(trigger.nextFireTime()).isNull();
+        assertThat(trigger.hasNextFireTime()).isNull();
     }
     
     @Test
@@ -50,13 +49,13 @@ public class CompositeMaxDurationTimerTest {
         Date timestamp = new Date();        
         
         Trigger trigger = timer.createTrigger( timestamp.getTime(), null, null, null, null, null, null );
-        
+
         // ignores the first interval timer at 65
-        assertEquals( new Date( timestamp.getTime() + 70 ), trigger.hasNextFireTime() );
-        assertEquals( new Date( timestamp.getTime() + 90 ), trigger.nextFireTime() );
-        assertEquals( new Date( timestamp.getTime() + 115 ), trigger.nextFireTime() );
-        assertEquals( new Date( timestamp.getTime() + 140 ), trigger.nextFireTime() );
-        assertNull( trigger.nextFireTime() );
-        assertNull( trigger.hasNextFireTime() );        
+        assertThat(trigger.hasNextFireTime()).isEqualTo(new Date( timestamp.getTime() + 70 ));
+        assertThat(trigger.nextFireTime()).isEqualTo(new Date( timestamp.getTime() + 90 ));
+        assertThat(trigger.nextFireTime()).isEqualTo(new Date( timestamp.getTime() + 115 ));
+        assertThat(trigger.nextFireTime()).isEqualTo(new Date( timestamp.getTime() + 140 ));
+        assertThat(trigger.nextFireTime()).isNull();
+        assertThat(trigger.hasNextFireTime()).isNull();        
     }    
 }

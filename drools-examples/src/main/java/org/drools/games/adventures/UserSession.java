@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.games.adventures.model.Character;
 
 import org.kie.api.definition.type.Position;
-import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.runtime.Channel;
 
 public class UserSession {
@@ -38,7 +37,7 @@ public class UserSession {
 
     public UserSession() {
         this.id = counter.getAndIncrement();
-        this.channels = new HashMap<String, Channel>();
+        this.channels = new HashMap<>();
     }
 
     public int getId() {

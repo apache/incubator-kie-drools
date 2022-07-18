@@ -49,8 +49,8 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.ScoreDistribution;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
@@ -92,7 +92,7 @@ public class KiePMMLNodeFactoryTest {
     private static DataDictionary dataDictionary2;
     private static List<DerivedField> derivedFields2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() throws Exception {
         pmml1 = TestUtils.loadFromFile(SOURCE_1);
         TreeModel model1 = (TreeModel) pmml1.getModels().get(0);
@@ -109,49 +109,49 @@ public class KiePMMLNodeFactoryTest {
     }
 
     @Test
-    public void getKiePMMLNode() {
+    void getKiePMMLNode() {
         final KiePMMLNode retrieved = KiePMMLNodeFactory.getKiePMMLNode(node1,
-                                                                        getFieldsFromDataDictionaryAndDerivedFields(dataDictionary1, derivedFields1),
-                                                                        PACKAGE_NAME,
-                                                                        1.0,
-                                                                        new HasClassLoaderMock());
+                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary1, derivedFields1),
+                PACKAGE_NAME,
+                1.0,
+                new HasClassLoaderMock());
         assertThat(retrieved).isNotNull();
         commonVerifyNode(retrieved, node1);
     }
 
     @Test
-    public void getKiePMMLNodeSourcesMap() {
+    void getKiePMMLNodeSourcesMap() {
         final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node1,
-                                                                                                 createNodeClassName(),
-                                                                                                 null,
-                                                                                                 1.0);
+                createNodeClassName(),
+                null,
+                1.0);
 
         Map<String, String> retrieved = KiePMMLNodeFactory.getKiePMMLNodeSourcesMap(nodeNamesDTO,
-                                                                                    getFieldsFromDataDictionaryAndDerivedFields(dataDictionary1, derivedFields1),
-                                                                                    PACKAGE_NAME);
+                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary1, derivedFields1),
+                PACKAGE_NAME);
         assertThat(retrieved).isNotNull();
         commonVerifyNodeSource(retrieved, PACKAGE_NAME);
     }
 
     @Test
-    public void populateJavaParserDTOAndSourcesMap() {
+    void populateJavaParserDTOAndSourcesMap() {
         boolean isRoot = true;
         Map<String, String> sourcesMap = new HashMap<>();
         KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(nodeRoot,
-                                                                                           createNodeClassName(), null,
-                                                                                           1.0);
+                createNodeClassName(), null,
+                1.0);
         KiePMMLNodeFactory.JavaParserDTO toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, PACKAGE_NAME);
         KiePMMLNodeFactory.populateJavaParserDTOAndSourcesMap(toPopulate, sourcesMap, nodeNamesDTO,
-                                                              getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2),
-                                                              isRoot);
+                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2),
+                isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
     }
 
     @Test
-    public void mergeNodeReferences() {
+    void mergeNodeReferences() {
         KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(nodeRoot,
-                                                                                           createNodeClassName(), null,
-                                                                                           1.0);
+                createNodeClassName(), null,
+                1.0);
         KiePMMLNodeFactory.JavaParserDTO toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, PACKAGE_NAME);
         Node nestedNode = nodeRoot.getNodes().get(0);
         // Creating evaluateNodeInitializer
@@ -169,7 +169,7 @@ public class KiePMMLNodeFactoryTest {
         evaluateNodeInitializer.setArguments(methodReferenceExprs);
         //
         KiePMMLNodeFactory.NodeNamesDTO nestedNodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(nestedNode,
-                                                                                                 nodeNamesDTO.getNestedNodeClassName(nestedNode), nodeNamesDTO.nodeClassName, nodeNamesDTO.missingValuePenalty);
+                nodeNamesDTO.getNestedNodeClassName(nestedNode), nodeNamesDTO.nodeClassName, nodeNamesDTO.missingValuePenalty);
         KiePMMLNodeFactory.mergeNodeReferences(toPopulate, nestedNodeNamesDTO, evaluateNodeInitializer);
 
         MethodReferenceExpr retrieved = evaluateNodeInitializer.getArguments().get(0).asMethodReferenceExpr();
@@ -180,20 +180,20 @@ public class KiePMMLNodeFactoryTest {
     }
 
     @Test
-    public void populateEvaluateNode() {
+    void populateEvaluateNode() {
         final String packageName = "packageName";
         // empty node
         boolean isRoot = false;
         KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(nodeLeaf,
-                                                                                           createNodeClassName(),
-                                                                                           "PARENTNODECLASS",
-                                                                                           1.0);
+                createNodeClassName(),
+                "PARENTNODECLASS",
+                1.0);
         KiePMMLNodeFactory.JavaParserDTO toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
         KiePMMLNodeFactory.populateEvaluateNode(toPopulate,
-                                                nodeNamesDTO,
-                                                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2,
-                                                                                            derivedFields2),
-                                                isRoot);
+                nodeNamesDTO,
+                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2,
+                        derivedFields2),
+                isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
 
         // populated node
@@ -201,15 +201,15 @@ public class KiePMMLNodeFactoryTest {
         nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(nodeRoot, createNodeClassName(), null, 1.0);
         toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
         KiePMMLNodeFactory.populateEvaluateNode(toPopulate,
-                                                nodeNamesDTO,
-                                                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2,
-                                                                                            derivedFields2),
-                                                isRoot);
+                nodeNamesDTO,
+                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2,
+                        derivedFields2),
+                isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
     }
 
     @Test
-    public void populateEvaluateNodeWithNodeFunctions() {
+    void populateEvaluateNodeWithNodeFunctions() {
         final BlockStmt toPopulate = new BlockStmt();
         final VariableDeclarator variableDeclarator = new VariableDeclarator();
         variableDeclarator.setType("Object");
@@ -230,7 +230,7 @@ public class KiePMMLNodeFactoryTest {
     }
 
     @Test
-    public void getEvaluateNodeMethodReference() {
+    void getEvaluateNodeMethodReference() {
         String fullNodeClassName = "full.node.NodeClassName";
         MethodReferenceExpr retrieved = KiePMMLNodeFactory.getEvaluateNodeMethodReference(fullNodeClassName);
         assertThat(retrieved.getScope().toString()).isEqualTo(fullNodeClassName);
@@ -238,7 +238,7 @@ public class KiePMMLNodeFactoryTest {
     }
 
     @Test
-    public void populateEvaluateNodeWithScore() {
+    void populateEvaluateNodeWithScore() {
         final BlockStmt toPopulate = new BlockStmt();
         final VariableDeclarator variableDeclarator = new VariableDeclarator();
         variableDeclarator.setType("Object");
@@ -260,7 +260,7 @@ public class KiePMMLNodeFactoryTest {
     }
 
     @Test
-    public void populateEvaluateNodeWithScoreDistributions() {
+    void populateEvaluateNodeWithScoreDistributions() {
         final BlockStmt toPopulate = new BlockStmt();
         final VariableDeclarator variableDeclarator = new VariableDeclarator();
         variableDeclarator.setType("List");
@@ -278,7 +278,7 @@ public class KiePMMLNodeFactoryTest {
     }
 
     @Test
-    public void populateEvaluateNodeWithMissingValuePenalty() {
+    void populateEvaluateNodeWithMissingValuePenalty() {
         final BlockStmt toPopulate = new BlockStmt();
         final VariableDeclarator variableDeclarator = new VariableDeclarator();
         variableDeclarator.setType("double");
@@ -295,20 +295,20 @@ public class KiePMMLNodeFactoryTest {
     }
 
     @Test
-    public void populateEvaluateNodeWithPredicateFunction() throws IOException {
+    void populateEvaluateNodeWithPredicateFunction() throws IOException {
         BlockStmt toPopulate = new BlockStmt();
         KiePMMLNodeFactory.populateEvaluateNodeWithPredicate(toPopulate,
-                                                             compoundPredicateNode.getPredicate(),
-                                                             getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2));
+                compoundPredicateNode.getPredicate(),
+                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2));
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(text);
         assertThat(JavaParserUtils.equalsNode(expected, toPopulate)).isTrue();
     }
 
     @Test
-    public void nodeNamesDTO() {
+    void nodeNamesDTO() {
         KiePMMLNodeFactory.NodeNamesDTO retrieved = new KiePMMLNodeFactory.NodeNamesDTO(nodeRoot, createNodeClassName(),
-                                                                                        PACKAGE_NAME, 1.0);
+                PACKAGE_NAME, 1.0);
         assertThat(retrieved.childrenNodes).hasSameSizeAs(nodeRoot.getNodes());
     }
 

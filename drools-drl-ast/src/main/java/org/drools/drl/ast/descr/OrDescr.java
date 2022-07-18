@@ -23,7 +23,7 @@ public class OrDescr extends AnnotatedBaseDescr
     ConditionalElementDescr {
 
     private static final long serialVersionUID = 510l;
-    private List<BaseDescr>   descrs           = new ArrayList<BaseDescr>();
+    private List<BaseDescr>   descrs           = new ArrayList<>();
 
     public OrDescr() { }
 

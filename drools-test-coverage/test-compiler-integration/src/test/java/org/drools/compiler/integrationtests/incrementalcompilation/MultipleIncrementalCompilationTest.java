@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.impl.InternalKieContainer;
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
@@ -34,8 +34,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MultipleIncrementalCompilationTest {
@@ -161,13 +160,13 @@ public class MultipleIncrementalCompilationTest {
             kieBuilder.buildAll(DrlProject.class);
         }
 
-        assertFalse(kieBuilder.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR));
+        assertThat(kieBuilder.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR)).isFalse();
     }
 
     private void runRules(KieContainer kieContainer) {
         final KieSession ksession = ((InternalKieContainer) kieContainer).getKieSession(); // use the same ksession
         ksession.insert("Start");
         int fired = ksession.fireAllRules();
-        assertEquals(3, fired);
+        assertThat(fired).isEqualTo(3);
     }
 }

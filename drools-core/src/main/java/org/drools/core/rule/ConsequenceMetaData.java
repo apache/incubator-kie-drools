@@ -40,7 +40,7 @@ public class ConsequenceMetaData implements Externalizable {
 
     public void addStatement(Statement statement) {
         if (statements == null) {
-            statements = new ArrayList<Statement>();
+            statements = new ArrayList<>();
         }
         statements.add(statement);
     }
@@ -91,7 +91,7 @@ public class ConsequenceMetaData implements Externalizable {
 
         public void addField(Field field) {
             if (fields == null) {
-                fields = new ArrayList<Field>();
+                fields = new ArrayList<>();
             }
             fields.add(field);
         }

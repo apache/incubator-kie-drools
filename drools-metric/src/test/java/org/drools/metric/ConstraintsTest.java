@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConstraintsTest extends AbstractMetricTest {
 
@@ -55,8 +55,8 @@ public class ConstraintsTest extends AbstractMetricTest {
         ksession.insert(p3);
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals(33, (int) list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(33);
     }
 
     @Test
@@ -86,8 +86,8 @@ public class ConstraintsTest extends AbstractMetricTest {
         ksession.insert(p3);
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals(33, (int) list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(33);
     }
 
     @Test
@@ -120,8 +120,8 @@ public class ConstraintsTest extends AbstractMetricTest {
         ksession.insert(p3);
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals(33, (int) list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(33);
     }
 
     @Test
@@ -157,7 +157,7 @@ public class ConstraintsTest extends AbstractMetricTest {
         ksession.insert(p3);
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals(33, (int) list.get(0));
+        assertThat(list.size()).isEqualTo(1);
+        assertThat((int) list.get(0)).isEqualTo(33);
     }
 }

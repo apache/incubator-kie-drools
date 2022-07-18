@@ -21,17 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "CompoundPredicateScorecard.pmml";
@@ -51,7 +49,7 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
     private String reasonCode2;
     private String reasonCode3;
 
-    public CompoundPredicateScorecardTest(double input1, double input2, String input3, String input4, double score,
+    public void initCompoundPredicateScorecardTest(double input1, double input2, String input3, String input4, double score,
                                           String reasonCode1, String reasonCode2, String reasonCode3) {
         this.input1 = input1;
         this.input2 = input2;
@@ -63,12 +61,11 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
         this.reasonCode3 = reasonCode3;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {-21.5, -7, "classA", "classB", -93, null, null, null},
@@ -84,8 +81,10 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testCompoundPredicateScorecard() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testCompoundPredicateScorecard(double input1, double input2, String input3, String input4, double score, String reasonCode1, String reasonCode2, String reasonCode3) {
+        initCompoundPredicateScorecardTest(input1, input2, input3, input4, score, reasonCode1, reasonCode2, reasonCode3);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);

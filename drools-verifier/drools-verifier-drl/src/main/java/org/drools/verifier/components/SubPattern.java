@@ -32,7 +32,7 @@ public class SubPattern extends PatternComponent
 
     private final Pattern         pattern;
 
-    private Set<PatternComponent> items            = new HashSet<PatternComponent>();
+    private Set<PatternComponent> items            = new HashSet<>();
 
     public SubPattern(Pattern pattern,
                       int orderNumber) {

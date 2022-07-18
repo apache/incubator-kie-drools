@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.dmg.pmml.True;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 
@@ -33,7 +33,7 @@ import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getPredicateA
 public class KiePMMLTruePredicateASTFactoryTest {
 
     @Test
-    public void declareRuleFromTruePredicateNotFinalLeaf() {
+    void declareRuleFromTruePredicateNotFinalLeaf() {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
@@ -51,7 +51,7 @@ public class KiePMMLTruePredicateASTFactoryTest {
     }
 
     @Test
-    public void declareRuleFromTruePredicateFinalLeaf() {
+    void declareRuleFromTruePredicateFinalLeaf() {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();

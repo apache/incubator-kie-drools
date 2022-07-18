@@ -16,12 +16,12 @@
 
 package org.drools.kiesession.debug;
 
+import java.util.Collection;
+
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
-
-import java.util.Stack;
 
 public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -32,7 +32,7 @@ public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
 
     @Override
     protected void doVisit(NetworkNode node,
-                           Stack<NetworkNode> nodeStack,
+                           Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         FromNode fn = (FromNode) node;
         DefaultNodeInfo ni = info.getNodeInfo( node );

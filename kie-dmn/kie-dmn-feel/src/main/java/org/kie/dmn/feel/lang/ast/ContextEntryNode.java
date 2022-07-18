@@ -20,8 +20,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 
-import java.util.Arrays;
-import java.util.List;
 
 public class ContextEntryNode
         extends BaseNode {

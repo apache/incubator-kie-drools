@@ -41,7 +41,7 @@ import javax.inject.Singleton;
  */
 public class BootOnLoadExtension implements Extension {
 
-    private final List<Bean<?>> startupBootstrapBeans = new LinkedList<Bean<?>>();
+    private final List<Bean<?>> startupBootstrapBeans = new LinkedList<>();
 
     public <X> void processBean(@Observes final ProcessBean<X> event) {
         if (event.getAnnotated().isAnnotationPresent(BootOnLoad.class)

@@ -30,7 +30,7 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.OpType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
@@ -50,7 +50,7 @@ public class KiePMMLLocalTransformationsFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLLocalTransformationsFactoryTest_01.txt";
 
     @Test
-    public void getKiePMMLTransformationDictionaryVariableDeclaration() throws IOException {
+    void getKiePMMLTransformationDictionaryVariableDeclaration() throws IOException {
         LocalTransformations localTransformations = new LocalTransformations();
         localTransformations.addDerivedFields(getDerivedFields());
 

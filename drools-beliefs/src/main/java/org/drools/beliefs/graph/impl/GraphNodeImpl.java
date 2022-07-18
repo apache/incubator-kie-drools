@@ -26,8 +26,8 @@ public class GraphNodeImpl<T> implements GraphNode<T> {
     private T content;
 
 
-    private List<Edge> inEdges = new ArrayList<Edge>();
-    private List<Edge> outEdges = new ArrayList<Edge>();
+    private List<Edge> inEdges = new ArrayList<>();
+    private List<Edge> outEdges = new ArrayList<>();
 
     public GraphNodeImpl(int id) {
         this.id = id;

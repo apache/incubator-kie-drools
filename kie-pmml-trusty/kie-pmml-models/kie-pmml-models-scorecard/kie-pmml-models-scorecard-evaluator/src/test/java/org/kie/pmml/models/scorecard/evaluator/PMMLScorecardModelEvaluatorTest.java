@@ -15,8 +15,8 @@
  */
 package  org.kie.pmml.models.scorecard.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,13 +25,13 @@ public class PMMLScorecardModelEvaluatorTest {
 
     private PMMLScorecardModelEvaluator evaluator;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         evaluator = new PMMLScorecardModelEvaluator();
     }
 
     @Test
-    public void getPMMLModelType(){
+    void getPMMLModelType() {
         assertThat(evaluator.getPMMLModelType()).isEqualTo(PMML_MODEL.SCORECARD_MODEL);
     }
 

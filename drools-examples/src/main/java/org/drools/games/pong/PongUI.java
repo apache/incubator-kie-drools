@@ -16,25 +16,16 @@
 package org.drools.games.pong;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
-import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
 import org.drools.games.GameConfiguration;
 import org.drools.games.GameUI;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.EntryPoint;
 
 public class PongUI extends GameUI {
     private PongConfiguration pconf;

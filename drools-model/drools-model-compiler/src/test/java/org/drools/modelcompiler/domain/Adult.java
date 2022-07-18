@@ -16,9 +16,9 @@
 
 package org.drools.modelcompiler.domain;
 
-import org.drools.core.phreak.ReactiveList;
-
 import java.util.List;
+
+import org.drools.core.phreak.ReactiveList;
 
 public class Adult extends Person {
 

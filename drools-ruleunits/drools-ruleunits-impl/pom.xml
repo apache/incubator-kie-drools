@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-ruleunits</artifactId>
-        <version>8.24.0-SNAPSHOT</version>
+        <version>8.25.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.drools</groupId>
@@ -54,9 +54,9 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-model-compiler</artifactId>
-          <scope>test</scope>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-model-codegen</artifactId>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>

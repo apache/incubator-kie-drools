@@ -25,7 +25,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.NormDiscrete;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLNormDiscrete;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
@@ -38,7 +38,7 @@ public class KiePMMLNormDiscreteFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLNormDiscreteFactoryTest_01.txt";
 
     @Test
-    public void getNormDiscreteVariableDeclaration() throws IOException {
+    void getNormDiscreteVariableDeclaration() throws IOException {
         String variableName = "variableName";
         String fieldName = "fieldName";
         String fieldValue = "fieldValue";
@@ -50,7 +50,7 @@ public class KiePMMLNormDiscreteFactoryTest {
         normDiscrete.setMapMissingTo(mapMissingTo);
 
         BlockStmt retrieved = KiePMMLNormDiscreteFactory.getNormDiscreteVariableDeclaration(variableName,
-                                                                                                normDiscrete);
+                                                                                            normDiscrete);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, fieldName, fieldValue, mapMissingTo));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();

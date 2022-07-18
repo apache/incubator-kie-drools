@@ -34,8 +34,8 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.mining.MiningModel;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -64,7 +64,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     private static CompilationUnit COMPILATION_UNIT;
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws IOException, JAXBException, SAXException {
         innerSetup();
         COMPILATION_UNIT = getFromFileName(TEMPLATE_SOURCE);
@@ -72,12 +72,12 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     }
 
     @Test
-    public void getKiePMMLMiningModel() {
+    void getKiePMMLMiningModel() {
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       MINING_MODEL,
-                                                                       new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
+                        pmml,
+                        MINING_MODEL,
+                        new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final KiePMMLMiningModel retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModel(compilationDTO);
@@ -88,13 +88,13 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     }
 
     @Test
-    public void getKiePMMLMiningModelSourcesMap() {
+    void getKiePMMLMiningModelSourcesMap() {
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       MINING_MODEL,
-                                                                       new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
+                        pmml,
+                        MINING_MODEL,
+                        new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved =
@@ -105,14 +105,14 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     }
 
     @Test
-    public void getKiePMMLMiningModelSourcesMapCompiled() {
+    void getKiePMMLMiningModelSourcesMapCompiled() {
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final HasKnowledgeBuilderMock hasKnowledgeBuilderMock = new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER);
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       MINING_MODEL,
-                                                                       hasKnowledgeBuilderMock);
+                        pmml,
+                        MINING_MODEL,
+                        hasKnowledgeBuilderMock);
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final List<String> expectedGeneratedClasses =
@@ -121,7 +121,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
                     String modelName = segment.getModel().getModelName();
                     String sanitizedPackageName =
                             getSanitizedPackageName(compilationDTO.getSegmentationPackageName() + "."
-                                                            + segment.getId());
+                                    + segment.getId());
                     String sanitizedClassName = getSanitizedClassName(modelName);
                     return String.format(PACKAGE_CLASS_TEMPLATE, sanitizedPackageName, sanitizedClassName);
                 }).collect(Collectors.toList());
@@ -149,16 +149,16 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     }
 
     @Test
-    public void setConstructor() {
+    void setConstructor() {
         PMML_MODEL pmmlModel = PMML_MODEL.byName(MINING_MODEL.getClass().getSimpleName());
 
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(MINING_MODEL.getMiningFunction().value());
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       MINING_MODEL,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        MINING_MODEL,
+                        new HasClassLoaderMock());
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         KiePMMLMiningModelFactory.setConstructor(compilationDTO, modelTemplate);
@@ -167,7 +167,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetFieldName));
         assignExpressionMap.put("miningFunction",
-                                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
+                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
         ClassOrInterfaceType kiePMMLSegmentationClass =
                 parseClassOrInterfaceType(compilationDTO.getSegmentationCanonicalClassName());
@@ -176,6 +176,6 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         assignExpressionMap.put("segmentation", objectCreationExpr);
         ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
         assertThat(commonEvaluateConstructor(constructorDeclaration, getSanitizedClassName(MINING_MODEL.getModelName()),
-                                             superInvocationExpressionsMap, assignExpressionMap)).isTrue();
+                superInvocationExpressionsMap, assignExpressionMap)).isTrue();
     }
 }

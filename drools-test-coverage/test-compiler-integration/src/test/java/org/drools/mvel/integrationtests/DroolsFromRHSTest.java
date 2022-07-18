@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DroolsFromRHSTest {
@@ -57,9 +57,9 @@ public class DroolsFromRHSTest {
         ksession.insert(0);
         ksession.fireAllRules();
 
-        assertEquals( 10, results.size() );
+        assertThat(results.size()).isEqualTo(10);
         for ( int i = 0; i < 10; i++ ) {
-            assertEquals(i, results.get( i ) );
+            assertThat(results.get(i)).isEqualTo(i);
         }
     }
 
@@ -73,39 +73,39 @@ public class DroolsFromRHSTest {
 
         ksession.insert(0);
         int count = ksession.fireAllRules();
-        assertEquals(21, count);
+        assertThat(count).isEqualTo(21);
 
-        assertEquals(20, results.size());
+        assertThat(results.size()).isEqualTo(20);
         for (int i = 0; i < 20; i++) {
-            assertEquals(i, results.get(i));
+            assertThat(results.get(i)).isEqualTo(i);
         }
         results.clear();
 
         ksession.insert(0);
         count = ksession.fireAllRules(10);
-        assertEquals(10, count);
+        assertThat(count).isEqualTo(10);
 
-        assertEquals(10, results.size());
+        assertThat(results.size()).isEqualTo(10);
         for (int i = 0; i < 10; i++) {
-            assertEquals(i, results.get(i));
+            assertThat(results.get(i)).isEqualTo(i);
         }
 
         count = ksession.fireAllRules(); //should finish the rest
-        assertEquals(11, count);
-        assertEquals(20, results.size());
+        assertThat(count).isEqualTo(11);
+        assertThat(results.size()).isEqualTo(20);
         for (int i = 0; i < 20; i++) {
-            assertEquals(i, results.get(i));
+            assertThat(results.get(i)).isEqualTo(i);
         }
         results.clear();
 
         ksession.insert(0);
         count = ksession.fireAllRules();
 
-        assertEquals(21, count);
+        assertThat(count).isEqualTo(21);
 
-        assertEquals(20, results.size());
+        assertThat(results.size()).isEqualTo(20);
         for (int i = 0; i < 20; i++) {
-            assertEquals(i, results.get(i));
+            assertThat(results.get(i)).isEqualTo(i);
         }
         results.clear();
     }

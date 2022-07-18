@@ -17,8 +17,7 @@ package org.drools.verifier.api.reporting;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IllegalVerifierStateIssueTest {
 
@@ -27,8 +26,8 @@ public class IllegalVerifierStateIssueTest {
 
         final IllegalVerifierStateIssue issue = new IllegalVerifierStateIssue();
 
-        assertEquals(Severity.ERROR, issue.getSeverity());
-        assertEquals(CheckType.ILLEGAL_VERIFIER_STATE, issue.getCheckType());
-        assertTrue(issue.getRowNumbers().isEmpty());
+        assertThat(issue.getSeverity()).isEqualTo(Severity.ERROR);
+        assertThat(issue.getCheckType()).isEqualTo(CheckType.ILLEGAL_VERIFIER_STATE);
+        assertThat(issue.getRowNumbers().isEmpty()).isTrue();
     }
 }

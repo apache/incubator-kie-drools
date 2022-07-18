@@ -53,7 +53,7 @@ public class ProjectJavaCompiler {
                                                     List<String> classList,
                                                     MemoryResourceReader src) {
 
-        List<KnowledgeBuilderResult> results = new ArrayList<KnowledgeBuilderResult>();
+        List<KnowledgeBuilderResult> results = new ArrayList<>();
 
         if ( classList.isEmpty() ) {
             return results;
@@ -67,7 +67,7 @@ public class ProjectJavaCompiler {
                                                      projectClassLoader );
 
         if ( result.getErrors().length > 0 ) {
-            Map<String, ErrorHandler> errorHandlerMap = new HashMap<String, ErrorHandler>();
+            Map<String, ErrorHandler> errorHandlerMap = new HashMap<>();
 
             for ( int i = 0; i < result.getErrors().length; i++ ) {
                 final CompilationProblem err = new CompilationProblemAdapter( result.getErrors()[i] );

@@ -24,7 +24,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         java-version: [11]
-        maven-version: ['3.8.1']
+        maven-version: ['3.8.6']
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Full downstream build

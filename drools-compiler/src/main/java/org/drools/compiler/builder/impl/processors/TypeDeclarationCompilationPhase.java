@@ -24,7 +24,6 @@ import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

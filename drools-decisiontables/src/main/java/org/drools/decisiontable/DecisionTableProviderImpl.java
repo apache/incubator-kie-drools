@@ -53,7 +53,7 @@ public class DecisionTableProviderImpl
     @Override
     public List<String> loadFromInputStreamWithTemplates(Resource resource,
                                                          DecisionTableConfiguration configuration) {
-        List<String> drls = new ArrayList<String>( configuration.getRuleTemplateConfigurations().size() );
+        List<String> drls = new ArrayList<>( configuration.getRuleTemplateConfigurations().size() );
         ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         for ( RuleTemplateConfiguration template : configuration.getRuleTemplateConfigurations() ) {
             try {

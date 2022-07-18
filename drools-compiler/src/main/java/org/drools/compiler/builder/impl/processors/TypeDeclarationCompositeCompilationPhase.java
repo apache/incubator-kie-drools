@@ -19,11 +19,8 @@ package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.builder.impl.TypeDefinition;
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import java.util.ArrayList;

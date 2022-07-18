@@ -31,8 +31,7 @@ import org.drools.verifier.data.VerifierComponent;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ExprConstraintDescrVisitorTest extends TestBase {
 
@@ -48,8 +47,8 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
         Collection<StringRestriction> allRestrictions = verifierData.getAll(VerifierComponentType.RESTRICTION);
         Collection<Field> allFields = verifierData.getAll(VerifierComponentType.FIELD);
 
-        assertEquals(3, allRestrictions.size());
-        assertEquals(3, allFields.size());
+        assertThat(allRestrictions.size()).isEqualTo(3);
+        assertThat(allFields.size()).isEqualTo(3);
 
         for (Field field : allFields) {
             assertThat(field.getFieldType()).isNotNull();
@@ -76,7 +75,7 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
 
         Collection<StringRestriction> allRestrictions = verifierData.getAll(VerifierComponentType.RESTRICTION);
 
-        assertEquals(2, allRestrictions.size());
+        assertThat(allRestrictions.size()).isEqualTo(2);
         assertContainsFields(1);
 
 
@@ -97,7 +96,7 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
 
         Collection<StringRestriction> allRestrictions = verifierData.getAll(VerifierComponentType.RESTRICTION);
 
-        assertEquals(1, allRestrictions.size());
+        assertThat(allRestrictions.size()).isEqualTo(1);
         assertContainsFields(1);
 
         assertContainsField("age");

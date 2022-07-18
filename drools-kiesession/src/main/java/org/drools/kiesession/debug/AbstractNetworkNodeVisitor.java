@@ -16,7 +16,7 @@
 
 package org.drools.kiesession.debug;
 
-import java.util.Stack;
+import java.util.Collection;
 
 import org.drools.core.common.NetworkNode;
 
@@ -28,19 +28,19 @@ public abstract class AbstractNetworkNodeVisitor
     }
 
     public void visit(NetworkNode node,
-                      Stack<NetworkNode> nodeStack,
+                      Collection<NetworkNode> nodeList,
                       StatefulKnowledgeSessionInfo info) {
         info.info( this.getClass().getSimpleName() + " - Visiting "+node );
         DefaultNodeInfo dni = new DefaultNodeInfo( node );
         info.addNodeInfo( node,
                           dni );
         doVisit( node,
-                 nodeStack,
+                 nodeList,
                  info );
     }
 
     protected abstract void doVisit(NetworkNode node,
-                                    Stack<NetworkNode> nodeStack,
+                                    Collection<NetworkNode> nodeStack,
                                     StatefulKnowledgeSessionInfo info);
 
 }

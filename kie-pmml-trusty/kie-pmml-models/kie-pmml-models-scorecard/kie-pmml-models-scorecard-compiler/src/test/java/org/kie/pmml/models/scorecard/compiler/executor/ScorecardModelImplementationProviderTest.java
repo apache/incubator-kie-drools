@@ -21,8 +21,8 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
@@ -43,7 +43,7 @@ public class ScorecardModelImplementationProviderTest {
     private static TransformationDictionary basicComplexPartialScoreTransformationDictionary;
     private static Scorecard basicComplexPartialScore;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() throws Exception {
         basicComplexPartialScorePmml = TestUtils.loadFromFile(BASIC_COMPLEX_PARTIAL_SCORE_SOURCE);
         basicComplexPartialScoreDataDictionary = basicComplexPartialScorePmml.getDataDictionary();
@@ -52,28 +52,28 @@ public class ScorecardModelImplementationProviderTest {
     }
 
     @Test
-    public void getPMMLModelType() {
+    void getPMMLModelType() {
         assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.SCORECARD_MODEL);
     }
 
     @Test
-    public void getKiePMMLModel() {
+    void getKiePMMLModel() {
         final CommonCompilationDTO<Scorecard> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       basicComplexPartialScorePmml,
-                                                                       basicComplexPartialScore,
-                                                                       new HasClassLoaderMock());
+                        basicComplexPartialScorePmml,
+                        basicComplexPartialScore,
+                        new HasClassLoaderMock());
         KiePMMLScorecardModel retrieved = provider.getKiePMMLModel(compilationDTO);
         assertThat(retrieved).isNotNull();
     }
 
     @Test
-    public void getKiePMMLModelWithSources() {
+    void getKiePMMLModelWithSources() {
         final CommonCompilationDTO<Scorecard> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       basicComplexPartialScorePmml,
-                                                                       basicComplexPartialScore,
-                                                                       new HasClassLoaderMock());
+                        basicComplexPartialScorePmml,
+                        basicComplexPartialScore,
+                        new HasClassLoaderMock());
         KiePMMLModelWithSources retrieved = provider.getKiePMMLModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
         Map<String, String> retrievedSourcesMap = retrieved.getSourcesMap();

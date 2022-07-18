@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.CLOSURE;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -45,7 +45,7 @@ public class KiePMMLDiscretizeTest {
     private static KiePMMLDiscretizeBin kiePMMLDiscretizeBin5;
     private static List<KiePMMLDiscretizeBin> discretizeBins;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         kiePMMLDiscretizeBin1 = getKiePMMLDiscretizeBin("kiePMMLDiscretizeBin1", new KiePMMLInterval(null, 20,
                                                                                                      CLOSURE.OPEN_OPEN), "kiePMMLDiscretizeBin1");
@@ -58,12 +58,12 @@ public class KiePMMLDiscretizeTest {
         kiePMMLDiscretizeBin5 = getKiePMMLDiscretizeBin("kiePMMLDiscretizeBin5", new KiePMMLInterval(51, null,
                                                                                                      CLOSURE.CLOSED_CLOSED), "kiePMMLDiscretizeBin5");
         discretizeBins = Arrays.asList(kiePMMLDiscretizeBin1, kiePMMLDiscretizeBin2,
-                                                                  kiePMMLDiscretizeBin3, kiePMMLDiscretizeBin4,
-                                                                  kiePMMLDiscretizeBin5);
+                                       kiePMMLDiscretizeBin3, kiePMMLDiscretizeBin4,
+                                       kiePMMLDiscretizeBin5);
     }
 
     @Test
-    public void evaluateNoInput() {
+    void evaluateNoInput() {
         KiePMMLDiscretize kiePMMLDiscretize = getKiePMMLDiscretize(null, null);
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         Object retrieved = kiePMMLDiscretize.evaluate(processingDTO);
@@ -75,7 +75,7 @@ public class KiePMMLDiscretizeTest {
     }
 
     @Test
-    public void evaluateDefaultValue() {
+    void evaluateDefaultValue() {
         KiePMMLDiscretize kiePMMLDiscretize = getKiePMMLDiscretize(null, null);
 
         ProcessingDTO processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 20)));
@@ -97,7 +97,7 @@ public class KiePMMLDiscretizeTest {
     }
 
     @Test
-    public void getFromDiscretizeBins() {
+    void getFromDiscretizeBins() {
         KiePMMLDiscretize kiePMMLDiscretize = getKiePMMLDiscretize(null, null);
         Optional<String> retrieved = kiePMMLDiscretize.getFromDiscretizeBins(10);
         assertThat(retrieved).isPresent();
@@ -138,7 +138,7 @@ public class KiePMMLDiscretizeTest {
         assertThat(retrieved).isPresent();
         assertThat(retrieved.get()).isEqualTo(kiePMMLDiscretizeBin5.getBinValue());
     }
-    
+
     private KiePMMLDiscretize getKiePMMLDiscretize(String mapMissingTo, String defaultValue) {
         Collections.shuffle(discretizeBins);
         return new KiePMMLDiscretize(NAME, Collections.emptyList(), discretizeBins, mapMissingTo, defaultValue, DATATYPE);

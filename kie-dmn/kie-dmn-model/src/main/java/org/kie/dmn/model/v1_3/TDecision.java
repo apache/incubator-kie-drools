@@ -76,7 +76,7 @@ public class TDecision extends TDRGElement implements Decision {
     @Override
     public List<InformationRequirement> getInformationRequirement() {
         if (informationRequirement == null) {
-            informationRequirement = new ArrayList<InformationRequirement>();
+            informationRequirement = new ArrayList<>();
         }
         return this.informationRequirement;
     }
@@ -84,7 +84,7 @@ public class TDecision extends TDRGElement implements Decision {
     @Override
     public List<KnowledgeRequirement> getKnowledgeRequirement() {
         if (knowledgeRequirement == null) {
-            knowledgeRequirement = new ArrayList<KnowledgeRequirement>();
+            knowledgeRequirement = new ArrayList<>();
         }
         return this.knowledgeRequirement;
     }
@@ -92,7 +92,7 @@ public class TDecision extends TDRGElement implements Decision {
     @Override
     public List<AuthorityRequirement> getAuthorityRequirement() {
         if (authorityRequirement == null) {
-            authorityRequirement = new ArrayList<AuthorityRequirement>();
+            authorityRequirement = new ArrayList<>();
         }
         return this.authorityRequirement;
     }
@@ -100,7 +100,7 @@ public class TDecision extends TDRGElement implements Decision {
     @Override
     public List<DMNElementReference> getSupportedObjective() {
         if (supportedObjective == null) {
-            supportedObjective = new ArrayList<DMNElementReference>();
+            supportedObjective = new ArrayList<>();
         }
         return this.supportedObjective;
     }
@@ -108,7 +108,7 @@ public class TDecision extends TDRGElement implements Decision {
     @Override
     public List<DMNElementReference> getImpactedPerformanceIndicator() {
         if (impactedPerformanceIndicator == null) {
-            impactedPerformanceIndicator = new ArrayList<DMNElementReference>();
+            impactedPerformanceIndicator = new ArrayList<>();
         }
         return this.impactedPerformanceIndicator;
     }
@@ -116,7 +116,7 @@ public class TDecision extends TDRGElement implements Decision {
     @Override
     public List<DMNElementReference> getDecisionMaker() {
         if (decisionMaker == null) {
-            decisionMaker = new ArrayList<DMNElementReference>();
+            decisionMaker = new ArrayList<>();
         }
         return this.decisionMaker;
     }
@@ -124,7 +124,7 @@ public class TDecision extends TDRGElement implements Decision {
     @Override
     public List<DMNElementReference> getDecisionOwner() {
         if (decisionOwner == null) {
-            decisionOwner = new ArrayList<DMNElementReference>();
+            decisionOwner = new ArrayList<>();
         }
         return this.decisionOwner;
     }
@@ -132,7 +132,7 @@ public class TDecision extends TDRGElement implements Decision {
     @Override
     public List<DMNElementReference> getUsingProcess() {
         if (usingProcess == null) {
-            usingProcess = new ArrayList<DMNElementReference>();
+            usingProcess = new ArrayList<>();
         }
         return this.usingProcess;
     }
@@ -140,7 +140,7 @@ public class TDecision extends TDRGElement implements Decision {
     @Override
     public List<DMNElementReference> getUsingTask() {
         if (usingTask == null) {
-            usingTask = new ArrayList<DMNElementReference>();
+            usingTask = new ArrayList<>();
         }
         return this.usingTask;
     }

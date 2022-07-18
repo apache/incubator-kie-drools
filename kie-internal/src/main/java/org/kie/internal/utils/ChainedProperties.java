@@ -58,8 +58,8 @@ public class ChainedProperties
 
     protected static transient Logger logger = LoggerFactory.getLogger(ChainedProperties.class);
 
-    private List<Properties> props = new ArrayList<Properties>();
-    private List<Properties> defaultProps = new ArrayList<Properties>();
+    private List<Properties> props = new ArrayList<>();
+    private List<Properties> defaultProps = new ArrayList<>();
 
     public ChainedProperties() { }
 

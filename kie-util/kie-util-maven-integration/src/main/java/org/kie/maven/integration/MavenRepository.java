@@ -100,7 +100,7 @@ public class MavenRepository {
 
     private Collection<RemoteRepository> initRemoteRepositoriesForRequest() {
         final MavenRepositoryConfiguration repositoryUtils = getMavenRepositoryConfiguration();
-        Collection<RemoteRepository> remoteRepos = new HashSet<RemoteRepository>();
+        Collection<RemoteRepository> remoteRepos = new HashSet<>();
         remoteRepos.addAll( repositoryUtils.getRemoteRepositoriesForRequest() );
 
         for ( RemoteRepository repo : aether.getRepositories() ) {
@@ -130,7 +130,7 @@ public class MavenRepository {
         CollectDependencyVisitor visitor = new CollectDependencyVisitor();
         collectResult.getRoot().accept( visitor );
 
-        List<DependencyDescriptor> descriptors = new ArrayList<DependencyDescriptor>();
+        List<DependencyDescriptor> descriptors = new ArrayList<>();
         for ( DependencyNode node : visitor.getDependencies() ) {
             // skip root to not add artifact as dependency
             if ( node.getDependency().equals( root ) ) {
@@ -359,7 +359,7 @@ public class MavenRepository {
 
     private static class CollectDependencyVisitor implements DependencyVisitor {
 
-        private final List<DependencyNode> dependencies = new ArrayList<DependencyNode>();
+        private final List<DependencyNode> dependencies = new ArrayList<>();
 
         public boolean visitEnter( DependencyNode node ) {
             dependencies.add( node );

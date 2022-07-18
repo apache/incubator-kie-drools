@@ -18,7 +18,7 @@ package org.kie.pmml.compiler.commons.factories;
 import java.util.Collections;
 
 import org.dmg.pmml.DerivedField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getDerivedField;
@@ -27,7 +27,7 @@ import static org.kie.pmml.compiler.commons.factories.InstanceFactoriesTestCommo
 public class KiePMMLDerivedFieldInstanceFactoryTest {
 
     @Test
-    public void getKiePMMLDerivedField() {
+    void getKiePMMLDerivedField() {
         final String fieldName = "fieldName";
         final DerivedField toConvert = getDerivedField(fieldName);
         KiePMMLDerivedField retrieved = KiePMMLDerivedFieldInstanceFactory.getKiePMMLDerivedField(toConvert,

@@ -38,8 +38,8 @@ public class MapBasedPersistenceContext
     public MapBasedPersistenceContext(KnowledgeSessionStorage storage) {
         open = true;
         this.storage = storage;
-        this.ksessions = new HashMap<Long, PersistentSession>();
-        this.workItems = new HashMap<Long, PersistentWorkItem>();
+        this.ksessions = new HashMap<>();
+        this.workItems = new HashMap<>();
     }
     
     public PersistentSession persist(PersistentSession entity) {

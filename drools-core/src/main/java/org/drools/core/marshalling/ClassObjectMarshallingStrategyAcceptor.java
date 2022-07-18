@@ -28,14 +28,14 @@ public class ClassObjectMarshallingStrategyAcceptor implements ObjectMarshalling
     private final Map<String, Object> patterns;
     
     public ClassObjectMarshallingStrategyAcceptor(String[] patterns) {
-        this.patterns = new HashMap<String, Object>();
+        this.patterns = new HashMap<>();
         for (String pattern : patterns ) {
             addPattern( pattern );
         }
     }
     
     public ClassObjectMarshallingStrategyAcceptor() {
-        this.patterns = new HashMap<String, Object>();
+        this.patterns = new HashMap<>();
     }
     
     private void addPattern(String pattern) {

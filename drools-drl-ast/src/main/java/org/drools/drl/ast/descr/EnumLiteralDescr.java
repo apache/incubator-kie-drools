@@ -78,7 +78,7 @@ public class EnumLiteralDescr extends AnnotatedBaseDescr
     
     public void addConstructorArg( String arg ) {
         if ( constructorArgs == Collections.EMPTY_LIST ) {
-            constructorArgs = new ArrayList<String>();
+            constructorArgs = new ArrayList<>();
         }
         constructorArgs.add( arg );
     }

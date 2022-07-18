@@ -6,3 +6,4 @@ include::../_artifacts/document-attributes.adoc[]
 :context: getting-started
 
 include::first-rule-project.adoc[leveloffset=+1]
+include::getting-started-decision-services.adoc[leveloffset=+1]

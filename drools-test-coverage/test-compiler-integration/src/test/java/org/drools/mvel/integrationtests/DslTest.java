@@ -51,10 +51,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DslTest {
@@ -76,7 +73,7 @@ public class DslTest {
         final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_dsl_multiline.dsl" ) );
         Expander ex =  new DefaultExpanderResolver(dsl).get("*", null);
         String r = ex.expand(source);
-        assertEquals("when Car(color==\"Red\") then doSomething();", r.trim());
+        assertThat(r.trim()).isEqualTo("when Car(color==\"Red\") then doSomething();");
     }
 
     @Test
@@ -93,11 +90,11 @@ public class DslTest {
 
     private void checkDSLExpanderTest(KieBuilder kieBuilder) throws IOException, ClassNotFoundException {
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
 
         // the compiled package
         final Collection<KiePackage> pkgs = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder).getKiePackages();
-        assertEquals( 2, pkgs.size() );
+        assertThat(pkgs.size()).isEqualTo(2);
 
         KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder);
 
@@ -112,7 +109,7 @@ public class DslTest {
                       messages );
         session.fireAllRules();
 
-        assertEquals( 1, messages.size() );
+        assertThat(messages.size()).isEqualTo(1);
     }
 
     @Test
@@ -125,11 +122,11 @@ public class DslTest {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource1, resource2);
 
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
         
         // the compiled package
         final Collection<KiePackage> pkgs = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder).getKiePackages();
-        assertEquals( 2, pkgs.size() );
+        assertThat(pkgs.size()).isEqualTo(2);
 
         KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder);
 
@@ -145,15 +142,13 @@ public class DslTest {
         session.fireAllRules();
 
         // should have NONE, as both conditions should be false.
-        assertEquals( 0,
-                      messages.size() );
+        assertThat(messages.size()).isEqualTo(0);
 
         session.insert( new Person( "fire" ) );
         session.fireAllRules();
 
         // still no firings
-        assertEquals( 0,
-                      messages.size() );
+        assertThat(messages.size()).isEqualTo(0);
 
         session.insert( new Cheese( "brie",
                                15 ) );
@@ -161,8 +156,7 @@ public class DslTest {
         session.fireAllRules();
 
         // YOUR FIRED
-        assertEquals( 1,
-                      messages.size() );
+        assertThat(messages.size()).isEqualTo(1);
     }
 
     @Test @Ignore("antlr cannot parse correctly if the file ends with a comment without a further line break")
@@ -176,18 +170,16 @@ public class DslTest {
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( DSL)  ) ,
                               ResourceType.DSLR );
 
-        assertFalse( kbuilder.hasErrors() ); // trying to expand Cheese() pattern
+        assertThat(kbuilder.hasErrors()).isFalse(); // trying to expand Cheese() pattern
 
         // Check errors
         final String err = kbuilder.getErrors().toString();
-        assertEquals( "",
-                      err );
-        assertEquals( 0,
-                      kbuilder.getErrors().size() );
+        assertThat(err).isEqualTo("");
+        assertThat(kbuilder.getErrors().size()).isEqualTo(0);
         
         // the compiled package
         Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 0, pkgs.size() );
+        assertThat(pkgs.size()).isEqualTo(0);
         
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( pkgs );
@@ -196,7 +188,7 @@ public class DslTest {
         KieSession session = kbase.newKieSession();
 
         pkgs = SerializationHelper.serializeObject(pkgs);
-        assertNull( pkgs );
+        assertThat(pkgs).isNull();
     }
 
     @Test
@@ -209,11 +201,11 @@ public class DslTest {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource1, resource2);
 
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
         
         // the compiled package
         final Collection<KiePackage> pkgs = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder).getKiePackages();
-        assertEquals( 1, pkgs.size() );
+        assertThat(pkgs.size()).isEqualTo(1);
 
         KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder);
 
@@ -229,10 +221,8 @@ public class DslTest {
         session.fireAllRules();
 
         // should have fired
-        assertEquals( 1,
-                      results.size() );
-        assertEquals(cheese,
-                     results.get(0));
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo(cheese);
 
     }
 
@@ -255,7 +245,7 @@ public class DslTest {
                 + "Log \"OK\"\n"
                 + "end\n";
 
-        assertTrue(doTest(dsl, drl).contains("OK"));
+        assertThat(doTest(dsl, drl).contains("OK")).isTrue();
     }
 
     @Test
@@ -276,7 +266,7 @@ public class DslTest {
                 + "Log person name\n"
                 + "end\n";
 
-        assertTrue(doTest(dsl, drl).contains("Mario"));
+        assertThat(doTest(dsl, drl).contains("Mario")).isTrue();
     }
 
     @Test
@@ -293,7 +283,7 @@ public class DslTest {
                 + "Log person name\n"
                 + "end\n";
 
-        assertTrue(doTest(dsl, drl).contains("Mario"));
+        assertThat(doTest(dsl, drl).contains("Mario")).isTrue();
     }
 
     @Test
@@ -317,7 +307,7 @@ public class DslTest {
                 + "Log \"OK\"\n"
                 + "end\n";
 
-        assertTrue(doTest(dsl, drl).contains("OK"));
+        assertThat(doTest(dsl, drl).contains("OK")).isTrue();
     }
 
     @Test
@@ -333,7 +323,7 @@ public class DslTest {
                 + "Log X\n"
                 + "end\n";
 
-        assertTrue(doTest(dsl, drl).contains("X"));
+        assertThat(doTest(dsl, drl).contains("X")).isTrue();
     }
 
     private List doTest(String dsl, String drl) {
@@ -345,7 +335,7 @@ public class DslTest {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource1, resource2);
 
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
 
         KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder);
         
@@ -380,7 +370,7 @@ public class DslTest {
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         final List<Message> messages = kieBuilder.getResults().getMessages();
 
-        assertEquals(0, messages.size());
+        assertThat(messages.size()).isEqualTo(0);
     }
 
     @Test
@@ -419,6 +409,6 @@ public class DslTest {
         
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource1, resource2);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 }

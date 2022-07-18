@@ -129,7 +129,7 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
 
     }
 
-    private static class SupportedConstantValueVisitor extends DefaultedVisitor<Boolean> {
+    protected static class SupportedConstantValueVisitor extends DefaultedVisitor<Boolean> {
 
         public boolean areAllSupported(List<BaseNode> nodes) {
             return nodes.stream().allMatch(n -> n.accept(this));

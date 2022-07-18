@@ -9,8 +9,8 @@
 
   <logger name="org.kie" level="warn"/>
   <logger name="org.drools.compiler.kie.builder.impl" level="ERROR" />
-  <!--<logger name="org.drools.modelcompiler.builder.generator.expressiontyper" level="debug"/>-->
-<!--  <logger name="org.drools.modelcompiler.builder" level="debug"/>-->
+  <!--<logger name="org.drools.model.codegen.execmodel.generator.expressiontyper" level="debug"/>-->
+<!--  <logger name="org.drools.model.codegen.execmodel" level="debug"/>-->
   <logger name="org.drools.ancompiler" level="info"/>
 
   <logger name="org.drools" level="warn"/>

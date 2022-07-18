@@ -91,15 +91,15 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends Bas
     }
 
     public SourceDescrBuilder<PatternDescrBuilder<P>> from() {
-        return new SourceDescrBuilderImpl<PatternDescrBuilder<P>>( this );
+        return new SourceDescrBuilderImpl<>( this );
     }
 
     public BehaviorDescrBuilder<PatternDescrBuilder<P>> behavior() {
-        return new BehaviorDescrBuilderImpl<PatternDescrBuilder<P>>( this );
+        return new BehaviorDescrBuilderImpl<>( this );
     }
 
     public AnnotationDescrBuilder<PatternDescrBuilder<P>> newAnnotation(String name) {
-        AnnotationDescrBuilder<PatternDescrBuilder<P>> annotation = new AnnotationDescrBuilderImpl<PatternDescrBuilder<P>>( this, name );
+        AnnotationDescrBuilder<PatternDescrBuilder<P>> annotation = new AnnotationDescrBuilderImpl<>( this, name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }

@@ -1,6 +1,6 @@
 package org.drools.compiler.integrationtests.noxml;
 
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -9,7 +9,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NoXmlTest {
 
@@ -32,6 +32,6 @@ public class NoXmlTest {
 
         KieSession kieSession = kieBase.newKieSession();
         kieSession.insert("test");
-        assertEquals(1, kieSession.fireAllRules());
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 }

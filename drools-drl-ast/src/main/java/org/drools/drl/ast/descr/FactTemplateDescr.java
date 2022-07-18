@@ -23,7 +23,7 @@ public class FactTemplateDescr extends BaseDescr {
     private static final long serialVersionUID = 510l;
 
     String                    name;
-    List<FieldTemplateDescr>  fields           = new ArrayList<FieldTemplateDescr>( 1 );
+    List<FieldTemplateDescr>  fields           = new ArrayList<>( 1 );
 
     public FactTemplateDescr(final String name) {
         this.name = name;

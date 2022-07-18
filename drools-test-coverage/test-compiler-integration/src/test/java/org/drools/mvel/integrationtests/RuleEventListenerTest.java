@@ -34,7 +34,7 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class RuleEventListenerTest {
@@ -97,6 +97,6 @@ public class RuleEventListenerTest {
                                                "onBeforeMatchFire: 19",
                                                "onAfterMatchFire: 20",
                                                "onDeleteMatch: 20" );
-        assertEquals(expected, list);
+        assertThat(list).isEqualTo(expected);
     }
 }

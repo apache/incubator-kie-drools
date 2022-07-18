@@ -32,8 +32,8 @@ import org.drools.drl.ast.dsl.CEDescrBuilder;
 import org.drools.drl.ast.dsl.DescrFactory;
 import org.drools.drl.ast.dsl.PackageDescrBuilder;
 import org.drools.drl.ast.dsl.RuleDescrBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -43,6 +43,7 @@ import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrLhsFactory.INPUT_FIELD;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrLhsFactory.INPUT_FIELD_CONDITIONAL;
@@ -54,7 +55,7 @@ public class KiePMMLDescrLhsFactoryTest {
     private static final String CURRENT_RULE = "currentRule";
     private CEDescrBuilder<RuleDescrBuilder, AndDescr> lhsBuilder;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         PackageDescrBuilder builder = DescrFactory.newPackage().name(PACKAGE_NAME);
         RuleDescrBuilder ruleBuilder = builder.newRule().name(CURRENT_RULE);
@@ -62,7 +63,7 @@ public class KiePMMLDescrLhsFactoryTest {
     }
 
     @Test
-    public void declareLhs() {
+    void declareLhs() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
@@ -80,13 +81,13 @@ public class KiePMMLDescrLhsFactoryTest {
     }
 
     @Test
-    public void declareConstraintAnd() {
+    void declareConstraintAnd() {
         String temperatureField = "TEMPERATURE";
         String humidityField = "HUMIDITY";
         List<KiePMMLFieldOperatorValue> kiePMMLOperatorValues =
                 Arrays.asList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.AND,
-                                                            Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
-                                                                              new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                        new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.and());
         assertThat(lhsBuilder.getDescr()).isNotNull();
         assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
@@ -126,17 +127,17 @@ public class KiePMMLDescrLhsFactoryTest {
     }
 
     @Test
-    public void declareNestedConstraintAnd() {
+    void declareNestedConstraintAnd() {
         String temperatureField = "TEMPERATURE";
         String humidityField = "HUMIDITY";
         final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues = Arrays
                 .asList(new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
                         new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
         List<KiePMMLFieldOperatorValue> kiePMMLOperatorValues =
                 Collections.singletonList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.AND,
-                                                                        Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), nestedKiePMMLFieldOperatorValues));
+                        Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), nestedKiePMMLFieldOperatorValues));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.and());
         assertThat(lhsBuilder.getDescr()).isNotNull();
         assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
@@ -195,13 +196,13 @@ public class KiePMMLDescrLhsFactoryTest {
     }
 
     @Test
-    public void declareConstraintsOr() {
+    void declareConstraintsOr() {
         String temperatureField = "TEMPERATURE";
         String humidityField = "HUMIDITY";
         List<KiePMMLFieldOperatorValue> kiePMMLOperatorValues =
                 Arrays.asList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.AND,
-                                                            Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
-                                                                              new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                        new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.or());
         assertThat(lhsBuilder.getDescr()).isNotNull();
         assertThat(lhsBuilder.getDescr().getDescrs()).hasSize(1);
@@ -240,30 +241,32 @@ public class KiePMMLDescrLhsFactoryTest {
         assertThat(exprConstraintDescr.getExpression()).isEqualTo(expected);
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void declareConstraintsXorWrongInput() {
-        String temperatureField = "TEMPERATURE";
-        String humidityField = "HUMIDITY";
-        final List<KiePMMLFieldOperatorValue> xorConstraints = Arrays
-                .asList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
-                        new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null),
-                        new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
-                        new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
-        KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsXor(xorConstraints);
+    @Test
+    void declareConstraintsXorWrongInput() {
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            String temperatureField = "TEMPERATURE";
+            String humidityField = "HUMIDITY";
+            final List<KiePMMLFieldOperatorValue> xorConstraints = Arrays
+                    .asList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
+                                    Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                            new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
+                                    Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null),
+                            new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
+                                    Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
+                            new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR,
+                                    Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
+            KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsXor(xorConstraints);
+        });
     }
 
     @Test
-    public void declareConstraintsXor() {
+    void declareConstraintsXor() {
         String temperatureField = "TEMPERATURE";
         final List<KiePMMLFieldOperatorValue> xorConstraints = Arrays
                 .asList(new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
                         new KiePMMLFieldOperatorValue(temperatureField, BOOLEAN_OPERATOR.OR,
-                                                      Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
+                                Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsXor(xorConstraints);
         assertThat(lhsBuilder.getDescr()).isNotNull();
         assertThat(lhsBuilder.getDescr().getDescrs()).isNotNull();
@@ -342,12 +345,12 @@ public class KiePMMLDescrLhsFactoryTest {
     }
 
     @Test
-    public void commonDeclarePatternWithConstraint() {
+    void commonDeclarePatternWithConstraint() {
         String patternType = "TEMPERATURE";
         String constraintsString = "value < 35";
         final CEDescrBuilder<CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, NotDescr>, ExistsDescr> existsBuilder = lhsBuilder.not().exists();
         KiePMMLDescrLhsFactory.factory(lhsBuilder).commonDeclarePatternWithConstraint(existsBuilder, patternType,
-                                                                                      constraintsString);
+                constraintsString);
         assertThat(existsBuilder.getDescr()).isNotNull();
         final List<BaseDescr> descrs = existsBuilder.getDescr().getDescrs();
         assertThat(descrs).isNotNull();
@@ -367,7 +370,7 @@ public class KiePMMLDescrLhsFactoryTest {
     }
 
     @Test
-    public void declareConstraintIn() {
+    void declareConstraintIn() {
         List<Object> values = Arrays.asList("-5", "0.5", "1", "10");
         String patternType = "INPUT1";
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintIn(patternType, values);
@@ -390,7 +393,7 @@ public class KiePMMLDescrLhsFactoryTest {
     }
 
     @Test
-    public void declareConstraintNotIn() {
+    void declareConstraintNotIn() {
         List<Object> values = Arrays.asList("3", "8.5");
         String patternType = "INPUT2";
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintNotIn(patternType, values);
@@ -416,7 +419,7 @@ public class KiePMMLDescrLhsFactoryTest {
     }
 
     @Test
-    public void declareIfBreak() {
+    void declareIfBreak() {
         String ifBreakField = "TEMPERATURE";
         String ifBreakOperator = "<";
         Object ifBreakValue = 24;
@@ -439,7 +442,7 @@ public class KiePMMLDescrLhsFactoryTest {
     }
 
     @Test
-    public void getInNotInConstraint() {
+    void getInNotInConstraint() {
         List<Object> values = Arrays.asList("-5", "0.5", "1", "10");
         String retrieved = KiePMMLDescrLhsFactory.factory(lhsBuilder).getInNotInConstraint(values);
         String expected = "value in (-5, 0.5, 1, 10)";

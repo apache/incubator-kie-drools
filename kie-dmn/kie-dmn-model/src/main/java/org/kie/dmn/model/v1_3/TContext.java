@@ -29,7 +29,7 @@ public class TContext extends TExpression implements Context {
     @Override
     public List<ContextEntry> getContextEntry() {
         if (contextEntry == null) {
-            contextEntry = new ArrayList<ContextEntry>();
+            contextEntry = new ArrayList<>();
         }
         return this.contextEntry;
     }

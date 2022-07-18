@@ -32,8 +32,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class IncoherentPatternsTest extends TestBaseOld {
 
@@ -64,9 +64,9 @@ public class IncoherentPatternsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 1"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 2"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 7"));
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 1")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 2")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 7")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -102,10 +102,10 @@ public class IncoherentPatternsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 3"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 4"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 5"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 6"));
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 3")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 4")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 5")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 6")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -141,8 +141,8 @@ public class IncoherentPatternsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 8"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 12"));
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 8")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 12")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -178,8 +178,8 @@ public class IncoherentPatternsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 9"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 14"));
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 9")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 14")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -215,8 +215,8 @@ public class IncoherentPatternsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 10"));
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 15"));
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 10")).isTrue();
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 15")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -252,7 +252,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 11"));
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 11")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -288,7 +288,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 16"));
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 16")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {
@@ -324,7 +324,7 @@ public class IncoherentPatternsTest extends TestBaseOld {
             }
         }
 
-        assertTrue(rulesThatHadErrors.remove("Incoherent patterns 13"));
+        assertThat(rulesThatHadErrors.remove("Incoherent patterns 13")).isTrue();
 
         if (!rulesThatHadErrors.isEmpty()) {
             for (String string : rulesThatHadErrors) {

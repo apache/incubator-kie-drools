@@ -47,8 +47,8 @@ public class RhsBuilder implements SourceBuilder {
         this.headerRow = row;
         this.headerCol = column;
         this.variable = boundVariable == null ? "" : boundVariable.trim();
-        this.templates = new HashMap<Integer, String>();
-        this.values = new ArrayList<String>();
+        this.templates = new HashMap<>();
+        this.values = new ArrayList<>();
     }
 
     public ActionType.Code getActionTypeCode() {
@@ -86,7 +86,7 @@ public class RhsBuilder implements SourceBuilder {
     }
 
     public String getResult() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for ( Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {
             buf.append( iter.next() );
             if (iter.hasNext()) {

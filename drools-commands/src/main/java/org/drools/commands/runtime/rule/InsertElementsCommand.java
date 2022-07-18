@@ -58,7 +58,7 @@ public class InsertElementsCommand
     private String entryPoint = "DEFAULT";
 
     public InsertElementsCommand() {
-        this.objects = new ArrayList<Object>();
+        this.objects = new ArrayList<>();
     }
 
     public InsertElementsCommand(Collection<Object> objects) {
@@ -80,7 +80,7 @@ public class InsertElementsCommand
 
     public Collection<FactHandle> execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        List<FactHandle> handles = new ArrayList<FactHandle>();
+        List<FactHandle> handles = new ArrayList<>();
         
         EntryPoint wmep;
         if ( StringUtils.isEmpty( this.entryPoint ) ) {
@@ -130,7 +130,7 @@ public class InsertElementsCommand
     }
 
     public String toString() {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         for ( Object object : objects ) {
             list.add( object );
         }

@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 public class StringKeyStringValueMap implements Map<String, String> {
 
     @XmlElement(name="entry")
-    public List<StringKeyStringValueEntry> entries = new ArrayList<StringKeyStringValueEntry>();
+    public List<StringKeyStringValueEntry> entries = new ArrayList<>();
 
     public void addEntry(StringKeyStringValueEntry newEntry) {
        this.entries.add(newEntry);
@@ -129,7 +129,7 @@ public class StringKeyStringValueMap implements Map<String, String> {
 
     @Override
     public Set<String> keySet() {
-        Set<String> keySet = new HashSet<String>();
+        Set<String> keySet = new HashSet<>();
         for( StringKeyStringValueEntry entry : entries ) {
             keySet.add(entry.getKey());
         }
@@ -138,7 +138,7 @@ public class StringKeyStringValueMap implements Map<String, String> {
 
     @Override
     public Collection<String> values() {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         for( StringKeyStringValueEntry entry : entries ) {
            values.add(entry.getValue());
         }
@@ -147,7 +147,7 @@ public class StringKeyStringValueMap implements Map<String, String> {
 
     @Override
     public Set<java.util.Map.Entry<String, String>> entrySet() {
-        Set<java.util.Map.Entry<String, String>> entrySet = new HashSet<Map.Entry<String,String>>();
+        Set<java.util.Map.Entry<String, String>> entrySet = new HashSet<>();
         for( StringKeyStringValueEntry entry : entries ) {
            String newVal = entry.getValue();
            String key = entry.getKey();

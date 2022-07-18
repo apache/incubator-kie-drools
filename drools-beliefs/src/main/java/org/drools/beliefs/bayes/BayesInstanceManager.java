@@ -17,7 +17,6 @@ package org.drools.beliefs.bayes;
 
 import org.kie.api.KieBase;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

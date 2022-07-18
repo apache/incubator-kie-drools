@@ -25,7 +25,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DiscretizeBin;
 import org.dmg.pmml.Interval;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.CLOSURE;
 import org.kie.pmml.commons.model.expressions.KiePMMLDiscretizeBin;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
@@ -40,7 +40,7 @@ public class KiePMMLDiscretizeBinFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLDiscretizeBinFactoryTest_01.txt";
 
     @Test
-    public void getDiscretizeBinVariableDeclaration() throws IOException {
+    void getDiscretizeBinVariableDeclaration() throws IOException {
         String variableName = "variableName";
         double leftMargin = 45.32;
 

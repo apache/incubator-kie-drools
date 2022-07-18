@@ -15,6 +15,23 @@
 
 package org.drools.compiler.builder.impl;
 
+import static java.util.Arrays.asList;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
+import java.util.function.Supplier;
+
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
@@ -23,7 +40,7 @@ import org.drools.compiler.builder.impl.processors.ConsequenceCompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompiler;
 import org.drools.compiler.builder.impl.processors.PackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
-import org.drools.compiler.builder.impl.processors.RuleCompiler;
+import org.drools.compiler.builder.impl.processors.RuleCompilationPhase;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
 import org.drools.compiler.builder.impl.resources.ResourceHandler;
@@ -53,6 +70,9 @@ import org.drools.drl.parser.ParserError;
 import org.drools.drl.parser.lang.dsl.DSLMappingFile;
 import org.drools.drl.parser.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
+import org.drools.io.BaseResource;
+import org.drools.io.InternalResource;
+import org.drools.io.ReaderResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.util.io.BaseResource;
@@ -81,22 +101,6 @@ import org.kie.internal.builder.ResultSeverity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
-import java.util.concurrent.ForkJoinPool;
-import java.util.function.Supplier;
-
-import static java.util.Arrays.asList;
-
 public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDeclarationContext, GlobalVariableContext {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
@@ -123,13 +127,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private final GlobalVariableContext globals = new GlobalVariableContextImpl();
 
-//    private Resource resource;
-
     private List<DSLTokenizedMappingFile> dslFiles;
 
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
 
-    private final Stack<List<Resource>> buildResources = new Stack<>();
+    private final Deque<List<Resource>> buildResources = new ArrayDeque<>();
 
     private AssetFilter assetFilter = null;
 
@@ -270,11 +272,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public void setBuildContext(BuildContext buildContext) {
         this.buildContext = buildContext;
-    }
-
-    public Resource getCurrentResource() {
-//        return resource;
-        throw new UnsupportedOperationException("deprecated");
     }
 
     public InternalKnowledgeBase getKnowledgeBase() {
@@ -463,8 +460,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         List<CompilationPhase> phases = asList(
                 new RuleValidator(packageRegistry, packageDescr, configuration), // validateUniqueRuleNames
-                new FunctionCompiler(packageDescr, pkgRegistry, assetFilter, rootClassLoader),
-                new RuleCompiler(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
+                new FunctionCompiler(pkgRegistry, packageDescr, assetFilter, rootClassLoader),
+                new RuleCompilationPhase(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
                         assetFilter, packageAttributes, resource, this));
         phases.forEach(CompilationPhase::process);
         phases.forEach(p -> this.results.addAll(p.getResults()));
@@ -899,18 +896,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                 pkg.wireStore();
             }
         }
-    }
-
-    public interface AssetFilter {
-
-        enum Action {
-            DO_NOTHING,
-            ADD,
-            REMOVE,
-            UPDATE
-        }
-
-        Action accept(ResourceChange.Type type, String pkgName, String assetName);
     }
 
     public void setAssetFilter(AssetFilter assetFilter) {

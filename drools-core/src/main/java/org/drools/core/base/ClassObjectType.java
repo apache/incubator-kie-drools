@@ -231,7 +231,7 @@ public class ClassObjectType
 
     public void storeTransformedMask(Class<?> modifiedClass, BitMask modificationMask, BitMask transforedMask) {
         if (transformedMasks == null) {
-            transformedMasks = new ConcurrentHashMap<String, BitMask>();
+            transformedMasks = new ConcurrentHashMap<>();
         }
         String key = modifiedClass.getName() + ":" + modificationMask;
         transformedMasks.put(key, transforedMask);

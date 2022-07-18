@@ -30,11 +30,11 @@ public class RulePackage extends VerifierComponent<PackageDescr> {
 
     private int                       offset    = 0;
     private String                    name;
-    private Set<VerifierRule>         rules     = new HashSet<VerifierRule>();
-    private List<String>              globals   = new ArrayList<String>();
+    private Set<VerifierRule>         rules     = new HashSet<>();
+    private List<String>              globals   = new ArrayList<>();
     private String                    description;
-    private List<String>              metadata  = new ArrayList<String>();
-    private Map<String, List<String>> otherInfo = new HashMap<String, List<String>>();
+    private List<String>              metadata  = new ArrayList<>();
+    private Map<String, List<String>> otherInfo = new HashMap<>();
 
     
     public RulePackage(PackageDescr descr) {

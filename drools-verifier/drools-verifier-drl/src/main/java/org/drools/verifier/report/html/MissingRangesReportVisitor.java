@@ -45,7 +45,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
                                                                  Collection<MissingRange> causes) {
 
         Multimap<String, DataRow> dt =  TreeMultimap.create();
-        Collection<String> stringRows = new ArrayList<String>();
+        Collection<String> stringRows = new ArrayList<>();
 
         for ( MissingRange cause : causes ) {
             dt.put( cause.getValueAsString(),
@@ -123,7 +123,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
     public static String visitRanges(String sourceFolder,
                                      Collection<Restriction> restrictions,
                                      Collection<MissingRange> collection) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         map.put( "lines",
                  visitRestrictionsCollection( sourceFolder,
@@ -157,7 +157,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
         Field field = (Field) message.getFaulty();
         Collection<Restriction> restrictions = data.getRestrictionsByFieldPath( field.getPath() );
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put( "header",
                  processHeader( sourceFolder ) );
         map.put( "sourceFolder",

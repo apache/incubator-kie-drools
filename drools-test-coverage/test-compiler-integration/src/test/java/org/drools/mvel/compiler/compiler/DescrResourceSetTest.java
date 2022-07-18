@@ -15,14 +15,14 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.util.io.InputStreamResource;
+import org.drools.io.InputStreamResource;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DescrResourceSetTest {
 
@@ -49,7 +49,7 @@ public class DescrResourceSetTest {
     private Set<File> getDrlFiles() throws Exception {
         URL url = this.getClass().getProtectionDomain().getCodeSource().getLocation();
         File dir = new File(url.toURI());
-        assertTrue("Does not exist: " + url.toString(), dir.exists());
+        assertThat(dir.exists()).as("Does not exist: " + url.toString()).isTrue();
 
         final FileFilter drlFilter = new FileFilter() {
             @Override

@@ -45,7 +45,7 @@ public class GroupElementBuilder
         implements
         ReteooComponentBuilder {
 
-    protected final Map<Type, ReteooComponentBuilder> geBuilders = new HashMap<Type, ReteooComponentBuilder>();
+    protected final Map<Type, ReteooComponentBuilder> geBuilders = new HashMap<>();
 
     public GroupElementBuilder() {
         this.geBuilders.put( GroupElement.AND,
@@ -258,7 +258,7 @@ public class GroupElementBuilder
 
                 // create a tuple start equals constraint and set it in the context
                 final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-                final List<BetaNodeFieldConstraint> predicates = new ArrayList<BetaNodeFieldConstraint>();
+                final List<BetaNodeFieldConstraint> predicates = new ArrayList<>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
             }

@@ -92,7 +92,7 @@ public class QueryResultsImpl
         }
         Declaration[] parameters = getParameters();
 
-        Set<String> idSet  = new HashSet<String>();
+        Set<String> idSet  = new HashSet<>();
         for ( Declaration declr : parameters ) {
             idSet.add( declr.getIdentifier() );
         }

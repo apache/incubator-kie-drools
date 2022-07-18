@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.drools.util.io.FileSystemResource;
-import org.drools.util.io.ReaderResource;
+import org.drools.io.FileSystemResource;
+import org.drools.io.ReaderResource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.kie.api.io.Resource;

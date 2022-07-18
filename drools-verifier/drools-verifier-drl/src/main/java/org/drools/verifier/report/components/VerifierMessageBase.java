@@ -30,7 +30,7 @@ abstract public class VerifierMessageBase
     private static int          index            = 0;
 
     // <path,rule name>
-    private Map<String, String> impactedRules    = new HashMap<String, String>();
+    private Map<String, String> impactedRules    = new HashMap<>();
 
     protected final Severity    severity;
     protected final MessageType messageType;
@@ -81,7 +81,7 @@ abstract public class VerifierMessageBase
 
     @Override
     public String toString() {
-        StringBuffer str = new StringBuffer( severity.singular );
+        StringBuilder str = new StringBuilder( severity.singular );
 
         str.append( " id = " );
         str.append( id );

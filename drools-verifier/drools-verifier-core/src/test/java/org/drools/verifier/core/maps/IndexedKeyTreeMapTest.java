@@ -27,7 +27,7 @@ import org.drools.verifier.core.maps.util.HasKeys;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IndexedKeyTreeMapTest {
 
@@ -59,9 +59,9 @@ public class IndexedKeyTreeMapTest {
 
     @Test
     public void testIndexOrder() throws Exception {
-        assertEquals(toni, map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next());
-        assertEquals(eder, map.get(IndexKey.INDEX_ID).get(new Value(1)).iterator().next());
-        assertEquals(michael, map.get(IndexKey.INDEX_ID).get(new Value(2)).iterator().next());
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next()).isEqualTo(toni);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(1)).iterator().next()).isEqualTo(eder);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(2)).iterator().next()).isEqualTo(michael);
     }
 
     @Test
@@ -73,11 +73,11 @@ public class IndexedKeyTreeMapTest {
         map.put(smurf,
                 1);
 
-        assertEquals(4, map.get(IndexKey.INDEX_ID).size());
-        assertEquals(toni, map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next());
-        assertEquals(smurf, map.get(IndexKey.INDEX_ID).get(new Value(1)).iterator().next());
-        assertEquals(eder, map.get(IndexKey.INDEX_ID).get(new Value(2)).iterator().next());
-        assertEquals(michael, map.get(IndexKey.INDEX_ID).get(new Value(3)).iterator().next());
+        assertThat(map.get(IndexKey.INDEX_ID).size()).isEqualTo(4);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next()).isEqualTo(toni);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(1)).iterator().next()).isEqualTo(smurf);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(2)).iterator().next()).isEqualTo(eder);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(3)).iterator().next()).isEqualTo(michael);
     }
 
     @Test
@@ -87,24 +87,24 @@ public class IndexedKeyTreeMapTest {
 
         toni.uuidKey.retract();
 
-        assertEquals(eder, map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next());
-        assertEquals(michael, map.get(IndexKey.INDEX_ID).get(new Value(1)).iterator().next());
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next()).isEqualTo(eder);
+        assertThat(map.get(IndexKey.INDEX_ID).get(new Value(1)).iterator().next()).isEqualTo(michael);
 
         eder.uuidKey.retract();
 
         Person next = map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next();
-        assertEquals(michael, next);
+        assertThat(next).isEqualTo(michael);
     }
 
     @Test
     public void testUpdateAge() throws Exception {
         toni.setAge(100);
 
-        assertEquals(100, toni.getAge());
+        assertThat(toni.getAge()).isEqualTo(100);
 
         final Person person = map.get(AGE_KEY_DEFINITION).get(new Value(100)).iterator().next();
-        assertEquals(toni, person);
-        assertEquals(100, person.getAge());
+        assertThat(person).isEqualTo(toni);
+        assertThat(person.getAge()).isEqualTo(100);
     }
 
     class Person

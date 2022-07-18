@@ -682,7 +682,7 @@ public class KieCronExpression implements Serializable {
     }
 
     public String getExpressionSummary() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         buf.append("seconds: ");
         buf.append(getExpressionSetSummary(seconds));
@@ -730,7 +730,7 @@ public class KieCronExpression implements Serializable {
             return "*";
         }
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         Iterator itr = set.iterator();
         boolean first = true;
@@ -756,7 +756,7 @@ public class KieCronExpression implements Serializable {
             return "*";
         }
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         Iterator itr = list.iterator();
         boolean first = true;

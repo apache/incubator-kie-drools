@@ -168,7 +168,7 @@ public class AccumulateDescr extends PatternSourceDescr
 
     public void addFunction( AccumulateFunctionCallDescr function ) {
         if ( functions == null ) {
-            functions = new ArrayList<AccumulateDescr.AccumulateFunctionCallDescr>();
+            functions = new ArrayList<>();
         }
         this.functions.add( function );
     }

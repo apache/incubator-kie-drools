@@ -22,8 +22,6 @@ import org.junit.Test;
 import org.kie.internal.jci.CompilationProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class RuleErrorTest {
 
@@ -41,10 +39,9 @@ public class RuleErrorTest {
         assertThat(err.toString()).isNotNull();
         String msg = err.getMessage();
 
-        assertTrue( msg.indexOf( "IM IN YR EROR" ) != -1 );
+        assertThat(msg.indexOf("IM IN YR EROR") != -1).isTrue();
         System.err.println( msg );
-        assertEquals( "IM IN YR EROR problem\nproblem\nproblem",
-                      msg );
+        assertThat(msg).isEqualTo("IM IN YR EROR problem\nproblem\nproblem");
 
     }
 

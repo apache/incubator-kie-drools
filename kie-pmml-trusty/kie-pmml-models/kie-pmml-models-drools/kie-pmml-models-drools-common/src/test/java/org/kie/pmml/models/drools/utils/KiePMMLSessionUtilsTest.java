@@ -22,8 +22,8 @@ import org.assertj.core.data.Offset;
 import org.drools.commands.runtime.SetGlobalCommand;
 import org.drools.commands.runtime.rule.InsertObjectCommand;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.pmml.PMML4Result;
@@ -41,20 +41,20 @@ public class KiePMMLSessionUtilsTest {
     private KiePMMLSessionUtils.Builder builder;
     private KiePMMLSessionUtils kiePMMLSessionUtils;
 
-    @Before
+    @BeforeEach
     public void setup() {
         builder = KiePMMLSessionUtils.builder(KIE_BASE, MODEL_NAME, PACKAGE_NAME, PMML4_RESULT);
         kiePMMLSessionUtils = builder.build();
     }
 
     @Test
-    public void builder() {
+    void builder() {
         assertThat(builder).isNotNull();
         assertThat(kiePMMLSessionUtils).isNotNull();
     }
 
     @Test
-    public void kiePMMLSessionUtils() {
+    void kiePMMLSessionUtils() {
         List<Command> retrieved = kiePMMLSessionUtils.commands;
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSize(3);
@@ -80,13 +80,13 @@ public class KiePMMLSessionUtilsTest {
     }
 
     @Test
-    public void getKieSession() {
+    void getKieSession() {
         StatelessKieSession retrieved = kiePMMLSessionUtils.getKieSession(KIE_BASE);
         assertThat(retrieved).isNotNull();
     }
 
     @Test
-    public void insertObjectInSession() {
+    void insertObjectInSession() {
         final List<Command> retrieved = kiePMMLSessionUtils.commands;
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSize(3);

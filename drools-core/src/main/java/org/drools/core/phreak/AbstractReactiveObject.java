@@ -28,7 +28,7 @@ public class AbstractReactiveObject implements ReactiveObject {
 
     public void addLeftTuple(Tuple leftTuple) {
         if (lts == null) {
-            lts = new HashSet<Tuple>();
+            lts = new HashSet<>();
         }
         lts.add(leftTuple);
     }

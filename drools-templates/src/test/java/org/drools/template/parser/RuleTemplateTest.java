@@ -21,14 +21,14 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleTemplateTest {
     @Test
     public void testSetContents() {
         RuleTemplate rt = new RuleTemplate("rt1", getTemplateContainer());
         rt.setContents("Test template");
-        assertEquals("Test template\n", rt.getContents());
+        assertThat(rt.getContents()).isEqualTo("Test template\n");
     }
 
     private TemplateContainer getTemplateContainer() {
@@ -62,23 +62,23 @@ public class RuleTemplateTest {
         rt.addColumn("!NotColumnCondition == \"test2\"");
         rt.addColumn("ArrayColumnCondition[0] == \"test2\"");
         List<TemplateColumn> columns = rt.getColumns();
-        assertEquals(5, columns.size());
+        assertThat(columns.size()).isEqualTo(5);
         TemplateColumn column1 = (TemplateColumn) columns.get(0);
-        assertEquals("StandardColumn", column1.getName());
-        assertFalse(column1.isNotCondition());
-        assertTrue(StringUtils.isEmpty(column1.getCondition()));
+        assertThat(column1.getName()).isEqualTo("StandardColumn");
+        assertThat(column1.isNotCondition()).isFalse();
+        assertThat(StringUtils.isEmpty(column1.getCondition())).isTrue();
         TemplateColumn column2 = (TemplateColumn) columns.get(1);
-        assertEquals("NotColumn", column2.getName());
-        assertTrue(column2.isNotCondition());
-        assertTrue(StringUtils.isEmpty(column2.getCondition()));
+        assertThat(column2.getName()).isEqualTo("NotColumn");
+        assertThat(column2.isNotCondition()).isTrue();
+        assertThat(StringUtils.isEmpty(column2.getCondition())).isTrue();
         TemplateColumn column3 = (TemplateColumn) columns.get(2);
-        assertEquals("ColumnCondition", column3.getName());
-        assertFalse(column3.isNotCondition());
-        assertEquals("== \"test\"", column3.getCondition());
+        assertThat(column3.getName()).isEqualTo("ColumnCondition");
+        assertThat(column3.isNotCondition()).isFalse();
+        assertThat(column3.getCondition()).isEqualTo("== \"test\"");
         TemplateColumn column4 = (TemplateColumn) columns.get(3);
-        assertEquals("NotColumnCondition", column4.getName());
-        assertTrue(column4.isNotCondition());
-        assertEquals("== \"test2\"", column4.getCondition());
+        assertThat(column4.getName()).isEqualTo("NotColumnCondition");
+        assertThat(column4.isNotCondition()).isTrue();
+        assertThat(column4.getCondition()).isEqualTo("== \"test2\"");
 
     }
 }

@@ -38,7 +38,7 @@ public abstract class ReflectiveVisitor
     protected static final transient Logger logger = LoggerFactory.getLogger(ReflectiveVisitor.class);
 
     static final String newline = System.getProperty( "line.separator" );
-    private Map<Class<?>, Method> methodCache = new HashMap<Class<?>, Method>();
+    private Map<Class<?>, Method> methodCache = new HashMap<>();
     
     public void visit(final Object object) {
         Method method = null;

@@ -58,11 +58,11 @@ public class VerifierImpl
 
     private final VerifierConfiguration conf;
 
-    private List<VerifierError>         errors                 = new ArrayList<VerifierError>();
+    private List<VerifierError>         errors                 = new ArrayList<>();
 
     private VerifierReport              result                 = VerifierReportFactory.newVerifierReport();
 
-    private List<JarInputStream>        jars                   = new ArrayList<JarInputStream>();
+    private List<JarInputStream>        jars                   = new ArrayList<>();
 
     private VerifierPackageBuilder      verifierPackageBuilder = new VerifierPackageBuilder();
 

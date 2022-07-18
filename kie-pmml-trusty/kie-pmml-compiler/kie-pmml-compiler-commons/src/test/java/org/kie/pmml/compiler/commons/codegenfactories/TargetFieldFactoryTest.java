@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.models.TargetField;
@@ -42,7 +42,7 @@ public class TargetFieldFactoryTest {
     private static final String TEST_01_SOURCE = "TargetFieldFactoryTest_01.txt";
 
     @Test
-    public void getTargetFieldVariableInitializer() throws IOException {
+    void getTargetFieldVariableInitializer() throws IOException {
         TargetField kieTargetField = ModelUtils.convertToKieTargetField(getRandomTarget());
         ObjectCreationExpr retrieved = TargetFieldFactory.getTargetFieldVariableInitializer(kieTargetField);
         String text = getFileContent(TEST_01_SOURCE);

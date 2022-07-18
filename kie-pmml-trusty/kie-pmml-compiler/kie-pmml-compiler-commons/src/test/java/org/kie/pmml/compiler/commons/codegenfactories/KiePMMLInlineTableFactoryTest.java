@@ -30,8 +30,8 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MapValues;
 import org.dmg.pmml.PMML;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLInlineTable;
 import org.kie.pmml.commons.model.expressions.KiePMMLRow;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -49,7 +49,7 @@ public class KiePMMLInlineTableFactoryTest {
     private static final String TEST_01_SOURCE = "KiePMMLInlineTableFactoryTest_01.txt";
     private static InlineTable INLINETABLE;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         PMML pmmlModel = KiePMMLUtil.load(getFileInputStream(TRANSFORMATIONS_SAMPLE), TRANSFORMATIONS_SAMPLE);
         DerivedField mapValued = pmmlModel.getTransformationDictionary()
@@ -62,7 +62,7 @@ public class KiePMMLInlineTableFactoryTest {
     }
 
     @Test
-    public void getInlineTableVariableDeclaration() throws IOException {
+    void getInlineTableVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLInlineTableFactory.getInlineTableVariableDeclaration(variableName,
                                                                                           INLINETABLE);

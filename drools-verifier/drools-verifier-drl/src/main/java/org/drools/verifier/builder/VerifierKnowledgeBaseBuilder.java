@@ -32,7 +32,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 
 public class VerifierKnowledgeBaseBuilder {
 
-    private List<VerifierError> errors = new ArrayList<VerifierError>();
+    private List<VerifierError> errors = new ArrayList<>();
 
     public KieBase newVerifierKnowledgeBase(VerifierConfiguration configuration) {
 

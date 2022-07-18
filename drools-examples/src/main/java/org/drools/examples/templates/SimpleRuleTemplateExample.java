@@ -42,7 +42,7 @@ public class SimpleRuleTemplateExample {
         ksession.insert( new Person( "michael",
                                "stilton",
                                42 ) );
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();

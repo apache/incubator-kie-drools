@@ -43,7 +43,7 @@ public class TBusinessKnowledgeModel extends TInvocable implements BusinessKnowl
     @Override
     public List<KnowledgeRequirement> getKnowledgeRequirement() {
         if (knowledgeRequirement == null) {
-            knowledgeRequirement = new ArrayList<KnowledgeRequirement>();
+            knowledgeRequirement = new ArrayList<>();
         }
         return this.knowledgeRequirement;
     }
@@ -51,7 +51,7 @@ public class TBusinessKnowledgeModel extends TInvocable implements BusinessKnowl
     @Override
     public List<AuthorityRequirement> getAuthorityRequirement() {
         if (authorityRequirement == null) {
-            authorityRequirement = new ArrayList<AuthorityRequirement>();
+            authorityRequirement = new ArrayList<>();
         }
         return this.authorityRequirement;
     }

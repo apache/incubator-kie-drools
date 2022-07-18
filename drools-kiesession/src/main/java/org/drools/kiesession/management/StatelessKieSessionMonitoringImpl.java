@@ -125,7 +125,7 @@ public class StatelessKieSessionMonitoringImpl extends GenericKieSessionMonitori
             public RuleRuntimeStatsData() {
                 this.objectsInserted = new AtomicLong(0);
                 this.objectsDeleted = new AtomicLong(0);
-                this.lastReset = new AtomicReference<Date>(new Date());
+                this.lastReset = new AtomicReference<>(new Date());
             }
             
             public void reset() {

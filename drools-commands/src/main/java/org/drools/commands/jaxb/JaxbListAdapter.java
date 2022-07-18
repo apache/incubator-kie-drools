@@ -94,7 +94,7 @@ public class JaxbListAdapter extends XmlAdapter<JaxbListWrapper, Collection> {
         if( objArr == null ) {
             return Collections.EMPTY_LIST;
         }
-        List<Object> list = new ArrayList<Object>(objArr.length);
+        List<Object> list = new ArrayList<>(objArr.length);
         for( Object obj : objArr ) {
             list.add(unknownAdapter.unmarshal(obj));
         }

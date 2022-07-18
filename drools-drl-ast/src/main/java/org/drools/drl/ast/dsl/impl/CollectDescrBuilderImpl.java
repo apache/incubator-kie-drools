@@ -36,7 +36,7 @@ public class CollectDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends Bas
      * {@inheritDoc}
      */
     public PatternDescrBuilder<CollectDescrBuilder<P>> pattern( String type ) {
-        PatternDescrBuilder<CollectDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<CollectDescrBuilder<P>>( this,
+        PatternDescrBuilder<CollectDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<>( this,
                                                                                                                    type );
         descr.setInputPattern( pattern.getDescr() );
         return pattern;
@@ -46,7 +46,7 @@ public class CollectDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends Bas
      * {@inheritDoc}
      */
     public PatternDescrBuilder<CollectDescrBuilder<P>> pattern() {
-        PatternDescrBuilder<CollectDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<CollectDescrBuilder<P>>( this );
+        PatternDescrBuilder<CollectDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<>( this );
         descr.setInputPattern( pattern.getDescr() );
         return pattern;
     }

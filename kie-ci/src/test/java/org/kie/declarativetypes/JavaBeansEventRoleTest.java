@@ -24,7 +24,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaBeansEventRoleTest extends CommonTestMethodBase {
 
@@ -52,7 +52,7 @@ public class JavaBeansEventRoleTest extends CommonTestMethodBase {
         final Class clazz = kieModuleMetaData.getClass( packageName,
                                                         className );
         final TypeMetaInfo typeMetaInfo = kieModuleMetaData.getTypeMetaInfo( clazz );
-        assertTrue( typeMetaInfo.isEvent() );
+        assertThat(typeMetaInfo.isEvent()).isTrue();
     }
 
     @Test
@@ -80,7 +80,7 @@ public class JavaBeansEventRoleTest extends CommonTestMethodBase {
         final Class clazz = kieModuleMetaData.getClass( packageName,
                                                         className );
         final TypeMetaInfo typeMetaInfo = kieModuleMetaData.getTypeMetaInfo( clazz );
-        assertTrue( typeMetaInfo.isEvent() );
+        assertThat(typeMetaInfo.isEvent()).isTrue();
     }
 
     @Test
@@ -109,7 +109,7 @@ public class JavaBeansEventRoleTest extends CommonTestMethodBase {
         final Class clazz = kieModuleMetaData.getClass( packageName,
                                                         className );
         final TypeMetaInfo typeMetaInfo = kieModuleMetaData.getTypeMetaInfo( clazz );
-        assertTrue( typeMetaInfo.isEvent() );
+        assertThat(typeMetaInfo.isEvent()).isTrue();
     }
 
 }

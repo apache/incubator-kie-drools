@@ -16,10 +16,10 @@
 
 package org.drools.kiesession.debug;
 
+import java.util.Collection;
+
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-
-import java.util.Stack;
 
 public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -30,7 +30,7 @@ public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
 
     @Override
     protected void doVisit(NetworkNode node,
-                           Stack<NetworkNode> nodeStack,
+                           Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         ObjectTypeNode otn = (ObjectTypeNode) node;
         DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );

@@ -1,7 +1,7 @@
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -18,7 +18,7 @@ public class OtherDeclarationCompilationPhase extends AbstractPackageCompilation
     private final TypeDeclarationContext typeDeclarationContext;
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfiguration configuration;
-    private final KnowledgeBuilderImpl.AssetFilter assetFilter;
+    private final AssetFilter assetFilter;
 
     public OtherDeclarationCompilationPhase(
             PackageRegistry pkgRegistry,
@@ -27,7 +27,7 @@ public class OtherDeclarationCompilationPhase extends AbstractPackageCompilation
             TypeDeclarationContext typeDeclarationContext,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfiguration configuration,
-            KnowledgeBuilderImpl.AssetFilter assetFilter) {
+            AssetFilter assetFilter) {
         super(pkgRegistry, packageDescr);
         this.globalVariableContext = globalVariableContext;
         this.typeDeclarationContext = typeDeclarationContext;

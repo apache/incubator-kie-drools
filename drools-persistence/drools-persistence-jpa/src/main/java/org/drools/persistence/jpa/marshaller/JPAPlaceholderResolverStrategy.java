@@ -50,7 +50,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     private boolean closeEmf = false;
     private String name = JPAPlaceholderResolverStrategy.class.getName();
     
-    private static final ThreadLocal<EntityPersister> persister = new ThreadLocal<EntityPersister>();
+    private static final ThreadLocal<EntityPersister> persister = new ThreadLocal<>();
     
     public JPAPlaceholderResolverStrategy(Environment env) {
         this( (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY) );
@@ -87,7 +87,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     }
     
     private void initializeManagedClasses(){
-    	managedClasses = new HashSet<String>();
+    	managedClasses = new HashSet<>();
     	if( emf != null ){
 	    	Metamodel metamodel = emf.getMetamodel();
 	     	if( metamodel != null ){

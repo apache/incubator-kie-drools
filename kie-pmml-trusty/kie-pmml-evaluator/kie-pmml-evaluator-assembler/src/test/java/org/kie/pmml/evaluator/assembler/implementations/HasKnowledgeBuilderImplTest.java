@@ -22,8 +22,8 @@ import java.util.stream.IntStream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -35,14 +35,14 @@ public class HasKnowledgeBuilderImplTest {
     private KnowledgeBuilderImpl knowledgeBuilder;
     private HasKnowledgeBuilderImpl hasKnowledgeBuilder;
 
-    @Before
+    @BeforeEach
     public void setup() {
         knowledgeBuilder = new KnowledgeBuilderImpl();
         hasKnowledgeBuilder = new HasKnowledgeBuilderImpl(knowledgeBuilder);
     }
 
     @Test
-    public void getClassLoader() {
+    void getClassLoader() {
         ClassLoader retrieved = hasKnowledgeBuilder.getClassLoader();
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isEqualTo(knowledgeBuilder.getRootClassLoader());
@@ -50,7 +50,7 @@ public class HasKnowledgeBuilderImplTest {
     }
 
     @Test
-    public void compileAndLoadClass() {
+    void compileAndLoadClass() {
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(CLASS_SOURCE_NAME, CLASS_SOURCE);
         Class<?> retrieved = hasKnowledgeBuilder.compileAndLoadClass(sourcesMap, CLASS_SOURCE_NAME);
@@ -59,10 +59,10 @@ public class HasKnowledgeBuilderImplTest {
     }
 
     @Test
-    public void compileAndLoadClassMultipleTimes() {
+    void compileAndLoadClassMultipleTimes() {
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(CLASS_SOURCE_NAME, CLASS_SOURCE);
-        IntStream.range(0,3).forEach(value -> {
+        IntStream.range(0, 3).forEach(value -> {
             try {
                 hasKnowledgeBuilder.compileAndLoadClass(sourcesMap, CLASS_SOURCE_NAME);
             } catch (Throwable t) {

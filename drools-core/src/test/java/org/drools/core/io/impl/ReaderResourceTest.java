@@ -15,17 +15,16 @@
 
 package org.drools.core.io.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
-import org.drools.util.io.ReaderResource;
+import org.drools.io.ReaderResource;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReaderResourceTest {
 
@@ -42,7 +41,7 @@ public class ReaderResourceTest {
         // test
         ReaderResource iresource = new ReaderResource(ireader, null, null);
         // assert
-        assertEquals(ireader.getEncoding(), iresource.getEncoding());
+        assertThat(iresource.getEncoding()).isEqualTo(ireader.getEncoding());
 
         // setup: different default encoding to prove source
         final String differentEncoding = availableCharsets[1].name();
@@ -50,7 +49,7 @@ public class ReaderResourceTest {
         // test
         iresource = new ReaderResource(ireader, null, null);
         // assert
-        assertEquals(ireader.getEncoding(), iresource.getEncoding());
+        assertThat(iresource.getEncoding()).isEqualTo(ireader.getEncoding());
     }
 
     @Test
@@ -66,8 +65,8 @@ public class ReaderResourceTest {
         final ReaderResource iresource = new ReaderResource(ireader,
                 overwrittenEncoding, null);
         // assert
-        assertEquals(overwrittenEncoding, iresource.getEncoding());
-        assertNotEquals(ireader.getEncoding(), iresource.getEncoding());
+        assertThat(iresource.getEncoding()).isEqualTo(overwrittenEncoding);
+        assertThat(iresource.getEncoding()).isNotEqualTo(ireader.getEncoding());
     }
 
 }

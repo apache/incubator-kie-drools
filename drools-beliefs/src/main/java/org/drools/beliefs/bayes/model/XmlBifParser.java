@@ -33,7 +33,7 @@ import org.drools.beliefs.bayes.assembler.BayesNetworkAssemblerError;
 import org.drools.beliefs.graph.GraphNode;
 import org.drools.beliefs.graph.impl.EdgeImpl;
 import org.drools.drl.parser.ParserError;
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderError;
 
@@ -93,7 +93,7 @@ public class XmlBifParser {
 
         BayesNetwork graph = new BayesNetwork(name, packageName);
 
-        Map<String, GraphNode<BayesVariable>> map = new HashMap<String, GraphNode<BayesVariable>>();
+        Map<String, GraphNode<BayesVariable>> map = new HashMap<>();
         for (Definition def : bif.getNetwork().getDefinitions()) {
             GraphNode<BayesVariable> node = graph.addNode();
             BayesVariable var = buildVariable(def, bif.getNetwork(), node.getId());

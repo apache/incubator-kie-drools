@@ -44,9 +44,7 @@ import org.drools.mvel.MVELConstraint;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,8 +62,7 @@ public class RuleBuilderTest {
         final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
 
         // just checking there is no parsing errors
-        assertFalse( parser.getErrors().toString(),
-                            parser.hasErrors() );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
         
         pkg.addGlobal("results", List.class);
 
@@ -77,32 +74,27 @@ public class RuleBuilderTest {
         
         kBuilder.addPackage(pkgDescr);
 
-        assertTrue(kBuilder.getErrors().toString(),
-                   kBuilder.getErrors().isEmpty());
+        assertThat(kBuilder.getErrors().isEmpty()).as(kBuilder.getErrors().toString()).isTrue();
 
         final RuleImpl rule = kBuilder.getPackage("org.drools.mvel.compiler").getRule( "test nested CEs" );
 
-        assertEquals( "There should be 2 rule level declarations",
-                      2,
-                      rule.getDeclarations().size() );
+        assertThat(rule.getDeclarations().size()).as("There should be 2 rule level declarations").isEqualTo(2);
 
         // second GE should be a not
         final GroupElement not = (GroupElement) rule.getLhs().getChildren().get( 1 );
-        assertTrue( not.isNot() );
+        assertThat(not.isNot()).isTrue();
         // not has no outer declarations
-        assertTrue( not.getOuterDeclarations().isEmpty() );
-        assertEquals( 1,
-                      not.getInnerDeclarations().size() );
-        assertTrue( not.getInnerDeclarations().keySet().contains( "$state" ) );
+        assertThat(not.getOuterDeclarations().isEmpty()).isTrue();
+        assertThat(not.getInnerDeclarations().size()).isEqualTo(1);
+        assertThat(not.getInnerDeclarations().keySet().contains("$state")).isTrue();
 
         // second not
         final GroupElement not2 = (GroupElement) ((GroupElement) not.getChildren().get( 0 )).getChildren().get( 1 );
-        assertTrue( not2.isNot() );
+        assertThat(not2.isNot()).isTrue();
         // not has no outer declarations
-        assertTrue( not2.getOuterDeclarations().isEmpty() );
-        assertEquals( 1,
-                      not2.getInnerDeclarations().size() );
-        assertTrue( not2.getInnerDeclarations().keySet().contains( "$likes" ) );
+        assertThat(not2.getOuterDeclarations().isEmpty()).isTrue();
+        assertThat(not2.getInnerDeclarations().size()).isEqualTo(1);
+        assertThat(not2.getInnerDeclarations().keySet().contains("$likes")).isTrue();
     }
 
     @Test
@@ -244,16 +236,14 @@ public class RuleBuilderTest {
         final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
         kBuilder.addPackage(pkgDescr);
 
-        assertTrue(kBuilder.getErrors().toString(),
-                   kBuilder.getErrors().isEmpty());
+        assertThat(kBuilder.getErrors().isEmpty()).as(kBuilder.getErrors().toString()).isTrue();
 
         final RuleImpl rule = kBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
         if (pat.getConstraints().get(0) instanceof MVELConstraint) {
             final MVELConstraint fc = (MVELConstraint) pat.getConstraints().get( 0 );
-            assertTrue( "Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass(),
-                        fc.getField().getValue() instanceof BigDecimal );
+            assertThat(fc.getField().getValue() instanceof BigDecimal).as("Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass()).isTrue();
         }
     }
 
@@ -268,8 +258,7 @@ public class RuleBuilderTest {
         final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
         kBuilder.addPackage(pkgDescr);
 
-        assertFalse(kBuilder.getErrors().toString(),
-                    kBuilder.getErrors().isEmpty());
+        assertThat(kBuilder.getErrors().isEmpty()).as(kBuilder.getErrors().toString()).isFalse();
     }    
     
     @Test
@@ -289,16 +278,14 @@ public class RuleBuilderTest {
         final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
         kBuilder.addPackage(pkgDescr);
 
-        assertTrue(kBuilder.getErrors().toString(),
-                   kBuilder.getErrors().isEmpty());
+        assertThat(kBuilder.getErrors().isEmpty()).as(kBuilder.getErrors().toString()).isTrue();
 
         final RuleImpl rule = kBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
         if (pat.getConstraints().get(0) instanceof MVELConstraint) {
             final MVELConstraint fc = (MVELConstraint) pat.getConstraints().get( 0 );
-            assertTrue( "Wrong class. Expected java.math.BigInteger. Found: " + fc.getField().getValue().getClass(),
-                        fc.getField().getValue() instanceof BigInteger );
+            assertThat(fc.getField().getValue() instanceof BigInteger).as("Wrong class. Expected java.math.BigInteger. Found: " + fc.getField().getValue().getClass()).isTrue();
         }
     }
 

@@ -35,7 +35,7 @@ public class MultiMapFactory {
                     new NewSubMapProvider<Value, List<Value>>() {
                         @Override
                         public List<Value> getNewSubMap() {
-                            return new ArrayList<Value>();
+                            return new ArrayList<>();
                         }
                     });
     }

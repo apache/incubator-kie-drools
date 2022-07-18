@@ -181,7 +181,7 @@ public final class JavaRuleBuilderHelper {
                                                      final Declaration[] declarations,
                                                      final Declaration[] localDeclarations,
                                                      final Map<String, Class<?>> globals) {
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final Map<String, Object> map = new HashMap<>();
 
         map.put( "className", 
                  className );

@@ -375,8 +375,8 @@ implements RuleSheetListener {
                                boolean firstTable) {
         preInitRuleTable( row, column, value );
         this._isInRuleTable = true;
-        this._actions = new HashMap<Integer, ActionType>();
-        this.sourceBuilders = new TreeSet<SourceBuilder>(Comparator.comparing( SourceBuilder::getColumn ));
+        this._actions = new HashMap<>();
+        this.sourceBuilders = new TreeSet<>(Comparator.comparing( SourceBuilder::getColumn ));
         this._ruleStartColumn = column;
         this._ruleStartRow = row;
         this._ruleRow = row + LABEL_ROW + 1;

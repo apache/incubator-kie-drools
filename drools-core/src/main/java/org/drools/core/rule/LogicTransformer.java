@@ -16,19 +16,20 @@
 
 package org.drools.core.rule;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Stack;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.rule.accessor.DataProvider;
 import org.drools.core.rule.accessor.DeclarationScopeResolver;
+import org.drools.core.rule.constraint.Constraint;
 
 /**
  * LogicTransformation is reponsible for removing redundant nodes and move Or
@@ -36,7 +37,7 @@ import org.drools.core.rule.accessor.DeclarationScopeResolver;
  *
  */
 public class LogicTransformer {
-    private final Map<GroupElement.Type, Transformation> orTransformations = new HashMap<GroupElement.Type, Transformation>();
+    private final Map<GroupElement.Type, Transformation> orTransformations = new HashMap<>();
 
     private static LogicTransformer INSTANCE          = new LogicTransformer();
 
@@ -99,7 +100,7 @@ public class LogicTransformer {
     }
 
     private GroupElement[] processNamedConsequences(GroupElement[] ands) {
-        List<GroupElement> result = new ArrayList<GroupElement>();
+        List<GroupElement> result = new ArrayList<>();
 
         for (GroupElement and : ands) {
             List<RuleConditionElement> children = and.getChildren();
@@ -143,28 +144,28 @@ public class LogicTransformer {
      * we need to fix any references to cloned declarations.
      */
     protected void fixClonedDeclarations( GroupElement and, Map<String, Class<?>> globals ) {
-        Stack<RuleConditionElement> contextStack = new Stack<RuleConditionElement>();
+        Deque<RuleConditionElement> contextList = new ArrayDeque<>();
         DeclarationScopeResolver resolver = new DeclarationScopeResolver( globals,
-                                                                          contextStack );
+                                                                          contextList );
 
-        contextStack.push( and );
+        contextList.push( and );
         processElement( resolver,
-                        contextStack,
+                        contextList,
                         and );
-        contextStack.pop();
+        contextList.pop();
     }
 
     /**
      * recurse through the rule condition elements updating the declaration objecs
      */
     private void processElement(final DeclarationScopeResolver resolver,
-                                final Stack<RuleConditionElement> contextStack,
+                                final Deque<RuleConditionElement> contextList,
                                 final RuleConditionElement element) {
         if ( element instanceof Pattern ) {
             Pattern pattern = (Pattern) element;
             for ( RuleConditionElement ruleConditionElement : pattern.getNestedElements() ) {
                 processElement( resolver,
-                                contextStack,
+                                contextList,
                                 ruleConditionElement );
             }
             for (Constraint constraint : pattern.getConstraints()) {
@@ -179,7 +180,7 @@ public class LogicTransformer {
 
         } else if ( element instanceof Accumulate ) {
             for ( RuleConditionElement rce : element.getNestedElements() ) {
-                processElement( resolver, contextStack, rce );
+                processElement( resolver, contextList, rce );
             }
             Accumulate accumulate = (Accumulate)element;
             replaceDeclarations( resolver, accumulate );
@@ -243,13 +244,13 @@ public class LogicTransformer {
             processBranch( resolver, (ConditionalBranch) element );
 
         } else {
-            contextStack.push( element );
+            contextList.push( element );
             for (RuleConditionElement ruleConditionElement : element.getNestedElements()) {
                 processElement(resolver,
-                        contextStack,
+                        contextList,
                         ruleConditionElement);
             }
-            contextStack.pop();
+            contextList.pop();
         }
     }
 
@@ -303,7 +304,7 @@ public class LogicTransformer {
     }
 
     private static List<Integer> asList(int[] ints) {
-        List<Integer> list = new ArrayList<Integer>(ints.length);
+        List<Integer> list = new ArrayList<>(ints.length);
         for ( int i : ints ) {
             list.add( i );
         }
@@ -426,7 +427,7 @@ public class LogicTransformer {
         Transformation {
 
         public void transform(final GroupElement parent) throws InvalidPatternException {
-            final List<GroupElement> orsList = new ArrayList<GroupElement>();
+            final List<GroupElement> orsList = new ArrayList<>();
             // must keep order, so, using array
             final RuleConditionElement[] others = new RuleConditionElement[parent.getChildren().size()];
 

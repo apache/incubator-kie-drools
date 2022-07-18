@@ -140,7 +140,7 @@ public class JavaAccumulateBuilder
         Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
 
         // set of required previous declarations
-        Set<Declaration> requiredDecl = new HashSet<Declaration>();
+        Set<Declaration> requiredDecl = new HashSet<>();
 
         Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
 
@@ -352,11 +352,11 @@ public class JavaAccumulateBuilder
             return null;
         }
 
-        final Set<String> requiredDeclarations = new HashSet<String>( initCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
+        final Set<String> requiredDeclarations = new HashSet<>( initCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
         requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
         requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
 
-        final Map<String, Class< ? >> requiredGlobals = new HashMap<String, Class< ? >>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
+        final Map<String, Class< ? >> requiredGlobals = new HashMap<>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
         requiredGlobals.putAll( actionCodeAnalysis.getBoundIdentifiers().getGlobals() );
         requiredGlobals.putAll( resultCodeAnalysis.getBoundIdentifiers().getGlobals() );
 
@@ -446,7 +446,7 @@ public class JavaAccumulateBuilder
 
     public String fixInitCode( JavaAnalysisResult analysis,
                                   final String originalCode ) {
-        TreeSet<JavaLocalDeclarationDescr> locals = new TreeSet<JavaLocalDeclarationDescr>( new Comparator<JavaLocalDeclarationDescr>() {
+        TreeSet<JavaLocalDeclarationDescr> locals = new TreeSet<>( new Comparator<JavaLocalDeclarationDescr>() {
             public int compare( JavaLocalDeclarationDescr o1,
                                 JavaLocalDeclarationDescr o2 ) {
                 return o1.getStart() - o2.getStart();

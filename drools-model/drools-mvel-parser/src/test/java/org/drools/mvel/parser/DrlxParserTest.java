@@ -8,9 +8,8 @@ import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.mvel.parser.Providers.provider;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class DrlxParserTest {
 

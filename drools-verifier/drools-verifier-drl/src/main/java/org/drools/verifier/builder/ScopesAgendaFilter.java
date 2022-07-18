@@ -63,7 +63,7 @@ public class ScopesAgendaFilter
                               String scope) {
         this.acceptEmpty = acceptEmpty;
 
-        Collection<String> list = new ArrayList<String>();
+        Collection<String> list = new ArrayList<>();
         list.add( scope );
         this.scopes = list;
     }

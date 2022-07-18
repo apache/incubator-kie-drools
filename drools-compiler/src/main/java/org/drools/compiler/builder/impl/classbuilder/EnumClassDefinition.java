@@ -64,7 +64,7 @@ public class EnumClassDefinition
 
     public void addLiteral(EnumLiteralDefinition enumLiteralDefinition) {
         if ( enumLiterals == Collections.EMPTY_LIST ) {
-            enumLiterals = new ArrayList<EnumLiteralDefinition>();
+            enumLiterals = new ArrayList<>();
         }
         enumLiterals.add( enumLiteralDefinition );
     }

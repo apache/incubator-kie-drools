@@ -65,7 +65,7 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
         public ReactiveFromMemory(BetaMemory betaMemory,
                                   DataProvider dataProvider) {
             super(betaMemory, dataProvider);
-            stagedLeftTuples = new TupleSetsImpl<LeftTuple>();
+            stagedLeftTuples = new TupleSetsImpl<>();
         }
 
         public short getNodeType() {

@@ -17,37 +17,33 @@ package org.drools.scenariosimulation.backend.util;
 
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JsonUtilsTest {
 
     @Test
     public void convertFromStringToJSONNode() {
-        assertFalse(JsonUtils.convertFromStringToJSONNode(null).isPresent());
-        assertFalse(JsonUtils.convertFromStringToJSONNode("Not json").isPresent());
-        assertFalse(JsonUtils.convertFromStringToJSONNode("\"Not json").isPresent());
-        assertFalse(JsonUtils.convertFromStringToJSONNode("key : notJson\"").isPresent());
-        assertFalse(JsonUtils.convertFromStringToJSONNode("[key : 100]").isPresent());
-        assertFalse(JsonUtils.convertFromStringToJSONNode("{\"key\" : 100{").isPresent());
-        assertFalse(JsonUtils.convertFromStringToJSONNode("{key : 100}").isPresent());
-        assertTrue(JsonUtils.convertFromStringToJSONNode("\"Json\"").isPresent());
-        assertTrue(JsonUtils.convertFromStringToJSONNode("\"key : Json\"").isPresent());
-        assertTrue(JsonUtils.convertFromStringToJSONNode("{ \"id\": 2, \"username\": \"user\", \"num\": 12, \"name\": \"Mr Yellow\"\n }").isPresent());
-        assertTrue(JsonUtils.convertFromStringToJSONNode("{ \"users\": [\n" +
-                                                                 "\t\t{ \"id\": 3, \"username\": \"user45\", \"num\": 24, \"name\": \"Mr White\" },\n" +
-                                                                 "\t\t{ \"id\": 4, \"username\": \"user65\", \"num\": 32, \"name\": \"Mr Red\" }\n" +
-                                                                 "\t]}").isPresent());
-        assertTrue(JsonUtils.convertFromStringToJSONNode("[{\"name\": \"\\\"John\\\"\"}, " +
-                                                                 "{\"name\": \"\\\"John\\\"\", \"names\" : [{\"value\": \"\\\"Anna\\\"\"}, {\"value\": \"\\\"Mario\\\"\"}]}]").isPresent());
-        assertTrue(JsonUtils.convertFromStringToJSONNode("[1,2,3]").isPresent());
-        assertTrue(JsonUtils.convertFromStringToJSONNode("{\"id\": 23, \"num\": 34, \"time\" : 56}").isPresent());
-        assertTrue("Combine three data types in object",
-                   JsonUtils.convertFromStringToJSONNode("{\"married\":true, \"num\":34, \"name\": \"john\"}").isPresent());
-        assertTrue("Combine three data types in array",
-                   JsonUtils.convertFromStringToJSONNode("[{\"married\":true,\"num\":34,\"name\":\"john\"}," +
-                                                                 "{\"married\":false,\"num\":43,\"name\":\"jane\"}]").isPresent());
-        assertTrue("Whitespaces",
-                   JsonUtils.convertFromStringToJSONNode("{\"is married\":\"yes, is\"}").isPresent());
+        assertThat(JsonUtils.convertFromStringToJSONNode(null).isPresent()).isFalse();
+        assertThat(JsonUtils.convertFromStringToJSONNode("Not json").isPresent()).isFalse();
+        assertThat(JsonUtils.convertFromStringToJSONNode("\"Not json").isPresent()).isFalse();
+        assertThat(JsonUtils.convertFromStringToJSONNode("key : notJson\"").isPresent()).isFalse();
+        assertThat(JsonUtils.convertFromStringToJSONNode("[key : 100]").isPresent()).isFalse();
+        assertThat(JsonUtils.convertFromStringToJSONNode("{\"key\" : 100{").isPresent()).isFalse();
+        assertThat(JsonUtils.convertFromStringToJSONNode("{key : 100}").isPresent()).isFalse();
+        assertThat(JsonUtils.convertFromStringToJSONNode("\"Json\"").isPresent()).isTrue();
+        assertThat(JsonUtils.convertFromStringToJSONNode("\"key : Json\"").isPresent()).isTrue();
+        assertThat(JsonUtils.convertFromStringToJSONNode("{ \"id\": 2, \"username\": \"user\", \"num\": 12, \"name\": \"Mr Yellow\"\n }").isPresent()).isTrue();
+        assertThat(JsonUtils.convertFromStringToJSONNode("{ \"users\": [\n" +
+                "\t\t{ \"id\": 3, \"username\": \"user45\", \"num\": 24, \"name\": \"Mr White\" },\n" +
+                "\t\t{ \"id\": 4, \"username\": \"user65\", \"num\": 32, \"name\": \"Mr Red\" }\n" +
+                "\t]}").isPresent()).isTrue();
+        assertThat(JsonUtils.convertFromStringToJSONNode("[{\"name\": \"\\\"John\\\"\"}, " +
+                "{\"name\": \"\\\"John\\\"\", \"names\" : [{\"value\": \"\\\"Anna\\\"\"}, {\"value\": \"\\\"Mario\\\"\"}]}]").isPresent()).isTrue();
+        assertThat(JsonUtils.convertFromStringToJSONNode("[1,2,3]").isPresent()).isTrue();
+        assertThat(JsonUtils.convertFromStringToJSONNode("{\"id\": 23, \"num\": 34, \"time\" : 56}").isPresent()).isTrue();
+        assertThat(JsonUtils.convertFromStringToJSONNode("{\"married\":true, \"num\":34, \"name\": \"john\"}").isPresent()).as("Combine three data types in object").isTrue();
+        assertThat(JsonUtils.convertFromStringToJSONNode("[{\"married\":true,\"num\":34,\"name\":\"john\"}," +
+                "{\"married\":false,\"num\":43,\"name\":\"jane\"}]").isPresent()).as("Combine three data types in array").isTrue();
+        assertThat(JsonUtils.convertFromStringToJSONNode("{\"is married\":\"yes, is\"}").isPresent()).as("Whitespaces").isTrue();
     }
 }

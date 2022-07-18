@@ -47,7 +47,7 @@ public class CorrelationKeyXmlAdapter extends XmlAdapter<String, CorrelationKey>
         if( key == null || key.isEmpty() ) {
            return factory.newCorrelationKey(Collections.EMPTY_LIST);
         }
-        List<String> keys = new ArrayList<String>();
+        List<String> keys = new ArrayList<>();
         for( String k : key.split(":") ) {
             keys.add(k);
         }
@@ -71,7 +71,7 @@ public class CorrelationKeyXmlAdapter extends XmlAdapter<String, CorrelationKey>
         if( key == null ) {
             return "";
         }
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         if( ! key.getProperties().isEmpty() ) {
             Iterator<CorrelationProperty<?>> iter = key.getProperties().iterator();
             CorrelationProperty<?> prop = iter.next();

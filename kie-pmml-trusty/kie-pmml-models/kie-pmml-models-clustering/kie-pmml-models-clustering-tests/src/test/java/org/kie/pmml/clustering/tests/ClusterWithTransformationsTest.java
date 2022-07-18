@@ -21,18 +21,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
-@RunWith(Parameterized.class)
 public class ClusterWithTransformationsTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "ClusterWithTransformations.pmml";
@@ -48,14 +47,14 @@ public class ClusterWithTransformationsTest extends AbstractPMMLTest {
 
     private static PMMLRuntime pmmlRuntime;
 
-    private final double sepalLength;
-    private final double sepalWidth;
-    private final double petalLength;
-    private final double petalWidth;
-    private final String irisClass;
-    private final double outNormcontinuousField;
+    private double sepalLength;
+    private double sepalWidth;
+    private double petalLength;
+    private double petalWidth;
+    private String irisClass;
+    private double outNormcontinuousField;
 
-    public ClusterWithTransformationsTest(double sepalLength, double sepalWidth, double petalLength,
+    public void initClusterWithTransformationsTest(double sepalLength, double sepalWidth, double petalLength,
                                           double petalWidth, String irisClass, double outNormcontinuousField) {
         this.sepalLength = sepalLength;
         this.sepalWidth = sepalWidth;
@@ -65,12 +64,11 @@ public class ClusterWithTransformationsTest extends AbstractPMMLTest {
         this.outNormcontinuousField = outNormcontinuousField;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {4.4, 3.0, 1.3, 0.2, "3", 4.966666666666667},
@@ -82,8 +80,10 @@ public class ClusterWithTransformationsTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testClusterWithTransformations() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testClusterWithTransformations(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String irisClass, double outNormcontinuousField) throws Exception {
+        initClusterWithTransformationsTest(sepalLength, sepalWidth, petalLength, petalWidth, irisClass, outNormcontinuousField);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("sepal_length", sepalLength);
         inputData.put("sepal_width", sepalWidth);
@@ -139,19 +139,25 @@ public class ClusterWithTransformationsTest extends AbstractPMMLTest {
         assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void testClusterWithTransformationsWithoutRequired() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("sepal_length", sepalLength);
-        inputData.put("sepal_width", sepalWidth);
-        inputData.put("petal_length", petalLength);
-        inputData.put("petal_width", petalWidth);
-        inputData.put("text_input", TEXT_INPUT);
-        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    @MethodSource("data")
+    @ParameterizedTest
+    void testClusterWithTransformationsWithoutRequired(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String irisClass, double outNormcontinuousField) {
+        initClusterWithTransformationsTest(sepalLength, sepalWidth, petalLength, petalWidth, irisClass, outNormcontinuousField);
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            final Map<String, Object> inputData = new HashMap<>();
+            inputData.put("sepal_length", sepalLength);
+            inputData.put("sepal_width", sepalWidth);
+            inputData.put("petal_length", petalLength);
+            inputData.put("petal_width", petalWidth);
+            inputData.put("text_input", TEXT_INPUT);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        });
     }
 
-    @Test
-    public void testClusterWithTransformationsConvertible() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testClusterWithTransformationsConvertible(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String irisClass, double outNormcontinuousField) {
+        initClusterWithTransformationsTest(sepalLength, sepalWidth, petalLength, petalWidth, irisClass, outNormcontinuousField);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("sepal_length", String.valueOf(sepalLength));
         inputData.put("sepal_width", String.valueOf(sepalWidth));
@@ -162,27 +168,35 @@ public class ClusterWithTransformationsTest extends AbstractPMMLTest {
         assertThat(evaluate(pmmlRuntime, inputData, MODEL_NAME)).isNotNull();
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void testClusterWithTransformationsNotConvertible() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("sepal_length", sepalLength);
-        inputData.put("sepal_width", sepalWidth);
-        inputData.put("petal_length", petalLength);
-        inputData.put("petal_width", petalWidth);
-        inputData.put("text_input", TEXT_INPUT);
-        inputData.put("input3", true);
-        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    @MethodSource("data")
+    @ParameterizedTest
+    void testClusterWithTransformationsNotConvertible(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String irisClass, double outNormcontinuousField) {
+        initClusterWithTransformationsTest(sepalLength, sepalWidth, petalLength, petalWidth, irisClass, outNormcontinuousField);
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            final Map<String, Object> inputData = new HashMap<>();
+            inputData.put("sepal_length", sepalLength);
+            inputData.put("sepal_width", sepalWidth);
+            inputData.put("petal_length", petalLength);
+            inputData.put("petal_width", petalWidth);
+            inputData.put("text_input", TEXT_INPUT);
+            inputData.put("input3", true);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        });
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void testClusterWithTransformationsInvalidValue() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("sepal_length", sepalLength);
-        inputData.put("sepal_width", sepalWidth);
-        inputData.put("petal_length", petalLength);
-        inputData.put("petal_width", petalWidth);
-        inputData.put("text_input", TEXT_INPUT);
-        inputData.put("input3", 4.1);
-        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    @MethodSource("data")
+    @ParameterizedTest
+    void testClusterWithTransformationsInvalidValue(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String irisClass, double outNormcontinuousField) {
+        initClusterWithTransformationsTest(sepalLength, sepalWidth, petalLength, petalWidth, irisClass, outNormcontinuousField);
+        assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
+            final Map<String, Object> inputData = new HashMap<>();
+            inputData.put("sepal_length", sepalLength);
+            inputData.put("sepal_width", sepalWidth);
+            inputData.put("petal_length", petalLength);
+            inputData.put("petal_width", petalWidth);
+            inputData.put("text_input", TEXT_INPUT);
+            inputData.put("input3", 4.1);
+            evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        });
     }
 }

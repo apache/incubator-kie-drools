@@ -32,7 +32,7 @@ abstract class ReportVisitor {
     private static final Logger LOG = LoggerFactory.getLogger(ReportVisitor.class);
 
     protected static String processHeader(String folder) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("sourceFolder", folder);
 
         map.put("objectTypesFile", UrlFactory.HTML_FILE_INDEX);
@@ -45,7 +45,7 @@ abstract class ReportVisitor {
     }
 
     protected static String readFile(String fileName) {
-        StringBuffer str = new StringBuffer("");
+        StringBuilder str = new StringBuilder("");
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(ReportVisitor.class.getResourceAsStream(fileName), IoUtils.UTF8_CHARSET))) {
             String line;
@@ -63,7 +63,7 @@ abstract class ReportVisitor {
     }
 
     protected static String createStyleTag(String path) {
-        StringBuffer str = new StringBuffer("");
+        StringBuilder str = new StringBuilder("");
 
         str.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         str.append(path);

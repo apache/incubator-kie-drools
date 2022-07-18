@@ -75,7 +75,7 @@ public class PersistenceUtil {
         // Setup the datasource
         PoolingDataSourceWrapper ds1 = setupPoolingDataSource(getDatasourceProperties(), dataSourceName);
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, Object> context = new HashMap<>();
         context.put(DATASOURCE, ds1);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         context.put(ENTITY_MANAGER_FACTORY, emf);

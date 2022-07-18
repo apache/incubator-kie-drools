@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
@@ -40,35 +40,35 @@ public class KiePMMLComplexPartialScoreTest {
     private static final Double value2 = 5.0;
 
     @Test
-    public void evaluateFromConstant() {
+    void evaluateFromConstant() {
         // <ComplexPartialScore>
         //     <Constant>100.0</Constant>
         // </ComplexPartialScore>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLComplexPartialScore complexPartialScore = new KiePMMLComplexPartialScore(CUSTOM_FIELD, Collections.emptyList(),
-                                                                                       kiePMMLConstant1);
+                kiePMMLConstant1);
         Object retrieved = complexPartialScore.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                                 Collections.emptyMap());
+                Collections.emptyMap());
         assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
-    public void evaluateFromFieldRef() {
+    void evaluateFromFieldRef() {
         // <ComplexPartialScore>
         //     <FieldRef field="PARAM_1"/>
         // </ComplexPartialScore>
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(PARAM_1, Collections.emptyList(), null);
         final KiePMMLComplexPartialScore complexPartialScore = new KiePMMLComplexPartialScore(CUSTOM_FIELD, Collections.emptyList(),
-                                                                                       kiePMMLFieldRef);
+                kiePMMLFieldRef);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put(PARAM_1, value1);
         Object retrieved = complexPartialScore.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                                 inputData);
+                inputData);
         assertThat(retrieved).isEqualTo(value1);
     }
 
     @Test
-    public void evaluateFromApplyWithKiePMMLNameValues() {
+    void evaluateFromApplyWithKiePMMLNameValues() {
         // <ComplexPartialScore>
         //     <Apply function="/">
         //        <FieldRef>PARAM_1</FieldRef>
@@ -81,15 +81,15 @@ public class KiePMMLComplexPartialScoreTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
         final KiePMMLComplexPartialScore complexPartialScore = new KiePMMLComplexPartialScore(CUSTOM_FIELD, Collections.emptyList(),
-                                                                                       kiePMMLApply);
+                kiePMMLApply);
         Object retrieved = complexPartialScore.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                                 getInputData());
+                getInputData());
         Object expected = value1 / value2;
         assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
-    public void evaluateFromApplyWithComplexPartialScores() {
+    void evaluateFromApplyWithComplexPartialScores() {
         // <ComplexPartialScore>
         //     <Apply function="/">
         //        <FieldRef>PARAM_1</FieldRef>
@@ -102,9 +102,9 @@ public class KiePMMLComplexPartialScoreTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
         final KiePMMLComplexPartialScore complexPartialScore = new KiePMMLComplexPartialScore(CUSTOM_FIELD, Collections.emptyList(),
-                                                                                              kiePMMLApply);
+                kiePMMLApply);
         Object retrieved = complexPartialScore.evaluate(Collections.emptyList(), getDerivedFields(), Collections.emptyList(),
-                                                 Collections.emptyMap());
+                Collections.emptyMap());
         Object expected = value1 / value2;
         assertThat(retrieved).isEqualTo(expected);
     }

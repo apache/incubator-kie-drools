@@ -77,7 +77,7 @@ public class MavenRepositoryConfiguration {
     }
 
     private Collection<RemoteRepository> initExtraRepositories() {
-        Collection<RemoteRepository> extraRepositories = new HashSet<RemoteRepository>();
+        Collection<RemoteRepository> extraRepositories = new HashSet<>();
         for ( Profile profile : settings.getProfiles() ) {
             if ( isProfileActive( profile ) ) {
                 for ( Repository repository : profile.getRepositories() ) {
@@ -94,7 +94,7 @@ public class MavenRepositoryConfiguration {
     }
 
     private Collection<RemoteRepository> initRemoteRepositoriesForRequest() {
-        Collection<RemoteRepository> remoteRepos = new HashSet<RemoteRepository>();
+        Collection<RemoteRepository> remoteRepos = new HashSet<>();
         for ( RemoteRepository repo : extraRepositories ) {
             remoteRepos.add( resolveMirroredRepo( repo ) );
         }
@@ -102,7 +102,7 @@ public class MavenRepositoryConfiguration {
     }
 
     private Collection<ArtifactRepository> initArtifactRepositories() {
-        Collection<ArtifactRepository> artifactRepos = new HashSet<ArtifactRepository>();
+        Collection<ArtifactRepository> artifactRepos = new HashSet<>();
         for ( RemoteRepository remoteRepository : remoteRepositoriesForRequest ) {
             artifactRepos.add( toArtifactRepository( remoteRepository ) );
         }

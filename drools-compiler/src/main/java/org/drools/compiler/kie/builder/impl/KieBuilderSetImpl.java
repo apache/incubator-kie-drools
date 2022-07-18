@@ -32,7 +32,7 @@ import java.util.Set;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.util.io.BaseResource;
+import org.drools.io.BaseResource;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
@@ -125,7 +125,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
 
     private Set<String> findResourcesWithMessages( KnowledgeBuilder kBuilder) {
         if ( kBuilder.hasResults( getSeverities() ) ) {
-            Set<String> resourcesWithMessages = new HashSet<String>();
+            Set<String> resourcesWithMessages = new HashSet<>();
             for ( KnowledgeBuilderResult result : kBuilder.getResults( getSeverities() ) ) {
                 resourcesWithMessages.add(result.getResource().getSourcePath());
             }

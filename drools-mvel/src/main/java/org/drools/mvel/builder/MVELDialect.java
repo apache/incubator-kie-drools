@@ -179,7 +179,7 @@ public class MVELDialect
         // setting MVEL option directly
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
 
-        this.results = new ArrayList<KnowledgeBuilderResult>();
+        this.results = new ArrayList<>();
 
         // this.data = new MVELDialectRuntimeData(
         // this.pkg.getDialectRuntimeRegistry() );
@@ -198,7 +198,7 @@ public class MVELDialect
             data = ( MVELDialectRuntimeData ) this.pkg.getDialectRuntimeRegistry().getDialectData("mvel");
         }
 
-        this.results = new ArrayList<KnowledgeBuilderResult>();
+        this.results = new ArrayList<>();
         this.src = new MemoryResourceReader();
         if (this.pkg != null) {
             this.addImport(new ImportDescr(this.pkg.getName() + ".*"));
@@ -259,7 +259,7 @@ public class MVELDialect
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
-        builders = new HashMap<Class<?>, EngineElementBuilder>();
+        builders = new HashMap<>();
 
         builders.put(AndDescr.class,
                      GE_BUILDER);
@@ -612,7 +612,7 @@ public class MVELDialect
         // "not bound" identifiers could be drools, kcontext and rule
         // but in the case of accumulate it could be vars from the "init" section.        
         //String[] otherIdentifiers = otherInputVariables == null ? new String[]{} : new String[otherInputVariables.size()];
-        strList = new ArrayList<String>();
+        strList = new ArrayList<>();
         if (otherInputVariables != null) {
             MVELAnalysisResult mvelAnalysis = (MVELAnalysisResult) analysis;
             for (Entry<String, Class<?>> stringClassEntry : otherInputVariables.entrySet()) {

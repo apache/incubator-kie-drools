@@ -17,7 +17,6 @@ package org.drools.template;
 
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DefaultTemplateContainer;
-import org.drools.template.parser.TemplateContainer;
 import org.drools.template.parser.TemplateDataListener;
 
 import java.io.InputStream;
@@ -110,7 +109,7 @@ public class DataProviderCompiler {
     public String compile(final DataProvider dataProvider,
                           final TemplateDataListener listener,
                           boolean replaceOptionals) {
-        List<DataListener> listeners = new ArrayList<DataListener>();
+        List<DataListener> listeners = new ArrayList<>();
         listeners.add(listener);
         processData(dataProvider,
                     listeners);

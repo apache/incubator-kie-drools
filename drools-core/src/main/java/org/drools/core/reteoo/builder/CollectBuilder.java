@@ -80,7 +80,7 @@ public class CollectBuilder
 
             // create a tuple start equals constraint and set it in the context
             final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-            final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<BetaNodeFieldConstraint>();
+            final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<>();
             betaConstraints.add( constraint );
             context.setBetaconstraints( betaConstraints );
             existSubNetwort = true;

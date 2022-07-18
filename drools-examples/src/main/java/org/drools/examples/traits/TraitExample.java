@@ -18,7 +18,7 @@ package org.drools.examples.traits;
 
 import java.util.Collection;
 
-import org.drools.util.io.ClassPathResource;
+import org.drools.io.ClassPathResource;
 import org.drools.traits.core.base.evaluators.IsAEvaluatorDefinition;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.EvaluatorOption;

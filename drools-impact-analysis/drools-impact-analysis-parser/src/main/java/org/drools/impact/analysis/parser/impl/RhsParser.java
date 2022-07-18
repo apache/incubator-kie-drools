@@ -38,9 +38,9 @@ import org.drools.impact.analysis.model.right.InsertedProperty;
 import org.drools.impact.analysis.model.right.ModifiedMapProperty;
 import org.drools.impact.analysis.model.right.ModifiedProperty;
 import org.drools.impact.analysis.model.right.ModifyAction;
-import org.drools.modelcompiler.builder.generator.Consequence;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
-import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.model.codegen.execmodel.generator.Consequence;
+import org.drools.model.codegen.execmodel.generator.DeclarationSpec;
+import org.drools.model.codegen.execmodel.generator.RuleContext;
 
 import static org.drools.util.StringUtils.ucFirst;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.getLiteralString;

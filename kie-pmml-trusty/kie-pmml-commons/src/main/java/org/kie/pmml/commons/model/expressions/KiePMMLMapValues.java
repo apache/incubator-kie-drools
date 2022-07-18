@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.KiePMMLExtension;

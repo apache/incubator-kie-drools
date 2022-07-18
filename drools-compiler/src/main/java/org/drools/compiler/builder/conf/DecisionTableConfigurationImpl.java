@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.drools.util.io.ResourceConfigurationImpl;
+import org.drools.io.ResourceConfigurationImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.DecisionTableConfiguration;
@@ -41,7 +41,7 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
     
     private String worksheetName;
 
-    private Set<RuleTemplateConfiguration> templates = new HashSet<RuleTemplateConfiguration>();
+    private Set<RuleTemplateConfiguration> templates = new HashSet<>();
 
     private boolean trimCell = true;
 

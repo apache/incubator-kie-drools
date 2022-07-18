@@ -1,0 +1,7 @@
+[id='dmn-gs-new-project-creating-proc_{context}']
+= Creating the traffic violations project from scratch
+
+For this example, create a new project called `traffic-violation` in your IDE. A project is a container for assets such as data objects, DMN assets, and test scenarios. This example project that you are creating is similar to the existing *Traffic_Violation* sample project.
+
+.Procedure
+. Follow the instruction depending on your IDE to create a new KJAR based Maven project.

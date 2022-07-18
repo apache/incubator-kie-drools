@@ -86,7 +86,7 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.util.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.util.io.InternalResource;
+import org.drools.io.InternalResource;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.LineMappings;
@@ -174,8 +174,8 @@ public class JavaDialect implements Dialect {
 
         this.configuration = ( JavaForMvelDialectConfiguration ) pkgConf.getDialectConfiguration("java");
 
-        this.errorHandlers = new ConcurrentHashMap<String, ErrorHandler>();
-        this.results = new ArrayList<KnowledgeBuilderResult>();
+        this.errorHandlers = new ConcurrentHashMap<>();
+        this.results = new ArrayList<>();
 
         this.src = new MemoryResourceReader();
 
@@ -209,7 +209,7 @@ public class JavaDialect implements Dialect {
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
-        builders = new HashMap<Class<?>, EngineElementBuilder>();
+        builders = new HashMap<>();
 
         builders.put(CollectDescr.class,
                      COLLECT_BUIDER);

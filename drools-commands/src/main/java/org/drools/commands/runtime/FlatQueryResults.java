@@ -77,7 +77,7 @@ public class FlatQueryResults implements QueryResults {
     public FlatQueryResults(QueryResultsImpl results) {
         Declaration[] parameters = results.getParameters();
 
-        identifiers  = new HashSet<String>();
+        identifiers  = new HashSet<>();
         for ( Declaration declr : parameters ) {
             identifiers.add( declr.getIdentifier() );
         }
@@ -100,13 +100,13 @@ public class FlatQueryResults implements QueryResults {
         }
 
         int length = declrs.length;
-        idFactHandleMaps = new ArrayList<Map<String,FactHandle>>();
-        idResultMaps = new ArrayList<Map<String,Object>>();
+        idFactHandleMaps = new ArrayList<>();
+        idResultMaps = new ArrayList<>();
 
         for ( QueryResultsRow result : results ) {
             QueryResultsRowImpl resultImpl = (QueryResultsRowImpl) result;
-            Map<String, FactHandle> idFactHandleMap = new HashMap<String, FactHandle>(length);
-            Map<String, Object> idResultMap = new HashMap<String, Object>(length);
+            Map<String, FactHandle> idFactHandleMap = new HashMap<>(length);
+            Map<String, Object> idResultMap = new HashMap<>(length);
 
             for( i = 0; i < length; ++i ) {
                 String id = declrs[i].getIdentifier();

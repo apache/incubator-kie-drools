@@ -32,7 +32,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class CrossProductTest {
@@ -65,12 +65,12 @@ public class CrossProductTest {
 
         session.fireAllRules();
 
-        assertEquals(6, list1.size());
+        assertThat(list1.size()).isEqualTo(6);
 
         final List list2 = Arrays.asList("42:43", "43:42", "World:42", "42:World", "World:43", "43:World");
         Collections.sort(list1);
         Collections.sort(list2);
-        assertEquals(list2, list1);
+        assertThat(list1).isEqualTo(list2);
     }
 
 }

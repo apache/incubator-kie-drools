@@ -33,7 +33,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MemberOfTest {
@@ -97,10 +97,10 @@ public class MemberOfTest {
 
             ksession.fireAllRules();
 
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
 
-            assertEquals(stilton, list.get(0));
-            assertEquals(muzzarela, list.get(1));
+            assertThat(list.get(0)).isEqualTo(stilton);
+            assertThat(list.get(1)).isEqualTo(muzzarela);
         } finally {
             ksession.dispose();
         }

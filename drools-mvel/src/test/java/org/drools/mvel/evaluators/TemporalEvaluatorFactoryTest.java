@@ -35,9 +35,6 @@ import org.drools.core.rule.accessor.ReadAccessor;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test coverage for the temporal evaluators.
@@ -935,8 +932,7 @@ public class TemporalEvaluatorFactoryTest {
                                                 row,
                                                 evaluator );
 
-            assertEquals( valueType,
-                          evaluator.getValueType() );
+            assertThat(evaluator.getValueType()).isEqualTo(valueType);
 
         }
     }
@@ -953,11 +949,9 @@ public class TemporalEvaluatorFactoryTest {
         final String message = "The evaluator type: [" + valueType + "] with 2 extractors incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
-            assertTrue( message,
-                        result );
+            assertThat(result).as(message).isTrue();
         } else {
-            assertFalse( message,
-                         result );
+            assertThat(result).as(message).isFalse();
         }
     }
 
@@ -976,11 +970,9 @@ public class TemporalEvaluatorFactoryTest {
         final String message = "The evaluator type: [" + valueType + "] with CachedRight incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
-            assertTrue( message,
-                        result );
+            assertThat(result).as(message).isTrue();
         } else {
-            assertFalse( message,
-                         result );
+            assertThat(result).as(message).isFalse();
         }
     }
 
@@ -999,11 +991,9 @@ public class TemporalEvaluatorFactoryTest {
         final String message = "The evaluator type: [" + valueType + "] with CachedLeft incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
-            assertTrue( message,
-                        result );
+            assertThat(result).as(message).isTrue();
         } else {
-            assertFalse( message,
-                         result );
+            assertThat(result).as(message).isFalse();
         }
     }
 

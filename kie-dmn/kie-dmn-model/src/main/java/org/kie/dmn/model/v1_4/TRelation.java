@@ -31,7 +31,7 @@ public class TRelation extends TExpression implements Relation {
     @Override
     public java.util.List<InformationItem> getColumn() {
         if (column == null) {
-            column = new ArrayList<InformationItem>();
+            column = new ArrayList<>();
         }
         return this.column;
     }
@@ -39,7 +39,7 @@ public class TRelation extends TExpression implements Relation {
     @Override
     public java.util.List<List> getRow() {
         if (row == null) {
-            row = new ArrayList<List>();
+            row = new ArrayList<>();
         }
         return this.row;
     }

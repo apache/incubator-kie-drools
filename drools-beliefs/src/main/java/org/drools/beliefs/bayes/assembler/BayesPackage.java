@@ -29,7 +29,7 @@ public class BayesPackage implements ResourceTypePackage<JunctionTree> {
     private String namespace;
 
     public BayesPackage(String namespace) {
-        this.trees = new HashMap<String, JunctionTree>();
+        this.trees = new HashMap<>();
         this.namespace = namespace;
     }
 

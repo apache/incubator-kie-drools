@@ -44,7 +44,7 @@ public class InsertBeforeFunction
         }
 
         // spec requires us to return a new list
-        final List<Object> result = new ArrayList<Object>( list );
+        final List<Object> result = new ArrayList<>( list );
         if( position.intValue() > 0 ) {
             result.add( position.intValue() - 1, newItem );
         } else {

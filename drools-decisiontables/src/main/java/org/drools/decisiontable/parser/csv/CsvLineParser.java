@@ -83,7 +83,7 @@ public class CsvLineParser {
         }
 
         /** The fields in the current String */
-        protected List<String> list = new ArrayList<String>();
+        protected List<String> list = new ArrayList<>();
 
         /** the separator char for this parser */
         protected char fieldSep;
@@ -95,7 +95,7 @@ public class CsvLineParser {
          *         a String, in order.
          */
         public List<String> parse(final String line) {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             this.list.clear(); // recycle to initial state
             int i = 0;
 
@@ -124,7 +124,7 @@ public class CsvLineParser {
 
         /** advQuoted: quoted field; return index of next separator */
         protected int advQuoted(final String s,
-                                final StringBuffer sb,
+                                final StringBuilder sb,
                                 final int i) {
             int j;
             final int len = s.length();
@@ -146,7 +146,7 @@ public class CsvLineParser {
 
         /** advPlain: unquoted field; return index of next separator */
         protected int advPlain(final String s,
-                               final StringBuffer sb,
+                               final StringBuilder sb,
                                final int i) {
             int j;
 

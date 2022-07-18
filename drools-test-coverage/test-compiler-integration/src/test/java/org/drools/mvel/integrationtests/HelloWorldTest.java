@@ -36,8 +36,7 @@ import org.mvel2.MVELRuntime;
 import org.mvel2.debug.Debugger;
 import org.mvel2.debug.Frame;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This is a sample class to launch a rule.
@@ -104,14 +103,14 @@ public class HelloWorldTest {
         ksession.insert(message);
         ksession.fireAllRules();
         logger.close();
-        assertEquals( 6, knownVariables.size() );
-        assertTrue(knownVariables.contains("drools"));
-        assertTrue(knownVariables.contains("myMessage"));
-        assertTrue(knownVariables.contains("rule"));
-        assertTrue(knownVariables.contains("kcontext"));
-        assertTrue(knownVariables.contains("this"));        
-        assertTrue(knownVariables.contains("m"));
-        assertTrue(knownVariables.contains("myMessage"));
+        assertThat(knownVariables.size()).isEqualTo(6);
+        assertThat(knownVariables.contains("drools")).isTrue();
+        assertThat(knownVariables.contains("myMessage")).isTrue();
+        assertThat(knownVariables.contains("rule")).isTrue();
+        assertThat(knownVariables.contains("kcontext")).isTrue();
+        assertThat(knownVariables.contains("this")).isTrue();
+        assertThat(knownVariables.contains("m")).isTrue();
+        assertThat(knownVariables.contains("myMessage")).isTrue();
     }
 
     private KieBase readKnowledgeBase() throws Exception {

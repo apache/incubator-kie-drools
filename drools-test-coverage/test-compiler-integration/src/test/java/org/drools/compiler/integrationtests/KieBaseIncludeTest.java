@@ -22,7 +22,7 @@ import java.io.IOException;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -36,8 +36,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class KieBaseIncludeTest {
@@ -77,13 +76,13 @@ public class KieBaseIncludeTest {
         kfs.writePomXML( getPom( containerReleaseId, includedReleaseId ) );
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-        assertTrue( kieBuilder.buildAll(projectType).getResults().getMessages().isEmpty() );
+        assertThat(kieBuilder.buildAll(projectType).getResults().getMessages().isEmpty()).isTrue();
         InternalKieModule containerKJar = ( InternalKieModule ) kieBuilder.getKieModule();
 
         KieContainer kieContainer = ks.newKieContainer( containerReleaseId );
         KieSession ksession = kieContainer.newKieSession( "KSession2" );
         ksession.insert( "test" );
-        assertEquals( 1, ksession.fireAllRules() );
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         ksession.dispose();
         fileManager.tearDown();
@@ -105,7 +104,7 @@ public class KieBaseIncludeTest {
         }
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll(projectType).getResults().getMessages().isEmpty());
+        assertThat(kieBuilder.buildAll(projectType).getResults().getMessages().isEmpty()).isTrue();
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 

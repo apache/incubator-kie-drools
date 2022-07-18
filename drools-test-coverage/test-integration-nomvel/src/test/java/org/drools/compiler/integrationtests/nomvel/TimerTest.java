@@ -33,9 +33,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.Calendar;
 import org.kie.api.time.SessionClock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.compiler.integrationtests.nomvel.TestUtil.getKieSession;
 import static org.drools.modelcompiler.util.EvaluationUtil.convertDate;
-import static org.junit.Assert.assertEquals;
 
 public class TimerTest {
 
@@ -60,27 +60,27 @@ public class TimerTest {
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         timeService.advanceTime(20, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertThat(list.size()).isEqualTo(0);
 
         timeService.advanceTime(15, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         timeService.advanceTime(3, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertThat(list.size()).isEqualTo(1);
 
         timeService.advanceTime(2, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(2, list.size());
+        assertThat(list.size()).isEqualTo(2);
 
         timeService.advanceTime(10, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals(3, list.size());
+        assertThat(list.size()).isEqualTo(3);
     }
 
     @Test
@@ -124,12 +124,12 @@ public class TimerTest {
             ksession.insert(event3);
 
             ksession.fireAllRules(); // Nothing Happens
-            assertEquals(1, counter.get());
+            assertThat(counter.get()).isEqualTo(1);
 
             sessionClock.advanceTime(10, TimeUnit.MILLISECONDS);
             ksession.fireAllRules();
 
-            assertEquals(0, counter.get());
+            assertThat(counter.get()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }
@@ -169,16 +169,16 @@ public class TimerTest {
             final FactHandle fh = ksession.insert(10000L);
 
             ksession.fireAllRules();
-            assertEquals(0, list.size());
+            assertThat(list.size()).isEqualTo(0);
 
             timeService.advanceTime(10, TimeUnit.SECONDS);
             ksession.fireAllRules();
-            assertEquals(1, list.size());
+            assertThat(list.size()).isEqualTo(1);
 
             timeService.advanceTime(17, TimeUnit.SECONDS);
             ksession.update(fh, 5000L);
             ksession.fireAllRules();
-            assertEquals(2, list.size());
+            assertThat(list.size()).isEqualTo(2);
         } finally {
             ksession.dispose();
         }
@@ -216,27 +216,27 @@ public class TimerTest {
 
                 timeService.advanceTime(date.getTime(), TimeUnit.MILLISECONDS);
                 ksession.fireAllRules();
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(0, list.size());
+                assertThat(list.size()).isEqualTo(0);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 3
                 ksession.fireAllRules();
-                assertEquals(1, list.size());
+                assertThat(list.size()).isEqualTo(1);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(2, list.size());
+                assertThat(list.size()).isEqualTo(2);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);   // day 5
                 ksession.fireAllRules();
-                assertEquals(3, list.size());
+                assertThat(list.size()).isEqualTo(3);
 
                 timeService.advanceTime(oneDay, TimeUnit.SECONDS);
                 ksession.fireAllRules();
-                assertEquals(3, list.size());
+                assertThat(list.size()).isEqualTo(3);
             } finally {
                 ksession.dispose();
             }

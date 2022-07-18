@@ -16,6 +16,7 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -28,7 +29,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // DROOLS-6046
 public class ClassLoaderLeakTest {
@@ -110,7 +111,7 @@ public class ClassLoaderLeakTest {
 
         KieBuilder kb = ks.newKieBuilder(kfs);
         if (withExecModel) {
-            kb.buildAll(org.drools.modelcompiler.ExecutableModelProject.class);
+            kb.buildAll(ExecutableModelProject.class);
         } else {
             kb.buildAll();
         }
@@ -144,7 +145,7 @@ public class ClassLoaderLeakTest {
                     cl.getStore().values().stream()
                             .map(b->b.length).reduce(0,Integer::sum)));
 
-            assertTrue( cl.getStore().size() <= oldSize );
+            assertThat(cl.getStore().size() <= oldSize).isTrue();
             oldSize = cl.getStore().size();
 
             kr.removeKieModule(kModule.getReleaseId());

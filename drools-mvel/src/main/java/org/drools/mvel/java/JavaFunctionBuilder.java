@@ -55,7 +55,7 @@ public class JavaFunctionBuilder
                         final Map<String, LineMappings> lineMappings,
                         final List<KnowledgeBuilderResult> errors) {
 
-        final Map<String, Object> vars = new HashMap<String, Object>();
+        final Map<String, Object> vars = new HashMap<>();
 
         vars.put("package",
                  pkg.getName());
@@ -63,7 +63,7 @@ public class JavaFunctionBuilder
         vars.put("imports",
                  pkg.getImports().keySet());
 
-        final List<String> staticImports = new ArrayList<String>();
+        final List<String> staticImports = new ArrayList<>();
         for (String staticImport : pkg.getStaticImports()) {
             if (!staticImport.endsWith(functionDescr.getName())) {
                 staticImports.add(staticImport);

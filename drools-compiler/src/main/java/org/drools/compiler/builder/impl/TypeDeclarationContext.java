@@ -17,7 +17,6 @@ package org.drools.compiler.builder.impl;
 
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
 
 import java.util.List;

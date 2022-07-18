@@ -16,7 +16,7 @@
 
 package org.kie.pmml.models.drools.tuples;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.OPERATOR;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +25,7 @@ import static org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue.VALUE_CONST
 public class KiePMMLOperatorValueTest {
 
     @Test
-    public void getConstraintsAsString() {
+    void getConstraintsAsString() {
         OPERATOR operator = OPERATOR.LESS_THAN;
         Object value = 234;
         KiePMMLOperatorValue kiePMMLOperatorValue = new KiePMMLOperatorValue(operator, value);
@@ -35,7 +35,7 @@ public class KiePMMLOperatorValueTest {
     }
 
     @Test
-    public void buildConstraintsString() {
+    void buildConstraintsString() {
         OPERATOR operator = OPERATOR.LESS_THAN;
         Object value = 234;
         KiePMMLOperatorValue kiePMMLOperatorValue = new KiePMMLOperatorValue(operator, value);

@@ -30,7 +30,7 @@ import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
-import org.drools.util.io.ResourceFactoryServiceImpl;
+import org.drools.io.ResourceFactoryServiceImpl;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -64,7 +64,7 @@ public class KieServicesImpl implements InternalKieServices {
 
     private WeakReference<KieServicesEventListerner> listener;
     
-    private final ConcurrentMap<String, KieContainer> kContainers = new ConcurrentHashMap<String, KieContainer>();
+    private final ConcurrentMap<String, KieContainer> kContainers = new ConcurrentHashMap<>();
 
     public KieRepository getRepository() {
         return KieRepositoryImpl.INSTANCE;
@@ -316,7 +316,7 @@ public class KieServicesImpl implements InternalKieServices {
 
     @Override
     public void registerListener(KieServicesEventListerner listener) {
-        this.listener = new WeakReference<KieServicesEventListerner>(listener);
+        this.listener = new WeakReference<>(listener);
     }
 }
 

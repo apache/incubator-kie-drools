@@ -31,7 +31,7 @@ public class ForallDescr extends BaseDescr
     private List<BaseDescr>     patterns;
 
     public ForallDescr() {
-        this.patterns = new ArrayList<BaseDescr>( 2 );
+        this.patterns = new ArrayList<>( 2 );
     }
 
     /* (non-Javadoc)

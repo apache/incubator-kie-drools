@@ -21,10 +21,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
@@ -33,7 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.api.enums.ResultCode.FAIL;
 import static org.kie.pmml.api.enums.ResultCode.OK;
 
-@RunWith(Parameterized.class)
 public class MultiplePredicatesMiningTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "MultipleMining.pmml";
@@ -50,7 +48,7 @@ public class MultiplePredicatesMiningTest extends AbstractPMMLTest {
     private double variable;
     private Double expectedResult;
 
-    public MultiplePredicatesMiningTest(String residenceState,
+    public void initMultiplePredicatesMiningTest(String residenceState,
                                         boolean validLicense,
                                         String occupation,
                                         String categoricalY,
@@ -68,12 +66,11 @@ public class MultiplePredicatesMiningTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
     }
 
-  @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"AP", true, "ASTRONAUT", "classA", "red", 23.6, 25.0, 21.345},
@@ -87,8 +84,10 @@ public class MultiplePredicatesMiningTest extends AbstractPMMLTest {
         });
     }
 
-    @Test
-    public void testPredicatesMining() {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testPredicatesMining(String residenceState, boolean validLicense, String occupation, String categoricalY, String categoricalX, double variable, double age, Double expectedResult) {
+        initMultiplePredicatesMiningTest(residenceState, validLicense, occupation, categoricalY, categoricalX, variable, age, expectedResult);
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("residenceState", residenceState);
         inputData.put("validLicense", validLicense);

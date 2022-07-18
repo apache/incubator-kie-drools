@@ -20,8 +20,8 @@ import java.util.Map;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
@@ -40,37 +40,37 @@ public class TreeModelImplementationProviderTest {
     private static final String SOURCE_1 = "TreeSample.pmml";
     private static PMML pmml;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         pmml = TestUtils.loadFromFile(SOURCE_1);
     }
 
     @Test
-    public void getPMMLModelType() {
+    void getPMMLModelType() {
         assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.TREE_MODEL);
     }
 
     @Test
-    public void getKiePMMLModel() {
+    void getKiePMMLModel() {
         TreeModel treeModel = (TreeModel) pmml.getModels().get(0);
         final CommonCompilationDTO<TreeModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       treeModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        treeModel,
+                        new HasClassLoaderMock());
         final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isInstanceOf(Serializable.class);
     }
 
     @Test
-    public void getKiePMMLModelWithSources() {
+    void getKiePMMLModelWithSources() {
         TreeModel treeModel = (TreeModel) pmml.getModels().get(0);
         final CommonCompilationDTO<TreeModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                       pmml,
-                                                                       treeModel,
-                                                                       new HasClassLoaderMock());
+                        pmml,
+                        treeModel,
+                        new HasClassLoaderMock());
         final KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
         final Map<String, String> sourcesMap = retrieved.getSourcesMap();
