@@ -43,4 +43,10 @@ public class KogitoBuildTimeConfig {
      */
     @ConfigItem(name = "workflow.version-strategy", defaultValue = "workflow")
     public String versionStrategy;
+
+    /**
+     * Persistence build time configuration
+     */
+    @ConfigItem
+    public KogitoPersistenceBuildTimeConfig persistence;
 }

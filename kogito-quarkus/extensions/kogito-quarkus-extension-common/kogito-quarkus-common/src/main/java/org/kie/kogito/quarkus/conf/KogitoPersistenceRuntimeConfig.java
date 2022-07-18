@@ -13,27 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.quarkus.conf;
 
 import java.util.Optional;
 
+import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
 
-@ConfigRoot(name = "", phase = ConfigPhase.RUN_TIME, prefix = "kogito")
-public class KogitoRuntimeConfig {
+@ConfigGroup
+public class KogitoPersistenceRuntimeConfig {
 
     /**
-     * The service URL needed to connect to the runtime endpoint from outside the service.
-     * <p>
-     */
-    @ConfigItem(name = "service.url")
-    public Optional<String> serviceUrl;
-
-    /**
-     * Persistence runtime configuration
+     * Persistence DB type
      */
     @ConfigItem
-    public KogitoPersistenceRuntimeConfig persistence;
+    public Optional<PersistenceType> type;
+
+    /**
+     * Automatically apply database schema changes
+     */
+    @ConfigItem(name = "auto.ddl", defaultValue = "true")
+    public boolean autoDDL;
+
+    /**
+     * Use optimistic locking
+     */
+    @ConfigItem(name = "optimistic.lock", defaultValue = "false")
+    public boolean optimisticLock;
+
+    /**
+     * Query execution timeout
+     */
+    @ConfigItem(name = "query.timeout.millis", defaultValue = "10000")
+    public long queryTimeout;
+
+    enum PersistenceType {
+        JDBC,
+        MONGODB,
+        FILESYSTEM,
+        KAFKA,
+        INFINISPAN,
+        POSTGRESQL
+    }
+
 }

@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.quarkus.conf;
 
-import java.util.Optional;
-
+import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
 
-@ConfigRoot(name = "", phase = ConfigPhase.RUN_TIME, prefix = "kogito")
-public class KogitoRuntimeConfig {
+@ConfigGroup
+public class KogitoPersistenceBuildTimeConfig {
 
     /**
-     * The service URL needed to connect to the runtime endpoint from outside the service.
-     * <p>
+     * Generate Protobuf marshallers for runtime
      */
-    @ConfigItem(name = "service.url")
-    public Optional<String> serviceUrl;
+    @ConfigItem(name = "proto.marshaller", defaultValue = "true")
+    public boolean runtimeProtoMarshaller;
 
     /**
-     * Persistence runtime configuration
+     * Generate Protobuf marshallers for Data Index
      */
-    @ConfigItem
-    public KogitoPersistenceRuntimeConfig persistence;
+    @ConfigItem(name = "data-index.proto.generation", defaultValue = "true")
+    public boolean dataIndexProtoMarshaller;
+
 }
