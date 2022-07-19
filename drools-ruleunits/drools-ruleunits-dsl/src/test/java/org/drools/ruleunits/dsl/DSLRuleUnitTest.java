@@ -100,16 +100,22 @@ public class DSLRuleUnitTest {
 
         RuleUnitInstance<AccumulateUnit> unitInstance = DSLRuleUnit.instance(unit);
 
-        assertThat(unitInstance.fire()).isEqualTo(2);
+        int fireNr = unitInstance.fire();
+        assertThat(fireNr).isEqualTo(3);
         assertThat(unit.getResults()).containsExactlyInAnyOrder(
                 "Sum of length of Strings starting with A is 12",
-                "Max length of Strings not starting with A is 5"
+                "Max length of Strings not starting with A is 5",
+                "Sum of length of Strings above threshold is 0"
         );
 
         unit.getResults().clear();
 
         unit.getThreshold().set(4);
-        assertThat(unitInstance.fire()).isEqualTo(1);
-        assertThat(unit.getResults()).containsExactly("Average length of Strings longer than threshold 4 is 5.5");
+        fireNr = unitInstance.fire();
+        assertThat(fireNr).isEqualTo(2);
+        assertThat(unit.getResults()).containsExactlyInAnyOrder(
+                "Average length of Strings longer than threshold 4 is 5.5",
+                "Sum of length of Strings above threshold is 11"
+        );
     }
 }

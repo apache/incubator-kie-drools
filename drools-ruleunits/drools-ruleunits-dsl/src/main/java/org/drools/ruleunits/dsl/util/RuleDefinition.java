@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.model.Condition;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Rule;
@@ -17,8 +18,11 @@ import org.drools.ruleunits.dsl.RuleUnitDefinition;
 import org.drools.ruleunits.dsl.RulesFactory;
 import org.drools.ruleunits.dsl.accumulate.AccumulatePattern1;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
-import org.drools.ruleunits.dsl.patterns.Pattern1;
+import org.drools.ruleunits.dsl.patterns.CombinedPatternDef;
+import org.drools.ruleunits.dsl.patterns.Pattern1Def;
+import org.drools.ruleunits.dsl.patterns.Pattern2Def;
 import org.drools.ruleunits.dsl.patterns.PatternDefinition;
+import org.drools.ruleunits.dsl.patterns.SinglePatternDef;
 
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
@@ -28,7 +32,7 @@ public class RuleDefinition {
     private final RuleUnitDefinition unit;
     private final RulesFactory.UnitGlobals globals;
 
-    private final List<PatternDefinition> patterns = new ArrayList<>();
+    private final List<SinglePatternDef> patterns = new ArrayList<>();
     private RuleItemBuilder consequence;
 
     public RuleDefinition(RuleUnitDefinition unit, RulesFactory.UnitGlobals globals) {
@@ -36,24 +40,32 @@ public class RuleDefinition {
         this.unit = unit;
     }
 
-    public void addPattern(PatternDefinition pattern) {
+    public void addPattern(SinglePatternDef pattern) {
         patterns.add(pattern);
     }
 
-    public void removePattern(PatternDefinition pattern) {
+    public void removePattern(SinglePatternDef pattern) {
         patterns.remove(pattern);
     }
 
-    public <A> Pattern1<A> from(DataSource<A> dataSource) {
-        Pattern1<A> pattern1 = new Pattern1<>(this, declarationOf(findDataSourceClass(dataSource),
+    public <A> Pattern1Def<A> from(DataSource<A> dataSource) {
+        Pattern1Def<A> pattern1 = new Pattern1Def<>(this, declarationOf(findDataSourceClass(dataSource),
                 entryPoint(asGlobal(dataSource).getName())));
         addPattern(pattern1);
         return pattern1;
     }
 
-    public <A, B> Pattern1<B> accumulate(Pattern1<A> pattern, Accumulator1<A, B> acc) {
+    public <A, B> Pattern1Def<B> accumulate(Pattern1Def<A> pattern, Accumulator1<A, B> acc) {
         removePattern(pattern);
-        Pattern1<B> accPattern = new AccumulatePattern1<>(this, pattern, acc);
+        Pattern1Def<B> accPattern = new AccumulatePattern1<>(this, pattern, acc);
+        addPattern(accPattern);
+        return accPattern;
+    }
+
+    public <A, B, C> Pattern1Def<C> accumulate(Pattern2Def<A, B> pattern, Accumulator1<B, C> acc) {
+        removePattern(pattern.getPatternA());
+        removePattern(pattern.getPatternB());
+        Pattern1Def<C> accPattern = new AccumulatePattern1<>(this, new CombinedPatternDef(Condition.Type.AND, pattern.getPatternA(), pattern.getPatternB()), acc);
         addPattern(accPattern);
         return accPattern;
     }
@@ -75,7 +87,7 @@ public class RuleDefinition {
 
         List<RuleItemBuilder> items = new ArrayList<>();
 
-        for (PatternDefinition<?> pattern : patterns) {
+        for (SinglePatternDef<?> pattern : patterns) {
             items.add(pattern.toExecModelItem());
         }
 

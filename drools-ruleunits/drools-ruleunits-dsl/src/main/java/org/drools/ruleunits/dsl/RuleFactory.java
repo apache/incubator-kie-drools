@@ -4,7 +4,8 @@ import org.drools.model.Rule;
 import org.drools.model.functions.Block1;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
-import org.drools.ruleunits.dsl.patterns.Pattern1;
+import org.drools.ruleunits.dsl.patterns.Pattern1Def;
+import org.drools.ruleunits.dsl.patterns.Pattern2Def;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 public class RuleFactory {
@@ -20,11 +21,15 @@ public class RuleFactory {
         this.ruleDefinition = new RuleDefinition(unit, globals);
     }
 
-    public <A> Pattern1<A> from(DataSource<A> dataSource) {
+    public <A> Pattern1Def<A> from(DataSource<A> dataSource) {
         return ruleDefinition.from(dataSource);
     }
 
-    public <A, B> Pattern1<B> accumulate(Pattern1<A> pattern, Accumulator1<A, B> acc) {
+    public <A, B> Pattern1Def<B> accumulate(Pattern1Def<A> pattern, Accumulator1<A, B> acc) {
+        return ruleDefinition.accumulate(pattern, acc);
+    }
+
+    public <A, B, C> Pattern1Def<C> accumulate(Pattern2Def<A, B> pattern, Accumulator1<B, C> acc) {
         return ruleDefinition.accumulate(pattern, acc);
     }
 

@@ -15,9 +15,9 @@ import org.drools.ruleunits.dsl.accumulate.Accumulator1;
 import org.drools.ruleunits.dsl.constraints.AlphaConstraint;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
 
-public class Pattern1<A> extends PatternDefinition<A> {
+public class Pattern1Def<A> extends SinglePatternDef<A> {
 
-    public Pattern1(RuleDefinition rule, Variable<A> variable) {
+    public Pattern1Def(RuleDefinition rule, Variable<A> variable) {
         super(rule, variable);
     }
 
@@ -29,38 +29,38 @@ public class Pattern1<A> extends PatternDefinition<A> {
         rule.setConsequence( DSL.on(rule.asGlobal(globalObject), variable).execute(block) );
     }
 
-    public <B> Pattern2<A, B> join(DataSource<B> dataSource) {
+    public <B> Pattern2Def<A, B> join(DataSource<B> dataSource) {
         return join(rule.from(dataSource));
     }
 
-    public <B> Pattern2<A, B> join(Pattern1<B> other) {
-        return new Pattern2<>(rule, this, other);
+    public <B> Pattern2Def<A, B> join(Pattern1Def<B> other) {
+        return new Pattern2Def<>(rule, this, other);
     }
 
-    public Pattern1<A> filter(Predicate1<A> predicate) {
+    public Pattern1Def<A> filter(Predicate1<A> predicate) {
         constraints.add(patternDef -> patternDef.expr(UUID.randomUUID().toString(), predicate));
         return this;
     }
 
-    public Pattern1<A> filter(String fieldName, Predicate1<A> predicate) {
+    public Pattern1Def<A> filter(String fieldName, Predicate1<A> predicate) {
         constraints.add(patternDef -> patternDef.expr(UUID.randomUUID().toString(), predicate, PatternDSL.reactOn(fieldName)));
         return this;
     }
 
-    public Pattern1<A> filter(Index.ConstraintType constraintType, A rightValue) {
+    public Pattern1Def<A> filter(Index.ConstraintType constraintType, A rightValue) {
         return filter("this", a -> a, constraintType, rightValue);
     }
 
-    public <V> Pattern1<A> filter(Function1<A, V> extractor, Index.ConstraintType constraintType, V rightValue) {
+    public <V> Pattern1Def<A> filter(Function1<A, V> extractor, Index.ConstraintType constraintType, V rightValue) {
         return filter(null, extractor, constraintType, rightValue);
     }
 
-    public <V> Pattern1<A> filter(String fieldName, Function1<A, V> extractor, Index.ConstraintType constraintType, V rightValue) {
+    public <V> Pattern1Def<A> filter(String fieldName, Function1<A, V> extractor, Index.ConstraintType constraintType, V rightValue) {
         constraints.add(new AlphaConstraint<>(variable, fieldName, extractor, constraintType, rightValue));
         return this;
     }
 
-    public <B> Pattern1<B> accumulate(Accumulator1<A, B> acc) {
+    public <B> Pattern1Def<B> accumulate(Accumulator1<A, B> acc) {
         return rule.accumulate(this, acc);
     }
 }

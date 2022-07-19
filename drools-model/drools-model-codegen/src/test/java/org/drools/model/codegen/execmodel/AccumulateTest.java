@@ -4164,10 +4164,42 @@ public class AccumulateTest extends BaseModelTest {
         ksession.insert(new Person("Edson", 35));
         ksession.insert(new Person("Mario", 40));
 
-        ksession.fireAllRules();
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results.size()).isEqualTo(1);
-        assertThat(results.iterator().next().getValue()).isEqualTo("75:5");
+        assertThat(results).containsExactly(new Result("75:5"));
+    }
+
+    @Test
+    public void testJoinInAccumulate() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  accumulate ( $i : Integer() and $p: Person ( name.length >= $i ); \n" +
+                "                $sum : sum($p.getAge())  \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results).containsExactly(new Result(0));
+
+        ksession.insert(5);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results).containsExactlyInAnyOrder(new Result(0), new Result(75));
     }
 }
