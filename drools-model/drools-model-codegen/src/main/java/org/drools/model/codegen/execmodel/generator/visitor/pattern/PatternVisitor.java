@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
@@ -65,7 +64,6 @@ public class PatternVisitor {
             return () -> { };
         }
 
-        final boolean allConstraintsPositional = areAllConstraintsPositional(constraintDescrs);
         return new PatternDSLPattern(context, packageModel, pattern, constraintDescrs, patternType);
     }
 
@@ -88,11 +86,5 @@ public class PatternVisitor {
             return new PatternAccumulateConstraint(context, packageModel, pattern, (( AccumulateDescr ) pattern.getSource()), constraintDescrs );
         }
         return null;
-    }
-
-    private boolean areAllConstraintsPositional(List<? extends BaseDescr> constraintDescrs) {
-        return !constraintDescrs.isEmpty() && constraintDescrs.stream()
-                .allMatch(c -> c instanceof ExprConstraintDescr
-                        && ((ExprConstraintDescr) c).getType().equals(ExprConstraintDescr.Type.POSITIONAL));
     }
 }
