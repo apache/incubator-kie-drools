@@ -1,5 +1,4 @@
-# This file serves for generating the Drools documentation website.
-# For local development, see antora-playbook-author.yml.
+# We use author-mode for antora build because we generate antora.yml during the maven build
 site:
   title: Drools Documentation
   url: https://www.drools.org/docs
@@ -8,16 +7,13 @@ site:
 content:
   edit_url: '{web_url}/edit/main/{path}'
   sources:
-    - url: git@github.com:kiegroup/drools.git
-      # Update with every release.
-      branches: [main]
+    - url: ..
+      branches: [HEAD]
       start_path: drools-docs/src
 ui:
   bundle:
     url: ./ui-bundle/ui-bundle.zip
-    snapshot: true
   supplemental_files: ./supplemental-ui
 antora:
   extensions:
     - '@antora/lunr-extension'
-
