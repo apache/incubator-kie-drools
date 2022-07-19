@@ -221,6 +221,11 @@
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
+                <artifactId>kie-pmml-evaluator-assembler</artifactId>
+                <version>${version.org.kie}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie</groupId>
                 <artifactId>kie-pmml-api</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>
