@@ -46,13 +46,13 @@ public class AccumulateUnit implements RuleUnitDefinition {
     @Override
     public void defineRules(RulesFactory rulesFactory) {
         // For simple accumulates both the nested form ...
-        RuleFactory ruleFactory1 = rulesFactory.addRule();
         // accumulate( $s: /strings[ this.substring(0, 1) != "A" ]; sum($s.length) )
-        ruleFactory1.accumulate(
-                ruleFactory1.from(strings).filter(s -> s.substring(0, 1), EQUAL, "A"),
-                sum(String::length)
-            )
-            .execute(results, (r, sum) -> r.add("Sum of length of Strings starting with A is " + sum));
+        rulesFactory.addRule()
+                .accumulate(
+                        rule -> rule.from(strings).filter(s -> s.substring(0, 1), EQUAL, "A"),
+                        sum(String::length)
+                )
+                .execute(results, (r, sum) -> r.add("Sum of length of Strings starting with A is " + sum));
 
         // ... and the fluent one are allowed. In this last case the accumulate is always on the last pattern.
         // accumulate( $s: /strings[ this.substring(0, 1) != "A" ]; max($s.length) )
@@ -65,16 +65,16 @@ public class AccumulateUnit implements RuleUnitDefinition {
         // $i : /threshold
         // accumulate( $s: /strings[ length >= $i ]; avg($s.length) )
         rulesFactory.addRule().from(threshold)
-                .join(strings)
+                .from(strings)
                 .filter(String::length, GREATER_THAN, identity())
                 .accumulate(avg(String::length))
                 .execute(results, (r, t, avg) -> r.add("Average length of Strings longer than threshold " + t + " is " + avg));
 
         // the join is in the accumulate, so this rule fires (having 0 as result) even without any matching tuple
         // accumulate( $i : /threshold and $s: /strings[ length >= $i ]; sum($s.length) )
-        RuleFactory ruleFactory2 = rulesFactory.addRule();
-        ruleFactory2.accumulate(
-                        ruleFactory2.from(threshold).join(strings).filter(String::length, GREATER_THAN, identity()),
+        rulesFactory.addRule()
+                .accumulate(
+                        rule -> rule.from(threshold).from(strings).filter(String::length, GREATER_THAN, identity()),
                         sum(String::length)
                 )
                 .execute(results, (r, sum) -> r.add("Sum of length of Strings above threshold is " + sum));

@@ -31,7 +31,7 @@ public abstract class SinglePatternDef<A> implements PatternDefinition {
     }
 
     public <G> void execute(G globalObject, Block1<G> block) {
-        rule.setConsequence(globalObject, block);
+        rule.execute(globalObject, block);
     }
 
     @Override

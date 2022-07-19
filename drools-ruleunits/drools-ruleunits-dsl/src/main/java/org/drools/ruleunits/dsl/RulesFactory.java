@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
+import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 import static org.drools.model.DSL.globalOf;
 
@@ -31,7 +32,7 @@ public class RulesFactory {
 
     private final RuleUnitDefinition unit;
 
-    private final List<RuleFactory> rules = new ArrayList<>();
+    private final List<RuleDefinition> rules = new ArrayList<>();
     private final UnitGlobals globals;
 
     public RulesFactory(RuleUnitDefinition unit) {
@@ -44,7 +45,7 @@ public class RulesFactory {
     }
 
     public RuleFactory addRule(String name) {
-        RuleFactory rule = new RuleFactory(unit, globals, name);
+        RuleDefinition rule = new RuleDefinition(name, unit, globals);
         rules.add(rule);
         return rule;
     }
@@ -52,7 +53,7 @@ public class RulesFactory {
     Model toModel() {
         ModelImpl model = new ModelImpl();
         getGlobals().values().forEach(model::addGlobal);
-        rules.stream().map(RuleFactory::toRule).forEach(model::addRule);
+        rules.stream().map(RuleDefinition::toRule).forEach(model::addRule);
         return model;
     }
 

@@ -48,7 +48,7 @@ public class SelfJoin implements RuleUnitDefinition {
     public void defineRules(RulesFactory rulesFactory) {
         rulesFactory.addRule()
                 .from(strings)
-                .join(strings)
+                .from(strings)
                 .filter(s -> s.substring(0,1), EQUAL, s -> s.substring(1,2))
                 .execute(results, (r, s1, s2) -> r.add("Found '" + s1 + "' and '" + s2 + "'"));
     }

@@ -11,6 +11,7 @@ import org.drools.model.functions.Block2;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
 import org.drools.ruleunits.dsl.constraints.AlphaConstraint;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
@@ -29,11 +30,15 @@ public class Pattern1Def<A> extends SinglePatternDef<A> {
         rule.setConsequence( DSL.on(rule.asGlobal(globalObject), variable).execute(block) );
     }
 
-    public <B> Pattern2Def<A, B> join(DataSource<B> dataSource) {
+    public <B> Pattern2Def<A, B> from(DataSource<B> dataSource) {
         return join(rule.from(dataSource));
     }
 
-    public <B> Pattern2Def<A, B> join(Pattern1Def<B> other) {
+    public <B> Pattern2Def<A, B> join(Function1<RuleFactory, Pattern1Def<B>> patternBuilder) {
+        return join(patternBuilder.apply(rule));
+    }
+
+    private <B> Pattern2Def<A, B> join(Pattern1Def<B> other) {
         return new Pattern2Def<>(rule, this, other);
     }
 
