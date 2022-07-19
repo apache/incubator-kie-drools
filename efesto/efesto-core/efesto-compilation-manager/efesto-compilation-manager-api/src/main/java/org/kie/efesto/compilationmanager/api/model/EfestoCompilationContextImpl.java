@@ -32,6 +32,14 @@ public class EfestoCompilationContextImpl implements EfestoCompilationContext {
         prepareClassLoader();
     }
 
+    /**
+     * Used to create sub context
+     */
+    protected EfestoCompilationContextImpl(EfestoCompilationContextImpl context) {
+        this.memoryCompilerClassLoader = context.memoryCompilerClassLoader;
+        prepareClassLoader();
+    }
+
     private void prepareClassLoader() {
         Set<FRI> friKeySet = friKeySet();
         friKeySet.stream()

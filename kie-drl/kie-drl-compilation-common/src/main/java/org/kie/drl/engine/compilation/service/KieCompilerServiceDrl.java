@@ -43,7 +43,7 @@ public class KieCompilerServiceDrl implements KieCompilerService {
                     toProcess.getClass().getName()));
         }
         if (!(context instanceof DrlCompilationContext)) {
-            throw new KieCompilerServiceException("context has to be DrlCompilationContext");
+            context = DrlCompilationContext.buildWithEfestoCompilationContext(context);
         }
         return Collections.singletonList((E) drlToPackageDescrs((DrlFileSetResource) toProcess, (DrlCompilationContext) context));
     }
