@@ -20,14 +20,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.quarkus.devtools.testing.codestarts.QuarkusCodestartTest;
+import io.quarkus.maven.ArtifactCoords;
 
 import static io.quarkus.devtools.codestarts.quarkus.QuarkusCodestartCatalog.Language.JAVA;
 
 public class ServerlessWorkflowCodestartTest {
 
+    private static final String VERSION = System.getProperty("project.version");
+
     @RegisterExtension
     public static QuarkusCodestartTest codestartTest = QuarkusCodestartTest.builder()
-            .setupStandaloneExtensionTest("org.kie.kogito:kogito-quarkus-serverless-workflow")
+            .standaloneExtensionCatalog()
+            //.setupStandaloneExtensionTest("org.kie.kogito:kogito-quarkus-serverless-workflow") //TODO Revert back once Quarkus LTS is upgraded to 2.10+
+            .extension(ArtifactCoords.fromString("org.kie.kogito:kogito-quarkus-serverless-workflow:" + VERSION))
             .languages(JAVA)
             .build();
 

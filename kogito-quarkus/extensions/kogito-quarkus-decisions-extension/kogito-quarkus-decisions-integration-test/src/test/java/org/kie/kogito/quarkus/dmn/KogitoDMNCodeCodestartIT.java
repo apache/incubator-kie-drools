@@ -43,9 +43,15 @@ public class KogitoDMNCodeCodestartIT {
         return properties.getProperty("version.assertj");
     }
 
+    public static String projectVersion() {
+        return properties.getProperty("version");
+    }
+
     @RegisterExtension
     public static QuarkusCodestartTest codestartTest = QuarkusCodestartTest.builder()
-            .setupStandaloneExtensionTest("org.kie.kogito:kogito-quarkus-decisions")
+            //.setupStandaloneExtensionTest("org.kie.kogito:kogito-quarkus-decisions") //TODO Revert back once Quarkus LTS is upgraded to 2.10+
+            .standaloneExtensionCatalog()
+            .extension(ArtifactCoords.fromString("org.kie.kogito:kogito-quarkus-decisions:" + projectVersion()))
             .extension(ArtifactKey.fromString("io.quarkus:quarkus-resteasy-jackson")) // account for KOGITO-5817
             .extension(ArtifactCoords.fromString("org.assertj:assertj-core:" + assertjVersion()))
             .putData(QuarkusDataKey.APP_CONFIG, Map.of("quarkus.http.test-port", "0"))
