@@ -35,6 +35,7 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
@@ -369,7 +370,9 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     }
 
     private Class<?> getRHSorLHSType(VariableDeclarator n) {
-        return mvelCompilerContext.resolveType(n.getType().asString());
+        return mvelCompilerContext.resolveType(n.getType() instanceof ClassOrInterfaceType ?
+                n.getType().asClassOrInterfaceType().getNameAsString() :
+                n.getType().asString());
     }
 
     private void logPhase(String phase, Node statement) {
