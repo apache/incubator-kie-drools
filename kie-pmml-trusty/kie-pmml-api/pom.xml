@@ -14,10 +14,6 @@
   <name>KIE :: PMML :: API</name>
   <description>Public APIs from Trusty PMML</description>
 
-  <properties>
-    <skip.jdepend>false</skip.jdepend>
-  </properties>
-
   <dependencies>
     <!-- KIE -->
     <dependency>
@@ -26,7 +22,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>efesto-runtime-manager-api</artifactId>
+      <artifactId>efesto-common-api</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <dependency>

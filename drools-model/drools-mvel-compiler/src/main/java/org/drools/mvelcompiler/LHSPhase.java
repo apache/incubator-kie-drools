@@ -35,6 +35,7 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
@@ -58,9 +59,9 @@ import org.slf4j.LoggerFactory;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
+import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.drools.util.ClassUtils.getAccessor;
 import static org.drools.util.ClassUtils.getSetter;
-import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 /**
  * This phase processes the left hand side of a MVEL target expression, if present, such as
@@ -369,7 +370,9 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     }
 
     private Class<?> getRHSorLHSType(VariableDeclarator n) {
-        return mvelCompilerContext.resolveType(n.getType().asString());
+        return mvelCompilerContext.resolveType(n.getType() instanceof ClassOrInterfaceType ?
+                n.getType().asClassOrInterfaceType().getNameAsString() :
+                n.getType().asString());
     }
 
     private void logPhase(String phase, Node statement) {
