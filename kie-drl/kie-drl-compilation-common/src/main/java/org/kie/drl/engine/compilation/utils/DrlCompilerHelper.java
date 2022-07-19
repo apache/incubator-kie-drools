@@ -38,12 +38,12 @@ import org.drools.model.codegen.project.RuleCodegenError;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
 import org.kie.api.io.Resource;
 import org.kie.drl.engine.compilation.model.DecisionTableFileSetResource;
+import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.slf4j.Logger;
@@ -56,28 +56,28 @@ public class DrlCompilerHelper {
     private DrlCompilerHelper() {
     }
 
-    public static ExecutableModelClassesContainer dTableToDrl(DecisionTableFileSetResource resources, EfestoCompilationContext context) {
+    public static ExecutableModelClassesContainer dTableToDrl(DecisionTableFileSetResource resources, DrlCompilationContext context) {
         // TODO {mfusco}
         throw new KieCompilerServiceException("Not implemented, yet");
     }
 
-    public static DrlPackageDescrSetResource drlToPackageDescrs(DrlFileSetResource resources, EfestoCompilationContext context) {
+    public static DrlPackageDescrSetResource drlToPackageDescrs(DrlFileSetResource resources, DrlCompilationContext context) {
         KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
         Set<PackageDescr> packageDescrSet = buildCompositePackageDescrs(resources, conf).stream().collect(Collectors.toSet());
         return new DrlPackageDescrSetResource(packageDescrSet, resources.getBasePath());
     }
 
-    public static ExecutableModelClassesContainer pkgDescrToExecModel(EfestoSetResource<PackageDescr> resources, EfestoCompilationContext context) {
+    public static ExecutableModelClassesContainer pkgDescrToExecModel(EfestoSetResource<PackageDescr> resources, DrlCompilationContext context) {
         return pkgDescrToExecModel(toCompositePackageDescrs(resources.getContent()), resources.getBasePath(), new KnowledgeBuilderConfigurationImpl(), context);
     }
 
-    public static ExecutableModelClassesContainer drlToExecutableModel(DrlFileSetResource resources, EfestoCompilationContext context) {
+    public static ExecutableModelClassesContainer drlToExecutableModel(DrlFileSetResource resources, DrlCompilationContext context) {
         KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
 
         return pkgDescrToExecModel(buildCompositePackageDescrs(resources, conf), resources.getBasePath(), conf, context);
     }
 
-    public static ExecutableModelClassesContainer pkgDescrToExecModel(Collection<CompositePackageDescr> packages, String basePath, KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, EfestoCompilationContext context) {
+    public static ExecutableModelClassesContainer pkgDescrToExecModel(Collection<CompositePackageDescr> packages, String basePath, KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, DrlCompilationContext context) {
         ExplicitCanonicalModelCompiler<KogitoPackageSources> compiler =
                 ExplicitCanonicalModelCompiler.of( packages, knowledgeBuilderConfiguration, KogitoPackageSources::dumpSources );
 

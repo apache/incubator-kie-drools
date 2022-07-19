@@ -17,23 +17,16 @@ package org.kie.efesto.compilationmanager.api.model;
 
 import java.util.Map;
 
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.memorycompiler.KieMemoryCompilerException;
 
 public class EfestoCompilationContextImpl implements EfestoCompilationContext {
 
-    private final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+    protected final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 
-    EfestoCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    protected EfestoCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         this.memoryCompilerClassLoader = memoryCompilerClassLoader;
-    }
-
-    @Override
-    public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
-        return KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(memoryCompilerClassLoader);
     }
 
     @Override

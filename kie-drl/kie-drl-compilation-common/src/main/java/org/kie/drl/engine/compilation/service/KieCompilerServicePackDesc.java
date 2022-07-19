@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.drl.ast.descr.PackageDescr;
+import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
@@ -43,7 +44,10 @@ public class KieCompilerServicePackDesc implements KieCompilerService {
                     this.getClass().getName(),
                     toProcess.getClass().getName()));
         }
-        return Collections.singletonList( (E) pkgDescrToExecModel((EfestoSetResource<PackageDescr>) toProcess, context) );
+        if (!(context instanceof DrlCompilationContext)) {
+            throw new KieCompilerServiceException("context has to be DrlCompilationContext");
+        }
+        return Collections.singletonList( (E) pkgDescrToExecModel((EfestoSetResource<PackageDescr>) toProcess, (DrlCompilationContext) context) );
     }
 
 }

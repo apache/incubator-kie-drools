@@ -23,13 +23,13 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.core.service.CompilationManagerImpl;
@@ -59,7 +59,7 @@ public class OnTheFlyDrlTest {
         Set<File> files = DrlTestUtils.collectDrlFiles("src/test/resources/org/drools/model/project/codegen");
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, onTheFlyPath);
         KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-        EfestoCompilationContext compilationContext = EfestoCompilationContext.buildWithMemoryCompilerClassLoader(memoryCompilerClassLoader);
+        DrlCompilationContext compilationContext = DrlCompilationContext.buildWithMemoryCompilerClassLoader(memoryCompilerClassLoader);
         Collection<IndexFile> indexFiles = compilationManager.processResource(compilationContext, toProcess);
 
         // Reuse MemoryCompilerClassLoader in the previous compilation
@@ -82,7 +82,7 @@ public class OnTheFlyDrlTest {
         String onTheFlyPath = "OnTheFlyPathNewMemoryClassLoader";
         Set<File> files = DrlTestUtils.collectDrlFiles("src/test/resources/org/drools/model/project/codegen");
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, onTheFlyPath);
-        EfestoCompilationContext compilationContext = EfestoCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        DrlCompilationContext compilationContext = DrlCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         Collection<IndexFile> indexFiles = compilationManager.processResource(compilationContext, toProcess);
 
         // Suppose we cannot access the previous compilationContext

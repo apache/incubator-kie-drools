@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.service.KieCompilerServiceDrl;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
@@ -38,12 +38,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class KieCompilerServiceDrlTest {
 
     private static KieCompilerService kieCompilerService;
-    private static EfestoCompilationContext context;
+    private static DrlCompilationContext context;
 
     @BeforeAll
     static void setUp() {
         kieCompilerService = new KieCompilerServiceDrl();
-        context = EfestoCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        context = DrlCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
 

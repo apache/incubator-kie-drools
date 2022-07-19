@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 /**
@@ -36,8 +35,6 @@ public interface EfestoCompilationContext extends EfestoContext<EfestoListener> 
     public static EfestoCompilationContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         return new EfestoCompilationContextImpl(memoryCompilerClassLoader);
     }
-
-    KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration();
 
     Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
 
