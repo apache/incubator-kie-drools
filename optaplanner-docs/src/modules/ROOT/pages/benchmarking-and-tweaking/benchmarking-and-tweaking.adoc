@@ -429,19 +429,19 @@ To write those solutions in the ``benchmarkDirectory``, enable ``writeOutputSolu
 
 Benchmark logging is configured like xref:planner-configuration/planner-configuration.adoc#logging[solver logging].
 
-To separate the log messages of each single benchmark run into a separate file, use the http://logback.qos.ch/manual/mdc.html[MDC] with key `singleBenchmark.name` in a sifting appender.
+To separate the log messages of each single benchmark run into a separate file, use the http://logback.qos.ch/manual/mdc.html[MDC] with key `subSingleBenchmark.name` in a sifting appender.
 For example with Logback in ``logback.xml``:
 
 [source,xml,options="nowrap"]
 ----
   <appender name="fileAppender" class="ch.qos.logback.classic.sift.SiftingAppender">
     <discriminator>
-      <key>singleBenchmark.name</key>
+      <key>subSingleBenchmark.name</key>
       <defaultValue>app</defaultValue>
     </discriminator>
     <sift>
-      <appender name="fileAppender.${singleBenchmark.name}" class="...FileAppender">
-        <file>local/log/optaplannerBenchmark-${singleBenchmark.name}.log</file>
+      <appender name="fileAppender.${subSingleBenchmark.name}" class="...FileAppender">
+        <file>local/log/optaplannerBenchmark-${subSingleBenchmark.name}.log</file>
         ...
       </appender>
     </sift>
