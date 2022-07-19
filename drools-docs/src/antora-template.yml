@@ -1,9 +1,8 @@
-# This file is a template for antora.yml, which is created during a release by:
-#   1. running maven that substitutes the properties into this file
-#   2. running build/release/update_antora_yml.sh that copies the result of the previous step to src/antora.yml
-#
-# The goal is to have the antora.yml containing correct attributes available in the release branch before
-# the drools-website is refreshed.
+# This file is a template for antora.yml. Maven build will
+#   1. substitute the properties into this file to target/antora-template.yml
+#   2. copy target/antora-template.yml to src/antora.yml
+#   3. generate antora website using the antora.yml
+
 name: drools
 title: Drools User Guide ${project.version}
 version: ~
