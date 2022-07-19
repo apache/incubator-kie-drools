@@ -18,9 +18,9 @@ package org.kie.kogito.jitexecutor.runner;
 
 import org.kie.kogito.jitexecutor.dmn.api.ValidatorResourceTest;
 
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@NativeImageTest
-public class NativeValidatorResourceIT extends ValidatorResourceTest {
+@QuarkusIntegrationTest
+public class ValidatorResourceIT extends ValidatorResourceTest {
     // Execute the same tests but in native mode.
 }

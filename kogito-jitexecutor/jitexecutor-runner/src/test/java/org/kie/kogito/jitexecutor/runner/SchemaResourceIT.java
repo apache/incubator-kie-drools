@@ -16,11 +16,11 @@
 
 package org.kie.kogito.jitexecutor.runner;
 
-import org.kie.kogito.jitexecutor.dmn.OneOfEachTypeTest;
+import org.kie.kogito.jitexecutor.dmn.api.SchemaResourceTest;
 
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@NativeImageTest
-public class NativeOneOfEachTypeIT extends OneOfEachTypeTest {
+@QuarkusIntegrationTest
+public class SchemaResourceIT extends SchemaResourceTest {
     // Execute the same tests but in native mode.
 }

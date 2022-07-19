@@ -43,13 +43,10 @@
     <dependency><!-- Leverage easily the best POM from: -->
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-dmn</artifactId>
-      <exclusions>
-        <!-- ANC is not used and depends on MVEL that breaks native compilation -->
-        <exclusion>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-alphanetwork-compiler</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-assembler</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

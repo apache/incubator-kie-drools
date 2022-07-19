@@ -16,11 +16,11 @@
 
 package org.kie.kogito.jitexecutor.runner;
 
-import org.kie.kogito.jitexecutor.dmn.api.MultipleModelsTest;
+import org.kie.kogito.jitexecutor.dmn.OneOfEachTypeTest;
 
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@NativeImageTest
-public class NativeMultipleModelsIT extends MultipleModelsTest {
+@QuarkusIntegrationTest
+public class OneOfEachTypeIT extends OneOfEachTypeTest {
     // Execute the same tests but in native mode.
 }
