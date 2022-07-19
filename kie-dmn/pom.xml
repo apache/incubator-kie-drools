@@ -20,23 +20,14 @@
     <module>kie-dmn-api</module>
     <module>kie-dmn-model</module>
     <module>kie-dmn-feel</module>
-    <module>kie-dmn-feel-gwt-functions</module>
-    <module>kie-dmn-feel-gwt</module>
-    <module>kie-dmn-backend</module>
     <module>kie-dmn-core</module>
+    <module>kie-dmn-backend</module>
     <module>kie-dmn-validation-bootstrap</module>
     <module>kie-dmn-validation</module>
-    <module>kie-dmn-openapi</module>
-    <module>kie-dmn-tck</module>
-    <module>kie-dmn-legacy-tests</module>
-    <module>kie-dmn-trisotech</module>
-    <module>kie-dmn-signavio</module>
-    <module>kie-dmn-pmml-tests-parent</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
-
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-bom</artifactId>
@@ -46,7 +37,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
+
   <profiles>
     <profile>
       <id>fullProfile</id>
@@ -63,10 +54,18 @@
       <id>default</id>
       <activation>
         <property>
-            <name>!productized</name>
+          <name>!productized</name>
         </property>
       </activation>
       <modules>
+        <module>kie-dmn-feel-gwt-functions</module>
+        <module>kie-dmn-feel-gwt</module>
+        <module>kie-dmn-openapi</module>
+        <module>kie-dmn-tck</module>
+        <module>kie-dmn-legacy-tests</module>
+        <module>kie-dmn-trisotech</module>
+        <module>kie-dmn-signavio</module>
+        <module>kie-dmn-pmml-tests-parent</module>
         <module>kie-dmn-xls2dmn-cli</module>
         <module>kie-dmn-core-jsr223-jq</module>
         <module>kie-dmn-core-jsr223</module>
