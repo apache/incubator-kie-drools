@@ -74,7 +74,7 @@ public class IndexUtil {
     }
 
     private static boolean canHaveRangeIndexForNodeType(short nodeType, RuleBaseConfiguration config) {
-        if (USE_COMPARISON_INDEX_JOIN && config.isBetaNodeRangeIndexEnabled()) {
+        if (USE_COMPARISON_INDEX_JOIN) {
             return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode || nodeType == NodeTypeEnums.JoinNode);
         } else {
             return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode);

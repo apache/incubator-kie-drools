@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.RemoveIdentitiesOption;
@@ -283,26 +282,6 @@ public class KnowledgeBaseConfigurationTest {
         assertThat(config.getOption(AlphaRangeIndexThresholdOption.class)).isEqualTo(AlphaRangeIndexThresholdOption.get(AlphaRangeIndexThresholdOption.DEFAULT_VALUE));
         // checking the string based getProperty() method
         assertThat(config.getProperty(AlphaRangeIndexThresholdOption.PROPERTY_NAME)).isEqualTo(String.valueOf(AlphaRangeIndexThresholdOption.DEFAULT_VALUE));
-    }
-
-    @Test
-    public void testBetaRangeIndexenabledConfiguration() {
-        // setting the option using the enum
-        config.setOption( BetaRangeIndexOption.ENABLED );
-
-        // checking the type safe getOption() method
-        assertThat(config.getOption(BetaRangeIndexOption.class)).isEqualTo(BetaRangeIndexOption.ENABLED);
-        // checking the string based getProperty() method
-        assertThat(config.getProperty(BetaRangeIndexOption.PROPERTY_NAME)).isEqualTo("true");
-
-        // setting the options using the string based setProperty() method
-        config.setProperty( BetaRangeIndexOption.PROPERTY_NAME,
-                            "false" );
-
-        // checking the type safe getOption() method
-        assertThat(config.getOption(BetaRangeIndexOption.class)).isEqualTo(BetaRangeIndexOption.DISABLED);
-        // checking the string based getProperty() method
-        assertThat(config.getProperty(BetaRangeIndexOption.PROPERTY_NAME)).isEqualTo("false");
     }
 
     @Test

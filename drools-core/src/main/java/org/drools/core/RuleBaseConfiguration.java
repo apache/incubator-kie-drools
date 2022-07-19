@@ -35,7 +35,6 @@ import org.drools.core.util.ConfFileUtils;
 import org.drools.util.StringUtils;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
@@ -311,8 +310,6 @@ public class RuleBaseConfiguration
             setAlphaNodeHashingThreshold( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
         } else if ( name.equals( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) ) {
             setAlphaNodeRangeIndexThreshold( StringUtils.isEmpty( value ) ? AlphaRangeIndexThresholdOption.DEFAULT_VALUE : Integer.parseInt(value));
-        } else if ( name.equals( BetaRangeIndexOption.PROPERTY_NAME ) ) {
-            setBetaNodeRangeIndexEnabled( StringUtils.isEmpty( value ) ? false : Boolean.valueOf(value));
         } else if ( name.equals( SessionsPoolOption.PROPERTY_NAME ) ) {
             setSessionPoolSize( StringUtils.isEmpty( value ) ? -1 : Integer.parseInt(value));
         } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
@@ -368,8 +365,6 @@ public class RuleBaseConfiguration
             return Integer.toString( getAlphaNodeHashingThreshold() );
         } else if ( name.equals( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) ) {
             return Integer.toString( getAlphaNodeRangeIndexThreshold() );
-        } else if ( name.equals( BetaRangeIndexOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isBetaNodeRangeIndexEnabled() );
         } else if ( name.equals( SessionsPoolOption.PROPERTY_NAME ) ) {
             return Integer.toString( getSessionPoolSize() );
         } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
@@ -447,8 +442,6 @@ public class RuleBaseConfiguration
         setAlphaNodeHashingThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaThresholdOption.PROPERTY_NAME, "3")));
 
         setAlphaNodeRangeIndexThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaRangeIndexThresholdOption.PROPERTY_NAME, "" + AlphaRangeIndexThresholdOption.DEFAULT_VALUE)));
-
-        setBetaNodeRangeIndexEnabled(Boolean.valueOf(this.chainedProperties.getProperty(BetaRangeIndexOption.PROPERTY_NAME, "false")));
 
         setSessionPoolSize(Integer.parseInt(this.chainedProperties.getProperty( SessionsPoolOption.PROPERTY_NAME, "-1")));
 
@@ -604,15 +597,6 @@ public class RuleBaseConfiguration
     public void setAlphaNodeRangeIndexThreshold(final int alphaNodeRangeIndexThreshold) {
         checkCanChange();
         this.alphaNodeRangeIndexThreshold = alphaNodeRangeIndexThreshold;
-    }
-
-    public boolean isBetaNodeRangeIndexEnabled() {
-        return this.betaNodeRangeIndexEnabled;
-    }
-
-    public void setBetaNodeRangeIndexEnabled(final boolean betaNodeRangeIndexEnabled) {
-        checkCanChange();
-        this.betaNodeRangeIndexEnabled = betaNodeRangeIndexEnabled;
     }
 
     public int getSessionPoolSize() {
@@ -1047,8 +1031,6 @@ public class RuleBaseConfiguration
             return (T) AlphaThresholdOption.get(alphaNodeHashingThreshold);
         } else if (AlphaRangeIndexThresholdOption.class.equals(option)) {
             return (T) AlphaRangeIndexThresholdOption.get(alphaNodeRangeIndexThreshold);
-        } else if (BetaRangeIndexOption.class.equals(option)) {
-            return (T) (this.betaNodeRangeIndexEnabled ? BetaRangeIndexOption.ENABLED : BetaRangeIndexOption.DISABLED);
         } else if ( SessionsPoolOption.class.equals(option)) {
             return (T) SessionsPoolOption.get(sessionPoolSize);
         } else if (CompositeKeyDepthOption.class.equals(option)) {
@@ -1106,8 +1088,6 @@ public class RuleBaseConfiguration
             setAlphaNodeHashingThreshold( ( (AlphaThresholdOption) option ).getThreshold());
         } else if (option instanceof AlphaRangeIndexThresholdOption) {
             setAlphaNodeRangeIndexThreshold( ( (AlphaRangeIndexThresholdOption) option ).getThreshold());
-        } else if (option instanceof BetaRangeIndexOption) {
-            setBetaNodeRangeIndexEnabled( ( (BetaRangeIndexOption) option ).isBetaRangeIndexEnabled());
         } else if (option instanceof SessionsPoolOption ) {
             setSessionPoolSize( ( ( SessionsPoolOption ) option ).getSize());
         } else if (option instanceof CompositeKeyDepthOption) {

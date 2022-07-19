@@ -45,7 +45,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieModule;
-import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,7 +65,7 @@ public class JoinNodeRangeIndexingTest {
 
     private KieBase getKieBaseWithRangeIndexOption(String drl) {
         KieModule kieModule = KieUtil.getKieModuleFromDrls("indexing-test", kieBaseTestConfiguration, drl);
-        return KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, BetaRangeIndexOption.ENABLED);
+        return KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration);
     }
 
     @Test

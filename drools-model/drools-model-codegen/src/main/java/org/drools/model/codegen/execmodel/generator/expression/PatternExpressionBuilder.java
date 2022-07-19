@@ -40,7 +40,6 @@ import org.drools.model.codegen.execmodel.generator.drlxparse.SingleDrlxParseSuc
 import static java.util.Optional.of;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.findLastMethodInChain;
-import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
@@ -209,7 +208,12 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         TypedExpression right = drlxParseResult.getRight();
 
         Expression rightExpression = right.getExpression();
-        if (!drlxParseResult.isBetaConstraint() && !(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression) || isNumberToStringExpression(rightExpression))) {
+        if (drlxParseResult.isBetaConstraint()) {
+            // the beta index cannot be generated if it uses a declaration of the same pattern where the beta constraint is used
+            if (drlxParseResult.getUsedDeclarations().stream().anyMatch(context::isDeclarationOnCurrentPattern)) {
+                return Optional.empty();
+            }
+        } else if (!(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression) || isNumberToStringExpression(rightExpression))) {
             return Optional.empty();
         }
 

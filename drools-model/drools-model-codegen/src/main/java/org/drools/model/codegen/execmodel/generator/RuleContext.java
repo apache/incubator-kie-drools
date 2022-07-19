@@ -17,6 +17,23 @@
 
 package org.drools.model.codegen.execmodel.generator;
 
+import java.lang.reflect.Method;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -47,23 +64,6 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-
-import java.lang.reflect.Method;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -258,6 +258,11 @@ public class RuleContext {
 
     private DeclarationSpec getDeclaration(String id) {
         return scopedDeclarations.get( getDeclarationKey( id ));
+    }
+
+    public boolean isDeclarationOnCurrentPattern(String id) {
+        DeclarationSpec decl = getDeclaration(id);
+        return decl != null && decl.getBelongingPatternDescr().flatMap( dp -> currentPatternDescr.map( cp -> cp.equals(dp) ) ).orElse(false);
     }
 
     public void registerBindingExpression( String boundVar, MethodCallExpr bidingExpr ) {

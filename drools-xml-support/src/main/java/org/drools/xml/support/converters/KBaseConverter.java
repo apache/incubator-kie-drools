@@ -25,7 +25,6 @@ import org.drools.compiler.kproject.models.RuleTemplateModelImpl;
 import org.drools.util.StringUtils;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.RuleTemplateModel;
-import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
@@ -64,9 +63,6 @@ public class KBaseConverter extends AbstractXStreamConverter {
         }
         if ( kBase.getSessionsPool() != null ) {
             writer.addAttribute( "sessionsPool", "" + kBase.getSessionsPool().getSize() );
-        }
-        if ( kBase.getBetaRangeIndexOption() != null ) {
-            writer.addAttribute( "betaRangeIndex", kBase.getBetaRangeIndexOption().toString().toLowerCase() );
         }
 
         if ( kBase.getScope() != null ) {
@@ -147,11 +143,6 @@ public class KBaseConverter extends AbstractXStreamConverter {
         String sessionsPool = reader.getAttribute( "sessionsPool" );
         if ( sessionsPool != null ) {
             kBase.setSessionsPool( SessionsPoolOption.get( Integer.parseInt( sessionsPool ) ) );
-        }
-
-        String betaRangeIndex = reader.getAttribute( "betaRangeIndex" );
-        if ( betaRangeIndex != null ) {
-            kBase.setBetaRangeIndexOption( BetaRangeIndexOption.determineBetaRangeIndex( betaRangeIndex ) );
         }
 
         String scope = reader.getAttribute( "scope" );
