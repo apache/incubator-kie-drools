@@ -16,6 +16,7 @@
 package org.kie.efesto.common.api.model;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -41,6 +42,10 @@ enum GeneratedClassesRepository {
 
     public boolean containsKey(FRI fri) {
         return generatedClassesMap.containsKey(fri);
+    }
+
+    public Set<FRI> friKeySet() {
+        return generatedClassesMap.keySet();
     }
 
     public void clear() {

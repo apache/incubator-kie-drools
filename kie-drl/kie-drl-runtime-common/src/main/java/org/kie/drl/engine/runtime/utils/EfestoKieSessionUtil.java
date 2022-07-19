@@ -36,7 +36,6 @@ public class EfestoKieSessionUtil {
     public static KieSession loadKieSession(FRI fri, EfestoRuntimeContext context) {
         GeneratedExecutableResource finalResource = GeneratedResourceUtils.getGeneratedExecutableResource(fri, "drl")
                 .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource for " + fri));
-        context.prepareClassLoader(finalResource);
         List<Model> models = finalResource.getFullClassNames().stream()
                         .map(className -> loadModel(className, context))
                         .collect(Collectors.toList());

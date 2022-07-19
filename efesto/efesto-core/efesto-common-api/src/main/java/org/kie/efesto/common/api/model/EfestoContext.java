@@ -76,4 +76,11 @@ public interface EfestoContext<T extends EfestoListener> {
     default boolean containsKey(FRI fri) {
         return GeneratedClassesRepository.INSTANCE.containsKey(fri);
     }
+
+    /**
+     * @return {@code Set} of {@code FRI} key in this map
+     */
+    default Set<FRI> friKeySet() {
+        return GeneratedClassesRepository.INSTANCE.friKeySet();
+    }
 }

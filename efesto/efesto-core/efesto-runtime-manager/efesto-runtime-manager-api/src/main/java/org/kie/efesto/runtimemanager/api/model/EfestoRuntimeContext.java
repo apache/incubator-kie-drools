@@ -18,7 +18,6 @@ package org.kie.efesto.runtimemanager.api.model;
 
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
-import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 public interface EfestoRuntimeContext extends EfestoContext<EfestoListener> {
@@ -30,8 +29,6 @@ public interface EfestoRuntimeContext extends EfestoContext<EfestoListener> {
     public static EfestoRuntimeContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         return new EfestoRuntimeContextImpl(memoryCompilerClassLoader);
     }
-
-    void prepareClassLoader(GeneratedExecutableResource finalResource);
 
     Class<?> loadClass(String className) throws ClassNotFoundException;
 }

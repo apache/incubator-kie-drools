@@ -15,11 +15,9 @@
  */
 package org.kie.efesto.runtimemanager.api.model;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 public class EfestoRuntimeContextImpl implements EfestoRuntimeContext {
@@ -28,6 +26,14 @@ public class EfestoRuntimeContextImpl implements EfestoRuntimeContext {
 
     EfestoRuntimeContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         this.memoryCompilerClassLoader = memoryCompilerClassLoader;
+        prepareClassLoader();
+    }
+
+    private void prepareClassLoader() {
+        Set<FRI> friKeySet = friKeySet();
+        friKeySet.stream()
+                 .map(this::getGeneratedClasses)
+                 .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
     }
 
     public static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
@@ -36,28 +42,6 @@ public class EfestoRuntimeContextImpl implements EfestoRuntimeContext {
 
     public static EfestoRuntimeContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         return new EfestoRuntimeContextImpl(memoryCompilerClassLoader);
-    }
-
-    @Override
-    public void prepareClassLoader(GeneratedExecutableResource finalResource) {
-        FRI fri = finalResource.getFri();
-        List<String> fullClassNames = finalResource.getFullClassNames();
-
-        boolean notFound = false;
-        for (String name : fullClassNames) {
-            try {
-                memoryCompilerClassLoader.loadClass(name);
-            } catch (ClassNotFoundException e) {
-                notFound = true;
-                break;
-            }
-        }
-
-        // populate memoryCompilerClassLoader with generatedClasses stored in context (Actually, in GeneratedClassesRepository)
-        if (notFound && this.containsKey(fri)) {
-            Map<String, byte[]> generatedClasses = this.getGeneratedClasses(fri);
-            generatedClasses.forEach(memoryCompilerClassLoader::addCode);
-        }
     }
 
     @Override

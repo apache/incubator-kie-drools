@@ -16,7 +16,9 @@
 package org.kie.efesto.compilationmanager.api.model;
 
 import java.util.Map;
+import java.util.Set;
 
+import org.kie.efesto.common.api.model.FRI;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.memorycompiler.KieMemoryCompilerException;
@@ -27,6 +29,14 @@ public class EfestoCompilationContextImpl implements EfestoCompilationContext {
 
     protected EfestoCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         this.memoryCompilerClassLoader = memoryCompilerClassLoader;
+        prepareClassLoader();
+    }
+
+    private void prepareClassLoader() {
+        Set<FRI> friKeySet = friKeySet();
+        friKeySet.stream()
+                 .map(this::getGeneratedClasses)
+                 .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
     }
 
     @Override
