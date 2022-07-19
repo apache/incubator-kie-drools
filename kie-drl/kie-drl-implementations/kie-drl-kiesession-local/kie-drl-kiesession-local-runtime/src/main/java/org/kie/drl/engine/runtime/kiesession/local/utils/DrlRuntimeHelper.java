@@ -23,7 +23,7 @@ import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessi
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,19 +35,17 @@ public class DrlRuntimeHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(DrlRuntimeHelper.class.getName());
 
-
     private DrlRuntimeHelper() {
     }
-
 
     public static boolean canManage(EfestoInput toEvaluate) {
         return (toEvaluate instanceof EfestoInputDrlKieSessionLocal) && getGeneratedExecutableResource(toEvaluate.getFRI(), "drl").isPresent();
     }
 
-    public static Optional<EfestoOutputDrlKieSessionLocal> execute(EfestoInputDrlKieSessionLocal toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static Optional<EfestoOutputDrlKieSessionLocal> execute(EfestoInputDrlKieSessionLocal toEvaluate, EfestoRuntimeContext context) {
         KieSession kieSession;
         try {
-            kieSession = loadKieSession(toEvaluate.getFRI(), memoryCompilerClassLoader);
+            kieSession = loadKieSession(toEvaluate.getFRI(), context);
         } catch (Exception e) {
             logger.warn("{} can not execute {}",
                         DrlRuntimeHelper.class.getName(),

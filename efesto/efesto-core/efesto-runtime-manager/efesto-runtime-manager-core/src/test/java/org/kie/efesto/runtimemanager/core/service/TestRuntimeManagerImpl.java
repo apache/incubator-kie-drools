@@ -28,8 +28,8 @@ import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputC;
 import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputD;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
-import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.fail;
 class TestRuntimeManagerImpl {
 
     private static RuntimeManager runtimeManager;
-    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+    private static EfestoRuntimeContext context;
 
     private static final List<Class<? extends EfestoInput>> MANAGED_Efesto_INPUTS = Arrays.asList(MockEfestoInputA.class,
             MockEfestoInputB.class,
@@ -47,7 +47,7 @@ class TestRuntimeManagerImpl {
     @BeforeAll
     static void setUp() {
         runtimeManager = new RuntimeManagerImpl();
-        memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
     @Test
@@ -55,13 +55,13 @@ class TestRuntimeManagerImpl {
         MANAGED_Efesto_INPUTS.forEach(managedInput -> {
             try {
                 EfestoInput toProcess = managedInput.getDeclaredConstructor().newInstance();
-                Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, toProcess);
+                Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(context, toProcess);
                 assertThat(retrieved).isNotNull().hasSize(1);
             } catch (Exception e) {
                 fail("Failed assertion on evaluateInput", e);
             }
         });
-        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader,
+        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(context,
                                                                           new MockEfestoInputD());
         assertThat(retrieved).isNotNull().isEmpty();
     }
@@ -78,7 +78,7 @@ class TestRuntimeManagerImpl {
             }
         });
         toProcess.add(new MockEfestoInputD());
-        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader,
+        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(context,
                                                                           toProcess.toArray(new EfestoInput[0]));
         assertThat(retrieved).isNotNull().hasSize(MANAGED_Efesto_INPUTS.size());
     }

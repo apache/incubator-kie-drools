@@ -23,9 +23,9 @@ import java.util.stream.Stream;
 
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,18 +35,18 @@ public class RuntimeManagerImpl implements RuntimeManager {
     private static final Logger logger = LoggerFactory.getLogger(RuntimeManagerImpl.class.getName());
 
     @Override
-    public Collection<EfestoOutput> evaluateInput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoInput... toEvaluate) {
+    public Collection<EfestoOutput> evaluateInput(EfestoRuntimeContext context, EfestoInput... toEvaluate) {
         return Arrays.stream(toEvaluate)
-                .flatMap(input -> getOptionalOutput(memoryCompilerClassLoader, input).map(Stream::of).orElse(Stream.empty()))
+                .flatMap(input -> getOptionalOutput(context, input).map(Stream::of).orElse(Stream.empty()))
                 .collect(Collectors.toList());
     }
 
-    private Optional<EfestoOutput> getOptionalOutput(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoInput input) {
-        Optional<KieRuntimeService> retrieved = getKieRuntimeService(input, false, memoryCompilerClassLoader);
+    private Optional<EfestoOutput> getOptionalOutput(EfestoRuntimeContext context, EfestoInput input) {
+        Optional<KieRuntimeService> retrieved = getKieRuntimeService(input, false, context);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieRuntimeService for {}", input.getFRI());
             return Optional.empty();
         }
-        return retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input, memoryCompilerClassLoader));
+        return retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input, context));
     }
 }

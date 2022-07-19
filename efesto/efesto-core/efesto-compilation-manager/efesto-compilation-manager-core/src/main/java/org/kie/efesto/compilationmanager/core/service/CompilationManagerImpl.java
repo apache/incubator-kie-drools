@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +33,9 @@ public class CompilationManagerImpl implements CompilationManager {
     private static final Logger logger = LoggerFactory.getLogger(CompilationManagerImpl.class.getName());
 
     @Override
-    public Collection<IndexFile> processResource(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoResource... toProcess) {
+    public Collection<IndexFile> processResource(EfestoCompilationContext context, EfestoResource... toProcess) {
         return Arrays.stream(toProcess)
-                .flatMap(resource -> getIndexFilesWithProcessedResource(resource, memoryCompilerClassLoader).stream())
+                .flatMap(resource -> getIndexFilesWithProcessedResource(resource, context).stream())
                 .collect(Collectors.toList());
     }
 
