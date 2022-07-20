@@ -23,7 +23,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.testingutility.PMMLContextTest;
+import org.kie.pmml.commons.testingutility.PMMLRuntimeContextTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -53,7 +53,7 @@ public class KiePMMLModelWithSourcesTest {
     @Test
     void evaluate() {
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
-            kiePMMLModelWithSources.evaluate(Collections.EMPTY_MAP, new PMMLContextTest());
+            kiePMMLModelWithSources.evaluate(Collections.EMPTY_MAP, new PMMLRuntimeContextTest());
         });
     }
 

@@ -18,16 +18,17 @@ package org.kie.pmml.evaluator.utils;
 import java.io.File;
 
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.PMMLRuntimeFactory;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
+import org.kie.pmml.compiler.PMMLCompilationContextImpl;
+import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
 import org.kie.pmml.evaluator.core.service.PMMLRuntimeInternalImpl;
 
 import static org.kie.efesto.common.api.utils.FileUtils.getFile;
@@ -44,7 +45,7 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
         EfestoResource<File> efestoFileResource = new EfestoFileResource(pmmlFile);
         KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-        PMMLContext pmmlContext = new PMMLContextImpl(new PMMLRequestData(), pmmlFile.getName(), memoryCompilerClassLoader);
+        PMMLCompilationContext pmmlContext = new PMMLCompilationContextImpl(pmmlFile.getName(), memoryCompilerClassLoader);
         compilationManager.processResource(pmmlContext, efestoFileResource);
         return new PMMLRuntimeInternalImpl();
     }

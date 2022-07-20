@@ -33,7 +33,7 @@ public class KieRuntimeServiceDrlMapInput implements KieRuntimeService<EfestoMap
     private static final Logger logger = LoggerFactory.getLogger(KieRuntimeServiceDrlMapInput.class.getName());
 
     @Override
-    public boolean canManageInput(AbstractEfestoInput<EfestoMapInputDTO>  toEvaluate, EfestoRuntimeContext context) {
+    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
         return DrlRuntimeHelper.canManage(toEvaluate);
     }
 

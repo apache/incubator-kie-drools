@@ -26,18 +26,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContextImpl;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
 import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
-public class PMMLContextImpl extends EfestoRuntimeContextImpl<PMMLListener> implements EfestoRuntimeContext<PMMLListener>,
-                                                                                       EfestoCompilationContext<PMMLListener>,
-                                                                                       PMMLContext {
+public class PMMLRuntimeContextImpl extends EfestoRuntimeContextImpl<PMMLListener> implements EfestoRuntimeContext<PMMLListener>,
+                                                                                              PMMLRuntimeContext {
 
     private static final String PMML_REQUEST_DATA = "PMML_REQUEST_DATA";
 
@@ -61,13 +59,9 @@ public class PMMLContextImpl extends EfestoRuntimeContextImpl<PMMLListener> impl
     private Object affinity;
     private LinkedHashMap<String, Double> probabilityResultMap;
 
-
-    // TODO @gcardosi remove - split in compilation and runtime context
-    private EfestoCompilationContext<PMMLListener> efestoCompilationContext;
-
-    public PMMLContextImpl(final PMMLRequestData pmmlRequestData,
-                           final String fileName,
-                           final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public PMMLRuntimeContextImpl(final PMMLRequestData pmmlRequestData,
+                                  final String fileName,
+                                  final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         super(memoryCompilerClassLoader);
         name = "Context_" + ID_GENERATOR.incrementAndGet();
         set(PMML_REQUEST_DATA, pmmlRequestData);
@@ -77,13 +71,12 @@ public class PMMLContextImpl extends EfestoRuntimeContextImpl<PMMLListener> impl
             this.fileName = fileName;
         }
         this.fileNameNoSuffix = this.fileName.substring(0, this.fileName.lastIndexOf('.'));
-        this.efestoCompilationContext = EfestoCompilationContext.buildWithParentClassLoader(memoryCompilerClassLoader);
     }
 
-    public PMMLContextImpl(final PMMLRequestData pmmlRequestData,
-                           final String fileName,
-                           final Set<PMMLListener> pmmlListeners,
-                           final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public PMMLRuntimeContextImpl(final PMMLRequestData pmmlRequestData,
+                                  final String fileName,
+                                  final Set<PMMLListener> pmmlListeners,
+                                  final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         this(pmmlRequestData, fileName, memoryCompilerClassLoader);
         this.pmmlListeners.addAll(pmmlListeners);
     }
@@ -268,15 +261,5 @@ public class PMMLContextImpl extends EfestoRuntimeContextImpl<PMMLListener> impl
     @Override
     public Set<PMMLListener> getEfestoListeners() {
         return Collections.unmodifiableSet(pmmlListeners);
-    }
-
-    @Override
-    public Map<String, byte[]> compileClasses(Map<String, String> sourcesMap) {
-        return efestoCompilationContext.compileClasses(sourcesMap);
-    }
-
-    @Override
-    public void loadClasses(Map<String, byte[]> compiledClassesMap) {
-        efestoCompilationContext.loadClasses(compiledClassesMap);
     }
 }

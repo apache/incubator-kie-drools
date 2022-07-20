@@ -24,7 +24,7 @@ import org.dmg.pmml.mining.MiningModel;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +49,7 @@ public class KiePMMLModelRetrieverTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        pmml.getModels().get(0),
-                                                                       new PMMLContextMock(), "fileName");
+                                                                       new PMMLCompilationContextMock(), "fileName");
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
@@ -63,7 +63,7 @@ public class KiePMMLModelRetrieverTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        pmml.getModels().get(0),
-                                                                       new PMMLContextMock(), fileName);
+                                                                       new PMMLCompilationContextMock(), fileName);
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
@@ -79,7 +79,7 @@ public class KiePMMLModelRetrieverTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        model,
-                                                                       new PMMLContextMock(), "fileName");
+                                                                       new PMMLCompilationContextMock(), "fileName");
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(compilationDTO);
         assertThat(retrieved).isNotNull().isPresent();
@@ -97,7 +97,7 @@ public class KiePMMLModelRetrieverTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        model,
-                                                                       new PMMLContextMock(), fileName);
+                                                                       new PMMLCompilationContextMock(), fileName);
         final Optional<KiePMMLModel> retrieved =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(compilationDTO);
         assertThat(retrieved).isNotNull();

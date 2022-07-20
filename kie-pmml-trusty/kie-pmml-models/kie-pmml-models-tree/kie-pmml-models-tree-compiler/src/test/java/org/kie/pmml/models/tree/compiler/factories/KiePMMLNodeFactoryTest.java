@@ -52,7 +52,6 @@ import org.dmg.pmml.tree.TreeModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.model.KiePMMLNode;

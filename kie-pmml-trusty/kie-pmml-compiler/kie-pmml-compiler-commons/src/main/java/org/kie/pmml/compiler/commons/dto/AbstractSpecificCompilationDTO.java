@@ -16,12 +16,12 @@
 package org.kie.pmml.compiler.commons.dto;
 
 import org.dmg.pmml.*;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
-import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.KiePMMLTarget;
@@ -64,7 +64,7 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
      */
     protected AbstractSpecificCompilationDTO(final PMML pmml,
                                              final T model,
-                                             final PMMLContext pmmlContext,
+                                             final PMMLCompilationContext pmmlContext,
                                              final String fileName,
                                              final String packageName,
                                              final List<Field<?>> fields) {
@@ -177,7 +177,7 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
     }
 
     @Override
-    public PMMLContext getPmmlContext() {
+    public PMMLCompilationContext getPmmlContext() {
         return source.getPmmlContext();
     }
 

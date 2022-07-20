@@ -19,28 +19,29 @@ import java.util.List;
 
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
-import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
+import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 
 import static org.kie.pmml.commons.Constants.PMML_STRING;
-import static org.kie.pmml.compiler.service.PMMLCompilerService.getEfestoCompilationOutputPMML;
+import static org.kie.pmml.compiler.service.PMMLCompilerServicePMMLInputStream.getEfestoCompilationOutputPMML;
 
-public class KieCompilerServicePMML implements KieCompilerService<EfestoCompilationOutput, PMMLContext> {
+public class KieCompilerServicePMMLInputStream implements KieCompilerService<EfestoCompilationOutput,
+        PMMLCompilationContext> {
 
     @Override
     public boolean canManageResource(EfestoResource toProcess) {
-        return toProcess instanceof EfestoFileResource && ((EfestoFileResource) toProcess).getModelType().equalsIgnoreCase(PMML_STRING);
+        return toProcess instanceof EfestoInputStreamResource && ((EfestoInputStreamResource) toProcess).getModelType().equalsIgnoreCase(PMML_STRING);
     }
 
     @Override
-    public List<EfestoCompilationOutput> processResource(EfestoResource toProcess, PMMLContext context) {
+    public List<EfestoCompilationOutput> processResource(EfestoResource toProcess, PMMLCompilationContext context) {
         if (!canManageResource(toProcess)) {
             throw new KieCompilerServiceException(String.format("%s can not process %s",
                                                                 this.getClass().getName(),
                                                                 toProcess.getClass().getName()));
         }
-        return getEfestoCompilationOutputPMML( (EfestoFileResource)toProcess, context);
+        return getEfestoCompilationOutputPMML((EfestoInputStreamResource) toProcess, context);
     }
 }

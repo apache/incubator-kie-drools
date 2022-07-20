@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.evaluator.core.model;
+package org.kie.pmml.api.compilation;
 
-import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
+import org.kie.api.runtime.Context;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.pmml.api.runtime.PMMLListener;
 
-public class EfestoInputPMML extends AbstractEfestoInput<PMMLRuntimeContext> {
-    public EfestoInputPMML(FRI fri, PMMLRuntimeContext inputData) {
-        super(fri, inputData);
-    }
+public interface PMMLCompilationContext extends EfestoCompilationContext<PMMLListener>,
+                                            Context {
 
 }

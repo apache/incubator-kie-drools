@@ -21,7 +21,7 @@ import org.drools.util.StringUtils;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.regression.model.AbstractKiePMMLTable;
@@ -49,7 +49,7 @@ public class PMMLRegressionModelEvaluator implements PMMLModelEvaluator<KiePMMLR
 
     @Override
     public PMML4Result evaluate(final KiePMMLRegressionModel model,
-                                final PMMLContext pmmlContext) {
+                                final PMMLRuntimeContext pmmlContext) {
         validate(model);
         PMML4Result toReturn = new PMML4Result();
         String targetField = model.getTargetField();

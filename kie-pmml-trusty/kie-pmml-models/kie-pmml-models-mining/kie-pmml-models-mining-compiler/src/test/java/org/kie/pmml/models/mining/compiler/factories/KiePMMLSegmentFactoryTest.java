@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.kie.pmml.models.mining.compiler.dto.SegmentCompilationDTO;
@@ -85,7 +85,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                         pmml,
                         MINING_MODEL,
-                        new PMMLContextMock(),
+                        new PMMLCompilationContextMock(),
                                                                        "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
@@ -105,9 +105,9 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        MINING_MODEL,
-                        new PMMLContextMock(), "FILENAME");
+                                                                       pmml,
+                                                                       MINING_MODEL,
+                                                                       new PMMLCompilationContextMock(), "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final SegmentCompilationDTO segmentCompilationDTO =
@@ -128,9 +128,9 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         sourcesMap.put(kiePMMLModelClass, String.format("public class %s {}", regressionModelName));
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        MINING_MODEL,
-                        new PMMLContextMock(), "FILENAME");
+                                                                       pmml,
+                                                                       MINING_MODEL,
+                                                                       new PMMLCompilationContextMock(), "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final SegmentCompilationDTO segmentCompilationDTO =

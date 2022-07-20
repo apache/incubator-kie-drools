@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.testingutility.PMMLContextTest;
+import org.kie.pmml.commons.testingutility.PMMLRuntimeContextTest;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +47,7 @@ public class KiePMMLMiningModelTest {
     @Test
     void evaluate() {
         assertThatExceptionOfType(KiePMMLException.class).isThrownBy(() -> {
-            KIE_PMML_MINING_MODEL.evaluate(Collections.EMPTY_MAP, new PMMLContextTest());
+            KIE_PMML_MINING_MODEL.evaluate(Collections.EMPTY_MAP, new PMMLRuntimeContextTest());
         });
     }
 

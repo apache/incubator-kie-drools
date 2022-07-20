@@ -18,11 +18,10 @@ package org.kie.pmml.evaluator.core.service;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
+import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
-import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 import org.slf4j.Logger;
@@ -31,17 +30,19 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManage;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.execute;
 
-public class KieRuntimeServicePMML implements KieRuntimeService<PMMLContext, PMML4Result, EfestoInputPMML, EfestoOutputPMML, PMMLContext> {
+public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeContext, PMML4Result, EfestoInputPMML, EfestoOutputPMML, PMMLRuntimeContext> {
 
     private static final Logger logger = LoggerFactory.getLogger(KieRuntimeServicePMML.class.getName());
 
+
+
     @Override
-    public boolean canManageInput(EfestoInputPMML toEvaluate, PMMLContext context) {
+    public boolean canManageInput(EfestoInput toEvaluate, PMMLRuntimeContext context) {
         return canManage(toEvaluate);
     }
 
     @Override
-    public Optional<EfestoOutputPMML> evaluateInput(EfestoInputPMML toEvaluate, PMMLContext context) {
+    public Optional<EfestoOutputPMML> evaluateInput(EfestoInputPMML toEvaluate, PMMLRuntimeContext context) {
         return execute(toEvaluate, context);
     }
 

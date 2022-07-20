@@ -35,7 +35,7 @@ public interface KieRuntimeService<S, U, T extends EfestoInput<S>, E extends Efe
      * @param context
      * @return
      */
-    boolean canManageInput(T toEvaluate, K context);
+    boolean canManageInput(EfestoInput toEvaluate, K context);
 
     /**
      * Produce one <code>EfestoOutput</code> from the given <code>EfestoInput</code>

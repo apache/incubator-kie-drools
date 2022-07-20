@@ -42,20 +42,24 @@ import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
+import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.runtimemanager.api.exceptions.EfestoRuntimeManagerException;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.api.runtime.PMMLContext;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
+import org.kie.pmml.compiler.PMMLCompilationContextImpl;
+import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.model.FRI.SLASH;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
@@ -81,9 +85,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
                 : pmmlFilePath;
         final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(eventManager.getRuntime().getRootClassLoader());
-        PMMLContext pmmlContext = getPMMLPMMLContext(UUID.randomUUID().toString(), pmmlFileName, model, dmnr,
-                                                     memoryCompilerClassLoader);
-        return evaluate(model, pmmlContext);
+        return evaluate(model, pmmlFileName, dmnr, memoryCompilerClassLoader);
     }
 
     @Override
@@ -131,22 +133,24 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         }
     }
 
-    protected PMML4Result evaluate(String modelName, PMMLContext context) {
-        String basePath = context.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
+    protected PMML4Result evaluate(String modelName, String pmmlFileName, DMNResult dmnr, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        PMMLRuntimeContext pmmlContext = getPMMLPMMLContext(UUID.randomUUID().toString(), pmmlFileName, modelName, dmnr,
+                                                            memoryCompilerClassLoader);
+        String basePath = pmmlContext.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
         FRI fri = new FRI(basePath, PMML_STRING);
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
+        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, pmmlContext);
         Collection<EfestoOutput> retrieved = evaluateInput(darInputPMML);
         if (retrieved.isEmpty()) {
-            LOG.warn("Failed to get a result for {}@{}: trying to invoke compilation....", context.getFileName(),
-                     context.getRequestData().getModelName());
-            compileFile(context);
+            LOG.warn("Failed to get a result for {}@{}: trying to invoke compilation....", pmmlContext.getFileName(),
+                     pmmlContext.getRequestData().getModelName());
+            compileFile(pmmlFileName, memoryCompilerClassLoader);
         }
         retrieved = evaluateInput(darInputPMML);
         if (retrieved.isEmpty()) {
             String errorMessage = String.format("Failed to get result for %s@%s: please" +
                                                         " check classpath and dependencies!",
-                                                context.getFileName(),
-                                                context.getRequestData().getModelName());
+                                                pmmlContext.getFileName(),
+                                                pmmlContext.getRequestData().getModelName());
             LOG.error(errorMessage);
             throw new KieRuntimeServiceException(errorMessage);
         }
@@ -154,7 +158,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     }
 
     protected Collection<EfestoOutput> evaluateInput(EfestoInputPMML darInputPMML) {
-        PMMLContext context = darInputPMML.getInputData();
+        PMMLRuntimeContext context = darInputPMML.getInputData();
         try {
             return runtimeManager.evaluateInput(context, darInputPMML);
         } catch (Throwable t) {
@@ -169,81 +173,38 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         }
     }
 
-    protected void compileFile(PMMLContext context) {
+    protected void compileFile(String fileName, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         Collection<IndexFile> retrievedIndexFiles;
         try {
-            EfestoFileResource toProcess = new EfestoFileResource(getPMMLFile(context.getFileName()));
-            retrievedIndexFiles = compilationManager.processResource(context, toProcess);
+            PMMLCompilationContext compilationContext = new PMMLCompilationContextImpl(fileName, memoryCompilerClassLoader);
+            EfestoInputStreamResource toProcess = new EfestoInputStreamResource(documentResource.getInputStream(), fileName);
+            retrievedIndexFiles = compilationManager.processResource(compilationContext, toProcess);
         } catch (Throwable t) {
-            String errorMessage = String.format("Compilation error for %s@%s due to %s: please" +
+            String errorMessage = String.format("Compilation error for %s due to %s: please" +
                                                         " check classpath and dependencies!",
-                                                context.getFileName(),
-                                                context.getRequestData().getModelName(),
+                                                fileName,
                                                 t.getMessage());
             LOG.error(errorMessage);
             throw new KieCompilerServiceException(errorMessage, t);
         }
         if (retrievedIndexFiles == null || retrievedIndexFiles.isEmpty() || retrievedIndexFiles.stream().noneMatch(indexFile -> indexFile.getModel().equals(PMML_STRING))) {
-            String errorMessage = String.format("Failed to create index files for %s@%s: please" +
+            String errorMessage = String.format("Failed to create index files for %s: please" +
                                                         " check classpath and dependencies!",
-                                                context.getFileName(),
-                                                context.getRequestData().getModelName());
+                                                fileName);
             LOG.error(errorMessage);
             throw new KieCompilerServiceException(errorMessage);
         }
     }
 
-    private PMMLContext getPMMLPMMLContext(String correlationId, String fileName, String modelName, DMNResult dmnr,
-                                           final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    private PMMLRuntimeContext getPMMLPMMLContext(String correlationId, String fileName, String modelName, DMNResult dmnr,
+                                                  final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
         for (DMNFunctionDefinitionEvaluator.FormalParameter p : parameters) {
             Object pValue = getValueForPMMLInput(dmnr, p.name);
             Class class1 = pValue.getClass();
             pmmlRequestDataBuilder.addParameter(p.name, pValue, class1);
         }
-        return new PMMLContextImpl(pmmlRequestDataBuilder.build(), fileName, memoryCompilerClassLoader);
+        return new PMMLRuntimeContextImpl(pmmlRequestDataBuilder.build(), fileName, memoryCompilerClassLoader);
     }
 
-    private File getPMMLFile(String fileName) {
-        try (InputStream inputStream = documentResource.getInputStream()) {
-            return getPMMLFile(fileName, inputStream);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Load a <code>File</code> with the given <b>name</b> from the given
-     * <code>InputStream</code>
-     * @param fileName <b>name</b> of file to load
-     * @param inputStream
-     * @return
-     */
-    private File getPMMLFile(String fileName, InputStream inputStream) {
-        FileOutputStream outputStream = null;
-        String fileNameToUse = fileName.endsWith(PMML_SUFFIX) ? fileName.replace(PMML_SUFFIX, "") : fileName;
-        try {
-            File tmpFile = File.createTempFile(fileNameToUse, null);
-            File toReturn = new File(tmpFile.getParentFile().getAbsolutePath() + File.separator + fileName);
-            Files.move(tmpFile.toPath(), toReturn.toPath());
-
-            outputStream = new FileOutputStream(toReturn);
-            byte[] byteArray = new byte[1024];
-            int i;
-            while ((i = inputStream.read(byteArray)) > 0) {
-                outputStream.write(byteArray, 0, i);
-            }
-            return toReturn;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            } catch (Exception e) {
-                LOG.warn("Failed to close outputStream", e);
-            }
-        }
-    }
 }

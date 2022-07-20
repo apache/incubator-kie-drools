@@ -31,11 +31,12 @@ import org.kie.efesto.common.utils.PackageClassNameUtils;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
+import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.HasRedirectOutput;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
@@ -67,23 +68,15 @@ public class PMMLCompilerService {
         // Avoid instantiation
     }
 
-    public static List<EfestoCompilationOutput> getEfestoCompilationOutputPMML(EfestoFileResource resource,
-                                                                               PMMLContext pmmlContext) {
-        return getEfestoFinalOutputPMML(resource, pmmlContext);
-    }
-
-    static List<EfestoCompilationOutput> getEfestoFinalOutputPMML(EfestoFileResource resource,
-                                                                  PMMLContext pmmlContext) {
-        List<EfestoCompilationOutput> toReturn = new ArrayList<>();
-        List<KiePMMLModel> kiePmmlModels = getKiePMMLModelsFromResourcesWithConfigurationsWithSources(pmmlContext,
-                                                                                                      Collections.singletonList(resource));
+    static List<EfestoCompilationOutput> getEfestoFinalOutputPMML(List<KiePMMLModel> kiePmmlModels, String originalFileName, PMMLCompilationContext pmmlContext) {
         List<KiePMMLModelWithSources> kiePmmlModelsWithSources = kiePmmlModels
                 .stream()
                 .filter(KiePMMLModelWithSources.class::isInstance)
                 .map(KiePMMLModelWithSources.class::cast)
                 .collect(Collectors.toList());
-        String fileName = removeSuffix((resource.getContent()).getName());
+        String fileName = removeSuffix(originalFileName);
         Map<String, String> allSourcesMap = new HashMap<>();
+        List<EfestoCompilationOutput> toReturn = new ArrayList<>();
         iterateOverKiePmmlModelsWithSources(kiePmmlModelsWithSources, toReturn, allSourcesMap, pmmlContext);
         List<KiePMMLFactoryModel> kiePMMLFactoryModels = kiePmmlModels
                 .stream()
@@ -106,7 +99,7 @@ public class PMMLCompilerService {
             List<KiePMMLModelWithSources> toIterate,
             List<EfestoCompilationOutput> darCompilationOutputs,
             Map<String, String> allSourcesMap,
-            PMMLContext pmmlContext) {
+            PMMLCompilationContext pmmlContext) {
         toIterate.forEach(kiePMMLModelWithSources -> {
             Map<String, String> sourcesMap = kiePMMLModelWithSources.getSourcesMap();
             allSourcesMap.putAll(sourcesMap);
@@ -131,62 +124,12 @@ public class PMMLCompilerService {
 
     }
 
-    static Collection<IndexFile> getRedirectCompilation(EfestoSetResource redirectOutput, PMMLContext pmmlContext) {
+    static Collection<IndexFile> getRedirectCompilation(EfestoSetResource redirectOutput, PMMLCompilationContext pmmlContext) {
         Optional<CompilationManager> compilationManager = getCompilationManager(true);
         if (!compilationManager.isPresent()) {
             throw new KieCompilerServiceException("Cannot find CompilationManager");
         }
         return compilationManager.get().processResource(pmmlContext, redirectOutput);
     }
-
-    /**
-     * @param pmmlContext
-     * @param resources
-     * @return
-     * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
-     * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
-     */
-    static List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurationsWithSources(PMMLContext pmmlContext,
-                                                                                         Collection<EfestoFileResource> resources) {
-        return resources.stream()
-                .flatMap(resource -> getKiePMMLModelsFromResourceWithSources(pmmlContext, resource).stream())
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * @param pmmlContext
-     * @param resource
-     * @return
-     */
-    static List<KiePMMLModel> getKiePMMLModelsFromResourceWithSources(PMMLContext pmmlContext,
-                                                                      EfestoFileResource resource) {
-        String[] classNamePackageName = getFactoryClassNamePackageName(resource);
-        String packageName = classNamePackageName[1];
-        try {
-            final List<KiePMMLModel> toReturn = PMML_COMPILER.getKiePMMLModelsWithSources(packageName,
-                                                                                          resource.getInputStream(),
-                                                                                          getFileName(resource.getSourcePath()),
-                                                                                          pmmlContext);
-            return toReturn;
-        } catch (IOException e) {
-            throw new ExternalException("ExternalException", e);
-        }
-    }
-
-    /**
-     * Returns an array where the first item is the <b>factory class</b> name and the second item is the <b>package</b> name,
-     * built starting from the given <code>Resource</code>
-     *
-     * @param resource
-     * @return
-     */
-    static String[] getFactoryClassNamePackageName(EfestoFileResource resource) {
-        String sourcePath = resource.getSourcePath();
-        if (sourcePath == null || sourcePath.isEmpty()) {
-            throw new IllegalArgumentException("Missing required sourcePath in resource " + resource + " -> " + resource.getClass().getName());
-        }
-        return PackageClassNameUtils.getFactoryClassNamePackageName(PMML_STRING, sourcePath);
-    }
-
 
 }

@@ -42,9 +42,11 @@ import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
 import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.runtime.PMMLContext;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
+import org.kie.pmml.compiler.PMMLCompilationContextImpl;
+import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,12 +106,12 @@ public class GeneratePMMLModelExecutor {
 
         final List<EfestoResource> efestoResources = getEfestoResources(resourcesDirectories, log);
 
-        PMMLContext pmmlContext = new PMMLContextImpl(null, "", memoryCompilerClassLoader);
+        PMMLCompilationContext pmmlContext = new PMMLCompilationContextImpl("", memoryCompilerClassLoader);
 
         Collection<IndexFile> indexFiles = compilationManager.processResource(pmmlContext, efestoResources.toArray(new EfestoResource[0]));
 
         List<IndexFile> allIndexFiles = getAllIndexFiles(indexFiles);
-        logger.debug("IndexFiles generated  " + allIndexFiles);
+        logger.debug("IndexFiles generated {}", allIndexFiles);
 
         Map<String, byte[]> toReturn = new HashMap<>();
         for (IndexFile indexFile : allIndexFiles) {

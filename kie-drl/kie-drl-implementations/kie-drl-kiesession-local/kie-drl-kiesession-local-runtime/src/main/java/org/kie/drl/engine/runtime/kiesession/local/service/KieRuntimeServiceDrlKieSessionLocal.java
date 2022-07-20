@@ -33,7 +33,7 @@ public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<St
     private static final Logger logger = LoggerFactory.getLogger(KieRuntimeServiceDrlKieSessionLocal.class.getName());
 
     @Override
-    public boolean canManageInput(EfestoInputDrlKieSessionLocal toEvaluate, EfestoRuntimeContext context) {
+    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
         return DrlRuntimeHelper.canManage(toEvaluate);
     }
 

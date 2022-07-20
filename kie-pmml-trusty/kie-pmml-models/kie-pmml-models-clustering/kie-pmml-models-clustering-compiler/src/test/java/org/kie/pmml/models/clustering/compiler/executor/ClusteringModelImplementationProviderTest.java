@@ -27,8 +27,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
-import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
@@ -62,7 +61,7 @@ public class ClusteringModelImplementationProviderTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        model,
-                                                                       new PMMLContextMock(),
+                                                                       new PMMLCompilationContextMock(),
                                                                        SOURCE_FILE);
         KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
 

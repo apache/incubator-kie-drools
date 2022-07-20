@@ -28,7 +28,7 @@ import org.assertj.core.data.Offset;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.testingutility.PMMLContextTest;
+import org.kie.pmml.commons.testingutility.PMMLRuntimeContextTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -74,7 +74,7 @@ public class KiePMMLClassificationTableTest {
     @ParameterizedTest
     void evaluateRegression(double firstTableResult, double secondTableResult, String expectedResult, double firstExpectedValue, double secondExpectedValue) {
         initKiePMMLClassificationTableTest(firstTableResult, secondTableResult, expectedResult, firstExpectedValue, secondExpectedValue);
-        PMMLContextTest pmmlContextTest = new PMMLContextTest();
+        PMMLRuntimeContextTest pmmlContextTest = new PMMLRuntimeContextTest();
         Map<String, Object> input = new HashMap<>();
         input.put(CASE_A, firstTableResult);
         input.put(CASE_B, secondTableResult);

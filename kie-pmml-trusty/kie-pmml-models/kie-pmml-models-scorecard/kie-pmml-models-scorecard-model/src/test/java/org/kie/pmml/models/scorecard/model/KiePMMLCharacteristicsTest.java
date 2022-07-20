@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
-import org.kie.pmml.commons.testingutility.PMMLContextTest;
+import org.kie.pmml.commons.testingutility.PMMLRuntimeContextTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,7 +48,7 @@ public class KiePMMLCharacteristicsTest {
         Double initialScore = 25.23;
         KiePMMLCharacteristics kiePMMLCharacteristics = new KiePMMLCharacteristics("NAME", Collections.emptyList(),
                 getKiePMMLCharacteristicList());
-        PMMLContextTest pmmlContextTest = new PMMLContextTest();
+        PMMLRuntimeContextTest pmmlContextTest = new PMMLRuntimeContextTest();
         Optional<Number> retrieved = kiePMMLCharacteristics.evaluate(Collections.emptyList(), Collections.emptyList()
         , Collections.emptyList(), Collections.emptyMap(),
                 pmmlContextTest,

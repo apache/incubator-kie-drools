@@ -17,34 +17,35 @@
 package org.kie.pmml.compiler.service;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
-import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
-import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
 
-class KieCompilerServicePMMLTest {
+class KieCompilerServicePMMLInputStreamTest {
 
     private static KieCompilerService kieCompilerService;
-    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 
     @BeforeAll
     static void setUp() {
-        kieCompilerService = new KieCompilerServicePMML();
-        memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        kieCompilerService = new KieCompilerServicePMMLInputStream();
     }
 
-
     @Test
-    void canManageResource() {
-        File pmmlFile = getFileFromFileName("LinearRegressionSample.pmml").orElseThrow(() -> new RuntimeException("Failed to get pmmlFIle"));
-        EfestoFileResource toProcess = new EfestoFileResource(pmmlFile);
+    void canManageResource() throws IOException {
+        String fileName = "LinearRegressionSample.pmml";
+        File pmmlFile = getFileFromFileName(fileName).orElseThrow(() -> new RuntimeException("Failed to get pmmlFIle"));
+        EfestoInputStreamResource toProcess = new EfestoInputStreamResource(Files.newInputStream(pmmlFile.toPath()), fileName);
         assertThat(kieCompilerService.canManageResource(toProcess)).isTrue();
+        EfestoFileResource notToProcess = new EfestoFileResource(pmmlFile);
+        assertThat(kieCompilerService.canManageResource(notToProcess)).isFalse();
     }
 
 }

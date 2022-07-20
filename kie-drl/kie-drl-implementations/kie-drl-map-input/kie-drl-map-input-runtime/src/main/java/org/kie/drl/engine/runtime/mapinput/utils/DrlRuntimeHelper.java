@@ -40,7 +40,7 @@ public class DrlRuntimeHelper {
     }
 
 
-    public static boolean canManage(AbstractEfestoInput<EfestoMapInputDTO>  toEvaluate) {
+    public static boolean canManage(EfestoInput toEvaluate) {
         return (toEvaluate instanceof AbstractEfestoInput) && (toEvaluate.getInputData() instanceof EfestoMapInputDTO) && getGeneratedExecutableResource(toEvaluate.getFRI(), "drl").isPresent();
     }
 

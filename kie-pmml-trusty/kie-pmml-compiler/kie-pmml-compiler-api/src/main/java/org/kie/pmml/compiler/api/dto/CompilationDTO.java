@@ -31,12 +31,12 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.TransformationDictionary;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.TargetField;
-import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
 
 /**
@@ -118,7 +118,7 @@ public interface CompilationDTO<T extends Model> extends Serializable {
      */
     Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
 
-    PMMLContext getPmmlContext();
+    PMMLCompilationContext getPmmlContext();
 
     PMML_MODEL getPMML_MODEL();
 

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
 
@@ -40,18 +39,15 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
-import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.xml.sax.SAXException;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
@@ -78,7 +74,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        MINING_MODEL,
-                                                                       new PMMLContextMock(),
+                                                                       new PMMLCompilationContextMock(),
                                                                        "FILE_NAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
@@ -99,7 +95,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        MINING_MODEL,
-                                                                       new PMMLContextMock(),
+                                                                       new PMMLCompilationContextMock(),
                                                                        "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);

@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 
@@ -38,7 +38,7 @@ public class PMMLClusteringModelEvaluator implements PMMLModelEvaluator<KiePMMLC
 
     @Override
     public PMML4Result evaluate(final KiePMMLClusteringModel model,
-                                final PMMLContext context) {
+                                final PMMLRuntimeContext context) {
         final Map<String, Object> requestData =
                 getUnwrappedParametersMap(context.getRequestData().getMappedRequestParams());
 

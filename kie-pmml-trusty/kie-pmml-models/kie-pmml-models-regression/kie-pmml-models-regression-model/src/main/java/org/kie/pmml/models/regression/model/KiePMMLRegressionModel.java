@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.IsInterpreted;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
@@ -42,7 +42,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel implements IsInterprete
 
     @Override
     public Object evaluate(final Map<String, Object> requestData,
-                           final PMMLContext context) {
+                           final PMMLRuntimeContext context) {
         return regressionTable.evaluateRegression(requestData, context);
     }
 

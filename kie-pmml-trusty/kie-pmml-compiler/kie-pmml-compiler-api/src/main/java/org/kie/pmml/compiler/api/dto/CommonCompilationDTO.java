@@ -33,9 +33,9 @@ import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.TransformationDictionary;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
 
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
@@ -55,9 +55,9 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     private final TransformationDictionary transformationDictionary;
     private final T model;
     /**
-     * Using <code>PMMLContext</code> to avoid coupling with drools
+     * Using <code>PMMLCompilationContext</code> to avoid coupling with drools
      */
-    private final PMMLContext pmmlContext;
+    private final PMMLCompilationContext pmmlContext;
 
     private final String fileName;
     private final PMML pmml;
@@ -78,7 +78,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
      */
     private CommonCompilationDTO(final PMML pmml,
                                  final T model,
-                                 final PMMLContext pmmlContext,
+                                 final PMMLCompilationContext pmmlContext,
                                  final String fileName,
                                  final String packageName) {
         this(pmml, model, pmmlContext, fileName, packageName,
@@ -97,7 +97,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
      */
     private CommonCompilationDTO(final PMML pmml,
                                  final T model,
-                                 final PMMLContext pmmlContext,
+                                 final PMMLCompilationContext pmmlContext,
                                  final String fileName,
                                  final String packageName,
                                  final List<Field<?>> fields) {
@@ -136,7 +136,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     private CommonCompilationDTO(final String packageName,
                                  final PMML pmml,
                                  final T model,
-                                 final PMMLContext pmmlContext,
+                                 final PMMLCompilationContext pmmlContext,
                                  final String fileName) {
         this(pmml, model, pmmlContext, fileName, getSanitizedPackageName(String.format(PACKAGE_CLASS_TEMPLATE,
                                                                                           packageName,
@@ -156,7 +156,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     public static <T extends Model> CommonCompilationDTO<T> fromGeneratedPackageNameAndFields(final String packageName,
                                                                                               final PMML pmml,
                                                                                               final T model,
-                                                                                              final PMMLContext pmmlContext,
+                                                                                              final PMMLCompilationContext pmmlContext,
                                                                                               final String fileName) {
         return new CommonCompilationDTO(packageName,
                                         pmml,
@@ -178,7 +178,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
      */
     public static <T extends Model> CommonCompilationDTO<T> fromPackageNameAndFields(final PMML pmml,
                                                                                      final T model,
-                                                                                     final PMMLContext pmmlContext,
+                                                                                     final PMMLCompilationContext pmmlContext,
                                                                                      final String fileName,
                                                                                      final String packageName,
                                                                                      final List<Field<?>> fields) {
@@ -276,7 +276,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     }
 
     @Override
-    public PMMLContext getPmmlContext() {
+    public PMMLCompilationContext getPmmlContext() {
         return pmmlContext;
     }
 

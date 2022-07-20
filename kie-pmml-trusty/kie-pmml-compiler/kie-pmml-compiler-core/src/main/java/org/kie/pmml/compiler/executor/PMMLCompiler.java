@@ -18,9 +18,9 @@ package org.kie.pmml.compiler.executor;
 import java.io.InputStream;
 import java.util.List;
 
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 /**
@@ -35,11 +35,11 @@ public interface PMMLCompiler {
      * @param packageName the package into which put all the generated classes out of the given <code>InputStream</code>
      * @param inputStream
      * @param fileName
-     * @param pmmlContext Using <code>PMMLContext</code>
+     * @param pmmlContext Using <code>PMMLCompilationContext</code>
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
     List<KiePMMLModel> getKiePMMLModelsWithSources(final String packageName, final InputStream inputStream,
-                                                   final String fileName, final PMMLContext pmmlContext);
+                                                   final String fileName, final PMMLCompilationContext pmmlContext);
 }

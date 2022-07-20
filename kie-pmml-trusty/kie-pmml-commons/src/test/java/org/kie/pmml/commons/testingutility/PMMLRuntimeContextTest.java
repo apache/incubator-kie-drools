@@ -21,10 +21,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.api.runtime.PMMLListener;
 
-public class PMMLContextTest implements PMMLContext {
+public class PMMLRuntimeContextTest implements PMMLRuntimeContext {
 
     private final Map<String, Object> outputFieldsMap = new HashMap<>();
     private LinkedHashMap<String, Double> probabilityResultMap;
@@ -164,15 +164,15 @@ public class PMMLContextTest implements PMMLContext {
         return null;
     }
 
-    @Override
-    public Map<String, byte[]> compileClasses(Map<String, String> sourcesMap) {
-        return null;
-    }
-
-    @Override
-    public void loadClasses(Map<String, byte[]> compiledClassesMap) {
-
-    }
+//    @Override
+//    public Map<String, byte[]> compileClasses(Map<String, String> sourcesMap) {
+//        return null;
+//    }
+//
+//    @Override
+//    public void loadClasses(Map<String, byte[]> compiledClassesMap) {
+//
+//    }
 
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {

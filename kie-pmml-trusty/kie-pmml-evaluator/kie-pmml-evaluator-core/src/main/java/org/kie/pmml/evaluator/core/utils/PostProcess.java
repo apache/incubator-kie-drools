@@ -27,7 +27,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -49,7 +49,7 @@ public class PostProcess {
     }
 
     public static void postProcess(final PMML4Result toReturn, final KiePMMLModel model,
-                                   final PMMLContext pmmlContext, final ProcessingDTO processingDTO) {
+                                   final PMMLRuntimeContext pmmlContext, final ProcessingDTO processingDTO) {
         executeTargets(toReturn, processingDTO);
         updateTargetValueType(model, toReturn);
         populateProcessingDTO(toReturn, pmmlContext, processingDTO);
@@ -66,7 +66,7 @@ public class PostProcess {
      * @param toPopulate
      */
     static void populateProcessingDTO(final PMML4Result pmml4Result,
-                                      final PMMLContext pmmlContext,
+                                      final PMMLRuntimeContext pmmlContext,
                                       final ProcessingDTO toPopulate) {
         pmml4Result.getResultVariables().forEach((key, value) -> toPopulate.addKiePMMLNameValue(new KiePMMLNameValue(key, value)));
         final Map<String, Double> sortedByValue

@@ -22,7 +22,7 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 
 public class DrlCompilationContextImpl extends EfestoCompilationContextImpl implements DrlCompilationContext {
 
-    protected DrlCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public DrlCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         super(memoryCompilerClassLoader);
     }
 

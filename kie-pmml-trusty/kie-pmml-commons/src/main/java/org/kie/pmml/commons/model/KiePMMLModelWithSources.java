@@ -23,7 +23,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.TargetField;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
 /**
  * Interface used to identify a given <code>HasSourcesMap</code> as <b>container</b> for KiePMMLModel' sources
@@ -57,7 +57,7 @@ public class KiePMMLModelWithSources extends KiePMMLModel implements HasSourcesM
 
     @Override
     public Object evaluate(final Map<String, Object> requestData,
-                           final PMMLContext context) {
+                           final PMMLRuntimeContext context) {
         throw new KiePMMLException("KiePMMLModelWithSources is not meant to be used for actual evaluation");
     }
 

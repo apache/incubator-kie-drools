@@ -26,7 +26,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.Named;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KieEnumException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.IsInterpreted;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
@@ -93,7 +93,7 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
 
     @Override
     public Object evaluate(final Map<String, Object> requestData,
-                           final PMMLContext context) {
+                           final PMMLRuntimeContext context) {
         double adjustmentFactor = computeAdjustmentFactor(requestData);
 
         Double[] inputs = new Double[clusteringFields.size()];

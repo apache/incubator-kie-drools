@@ -65,7 +65,7 @@ import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
-import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
@@ -221,7 +221,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                      pmmlModel,
                                                                                                      model,
-                                                                                                     new PMMLContextMock(), SOURCE_BASE);
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         ClassOrInterfaceDeclaration modelTemplate = new ClassOrInterfaceDeclaration();
         org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.addGetCreatedKiePMMLMiningFieldsMethod(modelTemplate,
                                                                                                                        compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
@@ -236,7 +236,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                      pmmlModel,
                                                                                                      model,
-                                                                                                     new PMMLContextMock(), SOURCE_BASE);
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateGetCreatedMiningFieldsMethod(classOrInterfaceDeclaration,
                                                                                                                      compilationDTO.getKieMiningFields());
         final MethodDeclaration retrieved =
@@ -251,7 +251,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                      pmmlModel,
                                                                                                      model,
-                                                                                                     new PMMLContextMock(), SOURCE_BASE);
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateGetCreatedOutputFieldsMethod(classOrInterfaceDeclaration,
                                                                                                                      compilationDTO.getKieOutputFields());
         final MethodDeclaration retrieved =
@@ -266,7 +266,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                      pmmlModel,
                                                                                                      model,
-                                                                                                     new PMMLContextMock(), SOURCE_BASE);
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateGetCreatedKiePMMLMiningFieldsMethod(classOrInterfaceDeclaration,
                                                                                                                             compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
         final MethodDeclaration retrieved =
@@ -398,7 +398,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                      pmmlModel,
                                                                                                      model,
-                                                                                                     new PMMLContextMock(), SOURCE_BASE);
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.init(compilationDTO, classOrInterfaceDeclaration);
         BlockStmt body = constructorDeclaration.getBody();
         String text = getFileContent(TEST_03_SOURCE);
@@ -411,7 +411,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                      pmmlModel,
                                                                                                      model,
-                                                                                                     new PMMLContextMock(), SOURCE_BASE);
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.initStaticGetter(compilationDTO,
                                                                                                  classOrInterfaceDeclaration);
         String text = getFileContent(TEST_04_SOURCE);
@@ -520,7 +520,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                      pmmlModel,
                                                                                                      model,
-                                                                                                     new PMMLContextMock(), SOURCE_BASE);
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         final MethodDeclaration methodDeclaration = new MethodDeclaration();
         org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.commonPopulateGetCreatedKiePMMLMiningFieldsMethod(methodDeclaration,
                                                                                                                                   compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
@@ -534,7 +534,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                      pmmlModel,
                                                                                                      model,
-                                                                                                     new PMMLContextMock(), SOURCE_BASE);
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         final MethodDeclaration methodDeclaration = new MethodDeclaration();
         KiePMMLModelFactoryUtils.commonPopulateGetCreatedKiePMMLOutputFieldsMethod(methodDeclaration,
                                                                                    compilationDTO.getOutput().getOutputFields());

@@ -24,10 +24,9 @@ import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.PMMLModel;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
@@ -50,7 +49,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     }
 
     @Override
-    public PMML4Result evaluate(String modelName, PMMLContext context) {
+    public PMML4Result evaluate(String modelName, PMMLRuntimeContext context) {
         String basePath = context.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
         FRI fri = new FRI(basePath, PMML_STRING);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
@@ -66,12 +65,12 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     }
 
     @Override
-    public List<PMMLModel> getPMMLModels(PMMLContext context) {
+    public List<PMMLModel> getPMMLModels(PMMLRuntimeContext context) {
         return PMMLRuntimeHelper.getPMMLModels(context);
     }
 
     @Override
-    public Optional<PMMLModel> getPMMLModel(String fileName, String modelName, PMMLContext context) {
+    public Optional<PMMLModel> getPMMLModel(String fileName, String modelName, PMMLRuntimeContext context) {
         return PMMLRuntimeHelper.getPMMLModel(fileName, modelName, context);
     }
 

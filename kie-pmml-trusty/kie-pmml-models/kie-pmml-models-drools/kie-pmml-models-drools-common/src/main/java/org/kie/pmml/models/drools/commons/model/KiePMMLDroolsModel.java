@@ -35,13 +35,12 @@ import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.efesto.runtimemanager.api.model.EfestoOriginalTypeGeneratedType;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.IsDrools;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -85,7 +84,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
 
     @Override
     public Object evaluate(final Map<String, Object> requestData,
-                           final PMMLContext context) {
+                           final PMMLRuntimeContext context) {
         logger.trace("evaluate {}", requestData);
         final PMML4Result toReturn = getPMML4Result(targetField);
 

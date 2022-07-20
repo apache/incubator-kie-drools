@@ -32,7 +32,7 @@ import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.ExternalizableMock;
-import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModelWithSources;
 import org.kie.test.util.filesystem.FileUtils;
@@ -104,7 +104,7 @@ public class MiningModelImplementationProviderTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        miningmodel,
-                                                                       new PMMLContextMock(),
+                                                                       new PMMLCompilationContextMock(),
                                                                        source);
         final KiePMMLMiningModelWithSources retrieved =
                 (KiePMMLMiningModelWithSources) PROVIDER.getKiePMMLModelWithSources(compilationDTO);

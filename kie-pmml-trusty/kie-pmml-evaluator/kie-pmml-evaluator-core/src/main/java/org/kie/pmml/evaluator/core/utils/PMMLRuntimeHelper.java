@@ -33,7 +33,7 @@ import org.kie.pmml.api.enums.PMML_STEP;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.models.PMMLStep;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelFactory;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -73,7 +73,7 @@ public class PMMLRuntimeHelper {
         return (toEvaluate instanceof EfestoInputPMML) && isPresentExecutableOrRedirect(toEvaluate.getFRI(), PMML_STRING);
     }
 
-    public static Optional<EfestoOutputPMML> execute(EfestoInputPMML toEvaluate, PMMLContext pmmlContext) {
+    public static Optional<EfestoOutputPMML> execute(EfestoInputPMML toEvaluate, PMMLRuntimeContext pmmlContext) {
         KiePMMLModelFactory kiePMMLModelFactory;
         try {
             kiePMMLModelFactory = loadKiePMMLModelFactory(toEvaluate.getFRI(), pmmlContext);
@@ -94,7 +94,7 @@ public class PMMLRuntimeHelper {
         }
     }
 
-    public static List<PMMLModel> getPMMLModels(PMMLContext pmmlContext) {
+    public static List<PMMLModel> getPMMLModels(PMMLRuntimeContext pmmlContext) {
         Collection<GeneratedExecutableResource> finalResources = getAllGeneratedExecutableResources(PMML_STRING);
         return finalResources.stream()
                 .map(finalResource -> loadKiePMMLModelFactory(finalResource, pmmlContext))
@@ -102,7 +102,7 @@ public class PMMLRuntimeHelper {
                 .collect(Collectors.toList());
     }
 
-    public static Optional<PMMLModel> getPMMLModel(String fileName, String modelName, PMMLContext pmmlContext) {
+    public static Optional<PMMLModel> getPMMLModel(String fileName, String modelName, PMMLRuntimeContext pmmlContext) {
         logger.trace("getPMMLModel {} {}", fileName, modelName);
         String fileNameToUse = !fileName.endsWith(PMML_SUFFIX) ? fileName + PMML_SUFFIX : fileName;
         return getPMMLModels(pmmlContext)
@@ -112,7 +112,7 @@ public class PMMLRuntimeHelper {
                 .findFirst();
     }
 
-    public static PMML4Result evaluate(final KiePMMLModel model, final PMMLContext context) {
+    public static PMML4Result evaluate(final KiePMMLModel model, final PMMLRuntimeContext context) {
         if (logger.isDebugEnabled()) {
             logger.debug("evaluate {} {}", model, context);
         }
@@ -129,14 +129,14 @@ public class PMMLRuntimeHelper {
         return toReturn;
     }
 
-    public static Collection<KiePMMLModelFactory> loadAllKiePMMLModelFactories(Collection<GeneratedExecutableResource> finalResources, PMMLContext pmmlContext) {
+    public static Collection<KiePMMLModelFactory> loadAllKiePMMLModelFactories(Collection<GeneratedExecutableResource> finalResources, PMMLRuntimeContext pmmlContext) {
         return finalResources
                 .stream().map(finalResource -> loadKiePMMLModelFactory(finalResource, pmmlContext))
                 .collect(Collectors.toSet());
     }
 
     @SuppressWarnings("unchecked")
-    static KiePMMLModelFactory loadKiePMMLModelFactory(FRI fri, PMMLContext pmmlContext) {
+    static KiePMMLModelFactory loadKiePMMLModelFactory(FRI fri, PMMLRuntimeContext pmmlContext) {
         GeneratedExecutableResource finalResource = getGeneratedExecutableResource(fri, PMML_STRING)
                 .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource " +
                                                                           "for " + fri));
@@ -144,7 +144,7 @@ public class PMMLRuntimeHelper {
     }
 
     static KiePMMLModelFactory loadKiePMMLModelFactory(GeneratedExecutableResource finalResource,
-                                                       PMMLContext pmmlContext) {
+                                                       PMMLRuntimeContext pmmlContext) {
         try {
             String fullKiePMMLModelFactorySourceClassName = finalResource.getFullClassNames().get(0);
             final Class<? extends KiePMMLModelFactory> aClass =
@@ -161,7 +161,7 @@ public class PMMLRuntimeHelper {
         return new EfestoOutputPMML(darInputPMML.getFRI(), result);
     }
 
-    static PMML4Result evaluate(final List<KiePMMLModel> kiePMMLModels, final PMMLContext pmmlContext) {
+    static PMML4Result evaluate(final List<KiePMMLModel> kiePMMLModels, final PMMLRuntimeContext pmmlContext) {
         if (logger.isDebugEnabled()) {
             logger.debug("evaluate {}", pmmlContext);
         }
@@ -196,11 +196,11 @@ public class PMMLRuntimeHelper {
 
     /**
      * Send the given <code>PMMLStep</code>
-     * to the <code>PMMLContext</code>
+     * to the <code>PMMLRuntimeContext</code>
      * @param stepSupplier
      * @param pmmlContext
      */
-    private static void addStep(final Supplier<PMMLStep> stepSupplier, final PMMLContext pmmlContext) {
+    private static void addStep(final Supplier<PMMLStep> stepSupplier, final PMMLRuntimeContext pmmlContext) {
         stepExecuted(stepSupplier, pmmlContext);
     }
 

@@ -31,7 +31,7 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.api.models.PMMLStep;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -66,14 +66,14 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
 
     @Override
     public PMML4Result evaluate(final KiePMMLMiningModel model,
-                                final PMMLContext pmmlContext) {
+                                final PMMLRuntimeContext pmmlContext) {
         validate(model);
         return evaluateMiningModel(model, pmmlContext);
     }
 
     PMML4Result getPMML4Result(final KiePMMLMiningModel toEvaluate,
                                final LinkedHashMap<String, KiePMMLNameValueProbabilityMapTuple> inputData,
-                               final PMMLContext pmmlContext) {
+                               final PMMLRuntimeContext pmmlContext) {
         final MULTIPLE_MODEL_METHOD multipleModelMethod = toEvaluate.getSegmentation().getMultipleModelMethod();
         Object result = null;
         LinkedHashMap<String, Double> probabilityResultMap = null;
@@ -194,7 +194,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
     }
 
     void populateInputDataWithSegmentResult(final PMML4Result pmml4Result,
-                                            final PMMLContext pmmlContext,
+                                            final PMMLRuntimeContext pmmlContext,
                                             final MULTIPLE_MODEL_METHOD multipleModelMethod,
                                             final KiePMMLSegment segment,
                                             final LinkedHashMap<String, KiePMMLNameValueProbabilityMapTuple> toPopulate) {
@@ -216,12 +216,12 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
 
     /**
      * Send the given <code>PMMLStep</code>
-     * to the <code>PMMLContext</code>
+     * to the <code>PMMLRuntimeContext</code>
      *
      * @param stepSupplier
      * @param pmmlContext
      */
-    void addStep(final Supplier<PMMLStep> stepSupplier, final PMMLContext pmmlContext) {
+    void addStep(final Supplier<PMMLStep> stepSupplier, final PMMLRuntimeContext pmmlContext) {
         stepExecuted(stepSupplier, pmmlContext);
     }
 
@@ -252,7 +252,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
      * @return
      */
     private PMML4Result evaluateMiningModel(final KiePMMLMiningModel toEvaluate,
-                                            final PMMLContext pmmlContext) {
+                                            final PMMLRuntimeContext pmmlContext) {
         final MULTIPLE_MODEL_METHOD multipleModelMethod = toEvaluate.getSegmentation().getMultipleModelMethod();
         final List<KiePMMLSegment> segments = toEvaluate.getSegmentation().getSegments();
         final LinkedHashMap<String, KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
@@ -276,7 +276,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
      * @return
      */
     private Optional<PMML4Result> evaluateSegment(final KiePMMLSegment toEvaluate,
-                                                  final PMMLContext pmmlContext) {
+                                                  final PMMLRuntimeContext pmmlContext) {
         logger.trace("evaluateSegment {}", toEvaluate.getId());
         final KiePMMLPredicate kiePMMLPredicate = toEvaluate.getKiePMMLPredicate();
         Optional<PMML4Result> toReturn = Optional.empty();

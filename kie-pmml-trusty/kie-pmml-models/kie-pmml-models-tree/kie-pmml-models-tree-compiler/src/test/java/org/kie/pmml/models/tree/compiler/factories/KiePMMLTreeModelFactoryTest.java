@@ -40,11 +40,10 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.compiler.dto.TreeCompilationDTO;
-import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
@@ -84,7 +83,7 @@ public class KiePMMLTreeModelFactoryTest {
         CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                         pmml1,
                                                                                                         treeModel1,
-                                                                                                        new PMMLContextMock(),
+                                                                                                        new PMMLCompilationContextMock(),
                                                                                                         SOURCE_1);
         Map<String, String> retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(source));
@@ -92,7 +91,7 @@ public class KiePMMLTreeModelFactoryTest {
         source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                         pmml2,
                                                                         treeModel2,
-                                                                        new PMMLContextMock(),
+                                                                        new PMMLCompilationContextMock(),
                                                                         SOURCE_2);
         retrieved =
                 KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(source));
@@ -112,7 +111,7 @@ public class KiePMMLTreeModelFactoryTest {
         CommonCompilationDTO<TreeModel> source = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                         pmml1,
                                                                                                         treeModel1,
-                                                                                                        new PMMLContextMock(),
+                                                                                                        new PMMLCompilationContextMock(),
                                                                                                         SOURCE_1);
         KiePMMLTreeModelFactory.setConstructor(TreeCompilationDTO.fromCompilationDTO(source),
                 modelTemplate,

@@ -25,10 +25,11 @@ import java.util.stream.Collectors;
 
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -56,7 +57,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     public List<KiePMMLModel> getKiePMMLModelsWithSources(final String packageName,
                                                           final InputStream inputStream,
                                                           final String fileName,
-                                                          final PMMLContext pmmlContext) {
+                                                          final PMMLCompilationContext pmmlContext) {
         logger.trace("getModels {} {}", inputStream, pmmlContext);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream, fileName);
@@ -120,7 +121,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
     private List<Map<String, String>> getModelSourcesMap(final String packageName, final PMML pmml,
-                                                         final PMMLContext pmmlContext,
+                                                         final PMMLCompilationContext pmmlContext,
                                                          final String fileName) {
         logger.trace("getModelSourcesMap {}", pmml);
         return pmml
@@ -140,13 +141,13 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     /**
      * Read the given <code>PMML</code> to returns a <code>List&lt;KiePMMLModel&gt;</code>
      * @param packageName the package into which put all the generated classes out of the given <code>PMML</code>
-     * @param pmmlContext Using <code>PMMLContext</code>
+     * @param pmmlContext Using <code>PMMLRuntimeContext</code>
      * @param fileName
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
     private List<KiePMMLModel> getModelsWithSources(final String packageName, final PMML pmml,
-                                                    final PMMLContext pmmlContext,
+                                                    final PMMLCompilationContext pmmlContext,
                                                     final String fileName) {
         logger.trace("getModels {}", pmml);
         return pmml

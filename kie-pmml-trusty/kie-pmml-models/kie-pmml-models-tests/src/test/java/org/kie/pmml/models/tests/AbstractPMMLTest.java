@@ -29,7 +29,7 @@ import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
+import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.evaluator.utils.SPIUtils;
 
@@ -73,8 +73,8 @@ public class AbstractPMMLTest {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
         KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-        return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData, fileName, pmmlListeners,
-                                                                   memoryCompilerClassLoader));
+        return pmmlRuntime.evaluate(modelName, new PMMLRuntimeContextImpl(pmmlRequestData, fileName, pmmlListeners,
+                                                                          memoryCompilerClassLoader));
     }
 
     protected PMMLListenerTest getPMMLListener() {

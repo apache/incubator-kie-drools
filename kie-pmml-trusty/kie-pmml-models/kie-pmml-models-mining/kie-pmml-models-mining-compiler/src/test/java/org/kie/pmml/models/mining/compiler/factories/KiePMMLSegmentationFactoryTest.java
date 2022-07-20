@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.xml.sax.SAXException;
 
@@ -49,7 +49,7 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        MINING_MODEL,
-                                                                       new PMMLContextMock(),
+                                                                       new PMMLCompilationContextMock(),
                                                                        "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);

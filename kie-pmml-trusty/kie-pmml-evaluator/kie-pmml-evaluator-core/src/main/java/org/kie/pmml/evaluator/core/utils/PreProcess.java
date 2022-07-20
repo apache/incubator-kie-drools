@@ -28,7 +28,7 @@ import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.MISSING_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInputDataException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -55,7 +55,7 @@ public class PreProcess {
      * @param context
      * @return
      */
-    public static ProcessingDTO preProcess(final KiePMMLModel model, final PMMLContext context) {
+    public static ProcessingDTO preProcess(final KiePMMLModel model, final PMMLRuntimeContext context) {
         final List<KiePMMLMiningField> notTargetMiningFields = model.getMiningFields() != null ?
                 model.getKiePMMLMiningFields().stream().filter(miningField -> !miningField.isTarget())
                         .collect(Collectors.toList())

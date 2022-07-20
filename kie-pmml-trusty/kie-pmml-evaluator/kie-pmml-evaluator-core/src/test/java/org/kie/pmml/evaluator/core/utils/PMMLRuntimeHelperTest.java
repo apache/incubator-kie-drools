@@ -39,12 +39,12 @@ import org.kie.pmml.api.enums.PMML_STEP;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.models.PMMLStep;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelFactory;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
+import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
 import org.kie.pmml.evaluator.core.implementations.PMMLRuntimeStep;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
@@ -118,7 +118,7 @@ class PMMLRuntimeHelperTest {
     @Test
     void evaluate() {
         FRI fri = new FRI(basePath, PMML_STRING);
-        PMMLContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
+        PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
         KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri, pmmlContext);
         List<KiePMMLModel> kiePMMLModels = kiePmmlModelFactory.getKiePMMLModels();
         PMML4Result retrieved = PMMLRuntimeHelper.evaluate(kiePMMLModels, pmmlContext);
@@ -130,8 +130,8 @@ class PMMLRuntimeHelperTest {
 
         FRI fri = new FRI(basePath, PMML_STRING);
         final List<PMMLStep> pmmlSteps = new ArrayList<>();
-        PMMLContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME,
-                                                 Collections.singleton(getPMMLListener(pmmlSteps)));
+        PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME,
+                                                        Collections.singleton(getPMMLListener(pmmlSteps)));
         KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri, pmmlContext);
         KiePMMLModel kiePMMLModel = kiePmmlModelFactory.getKiePMMLModels().get(0);
         PMMLRuntimeHelper.evaluate(kiePMMLModel, pmmlContext);
@@ -169,7 +169,7 @@ class PMMLRuntimeHelperTest {
     @Test
     void getEfestoOutput() {
         FRI fri = new FRI(basePath, PMML_STRING);
-        PMMLContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
+        PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
 
         KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri, pmmlContext);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, pmmlContext);
@@ -179,7 +179,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void getModelFromMemoryCLassloader() {
-        PMMLContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
+        PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
         Optional<PMMLModel> retrieved = PMMLRuntimeHelper.getPMMLModel(FILE_NAME,
                                                                        MODEL_NAME,
                                                                        pmmlContext);
@@ -236,11 +236,11 @@ class PMMLRuntimeHelperTest {
                                  assertThat(info.get(requestParam.getName())).isEqualTo(requestParam.getValue()));
     }
 
-    private PMMLContext getPMMLContext(String fileName, String modelName, Set<PMMLListener> listeners) {
-        return new PMMLContextImpl(getPMMLRequestData(modelName), fileName, listeners, memoryCompilerClassLoader);
+    private PMMLRuntimeContext getPMMLContext(String fileName, String modelName, Set<PMMLListener> listeners) {
+        return new PMMLRuntimeContextImpl(getPMMLRequestData(modelName), fileName, listeners, memoryCompilerClassLoader);
     }
 
-    private PMMLContext getPMMLContext(String fileName, String modelName) {
+    private PMMLRuntimeContext getPMMLContext(String fileName, String modelName) {
         return getPMMLContext(fileName, modelName, Collections.emptySet());
     }
 

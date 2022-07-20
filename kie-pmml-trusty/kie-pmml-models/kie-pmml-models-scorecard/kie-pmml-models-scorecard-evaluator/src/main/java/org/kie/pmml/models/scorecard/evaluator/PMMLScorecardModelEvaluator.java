@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 
@@ -38,7 +38,7 @@ public class PMMLScorecardModelEvaluator implements PMMLModelEvaluator<KiePMMLSc
 
     @Override
     public PMML4Result evaluate(final KiePMMLScorecardModel model,
-                                final PMMLContext pmmlContext) {
+                                final PMMLRuntimeContext pmmlContext) {
         PMML4Result toReturn = new PMML4Result();
         String targetField = model.getTargetField();
         final Map<String, Object> requestData =

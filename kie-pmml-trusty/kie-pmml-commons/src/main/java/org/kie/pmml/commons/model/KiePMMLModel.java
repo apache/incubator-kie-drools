@@ -26,7 +26,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.PMMLModel;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
@@ -129,7 +129,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
      * @return
      */
     public abstract Object evaluate(final Map<String, Object> requestData,
-                                    final PMMLContext context);
+                                    final PMMLRuntimeContext context);
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLComponent.Builder<T> {
 

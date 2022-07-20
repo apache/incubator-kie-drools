@@ -49,11 +49,11 @@ public class KieCompilerServicePackDesc implements KieCompilerService<EfestoComp
                     toProcess.getClass().getName()));
         }
         if (!(context instanceof DrlCompilationContext)) {
-            context =  EfestoCompilationContext.buildFromContext((EfestoCompilationContextImpl) context, DrlCompilationContextImpl.class);
-
-//            throw new KieCompilerServiceException("context has to be DrlCompilationContext");
+            context =  convertContext(context, DrlCompilationContextImpl.class);
         }
         return Collections.singletonList( pkgDescrToExecModel((EfestoSetResource<PackageDescr>) toProcess, (DrlCompilationContext) context) );
     }
+
+
 
 }
