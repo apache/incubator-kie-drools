@@ -2,11 +2,11 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Comparator;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.Objects;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -16,9 +16,9 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         implements Indexer<Tuple_, Value_> {
 
     private final int indexKeyPosition;
-    private final Function<Key_, Map<Key_, Indexer<Tuple_, Value_>>> submapExtractor;
+    private final BiPredicate<Key_, Key_> iterationStoppingCondition;
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
-    private final NavigableMap<Key_, Indexer<Tuple_, Value_>> comparisonMap = new TreeMap<>(new KeyComparator<>());
+    private final SortedMap<Key_, Indexer<Tuple_, Value_>> comparisonMap;
 
     public ComparisonIndexer(JoinerType comparisonJoinerType, Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
         this(comparisonJoinerType, 0, downstreamIndexerSupplier);
@@ -27,48 +27,46 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
     public ComparisonIndexer(JoinerType comparisonJoinerType, int indexKeyPosition,
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
         this.indexKeyPosition = indexKeyPosition;
-        this.submapExtractor = getSubmapExtractor(comparisonJoinerType);
+        this.iterationStoppingCondition = getIterationStoppingCondition(comparisonJoinerType);
         this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
+        /*
+         * For GT/GTE, the iteration order is reversed.
+         * This allows us to iterate over the entire map, stopping when the given condition is reached.
+         * This is done so that we can avoid using head/tail sub maps, which are expensive.
+         */
+        Comparator<Key_> keyComparator = new KeyComparator<>();
+        if (comparisonJoinerType == JoinerType.GREATER_THAN || comparisonJoinerType == JoinerType.GREATER_THAN_OR_EQUAL) {
+            keyComparator = keyComparator.reversed();
+        }
+        this.comparisonMap = new TreeMap<>(keyComparator);
     }
 
-    private Function<Key_, Map<Key_, Indexer<Tuple_, Value_>>> getSubmapExtractor(JoinerType comparisonJoinerType) {
+    private static <Key_ extends Comparable<Key_>> BiPredicate<Key_, Key_>
+            getIterationStoppingCondition(JoinerType comparisonJoinerType) {
         switch (comparisonJoinerType) {
             case LESS_THAN:
-                return this::getLessThanSubmapExtractor;
+                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) >= 0;
             case LESS_THAN_OR_EQUAL:
-                return this::getLessThanOrEqualSubmapExtractor;
+                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) > 0;
             case GREATER_THAN:
-                return this::getGreaterThanSubmapExtractor;
+                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) <= 0;
             case GREATER_THAN_OR_EQUAL:
-                return this::getGreaterThanOrEqualSubmapExtractor;
+                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) < 0;
             default:
                 throw new IllegalStateException("Impossible state: the comparisonJoinerType (" + comparisonJoinerType
                         + ") is not one of the 4 comparison types.");
         }
     }
 
-    private Map<Key_, Indexer<Tuple_, Value_>> getLessThanSubmapExtractor(Key_ comparisonIndexProperty) {
-        return comparisonMap.headMap(comparisonIndexProperty, false);
-    }
-
-    private Map<Key_, Indexer<Tuple_, Value_>> getLessThanOrEqualSubmapExtractor(Key_ comparisonIndexProperty) {
-        return comparisonMap.headMap(comparisonIndexProperty, true);
-    }
-
-    private Map<Key_, Indexer<Tuple_, Value_>> getGreaterThanSubmapExtractor(Key_ comparisonIndexProperty) {
-        return comparisonMap.tailMap(comparisonIndexProperty, false);
-    }
-
-    private Map<Key_, Indexer<Tuple_, Value_>> getGreaterThanOrEqualSubmapExtractor(Key_ comparisonIndexProperty) {
-        return comparisonMap.tailMap(comparisonIndexProperty, true);
-    }
-
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
         Key_ comparisonIndexProperty = getIndexerKey(indexProperties);
-        Map<Key_, Indexer<Tuple_, Value_>> selectedComparisonMap =
-                submapExtractor.apply(comparisonIndexProperty);
-        for (Indexer<Tuple_, Value_> indexer : selectedComparisonMap.values()) {
+        for (Map.Entry<Key_, Indexer<Tuple_, Value_>> entry : comparisonMap.entrySet()) {
+            Key_ key = entry.getKey();
+            if (iterationStoppingCondition.test(key, comparisonIndexProperty)) {
+                return;
+            }
+            Indexer<Tuple_, Value_> indexer = entry.getValue();
             indexer.visit(indexProperties, tupleValueVisitor);
         }
     }

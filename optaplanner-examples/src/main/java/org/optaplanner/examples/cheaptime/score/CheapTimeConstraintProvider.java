@@ -4,10 +4,7 @@ import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
-import static org.optaplanner.core.api.score.stream.Joiners.greaterThan;
-import static org.optaplanner.core.api.score.stream.Joiners.greaterThanOrEqual;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
-import static org.optaplanner.core.api.score.stream.Joiners.lessThanOrEqual;
+import static org.optaplanner.core.api.score.stream.Joiners.overlapping;
 import static org.optaplanner.examples.cheaptime.score.CheapTimeCostCalculator.multiplyTwoMicros;
 import static org.optaplanner.examples.common.experimental.ExperimentalConstraintCollectors.consecutiveIntervals;
 
@@ -58,8 +55,9 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .join(Resource.class,
                         filtering((taskAssignment, resource) -> taskAssignment.getTask().getUsage(resource) > 0))
                 .join(Period.class,
-                        lessThanOrEqual((taskAssignment, resource) -> taskAssignment.getStartPeriod(), Period::getIndex),
-                        greaterThan((taskAssignment, resource) -> taskAssignment.getEndPeriod(), Period::getIndex))
+                        overlapping((taskAssignment, resource) -> taskAssignment.getStartPeriod(),
+                                (taskAssignment, resource) -> taskAssignment.getEndPeriod(),
+                                Period::getIndex, period -> period.getIndex() + 1))
                 .groupBy((taskAssignment, resource, period) -> period,
                         (taskAssignment, resource, period) -> resource,
                         (taskAssignment, resource, period) -> taskAssignment.getMachine(),
@@ -74,8 +72,8 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .join(Machine.class)
                 .ifExists(TaskAssignment.class,
                         equal((period, machine) -> machine, TaskAssignment::getMachine),
-                        greaterThanOrEqual((period, machine) -> period.getIndex(), TaskAssignment::getStartPeriod),
-                        lessThan((period, machine) -> period.getIndex(), TaskAssignment::getEndPeriod))
+                        overlapping((period, machine) -> period.getIndex(), (period, machine) -> period.getIndex() + 1,
+                                TaskAssignment::getStartPeriod, TaskAssignment::getEndPeriod))
                 .penalizeLong("Active machine power cost", HardMediumSoftLongScore.ONE_MEDIUM,
                         (period, machine) -> multiplyTwoMicros(machine.getPowerConsumptionMicros(),
                                 period.getPowerPriceMicros()));
@@ -95,8 +93,9 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                         consecutiveIntervals(TaskAssignment::getStartPeriod, TaskAssignment::getEndPeriod, (a, b) -> b - a))
                 .flattenLast(ConsecutiveIntervalInfo::getBreaks)
                 .join(Period.class,
-                        lessThanOrEqual((machine, brk) -> brk.getPreviousIntervalClusterEnd(), Period::getIndex),
-                        greaterThan((machine, brk) -> brk.getNextIntervalClusterStart(), Period::getIndex))
+                        overlapping((machine, brk) -> brk.getPreviousIntervalClusterEnd(),
+                                (machine, brk) -> brk.getNextIntervalClusterStart(),
+                                Period::getIndex, period -> period.getIndex() + 1))
                 .groupBy((machine, brk, idlePeriod) -> machine,
                         (machine, brk, idlePeriod) -> brk,
                         sumLong((machine, brk, idlePeriod) -> idlePeriod.getPowerPriceMicros()))
@@ -111,8 +110,8 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
     protected Constraint taskPowerCost(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(TaskAssignment.class)
                 .join(Period.class,
-                        lessThanOrEqual(TaskAssignment::getStartPeriod, Period::getIndex),
-                        greaterThan(TaskAssignment::getEndPeriod, Period::getIndex))
+                        overlapping(TaskAssignment::getStartPeriod, TaskAssignment::getEndPeriod,
+                                Period::getIndex, period -> period.getIndex() + 1))
                 .penalizeLong("Task power cost", HardMediumSoftLongScore.ONE_MEDIUM,
                         (taskAssignment, period) -> multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
                                 period.getPowerPriceMicros()));

@@ -75,11 +75,11 @@ public class PatientAdmissionScheduleConstraintProvider implements ConstraintPro
     public Constraint differentGenderInSameGenderRoomInSameNightConstraint(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(BedDesignation.class)
                 .filter(bd -> bd.getRoomGenderLimitation() == GenderLimitation.SAME_GENDER)
-                .join(BedDesignation.class,
+                .join(constraintFactory.forEach(BedDesignation.class)
+                        .filter(bd -> bd.getRoomGenderLimitation() == GenderLimitation.SAME_GENDER),
                         equal(BedDesignation::getRoom),
                         lessThan(BedDesignation::getId),
-                        filtering((left, right) -> right.getRoomGenderLimitation() == GenderLimitation.SAME_GENDER
-                                && left.getPatient().getGender() != right.getPatient().getGender()
+                        filtering((left, right) -> left.getPatient().getGender() != right.getPatient().getGender()
                                 && left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()) > 0))
                 .penalize("differentGenderInSameGenderRoomInSameNight", HardMediumSoftScore.ofHard(1000),
                         (left, right) -> left.getAdmissionPart().calculateSameNightCount(right.getAdmissionPart()));
@@ -155,10 +155,10 @@ public class PatientAdmissionScheduleConstraintProvider implements ConstraintPro
     public Constraint roomSpecialismNotFirstPriorityConstraint(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(BedDesignation.class)
                 .filter(bd -> bd.getAdmissionPartSpecialism() != null)
-                .join(RoomSpecialism.class,
+                .join(constraintFactory.forEach(RoomSpecialism.class)
+                        .filter(rs -> rs.getPriority() > 1),
                         equal(BedDesignation::getRoom, RoomSpecialism::getRoom),
-                        equal(BedDesignation::getAdmissionPartSpecialism, RoomSpecialism::getSpecialism),
-                        filtering((bd, rs) -> rs.getPriority() > 1))
+                        equal(BedDesignation::getAdmissionPartSpecialism, RoomSpecialism::getSpecialism))
                 .penalize("roomSpecialismNotFirstPriority", HardMediumSoftScore.ofSoft(10),
                         (bd, rs) -> (rs.getPriority() - 1) * bd.getAdmissionPartNightCount());
     }
