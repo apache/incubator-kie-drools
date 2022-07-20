@@ -37,11 +37,6 @@ import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.core.service.RuntimeManagerImpl;
-import org.kie.memorycompiler.KieMemoryCompiler;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class OnTheFlyDrlTest {
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,32 +53,8 @@ class OnTheFlyDrlTest {
     }
 
     @Test
-    void evaluateWithKieSessionLocalCompilationOnTheFlyReuseMemoryClassLoader() throws IOException {
-        String onTheFlyPath = "OnTheFlyPathReuseMemoryClassLoader";
-        Set<File> files = DrlTestUtils.collectDrlFiles("src/test/resources/org/drools/model/project/codegen");
-        EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, onTheFlyPath);
-        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-        DrlCompilationContext compilationContext = DrlCompilationContext.buildWithMemoryCompilerClassLoader(memoryCompilerClassLoader);
-        Collection<IndexFile> indexFiles = compilationManager.processResource(compilationContext, toProcess);
-
-        // Reuse MemoryCompilerClassLoader in the previous compilation
-        EfestoRuntimeContext runtimeContext = EfestoRuntimeContext.buildWithMemoryCompilerClassLoader(memoryCompilerClassLoader);
-        EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(onTheFlyPath, "drl"), "");
-        Collection<EfestoOutput> output = runtimeManager.evaluateInput(runtimeContext, toEvaluate);
-        assertThat(output).isNotNull().hasSize(1);
-        EfestoOutput retrievedRaw = output.iterator().next();
-        assertThat(retrievedRaw).isInstanceOf(EfestoOutputDrlKieSessionLocal.class);
-        EfestoOutputDrlKieSessionLocal retrieved = (EfestoOutputDrlKieSessionLocal) retrievedRaw;
-        assertThat(retrieved.getOutputData()).isNotNull().isInstanceOf(KieSession.class);
-
-        KieSession session = retrieved.getOutputData();
-        session.insert("test");
-        assertThat(session.fireAllRules()).isEqualTo(3);
-    }
-
-    @Test
-    void evaluateWithKieSessionLocalCompilationOnTheFlyNewMemoryClassLoader() throws IOException {
-        String onTheFlyPath = "OnTheFlyPathNewMemoryClassLoader";
+    void evaluateWithKieSessionLocalCompilationOnTheFly() throws IOException {
+        String onTheFlyPath = "OnTheFlyPath";
         Set<File> files = DrlTestUtils.collectDrlFiles("src/test/resources/org/drools/model/project/codegen");
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, onTheFlyPath);
         DrlCompilationContext compilationContext = DrlCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());

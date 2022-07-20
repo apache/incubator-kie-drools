@@ -181,10 +181,6 @@ public class KieMemoryCompiler {
             customCompiledCode.putIfAbsent(name, bytes);
         }
 
-        public void addCodeIfAbsent(String name, byte[] bytes) {
-            customCompiledCode.putIfAbsent(name, bytes);
-        }
-
         @Override
         protected Class<?> findClass(String name) throws ClassNotFoundException {
             byte[] byteCode = customCompiledCode.get(name);
