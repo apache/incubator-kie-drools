@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.efesto.compilationmanager.api.service;
+package org.kie.drl.engine.compilation.model;
 
-import java.util.Collection;
-
-import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
-import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.memorycompiler.KieMemoryCompiler;
 
-public interface CompilationManager {
+public interface DrlCompilationContext extends EfestoCompilationContext {
 
-    /**
-     * Produce <code>Collection<IndexFile></code> from the given <code>EfestoResource</code>.
-     * <code>EfestoCompilationContext</code> will be populated with generated classes
-     *
-     * @param context
-     * @param toProcess
-     * @return
-     */
-    Collection<IndexFile> processResource(EfestoCompilationContext context, EfestoResource... toProcess);
+    public static DrlCompilationContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
+        return new DrlCompilationContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
+    }
 
+    KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration();
 }

@@ -32,24 +32,24 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.io.FileSystemResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
+import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
+import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
-import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.efesto.common.api.model.FRI.SLASH;
 
 class DrlCompilerHelperTest {
 
-    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+    private static DrlCompilationContext context;
     private static Set<File> drlFiles;
     private static Set<PackageDescr> packageDescrs;
 
     @BeforeAll
     static void setUp() throws IOException, DroolsParserException {
-        memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        context = DrlCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         drlFiles = Files.walk(Paths.get("src/test/resources"))
                 .map(Path::toFile)
                 .filter(File::isFile)
@@ -70,7 +70,7 @@ class DrlCompilerHelperTest {
     void getDrlCallableClassesContainerFromPackageDescrResource() {
         String basePath = UUID.randomUUID().toString();
         DrlPackageDescrSetResource toProcess = new DrlPackageDescrSetResource(packageDescrs, basePath);
-        EfestoCompilationOutput retrieved = DrlCompilerHelper.pkgDescrToExecModel(toProcess, memoryCompilerClassLoader);
+        EfestoCompilationOutput retrieved = DrlCompilerHelper.pkgDescrToExecModel(toProcess, context);
         commonVerifyEfestoCompilationOutput(retrieved, basePath);
     }
 
@@ -78,7 +78,7 @@ class DrlCompilerHelperTest {
     void getDrlCallableClassesContainerFromFileResource() {
         String basePath = UUID.randomUUID().toString();
         DrlFileSetResource toProcess = new DrlFileSetResource(drlFiles, basePath);
-        EfestoCompilationOutput retrieved = DrlCompilerHelper.drlToExecutableModel(toProcess, memoryCompilerClassLoader);
+        EfestoCompilationOutput retrieved = DrlCompilerHelper.drlToExecutableModel(toProcess, context);
         commonVerifyEfestoCompilationOutput(retrieved, basePath);
     }
 

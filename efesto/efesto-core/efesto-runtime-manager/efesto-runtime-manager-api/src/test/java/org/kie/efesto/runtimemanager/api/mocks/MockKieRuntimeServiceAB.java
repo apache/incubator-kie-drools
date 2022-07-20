@@ -15,22 +15,20 @@
  */
 package org.kie.efesto.runtimemanager.api.mocks;
 
-import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.memorycompiler.KieMemoryCompiler;
-
 import java.util.Arrays;
 import java.util.List;
 
-public class MockKieRuntimeServiceAB extends AbstractMockKieRuntimeService {
+import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
+public class MockKieRuntimeServiceAB extends AbstractMockKieRuntimeService {
 
     private static List<FRI> managedResources = Arrays.asList(new FRI(MockEfestoInputA.class.getPackage().getName(), MockEfestoInputA.class.getSimpleName()),
             new FRI(MockEfestoInputB.class.getPackage().getName(), MockEfestoInputB.class.getSimpleName()));
 
-
     @Override
-    public boolean canManageInput(EfestoInput toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
         return managedResources.contains(toEvaluate.getFRI());
     }
 

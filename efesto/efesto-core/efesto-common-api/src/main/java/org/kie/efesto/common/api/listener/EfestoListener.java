@@ -13,18 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.efesto.runtimemanager.api.mocks;
+package org.kie.efesto.common.api.listener;
 
-import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+public interface EfestoListener {
 
-public class MockKieRuntimeServiceC extends AbstractMockKieRuntimeService {
-
-    private final static FRI friC = new FRI(MockEfestoInputC.class.getPackage().getName(), MockEfestoInputC.class.getSimpleName());
-
-    @Override
-    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return toEvaluate.getFRI().equals(friC);
-    }
 }

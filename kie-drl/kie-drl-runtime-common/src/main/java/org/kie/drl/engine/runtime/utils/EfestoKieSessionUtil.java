@@ -25,18 +25,20 @@ import org.kie.api.runtime.KieSession;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils;
-import org.kie.memorycompiler.KieMemoryCompiler;
 
 public class EfestoKieSessionUtil {
 
     private EfestoKieSessionUtil() {
     }
 
-    public static KieSession loadKieSession(FRI fri, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static KieSession loadKieSession(FRI fri, EfestoRuntimeContext context) {
         GeneratedExecutableResource finalResource = GeneratedResourceUtils.getGeneratedExecutableResource(fri, "drl")
                 .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource for " + fri));
-        List<Model> models = finalResource.getFullClassNames().stream().map(className -> loadModel(className, memoryCompilerClassLoader)).collect(Collectors.toList());
+        List<Model> models = finalResource.getFullClassNames().stream()
+                        .map(className -> loadModel(className, context))
+                        .collect(Collectors.toList());
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(models);
 
         KieSession toReturn = kieBase.newKieSession();
@@ -44,11 +46,10 @@ public class EfestoKieSessionUtil {
         return toReturn;
     }
 
-
-    static Model loadModel(String fullModelResourcesSourceClassName, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    static Model loadModel(String fullModelResourcesSourceClassName, EfestoRuntimeContext context) {
         try {
             final Class<? extends Model> aClass =
-                    (Class<? extends Model>) memoryCompilerClassLoader.loadClass(fullModelResourcesSourceClassName);
+                    (Class<? extends Model>) context.loadClass(fullModelResourcesSourceClassName);
             return aClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new KieRuntimeServiceException(e);

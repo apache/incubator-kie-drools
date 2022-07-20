@@ -26,24 +26,24 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.service.KieCompilerServiceDrl;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
-import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class KieCompilerServiceDrlTest {
 
     private static KieCompilerService kieCompilerService;
-    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+    private static DrlCompilationContext context;
 
     @BeforeAll
     static void setUp() {
         kieCompilerService = new KieCompilerServiceDrl();
-        memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        context = DrlCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
 
@@ -68,7 +68,7 @@ class KieCompilerServiceDrlTest {
                 .filter(File::isFile)
                 .collect(Collectors.toSet());
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, "BasePath");
-        List<EfestoCompilationOutput> retrieved = kieCompilerService.processResource(toProcess, memoryCompilerClassLoader);
+        List<EfestoCompilationOutput> retrieved = kieCompilerService.processResource(toProcess, context);
         assertThat(retrieved).isNotNull().hasSize(1);
     }
 

@@ -24,7 +24,7 @@ import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
-import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,6 @@ public class DrlRuntimeHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(DrlRuntimeHelper.class.getName());
 
-
     private DrlRuntimeHelper() {
     }
 
@@ -45,10 +44,10 @@ public class DrlRuntimeHelper {
         return (toEvaluate instanceof AbstractEfestoInput) && (toEvaluate.getInputData() instanceof EfestoMapInputDTO) && getGeneratedExecutableResource(toEvaluate.getFRI(), "drl").isPresent();
     }
 
-    public static Optional<EfestoOutputDrlMap> execute(AbstractEfestoInput<EfestoMapInputDTO> toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static Optional<EfestoOutputDrlMap> execute(AbstractEfestoInput<EfestoMapInputDTO> toEvaluate, EfestoRuntimeContext context) {
         KieSession kieSession;
         try {
-            kieSession = loadKieSession(toEvaluate.getFRI(), memoryCompilerClassLoader);
+            kieSession = loadKieSession(toEvaluate.getFRI(), context);
         } catch (Exception e) {
             logger.warn("{} can not execute {}",
                     DrlRuntimeHelper.class.getName(),

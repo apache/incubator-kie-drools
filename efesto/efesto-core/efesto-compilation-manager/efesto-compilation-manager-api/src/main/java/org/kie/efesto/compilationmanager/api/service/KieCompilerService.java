@@ -17,9 +17,9 @@ package org.kie.efesto.compilationmanager.api.service;
 
 import java.util.List;
 
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
-import org.kie.memorycompiler.KieMemoryCompiler;
 
 /**
  * The compilation-related interface to be implemented by engine-plugin.
@@ -39,9 +39,9 @@ public interface KieCompilerService {
      * class to know if it can manage given resource
      *
      * @param toProcess
-     * @param memoryCompilerClassLoader
+     * @param context
      * @return
      */
-    <T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
+    <T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, EfestoCompilationContext context);
 
 }
