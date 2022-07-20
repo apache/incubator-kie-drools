@@ -23,14 +23,14 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.compilationmanager.core.mocks.AbstractMockOutput;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
+import org.kie.efesto.compilationmanager.core.mocks.AbstractMockOutput;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputA;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputB;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputC;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputD;
-import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 class TestCompilationManagerImpl {
 
     private static CompilationManager compilationManager;
-    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+    private static EfestoCompilationContext context;
 
     private static final List<Class<? extends AbstractMockOutput>> MANAGED_Efesto_RESOURCES = Arrays.asList(MockEfestoRedirectOutputA.class, MockEfestoRedirectOutputB.class, MockEfestoRedirectOutputC.class);
 
@@ -48,7 +48,7 @@ class TestCompilationManagerImpl {
     @BeforeAll
     static void setUp() {
         compilationManager = new CompilationManagerImpl();
-        memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(CompilationManager.class.getClassLoader());
+        context = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
     }
 
     @Test
@@ -56,7 +56,7 @@ class TestCompilationManagerImpl {
         MANAGED_Efesto_RESOURCES.forEach(managedResource -> {
             try {
                 AbstractMockOutput toProcess = managedResource.getDeclaredConstructor().newInstance();
-                Collection<IndexFile> retrieved = compilationManager.processResource(memoryCompilerClassLoader,
+                Collection<IndexFile> retrieved = compilationManager.processResource(context,
                                                                                      toProcess);
                 assertEquals(1, retrieved.size());
                 retrieved.clear();
@@ -64,7 +64,7 @@ class TestCompilationManagerImpl {
                 fail(e);
             }
         });
-        Collection<IndexFile> retrieved = compilationManager.processResource(memoryCompilerClassLoader,
+        Collection<IndexFile> retrieved = compilationManager.processResource(context,
                                                                              new MockEfestoRedirectOutputD());
         assertThat(retrieved.isEmpty()).isTrue();
     }
@@ -81,7 +81,7 @@ class TestCompilationManagerImpl {
             }
         });
         toProcess.add(new MockEfestoRedirectOutputD());
-        Collection<IndexFile> retrieved = compilationManager.processResource(memoryCompilerClassLoader,
+        Collection<IndexFile> retrieved = compilationManager.processResource(context,
                                                                              toProcess.toArray(new EfestoResource[0]));
         assertNotNull(retrieved);
     }

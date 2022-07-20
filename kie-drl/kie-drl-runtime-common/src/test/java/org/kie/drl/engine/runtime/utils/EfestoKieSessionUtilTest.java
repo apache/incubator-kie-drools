@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,24 +29,24 @@ class EfestoKieSessionUtilTest {
     private static final String fullModelResourcesSourceClassName = "org.kie.drl.engine.compilation.model.test.Rulesefe9b92fdd254fbabc9e9002be0d51d6";
 
     private static final String basePath = "/TestingRule";
-    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+    private static EfestoRuntimeContext context;
 
     @BeforeAll
     static void setUp() {
-        memoryCompilerClassLoader = new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
     @Test
     void loadKieSession() {
         FRI fri = new FRI(basePath, "drl");
-        KieSession retrieved = EfestoKieSessionUtil.loadKieSession(fri, memoryCompilerClassLoader);
+        KieSession retrieved = EfestoKieSessionUtil.loadKieSession(fri, context);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getIdentifier()).isZero();
     }
 
     @Test
     void loadModel() {
-        Model retrieved = EfestoKieSessionUtil.loadModel(fullModelResourcesSourceClassName, memoryCompilerClassLoader);
+        Model retrieved = EfestoKieSessionUtil.loadModel(fullModelResourcesSourceClassName, context);
         assertThat(retrieved).isNotNull();
     }
 }

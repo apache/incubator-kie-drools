@@ -14,6 +14,13 @@
     <name>KIE :: DRL :: API</name>
     <description>Common API for DRL</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-common-api</artifactId>
+    </dependency>
+  </dependencies>
+
 
 
 </project>

@@ -15,11 +15,11 @@
  */
 package org.kie.efesto.runtimemanager.api.service;
 
+import java.util.Optional;
+
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
-import org.kie.memorycompiler.KieMemoryCompiler;
-
-import java.util.Optional;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
 /**
  * The compilation-related interface to be implemented by engine-plugin.
@@ -28,24 +28,23 @@ import java.util.Optional;
  */
 public interface KieRuntimeService<S, U, T extends EfestoInput<S>, E extends EfestoOutput<U>> {
 
-
     /**
      * Every engine is responsible to verify if it can evaluate a result with the resource of the given <code>T</code>
      * (that contains a specific <code>FRI</code>)
      *
      * @param toEvaluate
-     * @param memoryCompilerClassLoader
+     * @param context
      * @return
      */
-    boolean canManageInput(EfestoInput toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
+    boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context);
 
     /**
      * Produce one <code>EfestoOutput</code> from the given <code>EfestoInput</code>
      *
      * @param toEvaluate
-     * @param memoryCompilerClassLoader
+     * @param context
      * @return
      */
-    Optional<E> evaluateInput(T toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader);
+    Optional<E> evaluateInput(T toEvaluate, EfestoRuntimeContext context);
 
 }

@@ -21,19 +21,18 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.kie.efesto.runtimemanager.api.mocks.MockKieRuntimeServiceAB;
 import org.kie.efesto.runtimemanager.api.mocks.MockKieRuntimeServiceC;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
-import org.kie.memorycompiler.KieMemoryCompiler;
 
 class TestSPIUtils {
 
     private static final List<Class<? extends KieRuntimeService>> KIE_RUNTIME_SERVICES =
             Arrays.asList(MockKieRuntimeServiceAB.class, MockKieRuntimeServiceC.class);
 
-    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+    private static EfestoRuntimeContext context;
 
     @BeforeAll
     static void setUp() {
-        memoryCompilerClassLoader =
-                new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
     }
 }

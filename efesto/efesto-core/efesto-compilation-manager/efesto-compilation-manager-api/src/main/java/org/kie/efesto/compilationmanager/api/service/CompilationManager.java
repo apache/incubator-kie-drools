@@ -18,21 +18,19 @@ package org.kie.efesto.compilationmanager.api.service;
 import java.util.Collection;
 
 import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
-import org.kie.memorycompiler.KieMemoryCompiler;
 
 public interface CompilationManager {
 
     /**
-     * Produce one <code>EfestoCallableOutput</code> from the given <code>EfestoRedirectOutput</code>.
-     * The return is <code>Optional</code> because the engine required to process given
-     * <code>EfestoRedirectOutput</code>
-     * may not be found
+     * Produce <code>Collection<IndexFile></code> from the given <code>EfestoResource</code>.
+     * <code>EfestoCompilationContext</code> will be populated with generated classes
      *
-     * @param memoryCompilerClassLoader
+     * @param context
      * @param toProcess
      * @return
      */
-    Collection<IndexFile> processResource(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, EfestoResource... toProcess);
+    Collection<IndexFile> processResource(EfestoCompilationContext context, EfestoResource... toProcess);
 
 }

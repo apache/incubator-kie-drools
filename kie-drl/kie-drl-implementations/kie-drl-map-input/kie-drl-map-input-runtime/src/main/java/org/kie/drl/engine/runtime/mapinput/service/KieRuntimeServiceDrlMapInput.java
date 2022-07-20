@@ -23,24 +23,22 @@ import org.kie.drl.engine.runtime.mapinput.utils.DrlRuntimeHelper;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class KieRuntimeServiceDrlMapInput implements KieRuntimeService<EfestoMapInputDTO, Map<String, Object>, AbstractEfestoInput<EfestoMapInputDTO>, EfestoOutputDrlMap> {
 
     private static final Logger logger = LoggerFactory.getLogger(KieRuntimeServiceDrlMapInput.class.getName());
 
-
     @Override
-    public boolean canManageInput(EfestoInput toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
         return DrlRuntimeHelper.canManage(toEvaluate);
     }
 
     @Override
-    public Optional<EfestoOutputDrlMap> evaluateInput(AbstractEfestoInput<EfestoMapInputDTO> toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        return DrlRuntimeHelper.execute(toEvaluate, memoryCompilerClassLoader);
+    public Optional<EfestoOutputDrlMap> evaluateInput(AbstractEfestoInput<EfestoMapInputDTO> toEvaluate, EfestoRuntimeContext context) {
+        return DrlRuntimeHelper.execute(toEvaluate, context);
     }
 }

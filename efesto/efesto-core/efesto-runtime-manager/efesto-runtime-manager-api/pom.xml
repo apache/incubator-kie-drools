@@ -22,11 +22,6 @@
       <groupId>org.kie</groupId>
       <artifactId>efesto-common-api</artifactId>
     </dependency>
-    <!--- Needed to propagate MemoryCompiler for on-the-fly compilation -->
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-memory-compiler</artifactId>
-    </dependency>
   </dependencies>
 
 

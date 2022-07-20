@@ -15,17 +15,17 @@
  */
 package org.kie.efesto.runtimemanager.api.mocks;
 
-import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
-import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
-import org.kie.memorycompiler.KieMemoryCompiler;
-
 import java.util.Optional;
+
+import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 
 public abstract class AbstractMockKieRuntimeService<T extends AbstractMockEfestoInput> implements KieRuntimeService<String, String, T, MockEfestoOutput> {
 
     @Override
-    public Optional<MockEfestoOutput> evaluateInput(T toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        if (!canManageInput(toEvaluate, memoryCompilerClassLoader)) {
+    public Optional<MockEfestoOutput> evaluateInput(T toEvaluate, EfestoRuntimeContext context) {
+        if (!canManageInput(toEvaluate, context)) {
             throw new KieRuntimeServiceException(String.format("Unmanaged input %s", toEvaluate.getFRI()));
         }
         return Optional.of(new MockEfestoOutput());

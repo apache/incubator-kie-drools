@@ -31,14 +31,13 @@ Finally install the Lunr extension with:
 
 == Building the website locally
 
-This folder contains 2 antora playbooks, `antora-playbook.yml` to generate the documentation from the Drools git repository and `antora-playbook-author.yml` to generate it from the source of your locally installed drools project. To run the latter and generate the documentation locally under the `build` folder use:
+This folder contains an antora playbook, `antora-playbook.yml` to generate documentation from the source of your locally installed drools project. To run the latter and generate the documentation manually under the `drools-docs` folder use:
 
-`npx antora antora-playbook-author.yml`
+`npx antora antora-playbook.yml`
 
 == How it works
 
-This module builds a documentation website using https://antora.org/[Antora] that pulls the content from
-the latest release branch of the https://github.com/kiegroup/drools[drools repository].
+This module builds a documentation website using contents under `drools-docs`.
 
 To simplify the maintenance, the documentation website is based on a pre-built default Antora UI bundle
 located in `ui-bundle/ui-bundle.zip`. Customizations are located in `supplemental-ui` that Antora uses to replace
