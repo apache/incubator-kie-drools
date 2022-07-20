@@ -27,6 +27,7 @@ import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
@@ -529,6 +530,14 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
             scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         }
         scoreDirectorFactoryConfig.setConstraintProviderClass(constraintProviderClass);
+        return this;
+    }
+
+    public SolverConfig withConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
+        if (scoreDirectorFactoryConfig == null) {
+            scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        }
+        scoreDirectorFactoryConfig.setConstraintStreamImplType(constraintStreamImplType);
         return this;
     }
 
