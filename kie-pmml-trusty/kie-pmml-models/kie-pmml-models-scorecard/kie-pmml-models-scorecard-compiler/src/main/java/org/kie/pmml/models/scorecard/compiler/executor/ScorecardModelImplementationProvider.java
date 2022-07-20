@@ -52,7 +52,7 @@ public class ScorecardModelImplementationProvider implements ModelImplementation
         logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
                      compilationDTO.getFields(),
                      compilationDTO.getModel(),
-                     compilationDTO.getHasClassloader());
+                     compilationDTO.getPmmlContext());
         try {
             ScorecardCompilationDTO scorecardCompilationDTO =
                     ScorecardCompilationDTO.fromCompilationDTO(compilationDTO);

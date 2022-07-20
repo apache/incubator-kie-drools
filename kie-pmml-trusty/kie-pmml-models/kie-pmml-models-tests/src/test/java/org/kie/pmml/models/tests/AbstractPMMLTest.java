@@ -17,12 +17,14 @@ package org.kie.pmml.models.tests;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLListener;
@@ -60,9 +62,7 @@ public class AbstractPMMLTest {
                                    final Map<String, Object> inputData,
                                    final String fileName,
                                    final String modelName) {
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
-        return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData, fileName,
-                                                                   pmmlRuntime.getMemoryClassLoader()));
+        return evaluate(pmmlRuntime, inputData, fileName, modelName, Collections.emptySet());
     }
 
     protected PMML4Result evaluate(final PMMLRuntime pmmlRuntime,
@@ -71,8 +71,10 @@ public class AbstractPMMLTest {
                                    final String modelName,
                                    final Set<PMMLListener> pmmlListeners) {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
+        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
+                new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
         return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData, fileName, pmmlListeners,
-                                                                   pmmlRuntime.getMemoryClassLoader()));
+                                                                   memoryCompilerClassLoader));
     }
 
     protected PMMLListenerTest getPMMLListener() {

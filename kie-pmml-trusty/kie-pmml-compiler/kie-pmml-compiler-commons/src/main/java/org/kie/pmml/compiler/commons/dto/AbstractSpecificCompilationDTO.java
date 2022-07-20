@@ -21,7 +21,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
-import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.KiePMMLTarget;
@@ -59,16 +59,16 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
      *
      * @param pmml
      * @param model
-     * @param hasClassLoader
+     * @param pmmlContext
      * @param packageName
      */
     protected AbstractSpecificCompilationDTO(final PMML pmml,
                                              final T model,
-                                             final HasClassLoader hasClassLoader,
+                                             final PMMLContext pmmlContext,
                                              final String fileName,
                                              final String packageName,
                                              final List<Field<?>> fields) {
-        this(CommonCompilationDTO.fromPackageNameAndFields(pmml, model, hasClassLoader, fileName, packageName, fields));
+        this(CommonCompilationDTO.fromPackageNameAndFields(pmml, model, pmmlContext, fileName, packageName, fields));
     }
 
     /**
@@ -177,8 +177,8 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
     }
 
     @Override
-    public HasClassLoader getHasClassloader() {
-        return source.getHasClassloader();
+    public PMMLContext getPmmlContext() {
+        return source.getPmmlContext();
     }
 
     @Override

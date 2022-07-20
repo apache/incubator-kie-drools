@@ -37,7 +37,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -78,7 +78,7 @@ public class KiePMMLTreeModelFactoryTest {
                                                                                            pmml.getTransformationDictionary(), treeModel.getLocalTransformations());
         final CommonCompilationDTO<TreeModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME, pmml, treeModel,
-                                                                       new HasClassLoaderMock(), "FILENAME");
+                                                                       new PMMLContextMock(), "FILENAME");
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
                 DroolsCompilationDTO.fromCompilationDTO(compilationDTO, fieldTypeMap);
         Map<String, String> retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(droolsCompilationDTO);
@@ -107,7 +107,7 @@ public class KiePMMLTreeModelFactoryTest {
         final ClassOrInterfaceDeclaration modelTemplate = classOrInterfaceDeclaration.clone();
         final CommonCompilationDTO<TreeModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME, pmml, treeModel,
-                                                                       new HasClassLoaderMock(), "FILENAME");
+                                                                       new PMMLContextMock(), "FILENAME");
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
                 DroolsCompilationDTO.fromCompilationDTO(compilationDTO, new HashMap<>());
         KiePMMLTreeModelFactory.setConstructor(droolsCompilationDTO, modelTemplate);

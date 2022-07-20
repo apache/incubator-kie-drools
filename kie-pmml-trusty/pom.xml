@@ -164,18 +164,4 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kie-pmml-benchmarks</module>
-      </modules>
-    </profile>
-  </profiles>
-
 </project>

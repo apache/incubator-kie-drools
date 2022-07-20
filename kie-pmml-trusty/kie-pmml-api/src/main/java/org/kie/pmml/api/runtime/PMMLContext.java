@@ -20,10 +20,11 @@ import java.util.Map;
 
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
-import org.kie.efesto.runtimemanager.api.model.EfestoContext;
-import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
-public interface PMMLContext extends EfestoContext<PMMLListener>,
+public interface PMMLContext extends EfestoRuntimeContext<PMMLListener>,
+                                     EfestoCompilationContext<PMMLListener>,
                                      Context {
 
     PMMLRequestData getRequestData();
@@ -69,8 +70,4 @@ public interface PMMLContext extends EfestoContext<PMMLListener>,
 
     Map<String, Object> getOutputFieldsMap();
 
-    /**
-     * @return
-     */
-    KieMemoryCompiler.MemoryCompilerClassLoader getMemoryClassLoader();
 }

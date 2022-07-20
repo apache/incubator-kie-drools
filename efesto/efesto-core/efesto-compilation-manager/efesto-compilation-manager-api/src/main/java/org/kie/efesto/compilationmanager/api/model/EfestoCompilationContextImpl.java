@@ -18,12 +18,13 @@ package org.kie.efesto.compilationmanager.api.model;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.memorycompiler.KieMemoryCompilerException;
 
-public class EfestoCompilationContextImpl implements EfestoCompilationContext {
+public class EfestoCompilationContextImpl<T extends EfestoListener> implements EfestoCompilationContext<T> {
 
     protected final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 

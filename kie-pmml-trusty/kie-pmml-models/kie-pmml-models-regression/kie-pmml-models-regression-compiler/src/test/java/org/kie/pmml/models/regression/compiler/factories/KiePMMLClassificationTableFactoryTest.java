@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.regression.compiler.dto.RegressionCompilationDTO;
 import org.kie.pmml.models.regression.model.KiePMMLClassificationTable;
@@ -112,7 +112,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock(),
+                                                                       new PMMLContextMock(),
                                                                        "FILENAME");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
@@ -166,7 +166,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock(),
+                                                                       new PMMLContextMock(),
                                                                        "FILENAME");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
@@ -217,7 +217,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock(),
+                                                                       new PMMLContextMock(),
                                                                        "FILENAME");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,
@@ -303,7 +303,7 @@ public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegres
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock(),
+                                                                       new PMMLContextMock(),
                                                                        "FILENAME");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,

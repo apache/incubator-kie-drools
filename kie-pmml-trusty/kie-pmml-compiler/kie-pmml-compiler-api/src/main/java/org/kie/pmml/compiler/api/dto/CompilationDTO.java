@@ -36,7 +36,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.TargetField;
-import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
 
 /**
@@ -118,7 +118,7 @@ public interface CompilationDTO<T extends Model> extends Serializable {
      */
     Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
 
-    HasClassLoader getHasClassloader();
+    PMMLContext getPmmlContext();
 
     PMML_MODEL getPMML_MODEL();
 

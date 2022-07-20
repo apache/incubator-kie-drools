@@ -22,26 +22,25 @@ import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
-import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.api.runtime.PMMLContext;
 
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.compiler.service.PMMLCompilerService.getEfestoCompilationOutputPMML;
 
-public class KieCompilerServicePMML implements KieCompilerService {
+public class KieCompilerServicePMML implements KieCompilerService<EfestoCompilationOutput, PMMLContext> {
 
     @Override
-    public <T extends EfestoResource> boolean canManageResource(T toProcess) {
+    public boolean canManageResource(EfestoResource toProcess) {
         return toProcess instanceof EfestoFileResource && ((EfestoFileResource) toProcess).getModelType().equalsIgnoreCase(PMML_STRING);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public List<EfestoCompilationOutput> processResource(EfestoResource toProcess, PMMLContext context) {
         if (!canManageResource(toProcess)) {
             throw new KieCompilerServiceException(String.format("%s can not process %s",
-                    this.getClass().getName(),
-                    toProcess.getClass().getName()));
+                                                                this.getClass().getName(),
+                                                                toProcess.getClass().getName()));
         }
-        return (List<E>) getEfestoCompilationOutputPMML((EfestoFileResource) toProcess, memoryCompilerClassLoader);
+        return getEfestoCompilationOutputPMML( (EfestoFileResource)toProcess, context);
     }
 }

@@ -20,13 +20,13 @@ import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
-public interface EfestoRuntimeContext extends EfestoContext<EfestoListener> {
+public interface EfestoRuntimeContext<T extends EfestoListener> extends EfestoContext<T> {
 
-    public static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
+    static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
         return new EfestoRuntimeContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
     }
 
-    public static EfestoRuntimeContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    static EfestoRuntimeContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         return new EfestoRuntimeContextImpl(memoryCompilerClassLoader);
     }
 

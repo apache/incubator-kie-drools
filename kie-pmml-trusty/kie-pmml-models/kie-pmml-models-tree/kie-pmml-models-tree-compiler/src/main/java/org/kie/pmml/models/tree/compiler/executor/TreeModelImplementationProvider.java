@@ -51,7 +51,7 @@ public class TreeModelImplementationProvider implements ModelImplementationProvi
         logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
                      compilationDTO.getFields(),
                      compilationDTO.getModel(),
-                     compilationDTO.getHasClassloader());
+                     compilationDTO.getPmmlContext());
         try {
             return KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(TreeCompilationDTO.fromCompilationDTO(compilationDTO));
         } catch (Exception e) {

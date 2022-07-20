@@ -156,7 +156,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     protected Collection<EfestoOutput> evaluateInput(EfestoInputPMML darInputPMML) {
         PMMLContext context = darInputPMML.getInputData();
         try {
-            return runtimeManager.evaluateInput((KieMemoryCompiler.MemoryCompilerClassLoader) context.getMemoryClassLoader(), darInputPMML);
+            return runtimeManager.evaluateInput(context, darInputPMML);
         } catch (Throwable t) {
             String errorMessage = String.format("Evaluation error for %s@%s using %s due to %s: please" +
                                                         " check classpath and dependencies!",
@@ -173,7 +173,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         Collection<IndexFile> retrievedIndexFiles;
         try {
             EfestoFileResource toProcess = new EfestoFileResource(getPMMLFile(context.getFileName()));
-            retrievedIndexFiles = compilationManager.processResource((KieMemoryCompiler.MemoryCompilerClassLoader) context.getMemoryClassLoader(), toProcess);
+            retrievedIndexFiles = compilationManager.processResource(context, toProcess);
         } catch (Throwable t) {
             String errorMessage = String.format("Compilation error for %s@%s due to %s: please" +
                                                         " check classpath and dependencies!",

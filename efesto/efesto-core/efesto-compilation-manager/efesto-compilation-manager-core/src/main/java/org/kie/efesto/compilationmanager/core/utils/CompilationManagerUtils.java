@@ -61,7 +61,8 @@ public class CompilationManagerUtils {
             return Collections.emptySet();
         }
         Set<IndexFile> toPopulate = new HashSet<>();
-        for (EfestoCompilationOutput compilationOutput : retrieved.get().processResource(toProcess, context)) {
+        List<EfestoCompilationOutput> efestoCompilationOutputList = retrieved.get().processResource(toProcess, context);
+        for (EfestoCompilationOutput compilationOutput : efestoCompilationOutputList) {
             if (compilationOutput instanceof EfestoCallableOutput) {
                 IndexFile indexFile = CompilationManagerUtils.getIndexFile((EfestoCallableOutput) compilationOutput);
                 toPopulate.add(indexFile);

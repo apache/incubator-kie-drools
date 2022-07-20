@@ -29,16 +29,14 @@ import java.util.stream.Collectors;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.efesto.runtimemanager.api.model.EfestoOriginalTypeGeneratedType;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
-import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;
@@ -53,10 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.model.FRI.SLASH;
-import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedRedirectResource;
-import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getKieRuntimeService;
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getRuntimeManager;
-import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 import static org.kie.pmml.models.drools.utils.KiePMMLAgendaListenerUtils.getAgendaEventListener;
@@ -116,7 +111,8 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         if (!runtimeManager.isPresent()) {
             throw new KieRuntimeServiceException("Cannot find RuntimeManager");
         }
-        Collection<EfestoOutput> output = runtimeManager.get().evaluateInput((KieMemoryCompiler.MemoryCompilerClassLoader) context.getMemoryClassLoader(), input);
+
+        Collection<EfestoOutput> output = runtimeManager.get().evaluateInput(context, input);
         // TODO manage for different kind of retrieved output
         if (output.isEmpty()) {
             throw new KiePMMLException("Failed to retrieve value for " + this.getName());
@@ -163,29 +159,6 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
     }
 
     @SuppressWarnings("unchecked")
-    private <S extends EfestoMapInputDTO, U, T extends EfestoInput<S>, E extends EfestoOutput<U>> void evaluatePMML4Result(final PMML4Result pmml4Result, T toEvaluate
-            , KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        GeneratedRedirectResource redirectResource =
-                getGeneratedRedirectResource(toEvaluate.getFRI(), PMML_STRING).orElse(null);
-        if (redirectResource == null) {
-            logger.warn("{} can not redirect {}", KiePMMLDroolsModel.class.getName(), toEvaluate.getFRI());
-            return;
-        }
-        FRI targetFri = new FRI(redirectResource.getFri().getBasePath(), redirectResource.getTarget());
-        T redirectInput = (T) new AbstractEfestoInput<EfestoMapInputDTO>(targetFri,
-                                                                         toEvaluate.getInputData()) {
-
-        };
-
-        Optional<KieRuntimeService> targetService = getKieRuntimeService(redirectInput, true,
-                                                                         memoryCompilerClassLoader);
-        if (!targetService.isPresent()) {
-            logger.warn("Cannot find KieRuntimeService for {}", toEvaluate.getFRI());
-            return;
-        }
-        targetService.get().evaluateInput(redirectInput, memoryCompilerClassLoader);
-    }
-
     private PMML4Result getPMML4Result(final String targetField) {
         PMML4Result toReturn = new PMML4Result();
         toReturn.setResultCode(ResultCode.FAIL.getName());

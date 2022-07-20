@@ -35,7 +35,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
@@ -82,7 +82,7 @@ public class KiePMMLScorecardModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        scorecardModel,
-                                                                       new HasClassLoaderMock(), "FILENAME");
+                                                                       new PMMLContextMock(), "FILENAME");
         final DroolsCompilationDTO<Scorecard> droolsCompilationDTO =
                 DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
                         fieldTypeMap);
@@ -112,7 +112,7 @@ public class KiePMMLScorecardModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                         pmml,
                         scorecardModel,
-                        new HasClassLoaderMock(), "FILENAME");
+                        new PMMLContextMock(), "FILENAME");
         final DroolsCompilationDTO<Scorecard> droolsCompilationDTO =
                 DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
                         new HashMap<>());

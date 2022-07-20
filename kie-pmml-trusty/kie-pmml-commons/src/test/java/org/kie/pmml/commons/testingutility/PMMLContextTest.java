@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
 
@@ -166,7 +165,17 @@ public class PMMLContextTest implements PMMLContext {
     }
 
     @Override
-    public KieMemoryCompiler.MemoryCompilerClassLoader getMemoryClassLoader() {
+    public Map<String, byte[]> compileClasses(Map<String, String> sourcesMap) {
+        return null;
+    }
+
+    @Override
+    public void loadClasses(Map<String, byte[]> compiledClassesMap) {
+
+    }
+
+    @Override
+    public Class<?> loadClass(String className) throws ClassNotFoundException {
         return null;
     }
 }

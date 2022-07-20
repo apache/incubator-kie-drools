@@ -43,6 +43,8 @@ import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +104,9 @@ public class GeneratePMMLModelExecutor {
 
         final List<EfestoResource> efestoResources = getEfestoResources(resourcesDirectories, log);
 
-        Collection<IndexFile> indexFiles = compilationManager.processResource(memoryCompilerClassLoader, efestoResources.toArray(new EfestoResource[0]));
+        PMMLContext pmmlContext = new PMMLContextImpl(null, "", memoryCompilerClassLoader);
+
+        Collection<IndexFile> indexFiles = compilationManager.processResource(pmmlContext, efestoResources.toArray(new EfestoResource[0]));
 
         List<IndexFile> allIndexFiles = getAllIndexFiles(indexFiles);
         logger.debug("IndexFiles generated  " + allIndexFiles);

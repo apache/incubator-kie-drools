@@ -33,19 +33,16 @@ import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
-import org.kie.memorycompiler.JavaConfiguration;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.HasRedirectOutput;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.executor.PMMLCompiler;
 import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
-import org.kie.pmml.compiler.impl.HasClassloaderImpl;
 import org.kie.pmml.compiler.model.EfestoCallableOutputPMMLClassesContainer;
 import org.kie.pmml.compiler.model.EfestoRedirectOutputPMML;
 import org.slf4j.Logger;
@@ -70,14 +67,16 @@ public class PMMLCompilerService {
         // Avoid instantiation
     }
 
-
-    public static List<EfestoCompilationOutput> getEfestoCompilationOutputPMML(EfestoFileResource resource, KieMemoryCompiler.MemoryCompilerClassLoader memoryClassLoader) {
-        return getEfestoFinalOutputPMML(resource, memoryClassLoader);
+    public static List<EfestoCompilationOutput> getEfestoCompilationOutputPMML(EfestoFileResource resource,
+                                                                               PMMLContext pmmlContext) {
+        return getEfestoFinalOutputPMML(resource, pmmlContext);
     }
 
-    static List<EfestoCompilationOutput> getEfestoFinalOutputPMML(EfestoFileResource resource, KieMemoryCompiler.MemoryCompilerClassLoader memoryClassLoader) {
+    static List<EfestoCompilationOutput> getEfestoFinalOutputPMML(EfestoFileResource resource,
+                                                                  PMMLContext pmmlContext) {
         List<EfestoCompilationOutput> toReturn = new ArrayList<>();
-        List<KiePMMLModel> kiePmmlModels = getKiePMMLModelsFromResourcesWithConfigurationsWithSources(new HasClassloaderImpl(memoryClassLoader), Collections.singletonList(resource));
+        List<KiePMMLModel> kiePmmlModels = getKiePMMLModelsFromResourcesWithConfigurationsWithSources(pmmlContext,
+                                                                                                      Collections.singletonList(resource));
         List<KiePMMLModelWithSources> kiePmmlModelsWithSources = kiePmmlModels
                 .stream()
                 .filter(KiePMMLModelWithSources.class::isInstance)
@@ -85,14 +84,14 @@ public class PMMLCompilerService {
                 .collect(Collectors.toList());
         String fileName = removeSuffix((resource.getContent()).getName());
         Map<String, String> allSourcesMap = new HashMap<>();
-        iterateOverKiePmmlModelsWithSources(kiePmmlModelsWithSources, toReturn, allSourcesMap, memoryClassLoader);
+        iterateOverKiePmmlModelsWithSources(kiePmmlModelsWithSources, toReturn, allSourcesMap, pmmlContext);
         List<KiePMMLFactoryModel> kiePMMLFactoryModels = kiePmmlModels
                 .stream()
                 .filter(KiePMMLFactoryModel.class::isInstance)
                 .map(KiePMMLFactoryModel.class::cast)
                 .collect(Collectors.toList());
         kiePMMLFactoryModels.forEach(kiePMMLFactoryModel -> allSourcesMap.putAll(kiePMMLFactoryModel.getSourcesMap()));
-        Map<String, byte[]> compiledClasses = compileClasses(allSourcesMap, memoryClassLoader);
+        Map<String, byte[]> compiledClasses = pmmlContext.compileClasses(allSourcesMap);
         kiePMMLFactoryModels.forEach(kiePMMLFactoryModel -> {
             String modelName = kiePMMLFactoryModel.getName().substring(0, kiePMMLFactoryModel.getName().lastIndexOf("Factory"));
             String basePath = fileName + SLASH + modelName;
@@ -107,64 +106,67 @@ public class PMMLCompilerService {
             List<KiePMMLModelWithSources> toIterate,
             List<EfestoCompilationOutput> darCompilationOutputs,
             Map<String, String> allSourcesMap,
-            KieMemoryCompiler.MemoryCompilerClassLoader memoryClassLoader) {
+            PMMLContext pmmlContext) {
         toIterate.forEach(kiePMMLModelWithSources -> {
             Map<String, String> sourcesMap = kiePMMLModelWithSources.getSourcesMap();
             allSourcesMap.putAll(sourcesMap);
             if (kiePMMLModelWithSources instanceof HasRedirectOutput) {
                 EfestoSetResource redirectResource = ((HasRedirectOutput) kiePMMLModelWithSources).getRedirectOutput();
-                getRedirectCompilation(redirectResource, memoryClassLoader);
+                getRedirectCompilation(redirectResource, pmmlContext);
                 FRI fri = new FRI(redirectResource.getBasePath(), PMML_STRING);
                 darCompilationOutputs.add(new EfestoRedirectOutputPMML(fri, kiePMMLModelWithSources.getName()));
             }
             if (kiePMMLModelWithSources instanceof HasNestedModels) {
-                List<KiePMMLModelWithSources> nestedKiePmmlModelsWithSources = ((HasNestedModels) kiePMMLModelWithSources)
+                List<KiePMMLModelWithSources> nestedKiePmmlModelsWithSources =
+                        ((HasNestedModels) kiePMMLModelWithSources)
                         .getNestedModels()
                         .stream()
                         .filter(KiePMMLModelWithSources.class::isInstance)
                         .map(KiePMMLModelWithSources.class::cast)
                         .collect(Collectors.toList());
-                iterateOverKiePmmlModelsWithSources(nestedKiePmmlModelsWithSources, darCompilationOutputs, allSourcesMap, memoryClassLoader);
+                iterateOverKiePmmlModelsWithSources(nestedKiePmmlModelsWithSources, darCompilationOutputs,
+                                                    allSourcesMap, pmmlContext);
             }
         });
 
     }
 
-    static Collection<IndexFile> getRedirectCompilation(EfestoSetResource redirectOutput, KieMemoryCompiler.MemoryCompilerClassLoader memoryClassLoader) {
+    static Collection<IndexFile> getRedirectCompilation(EfestoSetResource redirectOutput, PMMLContext pmmlContext) {
         Optional<CompilationManager> compilationManager = getCompilationManager(true);
         if (!compilationManager.isPresent()) {
             throw new KieCompilerServiceException("Cannot find CompilationManager");
         }
-        return compilationManager.get().processResource(memoryClassLoader, redirectOutput);
+        return compilationManager.get().processResource(pmmlContext, redirectOutput);
     }
 
     /**
-     * @param hasClassLoader
+     * @param pmmlContext
      * @param resources
      * @return
-     * @throws KiePMMLException  if any <code>KiePMMLInternalException</code> has been thrown during execution
+     * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    static List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurationsWithSources(HasClassLoader hasClassLoader, Collection<EfestoFileResource> resources) {
+    static List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurationsWithSources(PMMLContext pmmlContext,
+                                                                                         Collection<EfestoFileResource> resources) {
         return resources.stream()
-                .flatMap(resource -> getKiePMMLModelsFromResourceWithSources(hasClassLoader, resource).stream())
+                .flatMap(resource -> getKiePMMLModelsFromResourceWithSources(pmmlContext, resource).stream())
                 .collect(Collectors.toList());
     }
 
     /**
-     * @param hasClassLoader
+     * @param pmmlContext
      * @param resource
      * @return
      */
-    static List<KiePMMLModel> getKiePMMLModelsFromResourceWithSources(HasClassLoader hasClassLoader,
+    static List<KiePMMLModel> getKiePMMLModelsFromResourceWithSources(PMMLContext pmmlContext,
                                                                       EfestoFileResource resource) {
         String[] classNamePackageName = getFactoryClassNamePackageName(resource);
         String packageName = classNamePackageName[1];
         try {
             final List<KiePMMLModel> toReturn = PMML_COMPILER.getKiePMMLModelsWithSources(packageName,
-                    resource.getInputStream(),
-                    getFileName(resource.getSourcePath()),
-                    hasClassLoader);
+                                                                                          resource.getInputStream(),
+                                                                                          getFileName(resource.getSourcePath()),
+                                                                                          pmmlContext);
             return toReturn;
         } catch (IOException e) {
             throw new ExternalException("ExternalException", e);
@@ -184,17 +186,6 @@ public class PMMLCompilerService {
             throw new IllegalArgumentException("Missing required sourcePath in resource " + resource + " -> " + resource.getClass().getName());
         }
         return PackageClassNameUtils.getFactoryClassNamePackageName(PMML_STRING, sourcePath);
-    }
-
-    /**
-     * Compile the given sources and add them to given <code>Classloader</code> of the current instance.
-     * Returns the <code>compiled bytecode</code>
-     *
-     * @param sourcesMap
-     * @return
-     */
-    static Map<String, byte[]> compileClasses(Map<String, String> sourcesMap, KieMemoryCompiler.MemoryCompilerClassLoader memoryClassLoader) {
-        return KieMemoryCompiler.compileNoLoad(sourcesMap, memoryClassLoader, JavaConfiguration.CompilerType.NATIVE);
     }
 
 

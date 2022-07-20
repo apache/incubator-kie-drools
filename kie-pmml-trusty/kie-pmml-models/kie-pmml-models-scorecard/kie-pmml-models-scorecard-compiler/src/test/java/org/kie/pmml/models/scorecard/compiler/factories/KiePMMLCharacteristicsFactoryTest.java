@@ -47,7 +47,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.commons.utils.KiePMMLModelUtils;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
 import org.kie.pmml.models.scorecard.model.KiePMMLAttribute;
@@ -111,7 +111,7 @@ public class KiePMMLCharacteristicsFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        basicComplexPartialScorePmml,
                                                                        basicComplexPartialScore,
-                                                                       new HasClassLoaderMock(),
+                                                                       new PMMLContextMock(),
                                                                        BASIC_COMPLEX_PARTIAL_SCORE_SOURCE);
         ScorecardCompilationDTO compilationDTO = ScorecardCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved =

@@ -17,14 +17,15 @@ package org.kie.efesto.runtimemanager.api.model;
 
 import java.util.Set;
 
+import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
-public class EfestoRuntimeContextImpl implements EfestoRuntimeContext {
+public class EfestoRuntimeContextImpl<T extends EfestoListener> implements EfestoRuntimeContext<T> {
 
     private final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 
-    EfestoRuntimeContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    protected EfestoRuntimeContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         this.memoryCompilerClassLoader = memoryCompilerClassLoader;
         prepareClassLoader();
     }
@@ -34,14 +35,6 @@ public class EfestoRuntimeContextImpl implements EfestoRuntimeContext {
         friKeySet.stream()
                  .map(this::getGeneratedClasses)
                  .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
-    }
-
-    public static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
-        return new EfestoRuntimeContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
-    }
-
-    public static EfestoRuntimeContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        return new EfestoRuntimeContextImpl(memoryCompilerClassLoader);
     }
 
     @Override

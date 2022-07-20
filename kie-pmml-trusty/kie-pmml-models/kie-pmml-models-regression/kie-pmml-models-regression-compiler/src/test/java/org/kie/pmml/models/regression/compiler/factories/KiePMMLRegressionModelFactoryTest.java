@@ -58,7 +58,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.regression.compiler.dto.RegressionCompilationDTO;
 import org.kie.pmml.models.regression.model.AbstractKiePMMLTable;
@@ -157,7 +157,7 @@ public class KiePMMLRegressionModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock(),
+                                                                       new PMMLContextMock(),
                                                                        "FILENAME");
         KiePMMLRegressionModel retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
@@ -177,7 +177,7 @@ public class KiePMMLRegressionModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock(),
+                                                                       new PMMLContextMock(),
                                                                        "FILENAME");
         Map<String, String> retrieved =
                 KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
@@ -193,7 +193,7 @@ public class KiePMMLRegressionModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock(),
+                                                                       new PMMLContextMock(),
                                                                        "FILENAME");
         Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionModelFactory
                 .getRegressionTablesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
@@ -213,7 +213,7 @@ public class KiePMMLRegressionModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        regressionModel,
-                                                                       new HasClassLoaderMock(),
+                                                                       new PMMLContextMock(),
                                                                        "fileName");
         final RegressionCompilationDTO compilationDTO =
                 RegressionCompilationDTO.fromCompilationDTORegressionTablesAndNormalizationMethod(source,

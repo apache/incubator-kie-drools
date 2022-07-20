@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.kie.pmml.models.mining.compiler.dto.SegmentCompilationDTO;
@@ -85,7 +85,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                         pmml,
                         MINING_MODEL,
-                        new HasClassLoaderMock(),
+                        new PMMLContextMock(),
                                                                        "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
@@ -107,7 +107,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                         pmml,
                         MINING_MODEL,
-                        new HasClassLoaderMock(), "FILENAME");
+                        new PMMLContextMock(), "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final SegmentCompilationDTO segmentCompilationDTO =
@@ -130,7 +130,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                         pmml,
                         MINING_MODEL,
-                        new HasClassLoaderMock(), "FILENAME");
+                        new PMMLContextMock(), "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final SegmentCompilationDTO segmentCompilationDTO =

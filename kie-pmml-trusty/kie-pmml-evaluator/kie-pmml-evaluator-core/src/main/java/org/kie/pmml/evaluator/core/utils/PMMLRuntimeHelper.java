@@ -26,10 +26,8 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
-import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.PMML_STEP;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -48,7 +46,6 @@ import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getAllGeneratedClassResources;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getAllGeneratedExecutableResources;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedExecutableResource;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrRedirect;
@@ -76,14 +73,14 @@ public class PMMLRuntimeHelper {
         return (toEvaluate instanceof EfestoInputPMML) && isPresentExecutableOrRedirect(toEvaluate.getFRI(), PMML_STRING);
     }
 
-    public static Optional<EfestoOutputPMML> execute(EfestoInputPMML toEvaluate, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static Optional<EfestoOutputPMML> execute(EfestoInputPMML toEvaluate, PMMLContext pmmlContext) {
         KiePMMLModelFactory kiePMMLModelFactory;
         try {
-            kiePMMLModelFactory = loadKiePMMLModelFactory(toEvaluate.getFRI(), memoryCompilerClassLoader);
+            kiePMMLModelFactory = loadKiePMMLModelFactory(toEvaluate.getFRI(), pmmlContext);
         } catch (Exception e) {
             logger.warn("{} can not execute {}",
-                    PMMLRuntimeHelper.class.getName(),
-                    toEvaluate.getFRI());
+                        PMMLRuntimeHelper.class.getName(),
+                        toEvaluate.getFRI());
             return Optional.empty();
         }
         try {
@@ -97,21 +94,21 @@ public class PMMLRuntimeHelper {
         }
     }
 
-    public static List<PMMLModel> getPMMLModels(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static List<PMMLModel> getPMMLModels(PMMLContext pmmlContext) {
         Collection<GeneratedExecutableResource> finalResources = getAllGeneratedExecutableResources(PMML_STRING);
         return finalResources.stream()
-                .map(finalResource -> loadKiePMMLModelFactory(finalResource, memoryCompilerClassLoader))
+                .map(finalResource -> loadKiePMMLModelFactory(finalResource, pmmlContext))
                 .flatMap(factory -> factory.getKiePMMLModels().stream())
                 .collect(Collectors.toList());
-
     }
 
-    public static Optional<PMMLModel> getPMMLModel(String fileName, String modelName, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static Optional<PMMLModel> getPMMLModel(String fileName, String modelName, PMMLContext pmmlContext) {
         logger.trace("getPMMLModel {} {}", fileName, modelName);
-        String fileNameToUse =  ! fileName.endsWith(PMML_SUFFIX) ? fileName + PMML_SUFFIX: fileName;
-        return getPMMLModels(memoryCompilerClassLoader)
+        String fileNameToUse = !fileName.endsWith(PMML_SUFFIX) ? fileName + PMML_SUFFIX : fileName;
+        return getPMMLModels(pmmlContext)
                 .stream()
-                .filter(model -> Objects.equals(fileNameToUse, model.getFileName()) &&  Objects.equals(modelName, model.getName()))
+                .filter(model -> Objects.equals(fileNameToUse, model.getFileName()) && Objects.equals(modelName,
+                                                                                                      model.getName()))
                 .findFirst();
     }
 
@@ -132,24 +129,26 @@ public class PMMLRuntimeHelper {
         return toReturn;
     }
 
-    public static Collection<KiePMMLModelFactory> loadAllKiePMMLModelFactories(Collection<GeneratedExecutableResource> finalResources, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    public static Collection<KiePMMLModelFactory> loadAllKiePMMLModelFactories(Collection<GeneratedExecutableResource> finalResources, PMMLContext pmmlContext) {
         return finalResources
-                .stream().map(finalResource -> loadKiePMMLModelFactory(finalResource, memoryCompilerClassLoader))
+                .stream().map(finalResource -> loadKiePMMLModelFactory(finalResource, pmmlContext))
                 .collect(Collectors.toSet());
     }
 
     @SuppressWarnings("unchecked")
-    static KiePMMLModelFactory loadKiePMMLModelFactory(FRI fri, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    static KiePMMLModelFactory loadKiePMMLModelFactory(FRI fri, PMMLContext pmmlContext) {
         GeneratedExecutableResource finalResource = getGeneratedExecutableResource(fri, PMML_STRING)
-                .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource for " + fri));
-        return loadKiePMMLModelFactory(finalResource, memoryCompilerClassLoader);
+                .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource " +
+                                                                          "for " + fri));
+        return loadKiePMMLModelFactory(finalResource, pmmlContext);
     }
 
-    static KiePMMLModelFactory loadKiePMMLModelFactory(GeneratedExecutableResource finalResource, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+    static KiePMMLModelFactory loadKiePMMLModelFactory(GeneratedExecutableResource finalResource,
+                                                       PMMLContext pmmlContext) {
         try {
             String fullKiePMMLModelFactorySourceClassName = finalResource.getFullClassNames().get(0);
             final Class<? extends KiePMMLModelFactory> aClass =
-                    (Class<? extends KiePMMLModelFactory>) memoryCompilerClassLoader.loadClass(fullKiePMMLModelFactorySourceClassName);
+                    (Class<? extends KiePMMLModelFactory>) pmmlContext.loadClass(fullKiePMMLModelFactorySourceClassName);
             return aClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new KieRuntimeServiceException(e);

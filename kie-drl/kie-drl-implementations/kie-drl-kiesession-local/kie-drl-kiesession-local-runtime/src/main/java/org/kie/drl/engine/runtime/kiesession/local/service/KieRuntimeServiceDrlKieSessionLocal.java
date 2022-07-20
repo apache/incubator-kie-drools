@@ -28,12 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<String, KieSession, EfestoInputDrlKieSessionLocal, EfestoOutputDrlKieSessionLocal> {
+public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<String, KieSession, EfestoInputDrlKieSessionLocal, EfestoOutputDrlKieSessionLocal, EfestoRuntimeContext> {
 
     private static final Logger logger = LoggerFactory.getLogger(KieRuntimeServiceDrlKieSessionLocal.class.getName());
 
     @Override
-    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
+    public boolean canManageInput(EfestoInputDrlKieSessionLocal toEvaluate, EfestoRuntimeContext context) {
         return DrlRuntimeHelper.canManage(toEvaluate);
     }
 

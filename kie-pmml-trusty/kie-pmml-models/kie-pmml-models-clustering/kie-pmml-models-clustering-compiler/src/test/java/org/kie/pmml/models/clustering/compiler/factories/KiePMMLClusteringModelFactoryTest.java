@@ -49,7 +49,7 @@ import org.dmg.pmml.clustering.MissingValueWeights;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLContextMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.clustering.compiler.dto.ClusteringCompilationDTO;
 import org.kie.pmml.models.clustering.model.KiePMMLAggregateFunction;
@@ -136,7 +136,7 @@ public class KiePMMLClusteringModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        clusteringModel,
-                                                                       new HasClassLoaderMock(),
+                                                                       new PMMLContextMock(),
                                                                        "fileName");
         KiePMMLClusteringModel retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
@@ -163,7 +163,7 @@ public class KiePMMLClusteringModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        clusteringModel,
-                                                                       new HasClassLoaderMock(), "fileName");
+                                                                       new PMMLContextMock(), "fileName");
         Map<String, String> retrieved =
                 KiePMMLClusteringModelFactory.getKiePMMLClusteringModelSourcesMap(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
         assertThat(retrieved).isNotNull();
@@ -242,7 +242,7 @@ public class KiePMMLClusteringModelFactoryTest {
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                        pmml,
                                                                        clusteringModel,
-                                                                       new HasClassLoaderMock(), "fileName"); // fileName hardcoded inside TEST_01_SOURCE
+                                                                       new PMMLContextMock(), "fileName"); // fileName hardcoded inside TEST_01_SOURCE
         String expectedModelClass =
                 KiePMMLClusteringModel.ModelClass.class.getCanonicalName() + "." + clusteringModel.getModelClass().name();
         ComparisonMeasure comparisonMeasure = clusteringModel.getComparisonMeasure();

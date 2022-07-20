@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
@@ -46,10 +45,8 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
 
     private static final RuntimeManager runtimeManager = SPIUtils.getRuntimeManager(true).get();
 
-    private final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 
-    public PMMLRuntimeInternalImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        this.memoryCompilerClassLoader = memoryCompilerClassLoader;
+    public PMMLRuntimeInternalImpl() {
     }
 
     @Override
@@ -57,7 +54,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         String basePath = context.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
         FRI fri = new FRI(basePath, PMML_STRING);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
-        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(memoryCompilerClassLoader, darInputPMML);
+        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(context, darInputPMML);
         if (retrieved.isEmpty()) {
             throw new KiePMMLException("Failed to retrieve EfestoOutput");
         }
@@ -69,17 +66,13 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     }
 
     @Override
-    public List<PMMLModel> getPMMLModels() {
-        return PMMLRuntimeHelper.getPMMLModels(memoryCompilerClassLoader);
+    public List<PMMLModel> getPMMLModels(PMMLContext context) {
+        return PMMLRuntimeHelper.getPMMLModels(context);
     }
 
     @Override
-    public Optional<PMMLModel> getPMMLModel(String fileName, String modelName) {
-        return PMMLRuntimeHelper.getPMMLModel(fileName, modelName, memoryCompilerClassLoader);
+    public Optional<PMMLModel> getPMMLModel(String fileName, String modelName, PMMLContext context) {
+        return PMMLRuntimeHelper.getPMMLModel(fileName, modelName, context);
     }
 
-    @Override
-    public KieMemoryCompiler.MemoryCompilerClassLoader getMemoryClassLoader() {
-        return memoryCompilerClassLoader;
-    }
 }
