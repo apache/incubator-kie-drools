@@ -50,7 +50,7 @@ class RuntimeDrlTest {
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(basePath, "drl"), "");
         Collection<EfestoOutput> output = runtimeManager.evaluateInput(context, toEvaluate);
         assertThat(output).isNotNull().hasSize(1);
-        EfestoOutput retrievedRaw = output.iterator().next();
+        EfestoOutput<?> retrievedRaw = output.iterator().next();
         assertThat(retrievedRaw).isInstanceOf(EfestoOutputDrlKieSessionLocal.class);
         EfestoOutputDrlKieSessionLocal retrieved = (EfestoOutputDrlKieSessionLocal) retrievedRaw;
         assertThat(retrieved.getOutputData()).isNotNull().isInstanceOf(KieSession.class);

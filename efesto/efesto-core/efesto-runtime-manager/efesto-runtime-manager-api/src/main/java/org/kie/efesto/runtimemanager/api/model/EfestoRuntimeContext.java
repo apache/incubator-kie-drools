@@ -26,9 +26,5 @@ public interface EfestoRuntimeContext<T extends EfestoListener> extends EfestoCo
         return new EfestoRuntimeContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
     }
 
-    static EfestoRuntimeContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        return new EfestoRuntimeContextImpl(memoryCompilerClassLoader);
-    }
-
     Class<?> loadClass(String className) throws ClassNotFoundException;
 }

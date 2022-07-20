@@ -43,6 +43,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OnTheFlyDrlTest {
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+class OnTheFlyDrlTest {
+
     private static RuntimeManager runtimeManager;
     private static CompilationManager compilationManager;
 

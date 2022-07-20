@@ -123,7 +123,6 @@ public class CompilationManagerUtils {
         } else {
             throw new KieCompilerServiceException("Unmanaged type " + compilationOutput.getClass().getName());
         }
-
     }
 
     static List<GeneratedResource> getGeneratedResources(EfestoClassesContainer finalOutput) {

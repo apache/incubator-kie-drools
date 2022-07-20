@@ -40,8 +40,8 @@ public class KieCompilerServiceDecisionTable implements KieCompilerService<Efest
     public List<EfestoCompilationOutput> processResource(EfestoResource toProcess, EfestoCompilationContext context) {
         if (!canManageResource(toProcess)) {
             throw new KieCompilerServiceException(String.format("%s can not process %s",
-                                                                this.getClass().getName(),
-                                                                toProcess.getClass().getName()));
+                    this.getClass().getName(),
+                    toProcess.getClass().getName()));
         }
         if (!(context instanceof DrlCompilationContext)) {
             throw new KieCompilerServiceException("context has to be DrlCompilationContext");
