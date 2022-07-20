@@ -4,7 +4,7 @@ environment:
       enabled: true
     branch:
       enabled: true
-      version: '2.10'
+      version: '2.11'
     lts:
       enabled: true
       version: '2.7'
