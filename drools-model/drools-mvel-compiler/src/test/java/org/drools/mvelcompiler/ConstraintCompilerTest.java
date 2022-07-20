@@ -16,6 +16,7 @@
 
 package org.drools.mvelcompiler;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -57,6 +58,42 @@ public class ConstraintCompilerTest implements CompilerTest {
     public void testConversionConstructorArgument() {
         testExpression(c -> c.addDeclaration("$p", Person.class), "new Person($p.name, $p)",
                        "new Person($p.getName(), $p)");
+    }
+
+    @Test
+    public void testBigDecimalMultiplyInt() {
+        testExpression(c -> c.addDeclaration("$bd1", BigDecimal.class), "$bd1 * 10",
+                       "$bd1.multiply(new java.math.BigDecimal(10), java.math.MathContext.DECIMAL128)");
+    }
+
+    @Test
+    public void testBigDecimalMultiplyNegativeInt() {
+        testExpression(c -> c.addDeclaration("$bd1", BigDecimal.class), "$bd1 * -1",
+                       "$bd1.multiply(new java.math.BigDecimal(-1), java.math.MathContext.DECIMAL128)");
+    }
+
+    @Test
+    public void testBigDecimalAddInt() {
+        testExpression(c -> c.addDeclaration("$bd1", BigDecimal.class), "$bd1 + 10",
+                       "$bd1.add(new java.math.BigDecimal(10), java.math.MathContext.DECIMAL128)");
+    }
+
+    @Test
+    public void testBigDecimalSubtractInt() {
+        testExpression(c -> c.addDeclaration("$bd1", BigDecimal.class), "$bd1 - 10",
+                       "$bd1.subtract(new java.math.BigDecimal(10), java.math.MathContext.DECIMAL128)");
+    }
+
+    @Test
+    public void testBigDecimalDivideInt() {
+        testExpression(c -> c.addDeclaration("$bd1", BigDecimal.class), "$bd1 / 10",
+                       "$bd1.divide(new java.math.BigDecimal(10), java.math.MathContext.DECIMAL128)");
+    }
+
+    @Test
+    public void testBigDecimalModInt() {
+        testExpression(c -> c.addDeclaration("$bd1", BigDecimal.class), "$bd1 % 10",
+                       "$bd1.remainder(new java.math.BigDecimal(10), java.math.MathContext.DECIMAL128)");
     }
 
     public void testExpression(Consumer<MvelCompilerContext> testFunction,
