@@ -36,14 +36,6 @@ public class EfestoRuntimeContextImpl implements EfestoRuntimeContext {
                  .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
     }
 
-    public static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
-        return new EfestoRuntimeContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
-    }
-
-    public static EfestoRuntimeContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        return new EfestoRuntimeContextImpl(memoryCompilerClassLoader);
-    }
-
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
         return memoryCompilerClassLoader.loadClass(className);
