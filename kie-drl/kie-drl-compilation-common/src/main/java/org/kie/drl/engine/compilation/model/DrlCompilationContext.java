@@ -25,9 +25,5 @@ public interface DrlCompilationContext extends EfestoCompilationContext {
         return new DrlCompilationContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
     }
 
-    public static DrlCompilationContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        return new DrlCompilationContextImpl(memoryCompilerClassLoader);
-    }
-
     KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration();
 }

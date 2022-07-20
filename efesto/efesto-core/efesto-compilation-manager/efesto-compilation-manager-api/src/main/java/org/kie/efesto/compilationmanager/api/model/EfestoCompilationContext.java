@@ -32,10 +32,6 @@ public interface EfestoCompilationContext extends EfestoContext<EfestoListener> 
         return new EfestoCompilationContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
     }
 
-    public static EfestoCompilationContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        return new EfestoCompilationContextImpl(memoryCompilerClassLoader);
-    }
-
     Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
 
     void loadClasses(Map<String, byte[]> compiledClassesMap);
