@@ -147,9 +147,6 @@ void checkoutDroolsRepo() {
 MavenCommand getMavenCommand(String directory) {
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId('kogito_release_settings')
-                // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
-                // https://github.com/quarkusio/quarkus/issues/23205
-                .withProperty('quarkus.bootstrap.effective-model-builder', true)
                 .inDirectory(directory)
     if (env.BUILD_MVN_OPTS) {
         mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])

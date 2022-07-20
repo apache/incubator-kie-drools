@@ -135,9 +135,6 @@ MavenCommand getBasicMavenCommand(String directory) {
 
 MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
     def mvnCmd = getBasicMavenCommand(directory)
-                // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
-                // https://github.com/quarkusio/quarkus/issues/23205
-                .withProperty('quarkus.bootstrap.effective-model-builder', true)
     if (addQuarkusVersion) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
     }
