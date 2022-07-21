@@ -111,6 +111,12 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>efesto-runtime-manager-api</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>efesto-runtime-manager-core</artifactId>
         <version>${project.version}</version>
       </dependency>

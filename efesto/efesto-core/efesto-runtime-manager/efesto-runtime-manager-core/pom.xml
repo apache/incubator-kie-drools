@@ -17,14 +17,25 @@
     <skip.jdepend>false</skip.jdepend>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>efesto-runtime-manager-api</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
-     <artifactId>efesto-runtime-manager-api</artifactId>
+      <artifactId>efesto-runtime-manager-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-     <artifactId>efesto-runtime-manager-api</artifactId>
+      <artifactId>efesto-runtime-manager-api</artifactId>
       <classifier>tests</classifier>
     </dependency>
   </dependencies>
