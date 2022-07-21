@@ -116,25 +116,8 @@
       </dependency>
       <!-- ENGINES -->
       <!-- External -->
-      <!-- Kie -->
-<!--      <dependency>-->
-<!--        <groupId>org.kie</groupId>-->
-<!--        <artifactId>kie-api</artifactId>-->
-<!--        <version>${project.version}</version>-->
-<!--      </dependency>-->
-<!--      <dependency>-->
-<!--        <groupId>org.kie</groupId>-->
-<!--        <artifactId>kie-memory-compiler</artifactId>-->
-<!--        <version>${project.version}</version>-->
-<!--      </dependency>-->
       <!-- Logging -->
       <!-- Test -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-runtime-manager-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>tests</classifier>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 

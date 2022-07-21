@@ -27,6 +27,7 @@
   <modules>
     <module>efesto-common-utils</module>
     <module>efesto-core</module>
+    <module>efesto-dependencies</module>
   </modules>
 
   <!-- Dependencies core to all modules. Keep that as limited as possible. Please avoid indirect or looped dependencies-->
