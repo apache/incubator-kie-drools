@@ -57,8 +57,8 @@
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.6.3</version.info.picocli>
-    <version.io.micrometer>1.9.0</version.io.micrometer>
-    <version.io.quarkus>2.10.2.Final</version.io.quarkus>
+    <version.io.micrometer>1.9.2</version.io.micrometer>
+    <version.io.quarkus>2.11.0.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>2.1.22</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
@@ -76,7 +76,7 @@
     <version.org.apache.httpcomponents.httpcore>4.4.15</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.maven>3.8.4</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
-    <version.org.apache.maven.wagon>3.4.3</version.org.apache.maven.wagon>
+    <version.org.apache.maven.wagon>3.5.1</version.org.apache.maven.wagon>
     <version.org.apache.poi>5.1.0</version.org.apache.poi>
     <!-- DROOLS-6678: only used by kie-test-util -->
     <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
@@ -150,7 +150,7 @@
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-    <version.org.mockito>4.6.0</version.org.mockito>
+    <version.org.mockito>4.6.1</version.org.mockito>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
@@ -207,10 +207,10 @@
 
     <version.net.byte-buddy>1.12.9</version.net.byte-buddy>
 
-    <version.org.postgresql>42.3.6</version.org.postgresql>
+    <version.org.postgresql>42.4.0</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.org.jboss.jandex>2.4.2.Final</version.org.jboss.jandex>
+    <version.org.jboss.jandex>2.4.3.Final</version.org.jboss.jandex>
     <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
