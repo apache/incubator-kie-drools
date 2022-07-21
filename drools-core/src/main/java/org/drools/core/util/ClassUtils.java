@@ -56,6 +56,7 @@ import static java.lang.Character.toUpperCase;
 import static java.lang.System.arraycopy;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
+import static java.util.Arrays.asList;
 import static org.drools.core.util.MethodUtils.getMethod;
 import static org.drools.core.util.StringUtils.ucFirst;
 
@@ -73,6 +74,10 @@ public final class ClassUtils {
     private static final Map<String, String> abbreviationMap;
 
     private static final Map<String, Class<?>> primitiveNameToType;
+
+    private static final Set<Class<?>> numericClasses = new HashSet<Class<?>>(asList(int.class, long.class, double.class, float.class, short.class, char.class, byte.class,
+                                                                                     Integer.class, Long.class, Double.class, Float.class, Short.class, Character.class, Byte.class,
+                                                                                     BigInteger.class, BigDecimal.class));
 
     static {
         final Map<String, String> m = new HashMap<>();
@@ -1002,5 +1007,9 @@ public final class ClassUtils {
         return enclosingClass != null ?
                getCanonicalSimpleName(enclosingClass) + separator + c.getSimpleName() :
                c.getSimpleName();
+    }
+
+    public static boolean isNumericClass(Class<?> clazz) {
+        return numericClasses.contains(clazz);
     }
 }

@@ -57,7 +57,7 @@ public class ConstraintCompilerTest implements CompilerTest {
     @Test
     public void testConversionConstructorArgument() {
         testExpression(c -> c.addDeclaration("$p", Person.class), "new Person($p.name, $p)",
-                       "new Person($p.getName(), $p)");
+                       "new org.drools.Person($p.getName(), $p)");
     }
 
     @Test
