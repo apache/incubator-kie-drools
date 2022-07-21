@@ -44,7 +44,7 @@ How to retest this PR or trigger a specific build:
   Please add comment: <b>Jenkins retest this</b>
 
 - for a <b>specific pull request check</b>  
-  please add comment: <b>Jenkins (re)run [optaplanner|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] tests</b>
+  please add comment: <b>Jenkins (re)run [optaplanner|optaplanner-quickstarts|optaweb-vehicle-routing] tests</b>
   
 - for a <b>full downstream build</b> 
   - for <b>jenkins</b> job: 
@@ -67,7 +67,7 @@ How to retest this PR or trigger a specific build:
 
 - for a <b>quarkus branch specific check</b>  
   Run checks against Quarkus current used branch  
-  Please add comment: <b>Jenkins (re)run [optaplanner|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] quarkus-branch</b>
+  Please add comment: <b>Jenkins (re)run [optaplanner|optaplanner-quickstarts|optaweb-vehicle-routing] quarkus-branch</b>
 
 - for <b>quarkus main checks</b>  
   Run checks against Quarkus main branch  
@@ -75,7 +75,7 @@ How to retest this PR or trigger a specific build:
 
 - for a <b>specific quarkus main check</b>  
   Run checks against Quarkus main branch  
-  Please add comment: <b>Jenkins (re)run [optaplanner|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] quarkus-branch</b>
+  Please add comment: <b>Jenkins (re)run [optaplanner|optaplanner-quickstarts|optaweb-vehicle-routing] quarkus-branch</b>
 
 - for <b>native checks</b>  
   Run native checks  
@@ -83,7 +83,7 @@ How to retest this PR or trigger a specific build:
 
 - for a <b>specific native check</b>  
   Run native checks 
-  Please add comment: <b>Jenkins (re)run [optaplanner|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] native</b>
+  Please add comment: <b>Jenkins (re)run [optaplanner|optaplanner-quickstarts|optaweb-vehicle-routing] native</b>
 
 - for <b>mandrel checks</b>  
   Run native checks against Mandrel image
@@ -91,7 +91,7 @@ How to retest this PR or trigger a specific build:
 
 - for a <b>specific mandrel check</b>  
   Run native checks against Mandrel image  
-  Please add comment: <b>Jenkins (re)run [optaplanner|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] mandrel</b>
+  Please add comment: <b>Jenkins (re)run [optaplanner|optaplanner-quickstarts|optaweb-vehicle-routing] mandrel</b>
 </details>
 
 ### CI Status

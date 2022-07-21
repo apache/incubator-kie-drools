@@ -19,7 +19,7 @@ and the https://www.optaplanner.org/xsd/benchmark/[Benchmark] available on the o
 No build artifacts are required; as a result of the release, the `development` branch must be rebased onto
 the `stable` branch and must point to the released final version of OptaPlanner.
 
-=== OptaWeb Employee Rostering and Vehicle Routing
+=== OptaWeb Vehicle Routing
 
 * https://www.optaplanner.org/download/download.html[Distribution Zip] available via a link on the optaplanner-website
 * https://www.optaplanner.org/learn/documentation.html[Documentation] available via a link on the optaplanner-website
@@ -31,7 +31,7 @@ upload them to the `filemgmt.jboss.org` and then, open a PR changing the links.
 
 For the OptaPlanner project, there is a https://github.com/kiegroup/optaplanner/blob/main/build/release/upload_distribution.sh[script]
 uploading the documentation and the Distribution Zip. The release pipeline calls the script and updates also
-the links on the website. For the Optawebs, the upload has to be done manually at this moment.
+the links on the website. For Optaweb Vehicle Routing, the upload has to be done manually at this moment.
 
 == Versioning
 

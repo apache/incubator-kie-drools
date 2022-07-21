@@ -21,8 +21,6 @@ disable:
 repositories:
 - name: optaplanner
   branch: main
-- name: optaweb-employee-rostering
-  branch: main
 - name: optaweb-vehicle-routing
   branch: main
 - name: optaplanner-quickstarts

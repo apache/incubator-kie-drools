@@ -8,7 +8,6 @@ pipelineProperties = [:]
 
 String optaplannerRepository = 'optaplanner'
 String vehicleRoutingRepository = 'optaweb-vehicle-routing'
-String employeeRosteringRepository = 'optaweb-employee-rostering'
 String quickstartsRepository = 'optaplanner-quickstarts'
 
 pipeline {
@@ -91,21 +90,6 @@ pipeline {
             }
         }
 
-        stage('Merge Optaweb Employee Rostering deploy PR and tag') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    dir(employeeRosteringRepository) {
-                        checkoutRepo(employeeRosteringRepository)
-                        mergeAndPush(getDeployPrLink(employeeRosteringRepository))
-                        tagLatest()
-                    }
-                }
-            }
-        }
-
         stage('Merge OptaPlanner Quickstarts PR and tag') {
             when {
                 expression { return isRelease() }
@@ -141,18 +125,6 @@ pipeline {
                 script {
                     getMavenCommand().inDirectory(vehicleRoutingRepository).skipTests(true).run('clean install')
                     uploadDistribution(vehicleRoutingRepository)
-                }
-            }
-        }
-
-        stage('Upload Employee Rostering documentation and distribution') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    getMavenCommand().inDirectory(employeeRosteringRepository).skipTests(true).run('clean install')
-                    uploadDistribution(employeeRosteringRepository)
                 }
             }
         }
@@ -200,29 +172,6 @@ pipeline {
                     dir(vehicleRoutingRepository) {
                         sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(vehicleRoutingRepository))
-                        runMavenDeploy(getMavenCommand())
-                    }
-                }
-            }
-        }
-
-        stage('Set Optaweb Employee Rostering next snapshot version') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
-                    dir("$employeeRosteringRepository-bot") {
-                        prepareForPR(employeeRosteringRepository)
-                        maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
-
-                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
-                        setPipelinePrLink(employeeRosteringRepository, prLink)
-                    }
-                    dir(employeeRosteringRepository) {
-                        sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush(getPipelinePrLink(employeeRosteringRepository))
                         runMavenDeploy(getMavenCommand())
                     }
                 }

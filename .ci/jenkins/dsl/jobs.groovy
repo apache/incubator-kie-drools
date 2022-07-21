@@ -30,9 +30,6 @@ Map getMultijobPRConfig(Folder jobFolder) {
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
                 ]
             ], [
-                id: 'optaweb-employee-rostering',
-                repository: 'optaweb-employee-rostering'
-            ], [
                 id: 'optaweb-vehicle-routing',
                 repository: 'optaweb-vehicle-routing'
             ], [
@@ -45,7 +42,7 @@ Map getMultijobPRConfig(Folder jobFolder) {
             ]
         ]
     ]
-    if (jobFolder.isNative() || jobFolder.isMandrel()) { // Optawebs should not be built in native.
+    if (jobFolder.isNative() || jobFolder.isMandrel()) { // Optaweb should not be built in native.
         jobConfig.jobs.retainAll { !it.id.startsWith('optaweb') }
     }
     return jobConfig

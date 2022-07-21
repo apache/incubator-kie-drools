@@ -9,7 +9,6 @@ deployProperties = [:]
 optaplannerRepository = 'optaplanner'
 quickstartsRepository = 'optaplanner-quickstarts'
 vehicleRoutingRepository = 'optaweb-vehicle-routing'
-employeeRosteringRepository = 'optaweb-employee-rostering'
 
 pipeline {
     agent {
@@ -83,7 +82,6 @@ pipeline {
                 checkoutRepo(optaplannerRepository)
                 checkoutQuickstarts()
                 checkoutRepo(vehicleRoutingRepository)
-                checkoutRepo(employeeRosteringRepository)
             }
         }
 
@@ -94,7 +92,6 @@ pipeline {
             steps {
                 prepareForPR(optaplannerRepository)
                 prepareForPR(vehicleRoutingRepository)
-                prepareForPR(employeeRosteringRepository)
                 prepareForPR(quickstartsRepository)
             }
         }
@@ -110,7 +107,6 @@ pipeline {
                     mavenCleanInstallOptaPlannerParents()
 
                     maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion(), !isRelease())
-                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebEmployeeRosteringMavenCommand(), getProjectVersion(), !isRelease())
 
                     updateQuickstartsVersions()
                 }
@@ -168,23 +164,6 @@ pipeline {
             }
         }
 
-        stage('Build Employee Rostering') {
-            steps {
-                script {
-                    buildOptaweb(getOptawebEmployeeRosteringMavenCommand())
-                }
-            }
-            post {
-                always {
-                    script {
-                        archiveJUnitTestResults()
-                        archiveCypressArtifacts()
-                        util.archiveConsoleLog()
-                    }
-                }
-            }
-        }
-
         stage('Deploy to repository') {
             when {
                 expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
@@ -194,7 +173,6 @@ pipeline {
                     runMavenDeploy(getOptaplannerMavenCommand())
                     runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
                     runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
-                    runMavenDeploy(getOptawebEmployeeRosteringMavenCommand())
                 }
             }
         }
@@ -206,7 +184,6 @@ pipeline {
                 script {
                     runMavenDeploy(getOptaplannerMavenCommand(), optaplannerRepository)
                     runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                    runMavenDeploy(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
                 }
             }
         }
@@ -219,7 +196,6 @@ pipeline {
                     // Deploy to specific repository with credentials
                     maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
                     maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(vehicleRoutingRepository), getMavenRepoZipUrl())
-                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(employeeRosteringRepository), getMavenRepoZipUrl())
                 }
             }
         }
@@ -232,7 +208,6 @@ pipeline {
                     // Stage release artifacts
                     runMavenStage(getOptaplannerMavenCommand(), optaplannerRepository)
                     runMavenStage(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                    runMavenStage(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
                 }
             }
         }
@@ -244,7 +219,6 @@ pipeline {
             steps {
                 commitAndCreatePR(optaplannerRepository, getBuildBranch())
                 commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository, getBuildBranch())
-                commitAndCreatePRIgnoringNpmRegistry(employeeRosteringRepository, getBuildBranch())
                 commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
             }
             post {
@@ -259,11 +233,6 @@ pipeline {
                         setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.ref", getBotBranch())
                         setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${vehicleRoutingRepository}")
                         setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.ref", getBuildBranch())
-
-                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${employeeRosteringRepository}")
-                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.source.ref", getBotBranch())
-                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${employeeRosteringRepository}")
-                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.target.ref", getBuildBranch())
                     }
                 }
             }
@@ -432,10 +401,6 @@ MavenCommand getOptaplannerQuickstartsMavenCommand() {
 
 MavenCommand getOptawebVehicleRoutingMavenCommand() {
     return getMavenDefaultCommand().inDirectory(vehicleRoutingRepository)
-}
-
-MavenCommand getOptawebEmployeeRosteringMavenCommand() {
-    return getMavenDefaultCommand().inDirectory(employeeRosteringRepository)
 }
 
 /**
