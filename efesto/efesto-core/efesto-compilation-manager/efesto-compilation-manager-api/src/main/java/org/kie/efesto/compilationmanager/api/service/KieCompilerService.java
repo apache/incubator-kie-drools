@@ -17,9 +17,7 @@ package org.kie.efesto.compilationmanager.api.service;
 
 import java.util.List;
 
-import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContextImpl;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
@@ -45,15 +43,5 @@ public interface KieCompilerService<E extends EfestoCompilationOutput, U extends
      * @return
      */
     List<E> processResource(EfestoResource toProcess, U context);
-
-    default EfestoCompilationContext convertContext(EfestoCompilationContext toConvert, Class<? extends EfestoCompilationContext> toInstantiate) {
-        try {
-            return EfestoCompilationContext.buildFromContext((EfestoCompilationContextImpl) toConvert, toInstantiate);
-        } catch (Exception e) {
-            throw new KieCompilerServiceException(String.format("Can not convert %s to %s",
-                                                                toConvert.getClass().getCanonicalName(),
-                                                                toInstantiate.getCanonicalName()), e);
-        }
-    }
 
 }

@@ -31,6 +31,7 @@ import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
+import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.kie.drl.engine.compilation.utils.DrlCompilerHelper.pkgDescrToExecModel;
 
@@ -49,11 +50,17 @@ public class KieCompilerServicePackDesc implements KieCompilerService<EfestoComp
                     toProcess.getClass().getName()));
         }
         if (!(context instanceof DrlCompilationContext)) {
-            context =  convertContext(context, DrlCompilationContextImpl.class);
+            context =  getDrlCompilationContext(context);
         }
         return Collections.singletonList( pkgDescrToExecModel((EfestoSetResource<PackageDescr>) toProcess, (DrlCompilationContext) context) );
     }
 
 
+    private DrlCompilationContext getDrlCompilationContext(EfestoCompilationContext context) {
+        if (!(context instanceof EfestoCompilationContextImpl)) {
+            throw new KieCompilerServiceException("Expected an EfestoCompilationContextImpl, but got " + context.getClass().getCanonicalName());
+        }
+        return DrlCompilationContext.buildWithEfestoCompilationContext((EfestoCompilationContextImpl) context);
+    }
 
 }
