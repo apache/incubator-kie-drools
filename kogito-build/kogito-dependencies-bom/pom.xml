@@ -16,8 +16,8 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.10.2.Final</version.io.quarkus>
-    <version.io.quarkus.quarkus-test-maven>2.10.2.Final</version.io.quarkus.quarkus-test-maven>
+    <version.io.quarkus>2.11.0.Final</version.io.quarkus>
+    <version.io.quarkus.quarkus-test-maven>2.11.0.Final</version.io.quarkus.quarkus-test-maven>
     <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
 
     <!-- dependencies versions -->
@@ -51,13 +51,13 @@
 
     <version.io.cloudevents>2.3.0</version.io.cloudevents>
     <version.io.fabric8.kubernetes-client>5.8.0</version.io.fabric8.kubernetes-client>
-    <version.io.micrometer>1.9.0</version.io.micrometer>
+    <version.io.micrometer>1.9.2</version.io.micrometer>
     <version.io.serverlessworkflow>4.0.3.Final</version.io.serverlessworkflow>
     <version.io.smallrye-open-api-core>2.1.22</version.io.smallrye-open-api-core>
-    <version.io.smallrye.reactive.mutiny-vertx-web-client>2.22.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
+    <version.io.smallrye.reactive.mutiny-vertx-web-client>2.24.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
-    <version.io.vertx>4.2.7</version.io.vertx>
-    <version.io.grpc>1.46.0</version.io.grpc>
+    <version.io.vertx>4.3.2</version.io.vertx>
+    <version.io.grpc>1.47.0</version.io.grpc>
 
     <version.io.swagger.parser.v3>2.0.26</version.io.swagger.parser.v3>
 
@@ -88,7 +88,7 @@
     <version.org.junit.vintage>5.8.2</version.org.junit.vintage>
     <version.org.junit.platform>1.8.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
     <version.org.junit.pioneer>1.5.0</version.org.junit.pioneer>
-    <version.org.mockito>4.6.0</version.org.mockito>
+    <version.org.mockito>4.6.1</version.org.mockito>
     <version.org.testcontainers>1.17.3</version.org.testcontainers>
 
     <version.net.byte-buddy>1.12.9</version.net.byte-buddy>
@@ -98,9 +98,9 @@
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.30</version.org.slf4j>
 
-    <version.maven>3.8.1</version.maven>
+    <version.maven>3.8.6</version.maven>
     <version.maven.plugin>3.6.0</version.maven.plugin>
-    <version.maven.invoker>3.1.0</version.maven.invoker>
+    <version.maven.invoker>3.2.0</version.maven.invoker>
 
     <version.plexus>1.6</version.plexus>
     <version.plexus.classworld>2.6.0</version.plexus.classworld>
