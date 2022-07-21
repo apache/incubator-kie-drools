@@ -220,25 +220,40 @@ public class PreprocessPhase {
             if (expression.isMethodCallExpr()) {
                 MethodCallExpr mcExpr = expression.asMethodCallExpr();
 
-                MethodCallExpr rootMcExpr = findRootScope(mcExpr);
-                if (rootMcExpr == null) {
+                Expression rootExpr = findRootScope(mcExpr);
+                if (rootExpr == null) {
                     return e;
-                }
+                } else if (rootExpr.isMethodCallExpr()) {
+                    MethodCallExpr rootMcExpr = rootExpr.asMethodCallExpr();
+                    Expression enclosed = new EnclosedExpr(scope);
+                    rootMcExpr.setScope(enclosed);
 
-                Expression enclosed = new EnclosedExpr(scope);
-                rootMcExpr.setScope(enclosed);
+                    if (scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
+                        result.addUsedBinding(printNode(scope));
+                    }
 
-                if (scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
+                    return new ExpressionStmt(mcExpr);
+                } else if (rootExpr instanceof DrlNameExpr && !isSameDrlName(rootExpr, scope)) {
+                    // Unknown name. Assume a property of the fact
+                    DrlNameExpr originalFieldAccess = (DrlNameExpr) rootExpr;
+                    String propertyName = originalFieldAccess.getName().asString();
                     result.addUsedBinding(printNode(scope));
+                    FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(scope, propertyName);
+                    rootExpr.getParentNode().filter(MethodCallExpr.class::isInstance)
+                            .map(MethodCallExpr.class::cast)
+                            .ifPresent(mce -> mce.setScope(fieldAccessWithScope));
                 }
-
-                return new ExpressionStmt(mcExpr);
             }
         }
         return e;
     }
 
-    private MethodCallExpr findRootScope(MethodCallExpr mcExpr) {
+    private boolean isSameDrlName(Expression rootExpr, Expression scope) {
+        return rootExpr instanceof DrlNameExpr && scope instanceof DrlNameExpr &&
+               ((DrlNameExpr) rootExpr).getName().equals(((DrlNameExpr) scope).getName());
+    }
+
+    private Expression findRootScope(MethodCallExpr mcExpr) {
         Optional<Expression> opt = mcExpr.getScope();
         if (!opt.isPresent()) {
             return mcExpr;
@@ -249,9 +264,9 @@ public class PreprocessPhase {
             }
         }
         if (failOnEmptyRootScope) {
-            throw new MvelCompilerException( "Invalid modify statement: " + PrintUtil.printNode(mcExpr) );
+            throw new MvelCompilerException("Invalid modify statement: " + PrintUtil.printNode(mcExpr));
         }
-        return null;
+        return opt.get();
     }
 
     private AssignExpr assignToFieldAccess(PreprocessPhaseResult result, Expression scope, AssignExpr assignExpr) {
