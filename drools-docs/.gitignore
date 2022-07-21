@@ -20,3 +20,6 @@
 
 # Doc generation
 !.index.adoc
+
+# antora.yml is generated during maven build
+antora.yml

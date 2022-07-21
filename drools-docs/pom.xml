@@ -213,14 +213,6 @@
 
   <profiles>
     <profile>
-      <!-- Enables the Antora author mode https://docs.antora.org/antora/2.3/playbook/author-mode/. -->
-      <id>author</id>
-      <properties>
-        <antora.playbook>antora-playbook-author.yml</antora.playbook>
-      </properties>
-    </profile>
-
-    <profile>
       <id>antora-windows</id>
       <activation>
         <os>
