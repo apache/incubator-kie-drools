@@ -116,6 +116,7 @@ public class RestWorkItemHandlerTest {
         when(request.sendJsonAndAwait(any())).thenReturn(response);
         when(request.sendAndAwait()).thenReturn(response);
         when(response.bodyAsJson(ObjectNode.class)).thenReturn(ObjectMapperFactory.get().createObjectNode().put("num", 1));
+        when(response.statusCode()).thenReturn(200);
 
         workItem = new KogitoWorkItemImpl();
         workItem.setId("2");

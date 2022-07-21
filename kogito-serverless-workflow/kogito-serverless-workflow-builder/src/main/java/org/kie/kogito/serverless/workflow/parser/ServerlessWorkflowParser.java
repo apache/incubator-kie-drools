@@ -102,7 +102,6 @@ public class ServerlessWorkflowParser {
         handlers.forEach(StateHandler::handleEnd);
         handlers.forEach(StateHandler::handleState);
         handlers.forEach(StateHandler::handleTransitions);
-        handlers.forEach(StateHandler::handleErrors);
         handlers.forEach(StateHandler::handleConnections);
         if (parserContext.isCompensation()) {
             factory.metaData(Metadata.COMPENSATION, true);

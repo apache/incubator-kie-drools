@@ -15,17 +15,15 @@
  */
 package org.jbpm.process.core.context.exception;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,15 +36,17 @@ class ExceptionHandlerPolicyTest {
         policies = ExceptionHandlerPolicyFactory.getHandlerPolicies();
     }
 
-    @Test
-    void testExceptionHandlerPolicies() {
-        assertEquals(4, policies.size());
-    }
-
     @ParameterizedTest
     @ValueSource(strings = { "java.lang.RuntimeException", "Unknown error", "(?i)Status code 400", "(.*)code 4[0-9]{2}", "code 4[0-9]{2}" })
     void testExceptionHandlerPolicyFactory(String errorString) {
         Throwable exception = new IllegalStateException("Unknown error, status code 400");
+        assertTrue(test(policies, errorString, exception));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "java.lang.RuntimeException", "Unknown error", "(?i)Status code 400", "(.*)code 4[0-9]{2}", "code 4[0-9]{2}" })
+    void testExceptionChainPolicyFactory(String errorString) {
+        Throwable exception = new IOException(new RuntimeException("Unknown error, status code 400"));
         assertTrue(test(policies, errorString, exception));
     }
 
@@ -60,14 +60,14 @@ class ExceptionHandlerPolicyTest {
     @ParameterizedTest
     @ValueSource(strings = { "HTTP:500", "500" })
     void testWebExceptionHandlerPolicyFactory(String errorString) {
-        Throwable exception = new javax.ws.rs.WebApplicationException(Response.status(500).entity("Unknown error").build());
+        Throwable exception = new WorkItemExecutionException("500", "Unknown error");
         assertTrue(test(policies, errorString, exception));
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "HTTP:xyz", "xyz" })
     void testWebExceptionHandlerPolicyFactoryIncorrectFormat(String errorString) {
-        Throwable exception = new javax.ws.rs.WebApplicationException(Response.status(500).entity("Unknown error").build());
+        Throwable exception = new WorkItemExecutionException("500", "Unknown error");
         assertFalse(test(policies, errorString, exception));
     }
 

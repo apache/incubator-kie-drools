@@ -86,11 +86,6 @@
       <artifactId>jaxb-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>

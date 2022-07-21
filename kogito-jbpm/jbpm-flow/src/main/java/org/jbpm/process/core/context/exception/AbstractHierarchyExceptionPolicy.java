@@ -18,17 +18,13 @@ package org.jbpm.process.core.context.exception;
 public abstract class AbstractHierarchyExceptionPolicy implements ExceptionHandlerPolicy {
     @Override
     public boolean test(String errorCode, Throwable exception) {
-        boolean found = verifyRoot(errorCode, exception);
+        boolean found = verify(errorCode, exception);
         Throwable rootCause = exception.getCause();
         while (!found && rootCause != null) {
             found = verify(errorCode, rootCause);
             rootCause = rootCause.getCause();
         }
         return found;
-    }
-
-    protected boolean verifyRoot(String errorCode, Throwable exception) {
-        return verify(errorCode, exception);
     }
 
     protected abstract boolean verify(String errorCode, Throwable exception);

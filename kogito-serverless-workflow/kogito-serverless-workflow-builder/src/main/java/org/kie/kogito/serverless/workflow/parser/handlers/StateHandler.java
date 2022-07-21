@@ -46,6 +46,8 @@ import org.kie.kogito.serverless.workflow.suppliers.DataInputSchemaActionSupplie
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.MergeActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ProduceEventActionSupplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -66,6 +68,8 @@ import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtil
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.processResourceFile;
 
 public abstract class StateHandler<S extends State> {
+
+    private static Logger logger = LoggerFactory.getLogger(StateHandler.class);
 
     protected final S state;
     protected final Workflow workflow;
@@ -170,7 +174,6 @@ public abstract class StateHandler<S extends State> {
         Transition transition = compensation.getState().getTransition();
         long lastNodeId = compensation.getNode().getNode().getId();
         compensation.handleTransitions(embeddedSubProcess, transition, lastNodeId);
-        compensation.handleErrors(embeddedSubProcess);
         compensation.handleConnections(embeddedSubProcess);
         return lastNodeId;
     }
@@ -230,10 +233,6 @@ public abstract class StateHandler<S extends State> {
         }
     }
 
-    public void handleErrors() {
-        handleErrors(parserContext.factory());
-    }
-
     protected final Iterable<ErrorDefinition> getErrorDefinitions(Error error) {
         Predicate<? super ErrorDefinition> pred;
         if (error.getErrorRef() != null) {
@@ -246,19 +245,19 @@ public abstract class StateHandler<S extends State> {
         return workflow.getErrors().getErrorDefs().stream().filter(pred).collect(Collectors.toList());
     }
 
-    protected void handleErrors(RuleFlowNodeContainerFactory<?, ?> factory) {
+    protected final void handleErrors(RuleFlowNodeContainerFactory<?, ?> factory, RuleFlowNodeContainerFactory<?, ?> targetNode) {
         for (Error error : state.getOnErrors()) {
             for (ErrorDefinition errorDef : getErrorDefinitions(error)) {
-                String eventType = "Error-" + node.getNode().getMetaData().get("UniqueId");
-                BoundaryEventNodeFactory<?> boundaryNode =
-                        factory.boundaryEventNode(parserContext.newId()).attachedTo(node.getNode().getId()).metaData(
-                                "EventType", Metadata.EVENT_TYPE_ERROR).metaData("HasErrorEvent", true);
-                if (errorDef.getCode() != null) {
-                    boundaryNode.metaData("ErrorEvent", errorDef.getCode());
-                    eventType += "-" + errorDef.getCode();
+                if (errorDef.getCode() == null) {
+                    logger.error("Kogito requires code error to be set. Ignoring {}", errorDef.getName());
+                    return;
                 }
-                boundaryNode.eventType(eventType).name("Error-" + node.getNode().getName() + "-" + errorDef.getCode());
-                factory.exceptionHandler(eventType, errorDef.getCode());
+                String errorPrefix = RuleFlowProcessFactory.ERROR_TYPE_PREFIX + targetNode.getNode().getMetaData().get("UniqueId") + '-';
+                BoundaryEventNodeFactory<?> boundaryNode = factory.boundaryEventNode(parserContext.newId()).attachedTo(targetNode.getNode().getId())
+                        .metaData(Metadata.EVENT_TYPE, Metadata.EVENT_TYPE_ERROR).metaData("HasErrorEvent", true).metaData(Metadata.ERROR_EVENT, errorDef.getCode())
+                        .eventType(errorPrefix + errorDef.getCode())
+                        .name(RuleFlowProcessFactory.ERROR_TYPE_PREFIX + targetNode.getNode().getName() + '-' + errorDef.getCode());
+                targetNode.exceptionHandler(errorDef.getCode(), errorDef.getCode());
                 if (error.getEnd() != null) {
                     connect(boundaryNode, endNodeFactory(factory, error.getEnd()));
                 } else {

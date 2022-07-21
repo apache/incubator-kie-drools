@@ -130,11 +130,11 @@ class CallbackStateServerlessWorkflowParsingTest extends AbstractServerlessWorkf
         EndNode processEndNode2 = assertClassAndGetNode(process, 2, EndNode.class);
         CompositeContextNode callbackState = assertClassAndGetNode(process, 3, CompositeContextNode.class);
         assertHasName(callbackState, "CallbackState");
-        ActionNode processFinalizeSuccessfulState = assertClassAndGetNode(process, 4, ActionNode.class);
+        ActionNode processFinalizeSuccessfulState = assertClassAndGetNode(process, 5, ActionNode.class);
         assertHasName(processFinalizeSuccessfulState, "FinalizeSuccessful");
-        ActionNode processFinalizeWithErrorState = assertClassAndGetNode(process, 5, ActionNode.class);
+        ActionNode processFinalizeWithErrorState = assertClassAndGetNode(process, 6, ActionNode.class);
         assertHasName(processFinalizeWithErrorState, "FinalizeWithError");
-        BoundaryEventNode callbackStateErrorBoundaryEvent = assertClassAndGetNode(process, 6, BoundaryEventNode.class);
+        BoundaryEventNode callbackStateErrorBoundaryEvent = assertClassAndGetNode(process, 4, BoundaryEventNode.class);
         assertHasName(callbackStateErrorBoundaryEvent, "Error-CallbackState-java.lang.Exception");
 
         assertIsConnected(processStartNode, callbackState);

@@ -31,6 +31,16 @@ public class WorkItemExecutionException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    public WorkItemExecutionException(String errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
+    public WorkItemExecutionException(String errorCode, String message, Throwable ex) {
+        super(message, ex);
+        this.errorCode = errorCode;
+    }
+
     public String getErrorCode() {
         return errorCode;
     }

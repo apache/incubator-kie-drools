@@ -63,7 +63,6 @@ import org.kie.kogito.process.IOEventDescription;
 import org.kie.kogito.process.NamedDataType;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
@@ -183,8 +182,6 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 } else {
                     throw handlerException;
                 }
-            } catch (WorkItemExecutionException e) {
-                handleException(e.getErrorCode(), e);
             } catch (Exception e) {
                 handleException(e);
             }

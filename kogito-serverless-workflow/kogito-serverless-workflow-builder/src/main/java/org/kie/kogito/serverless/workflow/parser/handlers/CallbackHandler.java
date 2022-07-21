@@ -75,6 +75,7 @@ public class CallbackHandler extends CompositeContextNodeHandler<CallbackState> 
         }
         // Finally, connect with the End event
         connect(currentNode, embeddedSubProcess.endNode(parserContext.newId()).name("EmbeddedEnd").terminate(true)).done();
+        handleErrors(factory, embeddedSubProcess);
         return new MakeNodeResult(embeddedSubProcess);
     }
 }

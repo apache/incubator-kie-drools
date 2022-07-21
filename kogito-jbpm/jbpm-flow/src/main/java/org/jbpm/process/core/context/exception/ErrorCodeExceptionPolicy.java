@@ -15,17 +15,17 @@
  */
 package org.jbpm.process.core.context.exception;
 
-public class SubclassExceptionPolicy implements ExceptionHandlerPolicy {
+import org.kie.kogito.process.workitem.WorkItemExecutionException;
+
+public class ErrorCodeExceptionPolicy extends AbstractHierarchyExceptionPolicy {
 
     @Override
-    public boolean test(String className, Throwable exception) {
-        boolean found = false;
-        Class<?> exceptionClass = exception.getClass().getSuperclass();
-        while (!found && !exceptionClass.equals(Object.class)) {
-            found = className.equals(exceptionClass.getName());
-            exceptionClass = exceptionClass.getSuperclass();
-        }
-        return found;
+    protected boolean verify(String errorCode, Throwable exception) {
+        return exception instanceof WorkItemExecutionException && getErrorCode(errorCode).equals(((WorkItemExecutionException) exception).getErrorCode());
     }
 
+    private String getErrorCode(String errorCode) {
+        String[] error = errorCode.split(":");
+        return error[error.length - 1];
+    }
 }

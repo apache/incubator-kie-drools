@@ -113,6 +113,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         } else {
             connect(embeddedSubProcess.startNode(parserContext.newId()).name("EmbeddedStart"), embeddedSubProcess.endNode(parserContext.newId()).name("EmbeddedEnd").terminate(true)).done();
         }
+        handleErrors(parserContext.factory(), embeddedSubProcess);
         return embeddedSubProcess;
     }
 

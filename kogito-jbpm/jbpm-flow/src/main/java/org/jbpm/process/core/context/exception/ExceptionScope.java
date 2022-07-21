@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.AbstractContext;
+import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
 public class ExceptionScope extends AbstractContext {
 
@@ -31,6 +32,7 @@ public class ExceptionScope extends AbstractContext {
     public static final String EXCEPTION_SCOPE = "ExceptionScope";
 
     protected Map<String, ExceptionHandler> exceptionHandlers = new HashMap<String, ExceptionHandler>();
+    private transient Collection<ExceptionHandlerPolicy> policies = ExceptionHandlerPolicyFactory.getHandlerPolicies();
 
     @Override
     public String getType() {
@@ -50,12 +52,9 @@ public class ExceptionScope extends AbstractContext {
     }
 
     public ExceptionHandler getExceptionHandler(Throwable exception) {
-        Class<?> exceptionClass = exception.getClass();
-        ExceptionHandler handler = exceptionHandlers.get(exceptionClass.getName());
-
-        if (handler == null) {
-            Collection<ExceptionHandlerPolicy> policies = ExceptionHandlerPolicyFactory.getHandlerPolicies();
-            handler = exceptionHandlers.entrySet().stream().filter(e -> test(policies, e.getKey(), exception)).findFirst().map(Entry::getValue).orElse(null);
+        ExceptionHandler handler = exceptionHandlers.entrySet().stream().filter(e -> test(policies, e.getKey(), exception)).findFirst().map(Entry::getValue).orElse(null);
+        if (handler == null && exception instanceof WorkItemExecutionException) {
+            handler = exceptionHandlers.get(((WorkItemExecutionException) exception).getErrorCode());
         }
         if (handler == null) {
             handler = exceptionHandlers.get(null);
