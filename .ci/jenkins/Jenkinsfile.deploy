@@ -304,9 +304,6 @@ void runMavenDeploy(boolean skipTests = true, boolean localDeployment = false) {
     }
 
     mvnCmd.withProperty('maven.test.failure.ignore', true)
-        // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
-        // https://github.com/quarkusio/quarkus/issues/23205
-        .withProperty('quarkus.bootstrap.effective-model-builder', true)
         .skipTests(skipTests)
         .run('clean deploy')
 }
