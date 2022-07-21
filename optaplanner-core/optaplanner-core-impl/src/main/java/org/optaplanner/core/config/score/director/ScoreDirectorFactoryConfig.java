@@ -403,6 +403,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return (constraintStreamImplType == null || constraintStreamImplType == ConstraintStreamImplType.DROOLS);
     }
 
+    @Deprecated(forRemoval = true)
     public boolean isDroolsAlphaNetworkCompilationEnabled() {
         if (!isUsingDrools()) {
             return false;

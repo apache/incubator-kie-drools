@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
@@ -95,7 +96,9 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
             }
         }
 
-        if (config.isDroolsAlphaNetworkCompilationEnabled()) {
+        boolean isDroolsAlphaNetworkEnabled =
+                Objects.requireNonNullElse(config.getDroolsAlphaNetworkCompilationEnabled(), true);
+        if (isDroolsAlphaNetworkEnabled) {
             KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
         }
         return new DrlScoreDirectorFactory<>(solutionDescriptor, kieBase);

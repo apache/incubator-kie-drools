@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -312,10 +314,37 @@ class OptaPlannerAutoConfigurationTest {
                     ConstraintVerifier<TestdataSpringConstraintProvider, TestdataSpringSolution> constraintVerifier =
                             context.getBean(ConstraintVerifier.class);
 
+                    TestdataSpringSolution problem = new TestdataSpringSolution();
+                    problem.setValueList(IntStream.range(1, 3)
+                            .mapToObj(i -> "v" + i)
+                            .collect(Collectors.toList()));
+                    problem.setEntityList(IntStream.range(1, 3)
+                            .mapToObj(i -> new TestdataSpringEntity())
+                            .collect(Collectors.toList()));
+
+                    problem.getEntityList().get(0).setValue("v1");
+                    problem.getEntityList().get(1).setValue("v1");
+                    constraintVerifier.verifyThat().givenSolution(problem).scores(SimpleScore.of(-2));
+
+                    problem.getEntityList().get(1).setValue("v2");
+                    constraintVerifier.verifyThat().givenSolution(problem).scores(SimpleScore.of(0));
+                });
+    }
+
+    @Test
+    void constraintVerifierDrools() {
+        contextRunner
+                .withClassLoader(testFilteredClassLoader)
+                .withPropertyValues(
+                        "optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/droolsSolverConfig.xml")
+                .run(context -> {
+                    ConstraintVerifier<TestdataSpringConstraintProvider, TestdataSpringSolution> constraintVerifier =
+                            context.getBean(ConstraintVerifier.class);
+
                     assertThat(((DefaultConstraintVerifier) constraintVerifier).getConstraintStreamImplType())
                             .isEqualTo(ConstraintStreamImplType.DROOLS);
                     assertThat(((DefaultConstraintVerifier) constraintVerifier).isDroolsAlphaNetworkCompilationEnabled())
-                            .isEqualTo(true);
+                            .isEqualTo(false);
                     TestdataSpringSolution problem = new TestdataSpringSolution();
                     problem.setValueList(IntStream.range(1, 3)
                             .mapToObj(i -> "v" + i)

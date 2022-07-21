@@ -141,7 +141,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                 //  requires OptaPlannerAutoConfiguration to have a no-args constructor)
                 final String noConstraintProviderErrorMsg =
                         "Cannot provision a ConstraintVerifier because there is no ConstraintProvider class.";
-                return new ConstraintVerifier<ConstraintProvider_, SolutionClass_>() {
+                return new ConstraintVerifier<>() {
                     @Override
                     public ConstraintVerifier<ConstraintProvider_, SolutionClass_>
                             withConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
@@ -167,7 +167,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                 };
             }
 
-            return (ConstraintVerifier<ConstraintProvider_, SolutionClass_>) ConstraintVerifier.create(solverConfig);
+            return ConstraintVerifier.create(solverConfig);
         }
     }
 

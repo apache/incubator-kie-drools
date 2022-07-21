@@ -18,6 +18,16 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 public interface ScoreDirectorFactoryService<Solution_, Score_ extends Score<Score_>> {
 
     /**
+     * If multiple services are available for the same config, the one with the higher priority is picked.
+     * Used by the CS services to ensure Drools is picked if both Drools and Bavet are available.
+     *
+     * @return
+     */
+    default int getPriority() {
+        return Integer.MAX_VALUE;
+    }
+
+    /**
      *
      * @return never null, the score director type that is implemented by the factory
      */

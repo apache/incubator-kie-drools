@@ -1,10 +1,14 @@
 package org.optaplanner.test.impl.score.stream;
 
 import static java.util.Objects.requireNonNull;
+import static org.optaplanner.core.api.score.stream.ConstraintStreamImplType.DROOLS;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactoryService;
@@ -35,7 +39,7 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     }
 
     public ConstraintStreamImplType getConstraintStreamImplType() {
-        return Objects.requireNonNullElse(constraintStreamImplType, ConstraintStreamImplType.DROOLS);
+        return constraintStreamImplType;
     }
 
     @Override
@@ -80,27 +84,34 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
 
     private AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> createScoreDirectorFactory(
             ConstraintProvider constraintProvider) {
-        boolean isDroolsAlphaNetworkCompilationEnabled =
-                droolsAlphaNetworkCompilationEnabled == null ? getConstraintStreamImplType() != ConstraintStreamImplType.BAVET
-                        : droolsAlphaNetworkCompilationEnabled;
-        return serviceLoader.stream()
+        List<AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_>> services = serviceLoader.stream()
                 .map(ServiceLoader.Provider::get)
                 .filter(s -> s.getSupportedScoreDirectorType() == ScoreDirectorType.CONSTRAINT_STREAMS)
                 .map(s -> (AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_>) s)
-                .filter(s -> s.supportsImplType(getConstraintStreamImplType()))
-                .map(s -> s.buildScoreDirectorFactory(solutionDescriptor, constraintProvider,
-                        isDroolsAlphaNetworkCompilationEnabled))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElseThrow(() -> {
-                    String expectedModule = getConstraintStreamImplType() == ConstraintStreamImplType.BAVET
-                            ? "optaplanner-constraint-streams-bavet"
-                            : "optaplanner-constraint-streams-drools";
-                    throw new IllegalStateException(
-                            "Constraint Streams implementation was not found on the classpath.\n"
-                                    + "Maybe include org.optaplanner:" + expectedModule + " dependency in your project?\n"
-                                    + "Maybe ensure your uberjar bundles META-INF/services from included JAR files?");
-                });
+                .filter(s -> {
+                    ConstraintStreamImplType implType = constraintStreamImplType;
+                    return implType == null || s.supportsImplType(implType);
+                })
+                .sorted(Comparator
+                        .comparingInt(
+                                (AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> service) -> service
+                                        .getPriority())
+                        .reversed()) // CS-D will be picked if both are available.
+                .collect(Collectors.toList());
+        if (services.isEmpty()) {
+            throw new IllegalStateException(
+                    "Constraint Streams implementation was not found on the classpath.\n"
+                            + "Maybe include org.optaplanner:optaplanner-constraint-streams-drools dependency "
+                            + "or org.optaplanner:optaplanner-constraint-streams-bavet in your project?\n"
+                            + "Maybe ensure your uberjar bundles META-INF/services from included JAR files?");
+        }
+        AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> service = services.get(0);
+        boolean isDroolsAlphaNetworkCompilationEnabled =
+                droolsAlphaNetworkCompilationEnabled == null
+                        ? service.supportsImplType(DROOLS) && isDroolsAlphaNetworkCompilationEnabled()
+                        : droolsAlphaNetworkCompilationEnabled;
+        return service.buildScoreDirectorFactory(solutionDescriptor, constraintProvider,
+                isDroolsAlphaNetworkCompilationEnabled);
     }
 
     @Override

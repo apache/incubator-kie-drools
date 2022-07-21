@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.bavet;
 
-import java.util.Objects;
+import static org.optaplanner.core.api.score.stream.ConstraintStreamImplType.DROOLS;
+
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
@@ -18,6 +19,11 @@ public final class BavetConstraintStreamScoreDirectorFactoryService<Solution_, S
         extends AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> {
 
     @Override
+    public int getPriority() {
+        return Integer.MIN_VALUE;
+    }
+
+    @Override
     public ScoreDirectorType getSupportedScoreDirectorType() {
         return ScoreDirectorType.CONSTRAINT_STREAMS;
     }
@@ -25,9 +31,8 @@ public final class BavetConstraintStreamScoreDirectorFactoryService<Solution_, S
     @Override
     public Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
-        ConstraintStreamImplType constraintStreamImplType_ =
-                Objects.requireNonNullElse(config.getConstraintStreamImplType(), ConstraintStreamImplType.DROOLS);
-        if (constraintStreamImplType_ != ConstraintStreamImplType.BAVET) {
+        ConstraintStreamImplType constraintStreamImplType_ = config.getConstraintStreamImplType();
+        if (constraintStreamImplType_ == DROOLS) {
             return null;
         }
         if (config.getConstraintProviderClass() != null) {

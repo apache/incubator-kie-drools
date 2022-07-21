@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -298,10 +297,9 @@ class OptaPlannerProcessor {
             final List<Class<?>> planningEntityClasses = solverConfig.getEntityClassList();
             // TODO Don't duplicate defaults by using ConstraintVerifier.create(solverConfig) instead
             final ConstraintStreamImplType constraintStreamImplType =
-                    Objects.requireNonNullElse(solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType(),
-                            ConstraintStreamImplType.DROOLS);
-            final boolean droolsAlphaNetworkCompilationEnabled =
-                    solverConfig.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled();
+                    solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType();
+            Boolean droolsAlphaNetworkCompilationEnabled =
+                    solverConfig.getScoreDirectorFactoryConfig().getDroolsAlphaNetworkCompilationEnabled();
             syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(DotNames.CONSTRAINT_VERIFIER)
                     .scope(Singleton.class)
                     .creator(methodCreator -> {
@@ -330,21 +328,25 @@ class OptaPlannerProcessor {
                                         ConstraintProvider.class, SolutionDescriptor.class),
                                 constraintProviderResultHandle, solutionDescriptorResultHandle);
 
-                        constraintVerifierResultHandle = methodCreator.invokeInterfaceMethod(
-                                MethodDescriptor.ofMethod(constraintVerifierClassName,
-                                        "withConstraintStreamImplType",
-                                        constraintVerifierClassName,
-                                        ConstraintStreamImplType.class),
-                                constraintVerifierResultHandle,
-                                methodCreator.load(constraintStreamImplType));
+                        if (constraintStreamImplType != null) { // Use the default if not specified.
+                            constraintVerifierResultHandle = methodCreator.invokeInterfaceMethod(
+                                    MethodDescriptor.ofMethod(constraintVerifierClassName,
+                                            "withConstraintStreamImplType",
+                                            constraintVerifierClassName,
+                                            ConstraintStreamImplType.class),
+                                    constraintVerifierResultHandle,
+                                    methodCreator.load(constraintStreamImplType));
+                        }
 
-                        constraintVerifierResultHandle = methodCreator.invokeInterfaceMethod(
-                                MethodDescriptor.ofMethod(constraintVerifierClassName,
-                                        "withDroolsAlphaNetworkCompilationEnabled",
-                                        constraintVerifierClassName,
-                                        boolean.class),
-                                constraintVerifierResultHandle,
-                                methodCreator.load(droolsAlphaNetworkCompilationEnabled));
+                        if (droolsAlphaNetworkCompilationEnabled != null) { // Use the default if not specified.
+                            constraintVerifierResultHandle = methodCreator.invokeInterfaceMethod(
+                                    MethodDescriptor.ofMethod(constraintVerifierClassName,
+                                            "withDroolsAlphaNetworkCompilationEnabled",
+                                            constraintVerifierClassName,
+                                            boolean.class),
+                                    constraintVerifierResultHandle,
+                                    methodCreator.load(droolsAlphaNetworkCompilationEnabled));
+                        }
                         methodCreator.returnValue(constraintVerifierResultHandle);
                     })
                     .addType(ParameterizedType.create(DotNames.CONSTRAINT_VERIFIER,
