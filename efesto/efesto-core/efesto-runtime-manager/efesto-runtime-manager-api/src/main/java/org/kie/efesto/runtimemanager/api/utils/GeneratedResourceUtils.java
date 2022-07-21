@@ -29,9 +29,11 @@ import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
+import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.efesto.common.api.utils.CollectionUtils.findAtMostOne;
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
 import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 
@@ -54,17 +56,10 @@ public class GeneratedResourceUtils {
     }
 
     public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, IndexFile indexFile) {
-        try {
-            GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
-            return generatedResources.stream()
-                    .filter(generatedResource -> generatedResource instanceof GeneratedExecutableResource &&
-                            ((GeneratedExecutableResource) generatedResource).getFri().equals(fri))
-                    .findFirst()
-                    .map(GeneratedExecutableResource.class::cast);
-        } catch (IOException e) {
-            logger.debug("Failed to read GeneratedResources from {}.", indexFile.getName(), e);
-            return Optional.empty();
-        }
+        Collection<GeneratedExecutableResource> allExecutableResources = getAllGeneratedExecutableResources(indexFile);
+        return findAtMostOne(allExecutableResources,
+                             generatedResource -> generatedResource.getFri().equals(fri),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + fri));
     }
 
     public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(FRI fri, String modelType) {
@@ -84,7 +79,7 @@ public class GeneratedResourceUtils {
     }
 
     public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(String modelType) {
-        return getIndexFile(modelType).map(indexFile -> getAllGeneratedExecutableResources(indexFile)).orElse(Collections.EMPTY_SET);
+        return getIndexFile(modelType).map(GeneratedResourceUtils::getAllGeneratedExecutableResources).orElse(Collections.emptySet());
     }
 
     public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(IndexFile indexFile) {
@@ -92,7 +87,7 @@ public class GeneratedResourceUtils {
         try {
             GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
             toReturn.addAll(generatedResources.stream()
-                                    .filter(generatedResource -> generatedResource instanceof GeneratedExecutableResource)
+                                    .filter(GeneratedExecutableResource.class::isInstance)
                                     .map(GeneratedExecutableResource.class::cast)
                                     .collect(Collectors.toSet()));
         } catch (IOException e) {
@@ -107,7 +102,7 @@ public class GeneratedResourceUtils {
             try {
                 GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
                 toReturn.addAll(generatedResources.stream()
-                                        .filter(generatedResource -> generatedResource instanceof GeneratedClassResource)
+                                        .filter(GeneratedClassResource.class::isInstance)
                                         .map(GeneratedClassResource.class::cast)
                                         .collect(Collectors.toSet()));
             } catch (IOException e) {
@@ -121,4 +116,5 @@ public class GeneratedResourceUtils {
         IndexFile toSearch = new IndexFile(modelType);
         return getFileFromFileName(toSearch.getName()).map(IndexFile::new);
     }
+
 }
