@@ -16,21 +16,8 @@
   },
   "ignores": {
     "revapi": {
-      "_comment": "Changes between 8.5.0.Final and the current branch. These changes are desired and thus ignored.",
+      "_comment": "Changes between 8.13.0.Final and the current branch. These changes are desired and thus ignored.",
       "ignore": [
-        {
-          "code": "java.method.parameterTypeChanged",
-          "old": "parameter org.optaplanner.test.api.score.stream.ConstraintVerifier<ConstraintProvider_, Solution_> org.optaplanner.test.api.score.stream.ConstraintVerifier<ConstraintProvider_ extends org.optaplanner.core.api.score.stream.ConstraintProvider, Solution_>::withDroolsAlphaNetworkCompilationEnabled(===boolean===)",
-          "new": "parameter org.optaplanner.test.api.score.stream.ConstraintVerifier<ConstraintProvider_, Solution_> org.optaplanner.test.api.score.stream.ConstraintVerifier<ConstraintProvider_ extends org.optaplanner.core.api.score.stream.ConstraintProvider, Solution_>::withDroolsAlphaNetworkCompilationEnabled(===java.lang.Boolean===)",
-          "oldType": "boolean",
-          "newType": "java.lang.Boolean",
-          "package": "org.optaplanner.test.api.score.stream",
-          "classSimpleName": "ConstraintVerifier",
-          "methodName": "withDroolsAlphaNetworkCompilationEnabled",
-          "parameterIndex": "0",
-          "elementKind": "parameter",
-          "justification": "For consistency with ScoreDirectorFactoryConfig.droolsAlphaNetworkCompilationEnabled"
-        }
       ]
     }
   }

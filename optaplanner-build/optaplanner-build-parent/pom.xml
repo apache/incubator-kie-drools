@@ -70,7 +70,7 @@
     <jacoco.agent.argLine/>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the API. -->
-    <revapi.oldOptaplannerVersion>8.5.0.Final</revapi.oldOptaplannerVersion>
+    <revapi.oldOptaplannerVersion>8.13.0.Final</revapi.oldOptaplannerVersion>
     <!--suppress UnresolvedMavenProperty-->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
 
