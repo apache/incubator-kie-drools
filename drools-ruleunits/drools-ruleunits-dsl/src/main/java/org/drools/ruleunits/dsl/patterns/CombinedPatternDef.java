@@ -4,12 +4,12 @@ import org.drools.model.Condition;
 import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ViewItem;
 
-public class CombinedPatternDef implements PatternDefinition {
+public class CombinedPatternDef implements InternalPatternDef {
 
     private final Condition.Type type;
-    private final PatternDefinition[] patternDefs;
+    private final InternalPatternDef[] patternDefs;
 
-    public CombinedPatternDef(Condition.Type type, PatternDefinition... patternDefs) {
+    public CombinedPatternDef(Condition.Type type, InternalPatternDef... patternDefs) {
         this.type = type;
         this.patternDefs = patternDefs;
     }

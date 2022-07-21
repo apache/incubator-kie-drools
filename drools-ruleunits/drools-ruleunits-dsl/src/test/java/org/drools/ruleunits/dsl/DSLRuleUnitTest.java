@@ -118,4 +118,33 @@ public class DSLRuleUnitTest {
                 "Sum of length of Strings above threshold is 11"
         );
     }
+
+    @Test
+    public void testExistential() {
+        ExistentialUnit unit = new ExistentialUnit();
+
+        RuleUnitInstance<ExistentialUnit> unitInstance = DSLRuleUnit.instance(unit);
+
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).contains("There's no Hello World");
+        unit.getResults().clear();
+
+        unit.getStrings().add("test");
+        assertThat(unitInstance.fire()).isEqualTo(0);
+
+        unit.getStrings().add("Hello World");
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).contains("There is at least one Hello World");
+        unit.getResults().clear();
+
+        unit.getStrings().add("Hello World");
+        assertThat(unitInstance.fire()).isEqualTo(0);
+
+        unit.getThreshold().set(20);
+        assertThat(unitInstance.fire()).isEqualTo(0);
+
+        unit.getStrings().add("This is a very long String");
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).contains("There is at least a String longer than threshold 20");
+    }
 }

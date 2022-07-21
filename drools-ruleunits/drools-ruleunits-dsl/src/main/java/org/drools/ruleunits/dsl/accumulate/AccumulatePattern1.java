@@ -6,19 +6,19 @@ import org.drools.model.Variable;
 import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
-import org.drools.ruleunits.dsl.patterns.Pattern1Def;
-import org.drools.ruleunits.dsl.patterns.PatternDefinition;
+import org.drools.ruleunits.dsl.patterns.Pattern1DefImpl;
+import org.drools.ruleunits.dsl.patterns.InternalPatternDef;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.declarationOf;
 
-public class AccumulatePattern1<A, B> extends Pattern1Def<B> {
+public class AccumulatePattern1<A, B> extends Pattern1DefImpl<B> {
 
-    private final PatternDefinition pattern;
+    private final InternalPatternDef pattern;
     private final Accumulator1<A, B> acc;
 
-    public AccumulatePattern1(RuleDefinition rule, PatternDefinition pattern, Accumulator1<A, B> acc) {
+    public AccumulatePattern1(RuleDefinition rule, InternalPatternDef pattern, Accumulator1<A, B> acc) {
         super(rule, declarationOf( acc.getAccClass() ));
         this.pattern = pattern;
         this.acc = acc;
@@ -29,7 +29,7 @@ public class AccumulatePattern1<A, B> extends Pattern1Def<B> {
         return toAccumulate1Item(pattern, getVariable(), acc);
     }
 
-    static ExprViewItem<Object> toAccumulate1Item(PatternDefinition pattern, Variable variable, Accumulator1 acc) {
+    static ExprViewItem<Object> toAccumulate1Item(InternalPatternDef pattern, Variable variable, Accumulator1 acc) {
         ViewItem patternDef = pattern.toExecModelItem();
         Variable boundVar = declarationOf( acc.getAccClass());
         bindAccVar(acc, patternDef, boundVar);

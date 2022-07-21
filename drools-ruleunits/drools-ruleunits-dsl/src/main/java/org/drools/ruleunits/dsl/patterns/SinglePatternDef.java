@@ -12,7 +12,7 @@ import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 import static org.drools.model.PatternDSL.pattern;
 
-public abstract class SinglePatternDef<A> implements PatternDefinition {
+public abstract class SinglePatternDef<A> implements InternalPatternDef {
     protected final RuleDefinition rule;
     protected final Variable<A> variable;
     protected final List<Constraint> constraints = new ArrayList<>();

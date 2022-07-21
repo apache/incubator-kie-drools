@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.model.Global;
 import org.drools.modelcompiler.KieBaseBuilder;
 import org.drools.ruleunits.api.DataSource;
@@ -33,6 +34,8 @@ import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 import org.kie.api.runtime.rule.EntryPoint;
 
 public class DSLRuleUnit {
+
+    private static final boolean DUMP_GENERATED_RETE = false;
 
     public static <T extends RuleUnitDefinition> RuleUnitInstance<T> instance(T ruleUnit) {
         RulesFactory rulesFactory = new RulesFactory(ruleUnit);
@@ -49,6 +52,9 @@ public class DSLRuleUnit {
             super(type.getCanonicalName(), DummyRuleUnits.INSTANCE);
             this.rulesFactory = rulesFactory;
             this.ruleBase = KieBaseBuilder.createKieBaseFromModel( rulesFactory.toModel() );
+            if (DUMP_GENERATED_RETE) {
+                ReteDumper.dumpRete(this.ruleBase);
+            }
         }
 
         @Override

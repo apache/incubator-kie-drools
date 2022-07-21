@@ -45,38 +45,27 @@ public class AccumulateUnit implements RuleUnitDefinition {
 
     @Override
     public void defineRules(RulesFactory rulesFactory) {
-        // For simple accumulates both the nested form ...
-        // accumulate( $s: /strings[ this.substring(0, 1) != "A" ]; sum($s.length) )
+        // accumulate( $s: /strings[ this.substring(0, 1) == "A" ]; sum($s.length) )
         rulesFactory.addRule()
-                .accumulate(
-                        rule -> rule.from(strings).filter(s -> s.substring(0, 1), EQUAL, "A"),
-                        sum(String::length)
-                )
+                .accumulate( rule -> rule.from(strings).filter(s -> s.substring(0, 1), EQUAL, "A"), sum(String::length) )
                 .execute(results, (r, sum) -> r.add("Sum of length of Strings starting with A is " + sum));
 
-        // ... and the fluent one are allowed. In this last case the accumulate is always on the last pattern.
         // accumulate( $s: /strings[ this.substring(0, 1) != "A" ]; max($s.length) )
         rulesFactory.addRule()
-                .from(strings).filter(s -> s.substring(0, 1), NOT_EQUAL, "A")
-                .accumulate(max(String::length))
+                .accumulate( rule -> rule.from(strings).filter(s -> s.substring(0, 1), NOT_EQUAL, "A"), max(String::length) )
                 .execute(results, (r, max) -> r.add("Max length of Strings not starting with A is " + max));
 
-        // when the filtering constraint is a beta one with a join defined outside the accumulate only the fluent form can express this
         // $i : /threshold
         // accumulate( $s: /strings[ length >= $i ]; avg($s.length) )
-        rulesFactory.addRule().from(threshold)
-                .from(strings)
-                .filter(String::length, GREATER_THAN, identity())
-                .accumulate(avg(String::length))
+        rulesFactory.addRule()
+                .from(threshold)
+                .accumulate( rule -> rule.from(strings).filter(String::length, GREATER_THAN, identity()), avg(String::length) )
                 .execute(results, (r, t, avg) -> r.add("Average length of Strings longer than threshold " + t + " is " + avg));
 
         // the join is in the accumulate, so this rule fires (having 0 as result) even without any matching tuple
         // accumulate( $i : /threshold and $s: /strings[ length >= $i ]; sum($s.length) )
         rulesFactory.addRule()
-                .accumulate(
-                        rule -> rule.from(threshold).from(strings).filter(String::length, GREATER_THAN, identity()),
-                        sum(String::length)
-                )
+                .accumulate( rule -> rule.from(threshold).from(strings).filter(String::length, GREATER_THAN, identity()), sum(String::length) )
                 .execute(results, (r, sum) -> r.add("Sum of length of Strings above threshold is " + sum));
     }
 }

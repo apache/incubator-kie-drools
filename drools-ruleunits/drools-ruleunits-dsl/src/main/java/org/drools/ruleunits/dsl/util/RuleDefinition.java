@@ -21,9 +21,11 @@ import org.drools.ruleunits.dsl.RulesFactory;
 import org.drools.ruleunits.dsl.accumulate.AccumulatePattern1;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
 import org.drools.ruleunits.dsl.patterns.CombinedPatternDef;
-import org.drools.ruleunits.dsl.patterns.Pattern1Def;
-import org.drools.ruleunits.dsl.patterns.Pattern2Def;
-import org.drools.ruleunits.dsl.patterns.SinglePatternDef;
+import org.drools.ruleunits.dsl.patterns.ExistentialPatternDef;
+import org.drools.ruleunits.dsl.patterns.Pattern1DefImpl;
+import org.drools.ruleunits.dsl.patterns.Pattern2DefImpl;
+import org.drools.ruleunits.dsl.patterns.InternalPatternDef;
+import org.drools.ruleunits.dsl.patterns.PatternDef;
 
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
@@ -35,8 +37,10 @@ public class RuleDefinition implements RuleFactory {
     private final RuleUnitDefinition unit;
     private final RulesFactory.UnitGlobals globals;
 
-    private final List<SinglePatternDef> patterns = new ArrayList<>();
+    private final List<InternalPatternDef> patterns = new ArrayList<>();
     private RuleItemBuilder consequence;
+
+    private boolean registerNewPattern = true;
 
     public RuleDefinition(String name, RuleUnitDefinition unit, RulesFactory.UnitGlobals globals) {
         this.name = name;
@@ -44,47 +48,63 @@ public class RuleDefinition implements RuleFactory {
         this.unit = unit;
     }
 
-    public void addPattern(SinglePatternDef pattern) {
+    public void addPattern(InternalPatternDef pattern) {
         patterns.add(pattern);
     }
 
-    public void removePattern(SinglePatternDef pattern) {
+    public void removePattern(InternalPatternDef pattern) {
         patterns.remove(pattern);
     }
 
+    public <B> InternalPatternDef internalCreatePattern(B builder, Function1<B, PatternDef> patternBuilder) {
+        registerNewPattern = false;
+        try {
+            InternalPatternDef created = (InternalPatternDef) patternBuilder.apply(builder);
+            return builder instanceof InternalPatternDef ? created.subPatternFrom( (InternalPatternDef)builder ) : created;
+        } finally {
+            registerNewPattern = true;
+        }
+    }
+
     @Override
-    public <A> Pattern1Def<A> from(DataSource<A> dataSource) {
-        Pattern1Def<A> pattern1 = new Pattern1Def<>(this, declarationOf(findDataSourceClass(dataSource),
-                entryPoint(asGlobal(dataSource).getName())));
-        addPattern(pattern1);
+    public <A> Pattern1DefImpl<A> from(DataSource<A> dataSource) {
+        Pattern1DefImpl<A> pattern1 = new Pattern1DefImpl<>(this,
+                declarationOf(findDataSourceClass(dataSource), entryPoint(asGlobal(dataSource).getName())));
+        if (registerNewPattern) {
+            addPattern(pattern1);
+        }
         return pattern1;
     }
 
     @Override
-    public <A, B> Pattern1Def<B> accumulate(Function1<RuleFactory, SinglePatternDef<A>> patternBuilder, Accumulator1<A, B> acc) {
-        SinglePatternDef patternDef = patternBuilder.apply(this);
-        if (patternDef instanceof Pattern1Def) {
-            return accumulate(((Pattern1Def) patternDef), acc);
+    public RuleFactory not(Function1<RuleFactory, PatternDef> patternBuilder) {
+        addPattern(new ExistentialPatternDef(Condition.Type.NOT, internalCreatePattern(this, patternBuilder)));
+        return this;
+    }
+
+    @Override
+    public RuleFactory exists(Function1<RuleFactory, PatternDef> patternBuilder) {
+        addPattern(new ExistentialPatternDef(Condition.Type.EXISTS, internalCreatePattern(this, patternBuilder)));
+        return this;
+    }
+
+    @Override
+    public <A, B> Pattern1DefImpl<B> accumulate(Function1<RuleFactory, PatternDef> patternBuilder, Accumulator1<A, B> acc) {
+        InternalPatternDef patternDef = internalCreatePattern(this, patternBuilder);
+        Pattern1DefImpl accPattern = asAccumulatePattern(patternDef, acc);
+        addPattern(accPattern);
+        return accPattern;
+    }
+
+    private Pattern1DefImpl asAccumulatePattern(InternalPatternDef patternDef, Accumulator1 acc) {
+        if (patternDef instanceof Pattern1DefImpl) {
+            return new AccumulatePattern1<>(this, patternDef, acc);
         }
-        if (patternDef instanceof Pattern2Def) {
-            return accumulate(((Pattern2Def) patternDef), acc);
+        if (patternDef instanceof Pattern2DefImpl) {
+            Pattern2DefImpl pattern = (Pattern2DefImpl) patternDef;
+            return new AccumulatePattern1<>(this, new CombinedPatternDef(Condition.Type.AND, pattern.getPatternA(), pattern.getPatternB()), acc);
         }
         throw new UnsupportedOperationException();
-    }
-
-    public Pattern1Def accumulate(Pattern1Def pattern, Accumulator1 acc) {
-        removePattern(pattern);
-        Pattern1Def accPattern = new AccumulatePattern1<>(this, pattern, acc);
-        addPattern(accPattern);
-        return accPattern;
-    }
-
-    public Pattern1Def accumulate(Pattern2Def pattern, Accumulator1 acc) {
-        removePattern(pattern.getPatternA());
-        removePattern(pattern.getPatternB());
-        Pattern1Def accPattern = new AccumulatePattern1<>(this, new CombinedPatternDef(Condition.Type.AND, pattern.getPatternA(), pattern.getPatternB()), acc);
-        addPattern(accPattern);
-        return accPattern;
     }
 
     public void setConsequence(RuleItemBuilder consequence) {
@@ -105,7 +125,7 @@ public class RuleDefinition implements RuleFactory {
 
         List<RuleItemBuilder> items = new ArrayList<>();
 
-        for (SinglePatternDef<?> pattern : patterns) {
+        for (InternalPatternDef pattern : patterns) {
             items.add(pattern.toExecModelItem());
         }
 
