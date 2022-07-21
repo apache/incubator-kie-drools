@@ -92,7 +92,7 @@ public class CorrelationIT {
 
         // double check that the process instance is there.
         AtomicReference<String> processInstanceId = new AtomicReference<>();
-        await().with().pollDelay(20, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).atMost(2, TimeUnit.MINUTES).until(() -> {
+        await().with().pollDelay(2, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).atMost(2, TimeUnit.MINUTES).until(() -> {
             String id = getProcessInstance(PROCESS_URL);
             LOGGER.debug("Created workflow instance id = " + id);
             processInstanceId.set(id);
