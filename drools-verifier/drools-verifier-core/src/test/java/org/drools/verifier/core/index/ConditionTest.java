@@ -21,8 +21,8 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Condition;
 import org.drools.verifier.core.index.model.ConditionSuperType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -31,7 +31,7 @@ public class ConditionTest {
 
     private Condition condition;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
                         Exception {
         condition = new Condition(mock( Column.class ),
@@ -43,8 +43,8 @@ public class ConditionTest {
     }
 
     @Test
-    public void valueSet() throws
-                           Exception {
+    void valueSet() throws
+            Exception {
         assertThat(condition.getValues()
                 .size()).isEqualTo(1);
         assertThat(condition.getValues()
@@ -53,9 +53,9 @@ public class ConditionTest {
     }
 
     @Test
-    public void changeValue() throws
-                              Exception {
-        condition.setValue( new Values( 2 ) );
+    void changeValue() throws
+            Exception {
+        condition.setValue(new Values( 2 ));
 
         assertThat(condition.getValues()
                 .size()).isEqualTo(1);

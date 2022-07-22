@@ -51,95 +51,95 @@ import org.drools.verifier.components.VerifierFieldAccessDescr;
 import org.drools.verifier.components.VerifierFromDescr;
 import org.drools.verifier.components.VerifierMethodAccessDescr;
 import org.drools.verifier.components.VerifierRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class VerifierDataMapsTest {
 
     @Test
-    public void testSaveVerifierComponentAndGet() {
+    void testSaveVerifierComponentAndGet() {
         VerifierData data = VerifierReportFactory.newVerifierData();
 
         VerifierRule rule = VerifierComponentMockFactory.createRule1();
-        rule.setName( "0" );
+        rule.setName("0");
         String rulePath = rule.getPath();
 
-        data.add( rule );
+        data.add(rule);
 
         Collection<VerifierComponent> all = data.getAll();
 
         assertThat(all.size()).isEqualTo(1);
         assertThat(all.toArray()[0]).isEqualTo(rule);
 
-        Collection<VerifierRule> rules = data.getAll( VerifierComponentType.RULE );
+        Collection<VerifierRule> rules = data.getAll(VerifierComponentType.RULE);
 
         assertThat(rules.size()).isEqualTo(1);
         assertThat(rules.toArray()[0]).isEqualTo(rule);
 
-        VerifierRule rule2 = data.getVerifierObject( VerifierComponentType.RULE,
-                                                     rulePath );
+        VerifierRule rule2 = data.getVerifierObject(VerifierComponentType.RULE,
+                rulePath);
 
         assertThat(rule2).isNotNull();
         assertThat(rule2).isEqualTo(rule);
     }
 
     @Test
-    public void testSaveVerifierComponentAndGetForAllComponentTypes() {
+    void testSaveVerifierComponentAndGetForAllComponentTypes() {
 
         RulePackage rulePackage = VerifierComponentMockFactory.createPackage1();
-        saveVerifierComponentAndGet( rulePackage );
+        saveVerifierComponentAndGet(rulePackage);
 
         VerifierRule rule = VerifierComponentMockFactory.createRule1();
-        saveVerifierComponentAndGet( rule );
+        saveVerifierComponentAndGet(rule);
 
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
-        saveVerifierComponentAndGet( pattern );
+        saveVerifierComponentAndGet(pattern);
 
-        saveVerifierComponentAndGet( new InlineEvalDescr( pattern ) );
-        saveVerifierComponentAndGet( new ObjectType(new PackageDescr("testPackage1")) );
-        saveVerifierComponentAndGet( new RuleOperatorDescr( new AndDescr(), rule,
-                                                            OperatorDescrType.AND ) );
-        saveVerifierComponentAndGet( new PatternOperatorDescr( pattern,
-                                                               OperatorDescrType.AND ) );
-        saveVerifierComponentAndGet( new SubPattern( pattern,
-                                                     0 ) );
-        saveVerifierComponentAndGet( new ReturnValueFieldDescr( pattern ) );
-        saveVerifierComponentAndGet( new SubRule( rule,
-                                                  0 ) );
-        saveVerifierComponentAndGet( new TextConsequence( rule ) );
-        saveVerifierComponentAndGet( new PatternVariable( rule ) );
-        saveVerifierComponentAndGet( new VerifierAccessorDescr( rule ) );
-        saveVerifierComponentAndGet( new VerifierAccumulateDescr( pattern ) );
-        saveVerifierComponentAndGet( new VerifierCollectDescr( pattern ) );
-        saveVerifierComponentAndGet( new RuleEval( rule ) );
-        saveVerifierComponentAndGet( new VerifierFieldAccessDescr( rule ) );
-        saveVerifierComponentAndGet( new VerifierFromDescr( pattern ) );
-        saveVerifierComponentAndGet( new VerifierMethodAccessDescr( rule ) );
-        saveVerifierComponentAndGet( new PatternEval( pattern ) );
+        saveVerifierComponentAndGet(new InlineEvalDescr( pattern ));
+        saveVerifierComponentAndGet(new ObjectType(new PackageDescr("testPackage1")));
+        saveVerifierComponentAndGet(new RuleOperatorDescr( new AndDescr(), rule,
+                OperatorDescrType.AND ));
+        saveVerifierComponentAndGet(new PatternOperatorDescr( pattern,
+                OperatorDescrType.AND ));
+        saveVerifierComponentAndGet(new SubPattern( pattern,
+                0 ));
+        saveVerifierComponentAndGet(new ReturnValueFieldDescr( pattern ));
+        saveVerifierComponentAndGet(new SubRule( rule,
+                0 ));
+        saveVerifierComponentAndGet(new TextConsequence( rule ));
+        saveVerifierComponentAndGet(new PatternVariable( rule ));
+        saveVerifierComponentAndGet(new VerifierAccessorDescr( rule ));
+        saveVerifierComponentAndGet(new VerifierAccumulateDescr( pattern ));
+        saveVerifierComponentAndGet(new VerifierCollectDescr( pattern ));
+        saveVerifierComponentAndGet(new RuleEval( rule ));
+        saveVerifierComponentAndGet(new VerifierFieldAccessDescr( rule ));
+        saveVerifierComponentAndGet(new VerifierFromDescr( pattern ));
+        saveVerifierComponentAndGet(new VerifierMethodAccessDescr( rule ));
+        saveVerifierComponentAndGet(new PatternEval( pattern ));
     }
 
     @Test
-    public void testSaveVerifierComponentAndGetForAllFields() {
-        saveVerifierComponentAndGet( new EnumField(new PackageDescr("testPackage1")) );
-        saveVerifierComponentAndGet( new Field(new PackageDescr("testPackage1")) );
+    void testSaveVerifierComponentAndGetForAllFields() {
+        saveVerifierComponentAndGet(new EnumField(new PackageDescr("testPackage1")));
+        saveVerifierComponentAndGet(new Field(new PackageDescr("testPackage1")));
     }
 
     @Test
-    public void testSaveVerifierComponentAndGetForAllRestrictions() {
+    void testSaveVerifierComponentAndGetForAllRestrictions() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        saveVerifierComponentAndGet( LiteralRestriction.createRestriction( pattern,
-                                                                           "" ) );
-        saveVerifierComponentAndGet( new EnumRestriction( pattern ) );
-        saveVerifierComponentAndGet( new QualifiedIdentifierRestriction( pattern ) );
-        saveVerifierComponentAndGet( new ReturnValueRestriction( pattern ) );
-        saveVerifierComponentAndGet( new ReturnValueRestriction( pattern ) );
-        saveVerifierComponentAndGet( new VariableRestriction( pattern ) );
+        saveVerifierComponentAndGet(LiteralRestriction.createRestriction(pattern,
+                ""));
+        saveVerifierComponentAndGet(new EnumRestriction( pattern ));
+        saveVerifierComponentAndGet(new QualifiedIdentifierRestriction( pattern ));
+        saveVerifierComponentAndGet(new ReturnValueRestriction( pattern ));
+        saveVerifierComponentAndGet(new ReturnValueRestriction( pattern ));
+        saveVerifierComponentAndGet(new VariableRestriction( pattern ));
     }
 
     @Test
-    public void testSavePatternAndGet() {
+    void testSavePatternAndGet() {
         VerifierData data = VerifierReportFactory.newVerifierData();
 
         VerifierRule rule = VerifierComponentMockFactory.createRule1();
@@ -155,13 +155,13 @@ public class VerifierDataMapsTest {
         assertThat(pattern.getName()).isNotNull();
         assertThat(pattern.getRuleName()).isEqualTo(rule.getName());
 
-        pattern.setObjectTypePath( objectType.getPath() );
+        pattern.setObjectTypePath(objectType.getPath());
         assertThat(pattern.getObjectTypePath()).isNotNull();
         assertThat(pattern.getObjectTypePath()).isEqualTo(objectType.getPath());
 
-        data.add( rule );
-        data.add( objectType );
-        data.add( pattern );
+        data.add(rule);
+        data.add(objectType);
+        data.add(pattern);
 
         Collection<VerifierComponent> all = data.getAll();
 
@@ -170,19 +170,19 @@ public class VerifierDataMapsTest {
         assertThat(all.contains(objectType)).isTrue();
         assertThat(all.contains(rule)).isTrue();
 
-        Collection<VerifierComponent> components = data.getAll( pattern.getVerifierComponentType() );
+        Collection<VerifierComponent> components = data.getAll(pattern.getVerifierComponentType());
 
         assertThat(components.size()).isEqualTo(1);
         assertThat(components.toArray()[0]).isEqualTo(pattern);
 
-        VerifierComponent objectType2 = data.getVerifierObject( objectType.getVerifierComponentType(),
-                                                                objectType.getPath() );
+        VerifierComponent objectType2 = data.getVerifierObject(objectType.getVerifierComponentType(),
+                objectType.getPath());
 
         assertThat(objectType2).isNotNull();
         assertThat(objectType2).isEqualTo(objectType);
 
-        VerifierComponent rule2 = data.getVerifierObject( rule.getVerifierComponentType(),
-                                                          rule.getPath() );
+        VerifierComponent rule2 = data.getVerifierObject(rule.getVerifierComponentType(),
+                rule.getPath());
 
         assertThat(rule2).isNotNull();
         assertThat(rule2).isEqualTo(rule);

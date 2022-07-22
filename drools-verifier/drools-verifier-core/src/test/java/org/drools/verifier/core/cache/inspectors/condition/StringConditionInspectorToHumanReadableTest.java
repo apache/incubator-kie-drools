@@ -27,17 +27,14 @@ import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
 import org.drools.verifier.core.index.model.ObjectField;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(Parameterized.class)
 public class StringConditionInspectorToHumanReadableTest {
 
     private static final String FIELD_NAME = "name";
@@ -45,15 +42,14 @@ public class StringConditionInspectorToHumanReadableTest {
     private static final String IS_NOT_NULL = "!= null";
     private static final String IS_NULL = "== null";
 
-    private final String operator;
+    private String operator;
 
     private AnalyzerConfiguration configuration;
 
-    public StringConditionInspectorToHumanReadableTest(String operator) {
+    public void initStringConditionInspectorToHumanReadableTest(String operator) {
         this.operator = operator;
     }
 
-    @Parameters
     public static Collection<Object[]> testData() {
         // not sure if '== null' and '!= null' from OperatorsOracle.STRING_OPERATORS make much sense here
         ArrayList<Object> data = new ArrayList<Object>(Arrays.asList(new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null"}));
@@ -65,14 +61,17 @@ public class StringConditionInspectorToHumanReadableTest {
         return data2;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         configuration = new AnalyzerConfigurationMock();
     }
 
-    @Test
-    public void testToHumanReadableString() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testToHumanReadableString(String operator) {
+
+        initStringConditionInspectorToHumanReadableTest(operator);
 
         final StringConditionInspector inspector = getStringConditionInspector();
 
@@ -95,38 +94,38 @@ public class StringConditionInspectorToHumanReadableTest {
     private StringConditionInspector getStringConditionInspector() {
         if (IS_NOT_NULL.matches(operator)) {
             return new StringConditionInspector(new FieldCondition<>(new Field(mock(ObjectField.class),
-                                                                               "Test",
-                                                                               "String",
-                                                                               FIELD_NAME,
-                                                                               configuration),
-                                                                     mock(Column.class),
-                                                                     "!=",
-                                                                     Values.nullValue(),
-                                                                     configuration
-            ),
-                                                configuration);
+                                    "Test",
+                                    "String",
+                                    FIELD_NAME,
+                                    configuration),
+                            mock(Column.class),
+                            "!=",
+                            Values.nullValue(),
+                            configuration
+                    ),
+                    configuration);
         } else if (IS_NULL.matches(operator)) {
             return new StringConditionInspector(new FieldCondition<>(new Field(mock(ObjectField.class),
-                                                                               "Test",
-                                                                               "String",
-                                                                               FIELD_NAME,
-                                                                               configuration),
-                                                                     mock(Column.class),
-                                                                     "==",
-                                                                     Values.nullValue(),
-                                                                     configuration),
-                                                configuration);
+                                    "Test",
+                                    "String",
+                                    FIELD_NAME,
+                                    configuration),
+                            mock(Column.class),
+                            "==",
+                            Values.nullValue(),
+                            configuration),
+                    configuration);
         } else {
             return new StringConditionInspector(new FieldCondition<>(new Field(mock(ObjectField.class),
-                                                                               "Test",
-                                                                               "String",
-                                                                               FIELD_NAME,
-                                                                               configuration),
-                                                                     mock(Column.class),
-                                                                     operator,
-                                                                     new Values(VALUE),
-                                                                     configuration),
-                                                configuration);
+                                    "Test",
+                                    "String",
+                                    FIELD_NAME,
+                                    configuration),
+                            mock(Column.class),
+                            operator,
+                            new Values(VALUE),
+                            configuration),
+                    configuration);
         }
     }
 }

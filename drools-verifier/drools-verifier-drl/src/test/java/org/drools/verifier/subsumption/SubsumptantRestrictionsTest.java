@@ -21,7 +21,7 @@ import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.report.components.Subsumption;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -33,15 +33,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SubsumptantRestrictionsTest {
 
     @Test
-    public void testVerifierLiteralRestrictionRedundancy1() throws Exception {
+    void testVerifierLiteralRestrictionRedundancy1() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantRestriction1.drl",
-                getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
@@ -60,15 +60,15 @@ public class SubsumptantRestrictionsTest {
     }
 
     @Test
-    public void testVerifierLiteralRestrictionRedundancy2() throws Exception {
+    void testVerifierLiteralRestrictionRedundancy2() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantRestriction2.drl",
-                                                                           getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
@@ -87,15 +87,15 @@ public class SubsumptantRestrictionsTest {
     }
 
     @Test
-    public void testVerifierLiteralRestrictionRedundancy3() throws Exception {
+    void testVerifierLiteralRestrictionRedundancy3() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantRestriction3.drl",
-                                                                           getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
@@ -114,15 +114,15 @@ public class SubsumptantRestrictionsTest {
     }
 
     @Test
-    public void testVerifierLiteralRestrictionRedundancy4() throws Exception {
+    void testVerifierLiteralRestrictionRedundancy4() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantRestriction4.drl",
-                                                                           getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );

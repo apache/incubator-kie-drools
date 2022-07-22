@@ -29,18 +29,18 @@ import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldAction;
 import org.drools.verifier.core.index.model.FieldCondition;
 import org.drools.verifier.core.index.model.ObjectField;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FieldInspectorUpdateTest {
 
     @Mock
@@ -53,7 +53,7 @@ public class FieldInspectorUpdateTest {
 
     private AnalyzerConfigurationMock configurationMock;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
 
@@ -101,7 +101,7 @@ public class FieldInspectorUpdateTest {
     }
 
     @Test
-    public void updateAction() throws
+    void updateAction() throws
             Exception {
         fieldAction.setValue(new Values(20));
 
@@ -109,7 +109,7 @@ public class FieldInspectorUpdateTest {
     }
 
     @Test
-    public void updateCondition() throws
+    void updateCondition() throws
             Exception {
         fieldCondition.setValue(new Values(20));
 

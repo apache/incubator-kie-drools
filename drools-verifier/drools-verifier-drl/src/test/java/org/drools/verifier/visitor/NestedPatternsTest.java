@@ -29,7 +29,7 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class NestedPatternsTest {
 
     @Test
-    public void runVisitor() throws Exception {
+    void runVisitor() throws Exception {
         VerifierData data = VerifierReportFactory.newVerifierData();
         PackageDescrVisitor visitor = new PackageDescrVisitor(data,
                 Collections.EMPTY_LIST);

@@ -20,7 +20,7 @@ import org.drools.io.ClassPathResource;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ConditionalBranchDescrTest {
 
     @Test
-    public void testVerifier() {
+    void testVerifier() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
@@ -37,9 +37,9 @@ public class ConditionalBranchDescrTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( new ClassPathResource( "ConditionalBranchDescrTest.drl",
-                                                              Verifier.class ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(new ClassPathResource( "ConditionalBranchDescrTest.drl",
+                        Verifier.class ),
+                ResourceType.DRL);
 
         assertThat(verifier.hasErrors()).isFalse();
         assertThat(verifier.getErrors().size()).isEqualTo(0);

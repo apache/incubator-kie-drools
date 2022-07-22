@@ -22,7 +22,7 @@ import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Subsumption;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -34,15 +34,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RedundancyTest {
 
     @Test
-    public void testVerifierLiteralRestrictionRedundancy() throws Exception {
+    void testVerifierLiteralRestrictionRedundancy() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("RedundantRestrictions.drl",
-                getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         assertThat(verifier.hasErrors()).isFalse();
 

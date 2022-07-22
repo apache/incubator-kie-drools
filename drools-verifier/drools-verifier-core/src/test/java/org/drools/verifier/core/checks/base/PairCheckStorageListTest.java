@@ -21,16 +21,16 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PairCheckStorageListTest {
 
     private PairCheckStorage pairCheckStorage;
@@ -47,7 +47,7 @@ public class PairCheckStorageListTest {
     private PairCheckBundle pairCheckListOne;
     private PairCheckBundle pairCheckListTwo;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         pairCheckStorage = new PairCheckStorage();
         pairCheckListOne = new PairCheckBundle(a,
@@ -73,7 +73,7 @@ public class PairCheckStorageListTest {
     }
 
     @Test
-    public void getA() throws Exception {
+    void getA() throws Exception {
         final Collection<PairCheckBundle> pairCheckLists = this.pairCheckStorage.get(a);
         assertThat(pairCheckLists.size()).isEqualTo(4);
         assertThat(pairCheckLists.contains(pairCheckListOne)).isTrue();
@@ -81,7 +81,7 @@ public class PairCheckStorageListTest {
     }
 
     @Test
-    public void getB() throws Exception {
+    void getB() throws Exception {
         final Collection<PairCheckBundle> pairCheckLists = this.pairCheckStorage.get(b);
         assertThat(pairCheckLists.size()).isEqualTo(2);
         assertThat(pairCheckLists.contains(pairCheckListOne)).isTrue();
@@ -89,7 +89,7 @@ public class PairCheckStorageListTest {
     }
 
     @Test
-    public void removeB() throws Exception {
+    void removeB() throws Exception {
         final Collection<PairCheckBundle> pairCheckLists = this.pairCheckStorage.remove(b);
         assertThat(pairCheckLists.size()).isEqualTo(2);
         assertThat(pairCheckLists.contains(pairCheckListOne)).isTrue();
@@ -105,7 +105,7 @@ public class PairCheckStorageListTest {
     }
 
     @Test
-    public void removeA() throws Exception {
+    void removeA() throws Exception {
         final Collection<PairCheckBundle> pairCheckLists = this.pairCheckStorage.remove(a);
 
         assertThat(pairCheckLists.size()).isEqualTo(4);

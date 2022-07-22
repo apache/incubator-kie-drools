@@ -24,7 +24,7 @@ import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Gap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.fail;
 public class RangeCheckIntegersTest extends TestBaseOld {
 
     @Test
-    public void testSmallerOrEqual() throws Exception {
+    void testSmallerOrEqual() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("rangeChecks/Integers.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
@@ -67,7 +67,7 @@ public class RangeCheckIntegersTest extends TestBaseOld {
     }
 
     @Test
-    public void testGreaterOrEqual() throws Exception {
+    void testGreaterOrEqual() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("rangeChecks/Integers.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
@@ -101,7 +101,7 @@ public class RangeCheckIntegersTest extends TestBaseOld {
     }
 
     @Test
-    public void testEqualAndGreaterThan() throws Exception {
+    void testEqualAndGreaterThan() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("rangeChecks/Integers.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
@@ -136,7 +136,7 @@ public class RangeCheckIntegersTest extends TestBaseOld {
     }
 
     @Test
-    public void testEqualAndSmallerThan() throws Exception {
+    void testEqualAndSmallerThan() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("rangeChecks/Integers.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();

@@ -31,7 +31,7 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.visitor.PackageDescrVisitor;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +42,7 @@ public class TestBase {
     protected VerifierData verifierData;
     protected PackageDescrVisitor packageDescrVisitor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         verifierData = VerifierReportFactory.newVerifierData();
         packageDescrVisitor = new PackageDescrVisitor(verifierData,

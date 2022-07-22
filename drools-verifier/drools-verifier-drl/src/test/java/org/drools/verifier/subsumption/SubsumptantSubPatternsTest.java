@@ -24,8 +24,8 @@ import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Subsumption;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -37,15 +37,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SubsumptantSubPatternsTest {
 
     @Test
-    public void testSubpatternSubsumption1() throws Exception {
+    void testSubpatternSubsumption1() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns1.drl",
-                                                                           getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
@@ -81,15 +81,15 @@ public class SubsumptantSubPatternsTest {
      * @throws Exception
      */
     @Test
-    public void testSubpatternSubsumption2() throws Exception {
+    void testSubpatternSubsumption2() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns2.drl",
-                                                                           getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
@@ -120,15 +120,15 @@ public class SubsumptantSubPatternsTest {
      * @throws Exception
      */
     @Test
-    public void testSubpatternSubsumption3() throws Exception {
+    void testSubpatternSubsumption3() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns3.drl",
-                                                                           getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
@@ -159,16 +159,16 @@ public class SubsumptantSubPatternsTest {
      * @throws Exception
      */
     @Test
-    @Ignore
-    public void testSubpatternSubsumption4() throws Exception {
+    @Disabled
+    void testSubpatternSubsumption4() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns4.drl",
-                getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
@@ -199,15 +199,15 @@ public class SubsumptantSubPatternsTest {
      * @throws Exception
      */
     @Test
-    public void testSubpatternSubsumption5() throws Exception {
+    void testSubpatternSubsumption5() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns5.drl",
-                                                                           getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );

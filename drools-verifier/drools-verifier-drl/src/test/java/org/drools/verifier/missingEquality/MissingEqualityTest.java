@@ -32,7 +32,7 @@ import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,13 +41,13 @@ import static org.assertj.core.api.Assertions.fail;
 public class MissingEqualityTest extends TestBaseOld {
 
     @Test
-    public void testMissingEqualityInLiteralRestrictions() throws Exception {
+    void testMissingEqualityInLiteralRestrictions() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("MissingEquality.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-                                                                .getResourceAsStream("MissingEqualityTest.drl"), result
-                                                                    .getVerifierData());
+                .getResourceAsStream("MissingEqualityTest.drl"), result
+                .getVerifierData());
 
         session.setGlobal("result", result);
 
@@ -81,13 +81,13 @@ public class MissingEqualityTest extends TestBaseOld {
     }
 
     @Test
-    public void testMissingEqualityInVariableRestrictions() throws Exception {
+    void testMissingEqualityInVariableRestrictions() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("MissingEquality.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-                                                                .getResourceAsStream("MissingEqualityTest.drl"), result
-                                                                    .getVerifierData());
+                .getResourceAsStream("MissingEqualityTest.drl"), result
+                .getVerifierData());
 
         session.setGlobal("result", result);
 
@@ -128,13 +128,13 @@ public class MissingEqualityTest extends TestBaseOld {
     }
 
     @Test
-    public void testMissingEqualityInVariableRestrictions2() throws Exception {
+    void testMissingEqualityInVariableRestrictions2() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("MissingEquality.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-                                                                .getResourceAsStream("MissingEqualityTest.drl"), result
-                                                                    .getVerifierData());
+                .getResourceAsStream("MissingEqualityTest.drl"), result
+                .getVerifierData());
 
         session.setGlobal("result", result);
 
@@ -175,13 +175,13 @@ public class MissingEqualityTest extends TestBaseOld {
     }
 
     @Test
-    public void testMissingEqualityInVariableRestrictions3() throws Exception {
+    void testMissingEqualityInVariableRestrictions3() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("MissingEquality.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-                                                                .getResourceAsStream("MissingEqualityTest.drl"), result
-                                                                    .getVerifierData());
+                .getResourceAsStream("MissingEqualityTest.drl"), result
+                .getVerifierData());
 
         session.setGlobal("result", result);
 

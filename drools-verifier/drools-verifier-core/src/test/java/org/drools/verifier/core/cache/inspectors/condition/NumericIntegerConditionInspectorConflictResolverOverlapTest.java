@@ -24,26 +24,23 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(Parameterized.class)
 public class NumericIntegerConditionInspectorConflictResolverOverlapTest {
 
-    private final Integer value1;
-    private final Integer value2;
-    private final String operator1;
-    private final String operator2;
-    private final boolean overlapExpected;
-    private final Field field;
+    private Integer value1;
+    private Integer value2;
+    private String operator1;
+    private String operator2;
+    private boolean overlapExpected;
+    private Field field;
 
-    public NumericIntegerConditionInspectorConflictResolverOverlapTest(String operator1,
+    public void initNumericIntegerConditionInspectorConflictResolverOverlapTest(String operator1,
                                                                        Integer value1,
                                                                        String operator2,
                                                                        Integer value2,
@@ -56,7 +53,6 @@ public class NumericIntegerConditionInspectorConflictResolverOverlapTest {
         this.overlapExpected = overlapExpected;
     }
 
-    @Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
                 // op1, val1, op2, val2, overlaps
@@ -136,12 +132,14 @@ public class NumericIntegerConditionInspectorConflictResolverOverlapTest {
         });
     }
 
-    @Test
-    public void parametrizedOverlapTest() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void parametrizedOverlapTest(String operator1, Integer value1, String operator2, Integer value2, boolean overlapExpected) {
+        initNumericIntegerConditionInspectorConflictResolverOverlapTest(operator1, value1, operator2, value2, overlapExpected);
         NumericIntegerConditionInspector a = getCondition(value1,
-                                                          operator1);
+                operator1);
         NumericIntegerConditionInspector b = getCondition(value2,
-                                                          operator2);
+                operator2);
 
         assertThat(a.overlaps(b)).as(getAssertDescription(a,
                 b,
@@ -153,12 +151,14 @@ public class NumericIntegerConditionInspectorConflictResolverOverlapTest {
                 "overlap")).isEqualTo(overlapExpected);
     }
 
-    @Test
-    public void parametrizedConflictTest() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void parametrizedConflictTest(String operator1, Integer value1, String operator2, Integer value2, boolean overlapExpected) {
+        initNumericIntegerConditionInspectorConflictResolverOverlapTest(operator1, value1, operator2, value2, overlapExpected);
         NumericIntegerConditionInspector a = getCondition(value1,
-                                                          operator1);
+                operator1);
         NumericIntegerConditionInspector b = getCondition(value2,
-                                                          operator2);
+                operator2);
 
         assertThat(a.conflicts(b)).as(getAssertDescription(a,
                 b,
@@ -175,20 +175,20 @@ public class NumericIntegerConditionInspectorConflictResolverOverlapTest {
                                         final boolean conflictExpected,
                                         final String condition) {
         return format("Expected condition '%s' %sto %s with condition '%s':",
-                      a.toHumanReadableString(),
-                      conflictExpected ? "" : "not ",
-                      condition,
-                      b.toHumanReadableString());
+                a.toHumanReadableString(),
+                conflictExpected ? "" : "not ",
+                condition,
+                b.toHumanReadableString());
     }
 
     private NumericIntegerConditionInspector getCondition(final int value,
                                                           final String operator) {
         AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
         return new NumericIntegerConditionInspector(new FieldCondition<>(field,
-                                                                         mock(Column.class),
-                                                                         operator,
-                                                                         new Values<>(value),
-                                                                         configurationMock),
-                                                    configurationMock);
+                        mock(Column.class),
+                        operator,
+                        new Values<>(value),
+                        configurationMock),
+                configurationMock);
     }
 }

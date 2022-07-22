@@ -23,8 +23,8 @@ import org.drools.verifier.core.index.matchers.Matcher;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.MultiMap;
 import org.drools.verifier.core.maps.MultiMapFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +32,7 @@ public class SelectKeyMatcherTest {
 
     private Select<String> select;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final MultiMap<Value, String, List<String>> map = MultiMapFactory.make();
         map.put(new Value("value1"),
@@ -45,19 +45,19 @@ public class SelectKeyMatcherTest {
     }
 
     @Test
-    public void testAll() throws Exception {
+    void testAll() throws Exception {
         final Collection<String> all = select.all();
 
         assertThat(all.size()).isEqualTo(2);
     }
 
     @Test
-    public void testFirst() throws Exception {
+    void testFirst() throws Exception {
         assertThat(select.first()).isEqualTo("value1");
     }
 
     @Test
-    public void testLast() throws Exception {
+    void testLast() throws Exception {
         assertThat(select.last()).isEqualTo("value2");
     }
 }

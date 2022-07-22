@@ -16,29 +16,32 @@
 
 package org.drools.verifier.core.maps;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class KeyDefinitionBuilderTest {
 
-    @Test( expected = IllegalArgumentException.class )
-    public void testNoIdSet() throws Exception {
-        KeyDefinition.newKeyDefinition().build();
+    @Test
+    void testNoIdSet() throws Exception {
+        assertThrows(IllegalArgumentException.class, () -> {
+            KeyDefinition.newKeyDefinition().build();
+        });
     }
 
     @Test
-    public void testDefaults() throws Exception {
-        final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition().withId( "test" ).build();
+    void testDefaults() throws Exception {
+        final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition().withId("test").build();
         assertThat(keyDefinition.isUpdatable()).isFalse();
     }
 
     @Test
-    public void testUpdatable() throws Exception {
+    void testUpdatable() throws Exception {
         final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition()
-                                                         .withId( "test" )
-                                                         .updatable()
-                                                         .build();
+                .withId("test")
+                .updatable()
+                .build();
         assertThat(keyDefinition.isUpdatable()).isTrue();
     }
 

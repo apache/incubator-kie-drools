@@ -33,7 +33,7 @@ import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.solver.Solvers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -53,40 +53,40 @@ public class SolversTest {
      * r3 && r4
      */
     @Test
-    public void testNotAnd() {
+    void testNotAnd() {
         PackageDescr descr = new PackageDescr("testPackage");
         RulePackage rulePackage = new RulePackage(descr);
-        rulePackage.setName( "testPackage" );
+        rulePackage.setName("testPackage");
 
         VerifierRule rule = new VerifierRule(descr, rulePackage, new HashMap<String, Object>());
-        rule.setName( "testRule" );
+        rule.setName("testRule");
         Pattern pattern = new Pattern(new PatternDescr(), rule );
 
-        Restriction r = LiteralRestriction.createRestriction( pattern,
-                                                              "" );
-        Restriction r2 = LiteralRestriction.createRestriction( pattern,
-                                                               "" );
-        Restriction r3 = LiteralRestriction.createRestriction( pattern,
-                                                               "" );
-        Restriction r4 = LiteralRestriction.createRestriction( pattern,
-                                                               "" );
+        Restriction r = LiteralRestriction.createRestriction(pattern,
+                "");
+        Restriction r2 = LiteralRestriction.createRestriction(pattern,
+                "");
+        Restriction r3 = LiteralRestriction.createRestriction(pattern,
+                "");
+        Restriction r4 = LiteralRestriction.createRestriction(pattern,
+                "");
         Solvers solvers = new Solvers();
 
-        solvers.startRuleSolver( rule );
+        solvers.startRuleSolver(rule);
 
-        solvers.startOperator( OperatorDescrType.AND );
-        solvers.startPatternSolver( pattern );
-        solvers.startOperator( OperatorDescrType.AND );
-        solvers.addPatternComponent( r );
-        solvers.addPatternComponent( r2 );
+        solvers.startOperator(OperatorDescrType.AND);
+        solvers.startPatternSolver(pattern);
+        solvers.startOperator(OperatorDescrType.AND);
+        solvers.addPatternComponent(r);
+        solvers.addPatternComponent(r2);
         solvers.endOperator();
         solvers.endPatternSolver();
 
         solvers.startNot();
-        solvers.startPatternSolver( pattern );
-        solvers.startOperator( OperatorDescrType.AND );
-        solvers.addPatternComponent( r3 );
-        solvers.addPatternComponent( r4 );
+        solvers.startPatternSolver(pattern);
+        solvers.startOperator(OperatorDescrType.AND);
+        solvers.addPatternComponent(r3);
+        solvers.addPatternComponent(r4);
         solvers.endOperator();
         solvers.endPatternSolver();
         solvers.endNot();
@@ -100,26 +100,26 @@ public class SolversTest {
         assertThat(list.get(0).getItems().size()).isEqualTo(2);
 
         List<Restriction> result = new ArrayList<Restriction>();
-        result.add( r );
-        result.add( r2 );
+        result.add(r);
+        result.add(r2);
 
         List<Restriction> result2 = new ArrayList<Restriction>();
-        result2.add( r3 );
-        result2.add( r4 );
+        result2.add(r3);
+        result2.add(r4);
 
-        Object[] possibilies = list.get( 0 ).getItems().toArray();
+        Object[] possibilies = list.get(0).getItems().toArray();
         SubPattern p1 = (SubPattern) possibilies[0];
         SubPattern p2 = (SubPattern) possibilies[1];
 
         /*
          * Order may change but it doesn't matter.
          */
-        if ( p1.getItems().containsAll( result ) ) {
+        if (p1.getItems().containsAll(result)) {
             assertThat(p2.getItems().containsAll(result2)).isTrue();
-        } else if ( p1.getItems().containsAll( result2 ) ) {
+        } else if (p1.getItems().containsAll(result2)) {
             assertThat(p2.getItems().containsAll(result)).isTrue();
         } else {
-            fail( "No items found." );
+            fail("No items found.");
         }
     }
 
@@ -133,23 +133,23 @@ public class SolversTest {
      * descr && descr2
      */
     @Test
-    public void testBasicAnd() {
+    void testBasicAnd() {
 
         VerifierRule rule = VerifierComponentMockFactory.createRule1();
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        Restriction r = LiteralRestriction.createRestriction( pattern,
-                                                              "" );
-        Restriction r2 = LiteralRestriction.createRestriction( pattern,
-                                                               "" );
+        Restriction r = LiteralRestriction.createRestriction(pattern,
+                "");
+        Restriction r2 = LiteralRestriction.createRestriction(pattern,
+                "");
 
         Solvers solvers = new Solvers();
 
-        solvers.startRuleSolver( rule );
-        solvers.startPatternSolver( pattern );
-        solvers.startOperator( OperatorDescrType.AND );
-        solvers.addPatternComponent( r );
-        solvers.addPatternComponent( r2 );
+        solvers.startRuleSolver(rule);
+        solvers.startPatternSolver(pattern);
+        solvers.startOperator(OperatorDescrType.AND);
+        solvers.addPatternComponent(r);
+        solvers.addPatternComponent(r2);
         solvers.endOperator();
         solvers.endPatternSolver();
         solvers.endRuleSolver();
@@ -159,11 +159,11 @@ public class SolversTest {
         assertThat(list.get(0).getItems().size()).isEqualTo(1);
 
         List<Restriction> result = new ArrayList<Restriction>();
-        result.add( r );
-        result.add( r2 );
+        result.add(r);
+        result.add(r2);
 
-        Set<RuleComponent> set = list.get( 0 ).getItems();
-        for ( RuleComponent component : set ) {
+        Set<RuleComponent> set = list.get(0).getItems();
+        for (RuleComponent component : set) {
             SubPattern possibility = (SubPattern) component;
             assertThat(possibility.getItems().containsAll(result)).isTrue();
         }

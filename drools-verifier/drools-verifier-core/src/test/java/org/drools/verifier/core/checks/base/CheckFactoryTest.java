@@ -18,7 +18,7 @@ package org.drools.verifier.core.checks.base;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.configuration.CheckConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 public class CheckFactoryTest {
 
     @Test
-    public void emptyWhiteList() throws
+    void emptyWhiteList() throws
             Exception {
 
         final AnalyzerConfigurationMock configuration = new AnalyzerConfigurationMock(CheckConfiguration.newEmpty());
@@ -39,7 +39,7 @@ public class CheckFactoryTest {
     }
 
     @Test
-    public void defaultWhiteList() throws
+    void defaultWhiteList() throws
             Exception {
 
         final AnalyzerConfigurationMock configuration = new AnalyzerConfigurationMock(CheckConfiguration.newDefault());

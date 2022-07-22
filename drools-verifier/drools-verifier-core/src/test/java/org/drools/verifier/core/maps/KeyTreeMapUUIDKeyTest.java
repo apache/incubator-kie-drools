@@ -21,33 +21,39 @@ import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.maps.util.HasKeys;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class KeyTreeMapUUIDKeyTest {
 
     AnalyzerConfiguration configuration;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         configuration = new AnalyzerConfigurationMock();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNoKey() throws
+    @Test
+    void testNoKey() throws
             Exception {
-        final KeyTreeMap<NoKey> map = new KeyTreeMap<>(UUIDKey.UNIQUE_UUID);
+        assertThrows(IllegalArgumentException.class, () -> {
+            final KeyTreeMap<NoKey> map = new KeyTreeMap<>(UUIDKey.UNIQUE_UUID);
 
-        map.put(new NoKey());
+            map.put(new NoKey());
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testTwoKeys() throws
+    @Test
+    void testTwoKeys() throws
             Exception {
-        final KeyTreeMap<TwoKeys> map = new KeyTreeMap<>(UUIDKey.UNIQUE_UUID);
+        assertThrows(IllegalArgumentException.class, () -> {
+            final KeyTreeMap<TwoKeys> map = new KeyTreeMap<>(UUIDKey.UNIQUE_UUID);
 
-        map.put(new TwoKeys());
+            map.put(new TwoKeys());
+        });
     }
 
     private class NoKey

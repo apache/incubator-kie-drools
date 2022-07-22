@@ -22,8 +22,8 @@ import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.report.components.Overlap;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -36,8 +36,8 @@ public class OverlappingRestrictionsTest extends TestBaseOld {
 
     // TODO: Add this feature
     @Test
-    @Ignore
-    public void testOverlap() {
+    @Disabled
+    void testOverlap() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
@@ -52,7 +52,7 @@ public class OverlappingRestrictionsTest extends TestBaseOld {
 
         Collection<? extends Object> overlaps = ((VerifierImpl) verifier)
                 .getKnowledgeSession().getObjects(
-                        new ClassObjectFilter(Overlap.class));
+                new ClassObjectFilter(Overlap.class));
 
         for (Object object : overlaps) {
             System.out.println(object);
@@ -65,7 +65,7 @@ public class OverlappingRestrictionsTest extends TestBaseOld {
     }
 
     @Test
-    public void testDUMMY() throws Exception {
+    void testDUMMY() throws Exception {
         assertThat(true).isTrue();
     }
 }

@@ -24,8 +24,8 @@ import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
 import org.drools.verifier.core.index.model.ObjectField;
 import org.drools.verifier.core.index.select.AllListener;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.anyCollection;
 import static org.mockito.Mockito.mock;
@@ -38,7 +38,7 @@ public class ConditionsListenerTest {
     private AllListener allListener;
     private AnalyzerConfigurationMock configuration;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         configuration = new AnalyzerConfigurationMock();
@@ -54,35 +54,35 @@ public class ConditionsListenerTest {
     }
 
     @Test
-    public void testListen() throws
+    void testListen() throws
             Exception {
         conditions.add(new FieldCondition(new Field(mock(ObjectField.class),
-                                                    "Person",
-                                                    "String",
-                                                    "name",
-                                                    configuration),
-                                          new Column(1,
-                                                     configuration),
-                                          "==",
-                                          new Values<>(10),
-                                          configuration));
+                        "Person",
+                        "String",
+                        "name",
+                        configuration),
+                new Column(1,
+                        configuration),
+                "==",
+                new Values<>(10),
+                configuration));
 
         verify(allListener).onAllChanged(anyCollection());
     }
 
     @Test
-    public void testUpdate() throws
+    void testUpdate() throws
             Exception {
         final Condition condition = new FieldCondition(new Field(mock(ObjectField.class),
-                                                                 "Person",
-                                                                 "String",
-                                                                 "name",
-                                                                 configuration),
-                                                       new Column(1,
-                                                                  configuration),
-                                                       "==",
-                                                       new Values<>(10),
-                                                       configuration);
+                        "Person",
+                        "String",
+                        "name",
+                        configuration),
+                new Column(1,
+                        configuration),
+                "==",
+                new Values<>(10),
+                configuration);
         conditions.add(condition);
 
         reset(allListener);

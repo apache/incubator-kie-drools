@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.drools.verifier.core.index.keys.Value;
 import org.drools.verifier.core.index.keys.Values;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +33,7 @@ public class ChangeHandledMultiMapPreExistingDataTest {
 
     private int timesCalled = 0;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.timesCalled = 0;
 
@@ -53,10 +53,10 @@ public class ChangeHandledMultiMapPreExistingDataTest {
     }
 
     @Test
-    public void move() throws Exception {
-        map.move( new Values<>(new Value("ok" ) ),
-                  new Values<>( new Value( "hello" ) ),
-                  "b" );
+    void move() throws Exception {
+        map.move(new Values<>(new Value("ok" ) ),
+                new Values<>( new Value( "hello" ) ),
+                "b");
 
         assertThat(timesCalled).isEqualTo(1);
 
@@ -73,8 +73,8 @@ public class ChangeHandledMultiMapPreExistingDataTest {
     }
 
     @Test
-    public void testRemove() throws Exception {
-        map.remove( new Value( "ok" ) );
+    void testRemove() throws Exception {
+        map.remove(new Value( "ok" ));
 
         assertThat(changeSet.getRemoved().get(new Value( "ok" )).size()).isEqualTo(2);
 
@@ -82,9 +82,9 @@ public class ChangeHandledMultiMapPreExistingDataTest {
     }
 
     @Test
-    public void testRemoveValue() throws Exception {
-        map.removeValue( new Value( "ok" ),
-                         "b" );
+    void testRemoveValue() throws Exception {
+        map.removeValue(new Value( "ok" ),
+                "b");
 
         assertThat(changeSet.getRemoved().get(new Value( "ok" )).size()).isEqualTo(1);
         assertThat(changeSet.getRemoved().get(new Value( "ok" )).contains("b")).isTrue();
@@ -93,7 +93,7 @@ public class ChangeHandledMultiMapPreExistingDataTest {
     }
 
     @Test
-    public void testClear() throws Exception {
+    void testClear() throws Exception {
         map.clear();
 
         assertThat(changeSet.getRemoved().get(new Value( "hello" )).size()).isEqualTo(1);
@@ -106,14 +106,14 @@ public class ChangeHandledMultiMapPreExistingDataTest {
     }
 
     @Test
-    public void testMerge() throws Exception {
+    void testMerge() throws Exception {
         final MultiMap<Value, String, List<String>> other = MultiMapFactory.make();
-        other.put( new Value( "hello" ), "d" );
-        other.put( new Value( "ok" ), "e" );
-        other.put( new Value( "newOne" ), "f" );
+        other.put(new Value( "hello" ), "d");
+        other.put(new Value( "ok" ), "e");
+        other.put(new Value( "newOne" ), "f");
 
-        MultiMap.merge( map,
-                        other );
+        MultiMap.merge(map,
+                other);
 
         assertThat(changeSet.getAdded().get(new Value( "hello" )).size()).isEqualTo(1);
         assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("d")).isTrue();

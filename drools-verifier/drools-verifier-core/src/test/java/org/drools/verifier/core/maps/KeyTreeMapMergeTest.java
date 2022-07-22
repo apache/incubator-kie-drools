@@ -26,8 +26,8 @@ import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.index.keys.Value;
 import org.drools.verifier.core.index.matchers.Matcher;
 import org.drools.verifier.core.maps.util.HasKeys;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,7 +49,7 @@ public class KeyTreeMapMergeTest {
     private Matcher nameMatcher = new Matcher(NAME_KEY_DEFINITION);
     private AnalyzerConfigurationMock configuration;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
 
@@ -76,11 +76,11 @@ public class KeyTreeMapMergeTest {
     }
 
     @Test
-    public void testMergeToEmptyMap() throws
+    void testMergeToEmptyMap() throws
             Exception {
         final KeyTreeMap<Person> empty = new KeyTreeMap<>(UUIDKey.UNIQUE_UUID,
-                                                          NAME_KEY_DEFINITION,
-                                                          AGE_KEY_DEFINITION);
+                NAME_KEY_DEFINITION,
+                AGE_KEY_DEFINITION);
         empty.merge(otherKeyTreeMap);
 
         assertThat(empty.get(nameMatcher.getKeyDefinition())
@@ -89,7 +89,7 @@ public class KeyTreeMapMergeTest {
     }
 
     @Test
-    public void testNames() throws
+    void testNames() throws
             Exception {
         treeMap.merge(otherKeyTreeMap);
 
@@ -100,7 +100,7 @@ public class KeyTreeMapMergeTest {
     }
 
     @Test
-    public void testAge() throws
+    void testAge() throws
             Exception {
         treeMap.merge(otherKeyTreeMap);
 
@@ -108,10 +108,10 @@ public class KeyTreeMapMergeTest {
     }
 
     @Test
-    public void testRetract() throws
+    void testRetract() throws
             Exception {
         KeyTreeMap<Person> thirdKeyTreeMap = new KeyTreeMap<>(NAME_KEY_DEFINITION,
-                                                              AGE_KEY_DEFINITION);
+                AGE_KEY_DEFINITION);
         thirdKeyTreeMap.merge(treeMap);
         thirdKeyTreeMap.merge(otherKeyTreeMap);
 

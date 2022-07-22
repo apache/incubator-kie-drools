@@ -24,8 +24,8 @@ import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.maps.util.HasKeys;
 import org.drools.verifier.core.maps.util.HasUUID;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -35,7 +35,7 @@ public class UpdatableInspectorListTest {
     private UpdatableInspectorList<HasUUID, Item> list;
     private AnalyzerConfiguration configuration;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
 
@@ -57,7 +57,7 @@ public class UpdatableInspectorListTest {
     }
 
     @Test
-    public void add() throws
+    void add() throws
             Exception {
         final ArrayList<Item> updates = new ArrayList<>();
 
@@ -69,7 +69,7 @@ public class UpdatableInspectorListTest {
     }
 
     @Test
-    public void reAdd() throws
+    void reAdd() throws
             Exception {
         final ArrayList<Item> updates = new ArrayList<>();
 
@@ -83,7 +83,7 @@ public class UpdatableInspectorListTest {
     }
 
     @Test
-    public void reAddNew() throws
+    void reAddNew() throws
             Exception {
         final ArrayList<Item> updates = new ArrayList<>();
 
@@ -98,7 +98,7 @@ public class UpdatableInspectorListTest {
     }
 
     @Test
-    public void remove() throws
+    void remove() throws
             Exception {
         final ArrayList<Item> updates = new ArrayList<>();
 

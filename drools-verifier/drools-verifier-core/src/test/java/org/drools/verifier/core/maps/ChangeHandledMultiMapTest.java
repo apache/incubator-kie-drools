@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.verifier.core.index.keys.Value;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +32,7 @@ public class ChangeHandledMultiMapTest {
 
     private int timesCalled = 0;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.timesCalled = 0;
 
@@ -47,15 +47,15 @@ public class ChangeHandledMultiMapTest {
     }
 
     @Test
-    public void testSize() throws Exception {
+    void testSize() throws Exception {
         assertThat(changeSet).isNull();
         assertThat(timesCalled).isEqualTo(0);
     }
 
     @Test
-    public void testPut() throws Exception {
-        map.put( new Value( "hello" ),
-                 "test" );
+    void testPut() throws Exception {
+        map.put(new Value( "hello" ),
+                "test");
 
         assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("test")).isTrue();
 
@@ -63,14 +63,14 @@ public class ChangeHandledMultiMapTest {
     }
 
     @Test
-    public void testAddAllValues() throws Exception {
+    void testAddAllValues() throws Exception {
         final ArrayList<String> list = new ArrayList<>();
-        list.add( "a" );
-        list.add( "b" );
-        list.add( "c" );
+        list.add("a");
+        list.add("b");
+        list.add("c");
 
-        map.addAllValues( new Value( "hello" ),
-                          list );
+        map.addAllValues(new Value( "hello" ),
+                list);
 
         assertThat(changeSet.getAdded().get(new Value( "hello" )).size()).isEqualTo(3);
         assertThat(changeSet.getAdded().get(new Value( "hello" )).contains("a")).isTrue();

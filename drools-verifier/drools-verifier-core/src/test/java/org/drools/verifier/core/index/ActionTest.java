@@ -21,8 +21,8 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Action;
 import org.drools.verifier.core.index.model.ActionSuperType;
 import org.drools.verifier.core.index.model.Column;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -31,7 +31,7 @@ public class ActionTest {
 
     private Action action;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
                         Exception {
         action = new Action(mock( Column.class ),
@@ -42,8 +42,8 @@ public class ActionTest {
     }
 
     @Test
-    public void valueSet() throws
-                           Exception {
+    void valueSet() throws
+            Exception {
         assertThat(action.getValues()
                 .size()).isEqualTo(1);
         assertThat(action.getValues()
@@ -52,9 +52,9 @@ public class ActionTest {
     }
 
     @Test
-    public void changeValue() throws
-                              Exception {
-        action.setValue( new Values( false ) );
+    void changeValue() throws
+            Exception {
+        action.setValue(new Values( false ));
 
         assertThat(action.getValues()
                 .size()).isEqualTo(1);

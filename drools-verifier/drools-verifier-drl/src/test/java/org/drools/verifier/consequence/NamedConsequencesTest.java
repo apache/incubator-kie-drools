@@ -23,7 +23,7 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import java.io.InputStream;
@@ -38,41 +38,41 @@ import static org.assertj.core.api.Assertions.fail;
 public class NamedConsequencesTest extends TestBaseOld {
 
     @Test
-    public void testMissingConsequence() throws Exception {
+    void testMissingConsequence() throws Exception {
 
-        InputStream in = getClass().getResourceAsStream( "NamedConsequences.drl" );
+        InputStream in = getClass().getResourceAsStream("NamedConsequences.drl");
 
         KieSession session = getStatelessKieSession(in);
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
 
-        Collection< ? extends Object> testData = getTestData( this.getClass().getResourceAsStream( "ConsequenceTest.drl" ),
-                                                              result.getVerifierData() );
+        Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("ConsequenceTest.drl"),
+                result.getVerifierData());
 
-        session.setGlobal( "result",
-                           result );
+        session.setGlobal("result",
+                result);
 
         for (Object o : testData) {
             session.insert(o);
         }
         session.fireAllRules(new RuleNameMatchesAgendaFilter("No action - possibly commented out"));
 
-        Iterator<VerifierMessageBase> iter = result.getBySeverity( Severity.NOTE ).iterator();
+        Iterator<VerifierMessageBase> iter = result.getBySeverity(Severity.NOTE).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
-        while ( iter.hasNext() ) {
+        while (iter.hasNext()) {
             Object o = (Object) iter.next();
-            if ( o instanceof VerifierMessage ) {
+            if (o instanceof VerifierMessage) {
                 VerifierMessage message = (VerifierMessage) o;
-                rulesThatHadErrors.addAll( message.getImpactedRules().values() );
+                rulesThatHadErrors.addAll(message.getImpactedRules().values());
             }
         }
 
         assertThat(rulesThatHadErrors.contains("This one is has an unused named consequence")).isFalse();
 
-        if ( !rulesThatHadErrors.isEmpty() ) {
-            for ( String string : rulesThatHadErrors ) {
-                fail( "Rule " + string + " caused an error." );
+        if (!rulesThatHadErrors.isEmpty()) {
+            for (String string : rulesThatHadErrors) {
+                fail("Rule " + string + " caused an error.");
             }
         }
     }

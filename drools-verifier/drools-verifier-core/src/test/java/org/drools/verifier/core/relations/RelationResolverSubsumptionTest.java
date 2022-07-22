@@ -22,8 +22,8 @@ import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.maps.InspectorList;
 import org.drools.verifier.core.maps.util.HasKeys;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
@@ -42,7 +42,7 @@ public class RelationResolverSubsumptionTest {
     private Person firstItemInB;
     private Person blockingItem;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         configuration = new AnalyzerConfigurationMock();
@@ -62,20 +62,20 @@ public class RelationResolverSubsumptionTest {
     }
 
     @Test
-    public void empty() throws
+    void empty() throws
             Exception {
         relationResolver = new RelationResolver(new InspectorList(configuration));
         assertThat(relationResolver.subsumes(new InspectorList(configuration))).isTrue();
     }
 
     @Test
-    public void emptyListWithItemsSubsumesEmptyLists() throws
+    void emptyListWithItemsSubsumesEmptyLists() throws
             Exception {
         assertThat(relationResolver.subsumes(new InspectorList(configuration))).isTrue();
     }
 
     @Test
-    public void recheck() throws
+    void recheck() throws
             Exception {
 
         assertThat(relationResolver.subsumes(b)).isFalse();
@@ -87,11 +87,11 @@ public class RelationResolverSubsumptionTest {
         assertThat(relationResolver.subsumes(b)).isFalse();
 
         verify(firstItemInB,
-               never()).subsumes(any());
+                never()).subsumes(any());
     }
 
     @Test
-    public void recheckWithUpdate() throws
+    void recheckWithUpdate() throws
             Exception {
 
         assertThat(relationResolver.subsumes(b)).isFalse();
@@ -107,7 +107,7 @@ public class RelationResolverSubsumptionTest {
     }
 
     @Test
-    public void recheckConflictingItemRemoved() throws
+    void recheckConflictingItemRemoved() throws
             Exception {
 
         assertThat(relationResolver.subsumes(b)).isFalse();
@@ -123,13 +123,13 @@ public class RelationResolverSubsumptionTest {
     }
 
     @Test
-    public void recheckOtherListBecomesEmpty() throws
+    void recheckOtherListBecomesEmpty() throws
             Exception {
 
         assertThat(relationResolver.subsumes(b)).isFalse();
 
         reset(firstItemInB,
-              blockingItem);
+                blockingItem);
 
         // UPDATE
         b.clear();
@@ -137,9 +137,9 @@ public class RelationResolverSubsumptionTest {
         assertThat(relationResolver.subsumes(b)).isTrue();
 
         verify(firstItemInB,
-               never()).subsumes(any());
+                never()).subsumes(any());
         verify(blockingItem,
-               never()).subsumes(any());
+                never()).subsumes(any());
     }
 
     public class Person
