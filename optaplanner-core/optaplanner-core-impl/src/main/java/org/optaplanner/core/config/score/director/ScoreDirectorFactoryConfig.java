@@ -403,12 +403,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return (constraintStreamImplType == null || constraintStreamImplType == ConstraintStreamImplType.DROOLS);
     }
 
+    // TODO: Replace all usages of this message with {@link getDroolsAlphaNetworkCompilationEnabled()} when
+    //       https://github.com/quarkusio/quarkus/issues/26889 is fixed.
     @Deprecated(forRemoval = true)
     public boolean isDroolsAlphaNetworkCompilationEnabled() {
         if (!isUsingDrools()) {
             return false;
         }
-        boolean ancEnabledValue = Objects.requireNonNullElse(getDroolsAlphaNetworkCompilationEnabled(), true);
+        boolean ancEnabledValue = Objects.requireNonNullElse(droolsAlphaNetworkCompilationEnabled, true);
         if (ancEnabledValue) { // ANC does not work in native images.
             return !ConfigUtils.isNativeImage();
         } else {

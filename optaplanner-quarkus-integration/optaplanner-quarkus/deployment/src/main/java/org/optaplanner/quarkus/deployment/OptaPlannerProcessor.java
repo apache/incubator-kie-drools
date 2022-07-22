@@ -241,7 +241,7 @@ class OptaPlannerProcessor {
             // DroolsAlphaNetworkCompilationEnabled is a three-state boolean (null, true, false); if it not
             // null, ScoreDirectorFactoryFactory will throw an error if Drools isn't use (i.e. BAVET or Easy/Incremental)
             if (solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() != null && solverConfig
-                    .getScoreDirectorFactoryConfig().getConstraintStreamImplType() == ConstraintStreamImplType.DROOLS) {
+                    .getScoreDirectorFactoryConfig().getConstraintStreamImplType() != ConstraintStreamImplType.BAVET) {
                 disableANC(solverConfig);
             } else if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null
                     || solverConfig.getScoreDirectorFactoryConfig().getScoreDrlFileList() == null) {
@@ -299,7 +299,7 @@ class OptaPlannerProcessor {
             final ConstraintStreamImplType constraintStreamImplType =
                     solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType();
             Boolean droolsAlphaNetworkCompilationEnabled =
-                    solverConfig.getScoreDirectorFactoryConfig().getDroolsAlphaNetworkCompilationEnabled();
+                    solverConfig.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled();
             syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(DotNames.CONSTRAINT_VERIFIER)
                     .scope(Singleton.class)
                     .creator(methodCreator -> {

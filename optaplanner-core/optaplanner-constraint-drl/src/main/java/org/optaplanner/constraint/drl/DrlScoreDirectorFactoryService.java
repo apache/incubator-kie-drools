@@ -97,7 +97,7 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
         }
 
         boolean isDroolsAlphaNetworkEnabled =
-                Objects.requireNonNullElse(config.getDroolsAlphaNetworkCompilationEnabled(), true);
+                Objects.requireNonNullElse(config.isDroolsAlphaNetworkCompilationEnabled(), true);
         if (isDroolsAlphaNetworkEnabled) {
             KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
         }
