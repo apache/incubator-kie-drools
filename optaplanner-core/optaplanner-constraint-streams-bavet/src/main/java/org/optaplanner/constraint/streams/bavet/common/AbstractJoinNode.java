@@ -51,10 +51,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         tupleStore[inputStoreIndexLeft] = indexProperties;
 
         Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = new HashMap<>();
-        indexLeftTuple(leftTuple, indexProperties, outTupleMapLeft);
+        indexAndProgateLeft(leftTuple, indexProperties, outTupleMapLeft);
     }
 
-    private void indexLeftTuple(LeftTuple_ leftTuple, IndexProperties newIndexProperties,
+    private void indexAndProgateLeft(LeftTuple_ leftTuple, IndexProperties newIndexProperties,
             Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft) {
         indexerLeft.put(newIndexProperties, leftTuple, outTupleMapLeft);
         indexerRight.visit(newIndexProperties, (rightTuple, emptyMap) -> {
@@ -91,7 +91,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             outTupleMapLeft.clear();
 
             tupleStore[inputStoreIndexLeft] = newIndexProperties;
-            indexLeftTuple(leftTuple, newIndexProperties, outTupleMapLeft);
+            indexAndProgateLeft(leftTuple, newIndexProperties, outTupleMapLeft);
         }
     }
 
@@ -119,10 +119,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         }
         IndexProperties indexProperties = mappingRight.apply(rightTuple.factA);
         rightTuple.store[inputStoreIndexRight] = indexProperties;
-        indexRightTuple(rightTuple, indexProperties);
+        indexAndProgateRight(rightTuple, indexProperties);
     }
 
-    private void indexRightTuple(UniTupleImpl<Right_> rightTuple, IndexProperties indexProperties) {
+    private void indexAndProgateRight(UniTupleImpl<Right_> rightTuple, IndexProperties indexProperties) {
         indexerRight.put(indexProperties, rightTuple, Collections.emptyMap());
         indexerLeft.visit(indexProperties, (leftTuple, outTupleMapLeft) -> {
             MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
@@ -157,7 +157,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         } else {
             deindexRightTuple(oldIndexProperties, rightTuple);
             rightTuple.store[inputStoreIndexRight] = newIndexProperties;
-            indexRightTuple(rightTuple, newIndexProperties);
+            indexAndProgateRight(rightTuple, newIndexProperties);
         }
     }
 
