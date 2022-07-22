@@ -39,6 +39,7 @@ import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
+import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.kie.kogito.Model;
 import org.kie.kogito.ProcessInput;
 import org.kie.kogito.UserTask;
@@ -172,7 +173,8 @@ public class ProcessesAssetsProcessor {
                 CompositeCorrelation.class.getCanonicalName(),
                 SimpleCorrelation.class.getCanonicalName(),
                 Correlation.class.getCanonicalName(),
-                CorrelationInstance.class.getCanonicalName());
+                CorrelationInstance.class.getCanonicalName(),
+                ExceptionScope.class.getCanonicalName());
     }
 
     @BuildStep
