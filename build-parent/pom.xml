@@ -595,6 +595,7 @@
         <artifactId>junit-jupiter-params</artifactId>
         <version>${version.org.junit}</version>
       </dependency>
+  
       <dependency>
         <groupId>org.junit.vintage</groupId>
         <artifactId>junit-vintage-engine</artifactId>
@@ -1005,6 +1006,12 @@
         <artifactId>mockito-inline</artifactId>
         <version>${version.org.mockito}</version>
       </dependency>
+      
+      <dependency>
+	      <groupId>org.mockito</groupId>
+	      <artifactId>mockito-junit-jupiter</artifactId>
+          <version>${version.org.mockito}</version>
+	    </dependency>    
 
       <dependency>
         <groupId>org.mvel</groupId>
