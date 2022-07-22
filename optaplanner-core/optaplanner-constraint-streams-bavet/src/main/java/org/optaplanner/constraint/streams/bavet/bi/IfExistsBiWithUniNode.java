@@ -39,7 +39,7 @@ final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTuple<
     }
 
     @Override
-    protected boolean isFiltered(BiTuple<A, B> leftTuple, UniTuple<C> rightTuple) {
+    protected boolean testFiltering(BiTuple<A, B> leftTuple, UniTuple<C> rightTuple) {
         return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), rightTuple.getFactA());
     }
 

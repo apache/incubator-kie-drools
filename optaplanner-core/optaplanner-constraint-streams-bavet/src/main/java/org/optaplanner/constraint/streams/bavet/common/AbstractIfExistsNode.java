@@ -62,7 +62,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         indexerLeft.put(indexProperties, leftTuple, counter);
 
         indexerRight.visit(indexProperties, (rightTuple, counterSetRight) -> {
-            if (!isFiltering() || isFiltered(leftTuple, rightTuple)) {
+            if (!isFiltering() || testFiltering(leftTuple, rightTuple)) {
                 counter.countRight++;
                 counterSetRight.add(counter);
             }
@@ -88,23 +88,28 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             // No need for re-indexing because the index properties didn't change
             Counter<LeftTuple_> counter = indexerLeft.get(oldIndexProperties, leftTuple);
             // The indexers contain counters in the DEAD state, to track the rightCount.
-            switch (counter.state) {
-                case CREATING:
-                case UPDATING:
-                case DYING:
-                case ABORTING:
-                case DEAD:
-                    // Counter state does not change because the index properties didn't change
-                    break;
-                case OK:
-                    // Still needed to propagate the update for downstream filters, matchWeighters, ...
-                    counter.state = BavetTupleState.UPDATING;
-                    dirtyCounterQueue.add(counter);
-                    break;
-                default:
-                    throw new IllegalStateException("Impossible state: The counter (" + counter.state + ") in node (" +
-                            this + ") is in an unexpected state (" + counter.state + ").");
+            if (!isFiltering()) {
+                switch (counter.state) {
+                    case CREATING:
+                    case UPDATING:
+                    case DYING:
+                    case ABORTING:
+                    case DEAD:
+                        // Counter state does not change because the index properties didn't change
+                        break;
+                    case OK:
+                        // Still needed to propagate the update for downstream filters, matchWeighters, ...
+                        counter.state = BavetTupleState.UPDATING;
+                        dirtyCounterQueue.add(counter);
+                        break;
+                    default:
+                        throw new IllegalStateException("Impossible state: The counter (" + counter.state + ") in node (" +
+                                this + ") is in an unexpected state (" + counter.state + ").");
+                }
+            } else {
+                throw new UnsupportedOperationException();
             }
+
         } else {
             Counter<LeftTuple_> counter = indexerLeft.remove(oldIndexProperties, leftTuple);
             indexerRight.visit(oldIndexProperties, (rightTuple, counterSetRight) -> {
@@ -121,7 +126,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             tupleStore[inputStoreIndexLeft] = newIndexProperties;
             indexerLeft.put(newIndexProperties, leftTuple, counter);
             indexerRight.visit(newIndexProperties, (rightTuple, counterSetRight) -> {
-                if (!isFiltering() || isFiltered(leftTuple, rightTuple)) {
+                if (!isFiltering() || testFiltering(leftTuple, rightTuple)) {
                     counter.countRight++;
                     counterSetRight.add(counter);
                 }
@@ -206,13 +211,6 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     }
 
     @Override
-    public final void updateRight(UniTupleImpl<Right_> rightTuple) {
-        // TODO Implement actual update
-        retractRight(rightTuple);
-        insertRight(rightTuple);
-    }
-
-    @Override
     public final void insertRight(UniTupleImpl<Right_> rightTuple) {
         if (rightTuple.store[inputStoreIndexRight] != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
@@ -225,7 +223,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         Set<Counter<LeftTuple_>> counterSetRight = new LinkedHashSet<>();
         indexerRight.put(indexProperties, rightTuple, counterSetRight);
         indexerLeft.visit(indexProperties, (leftTuple, counter) -> {
-            if (!isFiltering() || isFiltered(leftTuple, rightTuple)) {
+            if (!isFiltering() || testFiltering(leftTuple, rightTuple)) {
                 if (counter.countRight == 0) {
                     if (shouldExist) {
                         insertCounter(counter);
@@ -237,6 +235,56 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                 counterSetRight.add(counter);
             }
         });
+    }
+
+    @Override
+    public final void updateRight(UniTupleImpl<Right_> rightTuple) {
+        Object[] tupleStore = rightTuple.store;
+        IndexProperties oldIndexProperties = (IndexProperties) tupleStore[inputStoreIndexRight];
+        if (oldIndexProperties == null) {
+            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            insertRight(rightTuple);
+            return;
+        }
+        IndexProperties newIndexProperties = mappingRight.apply(rightTuple.factA);
+
+        if (oldIndexProperties.equals(newIndexProperties)) {
+            // No need for re-indexing because the index properties didn't change
+            if (!isFiltering()) {
+                // Do nothing
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        } else {
+            Set<Counter<LeftTuple_>> counterSetRight = indexerRight.remove(oldIndexProperties, rightTuple);
+            for (Counter<LeftTuple_> counter : counterSetRight) {
+                counter.countRight--;
+                if (counter.countRight == 0) {
+                    if (shouldExist) {
+                        retractCounter(counter);
+                    } else {
+                        insertCounter(counter);
+                    }
+                }
+            }
+            counterSetRight.clear();
+
+            rightTuple.store[inputStoreIndexRight] = newIndexProperties;
+            indexerRight.put(newIndexProperties, rightTuple, counterSetRight);
+            indexerLeft.visit(newIndexProperties, (leftTuple, counter) -> {
+                if (!isFiltering() || testFiltering(leftTuple, rightTuple)) {
+                    if (counter.countRight == 0) {
+                        if (shouldExist) {
+                            insertCounter(counter);
+                        } else {
+                            retractCounter(counter);
+                        }
+                    }
+                    counter.countRight++;
+                    counterSetRight.add(counter);
+                }
+            });
+        }
     }
 
     @Override
@@ -265,7 +313,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     protected abstract boolean isFiltering();
 
-    protected abstract boolean isFiltered(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
+    protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
     public static final class Counter<Tuple_ extends Tuple> {
         public final Tuple_ leftTuple;

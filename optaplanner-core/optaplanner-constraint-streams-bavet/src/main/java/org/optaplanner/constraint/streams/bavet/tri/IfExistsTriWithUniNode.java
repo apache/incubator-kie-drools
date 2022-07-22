@@ -40,7 +40,7 @@ final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriT
     }
 
     @Override
-    protected boolean isFiltered(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
+    protected boolean testFiltering(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
         return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA());
     }
 
