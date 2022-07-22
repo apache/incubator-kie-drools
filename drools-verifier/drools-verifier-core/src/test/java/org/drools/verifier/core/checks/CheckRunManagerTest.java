@@ -35,18 +35,18 @@ import org.drools.verifier.core.checks.base.JavaCheckRunner;
 import org.drools.verifier.core.checks.base.SingleCheck;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.model.Rule;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CheckRunManagerTest {
 
     @Spy
@@ -63,7 +63,7 @@ public class CheckRunManagerTest {
 
     private AnalyzerConfiguration configuration;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         configuration = new AnalyzerConfigurationMock();
@@ -79,8 +79,6 @@ public class CheckRunManagerTest {
                 });
 
         ruleInspectors = new ArrayList<>();
-        when(cache.all()).thenReturn(ruleInspectors);
-
         ruleInspector1 = mockRowInspector(1);
         ruleInspectors.add(ruleInspector1);
         ruleInspector2 = mockRowInspector(2);
@@ -94,7 +92,7 @@ public class CheckRunManagerTest {
     }
 
     @Test
-    public void testChecksGetGenerated() throws
+    void testChecksGetGenerated() throws
             Exception {
         assertThat(ruleInspector1.getChecks()
                 .size()).isEqualTo(5);
@@ -105,7 +103,7 @@ public class CheckRunManagerTest {
     }
 
     @Test
-    public void testRemove() throws
+    void testRemove() throws
             Exception {
 
         this.checkRunManager.remove(ruleInspector2);
@@ -119,7 +117,7 @@ public class CheckRunManagerTest {
     }
 
     @Test
-    public void testRunTests() throws
+    void testRunTests() throws
             Exception {
 
         for (RuleInspector ruleInspector : cache.all()) {
@@ -127,7 +125,7 @@ public class CheckRunManagerTest {
         }
 
         this.checkRunManager.run(null,
-                                 null);
+                null);
 
         for (RuleInspector ruleInspector : cache.all()) {
             assertHasIssues(ruleInspector);
@@ -135,11 +133,11 @@ public class CheckRunManagerTest {
     }
 
     @Test
-    public void testOnlyTestChanges() throws
+    void testOnlyTestChanges() throws
             Exception {
         // First run
         this.checkRunManager.run(null,
-                                 null);
+                null);
 
         RuleInspector newRuleInspector = mockRowInspector(3);
         ruleInspectors.add(newRuleInspector);
@@ -150,7 +148,7 @@ public class CheckRunManagerTest {
 
         // Second run
         this.checkRunManager.run(null,
-                                 null);
+                null);
 
         assertHasIssues(newRuleInspector);
 

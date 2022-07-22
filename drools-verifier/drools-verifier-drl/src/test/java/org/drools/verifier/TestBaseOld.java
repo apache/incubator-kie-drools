@@ -31,7 +31,7 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.visitor.PackageDescrVisitor;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 abstract public class TestBaseOld {
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         System.setProperty( "drools.dateformat",

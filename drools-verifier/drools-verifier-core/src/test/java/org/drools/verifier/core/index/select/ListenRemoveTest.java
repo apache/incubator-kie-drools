@@ -23,8 +23,8 @@ import org.drools.verifier.core.index.matchers.ExactMatcher;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.MultiMap;
 import org.drools.verifier.core.maps.MultiMapFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,7 +40,7 @@ public class ListenRemoveTest {
     private Person             teenager;
     private Person             grandpa;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         map = MultiMapFactory.make( true );
 
@@ -87,8 +87,8 @@ public class ListenRemoveTest {
     }
 
     @Test
-    public void testBeginning() throws Exception {
-        map.remove( new Value( 0 ) );
+    void testBeginning() throws Exception {
+        map.remove(new Value( 0 ));
 
         assertThat(first).isEqualTo(teenager);
         assertThat(last).isNull();
@@ -96,8 +96,8 @@ public class ListenRemoveTest {
     }
 
     @Test
-    public void testEnd() throws Exception {
-        map.remove( new Value( 100 ) );
+    void testEnd() throws Exception {
+        map.remove(new Value( 100 ));
 
         assertThat(first).isNull();
         assertThat(last).isEqualTo(teenager);
@@ -105,8 +105,8 @@ public class ListenRemoveTest {
     }
 
     @Test
-    public void testMiddle() throws Exception {
-        map.remove( new Value( 15 ) );
+    void testMiddle() throws Exception {
+        map.remove(new Value( 15 ));
 
         assertThat(first).isNull();
         assertThat(last).isNull();

@@ -19,9 +19,7 @@ package org.drools.verifier.solver;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.verifier.VerifierComponentMockFactory;
@@ -43,19 +41,19 @@ public class PatternSolverTest {
      * descr && descr2
      */
     @Test
-    public void testAddBasicAnd() {
+    void testAddBasicAnd() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
-                                                                                      "" );
-        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction(pattern,
+                "");
 
         PatternSolver solver = new PatternSolver( pattern );
 
-        solver.addOperator( OperatorDescrType.AND );
-        solver.add( literalRestriction );
-        solver.add( literalRestriction2 );
+        solver.addOperator(OperatorDescrType.AND);
+        solver.add(literalRestriction);
+        solver.add(literalRestriction2);
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();
@@ -76,19 +74,19 @@ public class PatternSolverTest {
      * descr2
      */
     @Test
-    public void testAddBasicOr() {
+    void testAddBasicOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
-                                                                                      "" );
-        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction(pattern,
+                "");
 
         PatternSolver solver = new PatternSolver( pattern );
 
-        solver.addOperator( OperatorDescrType.OR );
-        solver.add( literalRestriction );
-        solver.add( literalRestriction2 );
+        solver.addOperator(OperatorDescrType.OR);
+        solver.add(literalRestriction);
+        solver.add(literalRestriction2);
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();
@@ -112,23 +110,23 @@ public class PatternSolverTest {
      * descr2 && descr3
      */
     @Test
-    public void testAddOrAnd() {
+    void testAddOrAnd() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
-                                                                                      "" );
-        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction(pattern,
+                "");
 
         PatternSolver solver = new PatternSolver( pattern );
 
-        solver.addOperator( OperatorDescrType.OR );
-        solver.add( literalRestriction );
-        solver.addOperator( OperatorDescrType.AND );
-        solver.add( literalRestriction2 );
-        solver.add( literalRestriction3 );
+        solver.addOperator(OperatorDescrType.OR);
+        solver.add(literalRestriction);
+        solver.addOperator(OperatorDescrType.AND);
+        solver.add(literalRestriction2);
+        solver.add(literalRestriction3);
         solver.end();
         solver.end();
 
@@ -158,23 +156,23 @@ public class PatternSolverTest {
      * descr && descr3
      */
     @Test
-    public void testAddAndOr() {
+    void testAddAndOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
-                                                                                      "" );
-        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction(pattern,
+                "");
 
         PatternSolver solver = new PatternSolver( pattern );
 
-        solver.addOperator( OperatorDescrType.AND );
-        solver.add( literalRestriction );
-        solver.addOperator( OperatorDescrType.OR );
-        solver.add( literalRestriction2 );
-        solver.add( literalRestriction3 );
+        solver.addOperator(OperatorDescrType.AND);
+        solver.add(literalRestriction);
+        solver.addOperator(OperatorDescrType.OR);
+        solver.add(literalRestriction2);
+        solver.add(literalRestriction3);
         solver.end();
         solver.end();
 
@@ -209,28 +207,28 @@ public class PatternSolverTest {
      * descr2 && descr4
      */
     @Test
-    public void testAddAndOrOr() {
+    void testAddAndOrOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
-                                                                                      "" );
-        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction(pattern,
+                "");
 
         PatternSolver solver = new PatternSolver( pattern );
 
-        solver.addOperator( OperatorDescrType.AND );
-        solver.addOperator( OperatorDescrType.OR );
-        solver.add( literalRestriction );
-        solver.add( literalRestriction2 );
+        solver.addOperator(OperatorDescrType.AND);
+        solver.addOperator(OperatorDescrType.OR);
+        solver.add(literalRestriction);
+        solver.add(literalRestriction2);
         solver.end();
-        solver.addOperator( OperatorDescrType.OR );
-        solver.add( literalRestriction3 );
-        solver.add( literalRestriction4 );
+        solver.addOperator(OperatorDescrType.OR);
+        solver.add(literalRestriction3);
+        solver.add(literalRestriction4);
         solver.end();
         solver.end();
 
@@ -269,28 +267,28 @@ public class PatternSolverTest {
      * descr3 && descr4
      */
     @Test
-    public void testAddOrAndAnd() {
+    void testAddOrAndAnd() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
-                                                                                      "" );
-        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction(pattern,
+                "");
 
         PatternSolver solver = new PatternSolver( pattern );
 
-        solver.addOperator( OperatorDescrType.OR );
-        solver.addOperator( OperatorDescrType.AND );
-        solver.add( literalRestriction );
-        solver.add( literalRestriction2 );
+        solver.addOperator(OperatorDescrType.OR);
+        solver.addOperator(OperatorDescrType.AND);
+        solver.add(literalRestriction);
+        solver.add(literalRestriction2);
         solver.end();
-        solver.addOperator( OperatorDescrType.AND );
-        solver.add( literalRestriction3 );
-        solver.add( literalRestriction4 );
+        solver.addOperator(OperatorDescrType.AND);
+        solver.add(literalRestriction3);
+        solver.add(literalRestriction4);
         solver.end();
         solver.end();
 
@@ -323,28 +321,28 @@ public class PatternSolverTest {
      * descr4
      */
     @Test
-    public void testAddOrAndOr() {
+    void testAddOrAndOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
-                                                                                      "" );
-        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction(pattern,
+                "");
 
         PatternSolver solver = new PatternSolver( pattern );
 
-        solver.addOperator( OperatorDescrType.OR );
-        solver.addOperator( OperatorDescrType.AND );
-        solver.add( literalRestriction );
-        solver.add( literalRestriction2 );
+        solver.addOperator(OperatorDescrType.OR);
+        solver.addOperator(OperatorDescrType.AND);
+        solver.add(literalRestriction);
+        solver.add(literalRestriction2);
         solver.end();
-        solver.addOperator( OperatorDescrType.OR );
-        solver.add( literalRestriction3 );
-        solver.add( literalRestriction4 );
+        solver.addOperator(OperatorDescrType.OR);
+        solver.add(literalRestriction3);
+        solver.add(literalRestriction4);
         solver.end();
         solver.end();
 
@@ -377,32 +375,32 @@ public class PatternSolverTest {
      * descr && descr2 && descr4 && descr5<br>
      */
     @Test
-    public void testAddOrAndOrDescr() {
+    void testAddOrAndOrDescr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
-        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction( pattern,
-                                                                                      "" );
-        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
-        LiteralRestriction literalRestriction5 = LiteralRestriction.createRestriction( pattern,
-                                                                                       "" );
+        LiteralRestriction literalRestriction = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction2 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction3 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction4 = LiteralRestriction.createRestriction(pattern,
+                "");
+        LiteralRestriction literalRestriction5 = LiteralRestriction.createRestriction(pattern,
+                "");
 
         PatternSolver solver = new PatternSolver( pattern );
 
-        solver.addOperator( OperatorDescrType.AND );
-        solver.addOperator( OperatorDescrType.AND );
-        solver.add( literalRestriction );
-        solver.add( literalRestriction2 );
+        solver.addOperator(OperatorDescrType.AND);
+        solver.addOperator(OperatorDescrType.AND);
+        solver.add(literalRestriction);
+        solver.add(literalRestriction2);
         solver.end();
-        solver.addOperator( OperatorDescrType.OR );
-        solver.add( literalRestriction3 );
-        solver.add( literalRestriction4 );
+        solver.addOperator(OperatorDescrType.OR);
+        solver.add(literalRestriction3);
+        solver.add(literalRestriction4);
         solver.end();
-        solver.add( literalRestriction5 );
+        solver.add(literalRestriction5);
         solver.end();
 
         List<Set<VerifierComponent>> list = solver.getPossibilityLists();

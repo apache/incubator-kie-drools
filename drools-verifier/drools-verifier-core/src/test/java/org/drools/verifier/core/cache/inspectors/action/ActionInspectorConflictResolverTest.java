@@ -26,312 +26,312 @@ import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldAction;
 import org.drools.verifier.core.index.model.ObjectField;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ActionInspectorConflictResolverTest {
 
     private AnalyzerConfiguration configuration;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         configuration = new AnalyzerConfigurationMock();
     }
 
     @Test
-    public void testRedundancy001() throws
+    void testRedundancy001() throws
             Exception {
 
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Toni");
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Toni");
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Toni");
 
         assertThat(a.isRedundant(b)).isTrue();
         assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
-    public void testRedundancy002() throws
+    void testRedundancy002() throws
             Exception {
 
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Toni");
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Rambo");
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Rambo");
 
         assertThat(a.isRedundant(b)).isFalse();
         assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
-    public void testRedundancy003() throws
+    void testRedundancy003() throws
             Exception {
 
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "org.test1.Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Toni");
+                        "org.test1.Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "org.test2.Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Toni");
+                        "org.test2.Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Toni");
 
         assertThat(a.isRedundant(b)).isFalse();
         assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
-    public void testRedundancy004() throws
+    void testRedundancy004() throws
             Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Boolean",
-                                                               "isOldEnough",
-                                                               new AnalyzerConfigurationMock()),
-                                                     true);
+                        "Person",
+                        "Boolean",
+                        "isOldEnough",
+                        new AnalyzerConfigurationMock()),
+                true);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Boolean",
-                                                               "isOldEnough",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "true");
+                        "Person",
+                        "Boolean",
+                        "isOldEnough",
+                        new AnalyzerConfigurationMock()),
+                "true");
 
         assertThat(a.isRedundant(b)).isTrue();
         assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
-    public void testRedundancy005() throws
+    void testRedundancy005() throws
             Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Boolean",
-                                                               "isOldEnough",
-                                                               new AnalyzerConfigurationMock()),
-                                                     true);
+                        "Person",
+                        "Boolean",
+                        "isOldEnough",
+                        new AnalyzerConfigurationMock()),
+                true);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Boolean",
-                                                               "isOldEnough",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "false");
+                        "Person",
+                        "Boolean",
+                        "isOldEnough",
+                        new AnalyzerConfigurationMock()),
+                "false");
 
         assertThat(a.isRedundant(b)).isFalse();
         assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
-    public void testRedundancy006() throws
+    void testRedundancy006() throws
             Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Integer",
-                                                               "age",
-                                                               new AnalyzerConfigurationMock()),
-                                                     20);
+                        "Person",
+                        "Integer",
+                        "age",
+                        new AnalyzerConfigurationMock()),
+                20);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Integer",
-                                                               "age",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "20");
+                        "Person",
+                        "Integer",
+                        "age",
+                        new AnalyzerConfigurationMock()),
+                "20");
 
         assertThat(a.isRedundant(b)).isTrue();
         assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
-    public void testRedundancy007() throws
+    void testRedundancy007() throws
             Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Integer",
-                                                               "age",
-                                                               new AnalyzerConfigurationMock()),
-                                                     20);
+                        "Person",
+                        "Integer",
+                        "age",
+                        new AnalyzerConfigurationMock()),
+                20);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Integer",
-                                                               "age",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "10");
+                        "Person",
+                        "Integer",
+                        "age",
+                        new AnalyzerConfigurationMock()),
+                "10");
 
         assertThat(a.isRedundant(b)).isFalse();
         assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
-    public void testRedundancy008() throws
+    void testRedundancy008() throws
             Exception {
         Date date = new Date();
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Integer",
-                                                               "birthDay",
-                                                               new AnalyzerConfigurationMock()),
-                                                     date);
+                        "Person",
+                        "Integer",
+                        "birthDay",
+                        new AnalyzerConfigurationMock()),
+                date);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Integer",
-                                                               "birthDay",
-                                                               new AnalyzerConfigurationMock()),
-                                                     format(date));
+                        "Person",
+                        "Integer",
+                        "birthDay",
+                        new AnalyzerConfigurationMock()),
+                format(date));
 
         assertThat(a.isRedundant(b)).isTrue();
         assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
-    public void testRedundancy009() throws
+    void testRedundancy009() throws
             Exception {
 
         Date value = new Date();
 
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Integer",
-                                                               "birthDay",
-                                                               new AnalyzerConfigurationMock()),
-                                                     value);
+                        "Person",
+                        "Integer",
+                        "birthDay",
+                        new AnalyzerConfigurationMock()),
+                value);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Integer",
-                                                               "birthDay",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "29-Dec-1981");
+                        "Person",
+                        "Integer",
+                        "birthDay",
+                        new AnalyzerConfigurationMock()),
+                "29-Dec-1981");
 
         assertThat(a.isRedundant(b)).isFalse();
         assertThat(b.isRedundant(a)).isFalse();
     }
 
     @Test
-    public void testConflict001() throws
+    void testConflict001() throws
             Exception {
 
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Toni");
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Rambo");
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Rambo");
 
         assertThat(a.conflicts(b)).isTrue();
         assertThat(b.conflicts(a)).isTrue();
     }
 
     @Test
-    public void testConflict002() throws
+    void testConflict002() throws
             Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Boolean",
-                                                               "isOldEnough",
-                                                               new AnalyzerConfigurationMock()),
-                                                     true);
+                        "Person",
+                        "Boolean",
+                        "isOldEnough",
+                        new AnalyzerConfigurationMock()),
+                true);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "Boolean",
-                                                               "isOldEnough",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "false");
+                        "Person",
+                        "Boolean",
+                        "isOldEnough",
+                        new AnalyzerConfigurationMock()),
+                "false");
 
         assertThat(a.conflicts(b)).isTrue();
         assertThat(b.conflicts(a)).isTrue();
     }
 
     @Test
-    public void testNoConflict001() throws
+    void testNoConflict001() throws
             Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Toni");
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Address",
-                                                               "String",
-                                                               "street",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Rambo");
+                        "Address",
+                        "String",
+                        "street",
+                        new AnalyzerConfigurationMock()),
+                "Rambo");
 
         assertThat(a.conflicts(b)).isFalse();
         assertThat(b.conflicts(a)).isFalse();
     }
 
     @Test
-    public void testNoConflict002() throws
+    void testNoConflict002() throws
             Exception {
         ActionInspector a = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Toni");
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
-                                                               "Person",
-                                                               "String",
-                                                               "name",
-                                                               new AnalyzerConfigurationMock()),
-                                                     "Toni");
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                "Toni");
 
         assertThat(a.conflicts(b)).isFalse();
         assertThat(b.conflicts(a)).isFalse();
     }
 
     @Test
-    public void testNoConflict003() throws
+    void testNoConflict003() throws
             Exception {
         ActionInspector a = createSetActionInspector(new FieldAction(new Field(mock(ObjectField.class),
-                                                                               "Person",
-                                                                               "String",
-                                                                               "name",
-                                                                               new AnalyzerConfigurationMock()),
-                                                                     mock(Column.class),
-                                                                     new Values(true),
-                                                                     new AnalyzerConfigurationMock()));
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                mock(Column.class),
+                new Values(true),
+                new AnalyzerConfigurationMock()));
         ActionInspector b = createSetActionInspector(new FieldAction(new Field(mock(ObjectField.class),
-                                                                               "Person",
-                                                                               "String",
-                                                                               "name",
-                                                                               new AnalyzerConfigurationMock()),
-                                                                     mock(Column.class),
-                                                                     new Values(true),
-                                                                     new AnalyzerConfigurationMock()));
+                        "Person",
+                        "String",
+                        "name",
+                        new AnalyzerConfigurationMock()),
+                mock(Column.class),
+                new Values(true),
+                new AnalyzerConfigurationMock()));
 
         assertThat(a.conflicts(b)).isFalse();
         assertThat(b.conflicts(a)).isFalse();

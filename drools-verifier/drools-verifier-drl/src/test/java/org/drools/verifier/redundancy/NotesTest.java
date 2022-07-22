@@ -26,7 +26,7 @@ import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
@@ -38,23 +38,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class NotesTest extends TestBaseOld {
 
     @Test
-    public void testRedundantRestrictionsInPatternPossibilities() throws Exception {
+    void testRedundantRestrictionsInPatternPossibilities() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Notes.drl"));
 
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
         Collection<Object> objects = new ArrayList<Object>();
         LiteralRestriction left = LiteralRestriction.createRestriction(pattern,
-                                                                       "");
+                "");
 
         LiteralRestriction right = LiteralRestriction.createRestriction(pattern,
-                                                                        "");
+                "");
 
         Redundancy redundancy = new Redundancy(left,
-                                               right);
+                right);
 
         SubPattern possibility = new SubPattern(pattern,
-                                                0);
+                0);
         possibility.add(left);
         possibility.add(right);
 
@@ -65,7 +65,7 @@ public class NotesTest extends TestBaseOld {
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : objects) {
             session.insert(o);
@@ -85,7 +85,7 @@ public class NotesTest extends TestBaseOld {
     }
 
     @Test
-    public void testRedundantPatternPossibilitiesInRulePossibilities() throws Exception {
+    void testRedundantPatternPossibilitiesInRulePossibilities() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Notes.drl"));
 
 
@@ -94,16 +94,16 @@ public class NotesTest extends TestBaseOld {
 
         Collection<Object> objects = new ArrayList<Object>();
         SubPattern left = new SubPattern(pattern,
-                                         0);
+                0);
 
         SubPattern right = new SubPattern(pattern,
-                                          1);
+                1);
 
         Redundancy redundancy = new Redundancy(left,
-                                               right);
+                right);
 
         SubRule possibility = new SubRule(rule,
-                                          0);
+                0);
         possibility.add(left);
         possibility.add(right);
 
@@ -114,7 +114,7 @@ public class NotesTest extends TestBaseOld {
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : objects) {
             session.insert(o);

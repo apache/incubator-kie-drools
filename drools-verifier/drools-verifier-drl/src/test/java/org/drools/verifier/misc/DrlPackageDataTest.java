@@ -22,14 +22,14 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class DrlPackageDataTest {
     @Test
-    public void testHandleDrl() throws ParseException {
+    void testHandleDrl() throws ParseException {
 
         String drl = "";
         drl += "package org.drools.test\n";
@@ -45,7 +45,7 @@ public class DrlPackageDataTest {
         drl += "list.add( drools.getRule().getName() );\n";
         drl += "end\n";
 
-        DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl( drl );
+        DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl(drl);
 
         assertThat(s.getName()).isEqualTo("org.drools.test");
         assertThat(s.getRules().size()).isEqualTo(2);
@@ -54,18 +54,18 @@ public class DrlPackageDataTest {
     }
 
     @Test
-    public void testHandleDrl2() throws IOException,
-                                ParseException {
-        BufferedReader in = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "DrlPackageTestData.drl" ) ) );
+    void testHandleDrl2() throws IOException,
+            ParseException {
+        BufferedReader in = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream("DrlPackageTestData.drl") ) );
         String rule = "";
         String str;
-        while ( (str = in.readLine()) != null ) {
+        while ((str = in.readLine()) != null) {
             rule += str;
             rule += "\n";
         }
         in.close();
 
-        DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl( rule );
+        DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl(rule);
 
         assertThat(s).isNotNull();
 
@@ -76,7 +76,7 @@ public class DrlPackageDataTest {
     }
 
     @Test
-    public void testHandleDrlNoPackageData() {
+    void testHandleDrlNoPackageData() {
 
         String drl = "";
         drl += "rule rule1\n";
@@ -87,19 +87,19 @@ public class DrlPackageDataTest {
 
         boolean exception = false;
         try {
-            DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl( drl );
-        } catch ( ParseException e ) {
+            DrlPackageParser s = DrlPackageParser.findPackageDataFromDrl(drl);
+        } catch (ParseException e) {
             // Test works
             exception = true;
         }
 
-        if ( !exception ) {
-            fail( "Should have thrown a ParseException." );
+        if (!exception) {
+            fail("Should have thrown a ParseException.");
         }
     }
 
     @Test
-    public void testHandleDrlWithComments() throws ParseException {
+    void testHandleDrlWithComments() throws ParseException {
 
         String drl = "";
         drl += "# important information\n";
@@ -118,7 +118,7 @@ public class DrlPackageDataTest {
         drl += "		list.add( drools.getRule().getName() );\n";
         drl += "end\n";
 
-        DrlPackageParser data = DrlPackageParser.findPackageDataFromDrl( drl );
+        DrlPackageParser data = DrlPackageParser.findPackageDataFromDrl(drl);
 
         assertThat(data.getName()).isEqualTo("org.drools.test");
         assertThat(data.getRules().size()).isEqualTo(2);
@@ -126,21 +126,21 @@ public class DrlPackageDataTest {
         assertThat(data.getGlobals().get(0)).isEqualTo("java.util.List list");
         assertThat(data.getDescription()).isEqualTo("important information\nabout this package\nit contains some rules\n");
 
-        DrlRuleParser rd1 = data.getRules().get( 0 );
+        DrlRuleParser rd1 = data.getRules().get(0);
         assertThat(rd1.getName()).isEqualTo("rule1");
         assertThat(rd1.getDescription()).isEqualTo("");
 
-        DrlRuleParser rd2 = data.getRules().get( 1 );
+        DrlRuleParser rd2 = data.getRules().get(1);
         assertThat(rd2.getName()).isEqualTo("rule2");
         assertThat(rd2.getDescription()).isEqualTo("");
     }
 
     @Test
-    public void testfindGlobals() {
+    void testfindGlobals() {
 
         String header = "global LoanApplication gg";
 
-        List<String> globals = DrlPackageParser.findGlobals( header );
+        List<String> globals = DrlPackageParser.findGlobals(header);
 
         assertThat(globals.size()).isEqualTo(1);
         assertThat(globals.get(0)).isEqualTo("LoanApplication gg");

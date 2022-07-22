@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.jar.JarInputStream;
 
 import org.drools.verifier.Verifier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 public class VerifierMapBackedClassLoaderTest {
 
     @Test
-    public void testCheckResources() throws Exception {
+    void testCheckResources() throws Exception {
         ArrayList<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
         jarInputStreams.add(new JarInputStream(Verifier.class.getResourceAsStream("model.jar")));
 
@@ -41,8 +41,8 @@ public class VerifierMapBackedClassLoaderTest {
         assertThat(verifierMapBackedClassLoader.getStore().containsKey("org.test.Pet")).isNotNull();
     }
 
-    @Test()
-    public void testToMakeSureExceptionsAreNotLost() throws Exception {
+    @Test
+    void testToMakeSureExceptionsAreNotLost() throws Exception {
         ArrayList<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
 
         JarInputStream jarInputStream = mock(JarInputStream.class);

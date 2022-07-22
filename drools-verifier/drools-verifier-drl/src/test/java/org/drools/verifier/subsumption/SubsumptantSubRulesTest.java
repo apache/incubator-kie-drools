@@ -23,7 +23,7 @@ import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Subsumption;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -35,15 +35,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SubsumptantSubRulesTest {
 
     @Test
-    public void testSubruleSubsumption1() throws Exception {
+    void testSubruleSubsumption1() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubRules1.drl",
-                                                                           getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );

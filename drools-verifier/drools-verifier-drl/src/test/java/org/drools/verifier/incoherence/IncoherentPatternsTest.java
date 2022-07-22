@@ -24,7 +24,7 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import java.util.Collection;
@@ -38,15 +38,15 @@ import static org.assertj.core.api.Assertions.fail;
 public class IncoherentPatternsTest extends TestBaseOld {
 
     @Test
-    public void testIncoherentPatternsInSubRule() throws Exception {
+    void testIncoherentPatternsInSubRule() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -76,15 +76,15 @@ public class IncoherentPatternsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentPatternsInSubRuleVariables() throws Exception {
+    void testIncoherentPatternsInSubRuleVariables() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -115,15 +115,15 @@ public class IncoherentPatternsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentPatternsInSubRuleRangesLess() throws Exception {
+    void testIncoherentPatternsInSubRuleRangesLess() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -152,15 +152,15 @@ public class IncoherentPatternsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentPatternsInSubRuleRangesGreater() throws Exception {
+    void testIncoherentPatternsInSubRuleRangesGreater() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -189,15 +189,15 @@ public class IncoherentPatternsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentPatternsInSubRuleRangesEqualOrUnequal() throws Exception {
+    void testIncoherentPatternsInSubRuleRangesEqualOrUnequal() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -226,15 +226,15 @@ public class IncoherentPatternsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentPatternsInSubRuleRangesEqualOrUnequalVariables() throws Exception {
+    void testIncoherentPatternsInSubRuleRangesEqualOrUnequalVariables() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -262,15 +262,15 @@ public class IncoherentPatternsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentPatternsInSubRuleRangesEqualValue() throws Exception {
+    void testIncoherentPatternsInSubRuleRangesEqualValue() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -298,15 +298,15 @@ public class IncoherentPatternsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentPatternsInSubRuleRangesEqualVariable() throws Exception {
+    void testIncoherentPatternsInSubRuleRangesEqualVariable() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("PatternsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);

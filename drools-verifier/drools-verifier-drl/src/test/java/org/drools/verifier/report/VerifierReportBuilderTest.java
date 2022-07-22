@@ -24,7 +24,7 @@ import org.drools.io.ClassPathResource;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,22 +32,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class VerifierReportBuilderTest {
 
     @Test
-    public void testHtmlReportTest() throws IOException {
+    void testHtmlReportTest() throws IOException {
 
         // Create report
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( new ClassPathResource( "Misc3.drl",
-                                                              Verifier.class ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(new ClassPathResource( "Misc3.drl",
+                        Verifier.class ),
+                ResourceType.DRL);
         VerifierReportWriter writer = VerifierReportWriterFactory.newHTMLReportWriter();
 
         // Write to disk
         FileOutputStream out = new FileOutputStream( "testReport.zip" );
 
-        writer.writeReport( out,
-                            verifier.getResult() );
+        writer.writeReport(out,
+                verifier.getResult());
 
         // Check the files on disk
         File file = new File( "testReport.zip" );
@@ -64,19 +64,19 @@ public class VerifierReportBuilderTest {
     }
 
     @Test
-    public void testPlainTextReportTest() throws IOException {
+    void testPlainTextReportTest() throws IOException {
         //TODO:
         assertThat(true).isTrue();
     }
 
     @Test
-    public void testXMLReportTest() throws IOException {
+    void testXMLReportTest() throws IOException {
         //TODO:
         assertThat(true).isTrue();
     }
 
     @Test
-    public void testPDFReportTest() throws IOException {
+    void testPDFReportTest() throws IOException {
         //TODO:
         assertThat(true).isTrue();
     }

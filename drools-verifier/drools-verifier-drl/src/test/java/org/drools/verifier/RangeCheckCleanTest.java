@@ -16,14 +16,14 @@
 
 package org.drools.verifier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RangeCheckCleanTest {
 
     @Test
-    public void testDummy() {
+    void testDummy() {
         // this is needed as eclipse will try to run this and produce a failure
         // if its not here.
         assertThat(true).isTrue();

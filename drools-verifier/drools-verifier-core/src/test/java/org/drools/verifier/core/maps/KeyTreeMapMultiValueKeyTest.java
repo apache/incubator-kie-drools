@@ -27,8 +27,8 @@ import org.drools.verifier.core.index.keys.UpdatableKey;
 import org.drools.verifier.core.index.keys.Value;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.maps.util.HasKeys;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,7 +47,7 @@ public class KeyTreeMapMultiValueKeyTest {
 
     private AnalyzerConfiguration configuration;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
 
@@ -71,26 +71,26 @@ public class KeyTreeMapMultiValueKeyTest {
     }
 
     @Test
-    public void testFindByUUID() throws
+    void testFindByUUID() throws
             Exception {
         Util.assertMapContent(map.get(UUIDKey.UNIQUE_UUID),
-                              finland.uuidKey,
-                              sweden.uuidKey,
-                              norway.uuidKey);
+                finland.uuidKey,
+                sweden.uuidKey,
+                norway.uuidKey);
     }
 
     @Test
-    public void testFindByAreaCodeKey() throws
+    void testFindByAreaCodeKey() throws
             Exception {
         Util.assertMapContent(map.get(AREA_CODE),
-                              48100,
-                              12345,
-                              51000,
-                              00000);
+                48100,
+                12345,
+                51000,
+                00000);
     }
 
     @Test
-    public void testFindByAreaCode() throws
+    void testFindByAreaCode() throws
             Exception {
         final MultiMap<Value, Country, List<Country>> areaCode = map.get(AREA_CODE);
         assertThat(areaCode.get(new Value(48100))

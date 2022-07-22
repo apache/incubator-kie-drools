@@ -33,7 +33,7 @@ import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.report.components.Cause;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.fail;
 public class OppositeRestrictionsTest extends OppositesBase {
 
     @Test
-    public void testLiteralRestrictionOpposite() throws Exception {
+    void testLiteralRestrictionOpposite() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
@@ -50,25 +50,25 @@ public class OppositeRestrictionsTest extends OppositesBase {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern,
-                                                                     "1");
+                "1");
         r1.setFieldPath("0");
         r1.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern,
-                                                                     "1");
+                "1");
         r2.setFieldPath("0");
         r2.setOperator(Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         r2.setOrderNumber(1);
 
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern,
-                                                                     "1.0");
+                "1.0");
         r3.setFieldPath("0");
         r3.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r3.setOrderNumber(2);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern,
-                                                                     "1.0");
+                "1.0");
         r4.setFieldPath("0");
         r4.setOperator(Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         r4.setOrderNumber(3);
@@ -84,7 +84,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.RESTRICTION,
-                                                        (Iterator<Object>)session.getObjects().iterator());
+                (Iterator<Object>) session.getObjects().iterator());
 
         assertThat((TestBaseOld.causeMapContains(map,
                 r1,
@@ -103,7 +103,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
     }
 
     @Test
-    public void testLiteralRestrictionOppositeWithRangesGreaterOrEqualAndLess() throws Exception {
+    void testLiteralRestrictionOppositeWithRangesGreaterOrEqualAndLess() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
@@ -111,13 +111,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern,
-                                                                     "1");
+                "1");
         r1.setFieldPath("0");
         r1.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern,
-                                                                     "1");
+                "1");
         r2.setFieldPath("0");
         r2.setOperator(Operator.BuiltInOperator.LESS.getOperator());
         r2.setOrderNumber(1);
@@ -131,7 +131,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions with ranges, greater or equal - less"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.RESTRICTION,
-                                                        (Iterator<Object>)session.getObjects().iterator());
+                (Iterator<Object>) session.getObjects().iterator());
 
         assertThat((TestBaseOld.causeMapContains(map,
                 r1,
@@ -145,20 +145,20 @@ public class OppositeRestrictionsTest extends OppositesBase {
     }
 
     @Test
-    public void testLiteralRestrictionOppositeWithRangesGreaterAndLessOrEqual() throws Exception {
+    void testLiteralRestrictionOppositeWithRangesGreaterAndLessOrEqual() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern,
-                                                                     "1");
+                "1");
         r1.setFieldPath("0");
         r1.setOperator(Operator.BuiltInOperator.GREATER.getOperator());
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern,
-                                                                     "1");
+                "1");
         r2.setFieldPath("0");
         r2.setOperator(Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator());
         r2.setOrderNumber(1);
@@ -172,7 +172,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions with ranges, greater - less or equal"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.RESTRICTION,
-                                                        (Iterator<Object>)session.getObjects().iterator());
+                (Iterator<Object>) session.getObjects().iterator());
 
         assertThat((TestBaseOld.causeMapContains(map,
                 r1,
@@ -187,7 +187,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
 
     @Test
-    public void testLiteralRestrictionOppositeWithRangesLessOrEqualAndGreaterOrEqualForIntsAndDates() throws Exception {
+    void testLiteralRestrictionOppositeWithRangesLessOrEqualAndGreaterOrEqualForIntsAndDates() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
@@ -195,13 +195,13 @@ public class OppositeRestrictionsTest extends OppositesBase {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern,
-                                                                     "1");
+                "1");
         r1.setFieldPath("0");
         r1.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern,
-                                                                     "0");
+                "0");
         r2.setFieldPath("0");
         r2.setOperator(Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator());
         r2.setOrderNumber(1);
@@ -215,7 +215,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.RESTRICTION,
-                                                        (Iterator<Object>)session.getObjects().iterator());
+                (Iterator<Object>) session.getObjects().iterator());
 
         assertThat((TestBaseOld.causeMapContains(map,
                 r1,
@@ -229,7 +229,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
     }
 
     @Test
-    public void testVariableRestrictionOpposite() throws Exception {
+    void testVariableRestrictionOpposite() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
@@ -270,14 +270,14 @@ public class OppositeRestrictionsTest extends OppositesBase {
         VariableRestriction r3 = new VariableRestriction(pattern2);
         r3.setFieldPath("1");
         r3.setOperator(Operator.determineOperator(containsOperator,
-                                                  false));
+                false));
         r3.setVariable(variable2);
         r3.setOrderNumber(4);
 
         VariableRestriction r4 = new VariableRestriction(pattern2);
         r4.setFieldPath("1");
         r4.setOperator(Operator.determineOperator(containsOperator,
-                                                  true));
+                true));
         r4.setVariable(variable2);
         r4.setOrderNumber(5);
 
@@ -314,7 +314,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite VariableRestrictions"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.RESTRICTION,
-                                                        (Iterator<Object>)session.getObjects().iterator());
+                (Iterator<Object>) session.getObjects().iterator());
 
         assertThat((TestBaseOld.causeMapContains(map,
                 r1,

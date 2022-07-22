@@ -16,14 +16,14 @@
 
 package org.drools.verifier.core.relations;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OperatorTest {
 
     @Test
-    public void testOperators() throws Exception {
+    void testOperators() throws Exception {
         assertThat(Operator.resolve("==")).isEqualTo(Operator.EQUALS);
         assertThat(Operator.resolve(">")).isEqualTo(Operator.GREATER_THAN);
         assertThat(Operator.resolve("<")).isEqualTo(Operator.LESS_THAN);

@@ -24,8 +24,8 @@ import org.drools.verifier.core.index.matchers.ExactMatcher;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.KeyTreeMap;
 import org.drools.verifier.core.maps.util.HasKeys;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +33,7 @@ public class SelectNoMatchesTest {
 
     private Select<Address> select;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final KeyDefinition keyDefinition = KeyDefinition.newKeyDefinition().withId("name").build();
         final KeyTreeMap<Address> map = new KeyTreeMap<>(keyDefinition);
@@ -46,19 +46,19 @@ public class SelectNoMatchesTest {
     }
 
     @Test
-    public void testAll() throws Exception {
+    void testAll() throws Exception {
         final Collection<Address> all = select.all();
 
         assertThat(all.isEmpty()).isTrue();
     }
 
     @Test
-    public void testFirst() throws Exception {
+    void testFirst() throws Exception {
         assertThat(select.first()).isNull();
     }
 
     @Test
-    public void testLast() throws Exception {
+    void testLast() throws Exception {
         assertThat(select.last()).isNull();
     }
 

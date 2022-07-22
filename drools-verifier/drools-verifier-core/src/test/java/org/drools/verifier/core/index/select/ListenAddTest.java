@@ -23,8 +23,8 @@ import org.drools.verifier.core.index.matchers.ExactMatcher;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.MultiMap;
 import org.drools.verifier.core.maps.MultiMapFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +37,7 @@ public class ListenAddTest {
     private Person             first;
     private Person             last;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         map = MultiMapFactory.make(true );
 
@@ -76,18 +76,18 @@ public class ListenAddTest {
     }
 
     @Test
-    public void testEmpty() throws Exception {
+    void testEmpty() throws Exception {
         assertThat(all).isNull();
         assertThat(first).isNull();
         assertThat(last).isNull();
     }
 
     @Test
-    public void testBeginning() throws Exception {
+    void testBeginning() throws Exception {
         final Person baby = new Person( 0,
-                                        "baby" );
-        map.put( new Value( 0 ),
-                 baby );
+                "baby" );
+        map.put(new Value( 0 ),
+                baby);
 
         assertThat(first).isEqualTo(baby);
         assertThat(last).isNull();
@@ -95,11 +95,11 @@ public class ListenAddTest {
     }
 
     @Test
-    public void testEnd() throws Exception {
+    void testEnd() throws Exception {
         final Person grandpa = new Person( 100,
-                                           "grandpa" );
-        map.put( new Value( 100 ),
-                 grandpa );
+                "grandpa" );
+        map.put(new Value( 100 ),
+                grandpa);
 
         assertThat(first).isNull();
         assertThat(last).isEqualTo(grandpa);
@@ -107,10 +107,10 @@ public class ListenAddTest {
     }
 
     @Test
-    public void testMiddle() throws Exception {
-        map.put( new Value( 15 ),
-                 new Person( 15,
-                             "teenager" ) );
+    void testMiddle() throws Exception {
+        map.put(new Value( 15 ),
+                new Person( 15,
+                        "teenager" ));
 
         assertThat(first).isNull();
         assertThat(last).isNull();

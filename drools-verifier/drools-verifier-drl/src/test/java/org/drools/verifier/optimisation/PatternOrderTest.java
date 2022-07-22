@@ -28,7 +28,7 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,15 +37,15 @@ import static org.assertj.core.api.Assertions.fail;
 public class PatternOrderTest extends TestBaseOld {
 
     @Test
-    public void testEvalOrderInsideOperator() throws Exception {
+    void testEvalOrderInsideOperator() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("PatternOrder.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("OptimisationPatternOrderTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);

@@ -15,24 +15,22 @@
  */
 package org.drools.verifier.core.index.model;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ActivationTimeTest {
 
-    private final ActivationTime start;
-    private final ActivationTime end;
-    private final boolean expected;
+    private ActivationTime start;
+    private ActivationTime end;
+    private boolean expected;
 
-    public ActivationTimeTest(final ActivationTime start,
+    public void initActivationTimeTest(final ActivationTime start,
                               final ActivationTime end,
                               final boolean expected) {
         this.start = start;
@@ -40,7 +38,6 @@ public class ActivationTimeTest {
         this.expected = expected;
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
                 {new ActivationTime(new Date(0), new Date(10)), new ActivationTime(new Date(0), new Date(10)), true},
@@ -68,8 +65,10 @@ public class ActivationTimeTest {
         });
     }
 
-    @Test
-    public void testOverlaps() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testOverlaps(final ActivationTime start, final ActivationTime end, final boolean expected) {
+        initActivationTimeTest(start, end, expected);
         assertThat(start.overlaps(end)).isEqualTo(expected);
     }
 }

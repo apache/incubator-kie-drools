@@ -24,8 +24,8 @@ import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.MultiMap;
 import org.drools.verifier.core.maps.MultiMapFactory;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +35,7 @@ public class SelectExactMatcherTest {
     private MultiMap<Value, Item, List<Item>> map;
     private Item                              thirteen;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         map = MultiMapFactory.make();
         thirteen = new Item( 13 );
@@ -57,19 +57,19 @@ public class SelectExactMatcherTest {
     }
 
     @Test
-    public void testAll() throws Exception {
+    void testAll() throws Exception {
         final Collection<Item> all = select.all();
 
         assertThat(all.size()).isEqualTo(1);
     }
 
     @Test
-    public void testFirst() throws Exception {
+    void testFirst() throws Exception {
         assertThat(select.first()).isEqualTo(thirteen);
     }
 
     @Test
-    public void testLast() throws Exception {
+    void testLast() throws Exception {
         assertThat(select.last()).isEqualTo(thirteen);
     }
 

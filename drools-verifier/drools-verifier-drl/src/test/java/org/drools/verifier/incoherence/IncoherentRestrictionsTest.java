@@ -35,7 +35,7 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
@@ -46,7 +46,7 @@ import static org.assertj.core.api.Assertions.fail;
 public class IncoherentRestrictionsTest extends TestBaseOld {
 
     @Test
-    public void testApprovedTrueAndNotTrue() {
+    void testApprovedTrueAndNotTrue() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
@@ -66,13 +66,13 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
         DefaultVerifierConfiguration conf = new DefaultVerifierConfiguration();
         Verifier verifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier(conf);
         verifier.addResourcesToVerify(ResourceFactory.newReaderResource(new StringReader(str)),
-                                      ResourceType.DRL);
+                ResourceType.DRL);
 
         assertThat(verifier.hasErrors()).isFalse();
         assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis(new ScopesAgendaFilter(true,
-                                                                     ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE));
+                ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE));
 
         assertThat(works).isTrue();
 
@@ -86,15 +86,15 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentLiteralRestrictionsInSubPattern() throws Exception {
+    void testIncoherentLiteralRestrictionsInSubPattern() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(getClass().getResourceAsStream("RestrictionsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -123,15 +123,15 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentLiteralRestrictionsInSubPatternImpossibleRanges() throws Exception {
+    void testIncoherentLiteralRestrictionsInSubPatternImpossibleRanges() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -159,15 +159,15 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentLiteralRestrictionsInSubPatternImpossibleEqualityLess() throws Exception {
+    void testIncoherentLiteralRestrictionsInSubPatternImpossibleEqualityLess() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -196,15 +196,15 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentLiteralRestrictionsInSubPatternImpossibleEqualityGreater() throws Exception {
+    void testIncoherentLiteralRestrictionsInSubPatternImpossibleEqualityGreater() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -232,15 +232,15 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentLiteralRestrictionsInSubPatternImpossibleRange() throws Exception {
+    void testIncoherentLiteralRestrictionsInSubPatternImpossibleRange() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -268,15 +268,15 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentVariableRestrictionsInSubPattern() throws Exception {
+    void testIncoherentVariableRestrictionsInSubPattern() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -306,15 +306,15 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
     }
 
     @Test
-    public void testIncoherentVariableRestrictionsInSubPatternImpossibleRange() throws Exception {
+    void testIncoherentVariableRestrictionsInSubPatternImpossibleRange() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("RestrictionsTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);

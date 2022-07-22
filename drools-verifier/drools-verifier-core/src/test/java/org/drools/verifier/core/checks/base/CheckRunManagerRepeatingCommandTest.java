@@ -17,8 +17,8 @@ package org.drools.verifier.core.checks.base;
 
 import java.util.HashSet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -27,7 +27,7 @@ public class CheckRunManagerRepeatingCommandTest {
 
     private HashSet<Check> checksToRun;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         checksToRun = new HashSet<>();
         for (int i = 0; i < 100; i++) {
@@ -37,10 +37,10 @@ public class CheckRunManagerRepeatingCommandTest {
     }
 
     @Test
-    public void testRunAll() throws Exception {
+    void testRunAll() throws Exception {
         final ChecksRepeatingCommand checksRepeatingCommand = new ChecksRepeatingCommand(checksToRun,
-                                                                                         null,
-                                                                                         null);
+                null,
+                null);
 
         while (checksRepeatingCommand.execute()) {
             // Loopidiloop

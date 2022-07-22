@@ -16,24 +16,24 @@
 
 package org.drools.verifier.core.maps;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultiMapFactoryTest {
 
     @Test
-    public void testDefault() throws Exception {
+    void testDefault() throws Exception {
         assertThat(MultiMapFactory.make() instanceof ChangeHandledMultiMap).isFalse();
     }
 
     @Test
-    public void normal() throws Exception {
+    void normal() throws Exception {
         assertThat(MultiMapFactory.make(false) instanceof ChangeHandledMultiMap).isFalse();
     }
 
     @Test
-    public void changeHandled() throws Exception {
+    void changeHandled() throws Exception {
         assertThat(MultiMapFactory.make(true) instanceof ChangeHandledMultiMap).isTrue();
     }
 }

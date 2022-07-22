@@ -23,51 +23,51 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DateConditionInspectorSubsumptionTest {
 
     @Mock
     private Field field;
 
     @Test
-    public void testSubsume001() throws
+    void testSubsume001() throws
             Exception {
         ComparableConditionInspector<Date> a = getCondition(new Date(100),
-                                                            "!=");
+                "!=");
         ComparableConditionInspector<Date> b = getCondition(new Date(100),
-                                                            "!=");
+                "!=");
 
         assertThat(a.subsumes(b)).isTrue();
         assertThat(b.subsumes(a)).isTrue();
     }
 
     @Test
-    public void testSubsumeEquals001() throws
+    void testSubsumeEquals001() throws
             Exception {
         ComparableConditionInspector<Date> a = getCondition(new Date(100),
-                                                            "==");
+                "==");
         ComparableConditionInspector<Date> b = getCondition(new Date(10),
-                                                            ">");
+                ">");
 
         assertThat(a.subsumes(b)).isFalse();
         assertThat(b.subsumes(a)).isTrue();
     }
 
     @Test
-    public void testSubsumeEquals002() throws
+    void testSubsumeEquals002() throws
             Exception {
         ComparableConditionInspector<Date> a = getCondition(new Date(10),
-                                                            "==");
+                "==");
         ComparableConditionInspector<Date> b = getCondition(new Date(100),
-                                                            ">");
+                ">");
 
         assertThat(a.subsumes(b)).isFalse();
         assertThat(b.subsumes(a)).isFalse();

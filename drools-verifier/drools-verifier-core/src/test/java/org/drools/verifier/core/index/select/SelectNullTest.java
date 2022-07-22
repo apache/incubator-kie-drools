@@ -16,13 +16,17 @@
 package org.drools.verifier.core.index.select;
 
 import org.drools.verifier.core.maps.MultiMapFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SelectNullTest {
 
-    @Test( expected = IllegalArgumentException.class )
-    public void testAll() throws Exception {
-        new Select<>(MultiMapFactory.make(),
-                     null );
+    @Test
+    void testAll() throws Exception {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Select<>(MultiMapFactory.make(),
+                    null );
+        });
     }
 }

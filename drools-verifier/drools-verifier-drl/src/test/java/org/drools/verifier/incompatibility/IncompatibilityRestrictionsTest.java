@@ -35,7 +35,7 @@ import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.report.components.Cause;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.fail;
 public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
     @Test
-    public void testLiteralRestrictionsIncompatibilityLessOrEqual() throws Exception {
+    void testLiteralRestrictionsIncompatibilityLessOrEqual() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
@@ -56,13 +56,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Working pair
          */
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern1,
-                                                                     "10");
+                "10");
         r1.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r1.setFieldPath("0");
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern1,
-                                                                     "1");
+                "1");
         r2.setOperator(Operator.BuiltInOperator.LESS.getOperator());
         r2.setFieldPath("0");
         r2.setOrderNumber(2);
@@ -71,13 +71,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Pair that doesn't work.
          */
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern2,
-                                                                     "1");
+                "1");
         r3.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r3.setFieldPath("1");
         r3.setOrderNumber(0);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern2,
-                                                                     "10");
+                "10");
         r4.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r4.setFieldPath("1");
         r4.setOrderNumber(1);
@@ -93,7 +93,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"));
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                                                              (Iterator<Object>)session.getObjects().iterator());
+                (Iterator<Object>) session.getObjects().iterator());
 
         assertThat((TestBaseOld.causeMapContains(map,
                 r1,
@@ -107,7 +107,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
     }
 
     @Test
-    public void testLiteralRestrictionsIncompatibilityGreater() throws Exception {
+    void testLiteralRestrictionsIncompatibilityGreater() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
@@ -119,13 +119,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Working pair
          */
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern1,
-                                                                     "10");
+                "10");
         r1.setOperator(Operator.BuiltInOperator.GREATER.getOperator());
         r1.setFieldPath("0");
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern1,
-                                                                     "1");
+                "1");
         r2.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r2.setFieldPath("0");
         r2.setOrderNumber(1);
@@ -134,13 +134,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Pair that doesn't work.
          */
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern2,
-                                                                     "1");
+                "1");
         r3.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r3.setFieldPath("1");
         r3.setOrderNumber(0);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern2,
-                                                                     "10");
+                "10");
         r4.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r4.setFieldPath("1");
         r4.setOrderNumber(1);
@@ -156,7 +156,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"));
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                                                              (Iterator<Object>)session.getObjects().iterator());
+                (Iterator<Object>) session.getObjects().iterator());
 
         assertThat((TestBaseOld.causeMapContains(map,
                 r1,
@@ -170,7 +170,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
     }
 
     @Test
-    public void testLiteralRestrictionsIncompatibilityImpossibleRange() throws Exception {
+    void testLiteralRestrictionsIncompatibilityImpossibleRange() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
@@ -182,13 +182,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Working pair
          */
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern1,
-                                                                     "10");
+                "10");
         r1.setOperator(Operator.BuiltInOperator.GREATER.getOperator());
         r1.setFieldPath("0");
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern1,
-                                                                     "10");
+                "10");
         r2.setOperator(Operator.BuiltInOperator.LESS.getOperator());
         r2.setFieldPath("0");
         r2.setOrderNumber(1);
@@ -197,13 +197,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Pair that doesn't work.
          */
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern2,
-                                                                     "1");
+                "1");
         r3.setOperator(Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator());
         r3.setFieldPath("1");
         r3.setOrderNumber(0);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern2,
-                                                                     "");
+                "");
         r4.setOperator(Operator.BuiltInOperator.EQUAL.getOperator());
         r4.setFieldPath("1");
         r4.setOrderNumber(1);
@@ -219,7 +219,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"));
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                                                              (Iterator<Object>)session.getObjects().iterator());
+                (Iterator<Object>) session.getObjects().iterator());
 
         assertThat((TestBaseOld.causeMapContains(map,
                 r1,
@@ -233,7 +233,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
     }
 
     @Test
-    public void testVariableRestrictionsIncompatibilityImpossibleRange() throws Exception {
+    void testVariableRestrictionsIncompatibilityImpossibleRange() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Restrictions.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
@@ -297,7 +297,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Incoherent VariableRestrictions in pattern possibility, impossible range"));
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                                                              (Iterator<Object>)session.getObjects().iterator());
+                (Iterator<Object>) session.getObjects().iterator());
 
         assertThat((TestBaseOld.causeMapContains(map,
                 r1,
