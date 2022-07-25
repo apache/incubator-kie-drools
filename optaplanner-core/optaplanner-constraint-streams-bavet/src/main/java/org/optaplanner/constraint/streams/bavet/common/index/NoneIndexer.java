@@ -1,19 +1,16 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
 final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
 
-    private final Map<Tuple_, Value_> tupleMap = new LinkedHashMap<>();
+    private final NoneIndexerStorage<Tuple_, Value_> storage = new NoneIndexerStorage<>();
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        Value_ old = tupleMap.put(tuple, Objects.requireNonNull(value));
+        Value_ old = storage.put(tuple, value);
         if (old != null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
@@ -23,7 +20,7 @@ final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_,
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        Value_ value = tupleMap.remove(tuple);
+        Value_ value = storage.remove(tuple);
         if (value == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
@@ -34,7 +31,7 @@ final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_,
 
     @Override
     public Value_ get(IndexProperties indexProperties, Tuple_ tuple) {
-        Value_ value = tupleMap.get(tuple);
+        Value_ value = storage.get(tuple);
         if (value == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
@@ -45,12 +42,12 @@ final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_,
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
-        tupleMap.forEach(tupleValueVisitor);
+        storage.visit(tupleValueVisitor);
     }
 
     @Override
     public boolean isEmpty() {
-        return tupleMap.isEmpty();
+        return storage.isEmpty();
     }
 
 }

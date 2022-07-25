@@ -2,8 +2,8 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -13,7 +13,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
 
     private final int indexKeyFromInclusive;
     private final int indexKeyToExclusive;
-    private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
+    private final Function<Key_, Indexer<Tuple_, Value_>> downstreamIndexerFunction;
     private final Map<Key_, Indexer<Tuple_, Value_>> downstreamIndexerMap = new HashMap<>();
 
     public EqualsIndexer(Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
@@ -24,7 +24,8 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
         this.indexKeyFromInclusive = indexKeyFromInclusive;
         this.indexKeyToExclusive = indexKeyToExclusive;
-        this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
+        // Avoid creating the capturing lambda over and over on the hot path.
+        this.downstreamIndexerFunction = k -> downstreamIndexerSupplier.get();
     }
 
     @Override
@@ -52,7 +53,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Key_ indexerKey = getIndexerKey(indexProperties);
         Indexer<Tuple_, Value_> downstreamIndexer =
-                downstreamIndexerMap.computeIfAbsent(indexerKey, k -> downstreamIndexerSupplier.get());
+                downstreamIndexerMap.computeIfAbsent(indexerKey, downstreamIndexerFunction);
         downstreamIndexer.put(indexProperties, tuple, value);
     }
 
