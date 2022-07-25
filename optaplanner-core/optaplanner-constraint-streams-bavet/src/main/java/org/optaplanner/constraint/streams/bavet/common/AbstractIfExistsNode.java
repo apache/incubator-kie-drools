@@ -107,9 +107,23 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                                 this + ") is in an unexpected state (" + counter.state + ").");
                 }
             } else {
-                throw new UnsupportedOperationException();
+                // Call filtering for the leftTuple and rightTuple combinations again
+                counter.countRight = 0;
+                indexerRight.visit(oldIndexProperties, (rightTuple, counterSetRight) -> {
+                    counterSetRight.remove(counter); // Filtering is active, so it might not contain it
+                    if (testFiltering(leftTuple, rightTuple)) {
+                        counter.countRight++;
+                        counterSetRight.add(counter);
+                    }
+                });
+                if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
+                    // Insert or update
+                    insertOrUpdateCounter(counter);
+                } else {
+                    // Retract or remain dead
+                    retractOrRemainDeadCounter(counter);
+                }
             }
-
         } else {
             Counter<LeftTuple_> counter = indexerLeft.remove(oldIndexProperties, leftTuple);
             indexerRight.visit(oldIndexProperties, (rightTuple, counterSetRight) -> {
@@ -133,54 +147,9 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             });
 
             if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
-                // Insert or update
-                switch (counter.state) {
-                    case CREATING:
-                    case UPDATING:
-                        // Don't add the tuple to the dirtyTupleQueue twice
-                        break;
-                    case OK:
-                        counter.state = BavetTupleState.UPDATING;
-                        dirtyCounterQueue.add(counter);
-                        break;
-                    case DYING:
-                        counter.state = BavetTupleState.UPDATING;
-                        break;
-                    case DEAD:
-                        counter.state = BavetTupleState.CREATING;
-                        dirtyCounterQueue.add(counter);
-                        break;
-                    case ABORTING:
-                        counter.state = BavetTupleState.CREATING;
-                        break;
-                    default:
-                        throw new IllegalStateException("Impossible state: the counter (" + counter
-                                + ") has an impossible insert state (" + counter.state + ").");
-                }
+                insertOrUpdateCounter(counter);
             } else {
-                // Retract or remain dead
-                switch (counter.state) {
-                    case CREATING:
-                        // Kill it before it propagates
-                        counter.state = BavetTupleState.ABORTING;
-                        break;
-                    case UPDATING:
-                        // Kill the original propagation
-                        counter.state = BavetTupleState.DYING;
-                        break;
-                    case OK:
-                        counter.state = BavetTupleState.DYING;
-                        dirtyCounterQueue.add(counter);
-                        break;
-                    case DYING:
-                    case DEAD:
-                    case ABORTING:
-                        // Don't add the tuple to the dirtyTupleQueue twice
-                        break;
-                    default:
-                        throw new IllegalStateException("Impossible state: The counter (" + counter
-                                + ") has an impossible retract state (" + counter.state + ").");
-                }
+                retractOrRemainDeadCounter(counter);
             }
         }
     }
@@ -253,7 +222,33 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             if (!isFiltering()) {
                 // Do nothing
             } else {
-                throw new UnsupportedOperationException();
+                // Call filtering for the leftTuple and rightTuple combinations again
+                Set<Counter<LeftTuple_>> counterSetRight = indexerRight.get(oldIndexProperties, rightTuple);
+                for (Counter<LeftTuple_> counter : counterSetRight) {
+                    counter.countRight--;
+                    if (counter.countRight == 0) {
+                        if (shouldExist) {
+                            retractCounter(counter);
+                        } else {
+                            insertCounter(counter);
+                        }
+                    }
+                }
+                counterSetRight.clear();
+
+                indexerLeft.visit(newIndexProperties, (leftTuple, counter) -> {
+                    if (testFiltering(leftTuple, rightTuple)) {
+                        if (counter.countRight == 0) {
+                            if (shouldExist) {
+                                insertOrUpdateCounter(counter);
+                            } else {
+                                retractOrRemainDeadCounter(counter);
+                            }
+                        }
+                        counter.countRight++;
+                        counterSetRight.add(counter);
+                    }
+                });
             }
         } else {
             Set<Counter<LeftTuple_>> counterSetRight = indexerRight.remove(oldIndexProperties, rightTuple);
@@ -345,6 +340,59 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             default:
                 throw new IllegalStateException("Impossible state: the counter (" + counter
                         + ") has an impossible insert state (" + counter.state + ").");
+        }
+    }
+
+    private void insertOrUpdateCounter(Counter<LeftTuple_> counter) {
+        // Insert or update
+        switch (counter.state) {
+            case CREATING:
+            case UPDATING:
+                // Don't add the tuple to the dirtyTupleQueue twice
+                break;
+            case OK:
+                counter.state = BavetTupleState.UPDATING;
+                dirtyCounterQueue.add(counter);
+                break;
+            case DYING:
+                counter.state = BavetTupleState.UPDATING;
+                break;
+            case DEAD:
+                counter.state = BavetTupleState.CREATING;
+                dirtyCounterQueue.add(counter);
+                break;
+            case ABORTING:
+                counter.state = BavetTupleState.CREATING;
+                break;
+            default:
+                throw new IllegalStateException("Impossible state: the counter (" + counter
+                        + ") has an impossible insert state (" + counter.state + ").");
+        }
+    }
+
+    private void retractOrRemainDeadCounter(Counter<LeftTuple_> counter) {
+        // Retract or remain dead
+        switch (counter.state) {
+            case CREATING:
+                // Kill it before it propagates
+                counter.state = BavetTupleState.ABORTING;
+                break;
+            case UPDATING:
+                // Kill the original propagation
+                counter.state = BavetTupleState.DYING;
+                break;
+            case OK:
+                counter.state = BavetTupleState.DYING;
+                dirtyCounterQueue.add(counter);
+                break;
+            case DYING:
+            case DEAD:
+            case ABORTING:
+                // Don't add the tuple to the dirtyTupleQueue twice
+                break;
+            default:
+                throw new IllegalStateException("Impossible state: The counter (" + counter
+                        + ") has an impossible retract state (" + counter.state + ").");
         }
     }
 
