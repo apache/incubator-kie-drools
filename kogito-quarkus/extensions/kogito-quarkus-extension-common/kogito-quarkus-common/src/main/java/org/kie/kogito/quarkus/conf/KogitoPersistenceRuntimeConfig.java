@@ -48,13 +48,4 @@ public class KogitoPersistenceRuntimeConfig {
     @ConfigItem(name = "query.timeout.millis", defaultValue = "10000")
     public long queryTimeout;
 
-    enum PersistenceType {
-        JDBC,
-        MONGODB,
-        FILESYSTEM,
-        KAFKA,
-        INFINISPAN,
-        POSTGRESQL
-    }
-
 }
