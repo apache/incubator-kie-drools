@@ -28,8 +28,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-serverless-workflow-test-utils</artifactId>
+      <artifactId>kogito-serverless-workflow-utils</artifactId>
+      <version>${project.version}</version>
       <scope>test</scope>
+      <type>test-jar</type>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

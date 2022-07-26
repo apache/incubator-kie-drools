@@ -27,6 +27,36 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- Integration tests -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>integration-tests-processes-persistence-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>integration-tests-processes-persistence-common</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+
+      <!-- NOTE: don't change scope of this dependency to test to avoid problem with maven-invoker-plugin localRepositoryPath creation
+      in springboot integration tests -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-test-utils</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-test-utils</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-spring-boot-test-utils</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
