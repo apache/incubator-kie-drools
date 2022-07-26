@@ -444,7 +444,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     private static void populateFactHandleFromExternalForm( String[] elements, DefaultFactHandle handle ) {
-        handle.id = Integer.parseInt( elements[1] );
+        handle.id = Long.parseLong( elements[1] );
         handle.identityHashCode = Integer.parseInt( elements[2] );
         handle.objectHashCode = Integer.parseInt( elements[3] );
         handle.recency = Long.parseLong( elements[4] );
