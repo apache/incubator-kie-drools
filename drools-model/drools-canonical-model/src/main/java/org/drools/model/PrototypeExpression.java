@@ -131,7 +131,7 @@ public interface PrototypeExpression {
 
     class BinaryOperation implements PrototypeExpression {
 
-        enum Operator {
+        public enum Operator {
             ADD("+", "add", Operator::add),
             SUB("-", "sub", Operator::sub),
             MUL("*", "mul", Operator::mul),
