@@ -15,6 +15,8 @@
  */
 package org.drools.model;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.drools.model.functions.Function1;
@@ -71,8 +73,10 @@ public class PrototypeDSL {
 
     public interface PrototypePatternDef extends PatternDSL.PatternDef<PrototypeFact> {
         PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, Object value);
+        PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeExpression right);
 
         PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, PrototypeVariable other, String otherFieldName);
+        PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression right);
     }
 
     public static class PrototypePatternDefImpl extends PatternDSL.PatternDefImpl<PrototypeFact> implements PrototypePatternDef {
@@ -93,9 +97,29 @@ public class PrototypeDSL {
             AlphaIndex alphaIndex = fieldClass != null ? alphaIndexedBy( fieldClass, constraintType, fieldIndex, extractor, value ) : null;
 
             expr("expr:" + fieldName + ":" + constraintType + ":" + value,
-                    asPredicate(extractor, constraintType, value),
+                    asPredicate1(extractor, constraintType, value),
                     alphaIndex,
                     reactOn( fieldName ));
+
+            return this;
+        }
+
+        @Override
+        public PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeExpression right) {
+            if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.FixedValue) {
+                return expr(((PrototypeExpression.PrototypeFieldValue) left).getFieldName(), constraintType, ((PrototypeExpression.FixedValue) right).getValue());
+            }
+
+            PrototypeVariable protoVar = (PrototypeVariable) getFirstVariable();
+            Prototype prototype = protoVar.getPrototype();
+
+            Set<String> reactOnFields = new HashSet<>();
+            reactOnFields.addAll(left.getImpactedFields());
+            reactOnFields.addAll(right.getImpactedFields());
+
+            expr("expr:" + left + ":" + constraintType + ":" + right,
+                    asPredicate1(left.asFunction(prototype), constraintType, right.asFunction(prototype)),
+                    reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
             return this;
         }
@@ -114,18 +138,43 @@ public class PrototypeDSL {
             Function1<PrototypeFact, Object> otherExtractor = getFieldValueExtractor(otherPrototype, otherFieldName);
 
             expr("expr:" + fieldName + ":" + constraintType + ":" + otherFieldName,
-                    other, asPredicate(extractor, constraintType, otherExtractor),
+                    other, asPredicate2(extractor, constraintType, otherExtractor),
                     betaIndexedBy( fieldClass, constraintType, fieldIndex, extractor, otherExtractor ),
                     reactOn( fieldName ));
 
             return this;
         }
 
-        private Predicate1<PrototypeFact> asPredicate(Function1<PrototypeFact, Object> extractor, Index.ConstraintType constraintType, Object value) {
+        @Override
+        public PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression right) {
+            if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.PrototypeFieldValue) {
+                return expr(((PrototypeExpression.PrototypeFieldValue) left).getFieldName(), constraintType, other, ((PrototypeExpression.PrototypeFieldValue) right).getFieldName());
+            }
+
+            PrototypeVariable protoVar = (PrototypeVariable) getFirstVariable();
+            Prototype prototype = protoVar.getPrototype();
+            Prototype otherPrototype = other.getPrototype();
+
+            Set<String> reactOnFields = new HashSet<>();
+            reactOnFields.addAll(left.getImpactedFields());
+            reactOnFields.addAll(right.getImpactedFields());
+
+            expr("expr:" + left + ":" + constraintType + ":" + right,
+                    other, asPredicate2(left.asFunction(prototype), constraintType, right.asFunction(otherPrototype)),
+                    reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
+
+            return this;
+        }
+
+        private Predicate1<PrototypeFact> asPredicate1(Function1<PrototypeFact, Object> extractor, Index.ConstraintType constraintType, Object value) {
             return p -> constraintType.asPredicate().test(extractor.apply(p), value);
         }
 
-        private Predicate2<PrototypeFact, PrototypeFact> asPredicate(Function1<PrototypeFact, Object> extractor, Index.ConstraintType constraintType, Function1<PrototypeFact, Object> otherExtractor) {
+        private Predicate1<PrototypeFact> asPredicate1(Function1<PrototypeFact, Object> left, Index.ConstraintType constraintType, Function1<PrototypeFact, Object> right) {
+            return p -> constraintType.asPredicate().test(left.apply(p), right.apply(p));
+        }
+
+        private Predicate2<PrototypeFact, PrototypeFact> asPredicate2(Function1<PrototypeFact, Object> extractor, Index.ConstraintType constraintType, Function1<PrototypeFact, Object> otherExtractor) {
             return (p1, p2) -> constraintType.asPredicate().test(extractor.apply(p1), otherExtractor.apply(p2));
         }
 
