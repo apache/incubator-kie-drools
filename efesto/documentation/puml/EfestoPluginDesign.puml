@@ -22,10 +22,10 @@ header Efesto Plugin Design
 HIDE_STEREOTYPE()
 SHOW_PERSON_PORTRAIT()
 
-System(EfestoFramework, "Efesto Framework", $tags="efesto_framework_style") {
+System(EfestoFramework, "Efesto", $tags="efesto_framework_style") {
     !include puml_images/Images.puml
     AddElementTag("efesto_framework_style", $bgColor="orange")
-    System(EfestoServices,"Efesto Services", $sprite="efesto")
+    System(EfestoServices,"Efesto API", $sprite="efesto")
     Container(RuleEngine,"Rule engine","",$sprite="drl")
     Container(DecisionEngine,"Decision engine","",$sprite="dmn")
     Container(PredictionEngine,"Prediction engine","",$sprite="pmml")
