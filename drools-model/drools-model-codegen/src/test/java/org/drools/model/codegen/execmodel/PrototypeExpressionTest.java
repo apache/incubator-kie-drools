@@ -30,8 +30,8 @@ public class PrototypeExpressionTest {
 
     @Test
     public void testExpression() {
-        PrototypeExpression.Expression expr1 = prototypeField("fieldA");
-        PrototypeExpression.Expression expr2 = prototypeField("fieldB").add(prototypeField("fieldC")).sub(fixedValue(1));
+        PrototypeExpression expr1 = prototypeField("fieldA");
+        PrototypeExpression expr2 = prototypeField("fieldB").add(prototypeField("fieldC")).sub(fixedValue(1));
 
         Prototype prototype = prototype("test");
         PrototypeFact testFact = (PrototypeFact) createMapBasedFact(prototype);

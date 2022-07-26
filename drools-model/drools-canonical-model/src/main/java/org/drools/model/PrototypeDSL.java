@@ -73,10 +73,10 @@ public class PrototypeDSL {
 
     public interface PrototypePatternDef extends PatternDSL.PatternDef<PrototypeFact> {
         PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, Object value);
-        PrototypePatternDef expr(PrototypeExpression.Expression left, Index.ConstraintType constraintType, PrototypeExpression.Expression right);
+        PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeExpression right);
 
         PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, PrototypeVariable other, String otherFieldName);
-        PrototypePatternDef expr(PrototypeExpression.Expression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression.Expression right);
+        PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression right);
     }
 
     public static class PrototypePatternDefImpl extends PatternDSL.PatternDefImpl<PrototypeFact> implements PrototypePatternDef {
@@ -105,7 +105,7 @@ public class PrototypeDSL {
         }
 
         @Override
-        public PrototypePatternDef expr(PrototypeExpression.Expression left, Index.ConstraintType constraintType, PrototypeExpression.Expression right) {
+        public PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeExpression right) {
             if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.FixedValue) {
                 return expr(((PrototypeExpression.PrototypeFieldValue) left).getFieldName(), constraintType, ((PrototypeExpression.FixedValue) right).getValue());
             }
@@ -146,7 +146,7 @@ public class PrototypeDSL {
         }
 
         @Override
-        public PrototypePatternDef expr(PrototypeExpression.Expression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression.Expression right) {
+        public PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression right) {
             if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.PrototypeFieldValue) {
                 return expr(((PrototypeExpression.PrototypeFieldValue) left).getFieldName(), constraintType, other, ((PrototypeExpression.PrototypeFieldValue) right).getFieldName());
             }

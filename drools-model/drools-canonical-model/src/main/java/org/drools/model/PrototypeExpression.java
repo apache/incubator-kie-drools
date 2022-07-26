@@ -24,20 +24,18 @@ import java.util.Set;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function3;
 
-public class PrototypeExpression {
+public interface PrototypeExpression {
 
-    public interface Expression {
 
-        Function1<PrototypeFact, Object> asFunction(Prototype prototype);
+    Function1<PrototypeFact, Object> asFunction(Prototype prototype);
 
-        Collection<String> getImpactedFields();
-    }
+    Collection<String> getImpactedFields();
 
-    public static class ExpressionBuilder implements Expression {
+    public static class ExpressionBuilder implements PrototypeExpression {
 
-        private final Expression expression;
+        private final PrototypeExpression expression;
 
-        public ExpressionBuilder(Expression expression) {
+        public ExpressionBuilder(PrototypeExpression expression) {
             this.expression = expression;
         }
 
@@ -76,7 +74,7 @@ public class PrototypeExpression {
         }
     }
 
-    static class FixedValue implements Expression {
+    static class FixedValue implements PrototypeExpression {
 
         private final Object value;
 
@@ -104,7 +102,7 @@ public class PrototypeExpression {
         }
     }
 
-    static class PrototypeFieldValue implements Expression {
+    static class PrototypeFieldValue implements PrototypeExpression {
 
         private final String fieldName;
 
@@ -131,7 +129,7 @@ public class PrototypeExpression {
         }
     }
 
-    static class BinaryOperation implements Expression {
+    static class BinaryOperation implements PrototypeExpression {
 
         enum Operator {
             ADD("+", "add", Operator::add),
@@ -141,15 +139,15 @@ public class PrototypeExpression {
 
             private final String symbol;
             private final String keyword;
-            private final Function3<Prototype, Expression, Expression, Function1<PrototypeFact, Object>> operator;
+            private final Function3<Prototype, PrototypeExpression, PrototypeExpression, Function1<PrototypeFact, Object>> operator;
 
-            Operator(String symbol, String keyword, Function3<Prototype, Expression, Expression, Function1<PrototypeFact, Object>> operator) {
+            Operator(String symbol, String keyword, Function3<Prototype, PrototypeExpression, PrototypeExpression, Function1<PrototypeFact, Object>> operator) {
                 this.symbol = symbol;
                 this.keyword = keyword;
                 this.operator = operator;
             }
 
-            private static Function1<PrototypeFact, Object> add(Prototype prototype, Expression left, Expression right) {
+            private static Function1<PrototypeFact, Object> add(Prototype prototype, PrototypeExpression left, PrototypeExpression right) {
                 return (PrototypeFact fact) -> {
                     Object leftValue = left.asFunction(prototype).apply(fact);
                     Object rightValue = right.asFunction(prototype).apply(fact);
@@ -169,7 +167,7 @@ public class PrototypeExpression {
                 };
             }
 
-            private static Function1<PrototypeFact, Object> sub(Prototype prototype, Expression left, Expression right) {
+            private static Function1<PrototypeFact, Object> sub(Prototype prototype, PrototypeExpression left, PrototypeExpression right) {
                 return (PrototypeFact fact) -> {
                     Object leftValue = left.asFunction(prototype).apply(fact);
                     Object rightValue = right.asFunction(prototype).apply(fact);
@@ -186,7 +184,7 @@ public class PrototypeExpression {
                 };
             }
 
-            private static Function1<PrototypeFact, Object> mul(Prototype prototype, Expression left, Expression right) {
+            private static Function1<PrototypeFact, Object> mul(Prototype prototype, PrototypeExpression left, PrototypeExpression right) {
                 return (PrototypeFact fact) -> {
                     Object leftValue = left.asFunction(prototype).apply(fact);
                     Object rightValue = right.asFunction(prototype).apply(fact);
@@ -201,7 +199,7 @@ public class PrototypeExpression {
                 };
             }
 
-            private static Function1<PrototypeFact, Object> div(Prototype prototype, Expression left, Expression right) {
+            private static Function1<PrototypeFact, Object> div(Prototype prototype, PrototypeExpression left, PrototypeExpression right) {
                 return (PrototypeFact fact) -> {
                     Object leftValue = left.asFunction(prototype).apply(fact);
                     Object rightValue = right.asFunction(prototype).apply(fact);
@@ -242,15 +240,15 @@ public class PrototypeExpression {
             }
         }
 
-        private BinaryOperation(Expression left, Operator op, Expression right) {
+        private BinaryOperation(PrototypeExpression left, Operator op, PrototypeExpression right) {
             this.left = left;
             this.op = op;
             this.right = right;
         }
 
-        private final Expression left;
+        private final PrototypeExpression left;
         private final Operator op;
-        private final Expression right;
+        private final PrototypeExpression right;
 
         @Override
         public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
