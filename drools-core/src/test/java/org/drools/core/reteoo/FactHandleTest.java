@@ -16,11 +16,15 @@
 
 package org.drools.core.reteoo;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 
 public class FactHandleTest {
     /*
@@ -95,4 +99,19 @@ public class FactHandleTest {
                       f0.getId() );
     }
 
+    @Test
+    public void testDefaultFactHandleCreateFromExternalFormat() {
+        // DROOLS-7076
+        String externalFormat = "0:2147483648:171497379:-1361525545:2147483648:null:NON_TRAIT:java.lang.String";
+        final DefaultFactHandle f0 = DefaultFactHandle.createFromExternalFormat(externalFormat);
+        assertThat(f0.getId()).isEqualTo(2147483648L);
+    }
+
+    @Test
+    public void testDisconnectedFactHandleCreateFromExternalFormat() {
+        // DROOLS-7076
+        String externalFormat = "0:2147483648:171497379:-1361525545:2147483648:null:NON_TRAIT:java.lang.String";
+        final DisconnectedFactHandle f0 = new DisconnectedFactHandle(externalFormat);
+        assertThat(f0.getId()).isEqualTo(2147483648L);
+    }
 }
