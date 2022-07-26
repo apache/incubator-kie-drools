@@ -24,7 +24,7 @@ header Efesto Plugin Chaining
 HIDE_STEREOTYPE()
 SHOW_PERSON_PORTRAIT()
 
-System(EfestoFramework, "Efesto Framework", $tags="efesto_framework_style") {
+System(EfestoFramework, "Efesto", $tags="efesto_framework_style") {
     AddElementTag("efesto_framework_style", $bgColor="orange")
     AddElementTag("efesto_plugin_style", $sprite="plug,scale=0.5,color=gray")
     AddRelTag("fast_forward", $lineStyle = DashedLine(), $sprite="fast_forward,scale=0.5")

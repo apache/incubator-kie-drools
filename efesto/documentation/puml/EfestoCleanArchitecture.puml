@@ -22,7 +22,7 @@ header Efesto Clean Architecture
 HIDE_STEREOTYPE()
 SHOW_PERSON_PORTRAIT()
 
-System(EfestoFramework, "Efesto Framework", $tags="efesto_framework_style") {
+System(EfestoFramework, "Efesto", $tags="efesto_framework_style") {
     !include puml_images/Images.puml
     AddElementTag("efesto_framework_style", $bgColor="orange")
     System(EfestoCore,"Efesto Core", $sprite="efesto")
@@ -41,7 +41,7 @@ System(EfestoFramework, "Efesto Framework", $tags="efesto_framework_style") {
 }
 
 AddElementTag("efesto_application_style", $bgColor="lime")
-System(EfestoApplication, "Efesto Application", $tags="efesto_application_style") {
+System(EfestoApplication, "External Application", $tags="efesto_application_style") {
 }
 
 Lay_D(EfestoApplication,EfestoFramework)
