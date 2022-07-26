@@ -15,25 +15,25 @@
  */
 package org.drools.verifier.core.index.keys;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValueNullTest {
 
     @Test
-    public void testNull01() throws Exception {
+    void testNull01() throws Exception {
         assertThat(new Value( null ).compareTo(new Value( null ))).isEqualTo(0);
 
     }
 
     @Test
-    public void testNull02() throws Exception {
+    void testNull02() throws Exception {
         assertThat(new Value( -1 ).compareTo(new Value( 0 )) < 0).isTrue();
     }
 
     @Test
-    public void testNull03() throws Exception {
+    void testNull03() throws Exception {
         assertThat(new Value( 0 ).compareTo(new Value( null )) > 0).isTrue();
 
     }

@@ -15,7 +15,7 @@
  */
 package org.drools.verifier.core.index.keys;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +23,7 @@ public class ValueTest {
 
 
     @Test
-    public void testIntegerVSInteger() throws Exception {
+    void testIntegerVSInteger() throws Exception {
         final Value nroZero = new Value( 0 );
         final Value nroOne = new Value( 1 );
 
@@ -32,7 +32,7 @@ public class ValueTest {
     }
 
     @Test
-    public void testStringVSInteger() throws Exception {
+    void testStringVSInteger() throws Exception {
         final Value hello = new Value( "hello" );
         final Value nroOne = new Value( 1 );
 
@@ -41,7 +41,7 @@ public class ValueTest {
     }
 
     @Test
-    public void testStringVSIntegerString() throws Exception {
+    void testStringVSIntegerString() throws Exception {
         final Value hello = new Value( "hello" );
         final Value nroOne = new Value( "1" );
 
@@ -50,7 +50,7 @@ public class ValueTest {
     }
 
     @Test
-    public void testStringVSString() throws Exception {
+    void testStringVSString() throws Exception {
         final Value a = new Value( "a" );
         final Value b = new Value( "b" );
 

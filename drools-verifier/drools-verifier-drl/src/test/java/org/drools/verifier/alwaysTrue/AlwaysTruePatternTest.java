@@ -24,8 +24,8 @@ import org.drools.verifier.components.*;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.*;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
@@ -38,35 +38,35 @@ import static org.assertj.core.api.Assertions.fail;
 public class AlwaysTruePatternTest extends TestBaseOld {
 
     @Test
-    public void testPatternPossibilities() throws Exception {
+    void testPatternPossibilities() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
 
         session.setGlobal("result",
-                          result);
+                result);
 
         // This pattern is always true.
         Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
 
         Restriction r1 = LiteralRestriction.createRestriction(pattern1,
-                                                              "");
+                "");
         Restriction r2 = LiteralRestriction.createRestriction(pattern1,
-                                                              "");
+                "");
         Opposites o1 = new Opposites(r1,
-                                     r2);
+                r2);
         SubPattern pp1 = new SubPattern(pattern1,
-                                        0);
+                0);
         pp1.add(r1);
         pp1.add(r2);
 
         Restriction r3 = new VariableRestriction(pattern1);
         Restriction r4 = new VariableRestriction(pattern1);
         Opposites o2 = new Opposites(r1,
-                                     r2);
+                r2);
         SubPattern pp2 = new SubPattern(pattern1,
-                                        1);
+                1);
         pp2.add(r1);
         pp2.add(r2);
 
@@ -74,20 +74,20 @@ public class AlwaysTruePatternTest extends TestBaseOld {
         Pattern pattern2 = VerifierComponentMockFactory.createPattern2();
 
         Restriction r5 = LiteralRestriction.createRestriction(pattern2,
-                                                              "");
+                "");
         Restriction r6 = LiteralRestriction.createRestriction(pattern2,
-                                                              "");
+                "");
         SubPattern pp3 = new SubPattern(pattern2,
-                                        0);
+                0);
         pp3.add(r5);
         pp3.add(r6);
 
         Restriction r7 = new VariableRestriction(pattern2);
         Restriction r8 = new VariableRestriction(pattern2);
         Opposites o4 = new Opposites(r7,
-                                     r8);
+                r8);
         SubPattern pp4 = new SubPattern(pattern2,
-                                        1);
+                1);
         pp4.add(r7);
         pp4.add(r8);
 
@@ -144,15 +144,15 @@ public class AlwaysTruePatternTest extends TestBaseOld {
     }
 
     @Test
-    @Ignore
-    public void testPatterns() throws Exception {
+    @Disabled
+    void testPatterns() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
 
         session.setGlobal("result",
-                          result);
+                result);
 
         VerifierRule rule1 = VerifierComponentMockFactory.createRule1();
 
@@ -160,11 +160,11 @@ public class AlwaysTruePatternTest extends TestBaseOld {
         Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
 
         SubPattern pp1 = new SubPattern(pattern1,
-                                        0);
+                0);
         AlwaysTrue alwaysTrue1 = new AlwaysTrue(pp1);
 
         SubPattern pp2 = new SubPattern(pattern1,
-                                        1);
+                1);
         AlwaysTrue alwaysTrue2 = new AlwaysTrue(pp2);
 
         // This pattern is okay.
@@ -172,10 +172,10 @@ public class AlwaysTruePatternTest extends TestBaseOld {
         pattern2.setName("testPattern2");
 
         SubPattern pp3 = new SubPattern(pattern2,
-                                        0);
+                0);
 
         SubPattern pp4 = new SubPattern(pattern2,
-                                        1);
+                1);
         AlwaysTrue alwaysTrue4 = new AlwaysTrue(pp4);
 
         data.add(rule1);

@@ -28,8 +28,8 @@ import org.drools.verifier.core.maps.KeyTreeMap;
 import org.drools.verifier.core.maps.MultiMap;
 import org.drools.verifier.core.maps.MultiMapFactory;
 import org.drools.verifier.core.maps.util.HasKeys;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,7 +56,7 @@ public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
         itemKeyTreeMap.put(item);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.select = new Select<>(makeMap(),
                                    new ExactMatcher(null,
@@ -65,19 +65,19 @@ public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
     }
 
     @Test
-    public void testAll() throws Exception {
+    void testAll() throws Exception {
         final Collection<Item> all = select.all();
 
         assertThat(all.size()).isEqualTo(4);
     }
 
     @Test
-    public void testFirst() throws Exception {
+    void testFirst() throws Exception {
         assertThat(select.first().cost).isEqualTo(0);
     }
 
     @Test
-    public void testLast() throws Exception {
+    void testLast() throws Exception {
         assertThat(select.last().cost).isEqualTo(1200);
     }
 

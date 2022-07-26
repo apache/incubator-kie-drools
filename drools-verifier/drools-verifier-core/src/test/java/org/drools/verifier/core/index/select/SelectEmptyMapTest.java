@@ -20,8 +20,8 @@ import java.util.Collection;
 import org.drools.verifier.core.index.matchers.ExactMatcher;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.MultiMapFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +29,7 @@ public class SelectEmptyMapTest {
 
     private Select<Address> select;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         select = new Select<>(MultiMapFactory.make(),
                               new ExactMatcher(KeyDefinition.newKeyDefinition().withId("name" ).build(),
@@ -37,19 +37,19 @@ public class SelectEmptyMapTest {
     }
 
     @Test
-    public void testAll() throws Exception {
+    void testAll() throws Exception {
         final Collection<Address> all = select.all();
 
         assertThat(all.isEmpty()).isTrue();
     }
 
     @Test
-    public void testFirst() throws Exception {
+    void testFirst() throws Exception {
         assertThat(select.first()).isNull();
     }
 
     @Test
-    public void testLast() throws Exception {
+    void testLast() throws Exception {
         assertThat(select.last()).isNull();
     }
 

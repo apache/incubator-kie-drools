@@ -24,8 +24,8 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 
@@ -36,16 +36,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WarningsTest extends TestBaseOld {
 
     @Test
-    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
-    public void testRedundantRules() throws Exception {
+    @Disabled("08-APR-2011 temporally ignoring -Rikkola-")
+    void testRedundantRules() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("RedundantRules1.drl",
-                                                                           getClass()),
-                                      ResourceType.DRL);
+                        getClass()),
+                ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );

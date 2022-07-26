@@ -28,7 +28,7 @@ import org.drools.verifier.components.StringRestriction;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.fail;
 public class ExprConstraintDescrVisitorTest extends TestBase {
 
     @Test
-    public void testVisitPerson() throws Exception {
+    void testVisitPerson() throws Exception {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("ExprConstraintDescr1.drl"));
 
@@ -65,7 +65,7 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
     }
 
     @Test
-    public void testVisitAnd() throws Exception {
+    void testVisitAnd() throws Exception {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("ExprConstraintDescr2.drl"));
 
@@ -86,7 +86,7 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
     }
 
     @Test
-    public void testVisitVariableRestriction() throws Exception {
+    void testVisitVariableRestriction() throws Exception {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("ExprConstraintDescr3.drl"));
 

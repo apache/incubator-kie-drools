@@ -29,7 +29,7 @@ import org.drools.verifier.report.components.AlwaysTrue;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
@@ -42,26 +42,26 @@ import static org.assertj.core.api.Assertions.fail;
 public class AlwaysTrueRuleTest extends TestBaseOld {
 
     @Test
-    public void testPatternPossibilities() throws Exception {
+    void testPatternPossibilities() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Rules.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
 
         session.setGlobal("result",
-                          result);
+                result);
 
         // This rule is always true.
         VerifierRule rule1 = VerifierComponentMockFactory.createRule1();
         Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
 
         SubRule rp1 = new SubRule(rule1,
-                                  0);
+                0);
         SubPattern pp1 = new SubPattern(pattern1,
-                                        0);
+                0);
         AlwaysTrue alwaysTrue1 = new AlwaysTrue(pp1);
         SubPattern pp2 = new SubPattern(pattern1,
-                                        1);
+                1);
         AlwaysTrue alwaysTrue2 = new AlwaysTrue(pp2);
 
         rp1.add(pp1);
@@ -72,11 +72,11 @@ public class AlwaysTrueRuleTest extends TestBaseOld {
         Pattern pattern2 = VerifierComponentMockFactory.createPattern2();
 
         SubRule rp2 = new SubRule(rule2,
-                                  0);
+                0);
         SubPattern pp3 = new SubPattern(pattern2,
-                                        0);
+                0);
         SubPattern pp4 = new SubPattern(pattern2,
-                                        1);
+                1);
         AlwaysTrue alwaysTrue4 = new AlwaysTrue(pp4);
 
         rp2.add(pp3);
@@ -129,34 +129,34 @@ public class AlwaysTrueRuleTest extends TestBaseOld {
     }
 
     @Test
-    public void testPatterns() throws Exception {
+    void testPatterns() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Rules.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<Object> data = new ArrayList<Object>();
 
         session.setGlobal("result",
-                          result);
+                result);
 
         // This rule is always true.
         VerifierRule rule1 = VerifierComponentMockFactory.createRule1();
 
         SubRule rp1 = new SubRule(rule1,
-                                  0);
+                0);
         AlwaysTrue alwaysTrue1 = new AlwaysTrue(rp1);
 
         SubRule rp2 = new SubRule(rule1,
-                                  1);
+                1);
         AlwaysTrue alwaysTrue2 = new AlwaysTrue(rp2);
 
         // This rule is okay.
         VerifierRule rule2 = VerifierComponentMockFactory.createRule2();
 
         SubRule rp3 = new SubRule(rule2,
-                                  0);
+                0);
 
         SubRule rp4 = new SubRule(rule2,
-                                  1);
+                1);
         AlwaysTrue alwaysTrue4 = new AlwaysTrue(rp4);
 
         data.add(rule1);

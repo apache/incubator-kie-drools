@@ -17,7 +17,7 @@ package org.drools.verifier.core.checks;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +30,7 @@ public class ComparableWrapperTest {
     private final ComparableWrapper max = ComparableWrapper.MAX_VALUE;
 
     @Test
-    public void testSorting() {
+    void testSorting() {
 
         final ComparableWrapper[] unsorted = {one, ten, theNull, max, min};
         final ComparableWrapper[] sorted = {min, theNull, one, ten, max};
@@ -41,7 +41,7 @@ public class ComparableWrapperTest {
     }
 
     @Test
-    public void compareTo() {
+    void compareTo() {
         assertThat(theNull.compareTo(theNull)).isEqualTo(0);
         assertThat(one.compareTo(one)).isEqualTo(0);
         assertThat(ten.compareTo(ten)).isEqualTo(0);

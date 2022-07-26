@@ -24,8 +24,8 @@ import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,8 +33,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CauseTest {
 
     @Test
-    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
-    public void testCauseTrace() throws Exception {
+    @Disabled("08-APR-2011 temporally ignoring -Rikkola-")
+    void testCauseTrace() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -44,9 +44,9 @@ public class CauseTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( new ClassPathResource( "Causes.drl",
-                                                              getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(new ClassPathResource( "Causes.drl",
+                        getClass() ),
+                ResourceType.DRL);
 
         assertThat(verifier.hasErrors()).isFalse();
         assertThat(verifier.getErrors().size()).isEqualTo(0);
@@ -58,12 +58,12 @@ public class CauseTest {
         VerifierReport result = verifier.getResult();
         assertThat(result).isNotNull();
         assertThat(result.getBySeverity(Severity.ERROR).size()).isEqualTo(0);
-        Collection<VerifierMessageBase> warnings = result.getBySeverity( Severity.WARNING );
+        Collection<VerifierMessageBase> warnings = result.getBySeverity(Severity.WARNING);
         Collection<VerifierMessageBase> redundancyWarnings = new ArrayList<VerifierMessageBase>();
 
-        for ( VerifierMessageBase verifierMessageBase : warnings ) {
-            if ( verifierMessageBase.getMessageType().equals( MessageType.REDUNDANCY ) ) {
-                redundancyWarnings.add( verifierMessageBase );
+        for (VerifierMessageBase verifierMessageBase : warnings) {
+            if (verifierMessageBase.getMessageType().equals(MessageType.REDUNDANCY)) {
+                redundancyWarnings.add(verifierMessageBase);
             }
         }
 
@@ -78,22 +78,22 @@ public class CauseTest {
         assertThat(message.getImpactedRules().values().contains("Your First Rule")).isTrue();
         assertThat(message.getImpactedRules().values().contains("Your Second Rule")).isTrue();
 
-        Cause[] causes = message.getCauses().toArray( new Cause[message.getCauses().size()] );
+        Cause[] causes = message.getCauses().toArray(new Cause[message.getCauses().size()]);
 
         assertThat(causes.length).isEqualTo(1);
-        causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
+        causes = causes[0].getCauses().toArray(new Cause[causes[0].getCauses().size()]);
 
         assertThat(causes.length).isEqualTo(2);
 
-        causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
+        causes = causes[0].getCauses().toArray(new Cause[causes[0].getCauses().size()]);
 
         assertThat(causes.length).isEqualTo(1);
 
-        causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
+        causes = causes[0].getCauses().toArray(new Cause[causes[0].getCauses().size()]);
 
         assertThat(causes.length).isEqualTo(1);
 
-        causes = causes[0].getCauses().toArray( new Cause[causes[0].getCauses().size()] );
+        causes = causes[0].getCauses().toArray(new Cause[causes[0].getCauses().size()]);
 
         assertThat(causes.length).isEqualTo(2);
 

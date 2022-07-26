@@ -26,10 +26,11 @@ import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.index.keys.UpdatableKey;
 import org.drools.verifier.core.index.keys.Value;
 import org.drools.verifier.core.maps.util.HasKeys;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +51,7 @@ public class KeyTreeMapTest {
 
     private AnalyzerConfiguration configuration;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         configuration = new AnalyzerConfigurationMock();
@@ -71,42 +72,44 @@ public class KeyTreeMapTest {
     }
 
     @Test
-    public void testFindByUUID() throws
+    void testFindByUUID() throws
             Exception {
         Util.assertMapContent(map.get(UUIDKey.UNIQUE_UUID),
-                              toni.uuidKey,
-                              eder.uuidKey,
-                              michael.uuidKey);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testReAdd() throws
-            Exception {
-        put(toni);
+                toni.uuidKey,
+                eder.uuidKey,
+                michael.uuidKey);
     }
 
     @Test
-    public void testFindByName() throws
+    void testReAdd() throws
+            Exception {
+        assertThrows(IllegalArgumentException.class, () -> {
+            put(toni);
+        });
+    }
+
+    @Test
+    void testFindByName() throws
             Exception {
         Util.assertMapContent(map.get(KeyDefinition.newKeyDefinition()
-                                              .withId("name")
-                                              .build()),
-                              "Toni",
-                              "Eder",
-                              "Michael");
+                        .withId("name")
+                        .build()),
+                "Toni",
+                "Eder",
+                "Michael");
     }
 
     @Test
-    public void testFindByAge() throws
+    void testFindByAge() throws
             Exception {
         final MultiMap<Value, Person, List<Person>> age = map.get(KeyDefinition.newKeyDefinition()
-                                                                          .withId("age")
-                                                                          .build());
+                .withId("age")
+                .build());
 
         Util.assertMapContent(age,
-                              20,
-                              20,
-                              30);
+                20,
+                20,
+                30);
         assertThat(age.get(new Value(20))
                 .contains(toni)).isTrue();
         assertThat(age.get(new Value(20))
@@ -114,7 +117,7 @@ public class KeyTreeMapTest {
     }
 
     @Test
-    public void testUpdateAge() throws
+    void testUpdateAge() throws
             Exception {
         final MultiMapChangeHandler changeHandler = mock(MultiMapChangeHandler.class);
         ((ChangeHandledMultiMap) map.get(AGE)).addChangeListener(changeHandler);
@@ -130,28 +133,28 @@ public class KeyTreeMapTest {
     }
 
     @Test
-    public void testRetract() throws
+    void testRetract() throws
             Exception {
 
         toni.uuidKey.retract();
 
         Util.assertMapContent(map.get(UUIDKey.UNIQUE_UUID),
-                              eder.uuidKey,
-                              michael.uuidKey);
+                eder.uuidKey,
+                michael.uuidKey);
         Util.assertMapContent(map.get(KeyDefinition.newKeyDefinition()
-                                              .withId("name")
-                                              .build()),
-                              "Eder",
-                              "Michael");
+                        .withId("name")
+                        .build()),
+                "Eder",
+                "Michael");
         Util.assertMapContent(map.get(KeyDefinition.newKeyDefinition()
-                                              .withId("age")
-                                              .build()),
-                              20,
-                              30);
+                        .withId("age")
+                        .build()),
+                20,
+                30);
     }
 
     @Test
-    public void testRemoveWhenItemDoesNotExist() throws
+    void testRemoveWhenItemDoesNotExist() throws
             Exception {
         final UUIDKey uuidKey = mock(UUIDKey.class);
         when(uuidKey.getKeyDefinition()).thenReturn(UUIDKey.UNIQUE_UUID);

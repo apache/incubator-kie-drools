@@ -24,27 +24,24 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(Parameterized.class)
 public class ComparableConditionInspectorSubsumptionTest {
 
-    private final Comparable value1;
-    private final Comparable value2;
-    private final String operator1;
-    private final String operator2;
-    private final boolean aSubsumesB;
-    private final boolean bSubsumesA;
-    private final Field field;
+    private Comparable value1;
+    private Comparable value2;
+    private String operator1;
+    private String operator2;
+    private boolean aSubsumesB;
+    private boolean bSubsumesA;
+    private Field field;
 
-    public ComparableConditionInspectorSubsumptionTest(final String operator1,
+    public void initComparableConditionInspectorSubsumptionTest(final String operator1,
                                                        final Comparable value1,
                                                        final String operator2,
                                                        final Comparable value2,
@@ -59,7 +56,6 @@ public class ComparableConditionInspectorSubsumptionTest {
         this.bSubsumesA = bSubsumesA;
     }
 
-    @Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
                 // op1, val1, op2, val2, aSubsumesB, bSubsumesA
@@ -142,24 +138,28 @@ public class ComparableConditionInspectorSubsumptionTest {
         });
     }
 
-    @Test
-    public void testASubsumesB() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testASubsumesB(final String operator1, final Comparable value1, final String operator2, final Comparable value2, final boolean aSubsumesB, final boolean bSubsumesA) {
+        initComparableConditionInspectorSubsumptionTest(operator1, value1, operator2, value2, aSubsumesB, bSubsumesA);
         final ComparableConditionInspector a = getCondition(value1,
-                                                            operator1);
+                operator1);
         final ComparableConditionInspector b = getCondition(value2,
-                                                            operator2);
+                operator2);
 
         assertThat(a.subsumes(b)).as(getAssertDescription(a,
                 b,
                 aSubsumesB)).isEqualTo(aSubsumesB);
     }
 
-    @Test
-    public void testBSubsumesA() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testBSubsumesA(final String operator1, final Comparable value1, final String operator2, final Comparable value2, final boolean aSubsumesB, final boolean bSubsumesA) {
+        initComparableConditionInspectorSubsumptionTest(operator1, value1, operator2, value2, aSubsumesB, bSubsumesA);
         final ComparableConditionInspector a = getCondition(value1,
-                                                            operator1);
+                operator1);
         final ComparableConditionInspector b = getCondition(value2,
-                                                            operator2);
+                operator2);
 
         assertThat(b.subsumes(a)).as(getAssertDescription(b,
                 a,
@@ -170,19 +170,19 @@ public class ComparableConditionInspectorSubsumptionTest {
                                         ComparableConditionInspector b,
                                         boolean subsumptionExpected) {
         return format("Expected condition '%s' %sto subsume condition '%s':",
-                      a.toHumanReadableString(),
-                      subsumptionExpected ? "" : "not ",
-                      b.toHumanReadableString());
+                a.toHumanReadableString(),
+                subsumptionExpected ? "" : "not ",
+                b.toHumanReadableString());
     }
 
     private ComparableConditionInspector getCondition(Comparable value,
                                                       String operator) {
         AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
         return new ComparableConditionInspector(new FieldCondition(field,
-                                                                   mock(Column.class),
-                                                                   operator,
-                                                                   new Values<>(value),
-                                                                   configurationMock),
-                                                configurationMock);
+                        mock(Column.class),
+                        operator,
+                        new Values<>(value),
+                        configurationMock),
+                configurationMock);
     }
 }

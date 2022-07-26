@@ -25,19 +25,19 @@ import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.Index;
 import org.drools.verifier.core.index.IndexImpl;
 import org.drools.verifier.core.index.model.Rule;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RuleInspectorCacheTest {
 
     private RuleInspectorCache cache;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         final Index index = new IndexImpl();
@@ -63,14 +63,14 @@ public class RuleInspectorCacheTest {
     }
 
     @Test
-    public void testInit() throws
+    void testInit() throws
             Exception {
         assertThat(cache.all()
                 .size()).isEqualTo(7);
     }
 
     @Test
-    public void testRemoveRow() throws
+    void testRemoveRow() throws
             Exception {
         cache.removeRow(3);
 
@@ -78,12 +78,12 @@ public class RuleInspectorCacheTest {
         assertThat(all.size()).isEqualTo(6);
 
         assertContainsRowNumbers(all,
-                                 0,
-                                 1,
-                                 2,
-                                 3,
-                                 4,
-                                 5);
+                0,
+                1,
+                2,
+                3,
+                4,
+                5);
     }
 
     private void assertContainsRowNumbers(final Collection<RuleInspector> all,

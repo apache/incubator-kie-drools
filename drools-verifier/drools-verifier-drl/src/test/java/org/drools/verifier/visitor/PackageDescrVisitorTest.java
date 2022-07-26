@@ -34,8 +34,8 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +46,7 @@ public class PackageDescrVisitorTest {
     private VerifierData        verifierData;
     private PackageDescrVisitor packageDescrVisitor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         verifierData = VerifierReportFactory.newVerifierData();
         packageDescrVisitor = new PackageDescrVisitor(verifierData,
@@ -55,7 +55,7 @@ public class PackageDescrVisitorTest {
 
 
     @Test
-    public void testVisit() throws Exception {
+    void testVisit() throws Exception {
 
         PackageDescr packageDescr = getPackageDescr(Verifier.class.getResourceAsStream("Misc3.drl"));
 
@@ -72,7 +72,9 @@ public class PackageDescrVisitorTest {
             System.out.println("-" + verifierComponent);
             if (verifierComponent.getDescr() != null) {
                 System.out.println(" \n\t\t => " + verifierComponent.getDescr().getLine() + ":" + +verifierComponent.getDescr().getEndLine() + " " + verifierComponent.getDescr().getText());
-            } else { System.out.println(" \n\t\t => null for " + verifierComponent.getClass().getSimpleName()); }
+            } else {
+                System.out.println(" \n\t\t => null for " + verifierComponent.getClass().getSimpleName());
+            }
 
             if (names.contains(path)) {
                 fail("Dublicate path " + path);
@@ -87,7 +89,7 @@ public class PackageDescrVisitorTest {
     }
 
     @Test
-    public void testSubPatterns() throws Exception {
+    void testSubPatterns() throws Exception {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("SubPattern.drl"));
 
@@ -110,7 +112,9 @@ public class PackageDescrVisitorTest {
             System.out.println("-" + verifierComponent);
             if (verifierComponent.getDescr() != null) {
                 System.out.println(" \n\t\t => " + verifierComponent.getDescr().getLine() + ":" + +verifierComponent.getDescr().getEndLine() + " " + verifierComponent.getDescr().getText());
-            } else { System.out.println(" \n\t\t => null for " + verifierComponent.getClass().getSimpleName()); }
+            } else {
+                System.out.println(" \n\t\t => null for " + verifierComponent.getClass().getSimpleName());
+            }
 
 
             if (verifierComponent.getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {

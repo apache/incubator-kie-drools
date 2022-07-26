@@ -29,7 +29,7 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.fail;
 public class VerifierTest {
 
     @Test
-    public void testVerifier() {
+    void testVerifier() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
@@ -47,9 +47,9 @@ public class VerifierTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( new ClassPathResource( "Misc3.drl",
-                                                              Verifier.class ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(new ClassPathResource( "Misc3.drl",
+                        Verifier.class ),
+                ResourceType.DRL);
 
         assertThat(verifier.hasErrors()).isFalse();
         assertThat(verifier.getErrors().size()).isEqualTo(0);
@@ -67,7 +67,7 @@ public class VerifierTest {
     }
 
     @Test
-    public void testFactTypesFromJar() {
+    void testFactTypesFromJar() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
@@ -78,17 +78,17 @@ public class VerifierTest {
 
         try {
 
-            JarInputStream jar = new JarInputStream( this.getClass().getResourceAsStream( "model.jar" ) );
+            JarInputStream jar = new JarInputStream( this.getClass().getResourceAsStream("model.jar") );
 
-            verifier.addObjectModel( jar );
+            verifier.addObjectModel(jar);
 
-        } catch ( IOException e ) {
-            fail( e.getMessage() );
+        } catch (IOException e) {
+            fail(e.getMessage());
         }
 
-        verifier.addResourcesToVerify( new ClassPathResource( "imports.drl",
-                                                              Verifier.class ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(new ClassPathResource( "imports.drl",
+                        Verifier.class ),
+                ResourceType.DRL);
 
         assertThat(verifier.hasErrors()).isFalse();
         assertThat(verifier.getErrors().size()).isEqualTo(0);
@@ -99,12 +99,12 @@ public class VerifierTest {
 
         VerifierReport result = verifier.getResult();
 
-        Collection<ObjectType> objectTypes = result.getVerifierData().getAll( VerifierComponentType.OBJECT_TYPE );
+        Collection<ObjectType> objectTypes = result.getVerifierData().getAll(VerifierComponentType.OBJECT_TYPE);
 
         assertThat(objectTypes).isNotNull();
         assertThat(objectTypes.size()).isEqualTo(3);
 
-        Collection<Field> fields = result.getVerifierData().getAll( VerifierComponentType.FIELD );
+        Collection<Field> fields = result.getVerifierData().getAll(VerifierComponentType.FIELD);
 
         assertThat(fields).isNotNull();
         assertThat(fields.size()).isEqualTo(10);
@@ -112,7 +112,7 @@ public class VerifierTest {
     }
 
     @Test
-    public void testFactTypesFromJarAndDeclarations() {
+    void testFactTypesFromJarAndDeclarations() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         // Check that the builder works.
@@ -123,17 +123,17 @@ public class VerifierTest {
 
         try {
 
-            JarInputStream jar = new JarInputStream( this.getClass().getResourceAsStream( "model.jar" ) );
+            JarInputStream jar = new JarInputStream( this.getClass().getResourceAsStream("model.jar") );
 
-            verifier.addObjectModel( jar );
+            verifier.addObjectModel(jar);
 
-        } catch ( IOException e ) {
-            fail( e.getMessage() );
+        } catch (IOException e) {
+            fail(e.getMessage());
         }
 
-        verifier.addResourcesToVerify( new ClassPathResource( "importsAndDeclarations.drl",
-                                                              Verifier.class ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(new ClassPathResource( "importsAndDeclarations.drl",
+                        Verifier.class ),
+                ResourceType.DRL);
 
         assertThat(verifier.hasErrors()).isFalse();
         assertThat(verifier.getErrors().size()).isEqualTo(0);
@@ -144,10 +144,10 @@ public class VerifierTest {
 
         VerifierReport result = verifier.getResult();
 
-        Collection<ObjectType> objectTypes = result.getVerifierData().getAll( VerifierComponentType.OBJECT_TYPE );
+        Collection<ObjectType> objectTypes = result.getVerifierData().getAll(VerifierComponentType.OBJECT_TYPE);
 
-        for ( ObjectType objectType : objectTypes ) {
-            if ( objectType.getName().equals( "VoiceCall" ) ) {
+        for (ObjectType objectType : objectTypes) {
+            if (objectType.getName().equals("VoiceCall")) {
                 assertThat(objectType.getMetadata().keySet().size()).isEqualTo(4);
             }
         }
@@ -155,7 +155,7 @@ public class VerifierTest {
         assertThat(objectTypes).isNotNull();
         assertThat(objectTypes.size()).isEqualTo(4);
 
-        Collection<Field> fields = result.getVerifierData().getAll( VerifierComponentType.FIELD );
+        Collection<Field> fields = result.getVerifierData().getAll(VerifierComponentType.FIELD);
 
         assertThat(fields).isNotNull();
         assertThat(fields.size()).isEqualTo(11);
@@ -163,7 +163,7 @@ public class VerifierTest {
     }
 
     @Test
-    public void testCustomRule() {
+    void testCustomRule() {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -173,26 +173,26 @@ public class VerifierTest {
         assertThat(vBuilder.hasErrors()).isFalse();
         assertThat(vBuilder.getErrors().size()).isEqualTo(0);
 
-        vConfiguration.getVerifyingResources().put( new ClassPathResource( "FindPatterns.drl",
-                                                                           Verifier.class ),
-                                                    ResourceType.DRL );
+        vConfiguration.getVerifyingResources().put(new ClassPathResource( "FindPatterns.drl",
+                        Verifier.class ),
+                ResourceType.DRL);
 
-        Verifier verifier = vBuilder.newVerifier( vConfiguration );
+        Verifier verifier = vBuilder.newVerifier(vConfiguration);
 
-        verifier.addResourcesToVerify( new ClassPathResource( "Misc3.drl",
-                                                              Verifier.class ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(new ClassPathResource( "Misc3.drl",
+                        Verifier.class ),
+                ResourceType.DRL);
 
         assertThat(verifier.hasErrors()).isFalse();
         assertThat(verifier.getErrors().size()).isEqualTo(0);
 
         boolean works = verifier.fireAnalysis();
 
-        if ( !works ) {
-            for ( VerifierError error : verifier.getErrors() ) {
-                System.out.println( error.getMessage() );
+        if (!works) {
+            for (VerifierError error : verifier.getErrors()) {
+                System.out.println(error.getMessage());
             }
-            fail( "Could not run verifier" );
+            fail("Could not run verifier");
         }
         assertThat(works).isTrue();
 
@@ -202,7 +202,7 @@ public class VerifierTest {
         assertThat(result.getBySeverity(Severity.WARNING).size()).isEqualTo(0);
         assertThat(result.getBySeverity(Severity.NOTE).size()).isEqualTo(6);
 
-        for ( VerifierMessageBase m : result.getBySeverity( Severity.NOTE ) ) {
+        for (VerifierMessageBase m : result.getBySeverity(Severity.NOTE)) {
             assertThat(m.getMessage()).isEqualTo("This pattern was found.");
         }
     }

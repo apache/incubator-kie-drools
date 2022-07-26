@@ -57,6 +57,8 @@ import static org.drools.model.PrototypeDSL.field;
 import static org.drools.model.PrototypeDSL.protoPattern;
 import static org.drools.model.PrototypeDSL.prototype;
 import static org.drools.model.PrototypeDSL.variable;
+import static org.drools.model.PrototypeExpression.fixedValue;
+import static org.drools.model.PrototypeExpression.prototypeField;
 import static org.drools.model.codegen.execmodel.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
 
@@ -108,6 +110,38 @@ public class FactTemplateTest {
 
         ksession.update(fh, mark, "age", "name");
         // saying to the engine that also name is changed to check if this time the update is processed as it should
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testExpressionAlphaConstraint() {
+        // DROOLS-7075
+        Prototype testPrototype = prototype( "test" );
+        PrototypeVariable testV = variable(testPrototype);
+
+        Rule rule = rule( "alpha" )
+                .build(
+                        protoPattern(testV)
+                                .expr( prototypeField("fieldA"), Index.ConstraintType.EQUAL,
+                                        prototypeField("fieldB").add(prototypeField("fieldC")).sub(fixedValue(1)) ),
+                        on(testV).execute((drools, x) ->
+                            drools.insert(new Result("Found"))
+                        )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact testFact = createMapBasedFact(testPrototype);
+        testFact.set( "fieldA", 12 );
+        testFact.set( "fieldB", 8 );
+
+        FactHandle fh = ksession.insert( testFact );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        testFact.set( "fieldC", 5 );
+        ksession.update(fh, testFact, "fieldC");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
@@ -197,6 +231,44 @@ public class FactTemplateTest {
 
         ksession.fireAllRules();
         assertThat(result.getValue()).isEqualTo("Edson is older than Mark");
+    }
+
+
+    @Test
+    public void testExpressionBetaConstraint() {
+        // DROOLS-7075
+        Prototype testPrototype = prototype( "test" );
+        PrototypeVariable test1V = variable(testPrototype);
+        PrototypeVariable test2V = variable(testPrototype);
+
+        Rule rule = rule( "beta" )
+                .build(
+                        protoPattern(test1V),
+                        protoPattern(test2V)
+                                .expr( prototypeField("fieldA"), Index.ConstraintType.EQUAL, test1V,
+                                        prototypeField("fieldB").add(prototypeField("fieldC")).sub(fixedValue(1)) ),
+                        on(test1V, test2V).execute((drools, x, y) ->
+                                drools.insert(new Result("Found"))
+                        )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact testFact1 = createMapBasedFact(testPrototype);
+        testFact1.set( "fieldA", 12 );
+        FactHandle fh1 = ksession.insert( testFact1 );
+
+        Fact testFact2 = createMapBasedFact(testPrototype);
+        testFact2.set( "fieldB", 8 );
+        FactHandle fh2 = ksession.insert( testFact2 );
+
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        testFact2.set( "fieldC", 5 );
+        ksession.update(fh2, testFact2, "fieldC");
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test

@@ -24,8 +24,8 @@ import org.drools.verifier.core.index.keys.UpdatableKey;
 import org.drools.verifier.core.index.keys.Value;
 import org.drools.verifier.core.maps.util.HasIndex;
 import org.drools.verifier.core.maps.util.HasKeys;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,7 +39,7 @@ public class IndexedKeyTreeMapTest {
     private Person eder;
     private Person michael;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         map = new IndexedKeyTreeMap<>(NAME_KEY_DEFINITION,
                                       AGE_KEY_DEFINITION);
@@ -58,17 +58,17 @@ public class IndexedKeyTreeMapTest {
     }
 
     @Test
-    public void testIndexOrder() throws Exception {
+    void testIndexOrder() throws Exception {
         assertThat(map.get(IndexKey.INDEX_ID).get(new Value(0)).iterator().next()).isEqualTo(toni);
         assertThat(map.get(IndexKey.INDEX_ID).get(new Value(1)).iterator().next()).isEqualTo(eder);
         assertThat(map.get(IndexKey.INDEX_ID).get(new Value(2)).iterator().next()).isEqualTo(michael);
     }
 
     @Test
-    public void testAddToMiddle() throws Exception {
+    void testAddToMiddle() throws Exception {
 
         final Person smurf = new Person("Smurf",
-                                        55);
+                55);
 
         map.put(smurf,
                 1);
@@ -81,7 +81,7 @@ public class IndexedKeyTreeMapTest {
     }
 
     @Test
-    public void testRemove() throws Exception {
+    void testRemove() throws Exception {
 
         // Removing one by one to check the index stays on track.
 
@@ -97,7 +97,7 @@ public class IndexedKeyTreeMapTest {
     }
 
     @Test
-    public void testUpdateAge() throws Exception {
+    void testUpdateAge() throws Exception {
         toni.setAge(100);
 
         assertThat(toni.getAge()).isEqualTo(100);

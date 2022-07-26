@@ -15,7 +15,7 @@
  */
 package org.drools.verifier.core.index.keys;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,10 +23,10 @@ public class ValuesTest {
 
 
     @Test
-    public void testNull() throws
-                           Exception {
+    void testNull() throws
+            Exception {
         final Values<Comparable> values = new Values<>();
-        values.add( null );
+        values.add(null);
 
         assertThat(values.isEmpty()).isFalse();
         assertThat(values.iterator()
@@ -34,8 +34,8 @@ public class ValuesTest {
     }
 
     @Test
-    public void testChanges() throws
-                              Exception {
+    void testChanges() throws
+            Exception {
         final Values a = new Values();
         final Values b = new Values();
 

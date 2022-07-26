@@ -24,26 +24,23 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(Parameterized.class)
 public class BooleanConditionInspectorTest {
 
-    private final boolean value1;
-    private final boolean value2;
-    private final String operator1;
-    private final String operator2;
-    private final boolean conflictExpected;
-    private final Field field;
+    private boolean value1;
+    private boolean value2;
+    private String operator1;
+    private String operator2;
+    private boolean conflictExpected;
+    private Field field;
 
-    public BooleanConditionInspectorTest(String operator1,
+    public void initBooleanConditionInspectorTest(String operator1,
                                          boolean value1,
                                          String operator2,
                                          boolean value2,
@@ -56,8 +53,10 @@ public class BooleanConditionInspectorTest {
         this.conflictExpected = conflictExpected;
     }
 
-    @Test
-    public void parametrizedConflictTest() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void parametrizedConflictTest(String operator1, boolean value1, String operator2, boolean value2, boolean conflictExpected) {
+        initBooleanConditionInspectorTest(operator1, value1, operator2, value2, conflictExpected);
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
@@ -65,8 +64,10 @@ public class BooleanConditionInspectorTest {
         assertThat(b.conflicts(a)).as(getAssertDescription(b, a, conflictExpected, "conflict")).isEqualTo(conflictExpected);
     }
 
-    @Test
-    public void parametrizedRedundancyTest() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void parametrizedRedundancyTest(String operator1, boolean value1, String operator2, boolean value2, boolean conflictExpected) {
+        initBooleanConditionInspectorTest(operator1, value1, operator2, value2, conflictExpected);
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
@@ -74,8 +75,10 @@ public class BooleanConditionInspectorTest {
         assertThat(b.isRedundant(a)).as(getAssertDescription(b, a, !conflictExpected, "be redundant")).isEqualTo(!conflictExpected);
     }
 
-    @Test
-    public void parametrizedOverlapTest() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void parametrizedOverlapTest(String operator1, boolean value1, String operator2, boolean value2, boolean conflictExpected) {
+        initBooleanConditionInspectorTest(operator1, value1, operator2, value2, conflictExpected);
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
@@ -83,8 +86,10 @@ public class BooleanConditionInspectorTest {
         assertThat(b.overlaps(a)).as(getAssertDescription(b, a, !conflictExpected, "overlap")).isEqualTo(!conflictExpected);
     }
 
-    @Test
-    public void parametrizedSubsumptionTest() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void parametrizedSubsumptionTest(String operator1, boolean value1, String operator2, boolean value2, boolean conflictExpected) {
+        initBooleanConditionInspectorTest(operator1, value1, operator2, value2, conflictExpected);
         BooleanConditionInspector a = getCondition(value1, operator1);
         BooleanConditionInspector b = getCondition(value2, operator2);
 
@@ -92,7 +97,6 @@ public class BooleanConditionInspectorTest {
         assertThat(b.subsumes(a)).as(getAssertDescription(b, a, !conflictExpected, "be subsuming")).isEqualTo(!conflictExpected);
     }
 
-    @Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
                 {"!=", true, "!=", true, false},
@@ -110,16 +114,16 @@ public class BooleanConditionInspectorTest {
                                         boolean conditionExpected,
                                         String condition) {
         return format("Expected conditions '%s' and '%s' %sto %s:",
-                      a.toHumanReadableString(),
-                      b.toHumanReadableString(),
-                      conditionExpected ? "" : "not ",
-                      condition);
+                a.toHumanReadableString(),
+                b.toHumanReadableString(),
+                conditionExpected ? "" : "not ",
+                condition);
     }
 
     private BooleanConditionInspector getCondition(boolean value,
                                                    String operator) {
         return new BooleanConditionInspector(new FieldCondition<>(field, mock(Column.class), operator, new Values<>(value),
-                                                                  new AnalyzerConfigurationMock()),
-                                             new AnalyzerConfigurationMock());
+                        new AnalyzerConfigurationMock()),
+                new AnalyzerConfigurationMock());
     }
 }

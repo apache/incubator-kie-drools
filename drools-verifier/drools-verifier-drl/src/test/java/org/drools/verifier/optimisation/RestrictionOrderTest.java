@@ -29,7 +29,7 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,12 +38,12 @@ import static org.assertj.core.api.Assertions.fail;
 public class RestrictionOrderTest extends TestBaseOld {
 
     @Test
-    public void testRestrictionOrderInsideOperator() throws Exception {
+    void testRestrictionOrderInsideOperator() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("RestrictionOrder.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("OptimisationRestrictionOrderTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         //        for ( Object object : testData ) {
         //            if ( object instanceof SubPattern ) {
@@ -56,7 +56,7 @@ public class RestrictionOrderTest extends TestBaseOld {
         //        }
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);
@@ -85,15 +85,15 @@ public class RestrictionOrderTest extends TestBaseOld {
     }
 
     @Test
-    public void testPredicateOrderInsideOperator() throws Exception {
+    void testPredicateOrderInsideOperator() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("RestrictionOrder.drl"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("OptimisationRestrictionOrderTest.drl"),
-                                                            result.getVerifierData());
+                result.getVerifierData());
 
         session.setGlobal("result",
-                          result);
+                result);
 
         for (Object o : testData) {
             session.insert(o);

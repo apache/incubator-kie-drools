@@ -17,19 +17,19 @@
 package org.drools.verifier.components;
 
 import org.drools.verifier.VerifierComponentMockFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LiteralRestrictionTest {
 
     @Test
-    public void testSetValue() {
+    void testSetValue() {
 
         Pattern pattern1 = VerifierComponentMockFactory.createPattern1();
 
         LiteralRestriction literalBooleanRestriction = LiteralRestriction.createRestriction(pattern1,
-                                                                                            "true");
+                "true");
 
         assertThat(literalBooleanRestriction instanceof BooleanRestriction).isTrue();
 
@@ -39,7 +39,7 @@ public class LiteralRestrictionTest {
         assertThat(booleanRestriction.getValue()).isEqualTo(true);
 
         LiteralRestriction intLiteralRestriction = LiteralRestriction.createRestriction(pattern1,
-                                                                                        "1");
+                "1");
         assertThat(intLiteralRestriction instanceof NumberRestriction).isTrue();
         NumberRestriction intRestriction = (NumberRestriction) intLiteralRestriction;
 
@@ -48,7 +48,7 @@ public class LiteralRestrictionTest {
         assertThat(intRestriction.getValue()).isEqualTo(1);
 
         LiteralRestriction doubleLiteralRestriction = LiteralRestriction.createRestriction(pattern1,
-                                                                                           "1.0");
+                "1.0");
         assertThat(doubleLiteralRestriction instanceof NumberRestriction).isTrue();
 
         NumberRestriction doubleRestriction = (NumberRestriction) doubleLiteralRestriction;
@@ -57,7 +57,7 @@ public class LiteralRestrictionTest {
         assertThat(doubleRestriction.getValue()).isEqualTo(1.0);
 
         LiteralRestriction dateLiteralRestriction = LiteralRestriction.createRestriction(pattern1,
-                                                                                         "11-jan-2008");
+                "11-jan-2008");
 
         assertThat(dateLiteralRestriction instanceof DateRestriction).isTrue();
 
@@ -66,13 +66,13 @@ public class LiteralRestrictionTest {
         assertThat(dateRestriction.getValueType()).isEqualTo(Field.DATE);
 
         LiteralRestriction stringRestriction = LiteralRestriction.createRestriction(pattern1,
-                                                                                    "test test");
+                "test test");
 
         assertThat(stringRestriction.getValueType()).isEqualTo(Field.STRING);
         assertThat(stringRestriction.getValueAsString()).isEqualTo("test test");
 
         LiteralRestriction nullRestriction = LiteralRestriction.createRestriction(pattern1,
-                                                                                  null);
+                null);
 
         assertThat(nullRestriction instanceof StringRestriction).isTrue();
 

@@ -18,13 +18,13 @@ package org.drools.verifier.misc;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DrlRuleDataTest {
     @Test
-    public void testHandleDrl() {
+    void testHandleDrl() {
         String drl = "rule \"Something\" \n ";
         drl += "dialect \"Java\" \n ";
         drl += "	when \n ";
@@ -46,7 +46,7 @@ public class DrlRuleDataTest {
     }
 
     @Test
-    public void testHandleDrlNoLineBreaks() {
+    void testHandleDrlNoLineBreaks() {
         String drl = "rule \"CreditScoreApproval\" \n";
         drl += "	dialect \"mvel\" \n";
         drl += "	when    then";
@@ -66,7 +66,7 @@ public class DrlRuleDataTest {
     }
 
     @Test
-    public void testHandleDrlWithComment() {
+    void testHandleDrlWithComment() {
         String drl = "# Really important information about this rule \n";
         drl += "# Another line because one was not enough \n";
         drl += "#  \n";

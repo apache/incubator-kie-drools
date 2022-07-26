@@ -21,9 +21,9 @@ import java.util.Collection;
 import java.util.jar.JarInputStream;
 
 import org.drools.verifier.Verifier;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -33,13 +33,13 @@ public class PackageHeaderLoaderTest {
 
     private ArrayList<JarInputStream> jarInputStreams;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         jarInputStreams = new ArrayList<JarInputStream>();
         jarInputStreams.add(new JarInputStream(Verifier.class.getResourceAsStream("model.jar")));
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         for (JarInputStream jarInputStream : jarInputStreams) {
             jarInputStream.close();
@@ -47,7 +47,7 @@ public class PackageHeaderLoaderTest {
     }
 
     @Test
-    public void testListAddressAndPetImport() throws Exception {
+    void testListAddressAndPetImport() throws Exception {
 
         PackageHeaderLoader packageHeaderLoader = getPackageHeaderLoader("org.test.Rambo", "org.test.Pet");
 
@@ -59,7 +59,7 @@ public class PackageHeaderLoaderTest {
     }
 
     @Test
-    public void testListFewClassesThatDoNotExist() throws Exception {
+    void testListFewClassesThatDoNotExist() throws Exception {
         PackageHeaderLoader packageHeaderLoader = getPackageHeaderLoader("org.test.Rambo", "i.do.not.Exist", "me.Neither");
 
         Collection<String> classNames = packageHeaderLoader.getClassNames();
@@ -70,7 +70,7 @@ public class PackageHeaderLoaderTest {
     }
 
     @Test
-    public void testListFields() throws Exception {
+    void testListFields() throws Exception {
         PackageHeaderLoader packageHeaderLoader = getPackageHeaderLoader("org.test.Person");
 
         Collection<String> fieldNames = packageHeaderLoader.getFieldNames("org.test.Person");

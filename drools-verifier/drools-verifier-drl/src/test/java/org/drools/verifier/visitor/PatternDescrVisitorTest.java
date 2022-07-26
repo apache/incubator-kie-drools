@@ -18,7 +18,7 @@ package org.drools.verifier.visitor;
 
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.verifier.TestBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +26,7 @@ public class PatternDescrVisitorTest extends TestBase {
 
 
     @Test
-    public void testVisitFieldVariableRestriction() throws Exception {
+    void testVisitFieldVariableRestriction() throws Exception {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("PatternDescrVisitorTest.drl"));
 
@@ -41,7 +41,7 @@ public class PatternDescrVisitorTest extends TestBase {
     }
 
     @Test
-    public void testVisitPatternVariableRestriction() throws Exception {
+    void testVisitPatternVariableRestriction() throws Exception {
 
         PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("PatternDescrVisitorTest2.drl"));
 

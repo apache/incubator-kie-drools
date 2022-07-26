@@ -25,14 +25,11 @@ import org.drools.verifier.core.index.matchers.Matcher;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.MultiMap;
 import org.drools.verifier.core.maps.MultiMapFactory;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith( Parameterized.class )
 public class SelectExactMatcherNegateTest {
 
     private int          amount;
@@ -43,58 +40,63 @@ public class SelectExactMatcherNegateTest {
     private MultiMap<Value, Item, List<Item>> makeMap() {
         final MultiMap<Value, Item, List<Item>> itemKeyTreeMap = MultiMapFactory.make();
 
-        itemKeyTreeMap.put( new Value( null ),
-                            new Item( null ) );
-        itemKeyTreeMap.put( new Value( 0 ),
-                            new Item( 0 ) );
-        itemKeyTreeMap.put( new Value( 56 ),
-                            new Item( 56 ) );
-        itemKeyTreeMap.put( new Value( 100 ),
-                            new Item( 100 ) );
-        itemKeyTreeMap.put( new Value( 1200 ),
-                            new Item( 1200 ) );
+        itemKeyTreeMap.put(new Value( null ),
+                new Item( null ));
+        itemKeyTreeMap.put(new Value( 0 ),
+                new Item( 0 ));
+        itemKeyTreeMap.put(new Value( 56 ),
+                new Item( 56 ));
+        itemKeyTreeMap.put(new Value( 100 ),
+                new Item( 100 ));
+        itemKeyTreeMap.put(new Value( 1200 ),
+                new Item( 1200 ));
         return itemKeyTreeMap;
     }
 
-    public SelectExactMatcherNegateTest( final int amount,
+    public void initSelectExactMatcherNegateTest(final int amount,
                                          final Object firstValue,
                                          final Object lastValue,
-                                         final Matcher matcher ) throws Exception {
+                                         final Matcher matcher) throws Exception {
 
         this.firstValue = firstValue;
         this.lastValue = lastValue;
         this.amount = amount;
         this.select = new Select<>( makeMap(),
-                                    matcher );
+                matcher );
     }
 
-    @Parameterized.Parameters
     public static Collection<Object[]> testData() {
-        return Arrays.asList( new Object[][]{
-                {5, null, 1200, new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "cost" ).build(),
-                                                  13,
-                                                  true )},
-                {4, 0, 1200, new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "cost" ).build(),
-                                               null,
-                                               true )},
-        } );
+        return Arrays.asList(new Object[][]{
+                {5, null, 1200, new ExactMatcher( KeyDefinition.newKeyDefinition().withId("cost").build(),
+                        13,
+                        true )},
+                {4, 0, 1200, new ExactMatcher( KeyDefinition.newKeyDefinition().withId("cost").build(),
+                        null,
+                        true )},
+        });
     }
 
 
-    @Test
-    public void testAll() throws Exception {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testAll(final int amount, final Object firstValue, final Object lastValue, final Matcher matcher) throws Exception {
+        initSelectExactMatcherNegateTest(amount, firstValue, lastValue, matcher);
         final Collection<Item> all = select.all();
 
         assertThat(all.size()).isEqualTo(amount);
     }
 
-    @Test
-    public void testFirst() throws Exception {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testFirst(final int amount, final Object firstValue, final Object lastValue, final Matcher matcher) throws Exception {
+        initSelectExactMatcherNegateTest(amount, firstValue, lastValue, matcher);
         assertThat(select.first().cost).isEqualTo(firstValue);
     }
 
-    @Test
-    public void testLast() throws Exception {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testLast(final int amount, final Object firstValue, final Object lastValue, final Matcher matcher) throws Exception {
+        initSelectExactMatcherNegateTest(amount, firstValue, lastValue, matcher);
         assertThat(select.last().cost).isEqualTo(lastValue);
     }
 
@@ -102,7 +104,7 @@ public class SelectExactMatcherNegateTest {
 
         private Integer cost;
 
-        public Item( final Integer cost ) {
+        public Item(final Integer cost) {
             this.cost = cost;
         }
     }

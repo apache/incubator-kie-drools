@@ -23,8 +23,8 @@ import org.drools.verifier.core.index.matchers.ExactMatcher;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.MultiMap;
 import org.drools.verifier.core.maps.MultiMapFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +35,7 @@ public class ListenAllTest {
     private MultiMap<Value, String, List<String>> map;
     private Collection<String>                    all;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         map = MultiMapFactory.make(true );
 
@@ -52,14 +52,14 @@ public class ListenAllTest {
     }
 
     @Test
-    public void testEmpty() throws Exception {
+    void testEmpty() throws Exception {
         assertThat(all).isNull();
     }
 
     @Test
-    public void testAll() throws Exception {
-        map.put( new Value( "value" ),
-                 "hello" );
+    void testAll() throws Exception {
+        map.put(new Value( "value" ),
+                "hello");
 
         assertThat(all.contains("hello")).isTrue();
     }

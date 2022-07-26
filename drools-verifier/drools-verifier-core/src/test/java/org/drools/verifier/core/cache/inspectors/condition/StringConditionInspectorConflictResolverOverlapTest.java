@@ -24,27 +24,24 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(Parameterized.class)
 public class StringConditionInspectorConflictResolverOverlapTest {
 
-    private final Values value1;
-    private final Values value2;
-    private final String operator1;
-    private final String operator2;
-    private final boolean conflictExpected;
-    private final boolean overlapExpected;
-    private final Field field;
+    private Values value1;
+    private Values value2;
+    private String operator1;
+    private String operator2;
+    private boolean conflictExpected;
+    private boolean overlapExpected;
+    private Field field;
 
-    public StringConditionInspectorConflictResolverOverlapTest(String operator1,
+    public void initStringConditionInspectorConflictResolverOverlapTest(String operator1,
                                                                Values value1,
                                                                String operator2,
                                                                Values value2,
@@ -59,7 +56,6 @@ public class StringConditionInspectorConflictResolverOverlapTest {
         this.overlapExpected = overlapExpected;
     }
 
-    @Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
                 // matches and soundslike are probably not doable...
@@ -71,11 +67,11 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                 {"<", new Values("a"), "<", new Values("a"), false, false},
                 {"<=", new Values("a"), "<=", new Values("a"), false, false},
                 {"in", new Values("a",
-                                  "b"), "in", new Values("a",
-                                                         "b"), false, true},
+                        "b"), "in", new Values("a",
+                        "b"), false, true},
                 {"not in", new Values("a",
-                                      "b"), "not in", new Values("a",
-                                                                 "b"), false, true},
+                        "b"), "not in", new Values("a",
+                        "b"), false, true},
                 {"matches", new Values("a"), "matches", new Values("a"), false, true},
                 {"soundslike", new Values("a"), "soundslike", new Values("a"), false, true},
 
@@ -85,10 +81,10 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                 {"==", new Values("a"), "<", new Values("b"), false, false},
                 {"==", new Values("a"), "<=", new Values("a"), false, false},
                 {"==", new Values("a"), "in", new Values("a",
-                                                         "b"), false, true},
+                        "b"), false, true},
                 {"==", new Values("a"), "not in", new Values("b",
-                                                             "c",
-                                                             "d"), false, true},
+                        "c",
+                        "d"), false, true},
                 {"==", new Values("a"), "matches", new Values("a"), false, true},
                 {"==", new Values("a"), "soundslike", new Values("a"), false, true},
 
@@ -98,10 +94,10 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                 {"==", new Values("a"), "<", new Values("a"), false, false},
                 {"==", new Values("a"), "<=", new Values(" "), false, false},
                 {"==", new Values("a"), "in", new Values("b",
-                                                         "c",
-                                                         "d"), true, false},
+                        "c",
+                        "d"), true, false},
                 {"==", new Values("a"), "not in", new Values("a",
-                                                             "b"), true, false},
+                        "b"), true, false},
                 {"==", new Values("a"), "matches", new Values("a"), false, true},
                 {"==", new Values("a"), "soundslike", new Values("a"), false, true},
 
@@ -111,13 +107,13 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                 {"!=", new Values("a"), "<", new Values("a"), false, false},
                 {"!=", new Values("a"), "<=", new Values("a"), false, false},
                 {"!=", new Values("a"), "in", new Values("a",
-                                                         "b"), false, true},
+                        "b"), false, true},
                 {"!=", new Values("a"), "in", new Values("b",
-                                                         "c",
-                                                         "d"), false, true},
+                        "c",
+                        "d"), false, true},
                 {"!=", new Values("a"), "not in", new Values("b",
-                                                             "c",
-                                                             "d"), false, true},
+                        "c",
+                        "d"), false, true},
                 {"!=", new Values("a"), "matches", new Values("a"), true, false},
                 {"!=", new Values("a"), "soundslike", new Values("a"), true, false},
 
@@ -130,20 +126,20 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                 {">", new Values("a"), "<", new Values("c"), false, false},
                 {">", new Values("a"), "<=", new Values("a"), false, false},
                 {">", new Values("a"), "in", new Values("a",
-                                                        "b"), false, false},
+                        "b"), false, false},
                 {">", new Values("a"), "not in", new Values("b",
-                                                            "c",
-                                                            "d"), false, false},
+                        "c",
+                        "d"), false, false},
                 {">", new Values("a"), "matches", new Values("a"), false, false},
                 {">", new Values("a"), "soundslike", new Values("a"), false, false},
 
                 {">", new Values("a"), "<", new Values("a"), false, false},
                 {">", new Values("a"), "<=", new Values("a"), false, false},
                 {">", new Values("a"), "in", new Values("0",
-                                                        "1",
-                                                        "A",
-                                                        "B",
-                                                        "a"), false, false},
+                        "1",
+                        "A",
+                        "B",
+                        "a"), false, false},
                 {">", new Values("a"), "matches", new Values("a"), false, false},
                 {">", new Values("a"), "soundslike", new Values(""), false, false},
 
@@ -152,86 +148,86 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                 {">=", new Values("a"), "<=", new Values("a"), false, false},
                 {">=", new Values("a"), "in", new Values("a"), false, false},
                 {">=", new Values("a"), "not in", new Values("b",
-                                                             "c",
-                                                             "d"), false, false},
+                        "c",
+                        "d"), false, false},
                 {">=", new Values("a"), "matches", new Values("a"), false, false},
                 {">=", new Values("a"), "soundslike", new Values("a"), false, false},
 
                 {">=", new Values("a"), "<", new Values(" "), false, false},
                 {">=", new Values("a"), "<=", new Values(" "), false, false},
                 {">=", new Values("a"), "in", new Values("0",
-                                                         "1",
-                                                         "A",
-                                                         "B"), false, false},
+                        "1",
+                        "A",
+                        "B"), false, false},
                 {">=", new Values("a"), "matches", new Values("A"), false, false},
                 {">=", new Values("a"), "soundslike", new Values(""), false, false},
 
                 {"<", new Values("a"), "<", new Values("a"), false, false},
                 {"<", new Values("a"), "<=", new Values("a"), false, false},
                 {"<", new Values("a"), "in", new Values("A",
-                                                        "B",
-                                                        "a",
-                                                        "b"), false, false},
+                        "B",
+                        "a",
+                        "b"), false, false},
                 {"<", new Values("a"), "not in", new Values("b",
-                                                            "c",
-                                                            "d"), false, false},
+                        "c",
+                        "d"), false, false},
                 {"<", new Values("a"), "matches", new Values("A"), false, false},
                 {"<", new Values("a"), "soundslike", new Values(""), false, false},
 
                 {"<", new Values("a"), "in", new Values("b",
-                                                        "c",
-                                                        "d"), false, false},
+                        "c",
+                        "d"), false, false},
                 {"<", new Values("a"), "matches", new Values("a"), false, false},
                 {"<", new Values("a"), "soundslike", new Values("a"), false, false},
 
                 {"<=", new Values("a"), "<=", new Values("a"), false, false},
                 {"<=", new Values("a"), "in", new Values("A",
-                                                         "B",
-                                                         "a",
-                                                         "b"), false, false},
+                        "B",
+                        "a",
+                        "b"), false, false},
                 {"<=", new Values("a"), "not in", new Values("b",
-                                                             "c",
-                                                             "d"), false, false},
+                        "c",
+                        "d"), false, false},
                 {"<=", new Values("a"), "matches", new Values("A"), false, false},
                 {"<=", new Values("a"), "soundslike", new Values(""), false, false},
 
                 {"<=", new Values("a"), "in", new Values("b",
-                                                         "c",
-                                                         "d"), false, false},
+                        "c",
+                        "d"), false, false},
                 {"<=", new Values("a"), "matches", new Values("a"), false, false},
                 {"<=", new Values("a"), "soundslike", new Values("a"), false, false},
 
                 {"in", new Values("a",
-                                  "b"), "in", new Values("b",
-                                                         "c",
-                                                         "d"), false, true},
+                        "b"), "in", new Values("b",
+                        "c",
+                        "d"), false, true},
                 {"in", new Values("a",
-                                  "b"), "not in", new Values("b",
-                                                             "c",
-                                                             "d"), false, true},
+                        "b"), "not in", new Values("b",
+                        "c",
+                        "d"), false, true},
                 {"in", new Values("a",
-                                  "b"), "matches", new Values("a"), false, true},
+                        "b"), "matches", new Values("a"), false, true},
                 {"in", new Values("a",
-                                  "b"), "soundslike", new Values("a"), false, true},
+                        "b"), "soundslike", new Values("a"), false, true},
 
                 {"in", new Values("a",
-                                  "b"), "in", new Values("c",
-                                                         "d"), true, false},
+                        "b"), "in", new Values("c",
+                        "d"), true, false},
                 {"in", new Values("a",
-                                  "b"), "not in", new Values("a",
-                                                             "b"), true, false},
+                        "b"), "not in", new Values("a",
+                        "b"), true, false},
                 {"in", new Values("a",
-                                  "b"), "matches", new Values("c"), true, false},
+                        "b"), "matches", new Values("c"), true, false},
                 {"in", new Values("a",
-                                  "b"), "soundslike", new Values("c"), true, false},
+                        "b"), "soundslike", new Values("c"), true, false},
 
                 {"not in", new Values("a",
-                                      "b"), "matches", new Values("c"), false, true},
+                        "b"), "matches", new Values("c"), false, true},
                 {"not in", new Values("a",
-                                      "b"), "soundslike", new Values("c"), false, true},
+                        "b"), "soundslike", new Values("c"), false, true},
 
                 {"not in", new Values("a",
-                                      "b"), "matches", new Values("a"), true, false},
+                        "b"), "matches", new Values("a"), true, false},
 
                 {"matches", new Values("a"), "soundslike", new Values("a"), false, true},
 
@@ -239,12 +235,14 @@ public class StringConditionInspectorConflictResolverOverlapTest {
         });
     }
 
-    @Test
-    public void parametrizedConflictTest() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void parametrizedConflictTest(String operator1, Values value1, String operator2, Values value2, boolean conflictExpected, boolean overlapExpected) {
+        initStringConditionInspectorConflictResolverOverlapTest(operator1, value1, operator2, value2, conflictExpected, overlapExpected);
         StringConditionInspector a = getCondition(value1,
-                                                  operator1);
+                operator1);
         StringConditionInspector b = getCondition(value2,
-                                                  operator2);
+                operator2);
 
         boolean conflicts = a.conflicts(b);
         assertThat(conflicts).as(getAssertDescription(a,
@@ -258,12 +256,14 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                 "conflict")).isEqualTo(conflictExpected);
     }
 
-    @Test
-    public void parametrizedOverlapTest() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void parametrizedOverlapTest(String operator1, Values value1, String operator2, Values value2, boolean conflictExpected, boolean overlapExpected) {
+        initStringConditionInspectorConflictResolverOverlapTest(operator1, value1, operator2, value2, conflictExpected, overlapExpected);
         StringConditionInspector a = getCondition(value1,
-                                                  operator1);
+                operator1);
         StringConditionInspector b = getCondition(value2,
-                                                  operator2);
+                operator2);
 
         boolean overlaps = a.overlaps(b);
         assertThat(overlaps).as(getAssertDescription(a,
@@ -281,11 +281,11 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                                                   final String operator) {
         AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
         return new StringConditionInspector(new FieldCondition<>(field,
-                                                                 mock(Column.class),
-                                                                 operator,
-                                                                 values,
-                                                                 configurationMock),
-                                            configurationMock);
+                        mock(Column.class),
+                        operator,
+                        values,
+                        configurationMock),
+                configurationMock);
     }
 
     private String getAssertDescription(StringConditionInspector a,
@@ -293,9 +293,9 @@ public class StringConditionInspectorConflictResolverOverlapTest {
                                         boolean conflictExpected,
                                         String condition) {
         return format("Expected condition '%s' %sto %s with condition '%s':",
-                      a.toHumanReadableString(),
-                      conflictExpected ? "" : "not ",
-                      condition,
-                      b.toHumanReadableString());
+                a.toHumanReadableString(),
+                conflictExpected ? "" : "not ",
+                condition,
+                b.toHumanReadableString());
     }
 }

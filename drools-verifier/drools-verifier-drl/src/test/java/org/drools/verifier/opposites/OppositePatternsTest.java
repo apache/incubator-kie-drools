@@ -32,7 +32,7 @@ import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Opposites;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.fail;
 public class OppositePatternsTest extends OppositesBase {
 
     @Test
-    public void testPatternsPossibilitiesOpposite() throws Exception {
+    void testPatternsPossibilitiesOpposite() throws Exception {
         KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
@@ -52,57 +52,57 @@ public class OppositePatternsTest extends OppositesBase {
          * Working pair
          */
         SubPattern pp1 = new SubPattern(pattern,
-                                        0);
+                0);
         SubPattern pp2 = new SubPattern(pattern,
-                                        1);
+                1);
 
         Restriction r1 = LiteralRestriction.createRestriction(pattern,
-                                                              "");
+                "");
         pp1.add(r1);
 
         Restriction r2 = LiteralRestriction.createRestriction(pattern,
-                                                              "");
+                "");
         pp2.add(r2);
 
         Restriction r3 = LiteralRestriction.createRestriction(pattern,
-                                                              "");
+                "");
         pp1.add(r3);
 
         Restriction r4 = LiteralRestriction.createRestriction(pattern,
-                                                              "");
+                "");
         pp2.add(r4);
 
         Opposites o1 = new Opposites(r1,
-                                     r2);
+                r2);
         Opposites o2 = new Opposites(r3,
-                                     r4);
+                r4);
 
         /*
          * Pair that doesn't work.
          */
         SubPattern pp3 = new SubPattern(pattern,
-                                        2);
+                2);
         SubPattern pp4 = new SubPattern(pattern,
-                                        3);
+                3);
 
         Restriction r5 = LiteralRestriction.createRestriction(pattern,
-                                                              "");
+                "");
         pp3.add(r5);
 
         Restriction r6 = LiteralRestriction.createRestriction(pattern,
-                                                              "");
+                "");
         pp4.add(r6);
 
         Restriction r7 = LiteralRestriction.createRestriction(pattern,
-                                                              "");
+                "");
         pp3.add(r7);
 
         Restriction r8 = LiteralRestriction.createRestriction(pattern,
-                                                              "");
+                "");
         pp4.add(r8);
 
         Opposites o3 = new Opposites(r5,
-                                     r6);
+                r6);
 
         data.add(r1);
         data.add(r2);
@@ -126,7 +126,7 @@ public class OppositePatternsTest extends OppositesBase {
         session.fireAllRules(new RuleNameMatchesAgendaFilter("Opposite Patterns"));
 
         Map<Cause, Set<Cause>> map = createOppositesMap(VerifierComponentType.SUB_PATTERN,
-                                                        (Iterator<Object>)session.getObjects().iterator());
+                (Iterator<Object>) session.getObjects().iterator());
 
         assertThat((TestBaseOld.causeMapContains(map,
                 pp1,

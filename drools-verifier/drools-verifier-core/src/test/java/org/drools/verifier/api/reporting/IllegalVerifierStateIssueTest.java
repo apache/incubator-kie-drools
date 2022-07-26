@@ -15,14 +15,14 @@
  */
 package org.drools.verifier.api.reporting;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class IllegalVerifierStateIssueTest {
 
     @Test
-    public void defaults() {
+    void defaults() {
 
         final IllegalVerifierStateIssue issue = new IllegalVerifierStateIssue();
 

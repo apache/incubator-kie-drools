@@ -24,27 +24,24 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(Parameterized.class)
 public class NumericIntegerConditionInspectorSubsumptionTest {
 
-    private final Integer value1;
-    private final Integer value2;
-    private final String operator1;
-    private final String operator2;
-    private final boolean aSubsumesB;
-    private final boolean bSubsumesA;
-    private final Field field;
+    private Integer value1;
+    private Integer value2;
+    private String operator1;
+    private String operator2;
+    private boolean aSubsumesB;
+    private boolean bSubsumesA;
+    private Field field;
 
-    public NumericIntegerConditionInspectorSubsumptionTest(String operator1,
+    public void initNumericIntegerConditionInspectorSubsumptionTest(String operator1,
                                                            Integer value1,
                                                            String operator2,
                                                            Integer value2,
@@ -59,7 +56,6 @@ public class NumericIntegerConditionInspectorSubsumptionTest {
         this.bSubsumesA = bSubsumesA;
     }
 
-    @Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
                 // op1, val1, op2, val2, aSubsumesB, bSubsumesA
@@ -146,24 +142,28 @@ public class NumericIntegerConditionInspectorSubsumptionTest {
         });
     }
 
-    @Test
-    public void testASubsumesB() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testASubsumesB(String operator1, Integer value1, String operator2, Integer value2, boolean aSubsumesB, boolean bSubsumesA) {
+        initNumericIntegerConditionInspectorSubsumptionTest(operator1, value1, operator2, value2, aSubsumesB, bSubsumesA);
         NumericIntegerConditionInspector a = getCondition(value1,
-                                                          operator1);
+                operator1);
         NumericIntegerConditionInspector b = getCondition(value2,
-                                                          operator2);
+                operator2);
 
         assertThat(a.subsumes(b)).as(getAssertDescription(a,
                 b,
                 aSubsumesB)).isEqualTo(aSubsumesB);
     }
 
-    @Test
-    public void testBSubsumesA() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testBSubsumesA(String operator1, Integer value1, String operator2, Integer value2, boolean aSubsumesB, boolean bSubsumesA) {
+        initNumericIntegerConditionInspectorSubsumptionTest(operator1, value1, operator2, value2, aSubsumesB, bSubsumesA);
         NumericIntegerConditionInspector a = getCondition(value1,
-                                                          operator1);
+                operator1);
         NumericIntegerConditionInspector b = getCondition(value2,
-                                                          operator2);
+                operator2);
 
         assertThat(b.subsumes(a)).as(getAssertDescription(b,
                 a,
@@ -174,19 +174,19 @@ public class NumericIntegerConditionInspectorSubsumptionTest {
                                         NumericIntegerConditionInspector b,
                                         boolean subsumptionExpected) {
         return format("Expected condition '%s' %sto subsume condition '%s':",
-                      a.toHumanReadableString(),
-                      subsumptionExpected ? "" : "not ",
-                      b.toHumanReadableString());
+                a.toHumanReadableString(),
+                subsumptionExpected ? "" : "not ",
+                b.toHumanReadableString());
     }
 
     private NumericIntegerConditionInspector getCondition(int value,
                                                           String operator) {
         AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
         return new NumericIntegerConditionInspector(new FieldCondition<>(field,
-                                                                         mock(Column.class),
-                                                                         operator,
-                                                                         new Values<>(value),
-                                                                         configurationMock),
-                                                    configurationMock);
+                        mock(Column.class),
+                        operator,
+                        new Values<>(value),
+                        configurationMock),
+                configurationMock);
     }
 }

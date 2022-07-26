@@ -20,8 +20,8 @@ import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.model.ObjectType;
 import org.drools.verifier.core.index.model.Pattern;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -33,7 +33,7 @@ public class PatternInspectorTest {
     private PatternInspector a;
     private PatternInspector b;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         configurationMock = new AnalyzerConfigurationMock();
@@ -53,42 +53,42 @@ public class PatternInspectorTest {
     }
 
     @Test
-    public void testRedundancy01() throws
+    void testRedundancy01() throws
             Exception {
         assertThat(a.isRedundant(b)).isTrue();
         assertThat(b.isRedundant(a)).isTrue();
     }
 
     @Test
-    public void testRedundancy02() throws
+    void testRedundancy02() throws
             Exception {
         final PatternInspector x = new PatternInspector(new Pattern("x",
-                                                                    new ObjectType("org.Address",
-                                                                                   configurationMock),
-                                                                    configurationMock),
-                                                        mock(RuleInspectorUpdater.class),
-                                                        mock(AnalyzerConfiguration.class));
+                        new ObjectType("org.Address",
+                                configurationMock),
+                        configurationMock),
+                mock(RuleInspectorUpdater.class),
+                mock(AnalyzerConfiguration.class));
 
         assertThat(x.isRedundant(b)).isFalse();
         assertThat(b.isRedundant(x)).isFalse();
     }
 
     @Test
-    public void testSubsumpt01() throws
+    void testSubsumpt01() throws
             Exception {
         assertThat(a.subsumes(b)).isTrue();
         assertThat(b.subsumes(a)).isTrue();
     }
 
     @Test
-    public void testSubsumpt02() throws
+    void testSubsumpt02() throws
             Exception {
         final PatternInspector x = new PatternInspector(new Pattern("x",
-                                                                    new ObjectType("org.Address",
-                                                                                   configurationMock),
-                                                                    configurationMock),
-                                                        mock(RuleInspectorUpdater.class),
-                                                        mock(AnalyzerConfiguration.class));
+                        new ObjectType("org.Address",
+                                configurationMock),
+                        configurationMock),
+                mock(RuleInspectorUpdater.class),
+                mock(AnalyzerConfiguration.class));
 
         assertThat(x.subsumes(b)).isFalse();
         assertThat(b.subsumes(x)).isFalse();

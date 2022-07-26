@@ -22,8 +22,8 @@ import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.maps.InspectorList;
 import org.drools.verifier.core.maps.util.HasKeys;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
@@ -42,7 +42,7 @@ public class RelationResolverConflictsTest {
     private Person isConflicting;
     private Person firstItemInA;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         configuration = new AnalyzerConfigurationMock();
@@ -62,7 +62,7 @@ public class RelationResolverConflictsTest {
     }
 
     @Test
-    public void empty() throws
+    void empty() throws
             Exception {
 
         relationResolver = new RelationResolver(new InspectorList(configuration));
@@ -70,7 +70,7 @@ public class RelationResolverConflictsTest {
     }
 
     @Test
-    public void recheck() throws
+    void recheck() throws
             Exception {
 
         assertThat(relationResolver.isConflicting(b)).isTrue();
@@ -82,11 +82,11 @@ public class RelationResolverConflictsTest {
         assertThat(relationResolver.isConflicting(b)).isTrue();
 
         verify(firstItemInA,
-               never()).conflicts(any());
+                never()).conflicts(any());
     }
 
     @Test
-    public void recheckWithUpdate() throws
+    void recheckWithUpdate() throws
             Exception {
 
         assertThat(relationResolver.isConflicting(b)).isTrue();
@@ -102,7 +102,7 @@ public class RelationResolverConflictsTest {
     }
 
     @Test
-    public void recheckConflictingItemRemoved() throws
+    void recheckConflictingItemRemoved() throws
             Exception {
 
         assertThat(relationResolver.isConflicting(b)).isTrue();
@@ -118,13 +118,13 @@ public class RelationResolverConflictsTest {
     }
 
     @Test
-    public void recheckOtherListBecomesEmpty() throws
+    void recheckOtherListBecomesEmpty() throws
             Exception {
 
         assertThat(relationResolver.isConflicting(b)).isTrue();
 
         reset(firstItemInA,
-              isConflicting);
+                isConflicting);
 
         // UPDATE
         b.clear();
@@ -132,9 +132,9 @@ public class RelationResolverConflictsTest {
         assertThat(relationResolver.isConflicting(b)).isFalse();
 
         verify(firstItemInA,
-               never()).conflicts(any());
+                never()).conflicts(any());
         verify(isConflicting,
-               never()).conflicts(any());
+                never()).conflicts(any());
     }
 
     public class Person

@@ -27,19 +27,19 @@ import org.drools.verifier.core.index.model.ObjectTypes;
 import org.drools.verifier.core.index.model.Rule;
 import org.drools.verifier.core.index.model.Rules;
 import org.drools.verifier.core.index.select.QueryCallback;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class QueryableIndexTest {
 
     private QueryableIndex queryableIndex;
@@ -65,7 +65,7 @@ public class QueryableIndexTest {
     private AnalyzerConfiguration configuration;
     private Column firstColumn;
 
-    @Before
+    @BeforeEach
     public void setUp() throws
             Exception {
         configuration = new AnalyzerConfigurationMock();
@@ -97,12 +97,12 @@ public class QueryableIndexTest {
     }
 
     @Test
-    public void queryAllRules() throws
+    void queryAllRules() throws
             Exception {
 
         queryableIndex.getRules()
                 .where(Rule.index()
-                               .any())
+                        .any())
                 .select()
                 .all(rulesQueryCallback);
 
@@ -113,12 +113,12 @@ public class QueryableIndexTest {
     }
 
     @Test
-    public void queryFirstColumn() throws
+    void queryFirstColumn() throws
             Exception {
 
         queryableIndex.getColumns()
                 .where(Column.index()
-                               .any())
+                        .any())
                 .select()
                 .first(firstColumnQueryCallback);
 
@@ -128,12 +128,12 @@ public class QueryableIndexTest {
     }
 
     @Test
-    public void makeSureFirstAndLastObjectTypesAreTheSame() throws
+    void makeSureFirstAndLastObjectTypesAreTheSame() throws
             Exception {
 
         queryableIndex.getObjectTypes()
                 .where(ObjectType.type()
-                               .is("Person"))
+                        .is("Person"))
                 .select()
                 .first(objectTypeQueryCallback);
 
@@ -145,7 +145,7 @@ public class QueryableIndexTest {
 
         queryableIndex.getObjectTypes()
                 .where(ObjectType.type()
-                               .is("Person"))
+                        .is("Person"))
                 .select()
                 .last(objectTypeQueryCallback);
 

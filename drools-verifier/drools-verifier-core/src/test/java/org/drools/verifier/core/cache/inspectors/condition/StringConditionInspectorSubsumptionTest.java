@@ -24,27 +24,24 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(Parameterized.class)
 public class StringConditionInspectorSubsumptionTest {
 
-    private final Values value1;
-    private final Values value2;
-    private final String operator1;
-    private final String operator2;
-    private final boolean aSubsumesB;
-    private final boolean bSubsumesA;
-    private final Field field;
+    private Values value1;
+    private Values value2;
+    private String operator1;
+    private String operator2;
+    private boolean aSubsumesB;
+    private boolean bSubsumesA;
+    private Field field;
 
-    public StringConditionInspectorSubsumptionTest(String operator1,
+    public void initStringConditionInspectorSubsumptionTest(String operator1,
                                                    Values value1,
                                                    String operator2,
                                                    Values value2,
@@ -59,7 +56,6 @@ public class StringConditionInspectorSubsumptionTest {
         this.bSubsumesA = bSubsumesA;
     }
 
-    @Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
                 // op1, val1, op2, val2, aSubsumesB, bSubsumesA
@@ -70,11 +66,11 @@ public class StringConditionInspectorSubsumptionTest {
                 {"<", new Values("a"), "<", new Values("a"), true, true},
                 {"<=", new Values("a"), "<=", new Values("a"), true, true},
                 {"in", new Values("a",
-                                  "b"), "in", new Values("a",
-                                                         "b"), true, true},
+                        "b"), "in", new Values("a",
+                        "b"), true, true},
                 {"not in", new Values("a",
-                                      "b"), "not in", new Values("a",
-                                                                 "b"), true, true},
+                        "b"), "not in", new Values("a",
+                        "b"), true, true},
                 {"matches", new Values("a"), "matches", new Values("a"), true, true},
                 {"soundslike", new Values("a"), "soundslike", new Values("a"), true, true},
 
@@ -95,13 +91,13 @@ public class StringConditionInspectorSubsumptionTest {
                 {"==", new Values("a"), "<=", new Values(" "), false, false},
                 {"==", new Values("a"), "<=", new Values("b"), false, false},
                 {"==", new Values("a"), "in", new Values("a",
-                                                         "b"), false, true},
+                        "b"), false, true},
                 {"==", new Values("a"), "in", new Values("b",
-                                                         "c"), false, false},
+                        "c"), false, false},
                 {"==", new Values("a"), "not in", new Values("a",
-                                                             "b"), false, false},
+                        "b"), false, false},
                 {"==", new Values("a"), "not in", new Values("b",
-                                                             "c"), false, true},
+                        "c"), false, true},
                 {"!=", new Values("a"), "!=", new Values("b"), false, false},
 
                 {"!=", new Values("a"), ">", new Values(" "), false, false},
@@ -118,15 +114,15 @@ public class StringConditionInspectorSubsumptionTest {
                 // This is tricky since, != a conflicts with ==a, but subsumes ==b
                 // At this point we need to ignore this, since we do not support "or"
                 {"!=", new Values("a"), "in", new Values("a",
-                                                         "b"), false, false},
+                        "b"), false, false},
 
                 {"!=", new Values("a"), "in", new Values("b",
-                                                         "c"), true, false},
+                        "c"), true, false},
 
                 {"!=", new Values("a"), "not in", new Values("a",
-                                                             "b"), false, true},
+                        "b"), false, true},
                 {"!=", new Values("a"), "not in", new Values("b",
-                                                             "c"), false, false},
+                        "c"), false, false},
 
                 {">", new Values("a"), ">", new Values("b"), false, false},
                 {">", new Values("a"), ">=", new Values("a"), false, true},
@@ -136,13 +132,13 @@ public class StringConditionInspectorSubsumptionTest {
                 {">", new Values("a"), "<=", new Values(" "), false, false},
                 {">", new Values("a"), "<=", new Values("b"), false, false},
                 {">", new Values("a"), "in", new Values("a",
-                                                        "b"), false, false},
+                        "b"), false, false},
                 {">", new Values("a"), "in", new Values("b",
-                                                        "c"), false, false},
+                        "c"), false, false},
                 {">", new Values("a"), "not in", new Values("a",
-                                                            "b"), false, false},
+                        "b"), false, false},
                 {">", new Values("a"), "not in", new Values("0",
-                                                            "1"), false, false},
+                        "1"), false, false},
 
                 {">=", new Values("a"), ">=", new Values("b"), false, false},
                 {">=", new Values("a"), "<", new Values(" "), false, false},
@@ -150,76 +146,80 @@ public class StringConditionInspectorSubsumptionTest {
                 {">=", new Values("a"), "<=", new Values(" "), false, false},
                 {">=", new Values("a"), "<=", new Values("c"), false, false},
                 {">=", new Values("a"), "in", new Values("0",
-                                                         "b"), false, false},
+                        "b"), false, false},
                 {">=", new Values("a"), "in", new Values("b",
-                                                         "c"), false, false},
+                        "c"), false, false},
                 {">=", new Values("a"), "not in", new Values("a",
-                                                             "b"), false, false},
+                        "b"), false, false},
                 {">=", new Values("a"), "not in", new Values("0",
-                                                             "1"), false, false},
+                        "1"), false, false},
 
                 {"<", new Values("a"), "<", new Values("b"), false, false},
                 {"<", new Values("a"), "<=", new Values(" "), false, false},
                 {"<", new Values("a"), "<=", new Values("c"), false, false},
                 {"<", new Values("a"), "in", new Values("a",
-                                                        "b"), false, false},
+                        "b"), false, false},
                 {"<", new Values("a"), "in", new Values("0",
-                                                        "1"), false, false},
+                        "1"), false, false},
                 {"<", new Values("a"), "not in", new Values("a",
-                                                            "b"), false, false},
+                        "b"), false, false},
                 {"<", new Values("a"), "not in", new Values("0",
-                                                            "1"), false, false},
+                        "1"), false, false},
 
                 {"<=", new Values("a"), "<=", new Values("b"), false, false},
                 {"<=", new Values("a"), "in", new Values("a",
-                                                         "b"), false, false},
+                        "b"), false, false},
                 {"<=", new Values("a"), "in", new Values("0",
-                                                         "1"), false, false},
+                        "1"), false, false},
                 {"<=", new Values("a"), "not in", new Values("b",
-                                                             "c"), false, false},
+                        "c"), false, false},
                 {"<=", new Values("a"), "not in", new Values("0",
-                                                             "1"), false, false},
+                        "1"), false, false},
 
                 {"in", new Values("a"), "in", new Values("a",
-                                                         "b"), false, true},
+                        "b"), false, true},
                 {"in", new Values("b",
-                                  "a"), "in", new Values("a",
-                                                         "b"), true, true},
+                        "a"), "in", new Values("a",
+                        "b"), true, true},
                 {"in", new Values("a"), "in", new Values("0",
-                                                         "1"), false, false},
+                        "1"), false, false},
                 {"in", new Values("a"), "not in", new Values("a",
-                                                             "b"), false, false},
+                        "b"), false, false},
                 {"in", new Values("a"), "not in", new Values("b",
-                                                             "c"), false, true},
+                        "c"), false, true},
 
                 {"not in", new Values("b",
-                                      "a"), "not in", new Values("a",
-                                                                 "b"), true, true},
+                        "a"), "not in", new Values("a",
+                        "b"), true, true},
                 {"not in", new Values("a"), "not in", new Values("a",
-                                                                 "b"), false, true},
+                        "b"), false, true},
                 {"not in", new Values("a"), "not in", new Values("b",
-                                                                 "c"), false, false},
+                        "c"), false, false},
         });
     }
 
-    @Test
-    public void testASubsumesB() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testASubsumesB(String operator1, Values value1, String operator2, Values value2, boolean aSubsumesB, boolean bSubsumesA) {
+        initStringConditionInspectorSubsumptionTest(operator1, value1, operator2, value2, aSubsumesB, bSubsumesA);
         StringConditionInspector a = getCondition(value1,
-                                                  operator1);
+                operator1);
         StringConditionInspector b = getCondition(value2,
-                                                  operator2);
+                operator2);
 
         assertThat(a.subsumes(b)).as(getAssertDescription(a,
                 b,
                 aSubsumesB)).isEqualTo(aSubsumesB);
     }
 
-    @Test
-    public void testBSubsumesA() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void testBSubsumesA(String operator1, Values value1, String operator2, Values value2, boolean aSubsumesB, boolean bSubsumesA) {
+        initStringConditionInspectorSubsumptionTest(operator1, value1, operator2, value2, aSubsumesB, bSubsumesA);
         StringConditionInspector a = getCondition(value1,
-                                                  operator1);
+                operator1);
         StringConditionInspector b = getCondition(value2,
-                                                  operator2);
+                operator2);
 
         assertThat(b.subsumes(a)).as(getAssertDescription(b,
                 a,
@@ -230,19 +230,19 @@ public class StringConditionInspectorSubsumptionTest {
                                         StringConditionInspector b,
                                         boolean conflictExpected) {
         return format("Expected condition '%s' %sto subsume condition '%s':",
-                      a.toHumanReadableString(),
-                      conflictExpected ? "" : "not ",
-                      b.toHumanReadableString());
+                a.toHumanReadableString(),
+                conflictExpected ? "" : "not ",
+                b.toHumanReadableString());
     }
 
     private StringConditionInspector getCondition(final Values values,
                                                   final String operator) {
         AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
         return new StringConditionInspector(new FieldCondition<>(field,
-                                                                 mock(Column.class),
-                                                                 operator,
-                                                                 values,
-                                                                 configurationMock),
-                                            configurationMock);
+                        mock(Column.class),
+                        operator,
+                        values,
+                        configurationMock),
+                configurationMock);
     }
 }

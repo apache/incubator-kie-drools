@@ -29,7 +29,7 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,33 +38,33 @@ import static org.assertj.core.api.Assertions.fail;
 public class ConsequenceTest extends TestBaseOld {
 
     @Test
-    public void testMissingConsequence() throws Exception {
+    void testMissingConsequence() throws Exception {
 
-        InputStream in = getClass().getResourceAsStream( "Consequence.drl" );
+        InputStream in = getClass().getResourceAsStream("Consequence.drl");
 
-        KieSession session = getStatelessKieSession( in );
+        KieSession session = getStatelessKieSession(in);
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
 
-        Collection< ? extends Object> testData = getTestData( this.getClass().getResourceAsStream( "ConsequenceTest2.drl" ),
-                                                              result.getVerifierData() );
+        Collection<? extends Object> testData = getTestData(this.getClass().getResourceAsStream("ConsequenceTest2.drl"),
+                result.getVerifierData());
 
-        session.setGlobal( "result",
-                           result );
+        session.setGlobal("result",
+                result);
 
         for (Object o : testData) {
             session.insert(o);
         }
         session.fireAllRules(new RuleNameMatchesAgendaFilter("No action - possibly commented out"));
 
-        Iterator<VerifierMessageBase> iterator = result.getBySeverity( Severity.WARNING ).iterator();
+        Iterator<VerifierMessageBase> iterator = result.getBySeverity(Severity.WARNING).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
-        while ( iterator.hasNext() ) {
+        while (iterator.hasNext()) {
             Object o = iterator.next();
-            if ( o instanceof VerifierMessage ) {
+            if (o instanceof VerifierMessage) {
                 VerifierMessage message = (VerifierMessage) o;
-                rulesThatHadErrors.addAll( message.getImpactedRules().values() );
+                rulesThatHadErrors.addAll(message.getImpactedRules().values());
             }
         }
 
@@ -72,9 +72,9 @@ public class ConsequenceTest extends TestBaseOld {
         assertThat(rulesThatHadErrors.remove("Missing consequence 1")).isTrue();
         assertThat(rulesThatHadErrors.remove("Missing consequence 2")).isTrue();
 
-        if ( !rulesThatHadErrors.isEmpty() ) {
-            for ( String string : rulesThatHadErrors ) {
-                fail( "Rule " + string + " caused an error." );
+        if (!rulesThatHadErrors.isEmpty()) {
+            for (String string : rulesThatHadErrors) {
+                fail("Rule " + string + " caused an error.");
             }
         }
     }

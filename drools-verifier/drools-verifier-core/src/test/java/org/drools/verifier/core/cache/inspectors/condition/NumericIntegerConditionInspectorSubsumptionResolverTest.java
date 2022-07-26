@@ -24,26 +24,23 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(Parameterized.class)
 public class NumericIntegerConditionInspectorSubsumptionResolverTest {
 
-    private final Integer value1;
-    private final Integer value2;
-    private final String operator1;
-    private final String operator2;
-    private final boolean redundancyExpected;
-    private final Field field;
+    private Integer value1;
+    private Integer value2;
+    private String operator1;
+    private String operator2;
+    private boolean redundancyExpected;
+    private Field field;
 
-    public NumericIntegerConditionInspectorSubsumptionResolverTest(String operator1,
+    public void initNumericIntegerConditionInspectorSubsumptionResolverTest(String operator1,
                                                                    Integer value1,
                                                                    String operator2,
                                                                    Integer value2,
@@ -56,7 +53,6 @@ public class NumericIntegerConditionInspectorSubsumptionResolverTest {
         this.redundancyExpected = redundancyExpected;
     }
 
-    @Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList(new Object[][]{
                 // op1, val1, op2, val2, redundant
@@ -120,12 +116,14 @@ public class NumericIntegerConditionInspectorSubsumptionResolverTest {
         });
     }
 
-    @Test
-    public void parametrizedTest() {
+    @MethodSource("testData")
+    @ParameterizedTest
+    void parametrizedTest(String operator1, Integer value1, String operator2, Integer value2, boolean redundancyExpected) {
+        initNumericIntegerConditionInspectorSubsumptionResolverTest(operator1, value1, operator2, value2, redundancyExpected);
         NumericIntegerConditionInspector a = getCondition(value1,
-                                                          operator1);
+                operator1);
         NumericIntegerConditionInspector b = getCondition(value2,
-                                                          operator2);
+                operator2);
 
         assertThat(a.isRedundant(b)).as(getAssertDescription(a,
                 b,
@@ -139,19 +137,19 @@ public class NumericIntegerConditionInspectorSubsumptionResolverTest {
                                         final NumericIntegerConditionInspector b,
                                         final boolean conflictExpected) {
         return format("Expected conditions '%s' and '%s' %sto be redundant:",
-                      a.toHumanReadableString(),
-                      b.toHumanReadableString(),
-                      conflictExpected ? "" : "not ");
+                a.toHumanReadableString(),
+                b.toHumanReadableString(),
+                conflictExpected ? "" : "not ");
     }
 
     private NumericIntegerConditionInspector getCondition(final int value,
                                                           final String operator) {
         AnalyzerConfigurationMock configurationMock = new AnalyzerConfigurationMock();
         return new NumericIntegerConditionInspector(new FieldCondition<Integer>(field,
-                                                                                mock(Column.class),
-                                                                                operator,
-                                                                                new Values(value),
-                                                                                configurationMock),
-                                                    configurationMock);
+                        mock(Column.class),
+                        operator,
+                        new Values(value),
+                        configurationMock),
+                configurationMock);
     }
 }
