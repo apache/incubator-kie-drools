@@ -22,8 +22,8 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.PrototypeDSL.prototype;
-import static org.drools.model.PrototypeExpression.ExpressionBuilder.fixedValue;
-import static org.drools.model.PrototypeExpression.ExpressionBuilder.prototypeField;
+import static org.drools.model.PrototypeExpression.fixedValue;
+import static org.drools.model.PrototypeExpression.prototypeField;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
 
 public class PrototypeExpressionTest {

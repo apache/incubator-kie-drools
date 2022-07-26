@@ -57,8 +57,8 @@ import static org.drools.model.PrototypeDSL.field;
 import static org.drools.model.PrototypeDSL.protoPattern;
 import static org.drools.model.PrototypeDSL.prototype;
 import static org.drools.model.PrototypeDSL.variable;
-import static org.drools.model.PrototypeExpression.ExpressionBuilder.fixedValue;
-import static org.drools.model.PrototypeExpression.ExpressionBuilder.prototypeField;
+import static org.drools.model.PrototypeExpression.fixedValue;
+import static org.drools.model.PrototypeExpression.prototypeField;
 import static org.drools.model.codegen.execmodel.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
 

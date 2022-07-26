@@ -31,20 +31,20 @@ public interface PrototypeExpression {
 
     Collection<String> getImpactedFields();
 
-    public static class ExpressionBuilder implements PrototypeExpression {
+    static ExpressionBuilder fixedValue(Object value) {
+        return new ExpressionBuilder(new FixedValue(value));
+    }
+
+    static ExpressionBuilder prototypeField(String fieldName) {
+        return new ExpressionBuilder(new PrototypeFieldValue(fieldName));
+    }
+
+    class ExpressionBuilder implements PrototypeExpression {
 
         private final PrototypeExpression expression;
 
         public ExpressionBuilder(PrototypeExpression expression) {
             this.expression = expression;
-        }
-
-        public static ExpressionBuilder fixedValue(Object value) {
-            return new ExpressionBuilder(new FixedValue(value));
-        }
-
-        public static ExpressionBuilder prototypeField(String fieldName) {
-            return new ExpressionBuilder(new PrototypeFieldValue(fieldName));
         }
 
         public ExpressionBuilder composeWith(BinaryOperation.Operator op, ExpressionBuilder right) {
@@ -74,7 +74,7 @@ public interface PrototypeExpression {
         }
     }
 
-    static class FixedValue implements PrototypeExpression {
+    class FixedValue implements PrototypeExpression {
 
         private final Object value;
 
@@ -102,7 +102,7 @@ public interface PrototypeExpression {
         }
     }
 
-    static class PrototypeFieldValue implements PrototypeExpression {
+    class PrototypeFieldValue implements PrototypeExpression {
 
         private final String fieldName;
 
@@ -129,7 +129,7 @@ public interface PrototypeExpression {
         }
     }
 
-    static class BinaryOperation implements PrototypeExpression {
+    class BinaryOperation implements PrototypeExpression {
 
         enum Operator {
             ADD("+", "add", Operator::add),
