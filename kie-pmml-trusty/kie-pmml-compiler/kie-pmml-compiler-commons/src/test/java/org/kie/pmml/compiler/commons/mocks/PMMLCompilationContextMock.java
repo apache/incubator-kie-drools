@@ -16,7 +16,9 @@
 package org.kie.pmml.compiler.commons.mocks;
 
 import java.util.Map;
+import java.util.Set;
 
+import org.kie.efesto.common.api.model.FRI;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.memorycompiler.KieMemoryCompilerException;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
@@ -28,6 +30,11 @@ public class PMMLCompilationContextMock implements PMMLCompilationContext {
     public PMMLCompilationContextMock() {
         this.memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+    }
+
+    @Override
+    public Set<FRI> getFRIForFile() {
+        return friKeySet();
     }
 
     @Override
@@ -46,11 +53,6 @@ public class PMMLCompilationContextMock implements PMMLCompilationContext {
             }
         }
     }
-//
-//    @Override
-//    public Class<?> loadClass(String className) throws ClassNotFoundException {
-//        return memoryCompilerClassLoader.loadClass(className);
-//    }
 
     @Override
     public String getName() {
@@ -77,98 +79,4 @@ public class PMMLCompilationContextMock implements PMMLCompilationContext {
         return false;
     }
 
-//    @Override
-//    public PMMLRequestData getRequestData() {
-//        return null;
-//    }
-//
-//    @Override
-//    public String getFileName() {
-//        return null;
-//    }
-//
-//    @Override
-//    public String getFileNameNoSuffix() {
-//        return null;
-//    }
-//
-//    @Override
-//    public void addMissingValueReplaced(String fieldName, Object missingValueReplaced) {
-//
-//    }
-//
-//    @Override
-//    public void addCommonTranformation(String fieldName, Object commonTranformation) {
-//
-//    }
-//
-//    @Override
-//    public void addLocalTranformation(String fieldName, Object commonTranformation) {
-//
-//    }
-//
-//    @Override
-//    public Map<String, Object> getMissingValueReplacedMap() {
-//        return null;
-//    }
-//
-//    @Override
-//    public Map<String, Object> getCommonTransformationMap() {
-//        return null;
-//    }
-//
-//    @Override
-//    public Map<String, Object> getLocalTransformationMap() {
-//        return null;
-//    }
-//
-//    @Override
-//    public Object getPredictedDisplayValue() {
-//        return null;
-//    }
-//
-//    @Override
-//    public void setPredictedDisplayValue(Object predictedDisplayValue) {
-//
-//    }
-//
-//    @Override
-//    public Object getEntityId() {
-//        return null;
-//    }
-//
-//    @Override
-//    public void setEntityId(Object entityId) {
-//
-//    }
-//
-//    @Override
-//    public Object getAffinity() {
-//        return null;
-//    }
-//
-//    @Override
-//    public void setAffinity(Object affinity) {
-//
-//    }
-//
-//    @Override
-//    public Map<String, Double> getProbabilityMap() {
-//        return null;
-//    }
-//
-//    @Override
-//    public LinkedHashMap<String, Double> getProbabilityResultMap() {
-//        return null;
-//    }
-//
-//    @Override
-//    public void setProbabilityResultMap(LinkedHashMap<String, Double> probabilityResultMap) {
-//
-//    }
-//
-//    @Override
-//    public Map<String, Object> getOutputFieldsMap() {
-//        return null;
-//    }
 }

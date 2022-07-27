@@ -167,7 +167,7 @@ public class DroolsQuarkusResourceUtils {
         return sourcesMap;
     }
 
-    private static Collection<GeneratedBeanBuildItem> makeBuildItems(Map<String, byte[]> byteCodeMap) {
+    public static Collection<GeneratedBeanBuildItem> makeBuildItems(Map<String, byte[]> byteCodeMap) {
         Collection<GeneratedBeanBuildItem> buildItems = new ArrayList<>();
         for (Map.Entry<String, byte[]> byteCode : byteCodeMap.entrySet()) {
             buildItems.add(new GeneratedBeanBuildItem(byteCode.getKey(), byteCode.getValue()));

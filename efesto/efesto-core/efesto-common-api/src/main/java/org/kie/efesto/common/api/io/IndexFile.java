@@ -19,6 +19,9 @@ import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.utils.FileNameUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Objects;
 
 import static org.kie.efesto.common.api.utils.FileNameUtils.getFileName;
 
@@ -30,6 +33,7 @@ public final class IndexFile extends File {
 
     public static final String INDEX_FILE = "IndexFile";
     public static final String FINAL_SUFFIX = "_json";
+    private static final long serialVersionUID = -3471854812784089038L;
 
     static String getIndexFileName(String modelType) {
         return String.format("%s.%s%s", INDEX_FILE, modelType, FINAL_SUFFIX);
@@ -66,6 +70,39 @@ public final class IndexFile extends File {
     public String getModel() {
         return getModel(getSuffix());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IndexFile) {
+            if (equalsByExists((IndexFile) obj)) {
+                if (this.exists()) {
+                    return equalsByIsSameFile((IndexFile) obj);
+                } else {
+                    return Objects.equals(this.getAbsoluteFile().getAbsolutePath(), ((IndexFile)obj).getAbsoluteFile().getAbsolutePath());
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getName().hashCode();
+    }
+
+    private boolean equalsByExists(IndexFile toCompare) {
+        return this.exists() == toCompare.exists();
+    }
+
+    private boolean equalsByIsSameFile(IndexFile toCompare) {
+        try {
+            return Files.isSameFile(this.toPath(), toCompare.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private String getSuffix() {
         return FileNameUtils.getSuffix(this.getName());

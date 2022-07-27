@@ -19,10 +19,10 @@ import java.util.Collections;
 
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
-import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 
-public class EfestoRedirectOutputPMMLDrl extends EfestoSetResource<PackageDescr> implements EfestoOutput<PackageDescr> {
+public class EfestoRedirectOutputPMMLDrl extends EfestoSetResource<PackageDescr> implements EfestoCompilationOutput {
 
     private final FRI fri;
     private final PackageDescr packageDescr;
@@ -33,13 +33,4 @@ public class EfestoRedirectOutputPMMLDrl extends EfestoSetResource<PackageDescr>
         this.packageDescr = packageDescr;
     }
 
-    @Override
-    public FRI getFRI() {
-        return fri;
-    }
-
-    @Override
-    public PackageDescr getOutputData() {
-        return packageDescr;
-    }
 }

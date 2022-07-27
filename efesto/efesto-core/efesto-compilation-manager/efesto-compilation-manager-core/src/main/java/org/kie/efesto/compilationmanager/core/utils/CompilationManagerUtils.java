@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileNameOrFilePath;
 import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.efesto.common.api.utils.JSONUtils.writeGeneratedResourcesObject;
 import static org.kie.efesto.compilationmanager.api.utils.SPIUtils.getKieCompilerService;
@@ -79,10 +80,16 @@ public class CompilationManagerUtils {
         return toPopulate;
     }
 
+    public static Optional<IndexFile> getExistingIndexFile(String model) {
+        String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY);
+        IndexFile toReturn = new IndexFile(parentPath, model);
+        return getFileFromFileNameOrFilePath(toReturn.getName(), toReturn.getAbsolutePath()).map(IndexFile::new);
+    }
+
     static IndexFile getIndexFile(EfestoCallableOutput compilationOutput) {
         String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY);
         IndexFile toReturn = new IndexFile(parentPath, compilationOutput.getFri().getModel());
-        return getFileFromFileName(toReturn.getName()).map(IndexFile::new).orElseGet(() -> createIndexFile(toReturn));
+        return getExistingIndexFile(compilationOutput.getFri().getModel()).orElseGet(() -> createIndexFile(toReturn));
     }
 
     private static IndexFile createIndexFile(IndexFile toCreate) {

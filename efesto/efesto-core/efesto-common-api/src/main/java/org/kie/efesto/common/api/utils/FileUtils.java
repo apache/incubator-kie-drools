@@ -95,16 +95,29 @@ public class FileUtils {
         }
     }
 
-    public static Optional<File> getFileFromFileName(String fileName) {
-        return getFileFromFileName(fileName, Thread.currentThread().getContextClassLoader());
+    public static Optional<File> getFileFromFileNameOrFilePath(String fileName, String filePath) {
+        return Stream.of(getFileByFileNameFromClassloader(fileName, Thread.currentThread().getContextClassLoader()),
+                         getFileByFilePath(filePath))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 
-    public static Optional<File> getFileFromFileName(String fileName, ClassLoader classLoader) {
+    public static Optional<File> getFileFromFileName(String fileName) {
+        return getFileByFileNameFromClassloader(fileName, Thread.currentThread().getContextClassLoader());
+    }
+
+    public static Optional<File> getFileByFileNameFromClassloader(String fileName, ClassLoader classLoader) {
         URL retrieved = classLoader.getResource(fileName);
         if (retrieved != null) {
             return Optional.of(new File(retrieved.getFile()));
         }
         File file = new File(fileName);
+        return file.exists() ? Optional.of(file) : Optional.empty();
+    }
+
+    public static Optional<File> getFileByFilePath(String filePath) {
+        File file = new File(filePath);
         return file.exists() ? Optional.of(file) : Optional.empty();
     }
 }
