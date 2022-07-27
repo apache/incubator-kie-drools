@@ -21,19 +21,18 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class ObjectStoreWrapper implements Collection {
 
     public ObjectStore                     store;
-    public org.kie.api.runtime.ObjectFilter filter;
+    public ObjectFilter                    filter;
     public int                             type;           // 0 == object, 1 == facthandle
     public static final int                OBJECT      = 0;
     public static final int                FACT_HANDLE = 1;
 
-    public ObjectStoreWrapper(ObjectStore store,
-                              org.kie.api.runtime.ObjectFilter filter,
-                              int type) {
+    public ObjectStoreWrapper(ObjectStore store, ObjectFilter filter, int type) {
         this.store = store;
         this.filter = filter;
         this.type = type;
@@ -109,6 +108,23 @@ public class ObjectStoreWrapper implements Collection {
             list.add(o);
         }
         return list;
+    }
+
+    public String toString() {
+        Iterator it = iterator();
+        if (!it.hasNext()) {
+            return "[]";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        while (true) {
+            sb.append(it.next());
+            if (!it.hasNext()) {
+                return sb.append(']').toString();
+            }
+            sb.append(',').append(' ');
+        }
     }
 
     public boolean add(Object o) {
