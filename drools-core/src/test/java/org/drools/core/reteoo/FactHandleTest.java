@@ -17,6 +17,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.DisconnectedFactHandle;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,4 +71,19 @@ public class FactHandleTest {
         assertThat(f0.getId()).isEqualTo(134);
     }
 
+    @Test
+    public void testDefaultFactHandleCreateFromExternalFormat() {
+        // DROOLS-7076
+        String externalFormat = "0:2147483648:171497379:-1361525545:2147483648:null:NON_TRAIT:java.lang.String";
+        final DefaultFactHandle f0 = DefaultFactHandle.createFromExternalFormat(externalFormat);
+        assertThat(f0.getId()).isEqualTo(2147483648L);
+    }
+
+    @Test
+    public void testDisconnectedFactHandleCreateFromExternalFormat() {
+        // DROOLS-7076
+        String externalFormat = "0:2147483648:171497379:-1361525545:2147483648:null:NON_TRAIT:java.lang.String";
+        final DisconnectedFactHandle f0 = new DisconnectedFactHandle(externalFormat);
+        assertThat(f0.getId()).isEqualTo(2147483648L);
+    }
 }
