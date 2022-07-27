@@ -55,9 +55,6 @@ public class HashMapFactImpl implements Fact, PrototypeFact {
 
     @Override
     public String toString() {
-        return "HashMapFactImpl{" +
-                "factTemplate=" + factTemplate +
-                ", valuesMap=" + valuesMap +
-                '}';
+        return factTemplate + "; values = " + valuesMap;
     }
 }

@@ -125,15 +125,8 @@ public class FactTemplateImpl implements FactTemplate {
         return new FactImpl( this );
     }
 
-    /**
-     * Method will return a string format with the int type code
-     * for the slot type
-     */
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
-        buf.append( "(" + this.name + " " );
-        buf.append( ")" );
-        return buf.toString();
+        return "FactTemplate of: " + this.name;
     }
 
     @Override
