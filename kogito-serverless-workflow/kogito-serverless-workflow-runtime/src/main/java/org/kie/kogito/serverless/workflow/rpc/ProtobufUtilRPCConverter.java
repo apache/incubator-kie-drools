@@ -17,7 +17,6 @@ package org.kie.kogito.serverless.workflow.rpc;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Map;
 
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
@@ -28,9 +27,9 @@ import com.google.protobuf.util.JsonFormat;
 
 class ProtobufUtilRPCConverter implements RPCConverter {
     @Override
-    public Builder buildMessage(Map<String, Object> parameters, Builder builder) {
+    public Builder buildMessage(Object object, Builder builder) {
         try {
-            JsonFormat.parser().merge(ObjectMapperFactory.get().writeValueAsString(parameters), builder);
+            JsonFormat.parser().merge(ObjectMapperFactory.get().writeValueAsString(object), builder);
             return builder;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
