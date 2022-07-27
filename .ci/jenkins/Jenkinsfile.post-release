@@ -7,6 +7,7 @@ import org.kie.jenkins.MavenCommand
 String optaplannerRepository = 'optaplanner'
 String quickstartsRepository = 'optaplanner-quickstarts'
 String stableBranchName = 'stable'
+String kieBenchmarksRepo = 'kie-benchmarks'
 
 pipeline {
     agent {
@@ -112,6 +113,28 @@ pipeline {
                         checkoutRepo(websiteRepository, 'main')
                         mergeAndPush(prLink, 'main')
                         githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorCredsID())
+                    }
+                }
+            }
+        }
+        stage('update version.org.optaplanner property in kie-benchmarks') {
+            steps {
+                script {
+                    String prLink = null
+                    String commitMsg = 'bumped up kie-version to next SNAPSHOT'
+                    String localBranch = 'kie-benchmarks-update'
+                    String targetBranch = 'main'
+                    dir(kieBenchmarksRepo){
+                        checkoutRepo(kieBenchmarksRepo, targetBranch)
+                        githubscm.setUserConfigFromCreds()
+                        githubscm.createBranch(localBranch)
+                        // update version.org.optaplanner property in kie-benchmarks
+                        maven.mvnSetVersionProperty('version.org.optaplanner', getProjectVersion())
+                        // Add changed files, commit, open and merge PR
+                        prLink = commitAndCreatePR(commitMsg, { sh "git add --all" }, localBranch, targetBranch)
+                        sh "git checkout ${targetBranch}"
+                        mergeAndPush(prLink, targetBranch)
+                        githubscm.removeRemoteBranch('origin', localBranch, getGitAuthorCredsID())
                     }
                 }
             }
