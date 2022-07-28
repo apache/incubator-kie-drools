@@ -36,6 +36,7 @@ public interface Index<A, V> {
         LESS_OR_EQUAL,
         RANGE,
         FORALL_SELF_JOIN,
+        EXISTS_PROTOTYPE_FIELD,
         UNKNOWN;
 
         public ConstraintType negate() {

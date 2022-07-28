@@ -31,47 +31,28 @@ public interface PrototypeExpression {
 
     Collection<String> getImpactedFields();
 
-    static ExpressionBuilder fixedValue(Object value) {
-        return new ExpressionBuilder(new FixedValue(value));
+    static PrototypeExpression fixedValue(Object value) {
+        return new FixedValue(value);
     }
 
-    static ExpressionBuilder prototypeField(String fieldName) {
-        return new ExpressionBuilder(new PrototypeFieldValue(fieldName));
+    static PrototypeExpression prototypeField(String fieldName) {
+        return new PrototypeFieldValue(fieldName);
     }
 
-    class ExpressionBuilder implements PrototypeExpression {
-
-        private final PrototypeExpression expression;
-
-        public ExpressionBuilder(PrototypeExpression expression) {
-            this.expression = expression;
-        }
-
-        public ExpressionBuilder composeWith(BinaryOperation.Operator op, ExpressionBuilder right) {
-            return new ExpressionBuilder(new BinaryOperation(expression, op, right.expression));
-        }
-        public ExpressionBuilder add(ExpressionBuilder right) {
-            return composeWith(BinaryOperation.Operator.ADD, right);
-        }
-        public ExpressionBuilder sub(ExpressionBuilder right) {
-            return composeWith(BinaryOperation.Operator.SUB, right);
-        }
-        public ExpressionBuilder mul(ExpressionBuilder right) {
-            return composeWith(BinaryOperation.Operator.MUL, right);
-        }
-        public ExpressionBuilder div(ExpressionBuilder right) {
-            return composeWith(BinaryOperation.Operator.DIV, right);
-        }
-
-        @Override
-        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
-            return expression.asFunction(prototype);
-        }
-
-        @Override
-        public Collection<String> getImpactedFields() {
-            return expression.getImpactedFields();
-        }
+    default PrototypeExpression composeWith(BinaryOperation.Operator op, PrototypeExpression right) {
+        return new BinaryOperation(this, op, right);
+    }
+    default PrototypeExpression add(PrototypeExpression right) {
+        return composeWith(BinaryOperation.Operator.ADD, right);
+    }
+    default PrototypeExpression sub(PrototypeExpression right) {
+        return composeWith(BinaryOperation.Operator.SUB, right);
+    }
+    default PrototypeExpression mul(PrototypeExpression right) {
+        return composeWith(BinaryOperation.Operator.MUL, right);
+    }
+    default PrototypeExpression div(PrototypeExpression right) {
+        return composeWith(BinaryOperation.Operator.DIV, right);
     }
 
     class FixedValue implements PrototypeExpression {
