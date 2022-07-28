@@ -19,6 +19,7 @@ package org.drools.core.reteoo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
@@ -324,5 +325,19 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
 
     public void cancelActivation(ActivationsManager activationsManager) {
         activationsManager.cancelActivation( this );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        RuleTerminalNodeLeftTuple that = (RuleTerminalNodeLeftTuple) o;
+        return ruleAgendaItem.getRule().getName().equals(that.ruleAgendaItem.getRule().getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), ruleAgendaItem.getRule().getName());
     }
 }
