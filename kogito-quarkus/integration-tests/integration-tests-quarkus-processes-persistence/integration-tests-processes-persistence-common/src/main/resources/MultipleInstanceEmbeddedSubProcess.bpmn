@@ -1,6 +1,7 @@
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_KehJYFCbEDqqR-EZALRq6g" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
-  <bpmn2:itemDefinition id="_myListItem" structureRef="java.util.List"/>
-  <bpmn2:itemDefinition id="_outListItem" structureRef="java.util.List"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_oayuUO7oEDqbB6ThabG0Qg" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_myListItem" structureRef="java.util.List&lt;String&gt;"/>
+  <bpmn2:itemDefinition id="_outListItem" structureRef="java.util.List&lt;String&gt;"/>
   <bpmn2:itemDefinition id="_960FDD78-091E-475A-B698-81731E9D7F67_multiInstanceItemType_input" structureRef="Object"/>
   <bpmn2:itemDefinition id="_960FDD78-091E-475A-B698-81731E9D7F67_multiInstanceItemType_output" structureRef="Object"/>
   <bpmn2:itemDefinition id="__8FA74461-1678-4541-A13F-43EFACA01FF0_SkippableInputXItem" structureRef="Object"/>
@@ -15,9 +16,13 @@
   <bpmn2:itemDefinition id="__8FA74461-1678-4541-A13F-43EFACA01FF0_NotCompletedReassignInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__8FA74461-1678-4541-A13F-43EFACA01FF0_NotStartedNotifyInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__8FA74461-1678-4541-A13F-43EFACA01FF0_NotCompletedNotifyInputXItem" structureRef="Object"/>
+  <bpmn2:collaboration id="_2680DABA-CFE1-4834-9206-F9E0E0FFAC3C" name="Default Collaboration">
+    <bpmn2:participant id="_D582093A-213E-43D1-94A0-D4C8D78DDDE6" name="Pool Participant" processRef="MultipleInstanceEmbeddedSubProcess"/>
+  </bpmn2:collaboration>
   <bpmn2:process id="MultipleInstanceEmbeddedSubProcess" drools:packageName="org.kie.kogito" drools:version="1.0" drools:adHoc="false" name="MultipleInstanceEmbeddedSubProcess" isExecutable="true" processType="Public">
     <bpmn2:property id="myList" itemSubjectRef="_myListItem" name="myList"/>
     <bpmn2:property id="outList" itemSubjectRef="_outListItem" name="outList"/>
+    <bpmn2:sequenceFlow id="_2BE18474-FD98-4B11-8E3C-EB1C749440DB" sourceRef="_44577E4A-FD15-40E4-8D2B-4E7689DBC5C1" targetRef="_642D6D69-7CB2-4628-B69F-21A0C54D2FE4"/>
     <bpmn2:sequenceFlow id="_BBD96F07-8A9B-4746-9D54-E834BEEF5562" sourceRef="_960FDD78-091E-475A-B698-81731E9D7F67" targetRef="_A6F9E6C1-0157-4BF8-8769-E40AF006EA19"/>
     <bpmn2:sequenceFlow id="_16EF07B7-1B1E-481D-838A-9B0B53BA7FFD" sourceRef="_642D6D69-7CB2-4628-B69F-21A0C54D2FE4" targetRef="_960FDD78-091E-475A-B698-81731E9D7F67">
       <bpmn2:extensionElements>
@@ -26,7 +31,6 @@
         </drools:metaData>
       </bpmn2:extensionElements>
     </bpmn2:sequenceFlow>
-    <bpmn2:sequenceFlow id="_2BE18474-FD98-4B11-8E3C-EB1C749440DB" sourceRef="_44577E4A-FD15-40E4-8D2B-4E7689DBC5C1" targetRef="_642D6D69-7CB2-4628-B69F-21A0C54D2FE4"/>
     <bpmn2:endEvent id="_A6F9E6C1-0157-4BF8-8769-E40AF006EA19">
       <bpmn2:incoming>_BBD96F07-8A9B-4746-9D54-E834BEEF5562</bpmn2:incoming>
     </bpmn2:endEvent>
@@ -121,8 +125,8 @@ kcontext.setVariable("outList", new java.util.ArrayList&lt;String&gt;());</bpmn2
             <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_8FA74461-1678-4541-A13F-43EFACA01FF0_SkippableInputX]]></bpmn2:to>
           </bpmn2:assignment>
         </bpmn2:dataInputAssociation>
-        <bpmn2:potentialOwner id="_KepsQFCbEDqqR-EZALRq6g">
-          <bpmn2:resourceAssignmentExpression id="_KeqTUFCbEDqqR-EZALRq6g">
+        <bpmn2:potentialOwner id="_oa6qIO7oEDqbB6ThabG0Qg">
+          <bpmn2:resourceAssignmentExpression id="_oa6qIe7oEDqbB6ThabG0Qg">
             <bpmn2:formalExpression>admin</bpmn2:formalExpression>
           </bpmn2:resourceAssignmentExpression>
         </bpmn2:potentialOwner>
@@ -147,7 +151,7 @@ kcontext.setVariable("outList", new java.util.ArrayList&lt;String&gt;());</bpmn2
     </bpmn2:subProcess>
   </bpmn2:process>
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="MultipleInstanceSubProcess">
+    <bpmndi:BPMNPlane bpmnElement="MultipleInstanceEmbeddedSubProcess">
       <bpmndi:BPMNShape id="shape__960FDD78-091E-475A-B698-81731E9D7F67" bpmnElement="_960FDD78-091E-475A-B698-81731E9D7F67">
         <dc:Bounds height="250" width="650" x="555" y="45"/>
       </bpmndi:BPMNShape>
@@ -184,10 +188,6 @@ kcontext.setVariable("outList", new java.util.ArrayList&lt;String&gt;());</bpmn2
       <bpmndi:BPMNShape id="shape__A6F9E6C1-0157-4BF8-8769-E40AF006EA19" bpmnElement="_A6F9E6C1-0157-4BF8-8769-E40AF006EA19">
         <dc:Bounds height="56" width="56" x="1285" y="146"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="edge_shape__44577E4A-FD15-40E4-8D2B-4E7689DBC5C1_to_shape__642D6D69-7CB2-4628-B69F-21A0C54D2FE4" bpmnElement="_2BE18474-FD98-4B11-8E3C-EB1C749440DB">
-        <di:waypoint x="157" y="174"/>
-        <di:waypoint x="342" y="174"/>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="edge_shape__642D6D69-7CB2-4628-B69F-21A0C54D2FE4_to_shape__960FDD78-091E-475A-B698-81731E9D7F67" bpmnElement="_16EF07B7-1B1E-481D-838A-9B0B53BA7FFD">
         <di:waypoint x="342" y="174"/>
         <di:waypoint x="555" y="170"/>
@@ -195,6 +195,10 @@ kcontext.setVariable("outList", new java.util.ArrayList&lt;String&gt;());</bpmn2
       <bpmndi:BPMNEdge id="edge_shape__960FDD78-091E-475A-B698-81731E9D7F67_to_shape__A6F9E6C1-0157-4BF8-8769-E40AF006EA19" bpmnElement="_BBD96F07-8A9B-4746-9D54-E834BEEF5562">
         <di:waypoint x="880" y="170"/>
         <di:waypoint x="1313" y="174"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__44577E4A-FD15-40E4-8D2B-4E7689DBC5C1_to_shape__642D6D69-7CB2-4628-B69F-21A0C54D2FE4" bpmnElement="_2BE18474-FD98-4B11-8E3C-EB1C749440DB">
+        <di:waypoint x="157" y="174"/>
+        <di:waypoint x="342" y="174"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
@@ -233,7 +237,7 @@ kcontext.setVariable("outList", new java.util.ArrayList&lt;String&gt;());</bpmn2
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_KehJYFCbEDqqR-EZALRq6g</bpmn2:source>
-    <bpmn2:target>_KehJYFCbEDqqR-EZALRq6g</bpmn2:target>
+    <bpmn2:source>_oayuUO7oEDqbB6ThabG0Qg</bpmn2:source>
+    <bpmn2:target>_oayuUO7oEDqbB6ThabG0Qg</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>

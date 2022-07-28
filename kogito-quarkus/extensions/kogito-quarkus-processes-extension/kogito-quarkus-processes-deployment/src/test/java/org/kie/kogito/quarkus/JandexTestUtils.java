@@ -35,6 +35,7 @@ import org.kie.kogito.codegen.data.AnswerWithAnnotations;
 import org.kie.kogito.codegen.data.EmptyConstructor;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
 import org.kie.kogito.codegen.data.JacksonData;
+import org.kie.kogito.codegen.data.ListWithoutType;
 import org.kie.kogito.codegen.data.NotEmptyConstructor;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonSubClass;
@@ -72,7 +73,8 @@ public final class JandexTestUtils {
             QuestionWithAnnotatedEnum.class,
             Travels.class,
             PersonSubClass.class,
-            JacksonData.class);
+            JacksonData.class,
+            ListWithoutType.class);
 
     private static ClassInfo indexClass(Indexer indexer, Class<?> toIndex) {
         try {

@@ -31,6 +31,7 @@ import org.kie.kogito.codegen.data.AnswerBrokenV2;
 import org.kie.kogito.codegen.data.AnswerWithAnnotations;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
 import org.kie.kogito.codegen.data.JacksonData;
+import org.kie.kogito.codegen.data.ListWithoutType;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonSubClass;
 import org.kie.kogito.codegen.data.PersonVarInfo;
@@ -751,6 +752,20 @@ public abstract class AbstractProtoGeneratorTest<T> {
 
         Proto proto = generator.protoOfDataClasses("defaultPkg");
         assertThat(proto).isNotNull();
+    }
+
+    @Test
+    void collectionWithoutTypeProto() {
+        AbstractProtoGenerator<T> generator = protoGeneratorBuilder()
+                .withDataClasses(Collections.singleton(convertToType(ListWithoutType.class)))
+                .build(null);
+
+        assertThatThrownBy(() -> generator.protoOfDataClasses("defaultPkg"))
+                .hasCauseInstanceOf(IllegalArgumentException.class)
+                .hasMessage(
+                        "Error while generating proto for model class " + ListWithoutType.class.getName()
+                                + " Field attribute of class " + ListWithoutType.class.getName()
+                                + " uses collection without type information");
     }
 
     @Test

@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 
 public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
 
@@ -65,6 +66,11 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
     @Override
     protected boolean isEnum(ClassInfo dataModel) {
         return dataModel.superName() != null && Enum.class.getName().equals(dataModel.superName().toString());
+    }
+
+    @Override
+    protected String modelClassName(ClassInfo dataModel) {
+        return dataModel.asClass().name().toString();
     }
 
     @Override
@@ -122,7 +128,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
             } else if (isCollection(pd)) {
                 fieldTypeString = "Collection";
 
-                List<Type> typeParameters = pd.type().asParameterizedType().arguments();
+                List<Type> typeParameters = pd.type().kind() == Kind.CLASS ? emptyList() : pd.type().asParameterizedType().arguments();
                 if (typeParameters.isEmpty()) {
                     throw new IllegalArgumentException("Field " + pd.name() + " of class " + clazz.name().toString()
                             + " uses collection without type information");
@@ -160,7 +166,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
     }
 
     private boolean isCollection(FieldInfo pd) {
-        if (pd.type().kind() == Kind.PARAMETERIZED_TYPE) {
+        if (pd.type().kind() == Kind.PARAMETERIZED_TYPE || pd.type().kind() == Kind.CLASS) {
             try {
                 Class<?> clazz = Class.forName(pd.type().name().toString());
                 return Collection.class.isAssignableFrom(clazz);

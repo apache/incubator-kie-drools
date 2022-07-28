@@ -99,7 +99,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
                     fieldType = (Class<?>) ptype.getActualTypeArguments()[0];
                     protoType = protoType(fieldType.getCanonicalName());
                 } else {
-                    throw new IllegalArgumentException("Field " + propertyField.getName() + " of class " + clazz + " uses collection without type information");
+                    throw new IllegalArgumentException("Field " + propertyField.getName() + " of class " + clazz.getName() + " uses collection without type information");
                 }
             } else {
                 protoType = protoType(fieldTypeString);
@@ -125,6 +125,11 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         message.setComment(messageComment);
         proto.addMessage(message);
         return message;
+    }
+
+    @Override
+    protected String modelClassName(Class<?> dataModel) {
+        return dataModel.getName();
     }
 
     private Field getFieldFromClass(Class<?> clazz, String name) {
