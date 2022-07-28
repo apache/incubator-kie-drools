@@ -90,11 +90,21 @@ public class PrototypeDSL {
 
             Prototype prototype = protoVar.getPrototype();
             Prototype.Field field = prototype.getField(fieldName);
-            Function1<PrototypeFact, Object> extractor = getFieldValueExtractor(prototype, fieldName);
-            int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
 
-            Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value != null ? value.getClass() : null);
-            AlphaIndex alphaIndex = fieldClass != null ? alphaIndexedBy( fieldClass, constraintType, fieldIndex, extractor, value ) : null;
+            Function1<PrototypeFact, Object> extractor = null;
+            AlphaIndex alphaIndex = null;
+            if (constraintType == Index.ConstraintType.EXISTS_PROTOTYPE_FIELD) {
+                extractor = prototypeFact -> prototypeFact.has(fieldName);
+                constraintType = Index.ConstraintType.EQUAL;
+            } else {
+                extractor = getFieldValueExtractor(prototype, fieldName);
+                int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
+
+                Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value != null ? value.getClass() : null);
+                if (fieldClass != null) {
+                    alphaIndex = alphaIndexedBy(fieldClass, constraintType, fieldIndex, extractor, value);
+                }
+            }
 
             expr("expr:" + fieldName + ":" + constraintType + ":" + value,
                     asPredicate1(extractor, constraintType, value),
