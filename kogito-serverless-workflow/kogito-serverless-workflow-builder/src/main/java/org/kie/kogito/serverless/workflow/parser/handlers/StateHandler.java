@@ -42,7 +42,6 @@ import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.suppliers.CollectorActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.CompensationActionSupplier;
-import org.kie.kogito.serverless.workflow.suppliers.DataInputSchemaActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.MergeActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ProduceEventActionSupplier;
@@ -52,7 +51,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.Workflow;
-import io.serverlessworkflow.api.datainputschema.DataInputSchema;
 import io.serverlessworkflow.api.end.End;
 import io.serverlessworkflow.api.error.Error;
 import io.serverlessworkflow.api.error.ErrorDefinition;
@@ -65,7 +63,6 @@ import io.serverlessworkflow.api.transitions.Transition;
 
 import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.messageNode;
-import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.processResourceFile;
 
 public abstract class StateHandler<S extends State> {
 
@@ -99,16 +96,7 @@ public abstract class StateHandler<S extends State> {
 
     public void handleStart() {
         if (isStartState) {
-            RuleFlowProcessFactory factory = parserContext.factory();
             startNodeFactory = parserContext.factory().startNode(parserContext.newId()).name(ServerlessWorkflowParser.NODE_START_NAME);
-            DataInputSchema inputSchema = workflow.getDataInputSchema();
-            if (inputSchema != null) {
-                // TODO when all uris included auth ref, include authref
-                processResourceFile(workflow, parserContext, inputSchema.getSchema());
-                startNodeFactory =
-                        connect(startNodeFactory, factory.actionNode(parserContext.newId())
-                                .action(new DataInputSchemaActionSupplier(inputSchema.getSchema(), inputSchema.isFailOnValidationErrors())));
-            }
             startNodeFactory.done();
         }
     }

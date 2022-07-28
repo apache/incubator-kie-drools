@@ -39,11 +39,13 @@ import org.kie.kogito.serverless.workflow.parser.handlers.StateHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.handlers.validation.WorkflowValidator;
 import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaGenerator;
 import org.kie.kogito.serverless.workflow.parser.schema.WorkflowModelSchemaRef;
+import org.kie.kogito.serverless.workflow.suppliers.DataInputSchemaValidatorSupplier;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.datainputschema.DataInputSchema;
 import io.serverlessworkflow.api.workflow.Constants;
 
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.processResourceFile;
@@ -94,7 +96,8 @@ public class ServerlessWorkflowParser {
                 .type(KogitoWorkflowProcess.SW_TYPE);
         ParserContext parserContext =
                 new ParserContext(idGenerator, factory, context, WorkflowOperationIdFactoryProvider.getFactory(context.getApplicationProperty(WorkflowOperationIdFactoryProvider.PROPERTY_NAME)));
-        loadConstants(workflow, factory, parserContext);
+        dataInputSchema(factory, parserContext);
+        loadConstants(factory, parserContext);
         Collection<StateHandler<?>> handlers =
                 workflow.getStates().stream().map(state -> StateHandlerFactory.getStateHandler(state, workflow, parserContext))
                         .filter(Optional::isPresent).map(Optional::get).filter(state -> !state.usedForCompensation()).collect(Collectors.toList());
@@ -121,6 +124,15 @@ public class ServerlessWorkflowParser {
         return new GeneratedInfo<>(factory.validate().getProcess(), parserContext.generatedFiles());
     }
 
+    private void dataInputSchema(RuleFlowProcessFactory factory, ParserContext parserContext) {
+        DataInputSchema inputSchema = workflow.getDataInputSchema();
+        if (inputSchema != null) {
+            // TODO when all uris included auth ref, include authref
+            processResourceFile(workflow, parserContext, inputSchema.getSchema());
+            factory.validator(new DataInputSchemaValidatorSupplier(inputSchema.getSchema(), inputSchema.isFailOnValidationErrors()));
+        }
+    }
+
     private static Collection<Tag> getTags(Workflow workflow) {
         Collection<Tag> tags = new ArrayList<>();
         if (workflow.getAnnotations() != null && !workflow.getAnnotations().isEmpty()) {
@@ -143,7 +155,7 @@ public class ServerlessWorkflowParser {
         return processInfo;
     }
 
-    private static void loadConstants(Workflow workflow, RuleFlowProcessFactory factory, ParserContext parserContext) {
+    private void loadConstants(RuleFlowProcessFactory factory, ParserContext parserContext) {
         Constants constants = workflow.getConstants();
         if (constants != null) {
             if (constants.getRefValue() != null) {

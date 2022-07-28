@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.Work;
@@ -156,6 +157,9 @@ public class ProcessVisitor extends AbstractVisitor {
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_TYPE, new StringLiteralExpr(getOrDefault(process.getType(), KogitoWorkflowProcess.BPMN_TYPE))))
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_VISIBILITY,
                         new StringLiteralExpr(getOrDefault(((KogitoWorkflowProcess) process).getVisibility(), KogitoWorkflowProcess.PUBLIC_VISIBILITY))));
+
+        ((org.jbpm.workflow.core.WorkflowProcess) process).getValidator().ifPresent(
+                v -> body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "validator", ExpressionUtils.getLiteralExpr(v))));
 
         visitCompensationScope(process, body);
         visitMetaData(process.getMetaData(), body, FACTORY_FIELD_NAME);

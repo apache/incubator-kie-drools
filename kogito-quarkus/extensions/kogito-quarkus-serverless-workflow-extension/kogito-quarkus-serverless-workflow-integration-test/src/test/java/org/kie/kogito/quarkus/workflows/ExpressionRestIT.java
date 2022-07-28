@@ -22,6 +22,7 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 
 @QuarkusIntegrationTest
@@ -51,6 +52,8 @@ class ExpressionRestIT {
                 .body("{\"workflowdata\":{\"numbers\":[{\"x\":\"abcdedf\", \"y\": 1},{\"x\":4, \"y\": 3}]}}").when()
                 .post("/expression")
                 .then()
-                .statusCode(is(400));
+                .statusCode(is(400))
+                .body("message", notNullValue())
+                .body("id", nullValue());
     }
 }

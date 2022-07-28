@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 
@@ -27,6 +28,7 @@ import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.WorkflowInputModelValidator;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -47,6 +49,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
 
     private boolean autoComplete = false;
     private boolean dynamic = false;
+    private WorkflowInputModelValidator validator;
     private org.jbpm.workflow.core.NodeContainer nodeContainer;
 
     private transient BiFunction<String, ProcessInstance, String> expressionEvaluator = (expression, p) -> {
@@ -88,10 +91,12 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         return new NodeContainerImpl();
     }
 
+    @Override
     public org.kie.api.definition.process.Node[] getNodes() {
         return nodeContainer.getNodes();
     }
 
+    @Override
     public org.kie.api.definition.process.Node getNode(final long id) {
         return nodeContainer.getNode(id);
     }
@@ -101,6 +106,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public org.kie.api.definition.process.Node internalGetNode(long id) {
         try {
             return getNode(id);
@@ -113,16 +119,19 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         }
     }
 
+    @Override
     public void removeNode(final org.kie.api.definition.process.Node node) {
         nodeContainer.removeNode(node);
         ((Node) node).setParentContainer(null);
     }
 
+    @Override
     public void addNode(final org.kie.api.definition.process.Node node) {
         nodeContainer.addNode(node);
         ((Node) node).setParentContainer(this);
     }
 
+    @Override
     public boolean isAutoComplete() {
         return autoComplete;
     }
@@ -131,6 +140,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         this.autoComplete = autoComplete;
     }
 
+    @Override
     public boolean isDynamic() {
         return dynamic;
     }
@@ -196,11 +206,23 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         return timerStartNodes;
     }
 
+    @Override
     public void setExpressionEvaluator(BiFunction<String, ProcessInstance, String> expressionEvaluator) {
         this.expressionEvaluator = expressionEvaluator;
     }
 
+    @Override
     public String evaluateExpression(String metaData, ProcessInstance processInstance) {
         return this.expressionEvaluator.apply(metaData, processInstance);
+    }
+
+    @Override
+    public Optional<WorkflowInputModelValidator> getValidator() {
+        return Optional.ofNullable(validator);
+    }
+
+    @Override
+    public void setValidator(WorkflowInputModelValidator validator) {
+        this.validator = validator;
     }
 }

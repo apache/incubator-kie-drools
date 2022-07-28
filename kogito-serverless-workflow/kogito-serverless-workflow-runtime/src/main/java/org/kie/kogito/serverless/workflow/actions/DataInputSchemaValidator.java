@@ -15,48 +15,56 @@
  */
 package org.kie.kogito.serverless.workflow.actions;
 
+import java.io.IOException;
+import java.util.Map;
+
 import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
-import org.jbpm.process.instance.impl.Action;
+import org.jbpm.workflow.core.WorkflowInputModelValidator;
 import org.json.JSONObject;
-import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.NullNode;
 
-import static org.kie.kogito.serverless.workflow.actions.ActionUtils.getWorkflowData;
 import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readAllBytes;
 import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.runtimeLoader;
 
-public class DataInputSchemaAction implements Action {
+public class DataInputSchemaValidator implements WorkflowInputModelValidator {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataInputSchemaAction.class);
+    private static final long serialVersionUID = 1L;
 
-    protected String schema;
-    protected boolean failOnValidationErrors;
+    private static final Logger logger = LoggerFactory.getLogger(DataInputSchemaValidator.class);
 
-    public DataInputSchemaAction(String schema, boolean failOnValidationErrors) {
+    protected final String schema;
+    protected final boolean failOnValidationErrors;
+
+    public DataInputSchemaValidator(String schema, boolean failOnValidationErrors) {
         this.schema = schema;
         this.failOnValidationErrors = failOnValidationErrors;
     }
 
     @Override
-    public void execute(KogitoProcessContext context) throws Exception {
+    public void validate(Map<String, Object> model) {
         ObjectMapper mapper = ObjectMapperFactory.get();
         try {
             SchemaLoader.load(mapper.readValue(readAllBytes(runtimeLoader(schema)), JSONObject.class))
-                    .validate(mapper.convertValue(getWorkflowData(context), JSONObject.class));
+                    .validate(mapper.convertValue(model.getOrDefault(SWFConstants.DEFAULT_WORKFLOW_VAR, NullNode.instance), JSONObject.class));
         } catch (ValidationException ex) {
-            String validationError = String.format("Error validating input schema %s", ex.getCausingExceptions().isEmpty()
-                    ? ex
-                    : ex.getCausingExceptions());
-            logger.warn(validationError, ex);
-            if (failOnValidationErrors) {
-                throw new IllegalArgumentException(validationError);
-            }
+            handleException(ex, ex.getCausingExceptions().isEmpty() ? ex : ex.getCausingExceptions());
+        } catch (IOException ex) {
+            handleException(ex, ex);
         }
+    }
 
+    private void handleException(Throwable ex, Object toAppend) {
+        String validationError = String.format("Error validating input schema: %s", toAppend);
+        logger.warn(validationError, ex);
+        if (failOnValidationErrors) {
+            throw new IllegalArgumentException(validationError);
+        }
     }
 }

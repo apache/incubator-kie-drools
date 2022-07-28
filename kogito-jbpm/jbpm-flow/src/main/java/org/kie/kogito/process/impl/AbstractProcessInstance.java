@@ -35,6 +35,7 @@ import java.util.function.Predicate;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -115,7 +116,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         setCorrelationKey(businessKey);
 
         Map<String, Object> map = bind(variables);
-        String processId = process.get().getId();
+
+        org.kie.api.definition.process.Process processDefinition = process.get();
+        if (processDefinition instanceof WorkflowProcess) {
+            ((WorkflowProcess) processDefinition).getValidator().ifPresent(v -> v.validate(map));
+        }
+        String processId = processDefinition.getId();
         syncProcessInstance((WorkflowProcessInstance) ((CorrelationAwareProcessRuntime) rt).createProcessInstance(processId, correlationKey, map));
         processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, this);
 
