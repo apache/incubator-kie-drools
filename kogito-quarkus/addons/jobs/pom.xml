@@ -17,6 +17,7 @@
     <module>common</module>
     <module>management</module>
     <module>messaging</module>
+    <module>knative-eventing</module>
   </modules>
 
 </project>

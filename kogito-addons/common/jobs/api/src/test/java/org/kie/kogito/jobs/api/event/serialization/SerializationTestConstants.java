@@ -26,11 +26,11 @@ class SerializationTestConstants {
     static final ZonedDateTime TIME = ZonedDateTime.parse("2021-11-24T18:01:15.001+01:00");
     static final String SUBJECT = "SUBJECT";
     static final String JOB_ID = "JOB_ID";
-    static final String PROCESS_INSTANCE_ID = "PROCESS_INSTANCE_ID";
-    static final String PROCESS_ID = "PROCESS_ID";
-    static final String ROOT_PROCESS_INSTANCE_ID = "ROOT_PROCESS_INSTANCE_ID";
-    static final String ROOT_PROCESS_ID = "ROOT_PROCESS_ID";
-    static final String KOGITO_ADDONS = "KOGITO_ADDONS";
+    static final String PROCESS_INSTANCE_ID_VALUE = "PROCESS_INSTANCE_ID";
+    static final String PROCESS_ID_VALUE = "PROCESS_ID";
+    static final String ROOT_PROCESS_INSTANCE_ID_VALUE = "ROOT_PROCESS_INSTANCE_ID";
+    static final String ROOT_PROCESS_ID_VALUE = "ROOT_PROCESS_ID";
+    static final String KOGITO_ADDONS_VALUE = "KOGITO_ADDONS";
     static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     static final long REPEAT_INTERVAL = 6000;
     static final int REPEAT_LIMIT = 3;

@@ -28,7 +28,7 @@ public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
 
     // Note: this constant is also declared in cloudevents-json-jackson.
     // However, to avoid importing a library for only one constant that won't likely to change, we opt to have it declared here.
-    private static final String CLOUD_EVENTS_CONTENT_TYPE = "application/cloudevents+json";
+    public static final String CLOUD_EVENTS_CONTENT_TYPE = "application/cloudevents+json";
 
     /**
      * Metadata to include content-type for structured CloudEvents messages

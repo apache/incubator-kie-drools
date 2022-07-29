@@ -45,6 +45,14 @@ public class JobCloudEventDeserializer {
     public JobCloudEvent<?> deserialize(byte[] data) {
         try {
             CloudEvent cloudEvent = objectMapper.readValue(data, CloudEvent.class);
+            return deserialize(cloudEvent);
+        } catch (IOException e) {
+            throw new DeserializationException("An error was produced during a JobCloudEvent deserialization: " + e.getMessage(), e);
+        }
+    }
+
+    public JobCloudEvent<?> deserialize(CloudEvent cloudEvent) {
+        try {
             CloudEventData cloudEventData = Objects.requireNonNull(cloudEvent.getData(), "JobCloudEvent data field must not be null");
             if (cloudEvent.getType().equals(CreateProcessInstanceJobRequestEvent.CREATE_PROCESS_INSTANCE_JOB_REQUEST)) {
                 Job job = objectMapper.readValue(cloudEventData.toBytes(), Job.class);

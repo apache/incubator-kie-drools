@@ -585,6 +585,11 @@
         <artifactId>cloudevents-http-restful-ws</artifactId>
         <version>${version.io.cloudevents}</version>
       </dependency>
+      <dependency>
+        <groupId>io.cloudevents</groupId>
+        <artifactId>cloudevents-http-vertx</artifactId>
+        <version>${version.io.cloudevents}</version>
+      </dependency>
 
       <!--  Json Schema -->
       <dependency>
