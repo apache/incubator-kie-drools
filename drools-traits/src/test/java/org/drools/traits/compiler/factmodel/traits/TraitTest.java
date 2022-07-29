@@ -32,7 +32,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.ObjectFilter;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -47,6 +46,8 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.EntryPointId;
+import org.drools.io.ByteArrayResource;
+import org.drools.io.ClassPathResource;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
@@ -66,8 +67,6 @@ import org.drools.traits.core.factmodel.TripleBasedStruct;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
 import org.drools.traits.core.util.CodedHierarchyImpl;
-import org.drools.io.ByteArrayResource;
-import org.drools.io.ClassPathResource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -3323,12 +3322,7 @@ public class TraitTest extends CommonTraitTest {
         assertThat(list).isEqualTo(Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G', 'Z'));
 
 
-        for ( Object o : ks.getObjects( new ObjectFilter() {
-            @Override
-            public boolean accept( Object object ) {
-                return object instanceof TraitableBean;
-            }
-        } ) ) {
+        for ( Object o : ks.getObjects(object -> object instanceof TraitableBean) ) {
             Set<BitSet> otns = checkOTNPartitioning( (TraitableBean) o, ks );
             assertThat(otns.size()).isEqualTo(7);
         }
@@ -3397,18 +3391,11 @@ public class TraitTest extends CommonTraitTest {
         assertThat(list).isEqualTo(Arrays.asList('A', 'D', 'G', 'Z'));
 
 
-        for ( Object o : ks.getObjects( new ObjectFilter() {
-            @Override
-            public boolean accept( Object object ) {
-                return object instanceof TraitableBean;
-            }
-        } ) ) {
+        for ( Object o : ks.getObjects(object -> object instanceof TraitableBean) ) {
             Set<BitSet> otns = checkOTNPartitioning( (TraitableBean) o, ks );
             assertThat(otns.size()).isEqualTo(3);
         }
-
     }
-
 
 
     @Test
@@ -5618,12 +5605,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.insert( new Entity() );
         ksession.fireAllRules();
 
-        for ( final Object o : ksession.getObjects( new ObjectFilter() {
-            @Override
-            public boolean accept( Object object ) {
-                return object.getClass().getName().contains( "test.A" );
-            }
-        } ) ) {
+        for ( final Object o : ksession.getObjects(object -> object.getClass().getName().contains( "test.A" )) ) {
             InternalFactHandle handle = (InternalFactHandle) ksession.getFactHandle( o );
             LeftTuple first = handle.getFirstLeftTuple();
             assertThat(first instanceof RuleTerminalNodeLeftTuple).isTrue();

@@ -39,6 +39,11 @@ public class HashMapFactImpl implements Fact, PrototypeFact {
     }
 
     @Override
+    public boolean has( String name ) {
+        return valuesMap.containsKey( name );
+    }
+
+    @Override
     public Object get( String name ) {
         return valuesMap.get(name);
     }
@@ -55,9 +60,6 @@ public class HashMapFactImpl implements Fact, PrototypeFact {
 
     @Override
     public String toString() {
-        return "HashMapFactImpl{" +
-                "factTemplate=" + factTemplate +
-                ", valuesMap=" + valuesMap +
-                '}';
+        return factTemplate + "; values = " + valuesMap;
     }
 }

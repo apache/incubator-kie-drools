@@ -138,7 +138,7 @@ public class DisconnectedFactHandle
             throw new IllegalArgumentException( "externalFormat did not have enough elements ["+externalFormat+"]" );
         }
 
-        this.id = Integer.parseInt( elements[1] );
+        this.id = Long.parseLong( elements[1] );
         this.identityHashCode = Integer.parseInt( elements[2] );
         this.objectHashCode = Integer.parseInt(elements[3]);
         this.recency = Long.parseLong( elements[4] );

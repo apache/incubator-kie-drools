@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.drools.core.ObjectFilter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -137,12 +136,7 @@ public class ClassAwareObjectStoreTest {
         insertObjectWithFactHandle(new SuperClass());
         insertObjectWithFactHandle(new SubClass());
 
-        Collection<Object> result = collect(underTest.iterateObjects(new ObjectFilter() {
-            @Override
-            public boolean accept(Object o) {
-                return SubClass.class.isInstance(o);
-            }
-        }));
+        Collection<Object> result = collect(underTest.iterateObjects(SubClass.class::isInstance));
 
         assertThat(result).hasSize(1);
         assertThat(result).hasAtLeastOneElementOfType(SubClass.class);

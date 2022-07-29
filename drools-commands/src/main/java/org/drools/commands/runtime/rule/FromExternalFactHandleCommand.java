@@ -44,7 +44,7 @@ public class FromExternalFactHandleCommand implements ExecutableCommand<FactHand
     public FactHandle execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         Collection<FactHandle> factHandles = ksession.getFactHandles();
-        int fhId = Integer.parseInt(factHandleExternalForm.split(":")[1]);
+        long fhId = Long.parseLong(factHandleExternalForm.split(":")[1]);
         for (FactHandle factHandle : factHandles) {
             if (factHandle instanceof InternalFactHandle
                     && ((InternalFactHandle) factHandle).getId() == fhId) {

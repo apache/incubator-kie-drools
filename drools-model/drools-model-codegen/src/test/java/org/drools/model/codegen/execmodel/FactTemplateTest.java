@@ -146,6 +146,36 @@ public class FactTemplateTest {
     }
 
     @Test
+    public void testExistsField() {
+        // DROOLS-7075
+        Prototype testPrototype = prototype( "test" );
+        PrototypeVariable testV = variable(testPrototype);
+
+        Rule rule = rule( "alpha" )
+                .build(
+                        protoPattern(testV)
+                                .expr( prototypeField("fieldA"), Index.ConstraintType.EXISTS_PROTOTYPE_FIELD, fixedValue(true) ),
+                        on(testV).execute((drools, x) ->
+                            drools.insert(new Result("Found"))
+                        )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact testFact = createMapBasedFact(testPrototype);
+        testFact.set( "fieldB", 8 );
+
+        FactHandle fh = ksession.insert( testFact );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        testFact.set( "fieldA", null );
+        ksession.update(fh, testFact, "fieldA");
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
     public void testNotNull() {
         Prototype personFact = prototype( "org.drools.Person" );
         PrototypeVariable markV = variable(personFact);
