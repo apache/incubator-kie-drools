@@ -60,7 +60,11 @@ import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_URL;
  */
 public class KeyStoreHelper {
 
+    private static final String SHA512WITH_RSA = "SHA512withRSA";
+    private static final String MD5WITH_RSA = "MD5withRSA";
+
     private boolean signed;
+    private boolean allowVerifyOldSignAlgo;
 
     private URL pvtKeyStoreURL;
     private char[] pvtKeyStorePwd;
@@ -85,6 +89,7 @@ public class KeyStoreHelper {
         try {
             this.signed = Boolean.valueOf(System.getProperty(KeyStoreConstants.PROP_SIGN,
                                                              RuleBaseConfiguration.DEFAULT_SIGN_ON_SERIALIZATION)).booleanValue();
+            this.allowVerifyOldSignAlgo = Boolean.parseBoolean(System.getProperty(KeyStoreConstants.PROP_VERIFY_OLD_SIGN, "false"));
 
             loadPrivateKeyStoreProperties();
             loadPublicKeyStoreProperties();
@@ -178,9 +183,22 @@ public class KeyStoreHelper {
         }
         PrivateKey pvtkey = (PrivateKey) pvtKeyStore.getKey( pvtKeyAlias,
                                                              pvtKeyPassword );
-        Signature sig = Signature.getInstance( "MD5withRSA" );
+        Signature sig = Signature.getInstance( SHA512WITH_RSA );
         sig.initSign( pvtkey );
         sig.update( data );
+        return sig.sign();
+    }
+
+    // test purpose
+    byte[] signDataWithPrivateKeyWithAlgorithm(byte[] data, String algorithm) throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        if (pvtKeyStore == null) {
+            throw new RuntimeException("Key store with private key not configured. Please configure it properly before using signed serialization.");
+        }
+        PrivateKey pvtkey = (PrivateKey) pvtKeyStore.getKey(pvtKeyAlias,
+                                                            pvtKeyPassword);
+        Signature sig = Signature.getInstance(algorithm);
+        sig.initSign(pvtkey);
+        sig.update(data);
         return sig.sign();
     }
 
@@ -212,10 +230,23 @@ public class KeyStoreHelper {
         if( cert == null ) {
             throw new RuntimeException( "Public certificate for key '"+publicKeyAlias+"' not found in the configured key store. Impossible to deserialize the object." );
         }
-        Signature sig = Signature.getInstance( "MD5withRSA" );
+        Signature sig = Signature.getInstance( SHA512WITH_RSA );
         sig.initVerify( cert.getPublicKey() );
         sig.update( data );
-        return sig.verify( signature );
+        try {
+            return sig.verify( signature );
+        } catch (SignatureException e) {
+            if (allowVerifyOldSignAlgo) {
+                // Fallback for old sign algorithm
+                sig = Signature.getInstance(MD5WITH_RSA);
+                sig.initVerify(cert.getPublicKey());
+                sig.update(data);
+                return sig.verify(signature);
+            } else {
+                throw new RuntimeException("Failed to verify signature. If you call this method for data signed by old Drools version," +
+                                                   " set system property \"" + KeyStoreConstants.PROP_VERIFY_OLD_SIGN + "\" to true" , e);
+            }
+        }
     }
 
     public String getPasswordKey(String pwdKeyAlias, char[] pwdKeyPassword) {
