@@ -25,11 +25,6 @@ final class TwoIndexProperties implements IndexProperties {
     }
 
     @Override
-    public int maxLength() {
-        return 2;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

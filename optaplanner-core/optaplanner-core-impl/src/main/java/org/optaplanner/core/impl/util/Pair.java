@@ -1,7 +1,7 @@
 package org.optaplanner.core.impl.util;
 
 /**
- * A key-value tuple.
+ * An immutable key-value tuple.
  * Two instances {@link #equals(Object) are equal} if both values in the first instance are equal to their counterpart in
  * the other instance.
  *
@@ -11,7 +11,7 @@ package org.optaplanner.core.impl.util;
 public interface Pair<A, B> {
 
     static <A, B> Pair<A, B> of(A key, B value) {
-        return new MutablePairImpl<>(key, value);
+        return new PairImpl<>(key, value);
     }
 
     A getKey();

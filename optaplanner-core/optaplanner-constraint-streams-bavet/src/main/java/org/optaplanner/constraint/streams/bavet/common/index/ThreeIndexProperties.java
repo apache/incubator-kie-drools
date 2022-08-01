@@ -29,11 +29,6 @@ final class ThreeIndexProperties implements IndexProperties {
     }
 
     @Override
-    public int maxLength() {
-        return 3;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

@@ -16,11 +16,6 @@ final class ManyIndexProperties implements IndexProperties {
     }
 
     @Override
-    public int maxLength() {
-        return properties.length;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

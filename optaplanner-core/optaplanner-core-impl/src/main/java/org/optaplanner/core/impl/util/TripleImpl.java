@@ -2,34 +2,16 @@ package org.optaplanner.core.impl.util;
 
 import java.util.Objects;
 
-final class MutableTripleImpl<A, B, C> implements MutableTriple<A, B, C> {
+final class TripleImpl<A, B, C> implements Triple<A, B, C> {
 
-    private A a;
-    private B b;
-    private C c;
+    private final A a;
+    private final B b;
+    private final C c;
 
-    MutableTripleImpl(A a, B b, C c) {
+    TripleImpl(A a, B b, C c) {
         this.a = a;
         this.b = b;
         this.c = c;
-    }
-
-    @Override
-    public MutableTriple<A, B, C> setA(A a) {
-        this.a = a;
-        return this;
-    }
-
-    @Override
-    public MutableTriple<A, B, C> setB(B b) {
-        this.b = b;
-        return this;
-    }
-
-    @Override
-    public MutableTriple<A, B, C> setC(C c) {
-        this.c = c;
-        return this;
     }
 
     @Override
@@ -53,7 +35,7 @@ final class MutableTripleImpl<A, B, C> implements MutableTriple<A, B, C> {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        MutableTripleImpl<A, B, C> that = (MutableTripleImpl<A, B, C>) o;
+        TripleImpl<A, B, C> that = (TripleImpl<A, B, C>) o;
         return Objects.equals(a, that.a)
                 && Objects.equals(b, that.b)
                 && Objects.equals(c, that.c);

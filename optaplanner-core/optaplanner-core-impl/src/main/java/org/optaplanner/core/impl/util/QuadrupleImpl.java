@@ -2,42 +2,18 @@ package org.optaplanner.core.impl.util;
 
 import java.util.Objects;
 
-final class MutableQuadrupleImpl<A, B, C, D> implements MutableQuadruple<A, B, C, D> {
+final class QuadrupleImpl<A, B, C, D> implements Quadruple<A, B, C, D> {
 
-    private A a;
-    private B b;
-    private C c;
-    private D d;
+    private final A a;
+    private final B b;
+    private final C c;
+    private final D d;
 
-    MutableQuadrupleImpl(A a, B b, C c, D d) {
+    QuadrupleImpl(A a, B b, C c, D d) {
         this.a = a;
         this.b = b;
         this.c = c;
         this.d = d;
-    }
-
-    @Override
-    public MutableQuadruple<A, B, C, D> setA(A a) {
-        this.a = a;
-        return this;
-    }
-
-    @Override
-    public MutableQuadruple<A, B, C, D> setB(B b) {
-        this.b = b;
-        return this;
-    }
-
-    @Override
-    public MutableQuadruple<A, B, C, D> setC(C c) {
-        this.c = c;
-        return this;
-    }
-
-    @Override
-    public MutableQuadruple<A, B, C, D> setD(D d) {
-        this.d = d;
-        return this;
     }
 
     @Override
@@ -66,7 +42,7 @@ final class MutableQuadrupleImpl<A, B, C, D> implements MutableQuadruple<A, B, C
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        MutableQuadrupleImpl<A, B, C, D> that = (MutableQuadrupleImpl<A, B, C, D>) o;
+        QuadrupleImpl<A, B, C, D> that = (QuadrupleImpl<A, B, C, D>) o;
         return Objects.equals(a, that.a)
                 && Objects.equals(b, that.b)
                 && Objects.equals(c, that.c)

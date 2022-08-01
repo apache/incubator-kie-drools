@@ -2,26 +2,14 @@ package org.optaplanner.core.impl.util;
 
 import java.util.Objects;
 
-final class MutablePairImpl<A, B> implements MutablePair<A, B> {
+final class PairImpl<A, B> implements Pair<A, B> {
 
-    private A key;
-    private B value;
+    private final A key;
+    private final B value;
 
-    MutablePairImpl(A key, B value) {
+    PairImpl(A key, B value) {
         this.key = key;
         this.value = value;
-    }
-
-    @Override
-    public MutablePair<A, B> setKey(A key) {
-        this.key = key;
-        return this;
-    }
-
-    @Override
-    public MutablePair<A, B> setValue(B value) {
-        this.value = value;
-        return this;
     }
 
     @Override
@@ -40,7 +28,7 @@ final class MutablePairImpl<A, B> implements MutablePair<A, B> {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        MutablePairImpl<?, ?> that = (MutablePairImpl<?, ?>) o;
+        PairImpl<?, ?> that = (PairImpl<?, ?>) o;
         return Objects.equals(key, that.key) && Objects.equals(value, that.value);
     }
 

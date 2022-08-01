@@ -24,7 +24,7 @@ final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriT
             Indexer<UniTuple<D>, Set<Counter<TriTuple<A, B, C>>>> indexerD,
             QuadPredicate<A, B, C, D> filtering) {
         super(shouldExist, mappingD, inputStoreIndexABC, inputStoreIndexD, nextNodesTupleLifecycle, indexerABC,
-                indexerD);
+                indexerD, filtering != null);
         this.mappingABC = mappingABC;
         this.filtering = filtering;
     }
@@ -32,11 +32,6 @@ final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriT
     @Override
     protected IndexProperties createIndexProperties(TriTuple<A, B, C> leftTuple) {
         return mappingABC.apply(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC());
-    }
-
-    @Override
-    protected boolean isFiltering() {
-        return filtering != null;
     }
 
     @Override

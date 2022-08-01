@@ -19,11 +19,6 @@ final class SingleIndexProperties implements IndexProperties {
     }
 
     @Override
-    public int maxLength() {
-        return 1;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

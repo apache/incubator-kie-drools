@@ -23,7 +23,8 @@ final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<
             Indexer<QuadTuple<A, B, C, D>, Counter<QuadTuple<A, B, C, D>>> indexerABCD,
             Indexer<UniTuple<E>, Set<Counter<QuadTuple<A, B, C, D>>>> indexerE,
             PentaPredicate<A, B, C, D, E> filtering) {
-        super(shouldExist, mappingD, inputStoreIndexABC, inputStoreIndexD, nextNodesTupleLifecycle, indexerABCD, indexerE);
+        super(shouldExist, mappingD, inputStoreIndexABC, inputStoreIndexD, nextNodesTupleLifecycle, indexerABCD, indexerE,
+                filtering != null);
         this.mappingABCD = mappingABCD;
         this.filtering = filtering;
     }
@@ -31,11 +32,6 @@ final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<
     @Override
     protected IndexProperties createIndexProperties(QuadTuple<A, B, C, D> leftTuple) {
         return mappingABCD.apply(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), leftTuple.getFactD());
-    }
-
-    @Override
-    protected boolean isFiltering() {
-        return filtering != null;
     }
 
     @Override

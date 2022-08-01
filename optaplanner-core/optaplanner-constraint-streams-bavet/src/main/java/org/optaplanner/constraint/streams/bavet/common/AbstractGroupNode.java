@@ -103,7 +103,13 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     private Group<MutableOutTuple_, GroupKey_, ResultContainer_> getOrCreateGroup(GroupKey_ key) {
         if (hasMultipleGroups) {
-            return groupMap.computeIfAbsent(key, this::createGroup);
+            // Avoids computeIfAbsent in order to not create lambdas on the hot path.
+            Group<MutableOutTuple_, GroupKey_, ResultContainer_> group = groupMap.get(key);
+            if (group == null) {
+                group = createGroup(key);
+                groupMap.put(key, group);
+            }
+            return group;
         } else {
             if (singletonGroup == null) {
                 singletonGroup = createGroup(key);

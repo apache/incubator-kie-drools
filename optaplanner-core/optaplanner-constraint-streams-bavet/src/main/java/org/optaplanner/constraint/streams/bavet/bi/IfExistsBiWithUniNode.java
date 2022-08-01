@@ -23,7 +23,8 @@ final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTuple<
             Indexer<BiTuple<A, B>, Counter<BiTuple<A, B>>> indexerAB,
             Indexer<UniTuple<C>, Set<Counter<BiTuple<A, B>>>> indexerC,
             TriPredicate<A, B, C> filtering) {
-        super(shouldExist, mappingC, inputStoreIndexAB, inputStoreIndexC, tupleLifecycle, indexerAB, indexerC);
+        super(shouldExist, mappingC, inputStoreIndexAB, inputStoreIndexC, tupleLifecycle, indexerAB, indexerC,
+                filtering != null);
         this.mappingAB = mappingAB;
         this.filtering = filtering;
     }
@@ -31,11 +32,6 @@ final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTuple<
     @Override
     protected IndexProperties createIndexProperties(BiTuple<A, B> leftTuple) {
         return mappingAB.apply(leftTuple.getFactA(), leftTuple.getFactB());
-    }
-
-    @Override
-    protected boolean isFiltering() {
-        return filtering != null;
     }
 
     @Override

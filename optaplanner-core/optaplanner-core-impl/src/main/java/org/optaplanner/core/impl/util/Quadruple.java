@@ -1,7 +1,7 @@
 package org.optaplanner.core.impl.util;
 
 /**
- * A tuple of four values.
+ * An immutable tuple of four values.
  * Two instances {@link #equals(Object) are equal} if all four values in the first instance are equal to their counterpart in
  * the other instance.
  *
@@ -13,7 +13,7 @@ package org.optaplanner.core.impl.util;
 public interface Quadruple<A, B, C, D> {
 
     static <A, B, C, D> Quadruple<A, B, C, D> of(A a, B b, C c, D d) {
-        return new MutableQuadrupleImpl<>(a, b, c, d);
+        return new QuadrupleImpl<>(a, b, c, d);
     }
 
     A getA();
