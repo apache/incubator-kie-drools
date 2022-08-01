@@ -45,6 +45,12 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>efesto-runtime-manager-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>efesto-runtime-manager-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- ENGINES -->
     <!-- External -->
