@@ -967,7 +967,7 @@ public class IndexingTest {
             List<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
             Person john = new Person("John");
-            john.setSalary(new BigDecimal("10.0"));
+            john.setSalary(new BigDecimal("10.00"));
             ksession.insert(john);
             ksession.fireAllRules();
 
@@ -1000,7 +1000,7 @@ public class IndexingTest {
             Person john = new Person("John");
             john.setSalary(new BigDecimal("10"));
             Person paul = new Person("Paul");
-            paul.setSalary(new BigDecimal("10.0"));
+            paul.setSalary(new BigDecimal("10.00"));
             ksession.insert(john);
             ksession.insert(paul);
             ksession.fireAllRules();
