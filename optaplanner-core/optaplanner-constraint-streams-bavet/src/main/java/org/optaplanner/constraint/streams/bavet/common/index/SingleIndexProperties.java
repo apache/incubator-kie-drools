@@ -31,8 +31,8 @@ final class SingleIndexProperties implements IndexProperties {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(property);
+    public int hashCode() { // Not using Objects.hash(Object...) as that would create an array on the hot path.
+        return Objects.hashCode(property);
     }
 
     @Override

@@ -42,8 +42,11 @@ final class TripleImpl<A, B, C> implements Triple<A, B, C> {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(a, b, c);
+    public int hashCode() { // Not using Objects.hash(Object...) as that would create an array on the hot path.
+        int result = Objects.hashCode(a);
+        result = 31 * result + Objects.hashCode(b);
+        result = 31 * result + Objects.hashCode(c);
+        return result;
     }
 
     @Override

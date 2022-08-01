@@ -45,8 +45,10 @@ final class MutablePairImpl<A, B> implements MutablePair<A, B> {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(key, value);
+    public int hashCode() { // Not using Objects.hash(Object...) as that would create an array on the hot path.
+        int result = Objects.hashCode(key);
+        result = 31 * result + Objects.hashCode(value);
+        return result;
     }
 
     @Override

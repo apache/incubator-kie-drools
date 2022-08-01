@@ -53,13 +53,12 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     @Override
     public final void insertLeft(LeftTuple_ leftTuple) {
-        Object[] tupleStore = leftTuple.getStore();
-        if (tupleStore[inputStoreIndexLeft] != null) {
+        if (leftTuple.getStore(inputStoreIndexLeft) != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + leftTuple
                     + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = createIndexProperties(leftTuple);
-        tupleStore[inputStoreIndexLeft] = indexProperties;
+        leftTuple.setStore(inputStoreIndexLeft, indexProperties);
 
         Counter<LeftTuple_> counter = new Counter<>(leftTuple, shouldExist);
         indexerLeft.put(indexProperties, leftTuple, counter);
@@ -78,8 +77,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     @Override
     public final void updateLeft(LeftTuple_ leftTuple) {
-        Object[] tupleStore = leftTuple.getStore();
-        IndexProperties oldIndexProperties = (IndexProperties) tupleStore[inputStoreIndexLeft];
+        IndexProperties oldIndexProperties = leftTuple.getStore(inputStoreIndexLeft);
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insertLeft(leftTuple);
@@ -131,7 +129,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             Counter<LeftTuple_> counter = deindexLeft(leftTuple, oldIndexProperties);
 
             counter.countRight = 0;
-            tupleStore[inputStoreIndexLeft] = newIndexProperties;
+            leftTuple.setStore(inputStoreIndexLeft, newIndexProperties);
             indexerLeft.put(newIndexProperties, leftTuple, counter);
             indexerRight.visit(newIndexProperties, (rightTuple, counterSetRight) -> {
                 if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
@@ -164,13 +162,12 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
-        Object[] tupleStore = leftTuple.getStore();
-        IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexLeft];
+        IndexProperties indexProperties = leftTuple.getStore(inputStoreIndexLeft);
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleStore[inputStoreIndexLeft] = null;
+        leftTuple.setStore(inputStoreIndexLeft, null);
 
         Counter<LeftTuple_> counter = deindexLeft(leftTuple, indexProperties);
         if (counter.isAlive()) {
@@ -180,13 +177,12 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     @Override
     public final void insertRight(UniTuple<Right_> rightTuple) {
-        Object[] tupleStore = rightTuple.getStore();
-        if (tupleStore[inputStoreIndexRight] != null) {
+        if (rightTuple.getStore(inputStoreIndexRight) != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
                     + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = mappingRight.apply(rightTuple.getFactA());
-        tupleStore[inputStoreIndexRight] = indexProperties;
+        rightTuple.setStore(inputStoreIndexRight, indexProperties);
 
         // TODO Maybe predict capacity with Math.max(16, counterMapA.size())
         Set<Counter<LeftTuple_>> counterSetRight = new LinkedHashSet<>();
@@ -213,8 +209,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     @Override
     public final void updateRight(UniTuple<Right_> rightTuple) {
-        Object[] tupleStore = rightTuple.getStore();
-        IndexProperties oldIndexProperties = (IndexProperties) tupleStore[inputStoreIndexRight];
+        IndexProperties oldIndexProperties = rightTuple.getStore(inputStoreIndexRight);
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insertRight(rightTuple);
@@ -247,7 +242,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             Set<Counter<LeftTuple_>> counterSetRight = indexerRight.remove(oldIndexProperties, rightTuple);
             processAndClearCounters(counterSetRight);
 
-            tupleStore[inputStoreIndexRight] = newIndexProperties;
+            rightTuple.setStore(inputStoreIndexRight, newIndexProperties);
             indexRight(rightTuple, newIndexProperties, counterSetRight);
         }
     }
@@ -272,13 +267,12 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
-        Object[] tupleStore = rightTuple.getStore();
-        IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexRight];
+        IndexProperties indexProperties = rightTuple.getStore(inputStoreIndexRight);
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleStore[inputStoreIndexRight] = null;
+        rightTuple.setStore(inputStoreIndexRight, null);
         Set<Counter<LeftTuple_>> counterSetRight = indexerRight.remove(indexProperties, rightTuple);
         processCounters(counterSetRight);
     }

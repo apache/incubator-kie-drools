@@ -30,8 +30,7 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
 
     @Override
     public void insert(InTuple_ tuple) {
-        Object[] tupleStore = tuple.getStore();
-        if (tupleStore[flattenLastStoreIndex] != null) {
+        if (tuple.getStore(flattenLastStoreIndex) != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + tuple
                     + ") was already added in the tupleStore.");
         }
@@ -40,7 +39,7 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
             addTuple(tuple, item, outTupleList);
         }
         if (!outTupleList.isEmpty()) {
-            tupleStore[flattenLastStoreIndex] = outTupleList;
+            tuple.setStore(flattenLastStoreIndex, outTupleList);
         }
     }
 
@@ -54,8 +53,7 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
 
     @Override
     public void update(InTuple_ tuple) {
-        Object[] tupleStore = tuple.getStore();
-        List<OutTuple_> outTupleList = (List<OutTuple_>) tupleStore[flattenLastStoreIndex];
+        List<OutTuple_> outTupleList = (List<OutTuple_>) tuple.getStore(flattenLastStoreIndex);
         if (outTupleList == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s).
             insert(tuple);
@@ -107,13 +105,12 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
 
     @Override
     public void retract(InTuple_ tuple) {
-        Object[] tupleStore = tuple.getStore();
-        List<OutTuple_> outTupleList = (List<OutTuple_>) tupleStore[flattenLastStoreIndex];
+        List<OutTuple_> outTupleList = (List<OutTuple_>) tuple.getStore(flattenLastStoreIndex);
         if (outTupleList == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleStore[flattenLastStoreIndex] = null;
+        tuple.setStore(flattenLastStoreIndex, null);
         for (OutTuple_ item : outTupleList) {
             removeTuple(item);
         }

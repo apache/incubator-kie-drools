@@ -43,8 +43,11 @@ final class ThreeIndexProperties implements IndexProperties {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(propertyA, propertyB, propertyC);
+    public int hashCode() { // Not using Objects.hash(Object...) as that would create an array on the hot path.
+        int result = Objects.hashCode(propertyA);
+        result = 31 * result + Objects.hashCode(propertyB);
+        result = 31 * result + Objects.hashCode(propertyC);
+        return result;
     }
 
     @Override

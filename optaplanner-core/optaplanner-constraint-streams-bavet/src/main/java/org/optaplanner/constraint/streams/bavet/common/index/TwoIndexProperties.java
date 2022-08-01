@@ -38,8 +38,10 @@ final class TwoIndexProperties implements IndexProperties {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(propertyA, propertyB);
+    public int hashCode() { // Not using Objects.hash(Object...) as that would create an array on the hot path.
+        int result = Objects.hashCode(propertyA);
+        result = 31 * result + Objects.hashCode(propertyB);
+        return result;
     }
 
     @Override

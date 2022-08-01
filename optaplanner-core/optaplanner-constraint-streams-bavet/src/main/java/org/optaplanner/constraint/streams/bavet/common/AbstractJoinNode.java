@@ -41,13 +41,12 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     @Override
     public final void insertLeft(LeftTuple_ leftTuple) {
-        Object[] tupleStore = leftTuple.getStore();
-        if (tupleStore[inputStoreIndexLeft] != null) {
+        if (leftTuple.getStore(inputStoreIndexLeft) != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + leftTuple
                     + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = createIndexPropertiesLeft(leftTuple);
-        tupleStore[inputStoreIndexLeft] = indexProperties;
+        leftTuple.setStore(inputStoreIndexLeft, indexProperties);
 
         Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = new LinkedHashMap<>();
         indexAndPropagateLeft(leftTuple, indexProperties, outTupleMapLeft);
@@ -69,8 +68,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     @Override
     public final void updateLeft(LeftTuple_ leftTuple) {
-        Object[] tupleStore = leftTuple.getStore();
-        IndexProperties oldIndexProperties = (IndexProperties) tupleStore[inputStoreIndexLeft];
+        IndexProperties oldIndexProperties = leftTuple.getStore(inputStoreIndexLeft);
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insertLeft(leftTuple);
@@ -93,20 +91,19 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             }
             outTupleMapLeft.clear();
 
-            tupleStore[inputStoreIndexLeft] = newIndexProperties;
+            leftTuple.setStore(inputStoreIndexLeft, newIndexProperties);
             indexAndPropagateLeft(leftTuple, newIndexProperties, outTupleMapLeft);
         }
     }
 
     @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
-        Object[] tupleStore = leftTuple.getStore();
-        IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexLeft];
+        IndexProperties indexProperties = leftTuple.getStore(inputStoreIndexLeft);
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleStore[inputStoreIndexLeft] = null;
+        leftTuple.setStore(inputStoreIndexLeft, null);
 
         Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = indexerLeft.remove(indexProperties, leftTuple);
         for (OutTuple_ outTuple : outTupleMapLeft.values()) {
@@ -116,13 +113,12 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     @Override
     public final void insertRight(UniTuple<Right_> rightTuple) {
-        Object[] tupleStore = rightTuple.getStore();
-        if (tupleStore[inputStoreIndexRight] != null) {
+        if (rightTuple.getStore(inputStoreIndexRight) != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
                     + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = mappingRight.apply(rightTuple.getFactA());
-        tupleStore[inputStoreIndexRight] = indexProperties;
+        rightTuple.setStore(inputStoreIndexRight, indexProperties);
         indexAndPropagateRight(rightTuple, indexProperties);
     }
 
@@ -134,8 +130,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     @Override
     public final void updateRight(UniTuple<Right_> rightTuple) {
-        Object[] tupleStore = rightTuple.getStore();
-        IndexProperties oldIndexProperties = (IndexProperties) tupleStore[inputStoreIndexRight];
+        IndexProperties oldIndexProperties = rightTuple.getStore(inputStoreIndexRight);
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insertRight(rightTuple);
@@ -158,7 +153,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             });
         } else {
             deindexRightTuple(oldIndexProperties, rightTuple);
-            tupleStore[inputStoreIndexRight] = newIndexProperties;
+            rightTuple.setStore(inputStoreIndexRight, newIndexProperties);
             indexAndPropagateRight(rightTuple, newIndexProperties);
         }
     }
@@ -179,13 +174,12 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
-        Object[] tupleStore = rightTuple.getStore();
-        IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexRight];
+        IndexProperties indexProperties = rightTuple.getStore(inputStoreIndexRight);
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleStore[inputStoreIndexRight] = null;
+        rightTuple.setStore(inputStoreIndexRight, null);
         deindexRightTuple(indexProperties, rightTuple);
     }
 

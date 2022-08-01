@@ -74,8 +74,12 @@ final class MutableQuadrupleImpl<A, B, C, D> implements MutableQuadruple<A, B, C
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(a, b, c, d);
+    public int hashCode() { // Not using Objects.hash(Object...) as that would create an array on the hot path.
+        int result = Objects.hashCode(a);
+        result = 31 * result + Objects.hashCode(b);
+        result = 31 * result + Objects.hashCode(c);
+        result = 31 * result + Objects.hashCode(d);
+        return result;
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.Objects;
 
-public final class Group<OutTuple_ extends Tuple, GroupKey_, ResultContainer_> {
+final class Group<OutTuple_ extends Tuple, GroupKey_, ResultContainer_> {
 
     public final GroupKey_ groupKey;
     public final ResultContainer_ resultContainer;

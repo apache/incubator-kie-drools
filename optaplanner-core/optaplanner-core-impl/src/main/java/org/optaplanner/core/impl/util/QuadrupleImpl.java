@@ -50,8 +50,12 @@ final class QuadrupleImpl<A, B, C, D> implements Quadruple<A, B, C, D> {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(a, b, c, d);
+    public int hashCode() { // Not using Objects.hash(Object...) as that would create an array on the hot path.
+        int result = Objects.hashCode(a);
+        result = 31 * result + Objects.hashCode(b);
+        result = 31 * result + Objects.hashCode(c);
+        result = 31 * result + Objects.hashCode(d);
+        return result;
     }
 
     @Override
