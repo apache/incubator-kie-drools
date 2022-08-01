@@ -47,7 +47,7 @@
     <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
     <version.com.google.gwt>2.9.0</version.com.google.gwt>
     <version.com.google.protobuf>3.19.3</version.com.google.protobuf>
-    <version.com.h2database>2.1.210</version.com.h2database>
+    <version.com.h2database>2.1.214</version.com.h2database>
     <!-- DROOLS-6678: only used by drools-verifier -->
     <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
     <!-- DROOLS-6678: only used by drools-examples -->
@@ -58,8 +58,8 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.6.3</version.info.picocli>
     <version.io.micrometer>1.9.2</version.io.micrometer>
-    <version.io.quarkus>2.11.0.Final</version.io.quarkus>
-    <version.io.smallrye.openapi.core>2.1.22</version.io.smallrye.openapi.core>
+    <version.io.quarkus>2.11.1.Final</version.io.quarkus>
+    <version.io.smallrye.openapi.core>2.1.23</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
     <version.antlr>2.7.7</version.antlr>
