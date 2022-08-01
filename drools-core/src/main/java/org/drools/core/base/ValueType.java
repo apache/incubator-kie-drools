@@ -66,7 +66,8 @@ public enum ValueType {
     EVENT_TYPE( "Event", EventFactHandle.class, SimpleValueType.OBJECT ),
     QUERY_TYPE( "Query", DroolsQuery.class, SimpleValueType.OBJECT ),
     TRAIT_TYPE( "Trait", Thing.class, SimpleValueType.OBJECT ),
-    CLASS_TYPE( "Class", Class.class, SimpleValueType.OBJECT );
+    CLASS_TYPE( "Class", Class.class, SimpleValueType.OBJECT ),
+    COMPARABLE_TYPE( "Comparable", Comparable.class, SimpleValueType.OBJECT );
 
     private final String name;
     private final Class<?> classType;
@@ -139,48 +140,67 @@ public enum ValueType {
         // primitives
         if ( clazz == FactTemplate.class ) {
             return ValueType.FACTTEMPLATE_TYPE;
-        } else if ( clazz == DroolsQuery.class ) {
+        }
+        if ( clazz == DroolsQuery.class ) {
             return ValueType.QUERY_TYPE;
-        } else if ( clazz == Character.TYPE ) {
+        }
+        if ( clazz == Character.TYPE ) {
             return ValueType.PCHAR_TYPE;
-        } else if ( clazz == Byte.TYPE ) {
+        }
+        if ( clazz == Byte.TYPE ) {
             return ValueType.PBYTE_TYPE;
-        } else if ( clazz == Short.TYPE ) {
+        }
+        if ( clazz == Short.TYPE ) {
             return ValueType.PSHORT_TYPE;
-        } else if ( clazz == Integer.TYPE ) {
+        }
+        if ( clazz == Integer.TYPE ) {
             return ValueType.PINTEGER_TYPE;
-        } else if ( clazz == Long.TYPE ) {
+        }
+        if ( clazz == Long.TYPE ) {
             return ValueType.PLONG_TYPE;
-        } else if ( clazz == Float.TYPE ) {
+        }
+        if ( clazz == Float.TYPE ) {
             return ValueType.PFLOAT_TYPE;
-        } else if ( clazz == Double.TYPE ) {
+        }
+        if ( clazz == Double.TYPE ) {
             return ValueType.PDOUBLE_TYPE;
-        } else if ( clazz == Boolean.TYPE ) {
+        }
+        if ( clazz == Boolean.TYPE ) {
             return ValueType.PBOOLEAN_TYPE;
         }
 
         // Number Wrappers
         if ( clazz == Character.class ) {
             return ValueType.CHAR_TYPE;
-        } else if ( clazz == Byte.class ) {
+        }
+        if ( clazz == Byte.class ) {
             return ValueType.BYTE_TYPE;
-        } else if ( clazz == Short.class ) {
+        }
+        if ( clazz == Short.class ) {
             return ValueType.SHORT_TYPE;
-        } else if ( clazz == Integer.class ) {
+        }
+        if ( clazz == Integer.class ) {
             return ValueType.INTEGER_TYPE;
-        } else if ( clazz == Long.class ) {
+        }
+        if ( clazz == Long.class ) {
             return ValueType.LONG_TYPE;
-        } else if ( clazz == Float.class ) {
+        }
+        if ( clazz == Float.class ) {
             return ValueType.FLOAT_TYPE;
-        } else if ( clazz == Double.class ) {
+        }
+        if ( clazz == Double.class ) {
             return ValueType.DOUBLE_TYPE;
-        } else if ( clazz == Boolean.class ) {
+        }
+        if ( clazz == Boolean.class ) {
             return ValueType.BOOLEAN_TYPE;
-        }  else if ( clazz == BigDecimal.class ) {
+        }
+        if ( clazz == BigDecimal.class ) {
             return ValueType.BIG_DECIMAL_TYPE;
-        } else if ( clazz == BigInteger.class ) {
+        }
+        if ( clazz == BigInteger.class ) {
             return ValueType.BIG_INTEGER_TYPE;
-        } else if ( Number.class.isAssignableFrom( clazz ) ) {
+        }
+        if ( Number.class.isAssignableFrom( clazz ) ) {
             return ValueType.NUMBER_TYPE;
         }
 
@@ -188,24 +208,33 @@ public enum ValueType {
         // Other Object types
         if ( Date.class.isAssignableFrom( clazz ) ) {
             return ValueType.DATE_TYPE;
-        } else if ( clazz == LocalDate.class ) {
+        }
+        if ( clazz == LocalDate.class ) {
             return ValueType.LOCAL_DATE_TYPE;
-        } else if ( clazz == LocalDateTime.class ) {
+        }
+        if ( clazz == LocalDateTime.class ) {
             return ValueType.LOCAL_TIME_TYPE;
-        } else if ( clazz.isArray() ) {
+        }
+        if ( clazz.isArray() ) {
             return ValueType.ARRAY_TYPE;
-        } else if ( clazz == String.class ) {
+        }
+        if ( clazz == String.class ) {
             return ValueType.STRING_TYPE;
-        } else if ( clazz == EventFactHandle.class ) {
+        }
+        if ( clazz == EventFactHandle.class ) {
             return ValueType.EVENT_TYPE;
-        } else if ( clazz == Class.class ) {
+        }
+        if ( clazz == Class.class ) {
             return ValueType.CLASS_TYPE;
         }
-        else if ( Thing.class.isAssignableFrom( clazz ) || clazz.isAnnotationPresent( Trait.class ) ) {
+
+        if ( Thing.class.isAssignableFrom( clazz ) || clazz.isAnnotationPresent( Trait.class ) ) {
             return ValueType.TRAIT_TYPE;
-        } else {
-            return ValueType.OBJECT_TYPE;
         }
+        if ( Comparable.class.isAssignableFrom( clazz ) ) {
+            return ValueType.COMPARABLE_TYPE;
+        }
+        return ValueType.OBJECT_TYPE;
     }
 }
 

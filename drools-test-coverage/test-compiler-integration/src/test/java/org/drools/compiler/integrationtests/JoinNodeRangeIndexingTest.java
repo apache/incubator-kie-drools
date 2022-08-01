@@ -94,6 +94,31 @@ public class JoinNodeRangeIndexingTest {
         }
     }
 
+    @Test
+    public void testRangeIndexWithComparable() {
+        final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
+                           "rule R1\n" +
+                           "when\n" +
+                           "   $p1 : Person()\n" +
+                           "   Person( comparableAge > $p1.comparableAge )\n" +
+                           "then\n" +
+                           "end\n";
+
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+
+        assertIndexedTrue(kbase, Person.class);
+
+        final KieSession ksession = kbase.newKieSession();
+        try {
+
+            ksession.insert(new Person("Paul", 20));
+            ksession.insert(new Person("Mark", 22));
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
+        } finally {
+            ksession.dispose();
+        }
+    }
+
     private void assertIndexedTrue(KieBase kbase, Class<?> factClass) {
         assertIndexed(kbase, factClass, true);
     }

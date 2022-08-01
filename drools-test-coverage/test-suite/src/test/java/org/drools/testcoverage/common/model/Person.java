@@ -111,6 +111,10 @@ public class Person implements Serializable {
         return age;
     }
 
+    public Comparable getComparableAge() {
+        return age;
+    }
+
     public int getDoubleAge() {
         return this.age * 2;
     }
