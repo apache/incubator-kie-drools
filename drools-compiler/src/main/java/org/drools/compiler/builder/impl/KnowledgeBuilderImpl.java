@@ -364,9 +364,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
             ((InternalResource) resource).setResourceType(type);
 
             if ((ResourceType.DRL.equals(type)) || (ResourceType.GDRL.equals(type)) || (ResourceType.RDRL.equals(type))
-                    || (ResourceType.DESCR.equals(type)) || (ResourceType.TDRL.equals(type))
-            || (ResourceType.DSLR.equals(type)) || (ResourceType.RDSLR.equals(type))
-            || ResourceType.TEMPLATE.equals(type)) {
+            || (ResourceType.DESCR.equals(type)) || (ResourceType.TDRL.equals(type)) || (ResourceType.DSLR.equals(type))
+            || (ResourceType.RDSLR.equals(type)) || ResourceType.TEMPLATE.equals(type)) {
                 ResourceHandlerManager handlerManager = new ResourceHandlerManager(this.getBuilderConfiguration(), this.releaseId, this::getDslExpander);
                 ResourceHandler handler = handlerManager.handlerForType(type);
                 PackageDescr descr = handler.process(resource,null);
