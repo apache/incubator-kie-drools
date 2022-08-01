@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
@@ -47,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getAllGeneratedExecutableResources;
-import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedExecutableResource;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrRedirect;
 import static org.kie.pmml.api.enums.PMML_STEP.END;
 import static org.kie.pmml.api.enums.PMML_STEP.POST_EVALUATION;
@@ -55,6 +53,7 @@ import static org.kie.pmml.api.enums.PMML_STEP.PRE_EVALUATION;
 import static org.kie.pmml.api.enums.PMML_STEP.START;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
+import static org.kie.pmml.commons.utils.PMMLLoaderUtils.loadKiePMMLModelFactory;
 import static org.kie.pmml.evaluator.core.utils.PMMLListenerUtils.stepExecuted;
 import static org.kie.pmml.evaluator.core.utils.PostProcess.postProcess;
 import static org.kie.pmml.evaluator.core.utils.PreProcess.preProcess;
@@ -95,7 +94,9 @@ public class PMMLRuntimeHelper {
     }
 
     public static List<PMMLModel> getPMMLModels(PMMLRuntimeContext pmmlContext) {
+        logger.debug("getPMMLModels {}", pmmlContext);
         Collection<GeneratedExecutableResource> finalResources = getAllGeneratedExecutableResources(PMML_STRING);
+        logger.debug("finalResources {}", finalResources);
         return finalResources.stream()
                 .map(finalResource -> loadKiePMMLModelFactory(finalResource, pmmlContext))
                 .flatMap(factory -> factory.getKiePMMLModels().stream())
@@ -127,32 +128,6 @@ public class PMMLRuntimeHelper {
         postProcess(toReturn, model, context, processingDTO);
         addStep(() -> getStep(END, model, context.getRequestData()), context);
         return toReturn;
-    }
-
-    public static Collection<KiePMMLModelFactory> loadAllKiePMMLModelFactories(Collection<GeneratedExecutableResource> finalResources, PMMLRuntimeContext pmmlContext) {
-        return finalResources
-                .stream().map(finalResource -> loadKiePMMLModelFactory(finalResource, pmmlContext))
-                .collect(Collectors.toSet());
-    }
-
-    @SuppressWarnings("unchecked")
-    static KiePMMLModelFactory loadKiePMMLModelFactory(FRI fri, PMMLRuntimeContext pmmlContext) {
-        GeneratedExecutableResource finalResource = getGeneratedExecutableResource(fri, PMML_STRING)
-                .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource " +
-                                                                          "for " + fri));
-        return loadKiePMMLModelFactory(finalResource, pmmlContext);
-    }
-
-    static KiePMMLModelFactory loadKiePMMLModelFactory(GeneratedExecutableResource finalResource,
-                                                       PMMLRuntimeContext pmmlContext) {
-        try {
-            String fullKiePMMLModelFactorySourceClassName = finalResource.getFullClassNames().get(0);
-            final Class<? extends KiePMMLModelFactory> aClass =
-                    (Class<? extends KiePMMLModelFactory>) pmmlContext.loadClass(fullKiePMMLModelFactorySourceClassName);
-            return aClass.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new KieRuntimeServiceException(e);
-        }
     }
 
     static EfestoOutputPMML getEfestoOutput(KiePMMLModelFactory kiePMMLModelFactory, EfestoInputPMML darInputPMML) {

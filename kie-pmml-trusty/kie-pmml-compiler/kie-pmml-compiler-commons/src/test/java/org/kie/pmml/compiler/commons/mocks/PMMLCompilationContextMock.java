@@ -47,11 +47,16 @@ public class PMMLCompilationContextMock implements PMMLCompilationContext {
         for (Map.Entry<String, byte[]> entry : compiledClassesMap.entrySet()) {
             memoryCompilerClassLoader.addCode(entry.getKey(), entry.getValue());
             try {
-                memoryCompilerClassLoader.loadClass(entry.getKey());
+                loadClass(entry.getKey());
             } catch (ClassNotFoundException e) {
                 throw new KieMemoryCompilerException(e.getMessage(), e);
             }
         }
+    }
+
+    @Override
+    public Class<?> loadClass(String className) throws ClassNotFoundException {
+        return memoryCompilerClassLoader.loadClass(className);
     }
 
     @Override

@@ -181,7 +181,7 @@ public class GeneratePMMLModelExecutor {
     private static GeneratedResources getGeneratedResources(IndexFile indexFile) {
         try {
             return getGeneratedResourcesObject(indexFile);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new KiePMMLException("Failed to get GeneratedResources from index file " + indexFile);
         }
     }

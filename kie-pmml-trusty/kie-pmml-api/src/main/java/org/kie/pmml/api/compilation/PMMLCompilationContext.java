@@ -20,10 +20,11 @@ import java.util.Set;
 import org.kie.api.runtime.Context;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.pmml.api.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
 
 public interface PMMLCompilationContext extends EfestoCompilationContext<PMMLListener>,
-                                                Context {
+                                                PMMLContext<PMMLListener> {
 
     Set<FRI> getFRIForFile();
 }

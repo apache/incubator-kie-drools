@@ -110,7 +110,7 @@ public class CompilationManagerUtils {
             GeneratedResources generatedResources = getGeneratedResourcesObject(toPopulate);
             populateGeneratedResources(generatedResources, compilationOutput);
             writeGeneratedResourcesObject(generatedResources, toPopulate);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new KieCompilerServiceException(e);
         }
     }

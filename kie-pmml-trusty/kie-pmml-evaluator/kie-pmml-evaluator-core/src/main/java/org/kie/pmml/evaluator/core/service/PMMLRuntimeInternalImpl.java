@@ -66,6 +66,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
 
     @Override
     public List<PMMLModel> getPMMLModels(PMMLRuntimeContext context) {
+        logger.debug("getPMMLModels {}", context);
         return PMMLRuntimeHelper.getPMMLModels(context);
     }
 

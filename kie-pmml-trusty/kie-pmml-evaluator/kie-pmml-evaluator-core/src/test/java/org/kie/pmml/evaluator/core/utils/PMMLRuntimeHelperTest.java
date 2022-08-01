@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -39,18 +38,18 @@ import org.kie.pmml.api.enums.PMML_STEP;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.models.PMMLStep;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.api.runtime.PMMLListener;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelFactory;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
+import org.kie.pmml.commons.utils.PMMLLoaderUtils;
 import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
 import org.kie.pmml.evaluator.core.implementations.PMMLRuntimeStep;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.api.enums.ResultCode.OK;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.mockito.Mockito.mock;
@@ -104,9 +103,9 @@ class PMMLRuntimeHelperTest {
     @Test
     void getPMMLModelFromClassLoader() {
         FRI fri = new FRI(basePath, PMML_STRING);
-        KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri,
-                                                                                            getPMMLContext(FILE_NAME,
-                                                                                                           MODEL_NAME));
+        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri,
+                                                                                          getPMMLContext(FILE_NAME,
+                                                                                                         MODEL_NAME));
         Optional<KiePMMLModel> retrieved = PMMLRuntimeHelper.getPMMLModel(kiePmmlModelFactory.getKiePMMLModels(),
                                                                           FILE_NAME,
                                                                           MODEL_NAME);
@@ -119,7 +118,7 @@ class PMMLRuntimeHelperTest {
     void evaluate() {
         FRI fri = new FRI(basePath, PMML_STRING);
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
-        KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri, pmmlContext);
+        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri, pmmlContext);
         List<KiePMMLModel> kiePMMLModels = kiePmmlModelFactory.getKiePMMLModels();
         PMML4Result retrieved = PMMLRuntimeHelper.evaluate(kiePMMLModels, pmmlContext);
         commonEvaluatePMML4Result(retrieved, pmmlContext.getRequestData());
@@ -132,7 +131,7 @@ class PMMLRuntimeHelperTest {
         final List<PMMLStep> pmmlSteps = new ArrayList<>();
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME,
                                                         Collections.singleton(getPMMLListener(pmmlSteps)));
-        KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri, pmmlContext);
+        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri, pmmlContext);
         KiePMMLModel kiePMMLModel = kiePmmlModelFactory.getKiePMMLModels().get(0);
         PMMLRuntimeHelper.evaluate(kiePMMLModel, pmmlContext);
         Arrays.stream(PMML_STEP.values()).forEach(pmml_step -> {
@@ -146,32 +145,11 @@ class PMMLRuntimeHelperTest {
     }
 
     @Test
-    void loadKiePMMLModelFactory() {
-        KiePMMLModelFactory retrieved = PMMLRuntimeHelper.loadKiePMMLModelFactory(new FRI(basePath, PMML_STRING),
-                                                                                  getPMMLContext(FILE_NAME, MODEL_NAME));
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.getKiePMMLModels()).hasSize(1);
-        KiePMMLModel kiePmmlModel = retrieved.getKiePMMLModels().get(0);
-        assertThat(kiePmmlModel.getName()).isEqualTo(MODEL_NAME);
-    }
-
-    @Test
-    void loadNotExistingKiePMMLModelFactory() {
-        try {
-            PMMLRuntimeHelper.loadKiePMMLModelFactory(new FRI(basePath, "notpmml"), getPMMLContext(FILE_NAME,
-                                                                                                   MODEL_NAME));
-            fail("Expecting KieRuntimeServiceException");
-        } catch (Exception e) {
-            assertThat(e).isInstanceOf(KieRuntimeServiceException.class);
-        }
-    }
-
-    @Test
     void getEfestoOutput() {
         FRI fri = new FRI(basePath, PMML_STRING);
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
 
-        KiePMMLModelFactory kiePmmlModelFactory = PMMLRuntimeHelper.loadKiePMMLModelFactory(fri, pmmlContext);
+        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri, pmmlContext);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, pmmlContext);
         EfestoOutputPMML retrieved = PMMLRuntimeHelper.getEfestoOutput(kiePmmlModelFactory, darInputPMML);
         commonEvaluateEfestoOutputPMML(retrieved, darInputPMML);

@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.efesto.common.api.model;
+package org.kie.pmml.api;
 
-import java.util.HashSet;
+import org.kie.api.runtime.Context;
+import org.kie.efesto.common.api.listener.EfestoListener;
+import org.kie.efesto.common.api.model.EfestoContext;
 
-public final class GeneratedResources extends HashSet<GeneratedResource> {
+public interface PMMLContext<T extends EfestoListener> extends Context,
+                                                               EfestoContext<T> {
 
-    private static final long serialVersionUID = 4719714824114857484L;
+    Class<?> loadClass(String className) throws ClassNotFoundException;
 
-    public GeneratedResources() {
-    }
 }

@@ -16,11 +16,22 @@
 package org.kie.efesto.common.api.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
+import org.kie.efesto.common.api.io.MemoryFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -61,5 +72,32 @@ class FileUtilsTest {
     void getFileFromFileNameNotExisting() {
         Optional<File> retrieved = FileUtils.getFileFromFileNameOrFilePath(NOT_EXISTING_FILE, NOT_EXISTING_FILE);
         assertThat(retrieved).isNotNull().isEmpty();
+    }
+
+    @Test
+    void getFileFromURL() throws IOException {
+        URL jarUrl = getJarUrl();
+        assertThat(jarUrl).isNotNull();
+        Optional<File> retrieved = FileUtils.getFileFromURL(jarUrl);
+        assertThat(retrieved).isNotNull().isPresent();
+        assertThat(retrieved.get()).isInstanceOf(MemoryFile.class);
+        assertThat(retrieved.get()).canRead();
+    }
+
+    @Test
+    void getFileFromJar() throws URISyntaxException, IOException {
+        URL jarUrl = getJarUrl();
+        assertThat(jarUrl).isNotNull();
+        File retrieved = FileUtils.getFileFromJar(jarUrl);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(MemoryFile.class);
+        assertThat(retrieved).canRead();
+    }
+
+    private static URL getJarUrl() throws MalformedURLException {
+        URL retrieved = Thread.currentThread().getContextClassLoader().getResource("TestJar.jar");
+        assertThat(retrieved).isNotNull();
+        String newString = "jar:" + retrieved + "!/IndexFile.testb_json";
+        return new URL(newString);
     }
 }

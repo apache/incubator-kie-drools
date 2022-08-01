@@ -21,9 +21,10 @@ import java.util.Map;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.pmml.api.PMMLContext;
 
 public interface PMMLRuntimeContext extends EfestoRuntimeContext<PMMLListener>,
-                                            Context {
+                                            PMMLContext<PMMLListener> {
 
     PMMLRequestData getRequestData();
 

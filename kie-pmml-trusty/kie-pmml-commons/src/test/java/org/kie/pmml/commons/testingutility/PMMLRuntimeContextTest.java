@@ -164,16 +164,6 @@ public class PMMLRuntimeContextTest implements PMMLRuntimeContext {
         return null;
     }
 
-//    @Override
-//    public Map<String, byte[]> compileClasses(Map<String, String> sourcesMap) {
-//        return null;
-//    }
-//
-//    @Override
-//    public void loadClasses(Map<String, byte[]> compiledClassesMap) {
-//
-//    }
-
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
         return null;

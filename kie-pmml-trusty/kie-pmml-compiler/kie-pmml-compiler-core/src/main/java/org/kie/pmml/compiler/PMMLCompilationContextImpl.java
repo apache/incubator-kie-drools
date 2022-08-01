@@ -91,6 +91,11 @@ public class PMMLCompilationContextImpl extends EfestoCompilationContextImpl<PMM
     }
 
     @Override
+    public Class<?> loadClass(String className) throws ClassNotFoundException {
+        return memoryCompilerClassLoader.loadClass(className);
+    }
+
+    @Override
     public void set(String identifier, Object value) {
         map.put(identifier, value);
     }
