@@ -932,4 +932,82 @@ public class IndexingTest {
         assertThat(sinkAdapter.getHashedSinkMap()).isNotNull();
         assertThat(sinkAdapter.getHashedSinkMap().size()).isEqualTo(hashedSize);
     }
+
+    @Test
+    public void testAlphaIndexWithBigDecimalDifferentScale() {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "global java.util.List list\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        Person( salary == 10 )\n" +
+                        "    then\n" +
+                        "        list.add(\"R1\");\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "    when\n" +
+                        "        Person( salary == 20 )\n" +
+                        "    then\n" +
+                        "        list.add(\"R2\");\n" +
+                        "end\n" +
+                        "rule R3\n" +
+                        "    when\n" +
+                        "        Person( salary == 30 )\n" +
+                        "    then\n" +
+                        "        list.add(\"R3\");\n" +
+                        "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            assertAlphaIndex(kbase, Person.class, 3);
+
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            Person john = new Person("John");
+            john.setSalary(new BigDecimal("10.0"));
+            ksession.insert(john);
+            ksession.fireAllRules();
+
+            assertThat(list).containsExactly("R1");
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testBetaIndexWithBigDecimalDifferentScale() {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "global java.util.List list\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        $p1 : Person( name == \"John\" )\n" +
+                        "        $p2 : Person( name == \"Paul\", salary == $p1.salary )\n" +
+                        "    then\n" +
+                        "        list.add(\"R1\");\n" +
+                        "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            Person john = new Person("John");
+            john.setSalary(new BigDecimal("10"));
+            Person paul = new Person("Paul");
+            paul.setSalary(new BigDecimal("10.0"));
+            ksession.insert(john);
+            ksession.insert(paul);
+            ksession.fireAllRules();
+
+            assertThat(list).containsExactly("R1");
+        } finally {
+            ksession.dispose();
+        }
+    }
 }
