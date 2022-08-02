@@ -37,7 +37,7 @@ class IndexFileTest {
     void validateWrongPathName() {
         final List<String> toValidate = Arrays.asList("/this/is/invalid/file._json", "/this/is/invalid/file.model");
         toValidate.forEach(toVal -> {
-            String fileName = toVal.substring(toVal.lastIndexOf('/') + 1);
+            String fileName = toVal.substring(toVal.lastIndexOf(File.separator) + 1);
             String expectedMessage = String.format("Wrong file name %s", fileName);
             assertThatThrownBy(() -> IndexFile.validatePathName(toVal))
                     .isInstanceOf(KieEfestoCommonException.class)
