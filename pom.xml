@@ -282,6 +282,7 @@
         <module>drools-alphanetwork-compiler</module>
         <module>kie-internal</module>
         <module>kie-test-util</module>
+        <module>efesto</module>
         <module>kie-dmn</module>
         <module>kie-pmml-trusty</module>
         <module>drools-drl-quarkus-extension</module>
