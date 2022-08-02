@@ -3,7 +3,6 @@ package org.optaplanner.constraint.streams.drools.common;
 import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
@@ -125,8 +124,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
             Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
             Function<B, Object> rightMapping = joiner.getRightMapping(mappingIndex);
             Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
-            BetaIndex<B, A, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
-                    rightMapping::apply, leftMapping::apply);
+            BetaIndex<B, A, ?> index = index(joiner, mappingIndex);
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariable.getPrimaryVariable(), joinPredicate, index);
         }

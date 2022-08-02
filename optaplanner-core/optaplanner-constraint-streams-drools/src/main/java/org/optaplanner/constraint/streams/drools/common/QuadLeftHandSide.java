@@ -3,7 +3,6 @@ package org.optaplanner.constraint.streams.drools.common;
 import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
-import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
@@ -101,8 +100,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
             Function<E, Object> rightMapping = joiner.getRightMapping(mappingIndex);
             Predicate5<E, A, B, C, D> joinPredicate =
                     (e, a, b, c, d) -> joinerType.matches(leftMapping.apply(a, b, c, d), rightMapping.apply(e));
-            BetaIndex4<E, A, B, C, D, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
-                    rightMapping::apply, leftMapping::apply, Object.class);
+            BetaIndex4<E, A, B, C, D, ?> index = index(joiner, mappingIndex);
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                     patternVariableC.getPrimaryVariable(), patternVariableD.getPrimaryVariable(), joinPredicate, index);

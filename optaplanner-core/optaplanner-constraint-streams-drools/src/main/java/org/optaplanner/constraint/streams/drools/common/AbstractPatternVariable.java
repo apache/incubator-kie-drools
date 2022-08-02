@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.drools.common;
 
-import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.optaplanner.constraint.streams.drools.common.AbstractLeftHandSide.index;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -144,9 +144,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         Predicate2<PatternVar_, LeftJoinVar_> predicate =
                 (b, a) -> joinerType.matches(leftMapping.apply(a), rightExtractor.apply(b));
         return create(p -> {
-            BetaIndex<PatternVar_, LeftJoinVar_, Object> index = betaIndexedBy(Object.class,
-                    AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex, rightExtractor,
-                    leftMapping::apply);
+            BetaIndex<PatternVar_, LeftJoinVar_, ?> index =
+                    (BetaIndex<PatternVar_, LeftJoinVar_, ?>) index(joiner, mappingIndex);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
         });
     }
@@ -161,9 +160,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         Predicate3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_> predicate =
                 (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightExtractor.apply(c));
         return create(p -> {
-            BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, Object> index =
-                    betaIndexedBy(Object.class, AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex,
-                            rightExtractor, leftMapping::apply, Object.class);
+            BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> index =
+                    (BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?>) index(joiner, mappingIndex);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB, predicate, index);
         });
     }
@@ -180,9 +178,9 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         Predicate4<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> predicate =
                 (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightExtractor.apply(d));
         return create(p -> {
-            BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> index =
-                    betaIndexedBy(Object.class, AbstractLeftHandSide.getConstraintType(joinerType), mappingIndex,
-                            rightExtractor, leftMapping::apply, Object.class);
+            BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> index =
+                    (BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?>) index(joiner,
+                            mappingIndex);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB,
                     leftJoinVarC, predicate, index);
         });
