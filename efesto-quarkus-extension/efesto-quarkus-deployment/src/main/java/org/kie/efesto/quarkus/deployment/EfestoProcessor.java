@@ -42,9 +42,9 @@ import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
 /**
  * Main class of the Kogito extension
  */
-public class KogitoEfestoProcessor {
+public class EfestoProcessor {
 
-    private static final Logger LOGGER = Logger.getLogger(KogitoEfestoProcessor.class);
+    private static final Logger LOGGER = Logger.getLogger(EfestoProcessor.class);
 
     @BuildStep
     public List<ReflectiveClassBuildItem> reflectiveEfestoStaticClasses() {
