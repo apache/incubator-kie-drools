@@ -3,6 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
@@ -199,6 +200,7 @@
         <module>kie-pmml-trusty</module>
         <module>kie-maven-plugin</module>
         <module>drools-drl-quarkus-extension</module>
+        <module>efesto-quarkus-extension</module>
       </modules>
     </profile>
     <profile>
@@ -285,6 +287,7 @@
         <module>kie-dmn</module>
         <module>kie-pmml-trusty</module>
         <module>drools-drl-quarkus-extension</module>
+        <module>efesto-quarkus-extension</module>
       </modules>
     </profile>
   </profiles>

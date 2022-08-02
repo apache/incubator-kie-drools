@@ -15,7 +15,10 @@
  */
 package org.drools.drl.quarkus.deployment;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
@@ -27,6 +30,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
@@ -34,7 +38,9 @@ import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.codegen.common.DroolsModelBuildContext;
+import org.jboss.logging.Logger;
 import org.kie.api.io.Resource;
+import org.kie.drl.engine.runtime.mapinput.service.KieRuntimeServiceDrlMapInput;
 
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.compileGeneratedSources;
@@ -45,6 +51,8 @@ import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.
 import static org.drools.model.codegen.project.RuleCodegen.ofResources;
 
 public class DroolsAssetsProcessor {
+
+    private static final Logger LOGGER = Logger.getLogger(DroolsAssetsProcessor.class);
 
     @Inject
     ArchiveRootBuildItem root;
@@ -93,5 +101,14 @@ public class DroolsAssetsProcessor {
         generatedBeanBuildItems.forEach(generatedBeans::produce);
 
         registerResources(generatedFiles, staticResProducer, resource, genResBI);
+    }
+
+    @BuildStep
+    public List<ReflectiveClassBuildItem> reflectiveEfestoRules() {
+        LOGGER.info("reflectiveEfestoRules()");
+        final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
+        toReturn.add(new ReflectiveClassBuildItem(true, true, KieRuntimeServiceDrlMapInput.class));
+        LOGGER.infof("toReturn {}", toReturn.size());
+        return toReturn;
     }
 }

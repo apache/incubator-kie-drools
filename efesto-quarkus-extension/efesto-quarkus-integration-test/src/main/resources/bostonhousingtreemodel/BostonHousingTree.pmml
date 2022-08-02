@@ -1,0 +1,176 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+ <Header/>
+ <DataDictionary numberOfFields="14">
+  <DataField name="medv" optype="continuous" dataType="double"/>
+  <DataField name="crim" optype="continuous" dataType="double"/>
+  <DataField name="zn" optype="continuous" dataType="double"/>
+  <DataField name="indus" optype="continuous" dataType="double"/>
+  <DataField name="chas" optype="categorical" dataType="string">
+   <Value value="0"/>
+   <Value value="1"/>
+  </DataField>
+  <DataField name="nox" optype="continuous" dataType="double"/>
+  <DataField name="rm" optype="continuous" dataType="double"/>
+  <DataField name="age" optype="continuous" dataType="double"/>
+  <DataField name="dis" optype="continuous" dataType="double"/>
+  <DataField name="rad" optype="continuous" dataType="double"/>
+  <DataField name="tax" optype="continuous" dataType="double"/>
+  <DataField name="ptratio" optype="continuous" dataType="double"/>
+  <DataField name="b" optype="continuous" dataType="double"/>
+  <DataField name="lstat" optype="continuous" dataType="double"/>
+ </DataDictionary>
+ <TreeModel modelName="BostonHousingTreeModel" functionName="regression" algorithmName="rpart" splitCharacteristic="binarySplit" missingValueStrategy="defaultChild" noTrueChildStrategy="returnLastPrediction">
+  <MiningSchema>
+   <MiningField name="medv" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="crim" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="zn" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="indus" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="chas" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="nox" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="rm" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="age" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="dis" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="rad" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="tax" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="ptratio" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="b" usageType="active" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="lstat" usageType="active" invalidValueTreatment="returnInvalid"/>
+  </MiningSchema>
+  <Output>
+   <OutputField name="Predicted_medv" optype="continuous" dataType="double" feature="predictedValue"/>
+  </Output>
+  <Node id="1" score="22.5328063241107" recordCount="506" defaultChild="2">
+   <True/>
+   <Node id="2" score="19.9337209302326" recordCount="430" defaultChild="4">
+    <CompoundPredicate booleanOperator="surrogate">
+     <SimplePredicate field="rm" operator="lessThan" value="6.941"/>
+     <SimplePredicate field="lstat" operator="greaterOrEqual" value="4.83"/>
+     <SimplePredicate field="ptratio" operator="greaterOrEqual" value="14.55"/>
+     <SimplePredicate field="zn" operator="lessThan" value="87.5"/>
+     <SimplePredicate field="indus" operator="greaterOrEqual" value="1.605"/>
+     <SimplePredicate field="crim" operator="greaterOrEqual" value="0.013355"/>
+    </CompoundPredicate>
+    <Node id="4" score="14.956" recordCount="175" defaultChild="8">
+     <CompoundPredicate booleanOperator="surrogate">
+      <SimplePredicate field="lstat" operator="greaterOrEqual" value="14.4"/>
+      <SimplePredicate field="age" operator="greaterOrEqual" value="84.3"/>
+      <SimplePredicate field="indus" operator="greaterOrEqual" value="16.57"/>
+      <SimplePredicate field="nox" operator="greaterOrEqual" value="0.5765"/>
+      <SimplePredicate field="dis" operator="lessThan" value="2.23935"/>
+      <SimplePredicate field="tax" operator="greaterOrEqual" value="434.5"/>
+     </CompoundPredicate>
+     <Node id="8" score="11.9783783783784" recordCount="74">
+      <CompoundPredicate booleanOperator="surrogate">
+       <SimplePredicate field="crim" operator="greaterOrEqual" value="6.99237"/>
+       <SimplePredicate field="rad" operator="greaterOrEqual" value="16"/>
+       <SimplePredicate field="tax" operator="greaterOrEqual" value="567.5"/>
+       <SimplePredicate field="nox" operator="greaterOrEqual" value="0.657"/>
+       <SimplePredicate field="dis" operator="lessThan" value="2.202"/>
+       <SimplePredicate field="ptratio" operator="greaterOrEqual" value="20.15"/>
+      </CompoundPredicate>
+     </Node>
+     <Node id="9" score="17.1376237623762" recordCount="101">
+      <CompoundPredicate booleanOperator="surrogate">
+       <SimplePredicate field="crim" operator="lessThan" value="6.99237"/>
+       <SimplePredicate field="rad" operator="lessThan" value="16"/>
+       <SimplePredicate field="tax" operator="lessThan" value="567.5"/>
+       <SimplePredicate field="nox" operator="lessThan" value="0.657"/>
+       <SimplePredicate field="dis" operator="greaterOrEqual" value="2.202"/>
+       <SimplePredicate field="ptratio" operator="lessThan" value="20.15"/>
+      </CompoundPredicate>
+     </Node>
+    </Node>
+    <Node id="5" score="23.3498039215686" recordCount="255" defaultChild="10">
+     <CompoundPredicate booleanOperator="surrogate">
+      <SimplePredicate field="lstat" operator="lessThan" value="14.4"/>
+      <SimplePredicate field="age" operator="lessThan" value="84.3"/>
+      <SimplePredicate field="indus" operator="lessThan" value="16.57"/>
+      <SimplePredicate field="nox" operator="lessThan" value="0.5765"/>
+      <SimplePredicate field="dis" operator="greaterOrEqual" value="2.23935"/>
+      <SimplePredicate field="tax" operator="lessThan" value="434.5"/>
+     </CompoundPredicate>
+     <Node id="10" score="22.9362903225807" recordCount="248" defaultChild="20">
+      <CompoundPredicate booleanOperator="surrogate">
+       <SimplePredicate field="dis" operator="greaterOrEqual" value="1.5511"/>
+       <SimplePredicate field="crim" operator="lessThan" value="8.053285"/>
+      </CompoundPredicate>
+      <Node id="20" score="21.6564766839378" recordCount="193">
+       <CompoundPredicate booleanOperator="surrogate">
+        <SimplePredicate field="rm" operator="lessThan" value="6.543"/>
+        <SimplePredicate field="lstat" operator="greaterOrEqual" value="5.055"/>
+        <SimplePredicate field="crim" operator="greaterOrEqual" value="0.017895"/>
+        <SimplePredicate field="zn" operator="lessThan" value="31.5"/>
+        <SimplePredicate field="dis" operator="lessThan" value="10.648"/>
+       </CompoundPredicate>
+      </Node>
+      <Node id="21" score="27.4272727272727" recordCount="55">
+       <CompoundPredicate booleanOperator="surrogate">
+        <SimplePredicate field="rm" operator="greaterOrEqual" value="6.543"/>
+        <SimplePredicate field="lstat" operator="lessThan" value="5.055"/>
+        <SimplePredicate field="crim" operator="lessThan" value="0.017895"/>
+        <SimplePredicate field="zn" operator="greaterOrEqual" value="31.5"/>
+        <SimplePredicate field="dis" operator="greaterOrEqual" value="10.648"/>
+       </CompoundPredicate>
+      </Node>
+     </Node>
+     <Node id="11" score="38" recordCount="7">
+      <CompoundPredicate booleanOperator="surrogate">
+       <SimplePredicate field="dis" operator="lessThan" value="1.5511"/>
+       <SimplePredicate field="crim" operator="greaterOrEqual" value="8.053285"/>
+      </CompoundPredicate>
+     </Node>
+    </Node>
+   </Node>
+   <Node id="3" score="37.2381578947369" recordCount="76" defaultChild="6">
+    <CompoundPredicate booleanOperator="surrogate">
+     <SimplePredicate field="rm" operator="greaterOrEqual" value="6.941"/>
+     <SimplePredicate field="lstat" operator="lessThan" value="4.83"/>
+     <SimplePredicate field="ptratio" operator="lessThan" value="14.55"/>
+     <SimplePredicate field="zn" operator="greaterOrEqual" value="87.5"/>
+     <SimplePredicate field="indus" operator="lessThan" value="1.605"/>
+     <SimplePredicate field="crim" operator="lessThan" value="0.013355"/>
+    </CompoundPredicate>
+    <Node id="6" score="32.1130434782609" recordCount="46" defaultChild="12">
+     <CompoundPredicate booleanOperator="surrogate">
+      <SimplePredicate field="rm" operator="lessThan" value="7.437"/>
+      <SimplePredicate field="lstat" operator="greaterOrEqual" value="3.99"/>
+      <SimplePredicate field="ptratio" operator="greaterOrEqual" value="14.75"/>
+      <SimplePredicate field="b" operator="greaterOrEqual" value="389.885"/>
+      <SimplePredicate field="crim" operator="lessThan" value="0.11276"/>
+      <SimplePredicate field="indus" operator="lessThan" value="18.84"/>
+     </CompoundPredicate>
+     <Node id="12" score="23.0571428571429" recordCount="7">
+      <CompoundPredicate booleanOperator="surrogate">
+       <SimplePredicate field="lstat" operator="greaterOrEqual" value="9.65"/>
+       <SimplePredicate field="crim" operator="greaterOrEqual" value="0.724605"/>
+       <SimplePredicate field="nox" operator="greaterOrEqual" value="0.659"/>
+       <SimplePredicate field="rad" operator="greaterOrEqual" value="16"/>
+       <SimplePredicate field="tax" operator="greaterOrEqual" value="534.5"/>
+       <SimplePredicate field="indus" operator="greaterOrEqual" value="15.015"/>
+      </CompoundPredicate>
+     </Node>
+     <Node id="13" score="33.7384615384615" recordCount="39">
+      <CompoundPredicate booleanOperator="surrogate">
+       <SimplePredicate field="lstat" operator="lessThan" value="9.65"/>
+       <SimplePredicate field="crim" operator="lessThan" value="0.724605"/>
+       <SimplePredicate field="nox" operator="lessThan" value="0.659"/>
+       <SimplePredicate field="rad" operator="lessThan" value="16"/>
+       <SimplePredicate field="tax" operator="lessThan" value="534.5"/>
+       <SimplePredicate field="indus" operator="lessThan" value="15.015"/>
+      </CompoundPredicate>
+     </Node>
+    </Node>
+    <Node id="7" score="45.0966666666667" recordCount="30">
+     <CompoundPredicate booleanOperator="surrogate">
+      <SimplePredicate field="rm" operator="greaterOrEqual" value="7.437"/>
+      <SimplePredicate field="lstat" operator="lessThan" value="3.99"/>
+      <SimplePredicate field="ptratio" operator="lessThan" value="14.75"/>
+      <SimplePredicate field="b" operator="lessThan" value="389.885"/>
+      <SimplePredicate field="crim" operator="greaterOrEqual" value="0.11276"/>
+      <SimplePredicate field="indus" operator="greaterOrEqual" value="18.84"/>
+     </CompoundPredicate>
+    </Node>
+   </Node>
+  </Node>
+ </TreeModel>
+</PMML>
