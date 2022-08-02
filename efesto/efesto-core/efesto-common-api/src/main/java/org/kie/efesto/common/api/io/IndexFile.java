@@ -30,7 +30,7 @@ public final class IndexFile extends File {
     public static final String FINAL_SUFFIX = "_json";
 
     static String getIndexFileName(String modelType) {
-        return PortablePath.of(String.format("%s.%s%s", INDEX_FILE, modelType, FINAL_SUFFIX)).asString();
+        return String.format("%s.%s%s", INDEX_FILE, modelType, FINAL_SUFFIX);
     }
 
     static PortablePath validatePathName(PortablePath toValidate) {
