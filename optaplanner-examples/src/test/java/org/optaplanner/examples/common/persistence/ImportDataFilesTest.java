@@ -15,6 +15,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
@@ -50,6 +52,7 @@ public abstract class ImportDataFilesTest<Solution_> extends LoggingTest {
     }
 
     @TestFactory
+    @Execution(ExecutionMode.CONCURRENT)
     Stream<DynamicTest> readSolution() {
         AbstractSolutionImporter<Solution_> solutionImporter = createSolutionImporter();
         return getInputFiles(getDataDirName(), solutionImporter).stream()

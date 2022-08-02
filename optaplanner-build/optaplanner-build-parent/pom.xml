@@ -52,7 +52,7 @@
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <!-- The first version that supports analysis of classes compiled by Java 11. -->
     <version.dependency.plugin>3.1.2</version.dependency.plugin>
-    <version.surefire.plugin>3.0.0-M5</version.surefire.plugin>
+    <version.surefire.plugin>3.0.0-M7</version.surefire.plugin>
     <!-- Versions plugin should stay on version 2.5
       until https://github.com/mojohaus/versions-maven-plugin/issues/312 is fixed -->
     <version.versions.plugin>2.5</version.versions.plugin>

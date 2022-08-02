@@ -13,6 +13,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -25,6 +27,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
 @ExtendWith(ConstraintStreamTestExtension.class)
+@Execution(ExecutionMode.CONCURRENT)
 public abstract class AbstractConstraintStreamTest {
 
     protected static final String TEST_CONSTRAINT_NAME = "testConstraintName";

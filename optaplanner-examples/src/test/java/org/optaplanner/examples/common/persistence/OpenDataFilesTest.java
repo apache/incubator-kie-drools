@@ -12,6 +12,8 @@ import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.examples.common.app.CommonApp;
@@ -49,14 +51,14 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
     }
 
     @TestFactory
+    @Execution(ExecutionMode.CONCURRENT)
     Stream<DynamicTest> readAndWriteSolution() {
         CommonApp<Solution_> commonApp = createCommonApp();
-        SolutionFileIO<Solution_> solutionFileIO = commonApp.createSolutionFileIO();
-        SolutionBusiness<Solution_, ?> solutionBusiness = commonApp.createSolutionBusiness();
         return getSolutionFiles(commonApp).stream()
                 .map(solutionFile -> dynamicTest(
                         solutionFile.getName(),
-                        () -> readAndWriteSolution(solutionBusiness, solutionFileIO, solutionFile)));
+                        () -> readAndWriteSolution(commonApp.createSolutionBusiness(), commonApp.createSolutionFileIO(),
+                                solutionFile)));
     }
 
     private <Score_ extends Score<Score_>> void readAndWriteSolution(SolutionBusiness<Solution_, Score_> solutionBusiness,

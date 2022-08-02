@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.Solver;
@@ -37,6 +39,7 @@ public abstract class AbstractPhaseTest<Solution_, T> extends LoggingTest {
     }
 
     @TestFactory
+    @Execution(ExecutionMode.CONCURRENT)
     @Timeout(600)
     Stream<DynamicContainer> runPhase() {
         CommonApp<Solution_> commonApp = createCommonApp();

@@ -14,6 +14,8 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
@@ -53,6 +55,7 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
     }
 
     @TestFactory
+    @Execution(ExecutionMode.CONCURRENT)
     @Timeout(600)
     Stream<DynamicTest> runSpeedTest() {
         return moveThreadCounts().flatMap(moveThreadCount -> testData().map(testData -> dynamicTest(

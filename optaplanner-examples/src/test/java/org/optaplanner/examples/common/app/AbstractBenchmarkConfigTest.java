@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
@@ -19,6 +21,7 @@ public abstract class AbstractBenchmarkConfigTest {
     protected abstract CommonBenchmarkApp getBenchmarkApp();
 
     @TestFactory
+    @Execution(ExecutionMode.CONCURRENT)
     Stream<DynamicTest> testBenchmarkApp() {
         return getBenchmarkApp().getArgOptions().stream()
                 .map(argOption -> dynamicTest(argOption.toString(), () -> buildPlannerBenchmark(argOption)));
