@@ -753,7 +753,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>src/main/resources/org/example/Traffic Violation.dmn</dmnFilePath>
+    <dmnFilePath>src/main/resources/Traffic Violation.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF</dmnNamespace>
     <dmnName>Traffic Violation</dmnName>
