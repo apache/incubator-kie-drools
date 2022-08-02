@@ -145,12 +145,13 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         Predicate2<PatternVar_, LeftJoinVar_> predicate =
                 (b, a) -> joinerType.matches(leftMapping.apply(a), rightExtractor.apply(b));
         return create(p -> {
-            BetaIndex<PatternVar_, LeftJoinVar_, ?> index = index(joinerType, mappingIndex, leftMapping, rightExtractor);
+            BetaIndex<PatternVar_, LeftJoinVar_, ?> index =
+                    createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
         });
     }
 
-    private <LeftJoinVar_> BetaIndex<PatternVar_, LeftJoinVar_, ?> index(JoinerType joinerType, int mappingIndex,
+    private <LeftJoinVar_> BetaIndex<PatternVar_, LeftJoinVar_, ?> createBetaIndex(JoinerType joinerType, int mappingIndex,
             Function<LeftJoinVar_, Object> leftMapping, Function1<PatternVar_, Object> rightExtractor) {
         if (joinerType == JoinerType.EQUAL) {
             return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping::apply,
@@ -172,12 +173,13 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
                 (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightExtractor.apply(c));
         return create(p -> {
             BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> index =
-                    index(joinerType, mappingIndex, leftMapping, rightExtractor);
+                    createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB, predicate, index);
         });
     }
 
-    private <LeftJoinVarA_, LeftJoinVarB_> BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> index(JoinerType joinerType,
+    private <LeftJoinVarA_, LeftJoinVarB_> BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> createBetaIndex(
+            JoinerType joinerType,
             int mappingIndex, BiFunction<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping,
             Function1<PatternVar_, Object> rightExtractor) {
         if (joinerType == JoinerType.EQUAL) {
@@ -202,14 +204,14 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
                 (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightExtractor.apply(d));
         return create(p -> {
             BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> index =
-                    index(joinerType, mappingIndex, leftMapping, rightExtractor);
+                    createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB,
                     leftJoinVarC, predicate, index);
         });
     }
 
     private <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_>
-            BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> index(JoinerType joinerType,
+            BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> createBetaIndex(JoinerType joinerType,
                     int mappingIndex, TriFunction<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping,
                     Function1<PatternVar_, Object> rightExtractor) {
         if (joinerType == JoinerType.EQUAL) {

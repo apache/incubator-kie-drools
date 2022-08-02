@@ -97,12 +97,12 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
                     (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightMapping.apply(d));
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
-                    patternVariableC.getPrimaryVariable(), joinPredicate, index(joiner, mappingIndex));
+                    patternVariableC.getPrimaryVariable(), joinPredicate, createBetaIndex(joiner, mappingIndex));
         }
         return applyFilters(existencePattern, predicate, shouldExist);
     }
 
-    private <D> BetaIndex3<D, A, B, C, ?> index(DefaultQuadJoiner<A, B, C, D> joiner, int mappingIndex) {
+    private <D> BetaIndex3<D, A, B, C, ?> createBetaIndex(DefaultQuadJoiner<A, B, C, D> joiner, int mappingIndex) {
         JoinerType joinerType = joiner.getJoinerType(mappingIndex);
         TriFunction<A, B, C, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
         Function<D, Object> rightMapping = joiner.getRightMapping(mappingIndex);

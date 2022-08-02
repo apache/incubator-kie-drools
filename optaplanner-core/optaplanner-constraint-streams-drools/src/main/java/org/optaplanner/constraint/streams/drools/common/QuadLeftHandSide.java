@@ -104,12 +104,12 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                     patternVariableC.getPrimaryVariable(), patternVariableD.getPrimaryVariable(), joinPredicate,
-                    index(joiner, mappingIndex));
+                    createBetaIndex(joiner, mappingIndex));
         }
         return applyFilters(existencePattern, predicate, shouldExist);
     }
 
-    private <E> BetaIndex4<E, A, B, C, D, ?> index(DefaultPentaJoiner<A, B, C, D, E> joiner, int mappingIndex) {
+    private <E> BetaIndex4<E, A, B, C, D, ?> createBetaIndex(DefaultPentaJoiner<A, B, C, D, E> joiner, int mappingIndex) {
         JoinerType joinerType = joiner.getJoinerType(mappingIndex);
         QuadFunction<A, B, C, D, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
         Function<E, Object> rightMapping = joiner.getRightMapping(mappingIndex);

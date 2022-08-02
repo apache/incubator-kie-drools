@@ -126,12 +126,12 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
             Function<B, Object> rightMapping = joiner.getRightMapping(mappingIndex);
             Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
-                    patternVariable.getPrimaryVariable(), joinPredicate, index(joiner, mappingIndex));
+                    patternVariable.getPrimaryVariable(), joinPredicate, createBetaIndex(joiner, mappingIndex));
         }
         return applyFilters(existencePattern, predicate, shouldExist);
     }
 
-    private <B> BetaIndex<B, A, ?> index(DefaultBiJoiner<A, B> joiner, int mappingIndex) {
+    private <B> BetaIndex<B, A, ?> createBetaIndex(DefaultBiJoiner<A, B> joiner, int mappingIndex) {
         JoinerType joinerType = joiner.getJoinerType(mappingIndex);
         Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
         Function<B, Object> rightMapping = joiner.getRightMapping(mappingIndex);

@@ -120,12 +120,12 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                     (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightMapping.apply(c));
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(), joinPredicate,
-                    index(joiner, mappingIndex));
+                    createBetaIndex(joiner, mappingIndex));
         }
         return applyFilters(existencePattern, predicate, shouldExist);
     }
 
-    private <C> BetaIndex2<C, A, B, ?> index(DefaultTriJoiner<A, B, C> joiner, int mappingIndex) {
+    private <C> BetaIndex2<C, A, B, ?> createBetaIndex(DefaultTriJoiner<A, B, C> joiner, int mappingIndex) {
         JoinerType joinerType = joiner.getJoinerType(mappingIndex);
         BiFunction<A, B, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
         Function<C, Object> rightMapping = joiner.getRightMapping(mappingIndex);
