@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
@@ -16,10 +15,11 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreManager;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
-import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 /**
@@ -57,16 +57,21 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
         return getSolutionFiles(commonApp).stream()
                 .map(solutionFile -> dynamicTest(
                         solutionFile.getName(),
-                        () -> readAndWriteSolution(commonApp.createSolutionBusiness(), commonApp.createSolutionFileIO(),
-                                solutionFile)));
+                        () -> {
+                            // TODO SolverFactory is expensive; share it once it is made thread-safe.
+                            SolverFactory<Solution_> solverFactory =
+                                    SolverFactory.createFromXmlResource(commonApp.getSolverConfigResource());
+                            ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
+                            readAndWriteSolution(scoreManager, commonApp.createSolutionFileIO(), solutionFile);
+                        }));
     }
 
-    private <Score_ extends Score<Score_>> void readAndWriteSolution(SolutionBusiness<Solution_, Score_> solutionBusiness,
+    private <Score_ extends Score<Score_>> void readAndWriteSolution(ScoreManager<Solution_, Score_> scoreManager,
             SolutionFileIO<Solution_> solutionFileIO, File solutionFile) {
         // Make sure we can process the solution from an existing file.
         Solution_ originalSolution = solutionFileIO.read(solutionFile);
         logger.info("Opened: {}", solutionFile);
-        Score_ originalScore = calculateScore(solutionBusiness, originalSolution);
+        Score_ originalScore = scoreManager.updateScore(originalSolution);
         Assertions.assertThat(originalScore).isNotNull();
         // Write the solution to a temp file and read it back.
         Solution_ roundTripSolution = null;
@@ -81,14 +86,8 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
             Assertions.fail("Failed to write solution.", ex);
         }
         // Make sure the solutions equal by checking their scores against each other.
-        Score_ roundTripScore = calculateScore(solutionBusiness, roundTripSolution);
+        Score_ roundTripScore = scoreManager.updateScore(roundTripSolution);
         Assertions.assertThat(roundTripScore).isEqualTo(originalScore);
-    }
-
-    private <Score_ extends Score<Score_>> Score_ calculateScore(SolutionBusiness<Solution_, Score_> solutionBusiness,
-            Solution_ solution) {
-        solutionBusiness.setSolution(Objects.requireNonNull(solution));
-        return solutionBusiness.getScore();
     }
 
 }
