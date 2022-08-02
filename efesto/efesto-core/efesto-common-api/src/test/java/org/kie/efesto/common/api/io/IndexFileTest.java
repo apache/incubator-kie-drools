@@ -29,15 +29,17 @@ class IndexFileTest {
 
     @Test
     void validatePathName() {
-        String toValidate = "/this/is/valid/file.model_json";
+        String toValidate = String.format("%1$sthis%1$sis%1$svalid%1$sfile.model_json", File.separator);
         assertThat(IndexFile.validatePathName(toValidate)).isEqualTo(toValidate);
     }
 
     @Test
     void validateWrongPathName() {
-        final List<String> toValidate = Arrays.asList("/this/is/invalid/file._json", "/this/is/invalid/file.model");
+        String toValidate1 = String.format("%1$sthis%1$sis%1$sinvalid%1$sfile._json", File.separator);
+        String toValidate2 = String.format("%1$sthis%1$sis%1$sinvalid%1$sfile.model", File.separator);
+        final List<String> toValidate = Arrays.asList(toValidate1, toValidate2);
         toValidate.forEach(toVal -> {
-            String fileName = toVal.substring(toVal.lastIndexOf('/') + 1);
+            String fileName = toVal.substring(toVal.lastIndexOf(File.separator) + 1);
             String expectedMessage = String.format("Wrong file name %s", fileName);
             assertThatThrownBy(() -> IndexFile.validatePathName(toVal))
                     .isInstanceOf(KieEfestoCommonException.class)
@@ -57,7 +59,7 @@ class IndexFileTest {
 
     @Test
     void testGetModel() {
-        String fileName = "/this/is/valid/file.model_json";
+        String fileName = String.format("%1$sthis%1$sis%1$svalid%1$sfile.model_json", File.separator);
         String expected = "model";
         IndexFile indexFile = new IndexFile(fileName);
         assertThat(indexFile.getModel()).isEqualTo(expected);
