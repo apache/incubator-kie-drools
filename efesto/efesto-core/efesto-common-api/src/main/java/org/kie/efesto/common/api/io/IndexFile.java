@@ -15,12 +15,10 @@
  */
 package org.kie.efesto.common.api.io;
 
+import org.drools.util.PortablePath;
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
-import org.kie.efesto.common.api.utils.FileNameUtils;
 
 import java.io.File;
-
-import static org.kie.efesto.common.api.utils.FileNameUtils.getFileName;
 
 
 /**
@@ -32,31 +30,31 @@ public final class IndexFile extends File {
     public static final String FINAL_SUFFIX = "_json";
 
     static String getIndexFileName(String modelType) {
-        return String.format("%s.%s%s", INDEX_FILE, modelType, FINAL_SUFFIX);
+        return PortablePath.of(String.format("%s.%s%s", INDEX_FILE, modelType, FINAL_SUFFIX)).asString();
     }
 
-    static String validatePathName(String toValidate) {
-        String fileName = getFileName(toValidate);
+    static PortablePath validatePathName(PortablePath toValidate) {
+        String fileName = toValidate.getFileName();
         if (!fileName.endsWith(FINAL_SUFFIX)) {
             throw new KieEfestoCommonException("Wrong file name " + fileName);
         }
-        String model = getModel(fileName);
+        String model = getModel(toValidate);
         if (model.isEmpty()) {
             throw new KieEfestoCommonException("Wrong file name " + fileName);
         }
         return toValidate;
     }
 
-    static String getModel(String fileName) {
-        return FileNameUtils.getSuffix(fileName).replace(FINAL_SUFFIX, "");
+    static String getModel(PortablePath file) {
+        return file.getSuffix().replace(FINAL_SUFFIX, "");
     }
 
     public IndexFile(String modelType) {
-        super(validatePathName(getIndexFileName(modelType)));
+        super(validatePathName(PortablePath.of(getIndexFileName(modelType))).asString());
     }
 
     public IndexFile(String parent, String modelType) {
-        super(parent, validatePathName(getIndexFileName(modelType)));
+        super(parent, validatePathName(PortablePath.of(getIndexFileName(modelType))).asString());
     }
 
     public IndexFile(File existingFile) {
@@ -64,11 +62,6 @@ public final class IndexFile extends File {
     }
 
     public String getModel() {
-        return getModel(getSuffix());
+        return getModel(PortablePath.of(this.getName()));
     }
-
-    private String getSuffix() {
-        return FileNameUtils.getSuffix(this.getName());
-    }
-
 }

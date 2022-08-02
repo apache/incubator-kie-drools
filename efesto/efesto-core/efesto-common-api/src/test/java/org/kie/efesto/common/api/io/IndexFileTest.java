@@ -15,12 +15,12 @@
  */
 package org.kie.efesto.common.api.io;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
+import org.drools.util.PortablePath;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,15 +29,16 @@ class IndexFileTest {
 
     @Test
     void validatePathName() {
-        String toValidate = "/this/is/valid/file.model_json";
-        assertThat(IndexFile.validatePathName(toValidate)).isEqualTo(toValidate);
+        assertThat(IndexFile.validatePathName(PortablePath.of("/this/is/valid/file.model_json")))
+                .isEqualTo(PortablePath.of("/this/is/valid/file.model_json"));
     }
 
     @Test
     void validateWrongPathName() {
-        final List<String> toValidate = Arrays.asList("/this/is/invalid/file._json", "/this/is/invalid/file.model");
+        final List<PortablePath> toValidate = Arrays.asList(PortablePath.of("/this/is/invalid/file._json"),
+                PortablePath.of("/this/is/invalid/file.model"));
         toValidate.forEach(toVal -> {
-            String fileName = toVal.substring(toVal.lastIndexOf(File.separator) + 1);
+            String fileName = toVal.getFileName();
             String expectedMessage = String.format("Wrong file name %s", fileName);
             assertThatThrownBy(() -> IndexFile.validatePathName(toVal))
                     .isInstanceOf(KieEfestoCommonException.class)
@@ -49,15 +50,15 @@ class IndexFileTest {
     void getModel() {
         String fileName = "file_name.model_json";
         String expected = "model";
-        String source = fileName;
+        PortablePath source = PortablePath.of(fileName);
         assertThat(IndexFile.getModel(source)).isEqualTo(expected);
-        source = File.separator + "dir" + File.separator + fileName;
+        source = PortablePath.of("/dir/" + fileName);
         assertThat(IndexFile.getModel(source)).isEqualTo(expected);
     }
 
     @Test
     void testGetModel() {
-        String fileName = "/this/is/valid/file.model_json";
+        String fileName = PortablePath.of("/this/is/valid/file.model_json").getFileName();
         String expected = "model";
         IndexFile indexFile = new IndexFile(fileName);
         assertThat(indexFile.getModel()).isEqualTo(expected);

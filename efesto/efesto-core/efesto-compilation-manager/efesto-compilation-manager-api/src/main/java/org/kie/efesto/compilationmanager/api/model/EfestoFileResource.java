@@ -15,7 +15,7 @@
  */
 package org.kie.efesto.compilationmanager.api.model;
 
-import org.kie.efesto.common.api.utils.FileNameUtils;
+import org.drools.util.PortablePath;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +36,7 @@ public final class EfestoFileResource implements EfestoResource<File> {
     }
 
     public String getModelType() {
-        return FileNameUtils.getSuffix(modelFile.getName());
+        return PortablePath.of(modelFile.getName()).getSuffix();
     }
 
     public InputStream getInputStream() throws IOException {

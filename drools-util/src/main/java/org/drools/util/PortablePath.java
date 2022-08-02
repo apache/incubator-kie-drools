@@ -78,6 +78,15 @@ public class PortablePath implements Serializable {
         return path.substring(0, path.length() - ".class".length()).replace('/', '.');
     }
 
+    public String getSuffix() {
+        final int dotIndex = getFileName().lastIndexOf('.');
+        if (dotIndex > -1) {
+            return getFileName().substring(dotIndex + 1);
+        } else {
+            return "";
+        }
+    }
+
     @Override
     public String toString() {
         return "KiePath{" +

@@ -37,7 +37,7 @@ public class KiePathTest {
     }
 
     @Test
-    public void testAsString() throws Exception {
+    public void testAsString() {
         assertThat(PortablePath.of("src", isWindowsSeparator).asString()).isEqualTo("src");
         assertThat(PortablePath.of("src" + fileSeparator + "test", isWindowsSeparator).asString()).isEqualTo("src/test");
         assertThat(PortablePath.of("src" + fileSeparator + "test", isWindowsSeparator).asString()).isEqualTo("src/test");
@@ -45,20 +45,27 @@ public class KiePathTest {
     }
 
     @Test
-    public void testParent() throws Exception {
+    public void testParent() {
         assertThat(PortablePath.of("src" + fileSeparator + "test" + fileSeparator + "folder", isWindowsSeparator).getParent().asString()).isEqualTo("src/test");
         assertThat(PortablePath.of("src" + fileSeparator + "test" + fileSeparator + "folder", isWindowsSeparator).getParent().getParent().asString()).isEqualTo("src");
         assertThat(PortablePath.of("src" + fileSeparator + "test" + fileSeparator + "folder", isWindowsSeparator).getParent().getParent().getParent().asString()).isEqualTo("");
     }
 
     @Test
-    public void testResolve() throws Exception {
+    public void testResolve() {
         assertThat(PortablePath.of("src" + fileSeparator + "test", isWindowsSeparator).resolve("folder").asString()).isEqualTo("src/test/folder");
         assertThat(PortablePath.of("src" + fileSeparator + "test", isWindowsSeparator).resolve(PortablePath.of("folder" + fileSeparator + "subfolder", isWindowsSeparator)).asString()).isEqualTo("src/test/folder/subfolder");
     }
 
     @Test
-    public void testFileName() throws Exception {
+    public void testFileName() {
         assertThat(PortablePath.of("src" + fileSeparator + "test" + fileSeparator + "folder", isWindowsSeparator).getFileName()).isEqualTo("folder");
+    }
+
+    @Test
+    public void testSuffix() {
+        assertThat(PortablePath.of("test.suffix").getSuffix()).isEqualTo("suffix");
+        assertThat(PortablePath.of("test.").getSuffix()).isEqualTo("");
+        assertThat(PortablePath.of("test").getSuffix()).isEqualTo("");
     }
 }
