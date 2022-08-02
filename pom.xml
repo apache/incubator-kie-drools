@@ -259,6 +259,7 @@
         <module>kie-util</module>
         <module>kie-memory-compiler</module>
         <module>kie-ci</module>
+        <module>efesto</module>
         <module>drools-util</module>
         <module>drools-io</module>
         <module>drools-serialization-protobuf</module>

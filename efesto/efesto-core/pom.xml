@@ -16,9 +16,21 @@
 
   <modules>
     <module>efesto-common-api</module>
-    <module>efesto-compilation-manager</module>
-    <module>efesto-runtime-manager</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>efesto-compilation-manager</module>
+        <module>efesto-runtime-manager</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
