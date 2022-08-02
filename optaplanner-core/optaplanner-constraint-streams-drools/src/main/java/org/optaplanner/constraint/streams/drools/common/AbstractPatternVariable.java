@@ -157,7 +157,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
             return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping::apply,
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
-            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
+            JoinerType reversedJoinerType = joinerType.flip();
+            return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
                     c -> (Comparable) rightExtractor.apply(c), leftMapping::apply, Comparable.class);
         }
     }
@@ -186,7 +187,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
             return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping::apply,
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
-            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
+            JoinerType reversedJoinerType = joinerType.flip();
+            return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
                     c -> (Comparable) rightExtractor.apply(c), leftMapping::apply, Comparable.class);
         }
     }
@@ -218,7 +220,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
             return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping::apply,
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
-            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
+            JoinerType reversedJoinerType = joinerType.flip();
+            return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
                     c -> (Comparable) rightExtractor.apply(c), leftMapping::apply, Comparable.class);
         }
     }

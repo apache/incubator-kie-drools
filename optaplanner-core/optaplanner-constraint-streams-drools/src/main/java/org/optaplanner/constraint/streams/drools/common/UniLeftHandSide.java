@@ -139,7 +139,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
             return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightMapping::apply,
                     leftMapping::apply, Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
-            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
+            JoinerType reversedJoinerType = joinerType.flip();
+            return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
                     b -> (Comparable) rightMapping.apply(b), leftMapping::apply, Comparable.class);
         }
     }
