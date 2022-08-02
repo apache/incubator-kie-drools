@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.drools.common;
 
-import static org.optaplanner.constraint.streams.drools.common.AbstractLeftHandSide.index;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.optaplanner.constraint.streams.drools.common.AbstractLeftHandSide.getConstraintType;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -144,10 +145,20 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         Predicate2<PatternVar_, LeftJoinVar_> predicate =
                 (b, a) -> joinerType.matches(leftMapping.apply(a), rightExtractor.apply(b));
         return create(p -> {
-            BetaIndex<PatternVar_, LeftJoinVar_, ?> index =
-                    (BetaIndex<PatternVar_, LeftJoinVar_, ?>) index(joiner, mappingIndex);
+            BetaIndex<PatternVar_, LeftJoinVar_, ?> index = index(joinerType, mappingIndex, leftMapping, rightExtractor);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
         });
+    }
+
+    private <LeftJoinVar_> BetaIndex<PatternVar_, LeftJoinVar_, ?> index(JoinerType joinerType, int mappingIndex,
+            Function<LeftJoinVar_, Object> leftMapping, Function1<PatternVar_, Object> rightExtractor) {
+        if (joinerType == JoinerType.EQUAL) {
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping::apply,
+                    Object.class);
+        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
+            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
+                    c -> (Comparable) rightExtractor.apply(c), leftMapping::apply, Comparable.class);
+        }
     }
 
     @Override
@@ -161,9 +172,21 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
                 (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightExtractor.apply(c));
         return create(p -> {
             BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> index =
-                    (BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?>) index(joiner, mappingIndex);
+                    index(joinerType, mappingIndex, leftMapping, rightExtractor);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB, predicate, index);
         });
+    }
+
+    private <LeftJoinVarA_, LeftJoinVarB_> BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> index(JoinerType joinerType,
+            int mappingIndex, BiFunction<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping,
+            Function1<PatternVar_, Object> rightExtractor) {
+        if (joinerType == JoinerType.EQUAL) {
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping::apply,
+                    Object.class);
+        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
+            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
+                    c -> (Comparable) rightExtractor.apply(c), leftMapping::apply, Comparable.class);
+        }
     }
 
     @Override
@@ -179,11 +202,23 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
                 (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightExtractor.apply(d));
         return create(p -> {
             BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> index =
-                    (BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?>) index(joiner,
-                            mappingIndex);
+                    index(joinerType, mappingIndex, leftMapping, rightExtractor);
             return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB,
                     leftJoinVarC, predicate, index);
         });
+    }
+
+    private <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_>
+            BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> index(JoinerType joinerType,
+                    int mappingIndex, TriFunction<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping,
+                    Function1<PatternVar_, Object> rightExtractor) {
+        if (joinerType == JoinerType.EQUAL) {
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping::apply,
+                    Object.class);
+        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
+            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
+                    c -> (Comparable) rightExtractor.apply(c), leftMapping::apply, Comparable.class);
+        }
     }
 
     @Override

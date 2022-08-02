@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.drools.common;
 import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
@@ -115,13 +116,26 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
             JoinerType joinerType = joiner.getJoinerType(mappingIndex);
             BiFunction<A, B, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
             Function<C, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-            BetaIndex2<C, A, B, ?> index = index(joiner, mappingIndex);
             Predicate3<C, A, B> joinPredicate =
                     (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightMapping.apply(c));
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
-                    patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(), joinPredicate, index);
+                    patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(), joinPredicate,
+                    index(joiner, mappingIndex));
         }
         return applyFilters(existencePattern, predicate, shouldExist);
+    }
+
+    private <C> BetaIndex2<C, A, B, ?> index(DefaultTriJoiner<A, B, C> joiner, int mappingIndex) {
+        JoinerType joinerType = joiner.getJoinerType(mappingIndex);
+        BiFunction<A, B, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
+        Function<C, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+        if (joinerType == JoinerType.EQUAL) {
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightMapping::apply,
+                    leftMapping::apply, Object.class);
+        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
+            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
+                    c -> (Comparable) rightMapping.apply(c), leftMapping::apply, Comparable.class);
+        }
     }
 
     private <C> BiLeftHandSide<A, B> applyFilters(PatternDSL.PatternDef<C> existencePattern, TriPredicate<A, B, C> predicate,

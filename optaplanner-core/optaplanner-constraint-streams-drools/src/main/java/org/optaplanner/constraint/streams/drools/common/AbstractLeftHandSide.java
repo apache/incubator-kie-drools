@@ -1,31 +1,19 @@
 package org.optaplanner.constraint.streams.drools.common;
 
 import static org.drools.model.DSL.and;
-import static org.drools.model.PatternDSL.betaIndexedBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.drools.model.BetaIndex;
-import org.drools.model.BetaIndex2;
-import org.drools.model.BetaIndex3;
-import org.drools.model.BetaIndex4;
 import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Variable;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
-import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
-import org.optaplanner.constraint.streams.common.penta.DefaultPentaJoiner;
-import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
-import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
 import org.optaplanner.constraint.streams.drools.DroolsVariableFactory;
-import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 abstract class AbstractLeftHandSide {
@@ -209,59 +197,6 @@ abstract class AbstractLeftHandSide {
                     Arrays.stream(accFunctions)
                             .skip(1)
                             .toArray(AccumulateFunction[]::new));
-        }
-    }
-
-    protected static <A, B> BetaIndex<B, A, ?> index(DefaultBiJoiner<A, B> joiner, int mappingIndex) {
-        JoinerType joinerType = joiner.getJoinerType(mappingIndex);
-        Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function<B, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-        if (joinerType == JoinerType.EQUAL) {
-            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
-                    rightMapping::apply, leftMapping::apply, Object.class);
-        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
-            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
-                    b -> (Comparable) rightMapping.apply(b), leftMapping::apply, Comparable.class);
-        }
-    }
-
-    protected static <A, B, C> BetaIndex2<C, A, B, ?> index(DefaultTriJoiner<A, B, C> joiner, int mappingIndex) {
-        JoinerType joinerType = joiner.getJoinerType(mappingIndex);
-        BiFunction<A, B, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function<C, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-        if (joinerType == JoinerType.EQUAL) {
-            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
-                    rightMapping::apply, leftMapping::apply, Object.class);
-        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
-            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
-                    c -> (Comparable) rightMapping.apply(c), leftMapping::apply, Comparable.class);
-        }
-    }
-
-    protected static <A, B, C, D> BetaIndex3<D, A, B, C, ?> index(DefaultQuadJoiner<A, B, C, D> joiner, int mappingIndex) {
-        JoinerType joinerType = joiner.getJoinerType(mappingIndex);
-        TriFunction<A, B, C, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function<D, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-        if (joinerType == JoinerType.EQUAL) {
-            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
-                    rightMapping::apply, leftMapping::apply, Object.class);
-        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
-            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
-                    d -> (Comparable) rightMapping.apply(d), leftMapping::apply, Comparable.class);
-        }
-    }
-
-    protected static <A, B, C, D, E> BetaIndex4<E, A, B, C, D, ?> index(DefaultPentaJoiner<A, B, C, D, E> joiner,
-            int mappingIndex) {
-        JoinerType joinerType = joiner.getJoinerType(mappingIndex);
-        QuadFunction<A, B, C, D, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function<E, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-        if (joinerType == JoinerType.EQUAL) {
-            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
-                    rightMapping::apply, leftMapping::apply, Object.class);
-        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
-            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
-                    e -> (Comparable) rightMapping.apply(e), leftMapping::apply, Comparable.class);
         }
     }
 

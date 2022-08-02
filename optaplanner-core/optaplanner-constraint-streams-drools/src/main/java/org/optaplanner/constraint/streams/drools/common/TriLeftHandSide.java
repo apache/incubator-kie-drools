@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.drools.common;
 import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
@@ -94,12 +95,24 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
             Function<D, Object> rightMapping = joiner.getRightMapping(mappingIndex);
             Predicate4<D, A, B, C> joinPredicate =
                     (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightMapping.apply(d));
-            BetaIndex3<D, A, B, C, ?> index = index(joiner, mappingIndex);
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
-                    patternVariableC.getPrimaryVariable(), joinPredicate, index);
+                    patternVariableC.getPrimaryVariable(), joinPredicate, index(joiner, mappingIndex));
         }
         return applyFilters(existencePattern, predicate, shouldExist);
+    }
+
+    private <D> BetaIndex3<D, A, B, C, ?> index(DefaultQuadJoiner<A, B, C, D> joiner, int mappingIndex) {
+        JoinerType joinerType = joiner.getJoinerType(mappingIndex);
+        TriFunction<A, B, C, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
+        Function<D, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+        if (joinerType == JoinerType.EQUAL) {
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightMapping::apply,
+                    leftMapping::apply, Object.class);
+        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
+            return betaIndexedBy(Comparable.class, getConstraintType(joinerType), mappingIndex,
+                    d -> (Comparable) rightMapping.apply(d), leftMapping::apply, Comparable.class);
+        }
     }
 
     private <D> TriLeftHandSide<A, B, C> applyFilters(PatternDSL.PatternDef<D> existencePattern,
