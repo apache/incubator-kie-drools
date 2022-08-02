@@ -53,6 +53,10 @@
           <skip>true</skip> <!-- This is an empty JAR to drag in dependencies; dep checks make no sense here. -->
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
 
