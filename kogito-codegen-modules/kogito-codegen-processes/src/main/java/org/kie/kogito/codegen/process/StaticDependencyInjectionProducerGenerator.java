@@ -29,7 +29,7 @@ public class StaticDependencyInjectionProducerGenerator {
 
     private final KogitoBuildContext context;
     //All available Producer templates for dependency injection
-    private static final List<String> producerTemplates = Arrays.asList("ProcessServiceProducer", "KogitoEventExecutorProducer");
+    private static final List<String> producerTemplates = Arrays.asList("ProcessServiceProducer");
 
     private StaticDependencyInjectionProducerGenerator(
             KogitoBuildContext context) {

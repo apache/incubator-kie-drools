@@ -31,10 +31,10 @@ import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.EventReceiver;
-import org.kie.kogito.event.KogitoEventExecutor;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
+import org.kie.kogito.event.EventExecutorServiceFactory;
 
 
 @io.quarkus.runtime.Startup
@@ -54,22 +54,25 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
     ConfigBean configBean;
 
     @Inject
-    EventReceiver eventReceiver;
-
-    @Inject
-    @javax.inject.Named(KogitoEventExecutor.BEAN_NAME)
-    ExecutorService executorService;
-
-    @Inject
     ProcessService processService;
+    
+    @Inject
+    EventReceiver eventReceiver;
+    
+    @Inject
+    EventExecutorServiceFactory factory;
+    
+    ExecutorService executor;
 
     @Inject
     ObjectMapper objectMapper;
 
     Set<String> correlation;
+    
 
     @javax.annotation.PostConstruct
     void init() {
+        executor = factory.getExecutorService("$Trigger$"); 
         init(application,
              process,
              "$Trigger$",
@@ -77,10 +80,16 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
              $DataType$.class,
              configBean.useCloudEvents(),
              processService,
-             executorService,
+             executor,
              eventUnmarshaller,
              correlation);
     }
+
+    @javax.annotation.PreDestroy
+    public void close() {
+        executor.shutdownNow();
+    }
+
 
     private $Type$ eventToModel(Object event) {
         $Type$ model = new $Type$();

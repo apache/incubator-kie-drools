@@ -26,8 +26,8 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
 import org.kie.kogito.event.EventUnmarshaller;
+import org.kie.kogito.event.EventExecutorServiceFactory;
 import org.kie.kogito.event.EventReceiver;
-import org.kie.kogito.event.KogitoEventExecutor;
 
 
 @org.springframework.stereotype.Component()
@@ -43,7 +43,7 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
             ConfigBean configBean,
             EventReceiver eventReceiver,
             ProcessService processService,
-            @org.springframework.beans.factory.annotation.Qualifier(KogitoEventExecutor.BEAN_NAME) ExecutorService executorService,
+            EventExecutorServiceFactory executorServiceFactory,
             EventUnmarshaller<Object> eventUnmarshaller) {
         super(application,
               process,
@@ -52,7 +52,7 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
               $DataType$.class,
               configBean.useCloudEvents(),
               processService,
-              executorService,
+              executorServiceFactory.getExecutorService("$Trigger$"),
               eventUnmarshaller);
     }
 
