@@ -25,7 +25,6 @@
   </properties>
 
   <modules>
-    <module>efesto-common-utils</module>
     <module>efesto-core</module>
   </modules>
 
@@ -159,5 +158,19 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>efesto-common-utils</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
