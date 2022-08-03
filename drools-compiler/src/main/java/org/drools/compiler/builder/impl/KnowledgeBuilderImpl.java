@@ -18,7 +18,6 @@ package org.drools.compiler.builder.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
@@ -114,7 +113,6 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -129,7 +127,6 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
@@ -743,8 +740,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                 addPackageFromXml(resource);
             } else if (ResourceType.DTABLE.equals(type)) {
                 addPackageFromDecisionTable(resource, configuration);
-            } else if (ResourceType.PKG.equals(type)) {
-                addPackageFromInputStream(resource);
             } else if (ResourceType.CHANGE_SET.equals(type)) {
                 addPackageFromChangeSet(resource);
             } else if (ResourceType.XSD.equals(type)) {
@@ -829,70 +824,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                 }
             }
         }
-    }
-
-    void addPackageFromInputStream(final Resource resource) throws IOException,
-            ClassNotFoundException {
-        InputStream is = resource.getInputStream();
-        Object object = DroolsStreamUtils.streamIn(is, this.configuration.getClassLoader());
-        is.close();
-        if (object instanceof Collection) {
-            // KnowledgeBuilder API
-            @SuppressWarnings("unchecked")
-            Collection<KiePackage> pkgs = (Collection<KiePackage>) object;
-            for (KiePackage kpkg : pkgs) {
-                overrideReSource((KnowledgePackageImpl) kpkg, resource);
-                addPackage((KnowledgePackageImpl) kpkg);
-            }
-        } else if (object instanceof KnowledgePackageImpl) {
-            // KnowledgeBuilder API
-            KnowledgePackageImpl kpkg = (KnowledgePackageImpl) object;
-            overrideReSource(kpkg, resource);
-            addPackage(kpkg);
-        } else {
-            results.add(new DroolsError(resource) {
-
-                @Override
-                public String getMessage() {
-                    return "Unknown binary format trying to load resource " + resource.toString();
-                }
-
-                @Override
-                public int[] getLines() {
-                    return new int[0];
-                }
-            });
-        }
-    }
-
-    private void overrideReSource(InternalKnowledgePackage pkg,
-                                  Resource res) {
-        for (org.kie.api.definition.rule.Rule r : pkg.getRules()) {
-            if (isSwappable(((RuleImpl) r).getResource(), res)) {
-                ((RuleImpl) r).setResource(res);
-            }
-        }
-        for (TypeDeclaration d : pkg.getTypeDeclarations().values()) {
-            if (isSwappable(d.getResource(), res)) {
-                d.setResource(res);
-            }
-        }
-        for (Function f : pkg.getFunctions().values()) {
-            if (isSwappable(f.getResource(), res)) {
-                f.setResource(res);
-            }
-        }
-        for (org.kie.api.definition.process.Process p : pkg.getRuleFlows().values()) {
-            if (isSwappable(p.getResource(), res)) {
-                p.setResource(res);
-            }
-        }
-    }
-
-    private boolean isSwappable(Resource original,
-                                Resource source) {
-        return original == null
-                || (original instanceof ReaderResource && ((ReaderResource) original).getReader() == null);
     }
 
     /**

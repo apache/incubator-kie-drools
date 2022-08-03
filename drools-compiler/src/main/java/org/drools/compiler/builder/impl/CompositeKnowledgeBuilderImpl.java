@@ -127,7 +127,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void buildResources() {
         buildResourceType(ResourceBuilder.DSL_RESOURCE_BUILDER, ResourceType.DSL);
         buildResourceType(ResourceBuilder.DRF_RESOURCE_BUILDER, ResourceType.DRF);
-        buildResourceType(ResourceBuilder.PKG_RESOURCE_BUILDER, ResourceType.PKG);
         buildResourceType(ResourceBuilder.CHANGE_SET_RESOURCE_BUILDER, ResourceType.CHANGE_SET);
         buildResourceType(ResourceBuilder.XSD_RESOURCE_BUILDER, ResourceType.XSD);
         buildResourceType(ResourceBuilder.SCD_RESOURCE_BUILDER, ResourceType.SCARD);
@@ -319,8 +318,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         ResourceBuilder GSCD_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromGuidedScoreCard(resourceDescr.resource);
 
         ResourceBuilder CHANGE_SET_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromChangeSet( resourceDescr.resource);
-
-        ResourceBuilder PKG_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> kBuilder.addPackageFromInputStream(resourceDescr.resource );
 
         ResourceBuilder BPMN2_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> {
             kBuilder.addKnowledgeResource( resourceDescr.resource, ResourceType.BPMN2, resourceDescr.configuration );
