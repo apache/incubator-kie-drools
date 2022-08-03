@@ -39,6 +39,18 @@ public class KogitoBuildTimeConfig {
     public Boolean failOnEmptyBean;
 
     /**
+     * Incoming channel default name
+     */
+    @ConfigItem(name = "addon.messaging.incoming.defaultName", defaultValue = "kogito_incoming_stream")
+    public String incomingChannelDefaultName;
+
+    /**
+     * Outgoing channel default name
+     */
+    @ConfigItem(name = "addon.messaging.outgoing.defaultName", defaultValue = "kogito_outgoing_stream")
+    public String outgoingChannelDefaultName;
+
+    /**
      * Strategy to resolve a Process version to use
      */
     @ConfigItem(name = "workflow.version-strategy", defaultValue = "workflow")
