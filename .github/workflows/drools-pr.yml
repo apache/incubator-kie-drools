@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 120
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         java-version: [11]
         maven-version: ['3.8.6']
       fail-fast: false
