@@ -1577,7 +1577,7 @@ public class PropertyReactivityTest extends BaseModelTest {
     public void testOnlyFirstLetterIsUpperCaseProperty() {
         // See JavaBeans 1.01 spec : 8.8 Capitalization of inferred names
         // “FooBah” becomes “fooBah”
-        testVariousCasePropFact("modify($f) { MyTarget = \"123\" };", "R1", "R2", "R1"); // "myTarget" is the right property name so results in AllSetButLastBitMask. This reacts R1
+        testVariousCasePropFact("modify($f) { MyTarget = \"123\" };", "R1", "R2"); // Actually, this modifies "myTarget" property (backed by private "MyTarget" field). This shouldn't react R1
     }
 
     @Test
@@ -1591,6 +1591,17 @@ public class PropertyReactivityTest extends BaseModelTest {
     public void testFirstLetterIsMultibyteProperty() {
         // Multibyte is not mentioned in JavaBeans spec
         testVariousCasePropFact("modify($f) { 名前 = \"123\" };", "R1", "R2"); // This shouldn't react R1
+    }
+
+    @Test
+    public void testOnlyFirstLetterIsUpperCaseAndMultibyteProperty() {
+        // Multibyte is not mentioned in JavaBeans spec
+        testVariousCasePropFact("modify($f) { My名前 = \"123\" };", "R1", "R2"); // Actually, this modifies "my名前" property (backed by private "My名前" field). This shouldn't react R1
+    }
+
+    @Test
+    public void testOnlyFirstLetterIsUpperCasePublicFieldProperty() {
+        testVariousCasePropFact("modify($f) { MyPublicTarget = \"123\" };", "R1", "R2"); // this modifies "MyPublicTarget" public field directly. This shouldn't react R1
     }
 
     private void testVariousCasePropFact(String modifyStatement, String... expectedResults) {
