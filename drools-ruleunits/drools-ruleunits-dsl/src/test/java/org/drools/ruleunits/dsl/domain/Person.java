@@ -13,14 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.dsl.patterns;
+package org.drools.ruleunits.dsl.domain;
 
-import org.drools.model.view.ViewItem;
+public class Person {
 
-public interface InternalPatternDef extends PatternDef {
-    ViewItem toExecModelItem();
+    private String name;
 
-    default InternalPatternDef subPatternFrom(InternalPatternDef from) {
-        return this;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }

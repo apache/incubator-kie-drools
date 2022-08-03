@@ -25,17 +25,17 @@ import static org.drools.model.Index.ConstraintType.EQUAL;
 import static org.drools.model.Index.ConstraintType.GREATER_THAN;
 import static org.drools.model.Index.ConstraintType.LESS_THAN;
 
-public class HelloWorld implements RuleUnitDefinition {
+public class HelloWorldUnit implements RuleUnitDefinition {
 
     private final DataStore<String> strings;
     private final DataStore<Integer> ints;
     private final List<String> results = new ArrayList<>();
 
-    public HelloWorld() {
+    public HelloWorldUnit() {
         this(DataSource.createStore(), DataSource.createStore());
     }
 
-    public HelloWorld(DataStore<String> strings, DataStore<Integer> ints) {
+    public HelloWorldUnit(DataStore<String> strings, DataStore<Integer> ints) {
         this.strings = strings;
         this.ints = ints;
     }
@@ -72,7 +72,7 @@ public class HelloWorld implements RuleUnitDefinition {
                     .filter("length", s -> s.length(), LESS_THAN, 5) // providing the name of the property used in the constraint allows index and property reactivity generation
                     .execute(results, r -> r.add("this shouldn't fire"));
 
-        // $s: /strings[ length < 5 ]
+        // $s: /strings[ length > 5 ]
         // /ints[ this > 5, this == $s.length ]
         rulesFactory.addRule()
                     .from(strings)

@@ -23,16 +23,16 @@ import org.drools.ruleunits.api.DataStore;
 
 import static org.drools.model.Index.ConstraintType.EQUAL;
 
-public class SelfJoin implements RuleUnitDefinition {
+public class SelfJoinUnit implements RuleUnitDefinition {
 
     private final DataStore<String> strings;
     private final List<String> results = new ArrayList<>();
 
-    public SelfJoin() {
+    public SelfJoinUnit() {
         this(DataSource.createStore());
     }
 
-    public SelfJoin(DataStore<String> strings) {
+    public SelfJoinUnit(DataStore<String> strings) {
         this.strings = strings;
     }
 

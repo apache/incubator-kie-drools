@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
 import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.dsl.domain.Person;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -29,10 +30,10 @@ public class DSLRuleUnitTest {
 
     @Test
     public void testHelloWorld() {
-        HelloWorld unit = new HelloWorld();
+        HelloWorldUnit unit = new HelloWorldUnit();
         unit.getStrings().add("Hello World");
 
-        RuleUnitInstance<HelloWorld> unitInstance = DSLRuleUnit.instance(unit);
+        RuleUnitInstance<HelloWorldUnit> unitInstance = DSLRuleUnit.instance(unit);
         assertThat(unitInstance.fire()).isEqualTo(2);
         assertThat(unit.getResults()).containsExactlyInAnyOrder("it worked!", "it also worked with HELLO WORLD");
 
@@ -78,12 +79,12 @@ public class DSLRuleUnitTest {
 
     @Test
     public void testSelfJoin() {
-        SelfJoin unit = new SelfJoin();
+        SelfJoinUnit unit = new SelfJoinUnit();
         unit.getStrings().add("abc");
         unit.getStrings().add("bcd");
         unit.getStrings().add("xyz");
 
-        RuleUnitInstance<SelfJoin> unitInstance = DSLRuleUnit.instance(unit);
+        RuleUnitInstance<SelfJoinUnit> unitInstance = DSLRuleUnit.instance(unit);
         assertThat(unitInstance.fire()).isEqualTo(1);
         assertThat(unit.getResults()).containsExactly("Found 'abc' and 'bcd'");
     }
@@ -146,5 +147,23 @@ public class DSLRuleUnitTest {
         unit.getStrings().add("This is a very long String");
         assertThat(unitInstance.fire()).isEqualTo(1);
         assertThat(unit.getResults()).contains("There is at least a String longer than threshold 20");
+    }
+
+    @Test
+    public void testMultiJoin() {
+        MultiJoinUnit unit = new MultiJoinUnit();
+        unit.getStrings().add("Hello World");
+        unit.getInts().add(11);
+        unit.getPersons().add(new Person("Sofia", 4));
+
+        RuleUnitInstance<MultiJoinUnit> unitInstance = DSLRuleUnit.instance(unit);
+        assertThat(unitInstance.fire()).isEqualTo(0);
+
+        unit.getPersons().add(new Person("Mark", 47));
+        assertThat(unitInstance.fire()).isEqualTo(0);
+
+        unit.getPersons().add(new Person("Mario", 48));
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).containsExactly("Found 'Mario'");
     }
 }

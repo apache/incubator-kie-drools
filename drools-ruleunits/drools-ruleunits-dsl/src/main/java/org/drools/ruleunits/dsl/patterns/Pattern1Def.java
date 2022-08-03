@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.ruleunits.dsl.patterns;
 
 import org.drools.model.Index;
@@ -10,15 +25,6 @@ import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
 
 public interface Pattern1Def<A> extends PatternDef {
-    void execute(Block1<A> block);
-
-    <G> void execute(G globalObject, Block1<G> block);
-
-    <G> void execute(G globalObject, Block2<G, A> block);
-
-    <B> Pattern2Def<A, B> from(DataSource<B> dataSource);
-
-    <B> Pattern2Def<A, B> join(Function1<RuleFactory, Pattern1Def<B>> patternBuilder);
 
     Pattern1Def<A> filter(Predicate1<A> predicate);
 
@@ -30,9 +36,23 @@ public interface Pattern1Def<A> extends PatternDef {
 
     <V> Pattern1Def<A> filter(String fieldName, Function1<A, V> extractor, Index.ConstraintType constraintType, V rightValue);
 
+    <V> Pattern1Def<A> filter(Function1<A, V> extractor, Index.ConstraintType constraintType, Function1<A, V> rightExtractor);
+
+    <V> Pattern1Def<A> filter(String fieldName, Function1<A, V> extractor, Index.ConstraintType constraintType, String rightFieldName, Function1<A, V> rightExtractor);
+
+    <B> Pattern2Def<A, B> from(DataSource<B> dataSource);
+
+    <B> Pattern2Def<A, B> join(Function1<RuleFactory, Pattern1Def<B>> patternBuilder);
+
     <B, C> Pattern2Def<A, C> accumulate(Function1<Pattern1Def<A>, PatternDef> patternBuilder, Accumulator1<B, C> acc);
 
     Pattern1Def<A> exists(Function1<Pattern1Def<A>, PatternDef> patternBuilder);
 
     Pattern1Def<A> not(Function1<Pattern1Def<A>, PatternDef> patternBuilder);
+
+    void execute(Block1<A> block);
+
+    <G> void execute(G globalObject, Block1<G> block);
+
+    <G> void execute(G globalObject, Block2<G, A> block);
 }

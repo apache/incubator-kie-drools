@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.ruleunits.dsl.patterns;
 
 import java.util.UUID;
@@ -14,7 +29,8 @@ import org.drools.model.functions.Predicate1;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
-import org.drools.ruleunits.dsl.constraints.AlphaConstraint;
+import org.drools.ruleunits.dsl.constraints.AlphaConstraintWithRightExtractor;
+import org.drools.ruleunits.dsl.constraints.AlphaConstraintWithRightValue;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 import static org.drools.model.functions.Function1.identity;
@@ -74,7 +90,18 @@ public class Pattern1DefImpl<A> extends SinglePatternDef<A> implements Pattern1D
 
     @Override
     public <V> Pattern1DefImpl<A> filter(String fieldName, Function1<A, V> extractor, Index.ConstraintType constraintType, V rightValue) {
-        constraints.add(new AlphaConstraint<>(variable, fieldName, extractor, constraintType, rightValue));
+        constraints.add(new AlphaConstraintWithRightValue<>(variable, fieldName, extractor, constraintType, rightValue));
+        return this;
+    }
+
+    @Override
+    public <V> Pattern1DefImpl<A> filter(Function1<A, V> extractor, Index.ConstraintType constraintType, Function1<A, V> rightExtractor) {
+        return filter(null, extractor, constraintType, null, rightExtractor);
+    }
+
+    @Override
+    public <V> Pattern1DefImpl<A> filter(String fieldName, Function1<A, V> extractor, Index.ConstraintType constraintType, String rightFieldName, Function1<A, V> rightExtractor) {
+        constraints.add(new AlphaConstraintWithRightExtractor(variable, fieldName, extractor, constraintType, rightFieldName, rightExtractor));
         return this;
     }
 
