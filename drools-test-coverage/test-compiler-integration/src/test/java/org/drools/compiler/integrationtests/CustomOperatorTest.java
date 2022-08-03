@@ -63,7 +63,7 @@ public class CustomOperatorTest {
     public void testCustomOperatorUsingCollections() {
         String constraints =
                 "    $alice : Person(name == \"Alice\")\n" +
-                        "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n";
+                "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n";
         customOperatorUsingCollections(constraints);
     }
 
@@ -72,7 +72,7 @@ public class CustomOperatorTest {
         // DROOLS-6983
         String constraints =
                 "    $bob : Person(name == \"Bob\")\n" +
-                        "    $alice : Person(name == \"Alice\", $bob.addresses supersetOf this.addresses)\n";
+                "    $alice : Person(name == \"Alice\", $bob.addresses supersetOf this.addresses)\n";
         customOperatorUsingCollections(constraints);
     }
 
@@ -81,8 +81,6 @@ public class CustomOperatorTest {
                 "import " + Address.class.getCanonicalName() + ";\n" +
                         "import " + Person.class.getCanonicalName() + ";\n" +
                         "rule R when\n" +
-                        "    $alice : Person(name == \"Alice\")\n" +
-                        "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
                         constraints +
                         "then\n" +
                         "end\n";
