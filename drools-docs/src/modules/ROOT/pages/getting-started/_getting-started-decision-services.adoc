@@ -15,7 +15,7 @@ For more information about the DMN components and implementation in {PRODUCT}, s
 
 // Modules - concepts, procedures, refs, etc.
 
-include::../DMN/dmn-gs-new-project-creating-proc.adoc[leveloffset=+1]
+include::../DMN/_dmn-gs-new-project-creating-proc.adoc[leveloffset=+1]
 
 // content re-placed to be [discrete] and not appear in TOC
 [id='dmn_{context}']
@@ -25,10 +25,10 @@ Decision Model and Notation (DMN) is a standard established by the Object Manage
 
 For general information about the background and applications of DMN, see the https://www.drools.org/learn/dmn.html[Drools DMN landing page].
 
-include::../DMN/dmn-gs-creating-drd-proc.adoc[leveloffset=+2]
-include::../DMN/dmn-gs-creating-custom-datatypes-proc.adoc[leveloffset=+2]
-include::../DMN/dmn-gs-assigning-custom-datatypes-proc.adoc[leveloffset=+2]
-include::../DMN/dmn-gs-defining-decision-logic-proc.adoc[leveloffset=+2]
+include::../DMN/_dmn-gs-creating-drd-proc.adoc[leveloffset=+2]
+include::../DMN/_dmn-gs-creating-custom-datatypes-proc.adoc[leveloffset=+2]
+include::../DMN/_dmn-gs-assigning-custom-datatypes-proc.adoc[leveloffset=+2]
+include::../DMN/_dmn-gs-defining-decision-logic-proc.adoc[leveloffset=+2]
 
 // content re-placed to be [discrete] and not appear in TOC
 [id='test-scenarios-intro-con_{context}']
@@ -41,6 +41,6 @@ You can run the defined test scenarios in a number of ways, for example, you can
 
 You can import data objects from different packages to the same project package as the test scenario. Assets in the same package are imported by default. After you create the necessary data objects and the test scenario, you can use the *Data Objects* tab of the test scenarios designer to verify that all required data objects are listed or to import other existing data objects by adding a *New item*.
 
-include::../DMN/dmn-gs-testing-test-scenario-proc.adoc[leveloffset=+2]
+include::../DMN/_dmn-gs-testing-test-scenario-proc.adoc[leveloffset=+2]
 
-include::../DMN/dmn-gs-evaluating-proc.adoc[leveloffset=+1]
+include::../DMN/_dmn-gs-evaluating-proc.adoc[leveloffset=+1]
