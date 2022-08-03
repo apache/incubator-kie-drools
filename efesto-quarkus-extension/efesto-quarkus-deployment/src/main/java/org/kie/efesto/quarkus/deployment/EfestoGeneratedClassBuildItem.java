@@ -17,20 +17,18 @@ package org.kie.efesto.quarkus.deployment;
 
 import java.util.Collection;
 
+import io.quarkus.builder.item.SimpleBuildItem;
 import org.drools.codegen.common.GeneratedFile;
 
-import io.quarkus.builder.item.SimpleBuildItem;
-
-public final class EfestoGeneratedSourcesBuildItem extends SimpleBuildItem {
+public final class EfestoGeneratedClassBuildItem extends SimpleBuildItem {
 
     private final Collection<GeneratedFile> generatedFiles;
 
-    public EfestoGeneratedSourcesBuildItem(Collection<GeneratedFile> generatedFiles) {
+    public EfestoGeneratedClassBuildItem(Collection<GeneratedFile> generatedFiles) {
         this.generatedFiles = generatedFiles;
     }
 
     public Collection<GeneratedFile> getGeneratedFiles() {
         return generatedFiles;
     }
-
 }

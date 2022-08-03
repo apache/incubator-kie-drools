@@ -62,12 +62,12 @@ public class EfestoProcessor {
     }
 
     @BuildStep
-    public List<ReflectiveClassBuildItem> reflectiveEfestoGeneratedClasses(Collection<GeneratedFile> generatedFiles) {
-        LOGGER.infof("reflectiveEfestoGeneratedClasses %s",  generatedFiles);
+    public List<ReflectiveClassBuildItem> reflectiveEfestoGeneratedClasses(EfestoGeneratedClassBuildItem efestoGeneratedClassBuildItem) {
+        LOGGER.infof("reflectiveEfestoGeneratedClasses %s",  efestoGeneratedClassBuildItem);
         final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
 
 
-        Map<GeneratedFileType, List<GeneratedFile>> mappedGeneratedFiles = generatedFiles.stream()
+        Map<GeneratedFileType, List<GeneratedFile>> mappedGeneratedFiles = efestoGeneratedClassBuildItem.getGeneratedFiles().stream()
                 .collect(Collectors.groupingBy(GeneratedFile::type));
         List<GeneratedFile> generatedCompiledFiles = mappedGeneratedFiles.getOrDefault(COMPILED_CLASS,
                                                                                        Collections.emptyList());

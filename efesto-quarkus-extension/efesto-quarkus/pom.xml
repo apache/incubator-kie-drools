@@ -9,7 +9,7 @@
     <version>8.26.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>efesto-quarkus-runtime</artifactId>
+  <artifactId>efesto-quarkus</artifactId>
 
   <name>Efesto :: Quarkus Extension :: Runtime</name>
 
