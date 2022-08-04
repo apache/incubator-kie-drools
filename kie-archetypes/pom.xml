@@ -18,10 +18,11 @@
 
   <modules>
     <module>kie-drools-archetype</module>
+    <module>kie-drools-dmn-archetype</module>
     <module>kie-drools-exec-model-ruleunit-archetype</module>
     <module>kie-drools-exec-model-archetype</module>
-    <module>kie-model-archetype</module>
     <module>kie-kjar-archetype</module>
+    <module>kie-model-archetype</module>
     <module>kie-service-spring-boot-archetype</module>
   </modules>
 
