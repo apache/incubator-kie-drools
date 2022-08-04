@@ -16,6 +16,7 @@
 package org.drools.ruleunits.dsl;
 
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
@@ -33,14 +34,28 @@ import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 import org.kie.api.runtime.rule.EntryPoint;
 
-public class DSLRuleUnit {
+public class RuleUnitRegistry {
 
     private static final boolean DUMP_GENERATED_RETE = false;
 
-    public static <T extends RuleUnitDefinition> RuleUnitInstance<T> instance(T ruleUnit) {
+    private static final RuleUnitRegistry INSTANCE = new RuleUnitRegistry();
+
+    private RuleUnitRegistry() {}
+
+    private Map<RuleUnitDefinition, RuleUnitInstance> unitInstancesCache = new WeakHashMap<>();
+
+    public <T extends RuleUnitDefinition> RuleUnitInstance<T> getOrCreate(T ruleUnit) {
+        return unitInstancesCache.computeIfAbsent(ruleUnit, this::instance);
+    }
+
+    public <T extends RuleUnitDefinition> RuleUnitInstance<T> instance(T ruleUnit) {
         RulesFactory rulesFactory = new RulesFactory(ruleUnit);
         ruleUnit.defineRules(rulesFactory);
         return new ModelRuleUnit<>((Class<T>) ruleUnit.getClass(), rulesFactory).createInstance(ruleUnit);
+    }
+
+    public static RuleUnitRegistry get() {
+        return INSTANCE;
     }
 
     public static class ModelRuleUnit<T extends RuleUnitData> extends AbstractRuleUnit<T> {
@@ -92,7 +107,9 @@ public class DSLRuleUnit {
                 if (v instanceof DataSource) {
                     DataSource<?> o = (DataSource<?>) v;
                     EntryPoint ep = reteEvaluator.getEntryPoint(dataSourceName);
-                    o.subscribe(new EntryPointDataProcessor(ep));
+                    if (ep != null) { // can be null if this DataSource isn't used in the LHS of any rule
+                        o.subscribe(new EntryPointDataProcessor(ep));
+                    }
                 }
                 try {
                     reteEvaluator.setGlobal(dataSourceName, v);
