@@ -27,6 +27,8 @@ import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Pet;
 import org.drools.model.codegen.execmodel.domain.Result;
+import org.drools.model.codegen.execmodel.domain.VariousCasePropFact;
+
 import org.junit.Test;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
@@ -1570,5 +1572,69 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         assertThat(p.getAge()).isEqualTo(41);
         assertThat(ksession.getObjects((Object object) -> object.equals("ok")).size()).isEqualTo(1);
+    }
+
+    @Test
+    public void testOnlyFirstLetterIsUpperCaseProperty() {
+        // See JavaBeans 1.01 spec : 8.8 Capitalization of inferred names
+        // “FooBah” becomes “fooBah”
+        testVariousCasePropFact("modify($f) { MyTarget = \"123\" };", "R1", "R2"); // Actually, this modifies "myTarget" property (backed by private "MyTarget" field). This shouldn't react R1
+    }
+
+    @Test
+    public void testTwoFirstLettersAreUpperCaseProperty() {
+        // See JavaBeans 1.01 spec : 8.8 Capitalization of inferred names
+        // “URL” becomes “URL”
+        testVariousCasePropFact("modify($f) { URL = \"123\" };", "R1", "R2"); // This shouldn't react R1
+    }
+
+    @Test
+    public void testFirstLetterIsMultibyteProperty() {
+        // Multibyte is not mentioned in JavaBeans spec
+        testVariousCasePropFact("modify($f) { 名前 = \"123\" };", "R1", "R2"); // This shouldn't react R1
+    }
+
+    @Test
+    public void testOnlyFirstLetterIsUpperCaseAndMultibyteProperty() {
+        // Multibyte is not mentioned in JavaBeans spec
+        testVariousCasePropFact("modify($f) { My名前 = \"123\" };", "R1", "R2"); // Actually, this modifies "my名前" property (backed by private "My名前" field). This shouldn't react R1
+    }
+
+    @Test
+    public void testOnlyFirstLetterIsUpperCasePublicFieldProperty() {
+        testVariousCasePropFact("modify($f) { MyPublicTarget = \"123\" };", "R1", "R2"); // this modifies "MyPublicTarget" public field directly. This shouldn't react R1
+    }
+
+    private void testVariousCasePropFact(String modifyStatement, String... expectedResults) {
+        final String str =
+                "import " + VariousCasePropFact.class.getCanonicalName() + ";\n" +
+                           "dialect \"mvel\"\n" +
+                           "global java.util.List results;\n" +
+                           "rule R1\n" +
+                           "salience 100\n" +
+                           "when\n" +
+                           "    $f : VariousCasePropFact( value == \"A\" )\n" +
+                           "then\n" +
+                           "    results.add(\"R1\")\n" +
+                           "end\n" +
+                           "rule R2\n" +
+                           "no-loop\n" +
+                           "when\n" +
+                           "    $f : VariousCasePropFact( value == \"A\" )\n" +
+                           "then\n" +
+                           "    results.add(\"R2\");\n" +
+                           modifyStatement + "\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        VariousCasePropFact fact = new VariousCasePropFact();
+        fact.setValue("A");
+        ksession.insert(fact);
+        ksession.fireAllRules();
+
+        assertThat(results).containsExactly(expectedResults);
     }
 }
