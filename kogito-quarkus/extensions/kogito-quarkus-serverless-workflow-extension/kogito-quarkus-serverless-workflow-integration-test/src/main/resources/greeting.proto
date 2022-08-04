@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 option java_package="org.kie.kogito.examples.sw.greeting";
 
 
@@ -8,6 +10,10 @@ option java_package="org.kie.kogito.examples.sw.greeting";
 service Greeter {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {}
+  
+  rpc DoNothing (google.protobuf.Empty) returns (google.protobuf.Empty) {} 
+  
+  rpc SayHelloArray (HelloArrayRequest) returns (HelloArrayReply) {}
 }
 
 // The request message containing the user's name.
@@ -21,19 +27,28 @@ message InnerHello {
   bool unknown = 1;
 }
 
+message HelloArrayRequest {
+	repeated HelloRequest requests = 1;
+}
 
+message HelloArrayReply {
+	repeated HelloReply replies = 1;
+}
 
 message InnerMessage {
   int32 number = 2;
+  State state  = 3;
 }
 
-// The response message containing the greetings
-message HelloReply {
-  enum State {
+enum State {
     UNKNOWN = 0;
     SUCCESS = 1;
     ERROR = 2;
   }
+  
+// The response message containing the greetings
+message HelloReply {
+  
   string message = 1;
   State state = 2;
   InnerMessage innerMessage = 3;

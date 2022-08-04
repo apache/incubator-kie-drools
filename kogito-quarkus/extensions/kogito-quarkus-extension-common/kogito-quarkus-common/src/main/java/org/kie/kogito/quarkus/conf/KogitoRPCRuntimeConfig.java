@@ -15,31 +15,23 @@
  */
 package org.kie.kogito.quarkus.conf;
 
-import java.util.Optional;
-
+import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
 
-@ConfigRoot(name = "", phase = ConfigPhase.RUN_TIME, prefix = "kogito")
-public class KogitoRuntimeConfig {
+@ConfigGroup
+public class KogitoRPCRuntimeConfig {
 
     /**
-     * The service URL needed to connect to the runtime endpoint from outside the service.
-     * <p>
+     * Indicates if default value of enumerations should be included in grpc response
+     * 
      */
-    @ConfigItem(name = "service.url")
-    public Optional<String> serviceUrl;
+    @ConfigItem(name = "enum.includeDefault", defaultValue = "false")
+    public boolean enumDefault;
 
     /**
-     * Persistence runtime configuration
+     * Time to wait for response from server when using streams
+     * 
      */
-    @ConfigItem
-    public KogitoPersistenceRuntimeConfig persistence;
-
-    /**
-     * grpc runtime configuration
-     */
-    @ConfigItem
-    public KogitoRPCRuntimeConfig grpc;
+    @ConfigItem(name = "stream.timeout", defaultValue = "20")
+    public int streamTimeout;
 }

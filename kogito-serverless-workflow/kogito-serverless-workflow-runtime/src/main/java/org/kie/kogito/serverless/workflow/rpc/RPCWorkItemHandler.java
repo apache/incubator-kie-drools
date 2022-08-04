@@ -16,7 +16,7 @@
 package org.kie.kogito.serverless.workflow.rpc;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
-import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
@@ -61,7 +60,25 @@ public abstract class RPCWorkItemHandler extends WorkflowWorkItemHandler {
     public static final String SERVICE_PROP = "serviceName";
     public static final String FILE_PROP = "fileName";
     public static final String METHOD_PROP = "methodName";
-    public static final String GRPC_WAIT_TIMEOUT_PROPERTY = "kogito.grpc.wait.timeout";
+
+    public static final String GRPC_ENUM_DEFAULT_PROPERTY = "kogito.grpc.enum.includeDefault";
+    public static final String GRPC_STREAM_TIMEOUT_PROPERTY = "kogito.grpc.stream.timeout";
+    public static final boolean GRPC_ENUM_DEFAULT_VALUE = false;
+    public static final int GRPC_STREAM_TIMEOUT_VALUE = 20;
+
+    private final Collection<RPCDecorator> decorators = new ArrayList<>();
+    private final int streamTimeout;
+
+    public RPCWorkItemHandler() {
+        this(GRPC_ENUM_DEFAULT_VALUE, GRPC_STREAM_TIMEOUT_VALUE);
+    }
+
+    public RPCWorkItemHandler(boolean enumDefault, int streamTimeout) {
+        this.streamTimeout = streamTimeout;
+        if (enumDefault) {
+            decorators.add(new DefaultEnumRpcDecorator());
+        }
+    }
 
     @Override
     protected Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters) {
@@ -75,9 +92,8 @@ public abstract class RPCWorkItemHandler extends WorkflowWorkItemHandler {
 
     protected abstract Channel getChannel(String file, String service);
 
-    private static JsonNode doCall(FileDescriptorSet fdSet, Map<String, Object> parameters, Channel channel, String fileName, String serviceName, String methodName) {
+    private JsonNode doCall(FileDescriptorSet fdSet, Map<String, Object> parameters, Channel channel, String fileName, String serviceName, String methodName) {
         try {
-            RPCConverter converter = RPCConverterFactory.get();
             FileDescriptor descriptor = FileDescriptor.buildFrom(fdSet.getFileList().stream().filter(f -> f.getName().equals(fileName))
                     .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find file name " + fileName)), new FileDescriptor[0], true);
             ServiceDescriptor serviceDesc = Objects.requireNonNull(descriptor.findServiceByName(serviceName), "Cannot find service name " + serviceName);
@@ -99,31 +115,34 @@ public abstract class RPCWorkItemHandler extends WorkflowWorkItemHandler {
             } else if (methodType == MethodType.BIDI_STREAMING) {
                 return asyncStreamingCall(parameters, methodDesc, responseObserver -> ClientCalls.asyncBidiStreamingCall(call, responseObserver), JsonObjectUtils::fromValue);
             } else if (methodType == MethodType.SERVER_STREAMING) {
-                Message message = converter.buildMessage(parameters, DynamicMessage.newBuilder(methodDesc.getInputType())).build();
-                Iterator<Message> responses = ClientCalls.blockingServerStreamingCall(call, message);
                 List<JsonNode> nodes = new ArrayList<>();
-                responses.forEachRemaining(m -> nodes.add(converter.getJsonNode(m)));
+                ClientCalls.blockingServerStreamingCall(call, RPCConverterFactory.get().buildMessage(parameters, DynamicMessage.newBuilder(methodDesc.getInputType())).build())
+                        .forEachRemaining(m -> nodes.add(convert(m, methodDesc)));
                 return JsonObjectUtils.fromValue(nodes);
             } else {
-                Message message = converter.buildMessage(parameters, DynamicMessage.newBuilder(methodDesc.getInputType())).build();
-                return converter.getJsonNode(ClientCalls.blockingUnaryCall(call, message));
+                return convert(ClientCalls.blockingUnaryCall(call, RPCConverterFactory.get().buildMessage(parameters, DynamicMessage.newBuilder(methodDesc.getInputType())).build()), methodDesc);
             }
-
         } catch (DescriptorValidationException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private static JsonNode asyncStreamingCall(Map<String, Object> parameters, MethodDescriptor methodDesc, UnaryOperator<StreamObserver<Message>> streamObserverFunction,
+    private JsonNode convert(Message m, MethodDescriptor descriptor) {
+        JsonNode node = RPCConverterFactory.get().getJsonNode(m);
+        for (RPCDecorator decorator : decorators) {
+            node = decorator.decorate(node, descriptor.getOutputType());
+        }
+        return node;
+    }
+
+    private JsonNode asyncStreamingCall(Map<String, Object> parameters, MethodDescriptor methodDesc, UnaryOperator<StreamObserver<Message>> streamObserverFunction,
             Function<List<JsonNode>, JsonNode> nodesFunction) {
-        List<Object> messageParams = (List<Object>) parameters.get(CONTENT_DATA);
-        RPCConverter converter = RPCConverterFactory.get();
-        WaitingStreamObserver responseObserver = new WaitingStreamObserver();
+        WaitingStreamObserver responseObserver = new WaitingStreamObserver(streamTimeout);
         StreamObserver<Message> requestObserver = streamObserverFunction.apply(responseObserver);
 
-        for (Object messageParam : messageParams) {
+        for (Object messageParam : Objects.requireNonNull((List<Object>) parameters.get(CONTENT_DATA), "Missing streaming call parameter")) {
             try {
-                Message message = converter.buildMessage(messageParam, DynamicMessage.newBuilder(methodDesc.getInputType())).build();
+                Message message = RPCConverterFactory.get().buildMessage(messageParam, DynamicMessage.newBuilder(methodDesc.getInputType())).build();
                 requestObserver.onNext(message);
             } catch (Exception e) {
                 requestObserver.onError(e);
@@ -133,9 +152,7 @@ public abstract class RPCWorkItemHandler extends WorkflowWorkItemHandler {
         }
         requestObserver.onCompleted();
 
-        List<Message> responses = responseObserver.get();
-        List<JsonNode> nodes = responses.stream().map(converter::getJsonNode).collect(Collectors.toList());
-        return nodesFunction.apply(nodes);
+        return nodesFunction.apply(responseObserver.get().stream().map(m -> convert(m, methodDesc)).collect(Collectors.toList()));
     }
 
     private static MethodType getMethodType(MethodDescriptor methodDesc) {
@@ -155,6 +172,11 @@ public abstract class RPCWorkItemHandler extends WorkflowWorkItemHandler {
     private static class WaitingStreamObserver implements StreamObserver<Message> {
         List<Message> responses = new ArrayList<>();
         CompletableFuture<List<Message>> responsesFuture = new CompletableFuture<>();
+        private final int timeout;
+
+        public WaitingStreamObserver(int timeout) {
+            this.timeout = timeout;
+        }
 
         @Override
         public void onNext(Message messageReply) {
@@ -172,7 +194,6 @@ public abstract class RPCWorkItemHandler extends WorkflowWorkItemHandler {
         }
 
         public List<Message> get() {
-            Long timeout = ConfigResolverHolder.getConfigResolver().getConfigProperty(GRPC_WAIT_TIMEOUT_PROPERTY, Long.class).orElse(20L);
             try {
                 return responsesFuture.get(timeout, TimeUnit.SECONDS);
             } catch (InterruptedException e) {

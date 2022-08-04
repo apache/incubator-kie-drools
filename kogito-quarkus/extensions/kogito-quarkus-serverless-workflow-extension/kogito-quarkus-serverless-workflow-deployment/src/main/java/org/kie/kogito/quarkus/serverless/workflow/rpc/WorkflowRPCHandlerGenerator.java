@@ -20,8 +20,10 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.drools.codegen.common.GeneratedFile;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
@@ -34,7 +36,10 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 
@@ -60,6 +65,12 @@ public class WorkflowRPCHandlerGenerator implements WorkflowHandlerGenerator {
         clazz.addField(Channel.class, serviceName).addAndGetAnnotation(GrpcClient.class);
         clazz.addMethod("getChannel", Keyword.PROTECTED).addParameter(String.class, "file").addParameter(String.class, "service").addAnnotation(Override.class).setType(Channel.class)
                 .setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(new NameExpr(serviceName)))));
+        clazz.addConstructor(Keyword.PUBLIC);
+        ConstructorDeclaration constructor = clazz.addConstructor(Keyword.PUBLIC);
+        constructor.addAnnotation(Inject.class);
+        addAnnotation(constructor, boolean.class, "enumDefault", RPCWorkItemHandler.GRPC_ENUM_DEFAULT_PROPERTY, Boolean.toString(RPCWorkItemHandler.GRPC_ENUM_DEFAULT_VALUE));
+        addAnnotation(constructor, int.class, "streamTimeout", RPCWorkItemHandler.GRPC_STREAM_TIMEOUT_PROPERTY, Integer.toString(RPCWorkItemHandler.GRPC_STREAM_TIMEOUT_VALUE));
+        constructor.setBody(new BlockStmt().addStatement(new MethodCallExpr(null, "super").addArgument("enumDefault").addArgument("streamTimeout")));
         return WorkflowCodeGenUtils.fromCompilationUnit(context, unit, className);
     }
 
@@ -68,5 +79,10 @@ public class WorkflowRPCHandlerGenerator implements WorkflowHandlerGenerator {
         return FileDescriptorHolder.get().descriptor().map(fd -> fd.getFileList().stream().map(f -> f.getServiceList().stream()).flatMap(x -> x).map(s -> generateHandler(context, s.getName()))
                 .collect(Collectors.toList())).orElse(Collections.emptyList());
 
+    }
+
+    private void addAnnotation(ConstructorDeclaration constructor, Class<?> clazz, String paramName, String propertyName, String defaultValue) {
+        constructor.addAndGetParameter(clazz, paramName).addAndGetAnnotation(ConfigProperty.class).addPair("name", new StringLiteralExpr(propertyName)).addPair("defaultValue",
+                new StringLiteralExpr(defaultValue));
     }
 }
