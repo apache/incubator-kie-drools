@@ -7,7 +7,6 @@ on:
       - 'LICENSE'
       - '**/.gitignore'
       - '**.md'
-      - '**.adoc'
       - '*.txt'
       - 'docsimg/**'
       - '.ci/jenkins/**'
