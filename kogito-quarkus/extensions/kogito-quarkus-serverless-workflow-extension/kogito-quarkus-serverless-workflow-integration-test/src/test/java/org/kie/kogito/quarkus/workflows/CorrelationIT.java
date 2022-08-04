@@ -21,11 +21,9 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,17 +34,18 @@ import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.jackson.JsonCloudEventData;
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.common.ResourceArg;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.quarkus.test.kafka.InjectKafkaCompanion;
+import io.quarkus.test.kafka.KafkaCompanionResource;
+import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 
 import static org.awaitility.Awaitility.await;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessInstanceExists;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessInstanceHasFinished;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.getProcessInstance;
-import static org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource.KOGITO_KAFKA_TOPICS;
 
-@QuarkusTestResource(value = KafkaQuarkusTestResource.class, initArgs = { @ResourceArg(name = KOGITO_KAFKA_TOPICS, value = "correlation_event_type,correlation_start_event_type") })
 @QuarkusIntegrationTest
+@QuarkusTestResource(KafkaCompanionResource.class)
 public class CorrelationIT {
 
     public static final String USER_ID = "userid";
@@ -58,7 +57,8 @@ public class CorrelationIT {
     public static final String START_EVENT_TOPIC = START_EVENT_TYPE;
     private static final Logger LOGGER = LoggerFactory.getLogger(CorrelationIT.class);
 
-    private KafkaTestClient kafkaClient;
+    @InjectKafkaCompanion
+    KafkaCompanion kafkaCompanion;
 
     private String kafkaBootstrapServers;
 
@@ -66,8 +66,6 @@ public class CorrelationIT {
 
     @BeforeEach
     void setup() {
-        kafkaBootstrapServers = ConfigProvider.getConfig().getValue(KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY, String.class);
-        kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
         objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .registerModule(JsonFormat.getCloudEventJacksonModule())
@@ -88,7 +86,7 @@ public class CorrelationIT {
                 .withExtension(USER_ID, userId)
                 .withData(JsonCloudEventData.wrap(objectMapper.createObjectNode().put("message", "Starting workflow using correlation")))
                 .build());
-        kafkaClient.produce(request, START_EVENT_TOPIC);
+        kafkaCompanion.produce(String.class).fromRecords(new ProducerRecord<>(START_EVENT_TYPE, request)).awaitCompletion();
 
         // double check that the process instance is there.
         AtomicReference<String> processInstanceId = new AtomicReference<>();
@@ -111,8 +109,7 @@ public class CorrelationIT {
                 .withExtension(USER_ID, userId)
                 .withData(JsonCloudEventData.wrap(objectMapper.createObjectNode().put("message", "Hello using correlation")))
                 .build());
-        kafkaClient.produce(response, CORRELATION_EVENT_TOPIC);
-
+        kafkaCompanion.produce(String.class).fromRecords(new ProducerRecord<>(CORRELATION_EVENT_TOPIC, response)).awaitCompletion();
         // give some time for the event to be processed and the process to finish.
         assertProcessInstanceHasFinished(PROCESS_GET_BY_ID_URL, processInstanceId.get(), 1, 180);
         LOGGER.debug("Workflow {} completed", processInstanceId.get());

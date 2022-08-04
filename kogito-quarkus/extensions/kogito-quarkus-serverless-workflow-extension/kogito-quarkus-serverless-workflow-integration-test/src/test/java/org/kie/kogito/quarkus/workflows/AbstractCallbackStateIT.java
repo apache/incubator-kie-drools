@@ -20,11 +20,9 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -32,7 +30,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.jackson.JsonCloudEventData;
 import io.cloudevents.jackson.JsonFormat;
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.kafka.InjectKafkaCompanion;
+import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.restassured.path.json.JsonPath;
+import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.quarkus.workflows.ExternalServiceMock.GENERATE_ERROR_QUERY;
@@ -43,20 +45,18 @@ import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessIn
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstance;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstanceAndGetId;
 
+@QuarkusTestResource(KafkaCompanionResource.class)
 abstract class AbstractCallbackStateIT {
 
     static final String ANSWER = "ANSWER";
 
-    String kafkaBootstrapServers;
-
     ObjectMapper objectMapper;
 
-    KafkaTestClient kafkaClient;
+    @InjectKafkaCompanion
+    KafkaCompanion kafkaCompanion;
 
     @BeforeEach
     void setup() {
-        kafkaBootstrapServers = ConfigProvider.getConfig().getValue(KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY, String.class);
-        kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
         objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .registerModule(JsonFormat.getCloudEventJacksonModule())
@@ -85,7 +85,7 @@ abstract class AbstractCallbackStateIT {
                         "kogitoprocrefid", processInstanceId)
                 .withData(JsonCloudEventData.wrap(objectMapper.createObjectNode().put("answer", answer)))
                 .build());
-        kafkaClient.produce(response, callbackEventTopic);
+        kafkaCompanion.produceStrings().usingGenerator(i -> new ProducerRecord<>(callbackEventTopic, response));
 
         // give some time for the event to be processed and the process to finish.
         assertProcessInstanceHasFinished(callbackProcessGetByIdUrl, processInstanceId, 1, 180);
@@ -105,7 +105,7 @@ abstract class AbstractCallbackStateIT {
 
     @AfterEach
     void cleanUp() {
-        kafkaClient.shutdown();
+        kafkaCompanion.close();
     }
 
     protected static String buildProcessInput(String query) {

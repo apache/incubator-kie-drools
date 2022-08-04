@@ -15,13 +15,9 @@
  */
 package org.kie.kogito.it;
 
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
-
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-@QuarkusTestResource(InfinispanQuarkusTestResource.class)
 class InfinispanPersistenceIT extends PersistenceTest {
 
 }

@@ -17,12 +17,10 @@
 package org.kie.kogito.quarkus.workflows;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
 @QuarkusTestResource(ExternalServiceMock.class)
 @QuarkusIntegrationTest
 class CallbackStateIT extends AbstractCallbackStateIT {

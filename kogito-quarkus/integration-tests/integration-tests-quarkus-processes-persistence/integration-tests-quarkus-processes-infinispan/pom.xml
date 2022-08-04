@@ -51,8 +51,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-test-utils</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-test-infinispan-client</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -80,7 +80,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
@@ -115,6 +114,32 @@
             </fileset>
           </filesets>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <configuration>
+              <includes>
+                <include>**/InfinispanPersistenceIT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>optimistic-integration-test</id>
+            <configuration>
+              <includes>
+                <include>**/InfinispanOptimisticLockingIT.java</include>
+              </includes>
+            </configuration>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

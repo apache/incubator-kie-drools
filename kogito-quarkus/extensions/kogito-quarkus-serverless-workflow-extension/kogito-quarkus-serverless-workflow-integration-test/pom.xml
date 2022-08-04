@@ -60,11 +60,6 @@
 
     <!-- Testing dependencies -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-test-utils</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-devtools-testing</artifactId>
       <scope>test</scope>
@@ -77,6 +72,11 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5-internal</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-test-kafka-companion</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
