@@ -14,6 +14,7 @@
 
 package org.drools.mvel.builder;
 
+import java.beans.Introspector;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -269,6 +270,7 @@ public class MVELConsequenceBuilder
                 continue;
             }
             BitMask modificationMask = getEmptyPropertyReactiveMask(settableProperties.size());
+            boolean directAccess = false;
 
             for (String expr : splitStatements(text)) {
                 if (expr.startsWith( identifier + "." )) {
@@ -285,10 +287,12 @@ public class MVELConsequenceBuilder
                             if (expr.length() > endMethodArgs+1 && expr.substring(endMethodArgs+1).trim().startsWith(".")) {
                                 propertyName = Character.toLowerCase(propertyName.charAt(3)) + propertyName.substring(4);
                             }
+                        } else {
+                            directAccess = true;
                         }
                     }
 
-                    int index = settableProperties.indexOf(propertyName);
+                    int index = findPropertyIndex(settableProperties, propertyName, directAccess);
                     if (index >= 0) {
                         modificationMask = setPropertyOnMask(modificationMask, index);
                     } else {
@@ -305,6 +309,14 @@ public class MVELConsequenceBuilder
         }
 
         return text;
+    }
+
+    private static int findPropertyIndex(List<String> settableProperties, String propertyName, boolean directAccess) {
+        int index = settableProperties.indexOf(propertyName);
+        if (index < 0 && directAccess) {
+            index = settableProperties.indexOf(Introspector.decapitalize(propertyName)); // e.g. "MyTarget" in mvel can be a property "myTarget"
+        }
+        return index;
     }
 
     public static String processMacros(String consequence) {
