@@ -1,5 +1,5 @@
 :DROOLS:
-include::../_artifacts/document-attributes.adoc[]
+include::ROOT:_artifacts/document-attributes.adoc[]
 
 [[gettingStarted]]
 = Getting Started
