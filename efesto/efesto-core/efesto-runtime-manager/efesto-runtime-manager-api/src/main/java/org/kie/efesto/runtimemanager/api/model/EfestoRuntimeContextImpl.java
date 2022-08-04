@@ -15,10 +15,12 @@
  */
 package org.kie.efesto.runtimemanager.api.model;
 
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 public class EfestoRuntimeContextImpl<T extends EfestoListener> implements EfestoRuntimeContext<T> {
@@ -40,5 +42,10 @@ public class EfestoRuntimeContextImpl<T extends EfestoListener> implements Efest
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
         return memoryCompilerClassLoader.loadClass(className);
+    }
+
+    @Override
+    public ServiceLoader<KieRuntimeService> getKieRuntimeService() {
+        return ServiceLoader.load(KieRuntimeService.class, memoryCompilerClassLoader);
     }
 }

@@ -16,10 +16,12 @@
 package org.kie.efesto.compilationmanager.api.model;
 
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
+import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 /**
@@ -46,4 +48,7 @@ public interface EfestoCompilationContext<T extends EfestoListener> extends Efes
     Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
 
     void loadClasses(Map<String, byte[]> compiledClassesMap);
+    ServiceLoader<KieCompilerService> getKieCompilerServiceLoader();
+
+
 }

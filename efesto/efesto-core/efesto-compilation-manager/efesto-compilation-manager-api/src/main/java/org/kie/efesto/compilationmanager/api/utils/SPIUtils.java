@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContextImpl;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
@@ -43,6 +45,13 @@ public class SPIUtils {
         logger.debug("getKieCompilerService {} {}", resource, refresh);
         return findAtMostOne(getServices(refresh), service -> service.canManageResource(resource),
                 (s1, s2) -> new KieCompilerServiceException("Found more than one compiler services: " + s1 + " and " + s2));
+    }
+
+    public static Optional<KieCompilerService> getKieCompilerServiceFromEfestoCompilationContext(EfestoResource resource, EfestoCompilationContext context) {
+        logger.debug("getKieCompilerServiceFromEfestoCompilationContext {} {}", resource, context);
+        ServiceLoader<KieCompilerService> contextServiceLoader = context.getKieCompilerServiceLoader();
+        return findAtMostOne(contextServiceLoader, service -> service.canManageResource(resource),
+                             (s1, s2) -> new KieCompilerServiceException("Found more than one compiler services: " + s1 + " and " + s2));
     }
 
     public static List<KieCompilerService> getKieCompilerServices(boolean refresh) {

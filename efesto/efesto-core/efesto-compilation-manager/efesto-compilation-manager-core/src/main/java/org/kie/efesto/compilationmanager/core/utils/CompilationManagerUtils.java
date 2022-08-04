@@ -42,11 +42,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileNameOrFilePath;
 import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.efesto.common.api.utils.JSONUtils.writeGeneratedResourcesObject;
 import static org.kie.efesto.compilationmanager.api.utils.SPIUtils.getKieCompilerService;
+import static org.kie.efesto.compilationmanager.api.utils.SPIUtils.getKieCompilerServiceFromEfestoCompilationContext;
 
 public class CompilationManagerUtils {
 
@@ -57,6 +57,10 @@ public class CompilationManagerUtils {
 
     public static Set<IndexFile> getIndexFilesWithProcessedResource(EfestoResource toProcess, EfestoCompilationContext context) {
         Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
+        if (!retrieved.isPresent()) {
+            logger.warn("Cannot find KieCompilerService for {}, trying in context classloader", toProcess.getClass());
+            retrieved = getKieCompilerServiceFromEfestoCompilationContext(toProcess, context);
+        }
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
             return Collections.emptySet();
@@ -69,7 +73,8 @@ public class CompilationManagerUtils {
                 toPopulate.add(indexFile);
                 populateIndexFile(indexFile, compilationOutput);
                 if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
-                    EfestoCallableOutputClassesContainer classesContainer = (EfestoCallableOutputClassesContainer) compilationOutput;
+                    EfestoCallableOutputClassesContainer classesContainer =
+                            (EfestoCallableOutputClassesContainer) compilationOutput;
                     context.loadClasses(classesContainer.getCompiledClassesMap());
                     context.addGeneratedClasses(classesContainer.getFri(), classesContainer.getCompiledClassesMap());
                 }

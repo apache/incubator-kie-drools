@@ -16,10 +16,12 @@
 package org.kie.efesto.compilationmanager.api.model;
 
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.memorycompiler.KieMemoryCompilerException;
@@ -55,5 +57,10 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
                 throw new KieMemoryCompilerException(e.getMessage(), e);
             }
         }
+    }
+
+    @Override
+    public ServiceLoader<KieCompilerService> getKieCompilerServiceLoader() {
+        return ServiceLoader.load(KieCompilerService.class, memoryCompilerClassLoader);
     }
 }

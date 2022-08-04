@@ -18,11 +18,13 @@ package org.kie.pmml.commons.testingutility;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
+import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.pmml.api.runtime.PMMLListener;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
 public class PMMLRuntimeContextTest implements PMMLRuntimeContext {
 
@@ -166,6 +168,11 @@ public class PMMLRuntimeContextTest implements PMMLRuntimeContext {
 
     @Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
+        return null;
+    }
+
+    @Override
+    public ServiceLoader<KieRuntimeService> getKieRuntimeService() {
         return null;
     }
 }
