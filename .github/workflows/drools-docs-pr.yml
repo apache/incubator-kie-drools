@@ -2,7 +2,6 @@ name: Drools Docs
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - 'drools-docs/**/**.adoc'
       - '.github/workflows/drools-docs-pr.yml'
