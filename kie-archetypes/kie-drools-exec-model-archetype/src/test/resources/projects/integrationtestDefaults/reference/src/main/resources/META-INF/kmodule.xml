@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kmodule xmlns="http://www.drools.org/xsd/kmodule">
-  <!-- This is a minimal kmodule.xml. Ref Drools documentation, see http://docs.jboss.org/drools/release/9.9.9-DUMMY/drools-docs/html_single/index.html#_creatingandbuildingakieproject -->
+  <!-- This is a minimal kmodule.xml. Ref Drools documentation, see http://docs.jboss.org/drools/release/latest/drools-docs/html_single/index.html#_creatingandbuildingakieproject -->
 </kmodule>

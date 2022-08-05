@@ -21,7 +21,7 @@ package ${package};
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.model.codegen.ExecutableModelProject;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -91,7 +91,7 @@ public class RuleTest {
         // Programmatically collect resources and build a KieContainer
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-        String packagePath = "${package}".replace(".", "/");
+        String packagePath = "org.example".replace(".", "/");
         kfs.write("src/main/resources/" + packagePath + "/rules.drl",
                   ks.getResources().newInputStreamResource(this.getClass().getClassLoader().getResourceAsStream(packagePath + "/rules.drl")));
         ReleaseId releaseId = ks.newReleaseId("${dollar}{groupId}", "${dollar}{artifactId}", "${dollar}{version}");
