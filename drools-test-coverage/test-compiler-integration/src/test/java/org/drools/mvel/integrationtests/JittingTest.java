@@ -351,4 +351,29 @@ public class JittingTest {
         kieSession.insert("CX");
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
+
+     public static class Tester {
+        public String get(String x) {
+            return "test";
+        }
+    }
+
+    @Test
+    public void testInvokeVarargsConstructor() {
+        // DROOLS-7095
+        String drl =
+                "package test\n" +
+                "import " + Tester.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule R1 when \n" +
+                "    Tester( \"test\" == get( new String() ) )\n" +
+                "then \n" +
+                "end";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        KieSession ksession = kieBase.newKieSession();
+        ksession.insert(new Tester());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
 }
