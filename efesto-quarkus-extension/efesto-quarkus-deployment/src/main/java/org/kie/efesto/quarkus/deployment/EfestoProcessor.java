@@ -81,6 +81,11 @@ public class EfestoProcessor {
     }
 
     @BuildStep
+    public EfestoGeneratedClassBuildItem defaultEfestoGeneratedClassBuildItem() {
+        return new EfestoGeneratedClassBuildItem(Collections.emptyList());
+    }
+
+    @BuildStep
     public NativeImageResourceBuildItem efestoSPICompilation() {
         LOGGER.debug("efestoSPICompilation()");
         return new NativeImageResourceBuildItem("META-INF/services/org.kie.efesto.compilationmanager.api.service.CompilationManager");
