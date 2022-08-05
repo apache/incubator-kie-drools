@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.quarkus.deployment.annotations.BuildStep;
@@ -62,27 +63,23 @@ public class EfestoProcessor {
     }
 
     @BuildStep
-    public List<ReflectiveClassBuildItem> reflectiveEfestoGeneratedClasses(EfestoGeneratedClassBuildItem efestoGeneratedClassBuildItem) {
+    public List<ReflectiveClassBuildItem> reflectiveEfestoGeneratedClasses(List<EfestoGeneratedClassBuildItem> efestoGeneratedClassBuildItem) {
         LOGGER.infof("reflectiveEfestoGeneratedClasses %s",  efestoGeneratedClassBuildItem);
         final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
-
-
-        Map<GeneratedFileType, List<GeneratedFile>> mappedGeneratedFiles = efestoGeneratedClassBuildItem.getGeneratedFiles().stream()
-                .collect(Collectors.groupingBy(GeneratedFile::type));
-        List<GeneratedFile> generatedCompiledFiles = mappedGeneratedFiles.getOrDefault(COMPILED_CLASS,
-                                                                                       Collections.emptyList());
-        LOGGER.infof("generatedCompiledFiles {}", generatedCompiledFiles);
-        Collection<ReflectiveClassBuildItem> reflectiveClassBuildItems =
-                makeReflectiveClassBuildItems(generatedCompiledFiles);
-        LOGGER.infof("reflectiveClassBuildItems {}", reflectiveClassBuildItems);
-        toReturn.addAll(reflectiveClassBuildItems);
+        efestoGeneratedClassBuildItem.forEach(generatedClassBuildItem -> {
+                                                     Map<GeneratedFileType, List<GeneratedFile>> mappedGeneratedFiles = generatedClassBuildItem.getGeneratedFiles().stream()
+                                                             .collect(Collectors.groupingBy(GeneratedFile::type));
+                                                     List<GeneratedFile> generatedCompiledFiles = mappedGeneratedFiles.getOrDefault(COMPILED_CLASS,
+                                                                                                                                    Collections.emptyList());
+                                                     LOGGER.infof("generatedCompiledFiles {}", generatedCompiledFiles);
+                                                     Collection<ReflectiveClassBuildItem> reflectiveClassBuildItems =
+                                                             makeReflectiveClassBuildItems(generatedCompiledFiles);
+                                                     LOGGER.infof("reflectiveClassBuildItems {}", reflectiveClassBuildItems);
+                                                     toReturn.addAll(reflectiveClassBuildItems);
+                                                 }
+        );
         LOGGER.infof("toReturn {}", toReturn);
         return toReturn;
-    }
-
-    @BuildStep
-    public EfestoGeneratedClassBuildItem defaultEfestoGeneratedClassBuildItem() {
-        return new EfestoGeneratedClassBuildItem(Collections.emptyList());
     }
 
     @BuildStep
