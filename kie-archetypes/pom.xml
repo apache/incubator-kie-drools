@@ -41,6 +41,17 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-maven-plugin</artifactId>
       <scope>runtime</scope>
+      <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.maven.resolver</groupId>
+          <artifactId>maven-resolver-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.maven.shared</groupId>
+          <artifactId>maven-artifact-transfer</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
