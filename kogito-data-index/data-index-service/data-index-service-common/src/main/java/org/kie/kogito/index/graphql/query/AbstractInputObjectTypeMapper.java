@@ -15,13 +15,14 @@
  */
 package org.kie.kogito.index.graphql.query;
 
+import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import graphql.schema.GraphQLInputObjectField;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNamedType;
@@ -48,18 +49,22 @@ public abstract class AbstractInputObjectTypeMapper implements Function<GraphQLO
         String typeName = getTypeName(domain);
         final GraphQLInputObjectType existingType = getInputObjectType(typeName);
         if (existingType == null) {
-            GraphQLInputObjectType.Builder builder = GraphQLInputObjectType.newInputObject().name(typeName);
-            build(domain).accept(builder);
-            return builder.build();
+            List<GraphQLInputObjectField> fields = build().apply(domain);
+            if (fields.isEmpty()) {
+                return null;
+            } else {
+                GraphQLInputObjectType.Builder builder = GraphQLInputObjectType.newInputObject().name(typeName);
+                return builder.fields(fields).build();
+            }
         } else {
             return existingType.transform(builder -> {
                 builder.clearFields();
-                build(domain).accept(builder);
+                builder.fields(build().apply(domain));
             });
         }
     }
 
-    protected abstract Consumer<GraphQLInputObjectType.Builder> build(GraphQLObjectType domain);
+    protected abstract Function<GraphQLObjectType, List<GraphQLInputObjectField>> build();
 
     protected abstract String getTypeName(GraphQLObjectType type);
 

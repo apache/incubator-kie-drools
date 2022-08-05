@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.index.graphql;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +47,6 @@ import static graphql.schema.FieldCoordinates.coordinates;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLNonNull.nonNull;
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
@@ -69,9 +70,13 @@ public class GraphQLProtoSchemaMapper {
             GraphQLObjectType rootType = new GraphQLObjectTypeMapper(schema, additionalTypes, map).apply(event.getDomainDescriptor());
             additionalTypes.put(rootType.getName(), rootType);
             GraphQLInputObjectType whereArgumentType = new GraphQLInputObjectTypeMapper(schema, additionalTypes).apply(rootType);
-            additionalTypes.put(whereArgumentType.getName(), whereArgumentType);
+            if (!whereArgumentType.getFields().isEmpty()) {
+                additionalTypes.put(whereArgumentType.getName(), whereArgumentType);
+            }
             GraphQLInputObjectType orderByType = new GraphQLOrderByTypeMapper(schema, additionalTypes).apply(rootType);
-            additionalTypes.put(orderByType.getName(), orderByType);
+            if (orderByType != null) {
+                additionalTypes.put(orderByType.getName(), orderByType);
+            }
             LOGGER.debug("New GraphQL types: {}", additionalTypes.keySet());
             Set<GraphQLType> newTypes = additionalTypes.entrySet().stream().map(entry -> entry.getValue()).collect(toSet());
             newTypes.addAll(schema.getAdditionalTypes().stream().filter(type -> additionalTypes.containsKey(((GraphQLNamedType) type).getName()) == false).collect(toSet()));
@@ -86,12 +91,16 @@ public class GraphQLProtoSchemaMapper {
                     qBuilder.fields(schema.getQueryType().getFieldDefinitions().stream().filter(field -> rootType.getName().equals(field.getName()) == false).collect(toList()));
                 }
 
-                GraphQLQueryParserRegistry.get().registerParser(whereArgumentType);
-
-                GraphQLArgument where = newArgument().name("where").type(whereArgumentType).build();
-                GraphQLArgument orderBy = newArgument().name("orderBy").type(orderByType).build();
-                GraphQLArgument pagination = newArgument().name("pagination").type(new GraphQLTypeReference("Pagination")).build();
-                qBuilder.field(newFieldDefinition().name(rootType.getName()).type(GraphQLList.list(rootType)).arguments(asList(where, orderBy, pagination)));
+                List<GraphQLArgument> arguments = new ArrayList<>();
+                if (!whereArgumentType.getFields().isEmpty()) {
+                    GraphQLQueryParserRegistry.get().registerParser(whereArgumentType);
+                    arguments.add(newArgument().name("where").type(whereArgumentType).build());
+                }
+                if (orderByType != null) {
+                    arguments.add(newArgument().name("orderBy").type(orderByType).build());
+                }
+                arguments.add(newArgument().name("pagination").type(new GraphQLTypeReference("Pagination")).build());
+                qBuilder.field(newFieldDefinition().name(rootType.getName()).type(GraphQLList.list(rootType)).arguments(arguments));
             });
             builder.query(query);
 

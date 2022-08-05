@@ -29,6 +29,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 
 import io.restassured.http.ContentType;
@@ -75,6 +76,9 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
         if (cacheService.getDomainModelCache("deals") != null) {
             cacheService.getDomainModelCache("deals").clear();
         }
+        if (cacheService.getDomainModelCache("books") != null) {
+            cacheService.getDomainModelCache("books").clear();
+        }
     }
 
     @Test
@@ -119,6 +123,16 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
             assertThat(ex.getMessage()).isEqualTo(
                     "Could not find message with name: org.demo.traveller in proto file, e, please review option kogito_model");
         }
+    }
+
+    @Test //Reproducer for KOGITO-7690
+    void testProtoWithoutSortingAttribute() throws Exception {
+        String proto = TestUtils.readFileContent("books.proto");
+        protobufService.registerProtoBufferType(proto);
+        given().contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{Books{ id, book { authors { name } }, metadata { processInstances { id } } } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.Books", isA(Collection.class));
     }
 
     @Test //Reproducer for KOGITO-172

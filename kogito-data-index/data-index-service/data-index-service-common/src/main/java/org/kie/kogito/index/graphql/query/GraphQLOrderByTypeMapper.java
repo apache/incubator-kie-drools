@@ -15,12 +15,17 @@
  */
 package org.kie.kogito.index.graphql.query;
 
+import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLInputObjectField;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNamedType;
@@ -48,44 +53,50 @@ public class GraphQLOrderByTypeMapper extends AbstractInputObjectTypeMapper {
     }
 
     @Override
-    protected Consumer<GraphQLInputObjectType.Builder> build(GraphQLObjectType domain) {
-        return builder -> domain.getFieldDefinitions().forEach(field -> {
-            if (!(field.getType() instanceof GraphQLList)) {
-                LOGGER.debug("GraphQL mapping field: {}", field.getName());
-                switch (field.getName()) {
-                    //Skip id, multi instances not sortable
-                    case PROCESS_INSTANCES_DOMAIN_ATTRIBUTE:
-                    case USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE:
-                        //Skip id, not sortable
-                    case "id":
-                        break;
-                    default:
-                        String typeName;
-                        String name = ((GraphQLNamedType) field.getType()).getName();
-                        switch (name) {
-                            case "Int":
-                            case "Long":
-                            case "String":
-                            case "Boolean":
-                            case "DateTime":
-                                typeName = ORDER_BY;
-                                break;
-                            default:
-                                typeName = name + ORDER_BY;
-                                if (getSchema().getType(typeName) == null && !getAdditionalTypes().containsKey(typeName)) {
-                                    GraphQLObjectType objectType = (GraphQLObjectType) getAdditionalTypes().get(name);
-                                    if (objectType == null) {
-                                        LOGGER.warn("Can not map order by type for field name: {}, type: {}", field.getName(), ((GraphQLNamedType) field.getType()).getName());
-                                        return;
-                                    }
-                                    GraphQLInputObjectType type = new GraphQLOrderByTypeMapper(getSchema(), getAdditionalTypes()).apply(objectType);
-                                    getAdditionalTypes().put(typeName, type);
-                                }
-                        }
+    protected Function<GraphQLObjectType, List<GraphQLInputObjectField>> build() {
+        return domain -> domain.getFieldDefinitions().stream()
+                .filter(field -> !(field.getType() instanceof GraphQLList))
+                .filter(field -> !PROCESS_INSTANCES_DOMAIN_ATTRIBUTE.equals(field.getName()))
+                .filter(field -> !USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE.equals(field.getName()))
+                .filter(field -> !"id".equals(field.getName()))
+                .map(field -> {
+                    LOGGER.debug("GraphQL mapping field: {}", field.getName());
+                    String typeName = getTypeName(field);
+                    if (typeName != null) {
+                        return newInputObjectField().name(field.getName()).type(new GraphQLTypeReference(typeName)).build();
+                    } else {
+                        LOGGER.warn("Can not map order by type for field name: {}, type: {}", field.getName(), ((GraphQLNamedType) field.getType()).getName());
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
 
-                        builder.field(newInputObjectField().name(field.getName()).type(new GraphQLTypeReference(typeName)));
+    private String getTypeName(GraphQLFieldDefinition field) {
+        String name = ((GraphQLNamedType) field.getType()).getName();
+        switch (name) {
+            case "Int":
+            case "Long":
+            case "String":
+            case "Boolean":
+            case "DateTime":
+                return ORDER_BY;
+            default:
+                String typeName = name + ORDER_BY;
+                if (getSchema().getType(typeName) == null && !getAdditionalTypes().containsKey(typeName)) {
+                    GraphQLObjectType objectType = (GraphQLObjectType) getAdditionalTypes().get(name);
+                    if (objectType == null) {
+                        return null;
+                    }
+                    GraphQLInputObjectType type = new GraphQLOrderByTypeMapper(getSchema(), getAdditionalTypes()).apply(objectType);
+                    if (type != null) {
+                        getAdditionalTypes().put(typeName, type);
+                    } else {
+                        return null;
+                    }
                 }
-            }
-        });
+                return typeName;
+        }
     }
 }

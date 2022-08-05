@@ -1,0 +1,25 @@
+syntax = "proto2"; 
+package org.acme.books;
+import "kogito-index.proto";
+import "kogito-types.proto";
+option kogito_model = "Books";
+option kogito_id = "books";
+
+message Author {
+	option java_package = "org.acme.books";
+	optional string name = 1;
+}
+
+message Book {
+	option java_package = "org.acme.books";
+	repeated Author authors = 1;
+}
+
+/* @Indexed */
+message Books {
+	option java_package = "org.acme.books";
+	optional Book book = 1;
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */
+	optional string id = 2;
+	optional org.kie.kogito.index.model.KogitoMetadata metadata = 3;
+}
