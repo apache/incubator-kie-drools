@@ -10,7 +10,7 @@ on:
 jobs:
   drools-build:
     concurrency:
-      group: drools_pr-${{ github.head_ref }}
+      group: drools-docs_pr-${{ github.head_ref }}
       cancel-in-progress: true
     timeout-minutes: 120
     strategy:
@@ -22,22 +22,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
-      - name: Clean Disk Space
-        uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-      - name: Support long paths
-        if: ${{ matrix.os == 'windows-latest' }}
-        uses: kiegroup/kogito-pipelines/.ci/actions/long-paths@main
+      - uses: actions/checkout@v2
       - name: Java and Maven Setup
         uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-      - name: Build Chain
-        uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
-        with:
-          definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/%{process.env.GITHUB_BASE_REF.replace(/(\d*)\.(.*)\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)}/.ci/pull-request-config.yaml
-          annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          starting-project: kiegroup/drools/drools-docs
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Build with Maven
+        run: mvn -B clean install --file drools-docs/pom.xml
