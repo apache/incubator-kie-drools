@@ -56,6 +56,11 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>efesto-runtime-manager-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-dependencies</artifactId>
       <scope>test</scope>
       <exclusions>
@@ -147,7 +152,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>efesto-quarkus-deployment</artifactId>
-      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -155,7 +159,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
   </dependencies>
 
 

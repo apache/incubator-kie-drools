@@ -945,35 +945,35 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-compilation-common</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-map-input-runtime</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-kiesession-local-runtime</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-compilation-common</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-map-input-runtime</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-kiesession-local-runtime</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${project.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
