@@ -27,7 +27,7 @@ import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.io.FileSystemResource;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
@@ -48,7 +48,7 @@ class CompileDrlTest {
 
     private static Set<PackageDescr> packageDescrs;
 
-    @BeforeAll
+    //    @BeforeAll
     static void setUp() throws IOException, DroolsParserException {
         DrlTestUtils.refreshDrlIndexFile();
         compilationManager = new CompilationManagerImpl();
@@ -66,6 +66,7 @@ class CompileDrlTest {
         }
     }
 
+    @Disabled // See DROOLS-7098
     @Test
     void compileDrlFromFile() {
         String basePath = UUID.randomUUID().toString();
@@ -74,6 +75,7 @@ class CompileDrlTest {
         assertThat(retrieved).isNotNull().hasSize(1);
     }
 
+    @Disabled // See DROOLS-7098
     @Test
     void compileDrlFromPackageDescr() {
         String basePath = UUID.randomUUID().toString();
