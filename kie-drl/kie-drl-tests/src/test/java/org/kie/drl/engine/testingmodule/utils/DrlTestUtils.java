@@ -23,7 +23,7 @@ public class DrlTestUtils {
     /**
      * refresh target/classes/IndexFile.drl_json with src/main/resources/IndexFile.drl_json because basically, unit tests should not depend on the file's state
      */
-    public static void refreshDrlIndexFile() {
+    public synchronized static void refreshDrlIndexFile() {
         IndexFile source = new IndexFile(SRC_MAIN_RESOURCES, "drl");
         String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, TARGET_CLASSES);
         IndexFile target = new IndexFile(parentPath, "drl");
@@ -40,7 +40,7 @@ public class DrlTestUtils {
     /**
      * Collect drl files under `startPath`
      */
-    public static Set<File> collectDrlFiles(String startPath) throws IOException {
+    public synchronized static Set<File> collectDrlFiles(String startPath) throws IOException {
         return Files.walk(Paths.get(startPath))
                     .map(Path::toFile)
                     .filter(File::isFile)
