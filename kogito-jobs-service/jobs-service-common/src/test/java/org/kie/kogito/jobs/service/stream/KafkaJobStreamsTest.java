@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.jobs.service.messaging;
 
-import org.apache.kafka.common.serialization.Deserializer;
-import org.kie.kogito.jobs.api.event.JobCloudEvent;
+package org.kie.kogito.jobs.service.stream;
 
-public class JobCloudEventDeserializer implements Deserializer<JobCloudEvent<?>> {
+import java.util.Optional;
 
-    org.kie.kogito.jobs.api.event.serialization.JobCloudEventDeserializer deserializer = new org.kie.kogito.jobs.api.event.serialization.JobCloudEventDeserializer();
+class KafkaJobStreamsTest extends AbstractJobStreamsTest<KafkaJobStreams> {
 
     @Override
-    public JobCloudEvent<?> deserialize(String topic, byte[] data) {
-        return deserializer.deserialize(data);
+    protected KafkaJobStreams createJobStreams() {
+        return new KafkaJobStreams(objectMapper, Optional.of("true"), emitter, URL);
     }
 }

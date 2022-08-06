@@ -1,0 +1,16 @@
+{
+  "specversion": "1.0",
+  "id": "eventId",
+  "source": "http://event_source",
+  "type": "eventType",
+  "time": "2022-07-27T14:28:15.001+01:00",
+  "dataschema": "http://event_data_schema/schema.json",
+  "datacontenttype": "application/json; charset=utf-8",
+  "subject": "eventSubject",
+  "data": {
+    "dataField1": "eventData1",
+    "dataField2": "eventData2"
+  },
+  "extension1": "eventExtension1",
+  "extension2": "eventExtension2"
+}
