@@ -17,12 +17,14 @@
 package org.kie.kogito.quarkus.workflows;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@QuarkusTestResource(ExternalServiceMock.class)
 @QuarkusIntegrationTest
+@QuarkusTestResource(ExternalServiceMock.class)
+@QuarkusTestResource(KafkaQuarkusTestResource.class)
 class CallbackStateIT extends AbstractCallbackStateIT {
 
     private static final String CALLBACK_STATE_SERVICE_URL = "/callback_state";

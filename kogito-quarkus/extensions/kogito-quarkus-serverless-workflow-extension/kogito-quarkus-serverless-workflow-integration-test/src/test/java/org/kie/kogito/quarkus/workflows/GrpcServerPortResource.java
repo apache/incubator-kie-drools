@@ -15,9 +15,9 @@
  */
 package org.kie.kogito.quarkus.workflows;
 
-import java.util.Collections;
 import java.util.Map;
 
+import org.apache.groovy.util.Maps;
 import org.kie.kogito.quarkus.utils.SocketUtils;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
@@ -26,8 +26,10 @@ public class GrpcServerPortResource implements QuarkusTestResourceLifecycleManag
 
     @Override
     public Map<String, String> start() {
-        int port = SocketUtils.findAvailablePort();
-        return Collections.singletonMap("kogito.grpc.server.port", Integer.toString(port));
+        String port = Integer.toString(SocketUtils.findAvailablePort());
+        return Maps.of("quarkus.grpc.clients.Greeter.port", port,
+                "quarkus.grpc.server.port", port,
+                "quarkus.grpc.server.test-port", port);
     }
 
     @Override

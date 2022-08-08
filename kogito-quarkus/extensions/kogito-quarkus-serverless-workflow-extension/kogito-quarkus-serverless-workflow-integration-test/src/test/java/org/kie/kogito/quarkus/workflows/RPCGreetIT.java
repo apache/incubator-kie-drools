@@ -38,7 +38,7 @@ class RPCGreetIT {
                 .post("/rpcgreet")
                 .then()
                 .statusCode(201)
-                .body("workflowdata.message", containsString("Hello"))
+                .body("workflowdata.message", is("Hello from gRPC service John"))
                 .body("workflowdata.state", is("SUCCESS"))
                 .body("workflowdata.innerMessage.number", is(23));
 
@@ -53,7 +53,7 @@ class RPCGreetIT {
                 .post("/rpcgreet")
                 .then()
                 .statusCode(201)
-                .body("workflowdata.message", containsString("Saludos"))
+                .body("workflowdata.message", is("Saludos desde gRPC service Javierito"))
                 .body("workflowdata.state", nullValue());
     }
 

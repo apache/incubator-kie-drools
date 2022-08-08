@@ -19,11 +19,16 @@ package org.kie.kogito.quarkus.workflows;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.test.quarkus.QuarkusTestProperty;
+import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
+import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -33,19 +38,14 @@ import io.cloudevents.jackson.JsonCloudEventData;
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
-import io.quarkus.test.kafka.InjectKafkaCompanion;
-import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.restassured.path.json.JsonPath;
-import io.smallrye.reactive.messaging.kafka.companion.ConsumerTask;
-import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessInstanceHasFinished;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstanceAndGetId;
 
 @QuarkusIntegrationTest
-@QuarkusTestResource(value = KafkaCompanionResource.class)
+@QuarkusTestResource(KafkaQuarkusTestResource.class)
 class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
 
     private static final String SWITCH_STATE_EVENT_CONDITION_TIMEOUTS_TRANSITION_URL = "/switch_state_event_condition_timeouts_transition";
@@ -72,13 +72,16 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
 
     private static final String EMPTY_WORKFLOW_DATA = "{\"workflowdata\" : \"\"}";
 
-    @InjectKafkaCompanion
-    KafkaCompanion kafkaCompanion;
+    @QuarkusTestProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
+    String kafkaBootstrapServers;
 
     ObjectMapper objectMapper;
 
+    KafkaTestClient kafkaClient;
+
     @BeforeEach
     void setup() {
+        kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
         objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .registerModule(JsonFormat.getCloudEventJacksonModule())
@@ -87,7 +90,7 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
 
     @AfterEach
     void cleanUp() {
-        kafkaCompanion.close();
+        kafkaClient.shutdown();
     }
 
     @Test
@@ -190,7 +193,7 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
                 .withExtension("kogitoprocrefid", processInstanceId)
                 .withData(JsonCloudEventData.wrap(objectMapper.createObjectNode()))
                 .build());
-        kafkaCompanion.produce(String.class).fromRecords(new ProducerRecord<>(eventTopicToSend, response)).awaitCompletion();
+        kafkaClient.produce(response, eventTopicToSend);
         // Give some time for the event to be processed and the process to finish.
         assertProcessInstanceHasFinished(processGetByIdUrl, processInstanceId, 1, 180);
 
@@ -216,13 +219,15 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
     }
 
     protected JsonPath waitForEvent(String topic, long seconds) throws Exception {
-        ConsumerTask<String, String> event_consumer = kafkaCompanion.consumeStrings()
-                .withGroupId("kogito-quarkus-serverless-workflow-integration-test")
-                .withAutoCommit()
-                .fromTopics(topic, 1);
-        event_consumer.awaitCompletion();
-        assertEquals(1, event_consumer.count());
-        return new JsonPath(event_consumer.getLastRecord().value());
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final AtomicReference<String> cloudEvent = new AtomicReference<>();
+        kafkaClient.consume(topic, rawCloudEvent -> {
+            cloudEvent.set(rawCloudEvent);
+            countDownLatch.countDown();
+        });
+        // give some time to consume the event and verifyy the expected decision was made.
+        assertThat(countDownLatch.await(seconds, TimeUnit.SECONDS)).isTrue();
+        return new JsonPath(cloudEvent.get());
     }
 
     protected static void assertDecisionEvent(JsonPath cloudEventJsonPath,

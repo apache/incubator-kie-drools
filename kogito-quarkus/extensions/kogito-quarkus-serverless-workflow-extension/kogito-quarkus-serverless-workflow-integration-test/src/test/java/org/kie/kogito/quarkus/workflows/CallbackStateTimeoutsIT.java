@@ -17,6 +17,7 @@
 package org.kie.kogito.quarkus.workflows;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
@@ -26,8 +27,9 @@ import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessIn
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessInstanceHasFinished;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstanceAndGetId;
 
-@QuarkusTestResource(ExternalServiceMock.class)
 @QuarkusIntegrationTest
+@QuarkusTestResource(ExternalServiceMock.class)
+@QuarkusTestResource(KafkaQuarkusTestResource.class)
 class CallbackStateTimeoutsIT extends AbstractCallbackStateIT {
 
     private static final String CALLBACK_STATE_TIMEOUTS_SERVICE_URL = "/callback_state_timeouts";
