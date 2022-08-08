@@ -30,13 +30,16 @@
                 <include>*_create.sql</include>
             </includes>
         </fileSet>
+        <!-- Job Service DDLs - Flyway scripts -->
+        <fileSet>
+            <directory>${project.root.dir}/jobs-service/jobs-service-postgresql/src/main/resources/db/migration</directory>
+            <outputDirectory>postgresql/jobs-service</outputDirectory>
+            <includes>
+                <include>*.sql</include>
+            </includes>
+        </fileSet>
     </fileSets>
     <files>
-        <file>
-            <source>${project.root.dir}/jobs-service/jobs-service-postgresql/src/main/resources/db/migration/V2.0.0__Create_Table.sql</source>
-            <outputDirectory>postgresql</outputDirectory>
-            <destName>jobs_service_create.sql</destName>
-        </file>
         <file>
             <source>${project.root.dir}/persistence-commons/persistence-commons-postgresql/src/main/resources/cache_entity_create.sql</source>
             <outputDirectory>postgresql</outputDirectory>
