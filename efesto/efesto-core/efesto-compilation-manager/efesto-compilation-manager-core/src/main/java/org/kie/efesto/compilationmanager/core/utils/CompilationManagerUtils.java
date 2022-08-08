@@ -101,7 +101,7 @@ public class CompilationManagerUtils {
         try {
             logger.debug("Writing file {}", toCreate.getPath());
             if (!toCreate.createNewFile()) {
-                throw new KieCompilerServiceException("Failed to create " + toCreate.getName());
+                throw new KieCompilerServiceException("Failed to create " + toCreate.getAbsolutePath() + " " + toCreate.getName());
             }
         } catch (IOException e) {
             logger.error("Failed to create {} due to {}", toCreate.getName(), e);
