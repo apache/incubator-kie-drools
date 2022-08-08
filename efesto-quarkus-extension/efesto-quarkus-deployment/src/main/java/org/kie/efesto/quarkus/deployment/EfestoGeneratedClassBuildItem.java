@@ -17,10 +17,11 @@ package org.kie.efesto.quarkus.deployment;
 
 import java.util.Collection;
 
+import io.quarkus.builder.item.MultiBuildItem;
 import io.quarkus.builder.item.SimpleBuildItem;
 import org.drools.codegen.common.GeneratedFile;
 
-public final class EfestoGeneratedClassBuildItem extends SimpleBuildItem {
+public final class EfestoGeneratedClassBuildItem extends MultiBuildItem {
 
     private final Collection<GeneratedFile> generatedFiles;
 
