@@ -99,13 +99,14 @@ public class CompilationManagerUtils {
 
     private static IndexFile createIndexFile(IndexFile toCreate) {
         try {
-            logger.debug("Writing file {}", toCreate.getPath());
+            logger.debug("Writing file {} {}", toCreate.getAbsolutePath() , toCreate.getName());
             if (!toCreate.createNewFile()) {
-                throw new KieCompilerServiceException("Failed to create " + toCreate.getAbsolutePath() + " " + toCreate.getName());
+                throw new KieCompilerServiceException("Failed to create (" + toCreate.getAbsolutePath() + ") " + toCreate.getName());
             }
         } catch (IOException e) {
-            logger.error("Failed to create {} {} due to {}", toCreate.getAbsolutePath(), toCreate.getName(), e);
-            throw new KieCompilerServiceException("Failed to create " + toCreate.getAbsolutePath() + " " + toCreate.getName(), e);
+            String errorMessage = (e.getMessage() != null && !e.getMessage().isEmpty()) ? e.getMessage() : e.getClass().getName();
+            logger.error("Failed to create {} {} due to {}", toCreate.getAbsolutePath(), toCreate.getName(), errorMessage);
+            throw new KieCompilerServiceException("Failed to create (" + toCreate.getAbsolutePath() + ") " + toCreate.getName(), e);
         }
         return toCreate;
     }
