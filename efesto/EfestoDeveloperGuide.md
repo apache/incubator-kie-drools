@@ -45,7 +45,7 @@ If a common class is needed by both, it should be put in a third module. In that
 
 ### Compilation module
 
-1. create an implementation of **org.kie.efesto.compilationmanager.api.serviceKieCompilerService**
+1. create an implementation of **org.kie.efesto.compilationmanager.api.service.KieCompilerService**
 2. write the `org.kie.efesto.compilationmanager.api.service.KieCompilerService` file, with the full class name of the implementing class
 
 There are two methods to implement:
@@ -53,6 +53,7 @@ There are two methods to implement:
 2. `<T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, EfestoCompilationContext context);`
 
 The first method is used by the framework to know if that specific plugin is able to process a given *resource*. There must be at most one plugin that returns `true` for any given resource.
+There is an enforcing check that eventually throws an `Exception` when multiple plugins returns `true`, but developers are the first responsible for that.
 The logic behind this boolean is based on the actual type of the resource, on the identifier of the resource, and on other plugin-specific logic.
 The second method is responsible to actually process the resource.
 The `T` parameter is actually an `org.kie.efesto.compilationmanager.api.model.EfestoResource`.
@@ -65,7 +66,7 @@ Beside implementing those two methods, there are no strict rules to follow. For 
 The `org.kie.efesto.compilationmanager.api.model.EfestoResource` contains the data to be processed.
 Every plugin could create its own subclass of `org.kie.efesto.compilationmanager.api.model.EfestoResource` to fullfill its goals; e.g for differentiate the different kind of inputs.
 The `org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext` define the environment to use for the processing.
-Since the most common use case is to do code-generation, `EfestoCompilationContext` embed a `KieMemoryCompiler.MemoryCompilerClassLoader` and is responsible to class compilation and classloader manipulation. It should not be exposed publicly to avoid uncontrolled and unforeseeable behaviors.
+Since the most common use case is to do code-generation, `EfestoCompilationContext` embed a `ClassLoader` capable of dynamic class loading, and is responsible to class compilation and classloader manipulation. It should not be exposed publicly to avoid uncontrolled and unforeseeable behaviors.
 Every plugin could also create its own subclass of `org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext`; e.g. `DrlCompilationContext` that subclass it to also use `KnowledgeBuilderConfiguration`.
 This subclassing activity is important to avoid that plugin-specific needs leaks out of the plugin boundary.
 
@@ -78,7 +79,7 @@ Every plugin could create its own subclass of `org.kie.efesto.compilationmanager
 #### EfestoCompilationContext
 
 The `org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext` define the environment to use for the processing.
-Since the most common use case is to do code-generation, `EfestoCompilationContext` embed a `KieMemoryCompiler.MemoryCompilerClassLoader` and is responsible to class compilation and classloader manipulation. It should not be exposed publicly to avoid uncontrolled and unforeseeable behaviors.
+Since the most common use case is to do code-generation, `EfestoCompilationContext` embed a `ClassLoader` capable of dynamic class loading, and is responsible to class compilation and classloader manipulation. It should not be exposed publicly to avoid uncontrolled and unforeseeable behaviors.
 Every plugin could also create its own subclass of `org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext`; e.g. `DrlCompilationContext` that subclass it to also use `KnowledgeBuilderConfiguration`.
 This subclassing activity is important to avoid that plugin-specific needs leaks out of the plugin boundary.
 
@@ -92,6 +93,7 @@ There are two methods to implement:
 2. `Optional<E> evaluateInput(T toEvaluate, EfestoRuntimeContext context);`
 
 The first method is used by the framework to know if that specific plugin is able to evaluate a given *input*. There must be at most one plugin that returns `true` for any given input.
+There is an enforcing check that eventually throws an `Exception` when multiple plugins returns `true`, but developers are the first responsible for that.
 The logic behind this boolean is based on the actual type of the input, on the identifier of the input, and on other plugin-specific logic.
 The second method is responsible to actually evalute the input.
 The `T` parameter is actually an `org.kie.efesto.runtimemanager.api.model.EfestoInput`
@@ -106,6 +108,7 @@ The `org.kie.efesto.runtimemanager.api.model.EfestoInput` contains the data to b
 Every plugin could create its own subclass of `org.kie.efesto.runtimemanager.api.model.EfestoInput` to fullfill its goals; e.g for differentiate the different kind of inputs.
 
 #### EfestoOutput
+
 The `org.kie.efesto.runtimemanager.api.model.EfestoOutput` contains the result of the evaluation.
 Every plugin could create its own subclass of `org.kie.efesto.runtimemanager.api.model.EfestoOutput` to fullfill its goals; e.g for differentiate the different kind of outputs.
 
@@ -121,7 +124,7 @@ This subclassing activity is important to avoid that plugin-specific needs leaks
 Chainability
 ------------
 
-Chainability refers to the ability of the plugin to invoke each other. To provide that and avoidi coupling/binding between them the following guidelines apply
+Chainability refers to the ability of the plugin to invoke each other. To provide that and avoid coupling/binding between them the following guidelines apply
 1. if a compilation plugin needs another compilation plugin to complete its task, the former must produce an `EfestoCompilationOutput` that also implements `EfestoResource` (see `DrlPackageDescrSetResource`). The compilation manager will be responsible to forward that intermediary artifact to the latter plugin. As usual, care must be giving to avoid leaking of plugin-specific classes outside the plugin parameters.
 2. if a runtime plugin needs another runtime plugin to complete its task, the former must produce an `EfestoInput` containing all the required data, and explicitily send it to the `RuntimeManager`. The compilation manager will be responsible to forward that intermediary input to the latter plugin. As usual, care must be giving to avoid leaking of plugin-specific classes outside the plugin parameters.
 
