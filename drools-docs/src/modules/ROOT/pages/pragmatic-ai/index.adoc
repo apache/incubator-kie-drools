@@ -12,13 +12,13 @@ As a business analyst or business rules developer, you can integrate Machine Lea
 
 You can also integrate other {PRODUCT} knowledge assets such as DRL with external Deep Learning (ML/DL) libraries. This section of the documentation is dedicated to highlight one pragmatic example, using DMN and PMML.
 
-include::ai-con.adoc[leveloffset=+1]
+include::_ai-con.adoc[leveloffset=+1]
 
 The next section demonstrates how predictive decision automation works with {PRODUCT}.
 
-include::ai-credit-card-con.adoc[leveloffset=+1]
-include::ai-gsg-proc.adoc[leveloffset=+2]
-include::ai-pmml-ref.adoc[leveloffset=+2]
+include::_ai-credit-card-con.adoc[leveloffset=+1]
+include::_ai-gsg-proc.adoc[leveloffset=+2]
+include::_ai-pmml-ref.adoc[leveloffset=+2]
 
 == Additional resources
 

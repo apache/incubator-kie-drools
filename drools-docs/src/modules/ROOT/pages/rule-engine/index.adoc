@@ -5,71 +5,71 @@ include::../_artifacts/document-attributes.adoc[]
 
 :context: rule-engine
 
-include::rule-engine-con.adoc[]
+include::_rule-engine-con.adoc[]
 
-include::kie-sessions-con.adoc[leveloffset=+1]
+include::_kie-sessions-con.adoc[leveloffset=+1]
 
-include::kie-sessions-stateless-con.adoc[leveloffset=+2]
+include::_kie-sessions-stateless-con.adoc[leveloffset=+2]
 
-include::kie-sessions-stateless-globals-con.adoc[leveloffset=+3]
+include::_kie-sessions-stateless-globals-con.adoc[leveloffset=+3]
 
-include::kie-sessions-stateful-con.adoc[leveloffset=+2]
+include::_kie-sessions-stateful-con.adoc[leveloffset=+2]
 
-include::kie-sessions-pools-con.adoc[leveloffset=+2]
+include::_kie-sessions-pools-con.adoc[leveloffset=+2]
 
-include::inference-and-truth-maintenance.adoc[leveloffset=+1]
+include::_inference-and-truth-maintenance.adoc[leveloffset=+1]
 
-include::fact-equality-modes-con.adoc[leveloffset=+2]
+include::_fact-equality-modes-con.adoc[leveloffset=+2]
 
-include::execution-control-con.adoc[leveloffset=+1]
+include::_execution-control-con.adoc[leveloffset=+1]
 
-include::rule-execution-modes-con.adoc[leveloffset=+2]
+include::_rule-execution-modes-con.adoc[leveloffset=+2]
 
-include::fact-propagation-modes-con.adoc[leveloffset=+2]
+include::_fact-propagation-modes-con.adoc[leveloffset=+2]
 
-include::agenda-filters-con.adoc[leveloffset=+2]
+include::_agenda-filters-con.adoc[leveloffset=+2]
 
-include::phreak-algorithm-con.adoc[leveloffset=+1]
+include::_phreak-algorithm-con.adoc[leveloffset=+1]
 
-include::phreak-rule-evaluation-con.adoc[leveloffset=+2]
+include::_phreak-rule-evaluation-con.adoc[leveloffset=+2]
 
-include::forward-and-backward-chaining-con.adoc[leveloffset=+3]
+include::_forward-and-backward-chaining-con.adoc[leveloffset=+3]
 
-include::rule-base-configuration-con.adoc[leveloffset=+2]
+include::_rule-base-configuration-con.adoc[leveloffset=+2]
 
-include::phreak-sequential-mode-con.adoc[leveloffset=+2]
+include::_phreak-sequential-mode-con.adoc[leveloffset=+2]
 
-include::cep-con.adoc[leveloffset=+1]
+include::_cep-con.adoc[leveloffset=+1]
 
-include::cep-events-con.adoc[leveloffset=+2]
+include::_cep-events-con.adoc[leveloffset=+2]
 
-include::cep-events-proc.adoc[leveloffset=+2]
+include::_cep-events-proc.adoc[leveloffset=+2]
 
-include::cep-modes-con.adoc[leveloffset=+2]
+include::_cep-modes-con.adoc[leveloffset=+2]
 
-include::cep-negative-patterns.adoc[leveloffset=+3]
+include::_cep-negative-patterns.adoc[leveloffset=+3]
 
-include::property-change-listeners-con.adoc[leveloffset=+2]
+include::_property-change-listeners-con.adoc[leveloffset=+2]
 
-include::cep-temporal-operators.adoc[leveloffset=+2]
+include::_cep-temporal-operators.adoc[leveloffset=+2]
 
-include::cep-clock-ref.adoc[leveloffset=+2]
+include::_cep-clock-ref.adoc[leveloffset=+2]
 
-include::cep-event-streams-con.adoc[leveloffset=+2]
+include::_cep-event-streams-con.adoc[leveloffset=+2]
 
-include::cep-event-streams-proc.adoc[leveloffset=+3]
+include::_cep-event-streams-proc.adoc[leveloffset=+3]
 
-include::cep-sliding-windows-con.adoc[leveloffset=+2]
+include::_cep-sliding-windows-con.adoc[leveloffset=+2]
 
-include::cep-sliding-windows-proc.adoc[leveloffset=+3]
+include::_cep-sliding-windows-proc.adoc[leveloffset=+3]
 
-include::cep-memory-management-con.adoc[leveloffset=+2]
+include::_cep-memory-management-con.adoc[leveloffset=+2]
 
-include::engine-queries-con.adoc[leveloffset=+1]
+include::_engine-queries-con.adoc[leveloffset=+1]
 
-include::engine-event-listeners-con.adoc[leveloffset=+1]
-include::engine-event-listeners-development-con.adoc[leveloffset=+2]
+include::_engine-event-listeners-con.adoc[leveloffset=+1]
+include::_engine-event-listeners-development-con.adoc[leveloffset=+2]
 
-include::logging-proc.adoc[leveloffset=+2]
+include::_logging-proc.adoc[leveloffset=+2]
 
-include::performance-tuning-rule-engine-ref.adoc[leveloffset=+1]
+include::_performance-tuning-rule-engine-ref.adoc[leveloffset=+1]
