@@ -366,7 +366,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
             if (handlerManager.handles(type)){
                 ResourceHandler handler = handlerManager.handlerForType(type);
-                PackageDescr descr = handler.process(resource,null);
+                PackageDescr descr = handler.process(resource,ResourceType.DTABLE.equals(type) ? configuration : null);
                 this.results.addAll(handler.getResults());
                 addPackageWithResource(descr, resource);
             } else if (ResourceType.DSL.equals(type)) {
