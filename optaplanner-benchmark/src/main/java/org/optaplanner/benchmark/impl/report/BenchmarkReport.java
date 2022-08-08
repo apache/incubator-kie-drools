@@ -44,6 +44,7 @@ import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;
+import org.optaplanner.benchmark.impl.result.LoggingLevel;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -324,18 +325,17 @@ public class BenchmarkReport {
                     + " This decreases performance."
                     + " Maybe set the environmentMode to " + EnvironmentMode.REPRODUCIBLE + ".");
         }
-        String loggingLevelOptaPlannerCore = plannerBenchmarkResult.getLoggingLevelOptaPlannerCore();
-        if (loggingLevelOptaPlannerCore != null && loggingLevelOptaPlannerCore.equals("trace")) {
+        LoggingLevel loggingLevelOptaPlannerCore = plannerBenchmarkResult.getLoggingLevelOptaPlannerCore();
+        if (loggingLevelOptaPlannerCore == LoggingLevel.TRACE) {
             warningList.add("The loggingLevel (" + loggingLevelOptaPlannerCore + ") of org.optaplanner.core is high."
                     + " This decreases performance."
-                    + " Maybe set the loggingLevel to debug or lower.");
+                    + " Maybe set the loggingLevel to " + LoggingLevel.DEBUG + " or lower.");
         }
-        String loggingLevelDroolsCore = plannerBenchmarkResult.getLoggingLevelDroolsCore();
-        if (loggingLevelDroolsCore != null
-                && (loggingLevelDroolsCore.equals("trace") || loggingLevelDroolsCore.equals("debug"))) {
+        LoggingLevel loggingLevelDroolsCore = plannerBenchmarkResult.getLoggingLevelDroolsCore();
+        if (loggingLevelDroolsCore == LoggingLevel.TRACE || loggingLevelDroolsCore == LoggingLevel.DEBUG) {
             warningList.add("The loggingLevel (" + loggingLevelDroolsCore + ") of org.drools.core is high."
                     + " This decreases performance."
-                    + " Maybe set the loggingLevel to info or lower.");
+                    + " Maybe set the loggingLevel to " + LoggingLevel.INFO + " or lower.");
         }
     }
 

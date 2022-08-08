@@ -3,8 +3,8 @@
   <name>2020-07-13_125809</name>
   <aggregation>false</aggregation>
   <availableProcessors>4</availableProcessors>
-  <loggingLevelOptaPlannerCore>debug</loggingLevelOptaPlannerCore>
-  <loggingLevelDroolsCore>warn</loggingLevelDroolsCore>
+  <loggingLevelOptaPlannerCore>DEBUG</loggingLevelOptaPlannerCore>
+  <loggingLevelDroolsCore>WARN</loggingLevelDroolsCore>
   <maxMemory>5523898368</maxMemory>
   <optaPlannerVersion>Unjarred development snapshot</optaPlannerVersion>
   <javaVersion>Java 1.8.0_252 (Oracle Corporation)</javaVersion>

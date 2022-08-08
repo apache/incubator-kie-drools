@@ -41,8 +41,8 @@ public class PlannerBenchmarkResult {
     // If it is an aggregation, many properties can stay null
 
     private Integer availableProcessors = null;
-    private String loggingLevelOptaPlannerCore = null;
-    private String loggingLevelDroolsCore = null;
+    private LoggingLevel loggingLevelOptaPlannerCore = null;
+    private LoggingLevel loggingLevelDroolsCore = null;
     private Long maxMemory = null;
     private String optaPlannerVersion = null;
     private String javaVersion = null;
@@ -103,11 +103,11 @@ public class PlannerBenchmarkResult {
         return availableProcessors;
     }
 
-    public String getLoggingLevelOptaPlannerCore() {
+    public LoggingLevel getLoggingLevelOptaPlannerCore() {
         return loggingLevelOptaPlannerCore;
     }
 
-    public String getLoggingLevelDroolsCore() {
+    public LoggingLevel getLoggingLevelDroolsCore() {
         return loggingLevelDroolsCore;
     }
 
@@ -283,20 +283,20 @@ public class PlannerBenchmarkResult {
                 + " " + System.getProperty("os.version");
     }
 
-    private String resolveLoggingLevel(String loggerName) {
+    private static LoggingLevel resolveLoggingLevel(String loggerName) {
         Logger logger = LoggerFactory.getLogger(loggerName);
         if (logger.isTraceEnabled()) {
-            return "trace";
+            return LoggingLevel.TRACE;
         } else if (logger.isDebugEnabled()) {
-            return "debug";
+            return LoggingLevel.DEBUG;
         } else if (logger.isInfoEnabled()) {
-            return "info";
+            return LoggingLevel.INFO;
         } else if (logger.isWarnEnabled()) {
-            return "warn";
+            return LoggingLevel.WARN;
         } else if (logger.isErrorEnabled()) {
-            return "error";
-        } else {
-            throw new IllegalStateException("Logging level for loggerName (" + loggerName + ") cannot be determined.");
+            return LoggingLevel.ERROR;
+        } else { // Reached when no SLF4J implementation found on the classpath.
+            return LoggingLevel.OFF;
         }
     }
 
