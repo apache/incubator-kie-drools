@@ -104,8 +104,8 @@ public class CompilationManagerUtils {
                 throw new KieCompilerServiceException("Failed to create " + toCreate.getAbsolutePath() + " " + toCreate.getName());
             }
         } catch (IOException e) {
-            logger.error("Failed to create {} due to {}", toCreate.getName(), e);
-            throw new KieCompilerServiceException("Failed to create " + toCreate.getName(), e);
+            logger.error("Failed to create {} {} due to {}", toCreate.getAbsolutePath(), toCreate.getName(), e);
+            throw new KieCompilerServiceException("Failed to create " + toCreate.getAbsolutePath() + " " + toCreate.getName(), e);
         }
         return toCreate;
     }
