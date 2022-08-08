@@ -5,5 +5,5 @@ include::../_artifacts/document-attributes.adoc[]
 = Getting Started
 :context: getting-started
 
-include::first-rule-project.adoc[leveloffset=+1]
-include::getting-started-decision-services.adoc[leveloffset=+1]
+include::_first-rule-project.adoc[leveloffset=+1]
+include::_getting-started-decision-services.adoc[leveloffset=+1]
