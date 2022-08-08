@@ -14,6 +14,7 @@ import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetMapUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
@@ -339,7 +340,11 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(QuadFunction<A, B, C, D, ResultA_> mapping) {
-        throw new UnsupportedOperationException();
+        BavetMapBridgeQuadConstraintStream<Solution_, A, B, C, D, ResultA_> bridge = shareAndAddChild(
+                new BavetMapBridgeQuadConstraintStream<>(constraintFactory, this, mapping));
+        return constraintFactory.share(
+                new BavetMapUniConstraintStream<>(constraintFactory, bridge),
+                bridge::setMapStream);
     }
 
     @Override

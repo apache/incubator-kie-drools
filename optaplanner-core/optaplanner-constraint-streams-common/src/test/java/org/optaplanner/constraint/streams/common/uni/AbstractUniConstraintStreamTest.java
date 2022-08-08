@@ -1699,7 +1699,6 @@ public abstract class AbstractUniConstraintStreamTest
     @Override
     @TestTemplate
     public void mapWithDuplicates() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
@@ -1728,7 +1727,6 @@ public abstract class AbstractUniConstraintStreamTest
     @Override
     @TestTemplate
     public void mapWithoutDuplicates() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 2);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
@@ -1758,7 +1756,6 @@ public abstract class AbstractUniConstraintStreamTest
     @Override
     @TestTemplate
     public void mapAndDistinctWithDuplicates() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
@@ -1787,7 +1784,6 @@ public abstract class AbstractUniConstraintStreamTest
     @Override
     @TestTemplate
     public void mapAndDistinctWithoutDuplicates() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 2);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)

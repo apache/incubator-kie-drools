@@ -20,6 +20,7 @@ import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintSt
 import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetMapUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
@@ -362,7 +363,11 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(BiFunction<A, B, ResultA_> mapping) {
-        throw new UnsupportedOperationException();
+        BavetMapBridgeBiConstraintStream<Solution_, A, B, ResultA_> bridge = shareAndAddChild(
+                new BavetMapBridgeBiConstraintStream<>(constraintFactory, this, mapping));
+        return constraintFactory.share(
+                new BavetMapUniConstraintStream<>(constraintFactory, bridge),
+                bridge::setMapStream);
     }
 
     @Override
