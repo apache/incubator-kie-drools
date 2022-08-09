@@ -135,6 +135,17 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    public <T extends MappableToModel<R>, R> Optional<R> updatePartial(Process<T> process, String id, T resource) {
+        return UnitOfWorkExecutor.executeInUnitOfWork(
+                application.unitOfWorkManager(),
+                () -> process
+                        .instances()
+                        .findById(id)
+                        .map(pi -> pi.updateVariablesPartially(resource))
+                        .map(MappableToModel::toModel));
+    }
+
+    @Override
     public <T extends Model> Optional<List<WorkItem>> getTasks(Process<T> process, String id, SecurityPolicy policy) {
         return process.instances()
                 .findById(id, ProcessInstanceReadMode.READ_ONLY)

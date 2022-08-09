@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -370,8 +371,15 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public T updateVariables(T updates) {
-        Map<String, Object> map = bind(updates);
+        return updateVariables(bind(updates));
+    }
 
+    @Override
+    public T updateVariablesPartially(T updates) {
+        return updateVariables(bind(updates).entrySet().stream().filter(e -> e.getValue() != null).collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
+    }
+
+    private T updateVariables(Map<String, Object> map) {
         for (Entry<String, Object> entry : map.entrySet()) {
             processInstance().setVariable(entry.getKey(), entry.getValue());
         }

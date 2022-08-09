@@ -124,6 +124,15 @@ public class $Type$Resource {
     public $Type$Output updateModel_$name$(@PathParam("id") String id, $Type$ resource) {
         return processService.update(process, id, resource).orElseThrow(NotFoundException::new);
     }
+    
+    @PATCH
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
+    public $Type$Output updateModelPartial_$name$(@PathParam("id") String id, $Type$ resource) {
+        return processService.updatePartial(process, id, resource).orElseThrow(NotFoundException::new);
+    }
 
     @GET
     @Path("/{id}/tasks")

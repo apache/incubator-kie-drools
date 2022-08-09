@@ -34,6 +34,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -66,15 +67,16 @@ class BasicRestIT {
                 .statusCode(200);
     }
 
+    private Map<String, Object> getParams() {
+        return Map.of("var1", "Kermit", "var2", 34);
+    }
+
     @Test
     void testGeneratedId() {
-        Map<String, String> params = new HashMap<>();
-        params.put("var1", "Kermit");
-
         String id = given()
                 .contentType(ContentType.JSON)
                 .when()
-                .body(params)
+                .body(getParams())
                 .post("/AdHocFragments")
                 .then()
                 .statusCode(201)
@@ -91,7 +93,8 @@ class BasicRestIT {
                 .then()
                 .statusCode(200)
                 .body("id", equalTo(id))
-                .body("var1", equalTo("Kermit"));
+                .body("var1", equalTo("Kermit"))
+                .body("var2", equalTo(34));
 
         assertExpectedUnitOfWorkEvents(1);
     }
@@ -178,33 +181,62 @@ class BasicRestIT {
 
     @Test
     void testUpdate() {
-        Map<String, String> params = new HashMap<>();
-        params.put("var1", "Kermit");
-
         String id = given()
                 .contentType(ContentType.JSON)
                 .when()
-                .body(params)
+                .body(getParams())
                 .post("/AdHocFragments")
                 .then()
                 .statusCode(201)
                 .header("Location", not(emptyOrNullString()))
                 .body("id", not(emptyOrNullString()))
                 .body("var1", equalTo("Kermit"))
+                .body("var2", equalTo(34))
                 .extract()
                 .path("id");
 
         // Update the previously model
-        params.put("var1", "Gonzo");
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .body(params)
+                .body(Collections.singletonMap("var1", "Gonzo"))
                 .put("/AdHocFragments/{customId}", id)
                 .then()
                 .statusCode(200)
                 .body("id", equalTo(id))
-                .body("var1", equalTo("Gonzo"));
+                .body("var1", equalTo("Gonzo"))
+                .body("var2", nullValue());
+
+        assertExpectedUnitOfWorkEvents(2);
+    }
+
+    @Test
+    void testPatch() {
+        String id = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(getParams())
+                .post("/AdHocFragments")
+                .then()
+                .statusCode(201)
+                .header("Location", not(emptyOrNullString()))
+                .body("id", not(emptyOrNullString()))
+                .body("var1", equalTo("Kermit"))
+                .body("var2", equalTo(34))
+                .extract()
+                .path("id");
+
+        // Update the previously model
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Collections.singletonMap("var1", "Gonzo"))
+                .patch("/AdHocFragments/{customId}", id)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(id))
+                .body("var1", equalTo("Gonzo"))
+                .body("var2", is(34));
 
         assertExpectedUnitOfWorkEvents(2);
     }

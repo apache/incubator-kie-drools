@@ -57,6 +57,8 @@ public interface ProcessService {
 
     <T extends MappableToModel<R>, R> Optional<R> update(Process<T> process, String id, T resource);
 
+    <T extends MappableToModel<R>, R> Optional<R> updatePartial(Process<T> process, String id, T resource);
+
     <T extends Model> Optional<List<WorkItem>> getTasks(Process<T> process, String id, SecurityPolicy policy);
 
     <T extends Model> Optional<WorkItem> signalTask(Process<T> process, String id, String taskNodeName);
