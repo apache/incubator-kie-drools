@@ -25,7 +25,7 @@ public interface RuntimeManager {
 
     /**
      * Produce a <code>Collection&lt;EfestoOutput&gt;</code> from the given <code>EfestoInput</code>
-     * @param contexst
+     * @param context
      * @param toEvaluate
      * @return
      */
