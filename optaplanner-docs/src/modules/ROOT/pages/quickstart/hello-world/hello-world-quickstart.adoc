@@ -457,6 +457,8 @@ Create the `src/main/resource/logback.xml` file:
 
 == Run the application
 
+=== Run the application in IDE
+
 Run that `TimeTableApp` class as the main class of a normal Java application:
 
 ----
@@ -575,6 +577,111 @@ Use `debug` logging to show every _step_:
 ----
 
 Use `trace` logging to show every _step_ and every _move_ per step.
+
+=== Make a standalone application
+
+In order to run the application outside an IDE easily, you will need to make some changes to the configuration of your build tool.
+
+==== Executable JAR in Maven
+
+In Maven, add the following to your `pom.xml`:
+
+[source,xml,options="nowrap"]
+----
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${version.assembly.plugin}</version>
+        <configuration>
+          <finalName>hello-world-run</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+          <descriptors>
+            <descriptor>src/assembly/jar-with-dependencies-and-services.xml</descriptor>
+          </descriptors>
+          <archive>
+            <manifestEntries>
+              <Main-Class>org.acme.schooltimetabling.TimeTableApp</Main-Class>
+              <Multi-Release>true</Multi-Release>
+            </manifestEntries>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+----
+
+Also, create a new file in `src/assembly` directory called `jar-with-dependencies-and-services.xml` with the following contents:
+
+[source,xml,options="nowrap"]
+----
+  <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
+    <id>jar-with-dependencies-and-services</id>
+    <formats>
+      <format>jar</format>
+    </formats>
+    <containerDescriptorHandlers>
+      <containerDescriptorHandler>
+        <handlerName>metaInf-services</handlerName>
+      </containerDescriptorHandler>
+    </containerDescriptorHandlers>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+      <dependencySet>
+        <outputDirectory>/</outputDirectory>
+        <useProjectArtifact>true</useProjectArtifact>
+        <unpack>true</unpack>
+        <scope>runtime</scope>
+      </dependencySet>
+    </dependencySets>
+  </assembly>
+----
+
+This enables the https://maven.apache.org/plugins/maven-assembly-plugin/[Maven Assembly Plugin] and tells it to do the following:
+
+* Take all dependencies of your project and put their classes and resources into a new JAR.
+** If any of the dependencies use https://docs.oracle.com/javase/tutorial/ext/basics/spi.html[Java SPI], it properly bundles all the service descriptors.
+** If any of the dependencies are https://openjdk.org/jeps/238[multi-release JARs], it takes that into account.
+* Set that JAR's main class to be `org.acme.schooltimetabling.TimeTableApp`.
+* Make that JAR available as `hello-world-run.jar` in your project's build directory, most likely `target/`.
+
+This executable JAR can be run like any other JAR:
+
+[source,options="nowrap"]
+----
+$ mvn clean install
+...
+$ java -jar target/hello-world-run.jar
+----
+
+==== Executable application in Gradle
+
+In Gradle, add the following to your `build.gradle`:
+
+[source,gradle,options="nowrap"]
+----
+application {
+    mainClass = "org.acme.schooltimetabling.TimeTableApp"
+}
+----
+
+After building the project, you can find an archive with a runnable application inside the `build/distributions/` directory.
 
 == Summary
 
