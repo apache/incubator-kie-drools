@@ -24,6 +24,7 @@ public class DrlTestUtils {
      * refresh target/classes/IndexFile.drl_json with src/main/resources/IndexFile.drl_json because basically, unit tests should not depend on the file's state
      */
     public static void refreshDrlIndexFile() {
+        System.out.println("## refreshDrlIndexFile : " + Thread.currentThread().getName());
         IndexFile source = new IndexFile(SRC_MAIN_RESOURCES, "drl");
         String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, TARGET_CLASSES);
         IndexFile target = new IndexFile(parentPath, "drl");
