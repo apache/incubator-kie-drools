@@ -200,7 +200,6 @@
         <module>kie-pmml-trusty</module>
         <module>kie-maven-plugin</module>
         <module>drools-drl-quarkus-extension</module>
-        <module>efesto-quarkus-extension</module>
       </modules>
     </profile>
     <profile>
@@ -288,7 +287,6 @@
         <module>kie-dmn</module>
         <module>kie-pmml-trusty</module>
         <module>drools-drl-quarkus-extension</module>
-        <module>efesto-quarkus-extension</module>
       </modules>
     </profile>
   </profiles>
