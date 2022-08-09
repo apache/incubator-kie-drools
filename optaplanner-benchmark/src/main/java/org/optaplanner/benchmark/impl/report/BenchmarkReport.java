@@ -812,6 +812,7 @@ public class BenchmarkReport {
         freemarkerCfg.setDefaultEncoding("UTF-8");
         freemarkerCfg.setLocale(locale);
         freemarkerCfg.setClassForTemplateLoading(BenchmarkReport.class, "");
+        freemarkerCfg.setCustomNumberFormats(Map.of("msDuration", MillisecondDurationNumberFormatFactory.INSTANCE));
 
         String templateFilename = "benchmarkReport.html.ftl";
         Map<String, Object> model = new HashMap<>();

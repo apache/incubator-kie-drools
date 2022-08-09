@@ -480,7 +480,7 @@
                                 <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
                                     <tr<#if solverBenchmarkResult.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmarkResult.name}&nbsp;<@addSolverBenchmarkBadges solverBenchmarkResult=solverBenchmarkResult/></th>
-                                        <td>${solverBenchmarkResult.averageTimeMillisSpent!""}</td>
+                                        <td>${solverBenchmarkResult.averageTimeMillisSpent!0?string.@msDuration}</td>
                                         <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                             <#if !solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)??>
                                                 <td></td>
@@ -490,11 +490,11 @@
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <#if solverBenchmarkResult.subSingleCount lte 1>
-                                                        <td>${singleBenchmarkResult.timeMillisSpent}</td>
+                                                        <td>${singleBenchmarkResult.timeMillisSpent?string.@msDuration}</td>
                                                     <#else>
                                                         <td><div class="dropdown">
                                                             <span class="nav nav-pills dropdown-toggle" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                ${singleBenchmarkResult.timeMillisSpent!""}
+                                                                ${singleBenchmarkResult.timeMillisSpent?string.@msDuration}
                                                                 <span class="caret"></span>
                                                             </span>
                                                             <ul class="dropdown-menu" aria-labelledby="dLabel">
@@ -502,7 +502,7 @@
                                                                 <li role="separator" class="divider"></li>
                                                                 <#list singleBenchmarkResult.subSingleBenchmarkResultList as subSingleBenchmarkResult>
                                                                     <li class="dropdown-header"><strong>Run #${subSingleBenchmarkResult.getSubSingleBenchmarkIndex()}</strong></li>
-                                                                    <li>${subSingleBenchmarkResult.timeMillisSpent!""}</li>
+                                                                    <li>${subSingleBenchmarkResult.timeMillisSpent?string.@msDuration}</li>
                                                                 </#list>
                                                             </ul>
                                                         </div></td>
@@ -553,7 +553,7 @@
                             <#if problemBenchmarkResult.inputSolutionLoadingTimeMillisSpent lt 1>
                                 &lt; 1 ms
                             <#else>
-                                ${problemBenchmarkResult.inputSolutionLoadingTimeMillisSpent} ms
+                                ${problemBenchmarkResult.inputSolutionLoadingTimeMillisSpent?string.@msDuration}
                             </#if>
                         </#if>
                         <#if problemBenchmarkResult.averageUsedMemoryAfterInputSolution??>
@@ -750,7 +750,7 @@
                     <tr>
                         <th>Warm up time spent</th>
                         <#if benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpentLimit??>
-                            <td>${benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpentLimit} ms</td>
+                            <td>${benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpentLimit?string.@msDuration}</td>
                         <#else>
                             <td>Differs</td>
                         </#if>
@@ -766,7 +766,7 @@
                     <tr>
                         <th>Benchmark time spent</th>
                         <#if benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpent??>
-                            <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpent} ms</td>
+                            <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpent?string.@msDuration}</td>[
                         <#else>
                             <td>Differs</td>
                         </#if>
