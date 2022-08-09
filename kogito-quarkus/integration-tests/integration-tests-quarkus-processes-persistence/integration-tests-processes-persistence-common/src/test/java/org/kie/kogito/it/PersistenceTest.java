@@ -26,7 +26,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Address;
+import org.kie.kogito.AddressType;
 import org.kie.kogito.Person;
+import org.kie.kogito.Status;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -57,8 +59,10 @@ public abstract class PersistenceTest {
     void testPersistence() {
         Person person = new Person("Name", 10, BigDecimal.valueOf(5.0), Instant.now().truncatedTo(ChronoUnit.MILLIS), ZonedDateTime.now(ZoneOffset.UTC));
         Person relative = new Person("relative", 5, BigDecimal.valueOf(5.0), Instant.now().truncatedTo(ChronoUnit.MILLIS), ZonedDateTime.now(ZoneOffset.UTC));
+        relative.setStatus(Status.ARCHIVED);
         person.setRelatives(new Person[] { relative });
-        person.setAddresses(asList(new Address("Brisbane"), new Address("Sydney")));
+        person.setParent(relative);
+        person.setAddresses(asList(new Address("Brisbane"), new Address(null, "Sydney", null, null, AddressType.SHIPPING, Status.ARCHIVED)));
         final String pid = given().contentType(ContentType.JSON)
                 .when()
                 .body(Map.of("var1", "Tiago", "person", person))
@@ -69,16 +73,24 @@ public abstract class PersistenceTest {
                 .body("id", not(emptyOrNullString()))
                 .body("var1", equalTo("Tiago"))
                 .body("var2", equalTo("Hello Tiago! Script"))
+                .body("person.id", equalTo(person.getId()))
+                .body("person.status", equalTo(person.getStatus().name()))
                 .body("person.name", equalTo(person.getName()))
                 .body("person.age", equalTo(person.getAge()))
                 .body("person.score", equalTo(person.getScore().floatValue()))
                 .body("person.created", equalTo(DateTimeFormatter.ISO_INSTANT.format(person.getCreated())))
                 .body("person.updated", equalTo(person.getUpdated().format(ISO_ZONED_DATE_TIME)))
+                .body("person.parent.name", equalTo(relative.getName()))
+                .body("person.parent.age", equalTo(relative.getAge()))
+                .body("person.parent.status", equalTo(relative.getStatus().name()))
                 .body("person.relatives.size()", equalTo(1))
                 .body("person.relatives[0].name", equalTo(relative.getName()))
                 .body("person.relatives[0].age", equalTo(relative.getAge()))
+                .body("person.relatives[0].status", equalTo(relative.getStatus().name()))
                 .body("person.addresses.size()", equalTo(person.getAddresses().size()))
                 .body("person.addresses[0].city", equalTo(person.getAddresses().get(0).getCity()))
+                .body("person.addresses[0].type", equalTo(person.getAddresses().get(0).getType().name()))
+                .body("person.addresses[0].status", equalTo(person.getAddresses().get(0).getStatus().name()))
                 .body("person.addresses[1].city", equalTo(person.getAddresses().get(1).getCity()))
                 .body("person.addresses[1].type", equalTo(person.getAddresses().get(1).getType().name()))
                 .body("person.addresses[1].status", equalTo(person.getAddresses().get(1).getStatus().name()))
@@ -93,16 +105,23 @@ public abstract class PersistenceTest {
                 .body("id", not(emptyOrNullString()))
                 .body("var1", equalTo("Tiago"))
                 .body("var2", equalTo("Hello Tiago! Script"))
+                .body("person.id", equalTo(person.getId()))
                 .body("person.name", equalTo(person.getName()))
                 .body("person.age", equalTo(person.getAge()))
                 .body("person.score", equalTo(person.getScore().floatValue()))
                 .body("person.created", equalTo(DateTimeFormatter.ISO_INSTANT.format(person.getCreated().truncatedTo(ChronoUnit.MILLIS))))
                 .body("person.updated", equalTo(person.getUpdated().format(ISO_ZONED_DATE_TIME)))
+                .body("person.parent.name", equalTo(relative.getName()))
+                .body("person.parent.age", equalTo(relative.getAge()))
+                .body("person.parent.status", equalTo(relative.getStatus().name()))
                 .body("person.relatives.size()", equalTo(1))
                 .body("person.relatives[0].name", equalTo(relative.getName()))
                 .body("person.relatives[0].age", equalTo(relative.getAge()))
+                .body("person.relatives[0].status", equalTo(relative.getStatus().name()))
                 .body("person.addresses.size()", equalTo(person.getAddresses().size()))
                 .body("person.addresses[0].city", equalTo(person.getAddresses().get(0).getCity()))
+                .body("person.addresses[0].type", equalTo(person.getAddresses().get(0).getType().name()))
+                .body("person.addresses[0].status", equalTo(person.getAddresses().get(0).getStatus().name()))
                 .body("person.addresses[1].city", equalTo(person.getAddresses().get(1).getCity()))
                 .body("person.addresses[1].type", equalTo(person.getAddresses().get(1).getType().name()))
                 .body("person.addresses[1].status", equalTo(person.getAddresses().get(1).getStatus().name()))

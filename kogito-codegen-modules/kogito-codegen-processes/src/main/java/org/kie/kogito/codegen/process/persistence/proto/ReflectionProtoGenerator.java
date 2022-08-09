@@ -191,12 +191,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             ordinal = protoEnumValue.number();
         }
         if (ordinal == null) {
-            ordinal = pEnum.getFields()
-                    .values()
-                    .stream()
-                    .mapToInt(Integer::intValue)
-                    .max()
-                    .orElse(-1) + 1;
+            ordinal = Enum.valueOf((Class<Enum>) field.getType(), field.getName()).ordinal();
         }
         pEnum.addField(field.getName(), ordinal, sortedWithAnnotation);
     }

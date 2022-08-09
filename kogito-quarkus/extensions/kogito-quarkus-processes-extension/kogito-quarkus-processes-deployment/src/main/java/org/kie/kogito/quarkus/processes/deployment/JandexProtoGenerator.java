@@ -226,12 +226,12 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
             }
         }
         if (ordinal == null) {
-            ordinal = pEnum.getFields()
-                    .values()
-                    .stream()
-                    .mapToInt(Integer::intValue)
-                    .max()
-                    .orElse(-1) + 1;
+            String clazzName = field.type().name().toString();
+            try {
+                ordinal = Enum.valueOf((Class<Enum>) Class.forName(clazzName), field.name()).ordinal();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("Failed to find enum class " + clazzName + " " + e.getMessage(), e);
+            }
         }
         pEnum.addField(field.name(), ordinal, sortedWithAnnotation);
     }

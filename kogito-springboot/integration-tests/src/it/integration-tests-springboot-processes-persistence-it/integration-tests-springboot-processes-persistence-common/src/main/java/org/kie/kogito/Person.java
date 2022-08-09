@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Person implements Serializable {
 
@@ -35,6 +36,7 @@ public class Person implements Serializable {
     private ZonedDateTime updated;
     private BigDecimal score;
     private Person[] relatives;
+    private Status status;
 
     private transient String ignoreMe;
 
@@ -43,9 +45,12 @@ public class Person implements Serializable {
     private List<Address> addresses;
 
     public Person() {
+        this.id = UUID.randomUUID().toString();
+        this.status = Status.ACTIVE;
     }
 
     public Person(String name, int age, BigDecimal score, Instant created, ZonedDateTime updated) {
+        this();
         this.name = name;
         this.age = age;
         this.score = score;
@@ -153,6 +158,14 @@ public class Person implements Serializable {
         this.relatives = relatives;
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -165,6 +178,7 @@ public class Person implements Serializable {
                 ", updated=" + updated +
                 ", score=" + score +
                 ", relatives=" + Arrays.toString(relatives) +
+                ", status=" + status +
                 ", ignoreMe='" + ignoreMe + '\'' +
                 ", addresses=" + addresses +
                 '}';
@@ -177,12 +191,11 @@ public class Person implements Serializable {
         if (o == null || getClass() != o.getClass())
             return false;
         Person person = (Person) o;
-        return age == person.age && adult == person.adult && Objects.equals(name, person.name) && Objects.equals(parent, person.parent) && Objects.equals(ignoreMe, person.ignoreMe)
-                && Objects.equals(addresses, person.addresses);
+        return id.equals(person.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, age, adult, parent, ignoreMe, addresses);
+        return Objects.hash(id);
     }
 }

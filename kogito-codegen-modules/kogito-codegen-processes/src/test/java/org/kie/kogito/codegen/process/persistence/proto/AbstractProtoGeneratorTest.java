@@ -526,9 +526,9 @@ public abstract class AbstractProtoGeneratorTest<T> {
 
         Map<String, Integer> fields = answer.getFields();
         assertThat(fields).isNotNull()
-                .containsEntry("YES", 2)
-                .containsEntry("MAYBE", 0)
-                .containsEntry("NO", 1);
+                .containsEntry("YES", 0)
+                .containsEntry("MAYBE", 1)
+                .containsEntry("NO", 2);
     }
 
     @Test
@@ -597,9 +597,9 @@ public abstract class AbstractProtoGeneratorTest<T> {
 
         Map<String, Integer> fields = answer.getFields();
         assertThat(fields).isNotNull()
-                .containsEntry("YES", 2)
-                .containsEntry("MAYBE", 0)
-                .containsEntry("NO", 1);
+                .containsEntry("YES", 0)
+                .containsEntry("MAYBE", 1)
+                .containsEntry("NO", 2);
     }
 
     @Test

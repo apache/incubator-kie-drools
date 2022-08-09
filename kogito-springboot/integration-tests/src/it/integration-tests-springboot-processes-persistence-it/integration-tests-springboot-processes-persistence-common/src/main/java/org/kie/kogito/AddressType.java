@@ -20,7 +20,6 @@ public enum AddressType {
 
     HOME,
     SHIPPING,
-    BUSINESS,
-    ARCHIVED
+    BUSINESS
 
 }
