@@ -31,6 +31,7 @@ import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
+import org.kie.efesto.common.api.utils.DebugUtils;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,6 +87,7 @@ public class GeneratedResourceUtils {
 
     public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(IndexFile indexFile) {
         logger.debug("getAllGeneratedExecutableResources {}", indexFile);
+        DebugUtils.logIsOpenInWindows("getAllGeneratedExecutableResources - start", indexFile);
         Collection<GeneratedExecutableResource> toReturn = new HashSet<>();
         try {
             GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
@@ -97,6 +99,7 @@ public class GeneratedResourceUtils {
         } catch (Exception e) {
             logger.error("Failed to read GeneratedClassResource from {}.", indexFile.getName(), e);
         }
+        DebugUtils.logIsOpenInWindows("getAllGeneratedExecutableResources - end", indexFile);
         return toReturn;
     }
 
