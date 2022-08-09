@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.drl.engine.compilation.model.DrlCompilationContext;
@@ -53,7 +52,6 @@ class OnTheFlyDrlTest {
         compilationManager = new CompilationManagerImpl();
     }
 
-    @Disabled // See DROOLS-7098
     @Test
     void evaluateWithKieSessionLocalCompilationOnTheFly() throws IOException {
         String onTheFlyPath = "OnTheFlyPath";
