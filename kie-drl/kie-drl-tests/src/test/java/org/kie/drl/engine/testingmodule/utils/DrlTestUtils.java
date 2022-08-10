@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.common.api.utils.DebugUtils;
 
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 
@@ -31,7 +30,6 @@ public class DrlTestUtils {
 
         Path sourcePath = source.getAbsoluteFile().toPath();
         Path targetPath = target.getAbsoluteFile().toPath();
-        DebugUtils.logIsOpenInWindows("refreshDrlIndexFile", targetPath.toFile());
         try {
             Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
