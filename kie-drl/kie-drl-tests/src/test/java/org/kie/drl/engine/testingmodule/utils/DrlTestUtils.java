@@ -32,6 +32,7 @@ public class DrlTestUtils {
         Path sourcePath = source.getAbsoluteFile().toPath();
         Path targetPath = target.getAbsoluteFile().toPath();
         
+        System.out.println("targetPath.toFile().exists() = " + targetPath.toFile().exists());
         DebugUtils.logIsOpenInWindows("refreshDrlIndexFile", targetPath.toFile());
         try {
             Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
