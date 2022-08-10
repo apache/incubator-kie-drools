@@ -42,4 +42,10 @@ public class KogitoRuntimeConfig {
      */
     @ConfigItem
     public KogitoRPCRuntimeConfig grpc;
+
+    /**
+     * Eventing runtime configuration
+     */
+    @ConfigItem(name = "quarkus.events")
+    public KogitoEventingRuntimeConfig eventingConfig;
 }
