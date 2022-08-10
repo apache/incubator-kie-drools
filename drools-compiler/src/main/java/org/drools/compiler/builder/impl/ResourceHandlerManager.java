@@ -68,4 +68,14 @@ public class ResourceHandlerManager {
         }
         throw new IllegalArgumentException("No registered mapper for type " + type);
     }
+
+    public boolean handles(ResourceType type){
+        boolean handlesType=false;
+        for (ResourceHandler mapper : this.mappers) {
+            if (mapper.handles(type)) {
+                handlesType = true;
+            }
+        }
+        return handlesType;
+    }
 }

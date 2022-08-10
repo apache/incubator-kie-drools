@@ -42,7 +42,6 @@ import org.drools.compiler.builder.impl.processors.PackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
 import org.drools.compiler.builder.impl.processors.RuleCompilationPhase;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
-import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
 import org.drools.compiler.builder.impl.resources.ResourceHandler;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.DuplicateFunction;
@@ -363,21 +362,15 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         try {
             ((InternalResource) resource).setResourceType(type);
 
-            if ((ResourceType.DRL.equals(type)) || (ResourceType.GDRL.equals(type)) || (ResourceType.RDRL.equals(type))
-            || (ResourceType.DESCR.equals(type)) || (ResourceType.TDRL.equals(type)) || (ResourceType.DSLR.equals(type))
-            || (ResourceType.RDSLR.equals(type)) || ResourceType.TEMPLATE.equals(type)) {
-                ResourceHandlerManager handlerManager = new ResourceHandlerManager(this.getBuilderConfiguration(), this.releaseId, this::getDslExpander);
+            ResourceHandlerManager handlerManager = new ResourceHandlerManager(this.getBuilderConfiguration(), this.releaseId, this::getDslExpander);
+
+            if (handlerManager.handles(type)){
                 ResourceHandler handler = handlerManager.handlerForType(type);
-                PackageDescr descr = handler.process(resource,null);
+                PackageDescr descr = handler.process(resource,ResourceType.DTABLE.equals(type) ? configuration : null);
                 this.results.addAll(handler.getResults());
                 addPackageWithResource(descr, resource);
             } else if (ResourceType.DSL.equals(type)) {
                 addDsl(resource);
-            } else if (ResourceType.DTABLE.equals(type)) {
-                DecisionTableResourceHandler handler = new DecisionTableResourceHandler(this.getBuilderConfiguration(), this.getReleaseId());
-                PackageDescr descr = handler.process(resource, configuration);
-                this.results.addAll(handler.getResults());
-                addPackageWithResource(descr, resource);
             } else if (ResourceType.XSD.equals(type)) {
                 addPackageFromXSD(resource, configuration);
             } else {
