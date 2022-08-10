@@ -2,22 +2,17 @@ package org.optaplanner.core.impl.domain.lookup;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectMultipleIds;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectPrimitiveIntId;
 
-class LookUpStrategyNoneTest {
+class LookUpStrategyNoneTest extends AbstractLookupTest {
 
-    private LookUpManager lookUpManager;
-
-    @BeforeEach
-    void setUpLookUpManager() {
-        lookUpManager = new LookUpManager(new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.NONE));
+    public LookUpStrategyNoneTest() {
+        super(LookUpStrategyType.NONE);
     }
 
     @Test

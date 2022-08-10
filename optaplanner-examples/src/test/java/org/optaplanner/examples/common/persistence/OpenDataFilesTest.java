@@ -54,16 +54,13 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
     @Execution(ExecutionMode.CONCURRENT)
     Stream<DynamicTest> readAndWriteSolution() {
         CommonApp<Solution_> commonApp = createCommonApp();
+        SolverFactory<Solution_> solverFactory =
+                SolverFactory.createFromXmlResource(commonApp.getSolverConfigResource());
+        ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
         return getSolutionFiles(commonApp).stream()
                 .map(solutionFile -> dynamicTest(
                         solutionFile.getName(),
-                        () -> {
-                            // TODO SolverFactory is expensive; share it once it is made thread-safe.
-                            SolverFactory<Solution_> solverFactory =
-                                    SolverFactory.createFromXmlResource(commonApp.getSolverConfigResource());
-                            ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
-                            readAndWriteSolution(scoreManager, commonApp.createSolutionFileIO(), solutionFile);
-                        }));
+                        () -> readAndWriteSolution(scoreManager, commonApp.createSolutionFileIO(), solutionFile)));
     }
 
     private <Score_ extends Score<Score_>> void readAndWriteSolution(ScoreManager<Solution_, Score_> scoreManager,

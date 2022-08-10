@@ -101,12 +101,11 @@ class MemberAccessorFactoryTest {
 
         Map<String, MemberAccessor> preexistingMemberAccessors = new HashMap<>();
         preexistingMemberAccessors.put(GizmoMemberAccessorFactory.getGeneratedClassName(member), mockMemberAccessor);
-
-        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member,
+        MemberAccessorFactory memberAccessorFactory = new MemberAccessorFactory(preexistingMemberAccessors);
+        MemberAccessor memberAccessor = memberAccessorFactory.buildAndCacheMemberAccessor(member,
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
-                DomainAccessType.REFLECTION, preexistingMemberAccessors);
+                DomainAccessType.REFLECTION);
         assertThat(memberAccessor)
                 .isSameAs(mockMemberAccessor);
     }
-
 }

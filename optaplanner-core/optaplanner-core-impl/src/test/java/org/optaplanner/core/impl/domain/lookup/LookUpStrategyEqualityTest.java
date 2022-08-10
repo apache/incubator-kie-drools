@@ -4,22 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEquals;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqualsNoHashCode;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqualsSubclass;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 
-class LookUpStrategyEqualityTest {
+class LookUpStrategyEqualityTest extends AbstractLookupTest {
 
-    private LookUpManager lookUpManager;
-
-    @BeforeEach
-    void setUpLookUpManager() {
-        lookUpManager = new LookUpManager(new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.EQUALITY));
+    public LookUpStrategyEqualityTest() {
+        super(LookUpStrategyType.EQUALITY);
     }
 
     @Test

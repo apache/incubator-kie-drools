@@ -10,7 +10,6 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEnti
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
 
 class ClassAndPlanningIdComparatorTest {
-
     private final Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
 
     @Test

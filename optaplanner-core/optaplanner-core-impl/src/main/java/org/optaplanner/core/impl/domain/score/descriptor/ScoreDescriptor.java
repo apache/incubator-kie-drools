@@ -21,7 +21,6 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.score.buildin.BendableBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.BendableLongScoreDefinition;
@@ -64,12 +63,11 @@ public class ScoreDescriptor {
     }
 
     private static MemberAccessor buildScoreMemberAccessor(DescriptorPolicy descriptorPolicy, Member member) {
-        return MemberAccessorFactory.buildMemberAccessor(
+        return descriptorPolicy.getMemberAccessorFactory().buildAndCacheMemberAccessor(
                 member,
                 FIELD_OR_GETTER_METHOD_WITH_SETTER,
                 PlanningScore.class,
-                descriptorPolicy.getDomainAccessType(),
-                descriptorPolicy.getGeneratedMemberAccessorMap());
+                descriptorPolicy.getDomainAccessType());
     }
 
     private static Class<? extends Score<?>> extractScoreType(MemberAccessor scoreMemberAccessor, Class<?> solutionClass) {

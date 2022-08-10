@@ -458,21 +458,32 @@ public class ConfigUtils {
         }
     }
 
-    public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz, DomainAccessType domainAccessType,
-            Map<String, MemberAccessor> generatedMemberAccessorMap) {
-        List<Member> memberList = getAllMembers(clazz, PlanningId.class);
-        if (memberList.isEmpty()) {
+    public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz,
+            MemberAccessorFactory memberAccessorFactory, DomainAccessType domainAccessType) {
+        Member member = getSingleMember(clazz, PlanningId.class);
+        if (member == null) {
             return null;
         }
-        if (memberList.size() > 1) {
-            throw new IllegalArgumentException("The class (" + clazz
-                    + ") has " + memberList.size() + " members (" + memberList + ") with a "
-                    + PlanningId.class.getSimpleName() + " annotation.");
-        }
-        Member member = memberList.get(0);
         MemberAccessor memberAccessor =
-                MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class, domainAccessType,
-                        generatedMemberAccessorMap);
+                memberAccessorFactory.buildAndCacheMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class,
+                        domainAccessType);
+        assertPlanningIdMemberIsComparable(clazz, member, memberAccessor);
+        return memberAccessor;
+    }
+
+    public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz, DomainAccessType domainAccessType) {
+        Member member = getSingleMember(clazz, PlanningId.class);
+        if (member == null) {
+            return null;
+        }
+        MemberAccessor memberAccessor =
+                MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class,
+                        domainAccessType);
+        assertPlanningIdMemberIsComparable(clazz, member, memberAccessor);
+        return memberAccessor;
+    }
+
+    private static void assertPlanningIdMemberIsComparable(Class<?> clazz, Member member, MemberAccessor memberAccessor) {
         if (!memberAccessor.getType().isPrimitive() && !Comparable.class.isAssignableFrom(memberAccessor.getType())) {
             throw new IllegalArgumentException("The class (" + clazz
                     + ") has a member (" + member + ") with a @" + PlanningId.class.getSimpleName()
@@ -481,7 +492,19 @@ public class ConfigUtils {
                     + "Maybe use a " + Long.class.getSimpleName()
                     + " or " + String.class.getSimpleName() + " type instead.");
         }
-        return memberAccessor;
+    }
+
+    private static <C> Member getSingleMember(Class<C> clazz, Class<? extends Annotation> annotationClass) {
+        List<Member> memberList = getAllMembers(clazz, annotationClass);
+        if (memberList.isEmpty()) {
+            return null;
+        }
+        if (memberList.size() > 1) {
+            throw new IllegalArgumentException("The class (" + clazz
+                    + ") has " + memberList.size() + " members (" + memberList + ") with a "
+                    + annotationClass.getSimpleName() + " annotation.");
+        }
+        return memberList.get(0);
     }
 
     public static String abbreviate(List<String> list, int limit) {

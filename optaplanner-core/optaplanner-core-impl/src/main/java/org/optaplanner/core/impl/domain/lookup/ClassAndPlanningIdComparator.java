@@ -8,29 +8,30 @@ import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 
 public class ClassAndPlanningIdComparator implements Comparator<Object> {
 
+    private MemberAccessorFactory memberAccessorFactory;
     private DomainAccessType domainAccessType;
-    private Map<String, MemberAccessor> generatedMemberAccessorMap;
     private boolean failFastIfNoPlanningId;
     private Map<Class, MemberAccessor> decisionCache = new HashMap<>();
 
-    public ClassAndPlanningIdComparator() {
-        // TODO This will break Quarkus once we don't open up the domain hierarchy for reflection any more
-        this(DomainAccessType.REFLECTION, new HashMap<>(), true);
-    }
-
     public ClassAndPlanningIdComparator(boolean failFastIfNoPlanningId) {
         // TODO This will break Quarkus once we don't open up the domain hierarchy for reflection any more
-        this(DomainAccessType.REFLECTION, new HashMap<>(), failFastIfNoPlanningId);
+        this(DomainAccessType.REFLECTION, failFastIfNoPlanningId);
     }
 
     public ClassAndPlanningIdComparator(DomainAccessType domainAccessType,
-            Map<String, MemberAccessor> generatedMemberAccessorMap,
             boolean failFastIfNoPlanningId) {
         this.domainAccessType = domainAccessType;
-        this.generatedMemberAccessorMap = generatedMemberAccessorMap;
+        this.failFastIfNoPlanningId = failFastIfNoPlanningId;
+    }
+
+    public ClassAndPlanningIdComparator(MemberAccessorFactory memberAccessorFactory,
+            DomainAccessType domainAccessType, boolean failFastIfNoPlanningId) {
+        this.memberAccessorFactory = memberAccessorFactory;
+        this.domainAccessType = domainAccessType;
         this.failFastIfNoPlanningId = failFastIfNoPlanningId;
     }
 
@@ -47,9 +48,9 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
             return aClass.getName().compareTo(bClass.getName());
         }
         MemberAccessor aMemberAccessor = decisionCache.computeIfAbsent(aClass,
-                clazz -> ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType, generatedMemberAccessorMap));
+                clazz -> findMemberAccessor(clazz, domainAccessType));
         MemberAccessor bMemberAccessor = decisionCache.computeIfAbsent(bClass,
-                clazz -> ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType, generatedMemberAccessorMap));
+                clazz -> findMemberAccessor(clazz, domainAccessType));
         if (failFastIfNoPlanningId) {
             if (aMemberAccessor == null) {
                 throw new IllegalArgumentException("The class (" + aClass
@@ -94,4 +95,8 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
         return aPlanningId.compareTo(bPlanningId);
     }
 
+    private MemberAccessor findMemberAccessor(Class<?> clazz, DomainAccessType domainAccessType) {
+        return memberAccessorFactory == null ? ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType)
+                : ConfigUtils.findPlanningIdMemberAccessor(clazz, memberAccessorFactory, domainAccessType);
+    }
 }

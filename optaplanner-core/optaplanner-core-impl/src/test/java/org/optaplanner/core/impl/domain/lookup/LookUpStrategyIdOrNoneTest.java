@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
@@ -15,14 +13,10 @@ import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectMult
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectPrimitiveIntId;
 
-class LookUpStrategyIdOrNoneTest {
+class LookUpStrategyIdOrNoneTest extends AbstractLookupTest {
 
-    private LookUpManager lookUpManager;
-
-    @BeforeEach
-    void setUpLookUpManager() {
-        lookUpManager = new LookUpManager(
-                new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.PLANNING_ID_OR_NONE));
+    public LookUpStrategyIdOrNoneTest() {
+        super(LookUpStrategyType.PLANNING_ID_OR_NONE);
     }
 
     @Test

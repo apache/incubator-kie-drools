@@ -23,16 +23,16 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 
-class LookUpStrategyImmutableTest {
+class LookUpStrategyImmutableTest extends AbstractLookupTest {
 
-    private LookUpManager lookUpManager;
+    public LookUpStrategyImmutableTest() {
+        super(LookUpStrategyType.PLANNING_ID_OR_NONE);
+    }
 
     static Stream<Arguments> data() {
         return Stream.of(
@@ -65,12 +65,6 @@ class LookUpStrategyImmutableTest {
                 arguments(ZoneOffset.UTC, ZoneOffset.UTC),
                 arguments(Duration.of(5, ChronoUnit.DAYS), Duration.of(5, ChronoUnit.DAYS)),
                 arguments(Period.of(1, 2, 3), Period.of(1, 2, 3)));
-    }
-
-    @BeforeEach
-    void setUpLookUpManager() {
-        lookUpManager = new LookUpManager(
-                new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.PLANNING_ID_OR_NONE));
     }
 
     @ParameterizedTest(name = "{index}: {0}")
