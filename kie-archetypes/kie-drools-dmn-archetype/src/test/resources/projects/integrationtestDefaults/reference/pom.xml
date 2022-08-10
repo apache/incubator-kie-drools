@@ -11,7 +11,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.drools>8.25.0.Beta</version.drools>
+    <version.drools>${project.version}</version.drools>
     <version.slf4j>1.7.2</version.slf4j>
     <version.junit>4.11</version.junit>
     <version.logback>1.2.9</version.logback>
@@ -22,7 +22,7 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-bom</artifactId>
-        <version>${version.drools}</version>
+        <version>${dollar}{version.drools}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>

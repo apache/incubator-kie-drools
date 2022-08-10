@@ -11,7 +11,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <drools-version>9.9.9-DUMMY</drools-version>
+    <drools-version>${project.version}</drools-version>
     <slf4j-version>1.7.2</slf4j-version>
     <junit-version>4.11</junit-version>
     <logback-version>1.2.9</logback-version>
@@ -23,7 +23,7 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-bom</artifactId>
         <type>pom</type>
-        <version>${drools-version}</version>
+        <version>${dollar}{drools-version}</version>
         <scope>import</scope>
       </dependency>
     </dependencies>
