@@ -15,6 +15,7 @@
  */
 package org.kie.efesto.common.api.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -139,10 +140,8 @@ public class FileUtils {
     static Optional<File> getFileFromURL(URL retrieved) {
         logger.debug("getFileFromURL {}", retrieved);
         logger.debug("retrieved.getProtocol() {}", retrieved.getProtocol());
-        try {
-            logger.debug("retrieved.getContent() {}", retrieved.getContent());
-        } catch (Exception e) {
-            logger.warn("failed to read content for {}", retrieved);
+        if (logger.isDebugEnabled()) {
+            debugURLContent(retrieved);
         }
         logger.debug("retrieved.getPath() {}", retrieved.getPath());
         switch (retrieved.getProtocol()) {
@@ -167,6 +166,26 @@ public class FileUtils {
                 logger.debug("toReturn {}", toReturn);
                 logger.debug("toReturn.getAbsolutePath() {}", toReturn.getAbsolutePath());
                 return Optional.of(toReturn);
+        }
+    }
+
+    static void debugURLContent(URL retrieved) {
+        if (retrieved != null) {
+            try {
+                InputStream input = retrieved.openStream();
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                int read;
+                byte[] bytes = new byte[1024];
+                while ((read = input.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                logger.debug("retrieved.getContent() {}", out.toByteArray());
+                out.flush();
+                out.close();
+                input.close();
+            } catch (Exception e) {
+                logger.warn("failed to read content for {}", retrieved);
+            }
         }
     }
 
