@@ -38,7 +38,13 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig,
                 benchmarkDirectory);
         benchmarkConfig.setWarmUpSecondsSpentLimit(WARM_UP_SECONDS_SPENT);
+
+        /*
+         * Benchmark blueprint will add two configs.
+         * Therefore we need to ensure that no other configs will interfere.
+         */
         benchmarkConfig.setSolverBenchmarkConfigList(Collections.emptyList());
+        benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().setPhaseConfigList(Collections.emptyList());
         benchmarkConfig.setSolverBenchmarkBluePrintConfigList(Collections.singletonList(
                 new SolverBenchmarkBluePrintConfig().withSolverBenchmarkBluePrintType(
                         SolverBenchmarkBluePrintType.CONSTRUCTION_HEURISTIC_WITH_AND_WITHOUT_LOCAL_SEARCH)));

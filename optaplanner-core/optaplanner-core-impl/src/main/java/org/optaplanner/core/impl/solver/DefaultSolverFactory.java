@@ -227,16 +227,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             }
             phaseConfigList_.add(new LocalSearchPhaseConfig());
         }
-        List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList_.size());
-        int phaseIndex = 0;
-        for (PhaseConfig phaseConfig : phaseConfigList_) {
-            PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig);
-            Phase<Solution_> phase =
-                    phaseFactory.buildPhase(phaseIndex, configPolicy, bestSolutionRecaller, termination);
-            phaseList.add(phase);
-            phaseIndex++;
-        }
-        return phaseList;
+        return PhaseFactory.buildPhases(phaseConfigList_, configPolicy, bestSolutionRecaller, termination);
     }
 
     // Required for testability as final classes cannot be mocked.

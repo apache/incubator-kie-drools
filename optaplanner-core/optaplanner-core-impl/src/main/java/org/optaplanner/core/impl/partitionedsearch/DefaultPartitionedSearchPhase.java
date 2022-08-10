@@ -1,6 +1,5 @@
 package org.optaplanner.core.impl.partitionedsearch;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.ExecutorService;
@@ -149,15 +148,9 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 BestSolutionRecallerFactory.create().buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
         Termination<Solution_> partTermination = new OrCompositeTermination<>(childThreadPlumbingTermination,
                 phaseTermination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
-        List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
-        int partPhaseIndex = 0;
-        for (PhaseConfig phaseConfig : phaseConfigList) {
-            PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig);
-            Phase<Solution_> phase =
-                    phaseFactory.buildPhase(partPhaseIndex, configPolicy, bestSolutionRecaller, partTermination);
-            phaseList.add(phase);
-            partPhaseIndex++;
-        }
+        List<Phase<Solution_>> phaseList =
+                PhaseFactory.buildPhases(phaseConfigList, configPolicy, bestSolutionRecaller, partTermination);
+
         // TODO create PartitionSolverScope alternative to deal with 3 layer terminations
         SolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
         partSolverScope.setRunnableThreadSemaphore(runnablePartThreadSemaphore);

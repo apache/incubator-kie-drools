@@ -9,11 +9,16 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
+import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -147,6 +152,20 @@ class SolverFactoryTest {
             SimpleScore score = scoreDirector.calculateScore();
             assertThat(score).isNotNull();
         }
+    }
+
+    @Test
+    void localSearchAfterUnterminatedLocalSearch() {
+        // Create a solver config that has two local searches, the second one unreachable.
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        List<PhaseConfig> phaseConfigList = solverConfig.getPhaseConfigList();
+        phaseConfigList.get(1).setTerminationConfig(new TerminationConfig());
+        phaseConfigList.add(new LocalSearchPhaseConfig());
+
+        DefaultSolverFactory<TestdataSolution> solverFactory =
+                (DefaultSolverFactory<TestdataSolution>) SolverFactory.<TestdataSolution> create(solverConfig);
+        Assertions.assertThatThrownBy(solverFactory::buildSolver)
+                .hasMessageContaining("unreachable phase");
     }
 
 }
