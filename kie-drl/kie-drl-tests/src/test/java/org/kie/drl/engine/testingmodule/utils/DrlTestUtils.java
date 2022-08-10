@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.common.api.utils.DebugUtils;
 
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 
@@ -24,13 +25,13 @@ public class DrlTestUtils {
      * refresh target/classes/IndexFile.drl_json with src/main/resources/IndexFile.drl_json because basically, unit tests should not depend on the file's state
      */
     public static void refreshDrlIndexFile() {
-        System.out.println("## refreshDrlIndexFile : " + Thread.currentThread().getName());
         IndexFile source = new IndexFile(SRC_MAIN_RESOURCES, "drl");
         String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, TARGET_CLASSES);
         IndexFile target = new IndexFile(parentPath, "drl");
 
         Path sourcePath = source.getAbsoluteFile().toPath();
         Path targetPath = target.getAbsoluteFile().toPath();
+        DebugUtils.logIsOpenInWindows("refreshDrlIndexFile", targetPath.toFile());
         try {
             Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
