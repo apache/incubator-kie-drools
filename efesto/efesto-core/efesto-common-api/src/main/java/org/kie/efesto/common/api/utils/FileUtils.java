@@ -171,8 +171,7 @@ public class FileUtils {
 
     static void debugURLContent(URL retrieved) {
         if (retrieved != null) {
-            try {
-                InputStream input = retrieved.openStream();
+            try(InputStream input = retrieved.openStream()) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 int read;
                 byte[] bytes = new byte[1024];
@@ -182,7 +181,6 @@ public class FileUtils {
                 logger.debug("retrieved.getContent() {}", out.toByteArray());
                 out.flush();
                 out.close();
-                input.close();
             } catch (Exception e) {
                 logger.warn("failed to read content for {}", retrieved);
             }

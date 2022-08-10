@@ -69,17 +69,17 @@ public class MemoryFile extends File implements Serializable {
     private void initContent(URL url) throws IOException {
         logger.debug("initContent {}", url);
         if (url != null) {
-            InputStream input = url.openStream();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            int read;
-            byte[] bytes = new byte[1024];
-            while ((read = input.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
+            try (InputStream input = url.openStream()) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                int read;
+                byte[] bytes = new byte[1024];
+                while ((read = input.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                content = out.toByteArray();
+                out.flush();
+                out.close();
             }
-            content = out.toByteArray();
-            out.flush();
-            out.close();
-            input.close();
         }
     }
 

@@ -141,8 +141,7 @@ public final class IndexFile extends File {
 
 
     private byte[] readContent() {
-        try {
-            InputStream input = new FileInputStream(this);
+        try(InputStream input = new FileInputStream(this)) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             int read;
             byte[] bytes = new byte[1024];
