@@ -139,11 +139,11 @@ public class FileUtils {
     static Optional<File> getFileFromURL(URL retrieved) {
         logger.debug("getFileFromURL {}", retrieved);
         logger.debug("retrieved.getProtocol() {}", retrieved.getProtocol());
-        try {
-            logger.debug("retrieved.getContent() {}", retrieved.getContent());
-        } catch (Exception e) {
-            logger.warn("failed to read content for {}", retrieved);
-        }
+//        try {
+//            logger.debug("retrieved.getContent() {}", retrieved.getContent());
+//        } catch (Exception e) {
+//            logger.warn("failed to read content for {}", retrieved);
+//        }
         logger.debug("retrieved.getPath() {}", retrieved.getPath());
         switch (retrieved.getProtocol()) {
             case "jar":
