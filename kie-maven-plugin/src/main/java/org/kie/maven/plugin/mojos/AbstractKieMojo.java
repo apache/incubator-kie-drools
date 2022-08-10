@@ -62,7 +62,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(defaultValue = "${session}", required = true, readonly = true)
     private MavenSession mavenSession;
 
-    @Parameter(defaultValue = "${project.resources}", required = true/*, readonly = true*/)
+    @Parameter(defaultValue = "${project.resources}", required = true)
     private List<org.apache.maven.model.Resource> resourcesDirectories;
 
     /**

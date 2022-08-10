@@ -23,7 +23,7 @@ public interface PMMLListener extends EfestoListener {
 
 
     /**
-     * Method invoked when an <code>    void stepExecuted(PMMLStep step);</code> is executed
+     * Method invoked when a <code>PMMLStep</code> is executed
      * @param step
      */
     void stepExecuted(PMMLStep step);

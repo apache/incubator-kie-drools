@@ -29,7 +29,6 @@ import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -175,29 +174,8 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                                                          HasSourcesMap.class.getCanonicalName()));
             }
             return (HasSourcesMap) kiePMMLModel;
-//        } else {
-//            throw new KiePMMLException(String.format("Expecting %s at this phase",
-//                    HasSourcesMap.class.getCanonicalName()));
         } else {
             return null;
         }
     }
-//
-//        KiePMMLModel retrieved =
-//                toReturn.stream().filter(kiePMMLModel -> {
-//                            String fullSourceName =
-//                                    String.format(PACKAGE_CLASS_TEMPLATE,
-//                                            kiePMMLModel.getKModulePackageName(),
-//                                            getSanitizedClassName(kiePMMLModel.getName()));
-//                            return expectedClass.equals(fullSourceName);
-//                        })
-//                        .findFirst()
-//                        .orElseThrow(() -> new KiePMMLException(String.format("Expected KiePMMLModel %s not found",
-//                                expectedClass)));
-//        if (!(retrieved instanceof HasSourcesMap)) {
-//            throw new KiePMMLException(String.format("Expecting %s at this phase",
-//                    HasSourcesMap.class.getCanonicalName()));
-//        }
-//        return (HasSourcesMap) retrieved;
-//    }
 }

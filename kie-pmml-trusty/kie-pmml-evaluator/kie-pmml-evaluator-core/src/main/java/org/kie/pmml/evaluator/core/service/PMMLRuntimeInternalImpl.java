@@ -26,8 +26,8 @@ import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.PMMLModel;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 import org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper;
@@ -38,12 +38,11 @@ import static org.kie.efesto.common.api.model.FRI.SLASH;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
-public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
+public class PMMLRuntimeInternalImpl implements PMMLRuntime {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeInternalImpl.class);
 
     private static final RuntimeManager runtimeManager = SPIUtils.getRuntimeManager(true).get();
-
 
     public PMMLRuntimeInternalImpl() {
     }
