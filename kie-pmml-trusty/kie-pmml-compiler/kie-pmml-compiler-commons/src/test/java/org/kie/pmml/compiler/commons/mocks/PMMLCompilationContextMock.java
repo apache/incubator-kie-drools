@@ -91,4 +91,8 @@ public class PMMLCompilationContextMock implements PMMLCompilationContext {
         return ServiceLoader.load(KieCompilerService.class, memoryCompilerClassLoader);
     }
 
+    @Override
+    public byte[] getCode(String name) {
+        return memoryCompilerClassLoader.getCode(name);
+    }
 }
