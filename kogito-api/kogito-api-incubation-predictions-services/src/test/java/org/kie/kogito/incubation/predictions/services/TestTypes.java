@@ -43,12 +43,15 @@ public class TestTypes {
         };
         MapDataContext ctx = MapDataContext.create();
 
-        String modelName = "/mypath/to/somePrediction.pmml";
+        String fileNameNoSuffix = "somePrediction";
+        String fileName = fileNameNoSuffix + ".pmml";
+
+        String modelName = "/mypath/to/" + fileName;
 
         ReflectiveAppRoot appRoot = new ReflectiveAppRoot();
 
         // LocalPredictionId decisionId = new LocalPredictionId(modelName);
-        LocalPredictionId decisionId = appRoot.get(PredictionIds.class).get(modelName);
+        LocalPredictionId decisionId = appRoot.get(PredictionIds.class).get(fileNameNoSuffix, modelName);
 
         assertEquals(
                 "/predictions" +

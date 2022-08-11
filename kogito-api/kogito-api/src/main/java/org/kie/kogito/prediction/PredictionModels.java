@@ -19,6 +19,6 @@ import org.kie.kogito.KogitoEngine;
 
 public interface PredictionModels extends KogitoEngine {
 
-    PredictionModel getPredictionModel(String modelName);
+    PredictionModel getPredictionModel(String fileName, String modelName);
 
 }

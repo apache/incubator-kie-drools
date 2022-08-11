@@ -23,11 +23,17 @@ import org.kie.kogito.incubation.common.LocalUriId;
 public class LocalPredictionId extends LocalUriId implements Id {
     public static final String PREFIX = "predictions";
 
+    private final String fileName;
     private final String name;
 
-    public LocalPredictionId(String name) {
+    public LocalPredictionId(String fileName, String name) {
         super(LocalUri.Root.append(PREFIX).append(name));
+        this.fileName = fileName;
         this.name = name;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public String name() {

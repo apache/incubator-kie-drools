@@ -13,13 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.efesto.quarkus.deployment;
 
-package org.kie.kogito.incubation.predictions;
+import java.util.Collection;
 
-import org.kie.kogito.incubation.common.ComponentRoot;
+import org.drools.codegen.common.GeneratedFile;
 
-public class PredictionIds implements ComponentRoot {
-    public LocalPredictionId get(String fileName, String name) {
-        return new LocalPredictionId(fileName, name);
+import io.quarkus.builder.item.MultiBuildItem;
+
+public final class EfestoGeneratedClassBuildItem extends MultiBuildItem {
+
+    private final Collection<GeneratedFile> generatedFiles;
+
+    public EfestoGeneratedClassBuildItem(Collection<GeneratedFile> generatedFiles) {
+        this.generatedFiles = generatedFiles;
+    }
+
+    public Collection<GeneratedFile> getGeneratedFiles() {
+        return generatedFiles;
     }
 }

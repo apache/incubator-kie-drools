@@ -111,7 +111,10 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
-
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>efesto-dependencies</artifactId>
+      </dependency>
     </dependencies>
 
     <build>

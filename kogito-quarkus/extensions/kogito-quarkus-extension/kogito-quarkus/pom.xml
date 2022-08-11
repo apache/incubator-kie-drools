@@ -39,7 +39,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-processes</artifactId>
     </dependency>
-
   </dependencies>
 
   <build>

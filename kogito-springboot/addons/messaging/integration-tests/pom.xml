@@ -63,11 +63,6 @@
       <type>pom</type>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-bom</artifactId>
-      <type>pom</type>
-    </dependency>
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-bom</artifactId>
       <type>pom</type>

@@ -31,6 +31,12 @@
                 <version>${version.org.kie}</version>
                 <type>pom</type>
             </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-efesto-bom</artifactId>
+            <version>${version.org.kie}</version>
+            <type>pom</type>
+          </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-dmn-bom</artifactId>
@@ -40,52 +46,60 @@
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-pmml-bom</artifactId>
-                <version>${version.org.kie}</version>
-                <type>pom</type>
+              <version>${version.org.kie}</version>
+              <type>pom</type>
+              <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-bom</artifactId>
-                <version>${version.org.kie}</version>
-                <type>pom</type>
-            </dependency>
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-bom</artifactId>
+            <version>${version.org.kie}</version>
+            <type>pom</type>
+          </dependency>
 
-            <!-- KIE -->
-            <dependency>
-                <groupId>org.kie</groupId>
-                <artifactId>kie-api</artifactId>
-                <version>${version.org.kie}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kie</groupId>
-                <artifactId>kie-internal</artifactId>
-                <version>${version.org.kie}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kie</groupId>
-                <artifactId>kie-test-util</artifactId>
-                <version>${version.org.kie}</version>
-            </dependency>
+          <!-- KIE -->
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-api</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-internal</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-test-util</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
 
-            <!-- DROOLS -->
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-compiler</artifactId>
-                <version>${version.org.kie}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-util</artifactId>
-                <version>${version.org.kie}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-io</artifactId>
-                <version>${version.org.kie}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-core</artifactId>
+          <!-- EFESTO -->
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>efesto-dependencies</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+
+          <!-- DROOLS -->
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-util</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-io</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>
             <dependency>
@@ -170,25 +184,38 @@
                 <artifactId>drools-ruleunits-api</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-ruleunits-impl</artifactId>
-                <version>${version.org.kie}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-drl-quarkus-util-deployment</artifactId>
-                <version>${version.org.kie}</version>
-            </dependency>
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-ruleunits-impl</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-drl-quarkus-util-deployment</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
 
-            <!-- DMN -->
-            <dependency>
-                <groupId>org.kie</groupId>
-                <artifactId>kie-dmn-api</artifactId>
-                <version>${version.org.kie}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kie</groupId>
+          <!-- Kie-DRL  -Efesto rules -->
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-drl-compilation-common</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-drl-map-input-runtime</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+
+
+          <!-- DMN -->
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-dmn-api</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
                 <artifactId>kie-dmn-feel</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>
@@ -221,11 +248,6 @@
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
-                <artifactId>kie-pmml-evaluator-assembler</artifactId>
-                <version>${version.org.kie}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kie</groupId>
                 <artifactId>kie-pmml-api</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>
@@ -234,6 +256,41 @@
                 <artifactId>kie-pmml-commons</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>
+          <!-- PMML-DROOLS models -->
+          <!-- Drools models -->
+          <!-- Tree -->
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-pmml-models-drools-tree-model</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <!-- Scorecard -->
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+
 
             <!-- Scenario Simulation -->
             <dependency>
@@ -246,6 +303,19 @@
                 <artifactId>drools-scenario-simulation-backend</artifactId>
                 <version>${version.org.kie}</version>
             </dependency>
+
+          <!-- Efesto deployments -->
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>efesto-quarkus</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>efesto-quarkus-deployment</artifactId>
+            <version>${version.org.kie}</version>
+          </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>

@@ -33,7 +33,7 @@ import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.prediction.PredictionModel;
 import org.kie.kogito.prediction.PredictionModelNotFoundException;
 import org.kie.kogito.prediction.PredictionModels;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,23 +114,23 @@ public class EventDrivenPredictionsController {
             return ctx;
         }
 
-        Optional<PredictionModel> optPredictionModel = getPredictionModel(ctx.getRequestModelName());
+        Optional<PredictionModel> optPredictionModel = getPredictionModel(ctx.getRequestFileName(), ctx.getRequestModelName());
         if (!optPredictionModel.isPresent()) {
             ctx.setResponseError(PredictionsResponseError.MODEL_NOT_FOUND);
             return ctx;
         }
 
         PredictionModel model = optPredictionModel.get();
-        PMMLContext context = model.newContext(ctx.getRequestData());
+        PMMLRuntimeContext context = model.newContext(ctx.getRequestData());
         PMML4Result apiResult = model.evaluateAll(context);
 
         ctx.setResult(apiResult);
         return ctx;
     }
 
-    private Optional<PredictionModel> getPredictionModel(String modelName) {
+    private Optional<PredictionModel> getPredictionModel(String fileName, String modelName) {
         try {
-            return Optional.ofNullable(predictionModels.getPredictionModel(modelName));
+            return Optional.ofNullable(predictionModels.getPredictionModel(fileName, modelName));
         } catch (PredictionModelNotFoundException e) {
             LOG.warn("Model not found with name=\"{}\"", modelName);
             return Optional.empty();
@@ -143,6 +143,7 @@ public class EventDrivenPredictionsController {
         String subject = ctx.getRequestCloudEvent().getSubject();
 
         KogitoPredictionsExtension extension = new KogitoPredictionsExtension();
+        extension.setPmmlFileName(ctx.getRequestFileName());
         extension.setPmmlModelName(ctx.getRequestModelName());
 
         if (ctx.isResponseError()) {
@@ -169,6 +170,7 @@ public class EventDrivenPredictionsController {
         private final CloudEvent requestCloudEvent;
         private final Map<String, Object> requestData;
 
+        private final String requestFileName;
         private final String requestModelName;
         private final boolean requestFullResult;
         private final boolean validRequest;
@@ -179,6 +181,10 @@ public class EventDrivenPredictionsController {
         public EvaluationContext(CloudEvent requestCloudEvent, KogitoPredictionsExtension requestExtension, Map<String, Object> requestData) {
             this.requestCloudEvent = requestCloudEvent;
             this.requestData = requestData;
+
+            this.requestFileName = Optional.ofNullable(requestExtension)
+                    .map(KogitoPredictionsExtension::getPmmlFileName)
+                    .orElse(null);
 
             this.requestModelName = Optional.ofNullable(requestExtension)
                     .map(KogitoPredictionsExtension::getPmmlModelName)
@@ -203,6 +209,10 @@ public class EventDrivenPredictionsController {
 
         public Map<String, Object> getRequestData() {
             return requestData;
+        }
+
+        String getRequestFileName() {
+            return requestFileName;
         }
 
         String getRequestModelName() {

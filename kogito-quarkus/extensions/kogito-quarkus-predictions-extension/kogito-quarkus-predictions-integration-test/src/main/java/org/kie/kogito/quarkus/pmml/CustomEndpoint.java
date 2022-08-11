@@ -45,7 +45,7 @@ public class CustomEndpoint {
     public DataContext hello(Map<String, Object> payload) {
         // path: /predictions/LinReg
 
-        var id = appRoot.get(PredictionIds.class).get("LinReg");
+        var id = appRoot.get(PredictionIds.class).get("PMMLRegression.pmml", "LinReg");
         return svc.evaluate(id, MapDataContext.from(payload));
     }
 

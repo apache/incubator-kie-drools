@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.assembler.PMMLWeaverService;
+import org.kie.pmml.compiler.service.KieCompilerServicePMMLFile;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinder;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
-import org.kie.pmml.evaluator.core.service.PMMLRuntimeService;
+import org.kie.pmml.evaluator.core.service.KieRuntimeServicePMML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,26 +60,26 @@ public class PredictionsAssetsProcessor {
     }
 
     @BuildStep
+    public List<ReflectiveClassBuildItem> reflectiveEfestoPredictions() {
+        logger.info("reflectiveEfestoPredictions()");
+        final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
+        toReturn.add(new ReflectiveClassBuildItem(true, true, KieRuntimeServicePMML.class));
+        toReturn.add(new ReflectiveClassBuildItem(true, true, KieCompilerServicePMMLFile.class));
+        toReturn.add(new ReflectiveClassBuildItem(true, true, KieCompilerServicePMMLFile.class));
+        logger.debug("toReturn {}", toReturn.size());
+        return toReturn;
+    }
+
+    @BuildStep
     public NativeImageResourceBuildItem predictionSPIEvaluator() {
-        logger.debug("predictionSPIEvaluator()");
+        logger.info("predictionSPIEvaluator()");
         return new NativeImageResourceBuildItem("META-INF/services/org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator");
     }
 
     @BuildStep
     public NativeImageResourceBuildItem predictionSPIRuntime() {
-        logger.debug("predictionSPIRuntime()");
+        logger.info("predictionSPIRuntime()");
         return new NativeImageResourceBuildItem("META-INF/services/org.kie.pmml.api.runtime.PMMLRuntime");
     }
 
-    @BuildStep
-    public ReflectiveClassBuildItem pmmlRuntimeServiceReflectiveClass() {
-        logger.debug("pmmlRuntimeServiceReflectiveClass()");
-        return new ReflectiveClassBuildItem(true, true, PMMLRuntimeService.class);
-    }
-
-    @BuildStep
-    public ReflectiveClassBuildItem pmmlWeaverServiceReflectiveClass() {
-        logger.debug("pmmlWeaverServiceReflectiveClass()");
-        return new ReflectiveClassBuildItem(true, true, PMMLWeaverService.class);
-    }
 }

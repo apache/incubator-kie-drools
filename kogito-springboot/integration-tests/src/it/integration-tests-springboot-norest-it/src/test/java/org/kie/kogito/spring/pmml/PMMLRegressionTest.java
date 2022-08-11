@@ -42,7 +42,7 @@ class PMMLRegressionTest {
 
     @Test
     void testEvaluateLinRegResult() {
-        PredictionModel linReg = predictionModels.getPredictionModel("LinReg");
+        PredictionModel linReg = predictionModels.getPredictionModel("PMMLRegression.pmml", "LinReg");
 
         Map<String, Object> context = new HashMap<>();
         context.put("fld1", 3.0);

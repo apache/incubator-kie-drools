@@ -19,9 +19,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
-import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.Application;
 import org.kie.kogito.ExecutionIdSupplier;
@@ -42,12 +40,11 @@ public abstract class AbstractDecisionModels implements DecisionModels {
     private static BiFunction<DecisionModel, KogitoGAV, DecisionModel> decisionModelTransformer = null;
     private KogitoGAV gav = KogitoGAV.EMPTY_GAV;
 
-    protected static void init(Function<String, KieRuntimeFactory> sKieRuntimeFactoryFunction,
-            ExecutionIdSupplier executionIdSupplier,
+    protected static void init(ExecutionIdSupplier executionIdSupplier,
             BiFunction<DecisionModel, KogitoGAV, DecisionModel> decisionModelTransformerInit,
             Reader... readers) {
-        DMNKogitoCallbacks.beforeAbstractDecisionModelsInit(sKieRuntimeFactoryFunction, executionIdSupplier, decisionModelTransformerInit, readers);
-        dmnRuntime = DMNKogito.createGenericDMNRuntime(sKieRuntimeFactoryFunction, readers);
+        DMNKogitoCallbacks.beforeAbstractDecisionModelsInit(executionIdSupplier, decisionModelTransformerInit, readers);
+        dmnRuntime = DMNKogito.createGenericDMNRuntime(readers);
         execIdSupplier = executionIdSupplier;
         decisionModelTransformer = decisionModelTransformerInit;
         DMNKogitoCallbacks.afterAbstractDecisionModelsInit(dmnRuntime);

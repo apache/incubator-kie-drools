@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/$nameURL$")
 public class PMMLRestResourceTemplate extends org.kie.kogito.pmml.AbstractPMMLRestResource {
 
+    final String FILE_NAME;
     final String MODEL_NAME;
     Application application;
 
@@ -39,14 +40,14 @@ public class PMMLRestResourceTemplate extends org.kie.kogito.pmml.AbstractPMMLRe
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/InputSet")), description = "PMML input")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/ResultSet")), description = "PMML result")
     public Object result(@RequestBody(required = true) Map<String, Object> variables) {
-        return super.result(application, MODEL_NAME, variables);
+        return super.result(application, FILE_NAME, MODEL_NAME, variables);
     }
 
     @PostMapping(value = "/descriptive", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/InputSet")), description = "PMML input")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/OutputSet")), description = "PMML full output")
     public org.kie.api.pmml.PMML4Result descriptive(@RequestBody(required = true) Map<String, Object> variables) {
-        return super.descriptive(application, MODEL_NAME, variables);
+        return super.descriptive(application, FILE_NAME, MODEL_NAME, variables);
     }
 
     @ExceptionHandler({Exception.class})

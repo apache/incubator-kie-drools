@@ -19,13 +19,13 @@ import java.util.Map;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.models.PMMLModel;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
 public interface PredictionModel {
 
-    PMMLContext newContext(Map<String, Object> inputSet);
+    PMMLRuntimeContext newContext(Map<String, Object> inputSet);
 
-    PMML4Result evaluateAll(PMMLContext context);
+    PMML4Result evaluateAll(PMMLRuntimeContext context);
 
     PMMLModel getPMMLModel();
 

@@ -41,4 +41,9 @@ public class PMMLUtils {
         return pmmlRequestDataBuilder.build();
     }
 
+    public static PMMLRequestData getPMMLRequestData(String modelName) {
+        PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(CORRELATION_ID, modelName);
+        return pmmlRequestDataBuilder.build();
+    }
+
 }

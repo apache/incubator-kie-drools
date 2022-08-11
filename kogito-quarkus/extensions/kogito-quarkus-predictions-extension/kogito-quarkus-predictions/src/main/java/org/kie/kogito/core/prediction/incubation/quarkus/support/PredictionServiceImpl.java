@@ -29,7 +29,7 @@ import org.kie.kogito.incubation.predictions.LocalPredictionId;
 import org.kie.kogito.incubation.predictions.services.PredictionService;
 import org.kie.kogito.prediction.PredictionModel;
 import org.kie.kogito.prediction.PredictionModels;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
 public class PredictionServiceImpl implements PredictionService {
     private final PredictionModels predictionModels;
@@ -49,9 +49,9 @@ public class PredictionServiceImpl implements PredictionService {
                     "Not a valid prediction id " + predictionId.toLocalId());
         }
         PredictionModel predictionModel =
-                predictionModels.getPredictionModel(localPredictionId.name());
+                predictionModels.getPredictionModel(localPredictionId.getFileName(), localPredictionId.name());
 
-        PMMLContext ctx = predictionModel.newContext(inputContext.as(MapDataContext.class).toMap());
+        PMMLRuntimeContext ctx = predictionModel.newContext(inputContext.as(MapDataContext.class).toMap());
 
         PMML4Result pmml4Result = predictionModel.evaluateAll(ctx);
         Map<String, Object> resultMap = Collections.singletonMap(

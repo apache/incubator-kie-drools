@@ -75,6 +75,7 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-api</artifactId>
         </dependency>
+
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>

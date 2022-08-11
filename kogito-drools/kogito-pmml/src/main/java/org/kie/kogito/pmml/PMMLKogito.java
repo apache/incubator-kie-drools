@@ -15,32 +15,35 @@
  */
 package org.kie.kogito.pmml;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.io.FileSystemResource;
-import org.kie.api.KieBase;
-import org.kie.api.io.Resource;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.kogito.Application;
+import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
+import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
+import org.kie.pmml.evaluator.core.service.PMMLRuntimeInternalImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.kogito.pmml.utils.PMMLUtils.getPMMLRequestData;
 
 /**
- * Internal Utility class.<br/>
- * Use {@link Application#predictionModels()} of Kogito API to programmatically access PMML assets and evaluate PMML
- * predictions.
+ * Internal Utility class
  */
 public class PMMLKogito {
+    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = org.kie.pmml.evaluator.utils.SPIUtils.getPMMLRuntimeFactory(false);
+
+    private static final Logger logger = LoggerFactory.getLogger(PMMLKogito.class);
 
     private PMMLKogito() {
         // intentionally private.
@@ -48,30 +51,24 @@ public class PMMLKogito {
 
     /**
      * Internal Utility class.<br/>
-     * Use {@link Application#predictionModels()} of Kogito API to programmatically access PMML assets and evaluate
-     * PMML decisions.
      *
      * @param pmmlPaths
      * @return
      */
-    public static Map<KieBase, KieRuntimeFactory> createKieRuntimeFactories(String... pmmlPaths) {
-        return commonCreateKieRuntimeFactory(KieRuntimeFactoryBuilder::fromResources, pmmlPaths);
+    public static Map<String, PMMLRuntime> createPMMLRuntimes(String... pmmlPaths) {
+        Map<String, PMMLRuntime> toReturn = new HashMap<>();
+        Stream.of(pmmlPaths).forEach(pmmlPath -> toReturn.put(pmmlPath,
+                getPMMLRuntimeAlreadyCompiled()));
+        return toReturn;
     }
 
-    /**
-     * This method is equivalents to createKieRuntimeFactories but it also compiles the PMML models in memory instead of
-     * just load it. It is used by Kogito Test Scenario to load and run the tests
-     * 
-     * @param pmmlPaths
-     * @return
-     */
-    public static Map<KieBase, KieRuntimeFactory> createKieRuntimeFactoriesWithInMemoryCompilation(String... pmmlPaths) {
-        return commonCreateKieRuntimeFactory(KieRuntimeFactoryBuilder::fromResourcesWithInMemoryCompilation, pmmlPaths);
-    }
-
-    public static PMMLModel modelByName(PMMLRuntime pmmlRuntime, String modelName) {
-        List<PMMLModel> modelsWithName =
-                pmmlRuntime.getPMMLModels().stream().filter(m -> modelName.equals(m.getName())).collect(Collectors.toList());
+    public static PMMLModel modelByName(PMMLRuntime pmmlRuntime, String fileName, String modelName) {
+        logger.debug("modelByName {} {} {}", pmmlRuntime, fileName, modelName);
+        final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName);
+        final PMMLRuntimeContext runtimeContext = getPMMLRuntimeContext(pmmlRequestData, fileName);
+        List<PMMLModel> allPmmlModels = pmmlRuntime.getPMMLModels(runtimeContext);
+        logger.debug("allPmmlModels {}", allPmmlModels);
+        List<PMMLModel> modelsWithName = allPmmlModels.stream().filter(m -> modelName.equals(m.getName())).collect(Collectors.toList());
         if (modelsWithName.size() == 1) {
             return modelsWithName.get(0);
         } else {
@@ -83,16 +80,23 @@ public class PMMLKogito {
         }
     }
 
-    public static PMML4Result evaluate(PMMLRuntime pmmlRuntime, String modelName, Map<String, Object> pmmlContext) {
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, pmmlContext);
-        return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData));
+    public static PMML4Result evaluate(PMMLRuntime pmmlRuntime, String fileName, String modelName, Map<String, Object> pmmlInputData) {
+        final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, pmmlInputData);
+        return pmmlRuntime.evaluate(modelName, getPMMLRuntimeContext(pmmlRequestData, fileName));
     }
 
-    private static Map<KieBase, KieRuntimeFactory> commonCreateKieRuntimeFactory(
-            final Function<Stream<Resource>, Map<KieBase, KieRuntimeFactory>> factory,
-            final String... pmmlPaths) {
-        Stream<Resource> resources = Stream.of(pmmlPaths).map(FileSystemResource::new);
-        return factory.apply(resources);
+    private static PMMLRuntimeContext getPMMLRuntimeContext(PMMLRequestData pmmlRequestData, String fileName) {
+        KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
+                new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        return new PMMLRuntimeContextImpl(pmmlRequestData, fileName, memoryCompilerClassLoader);
+    }
+
+    private static PMMLRuntime getPMMLRuntimeAlreadyCompiled() {
+        return new PMMLRuntimeInternalImpl();
+    }
+
+    private static PMMLRuntime getPMMLRuntimeWithInMemoryCompilation(File pmmlFile) {
+        return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);
     }
 
 }

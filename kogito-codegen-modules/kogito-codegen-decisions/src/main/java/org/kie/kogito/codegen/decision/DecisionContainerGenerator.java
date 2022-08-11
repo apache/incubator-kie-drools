@@ -81,7 +81,6 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
                         templatedGenerator,
                         "Missing init() method"));
 
-        setupPmmlIfAvailable(initMethod);
         setupExecIdSupplierVariable(initMethod);
         setupDecisionModelTransformerVariable(initMethod);
 
@@ -113,11 +112,6 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         } catch (Exception e) {
             return Optional.empty();
         }
-    }
-
-    private void setupPmmlIfAvailable(MethodCallExpr initMethod) {
-        boolean hasPMML = context.hasClassAvailable(PMML_ABSTRACT_CLASS);
-        initMethod.addArgument(hasPMML ? PMML_FUNCTION : "null");
     }
 
     private void setupExecIdSupplierVariable(MethodCallExpr initMethod) {

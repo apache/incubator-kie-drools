@@ -17,9 +17,7 @@ package org.kie.kogito.dmn;
 
 import java.io.Reader;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
-import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.ExecutionIdSupplier;
 import org.kie.kogito.KogitoGAV;
@@ -39,7 +37,7 @@ public final class DMNKogitoCallbacks {
         // intentionally private.
     }
 
-    public static void beforeCreateGenericDMNRuntime(Function<String, KieRuntimeFactory> kiePMMLRuntimeFactoryFunction, Reader[] readers) {
+    public static void beforeCreateGenericDMNRuntime(Reader[] readers) {
         if (isGraalVMNIRuntime()) {
             LOG.warn("createGenericDMNRuntime with {} model(s) for DMNRuntime initialization...", readers.length);
         } else {
@@ -55,8 +53,7 @@ public final class DMNKogitoCallbacks {
         }
     }
 
-    public static void beforeAbstractDecisionModelsInit(Function<String, KieRuntimeFactory> sKieRuntimeFactoryFunction,
-            ExecutionIdSupplier executionIdSupplier,
+    public static void beforeAbstractDecisionModelsInit(ExecutionIdSupplier executionIdSupplier,
             BiFunction<DecisionModel, KogitoGAV, DecisionModel> decisionModelTransformerInit,
             Reader[] readers) {
         if (isGraalVMNIRuntime()) {

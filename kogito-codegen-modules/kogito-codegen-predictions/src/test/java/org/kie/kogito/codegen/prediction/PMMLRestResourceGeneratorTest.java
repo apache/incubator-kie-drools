@@ -20,6 +20,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.drools.util.StringUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
@@ -41,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.CONTENT;
 import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.QUARKUS_API_RESPONSE;
 import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.QUARKUS_REQUEST_BODY;
@@ -65,11 +67,22 @@ class PMMLRestResourceGeneratorTest {
     private static PMMLRestResourceGenerator pmmlRestResourceGenerator;
     private static KogitoBuildContext context;
 
+    private static String expectedUrl;
+
     @BeforeAll
     public static void setup() {
         context = QuarkusKogitoBuildContext.builder().build();
         pmmlRestResourceGenerator = new PMMLRestResourceGenerator(context, KIE_PMML_MODEL, APP_CANONICAL_NAME);
         assertNotNull(pmmlRestResourceGenerator);
+        String filePrefix = URLEncoder.encode(getSanitizedClassName(KIE_PMML_MODEL.getFileName().replace(".pmml", "")));
+        String classPrefix = URLEncoder.encode(getSanitizedClassName(KIE_PMML_MODEL.getName()));
+        expectedUrl = String.format("/%s/%s", filePrefix, classPrefix);
+        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, "target/test-classes");
+    }
+
+    @AfterAll
+    public static void cleanup() {
+        System.clearProperty(INDEXFILE_DIRECTORY_PROPERTY);
     }
 
     private static ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration(KogitoBuildContext context) {
@@ -110,9 +123,7 @@ class PMMLRestResourceGeneratorTest {
 
     @Test
     void getNameURL() {
-        String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
-        String expected = URLEncoder.encode(classPrefix).replaceAll("\\+", " ");
-        assertEquals(expected, pmmlRestResourceGenerator.getNameURL());
+        assertEquals(expectedUrl, pmmlRestResourceGenerator.getNameURL());
     }
 
     @Test
@@ -143,9 +154,18 @@ class PMMLRestResourceGeneratorTest {
         SingleMemberAnnotationExpr retrieved = retrievedOpt.get();
         assertEquals("Path", retrieved.getName().asString());
         pmmlRestResourceGenerator.setPathValue(TEMPLATE);
-        String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
-        String expected = URLEncoder.encode(classPrefix).replaceAll("\\+", " ");
-        assertEquals(expected, retrieved.getMemberValue().asStringLiteralExpr().asString());
+        assertEquals(expectedUrl, retrieved.getMemberValue().asStringLiteralExpr().asString());
+    }
+
+    @Test
+    void setPredictionFileName() {
+        assertTrue(TEMPLATE.getFieldByName("FILE_NAME").isPresent());
+        final FieldDeclaration modelName = TEMPLATE.getFieldByName("FILE_NAME").get();
+        assertFalse(modelName.getVariable(0).getInitializer().isPresent());
+        pmmlRestResourceGenerator.setPredictionFileName(TEMPLATE);
+        assertTrue(modelName.getVariable(0).getInitializer().isPresent());
+        assertEquals(KIE_PMML_MODEL.getFileName(),
+                modelName.getVariable(0).getInitializer().get().asStringLiteralExpr().asString());
     }
 
     @Test
@@ -298,7 +318,7 @@ class PMMLRestResourceGeneratorTest {
     private void commonEvaluateGenerate(String retrieved) {
         assertNotNull(retrieved);
         String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
-        String expected = String.format("@Path(\"%s\")", classPrefix);
+        String expected = String.format("@Path(\"%s\")", expectedUrl);
         assertTrue(retrieved.contains(expected));
         expected = StringUtils.ucFirst(classPrefix) + "Resource";
         expected = String.format("public class %s extends org.kie.kogito.pmml.AbstractPMMLRestResource {", expected);

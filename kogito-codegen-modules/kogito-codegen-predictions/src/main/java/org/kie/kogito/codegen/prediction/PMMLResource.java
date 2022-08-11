@@ -16,7 +16,9 @@
 package org.kie.kogito.codegen.prediction;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
 
@@ -25,10 +27,13 @@ public class PMMLResource {
     private final Path path;
     private final String modelPath;
 
-    public PMMLResource(List<KiePMMLModel> kiePmmlModels, Path path, String modelPath) {
+    private final Map<String, byte[]> compiledClasses;
+
+    public PMMLResource(List<KiePMMLModel> kiePmmlModels, Path path, String modelPath, Map<String, byte[]> compiledClasses) {
         this.kiePmmlModels = kiePmmlModels;
         this.path = path;
         this.modelPath = modelPath;
+        this.compiledClasses = compiledClasses;
     }
 
     public List<KiePMMLModel> getKiePmmlModels() {
@@ -42,4 +47,9 @@ public class PMMLResource {
     public String getModelPath() {
         return modelPath;
     }
+
+    public Map<String, byte[]> getCompiledClasses() {
+        return Collections.unmodifiableMap(compiledClasses);
+    }
+
 }

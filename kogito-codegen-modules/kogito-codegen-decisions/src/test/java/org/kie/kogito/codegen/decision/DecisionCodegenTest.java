@@ -231,8 +231,7 @@ public class DecisionCodegenTest {
         contextBuilder
                 .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton(DecisionContainerGenerator.PMML_ABSTRACT_CLASS), emptyList()));
 
-        assertNotEmptySectionCompilationUnit("src/test/resources/decision/models/vacationDays", contextBuilder)
-                .contains(DecisionContainerGenerator.PMML_FUNCTION);
+        assertNotEmptySectionCompilationUnit("src/test/resources/decision/models/vacationDays", contextBuilder);
 
         // without PMML in the classpath
         contextBuilder

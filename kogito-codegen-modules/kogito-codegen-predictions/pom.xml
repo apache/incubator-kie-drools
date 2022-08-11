@@ -11,6 +11,18 @@
   <artifactId>kogito-codegen-predictions</artifactId>
   <name>Kogito :: Codegen Predictions</name>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-kie-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -39,6 +51,17 @@
     </dependency>
 
     <!-- test -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-drl-compilation-common</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-drl-map-input-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-pmml</artifactId>
@@ -77,5 +100,28 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>test-jar</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>**/*.pmml_json</exclude>
+                <exclude>**/*.drl_json</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

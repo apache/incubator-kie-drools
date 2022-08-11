@@ -23,6 +23,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -31,8 +35,12 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.kie.kogito.codegen.core.ApplicationGenerator;
 import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
+
+import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
+import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 
 @Mojo(name = "generateModel",
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
@@ -61,13 +69,30 @@ public class GenerateModelMojo extends AbstractKieMojo {
     @Parameter(property = "kogito.sources.keep", defaultValue = "false")
     private boolean keepSources;
 
+    @Parameter(property = "build.output.directory", readonly = true, defaultValue = "${project.build.directory}/classes/")
+    private String buildOutputDirectory;
+
     @Override
     public void execute() throws MojoExecutionException {
+        // TODO to be removed with DROOLS-7090
+        boolean indexFileDirectorySet = false;
+        getLog().debug("execute -> " + buildOutputDirectory);
+        if (buildOutputDirectory == null) {
+            throw new MojoExecutionException("${project.build.directory} is null");
+        }
+        if (System.getProperty(INDEXFILE_DIRECTORY_PROPERTY) == null) {
+            System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, buildOutputDirectory);
+            indexFileDirectorySet = true;
+        }
         addCompileSourceRoots();
         if (isOnDemand()) {
             getLog().info("On-Demand Mode is On. Use mvn compile kogito:scaffold");
         } else {
             generateModel();
+        }
+        // TODO to be removed with DROOLS-7090
+        if (indexFileDirectorySet) {
+            System.clearProperty(INDEXFILE_DIRECTORY_PROPERTY);
         }
     }
 
@@ -99,11 +124,26 @@ public class GenerateModelMojo extends AbstractKieMojo {
             generatedFiles = appGen.generate();
         }
 
-        writeGeneratedFiles(generatedFiles);
+        Map<GeneratedFileType, List<GeneratedFile>> mappedGeneratedFiles = generatedFiles.stream()
+                .collect(Collectors.groupingBy(GeneratedFile::type));
+        mappedGeneratedFiles.entrySet().stream()
+                .filter(entry -> !entry.getKey().equals(COMPILED_CLASS))
+                .forEach(entry -> writeGeneratedFiles(entry.getValue()));
+
+        List<GeneratedFile> generatedCompiledFiles = mappedGeneratedFiles.getOrDefault(COMPILED_CLASS,
+                Collections.emptyList())
+                .stream().map(originalGeneratedFile -> new GeneratedFile(COMPILED_CLASS, convertPath(originalGeneratedFile.path().toString()), originalGeneratedFile.contents()))
+                .collect(Collectors.toList());
+
+        writeGeneratedFiles(generatedCompiledFiles);
 
         if (!keepSources) {
             deleteDrlFiles();
         }
+    }
+
+    private String convertPath(String toConvert) {
+        return toConvert.replace('.', File.separatorChar) + ".class";
     }
 
     private void deleteDrlFiles() throws MojoExecutionException {

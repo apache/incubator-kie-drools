@@ -28,7 +28,9 @@ import org.kie.kogito.Application;
 @Path("/$nameURL$")
 public class PMMLRestResourceTemplate extends org.kie.kogito.pmml.AbstractPMMLRestResource {
 
+    final String FILE_NAME;
     final String MODEL_NAME;
+
     Application application;
 
     @POST
@@ -38,7 +40,7 @@ public class PMMLRestResourceTemplate extends org.kie.kogito.pmml.AbstractPMMLRe
     @org.eclipse.microprofile.openapi.annotations.parameters.RequestBody(content = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType = "application/json",schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/InputSet")), description = "PMML input")
     @org.eclipse.microprofile.openapi.annotations.responses.APIResponse(content = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType = "application/json", schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/ResultSet")), description = "PMML result")
     public Object result(java.util.Map<String, Object> variables) {
-        return super.result(application, MODEL_NAME, variables);
+        return super.result(application, FILE_NAME, MODEL_NAME, variables);
     }
 
     @POST
@@ -48,7 +50,7 @@ public class PMMLRestResourceTemplate extends org.kie.kogito.pmml.AbstractPMMLRe
     @org.eclipse.microprofile.openapi.annotations.parameters.RequestBody(content = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType = "application/json",schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/InputSet")), description = "PMML input")
     @org.eclipse.microprofile.openapi.annotations.responses.APIResponse(content = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType = "application/json", schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/OutputSet")), description = "PMML full output")
     public org.kie.api.pmml.PMML4Result descriptive(java.util.Map<String, Object> variables) {
-        return super.descriptive(application, MODEL_NAME, variables);
+        return super.descriptive(application, FILE_NAME, MODEL_NAME, variables);
     }
 
     @javax.ws.rs.ext.Provider

@@ -65,8 +65,10 @@ public class PMMLRestResourceGenerator {
         this.context = context;
         this.kiePMMLModel = model;
         this.restPackageName = "org.kie.kogito." + CodegenStringUtil.escapeIdentifier(model.getClass().getPackage().getName());
-        String classPrefix = getSanitizedClassName(model.getName());
-        this.nameURL = URLEncoder.encode(classPrefix).replaceAll("\\+", "%20");
+        String filePrefix = URLEncoder.encode(getSanitizedClassName(model.getFileName().replace(".pmml", "")));
+        String classPrefix = URLEncoder.encode(getSanitizedClassName(model.getName()));
+        String fullPath = String.format("/%s/%s", filePrefix, classPrefix);
+        this.nameURL = fullPath.replaceAll("\\+", "%20");
         this.appCanonicalName = appCanonicalName;
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = restPackageName.replace(".", "/") + "/" + resourceClazzName + ".java";
@@ -87,6 +89,7 @@ public class PMMLRestResourceGenerator {
         template.setName(resourceClazzName);
 
         setPathValue(template);
+        setPredictionFileName(template);
         setPredictionModelName(template);
         setOASAnnotations(template);
         if (context.hasDI()) {
@@ -119,6 +122,13 @@ public class PMMLRestResourceGenerator {
 
     void setPathValue(ClassOrInterfaceDeclaration template) {
         template.findFirst(SingleMemberAnnotationExpr.class).orElseThrow(() -> new RuntimeException("")).setMemberValue(new StringLiteralExpr(nameURL));
+    }
+
+    void setPredictionFileName(ClassOrInterfaceDeclaration template) {
+        template.getFieldByName("FILE_NAME")
+                .orElseThrow(() -> new RuntimeException("Missing FILE_NAME field"))
+                .getVariable(0)
+                .setInitializer(new StringLiteralExpr(kiePMMLModel.getFileName()));
     }
 
     void setPredictionModelName(ClassOrInterfaceDeclaration template) {

@@ -19,11 +19,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -33,20 +36,26 @@ import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.javaparser.ast.CompilationUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
 class PredictionCodegenTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PredictionCodegenTest.class);
 
     private static final Path BASE_PATH = Paths.get("src/test/resources/").toAbsolutePath();
     private static final String REGRESSION_SOURCE = "prediction/test_regression.pmml";
@@ -63,6 +72,16 @@ class PredictionCodegenTest {
     private static final String MOCK = "mock";
     private static final String NESTED_MOCK = "nestedMock";
     private static final String PMML = "PMML";
+
+    @BeforeAll
+    public static void setup() {
+        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, "target/test-classes");
+    }
+
+    @AfterAll
+    public static void cleanup() {
+        System.clearProperty(INDEXFILE_DIRECTORY_PROPERTY);
+    }
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
@@ -101,7 +120,7 @@ class PredictionCodegenTest {
         KogitoBuildContext context = contextBuilder.build();
         PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
                 context, CollectedResourceProducer.fromFiles(BASE_PATH, SCORECARD_FULL_SOURCE.toFile()));
-        generateAllFiles(context, codeGenerator, 5, 3, 1, false);
+        generateAllFiles(context, codeGenerator, 36, 34, 1, false);
     }
 
     @ParameterizedTest
@@ -110,29 +129,29 @@ class PredictionCodegenTest {
         KogitoBuildContext context = contextBuilder.build();
         PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
                 context, CollectedResourceProducer.fromFiles(BASE_PATH, MINING_FULL_SOURCE.toFile()));
-        generateAllFiles(context, codeGenerator, 14, 12, 1, false);
+        generateAllFiles(context, codeGenerator, 310, 308, 1, false);
     }
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     void generateAllFilesMultiple(KogitoBuildContext.Builder contextBuilder) {
+
         KogitoBuildContext context = contextBuilder.build();
         PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
                 context, CollectedResourceProducer.fromFiles(BASE_PATH, MULTIPLE_FULL_SOURCE.toFile()));
-        generateAllFiles(context, codeGenerator, 9, 5, 2, false);
+        generateAllFiles(context, codeGenerator, 88, 84, 2, false);
     }
 
-    private static void generateAllFiles(KogitoBuildContext context, PredictionCodegen codeGenerator, int expectedTotalFiles, int expectedJavaSources, int expectedRestEndpoints,
+    private static void generateAllFiles(KogitoBuildContext context, PredictionCodegen codeGenerator, int expectedTotalFiles, int expectedCompiledClasses, int expectedRestEndpoints,
             boolean assertReflect) {
         Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
 
         int expectedGeneratedFilesSize = expectedTotalFiles - (context.hasRESTForGenerator(codeGenerator) ? 0 : expectedRestEndpoints * 2);
         assertEquals(expectedGeneratedFilesSize, generatedFiles.size());
 
-        assertEquals(expectedJavaSources, generatedFiles.stream()
-                .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.SOURCE) &&
-                        generatedFile.type().name().equals(PMML) &&
-                        generatedFile.relativePath().endsWith(".java"))
+        assertEquals(expectedCompiledClasses, generatedFiles.stream()
+                .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.COMPILED_CLASS) &&
+                        generatedFile.type().equals(COMPILED_CLASS))
                 .count());
 
         int expectedReflectResource = assertReflect ? 1 : 0;
@@ -172,10 +191,10 @@ class PredictionCodegenTest {
         KogitoBuildContext context = contextBuilder.build();
 
         KiePMMLModel nullNameMock = buildInvalidMockedModel(null);
-        assertThrows(IllegalArgumentException.class, buildMockedGenerateExecutable(context, nullNameMock));
+        assertThrows(IllegalStateException.class, buildMockedGenerateExecutable(context, nullNameMock));
 
         KiePMMLModel emptyNameMock = buildInvalidMockedModel(EMPTY);
-        assertThrows(IllegalArgumentException.class, buildMockedGenerateExecutable(context, emptyNameMock));
+        assertThrows(IllegalStateException.class, buildMockedGenerateExecutable(context, emptyNameMock));
 
         KiePMMLModel invalidClassMock = buildInvalidMockedModel(MOCK);
         assertThrows(IllegalStateException.class, buildMockedGenerateExecutable(context, invalidClassMock));
@@ -187,10 +206,10 @@ class PredictionCodegenTest {
         KogitoBuildContext context = contextBuilder.build();
 
         KiePMMLModel nullNameMock = buildMockedModelWithInvalidNestedMockedModel(null);
-        assertThrows(IllegalArgumentException.class, buildMockedGenerateExecutable(context, nullNameMock));
+        assertThrows(IllegalStateException.class, buildMockedGenerateExecutable(context, nullNameMock));
 
         KiePMMLModel emptyNameMock = buildMockedModelWithInvalidNestedMockedModel(EMPTY);
-        assertThrows(IllegalArgumentException.class, buildMockedGenerateExecutable(context, emptyNameMock));
+        assertThrows(IllegalStateException.class, buildMockedGenerateExecutable(context, emptyNameMock));
 
         KiePMMLModel invalidClassMock = buildMockedModelWithInvalidNestedMockedModel(NESTED_MOCK);
         assertThrows(IllegalStateException.class, buildMockedGenerateExecutable(context, invalidClassMock));
@@ -208,7 +227,6 @@ class PredictionCodegenTest {
 
         HasSourcesMap smMock = (HasSourcesMap) mock;
         when(smMock.getSourcesMap()).thenReturn(Collections.emptyMap());
-        when(smMock.getRulesSourcesMap()).thenReturn(null);
 
         List<KiePMMLModel> nestedModelsMock = Collections.singletonList(buildInvalidMockedModel(name));
         HasNestedModels nmMock = (HasNestedModels) mock;
@@ -227,7 +245,7 @@ class PredictionCodegenTest {
     private static Executable buildMockedGenerateExecutable(KogitoBuildContext context, KiePMMLModel mockedModel) {
         return () -> {
             List<PMMLResource> mockedResourceList = Collections.singletonList(buildMockedResource(mockedModel));
-            PredictionCodegen codeGenerator = new PredictionCodegen(context, mockedResourceList);
+            PredictionCodegen codeGenerator = new PredictionCodegen(context, mockedResourceList, new HashSet<>());
             codeGenerator.generate();
         };
     }

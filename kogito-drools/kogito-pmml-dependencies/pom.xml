@@ -16,9 +16,9 @@
   <description>
     Declare this artifact as "pom" dependency to import all default kie-pmml-trusty modules with exclusions needed for Kogito environment.
   </description>
-  
+
   <properties>
-    <java.module.name>org.kie.kogito.kogito.pmml.dependencies</java.module.name>
+    <java.module.name>org.kie.kogito.pmml.dependencies</java.module.name>
   </properties>
 
   <dependencyManagement>
@@ -39,6 +39,33 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-dependencies</artifactId>
       <exclusions>
+        <!-- Tree -->
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-tree-model</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-tree-compiler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-tree-evaluator</artifactId>
+        </exclusion>
+        <!-- Scorecard -->
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-scorecard-model</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-scorecard-compiler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-scorecard-evaluator</artifactId>
+        </exclusion>
+
         <exclusion>
           <groupId>org.drools</groupId>
           <artifactId>drools-mvel</artifactId>
@@ -72,6 +99,33 @@
           <artifactId>drools-ruleunit</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <!-- Drools models -->
+    <!-- Tree -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-tree-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+    </dependency>
+    <!-- Scorecard -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
     </dependency>
   </dependencies>
 </project>

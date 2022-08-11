@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,8 +85,8 @@ class PredictionContainerGeneratorTest {
         Path path = getPath();
         String modelPath = "path/to/" + resourceName;
         List<KiePMMLModel> kiePmmlModels =
-                IntStream.range(0, 3).mapToObj(i -> getKiePMMLModelInternal(resourceName + "_Model-" + i)).collect(Collectors.toList());
-        return new PMMLResource(kiePmmlModels, path, modelPath);
+                IntStream.range(0, 3).mapToObj(i -> getKiePMMLModelInternal(resourceName, resourceName + "_Model-" + i)).collect(Collectors.toList());
+        return new PMMLResource(kiePmmlModels, path, modelPath, new HashMap<>());
     }
 
     private static Path getPath() {

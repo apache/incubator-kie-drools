@@ -26,8 +26,14 @@
        <groupId>org.kie.kogito</groupId>
        <artifactId>kogito-pmml-dependencies</artifactId>
        <type>pom</type>
-       <scope>import</scope>
        <version>${project.version}</version>
+     </dependency>
+     <dependency>
+       <groupId>org.kie.kogito</groupId>
+       <artifactId>kogito-kie-bom</artifactId>
+       <type>pom</type>
+       <version>${project.version}</version>
+       <scope>import</scope>
      </dependency>
    </dependencies>
   </dependencyManagement>
@@ -47,6 +53,19 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-pmml-dependencies</artifactId>
       <type>pom</type>
+    </dependency>
+
+    <!-- TODO to be removed when importing kie-drl inside kogito -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-efesto-drl</artifactId>
+      <type>pom</type>
+    </dependency>
+
+    <!-- EFESTO -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-dependencies</artifactId>
     </dependency>
 
     <!-- test -->

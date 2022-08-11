@@ -1615,6 +1615,13 @@
         <scope>test</scope>
       </dependency>
 
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-efesto-drl</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+
       <!-- Scenario Simulation Runner -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
@@ -1939,6 +1946,7 @@
         <artifactId>kogito-quarkus-predictions-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-quarkus-common</artifactId>

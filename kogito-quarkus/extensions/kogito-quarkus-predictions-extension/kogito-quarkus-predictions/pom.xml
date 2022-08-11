@@ -14,20 +14,20 @@
     <description>Add Kogito predictions (PMML) capabilities - Include Drools PMML engine</description>
     <dependencies>
 
-        <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-quarkus-common</artifactId>
-        </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-common</artifactId>
+      </dependency>
 
-        <!-- kogito -->
-        <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-pmml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-api-incubation-predictions-services</artifactId>
-        </dependency>
+      <!-- kogito -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-pmml</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-api-incubation-predictions-services</artifactId>
+      </dependency>
     </dependencies>
 
     <build>
