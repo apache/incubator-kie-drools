@@ -53,9 +53,4 @@ public abstract class BaseExpressionAction implements Action {
         }
         return result;
     }
-
-    protected final <T> T assign(KogitoProcessContext context, T value) {
-        expr.assign(getJsonNode(context, modelVar), value, context);
-        return value;
-    }
 }
