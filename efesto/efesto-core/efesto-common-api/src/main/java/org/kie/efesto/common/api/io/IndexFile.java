@@ -17,8 +17,18 @@ package org.kie.efesto.common.api.io;
 
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.utils.FileNameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
 
 import static org.kie.efesto.common.api.utils.FileNameUtils.getFileName;
 
@@ -30,6 +40,12 @@ public final class IndexFile extends File {
 
     public static final String INDEX_FILE = "IndexFile";
     public static final String FINAL_SUFFIX = "_json";
+    private static final long serialVersionUID = -3471854812784089038L;
+
+    private static final Logger logger = LoggerFactory.getLogger(IndexFile.class);
+
+
+    private MemoryFile memoryFile;
 
     static String getIndexFileName(String modelType) {
         return String.format("%s.%s%s", INDEX_FILE, modelType, FINAL_SUFFIX);
@@ -53,18 +69,94 @@ public final class IndexFile extends File {
 
     public IndexFile(String modelType) {
         super(validatePathName(getIndexFileName(modelType)));
+        logger.debug("IndexFile {}", modelType);
+        logger.debug(this.getAbsolutePath());
     }
 
     public IndexFile(String parent, String modelType) {
         super(parent, validatePathName(getIndexFileName(modelType)));
+        logger.debug("IndexFile {} {}", parent, modelType);
+        logger.debug(this.getAbsolutePath());
     }
 
     public IndexFile(File existingFile) {
         super(existingFile.toURI());
+        logger.debug("IndexFile {}", existingFile);
+        logger.debug(this.getAbsolutePath());
+    }
+
+    public IndexFile(MemoryFile memoryFile) {
+        super(memoryFile.getName());
+        this.memoryFile = memoryFile;
+        logger.debug("IndexFile {}", memoryFile);
+        logger.debug(this.getAbsolutePath());
+        logger.debug("memoryFile {}", memoryFile.getAbsolutePath());
     }
 
     public String getModel() {
         return getModel(getSuffix());
+    }
+
+    @Override
+    public long length() {
+        return memoryFile != null ? memoryFile.length() : super.length();
+    }
+
+    public byte[] getContent() {
+        return memoryFile != null ? memoryFile.getContent() : readContent();
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IndexFile) {
+            if (equalsByExists((IndexFile) obj)) {
+                if (this.exists()) {
+                    return equalsByIsSameFile((IndexFile) obj);
+                } else {
+                    return Objects.equals(this.getAbsoluteFile().getAbsolutePath(), ((IndexFile)obj).getAbsoluteFile().getAbsolutePath());
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getName().hashCode();
+    }
+
+    private boolean equalsByExists(IndexFile toCompare) {
+        return this.exists() == toCompare.exists();
+    }
+
+    private boolean equalsByIsSameFile(IndexFile toCompare) {
+        try {
+            return Files.isSameFile(this.toPath(), toCompare.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private byte[] readContent() {
+        try(InputStream input = new FileInputStream(this)) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            int read;
+            byte[] bytes = new byte[1024];
+            while ((read = input.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            byte[] toReturn = out.toByteArray();
+            out.flush();
+            out.close();
+            input.close();
+            return toReturn;
+        } catch (Exception e) {
+            logger.warn("Failed to read content of {} ", this, e);
+            return new byte[0];
+        }
     }
 
     private String getSuffix() {

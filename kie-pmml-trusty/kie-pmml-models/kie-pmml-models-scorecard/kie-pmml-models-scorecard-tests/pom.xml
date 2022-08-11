@@ -16,11 +16,6 @@
     <!-- TEST -->
     <!-- PMML -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-dynamic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-scorecard-model</artifactId>
       <scope>test</scope>
@@ -42,13 +37,23 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-evaluator-assembler</artifactId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
+      <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-compiler-api</artifactId>
-      <classifier>tests</classifier>
+      <artifactId>kie-pmml-compiler-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-compilation-manager-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-runtime-manager-core</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- KIE -->

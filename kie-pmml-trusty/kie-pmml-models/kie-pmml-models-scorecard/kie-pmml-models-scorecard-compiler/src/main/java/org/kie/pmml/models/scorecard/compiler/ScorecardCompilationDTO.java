@@ -15,14 +15,12 @@
  */
 package org.kie.pmml.models.scorecard.compiler;
 
-import java.util.Map;
-
 import org.dmg.pmml.scorecard.Characteristics;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.utils.KiePMMLModelUtils;
-import org.kie.pmml.compiler.commons.dto.AbstractSpecificCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
+import org.kie.pmml.compiler.commons.dto.AbstractSpecificCompilationDTO;
 
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 
@@ -53,16 +51,6 @@ public class ScorecardCompilationDTO extends AbstractSpecificCompilationDTO<Scor
      */
     public static ScorecardCompilationDTO fromCompilationDTO(final CompilationDTO<Scorecard> source) {
         return new ScorecardCompilationDTO(source);
-    }
-
-    /**
-     * Compile the given sources and add them to given <code>Classloader</code> of the current instance.
-     * Returns the <code>Class</code> with the current <b>packageCharacteristicsClassName</b>
-     * @param sourcesMap
-     * @return
-     */
-    public Class<?> compileAndLoadCharacteristicsClass(Map<String, String> sourcesMap) {
-        return getHasClassloader().compileAndLoadClass(sourcesMap, packageCharacteristicsClassName);
     }
 
     public Scorecard getScorecardModel() {

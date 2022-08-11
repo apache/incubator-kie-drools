@@ -91,7 +91,7 @@ public class ModelUtils {
     }
 
     /**
-     * Return the <code>DATA_TYPE</code>> of the field whose <b>usageType</b> is <code>TARGET</code> or
+     * Return the <code>DATA_TYPE</code> of the field whose <b>usageType</b> is <code>TARGET</code> or
      * <code>PREDICTED</code>.
      * It throws exception if none of such fields are found
      * <p>
@@ -377,8 +377,7 @@ public class ModelUtils {
     }
 
     /**
-     * Return a <code>List&lt;org.kie.pmml.api.models.OutputField&gt;</code> out of a <codeList&lt;org.dmg.pmml
-     * .OutputField&gt;</code> one
+     * Return a <code>List&lt;org.kie.pmml.api.models.OutputField&gt;</code> out of a <code>List&lt;org.dmg.pmml.OutputField&gt;</code> one
      * @param toConvert
      * @return
      */

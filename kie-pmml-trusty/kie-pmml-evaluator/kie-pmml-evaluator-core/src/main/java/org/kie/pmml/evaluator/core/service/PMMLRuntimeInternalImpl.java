@@ -15,155 +15,63 @@
  */
 package org.kie.pmml.evaluator.core.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
 
-import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.api.enums.PMML_STEP;
+import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
+import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
+import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.PMMLModel;
-import org.kie.pmml.api.models.PMMLStep;
-import org.kie.pmml.api.runtime.PMMLContext;
-import org.kie.pmml.api.runtime.PMMLListener;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.ProcessingDTO;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
-import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
-import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
-import org.kie.pmml.evaluator.core.implementations.PMMLRuntimeStep;
-import org.kie.pmml.evaluator.core.utils.KnowledgeBaseUtils;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
+import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
+import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
+import org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.api.enums.PMML_STEP.END;
-import static org.kie.pmml.api.enums.PMML_STEP.POST_EVALUATION;
-import static org.kie.pmml.api.enums.PMML_STEP.PRE_EVALUATION;
-import static org.kie.pmml.api.enums.PMML_STEP.START;
-import static org.kie.pmml.evaluator.core.utils.PMMLListenerUtils.stepExecuted;
-import static org.kie.pmml.evaluator.core.utils.PostProcess.postProcess;
-import static org.kie.pmml.evaluator.core.utils.PreProcess.preProcess;
+import static org.kie.efesto.common.api.model.FRI.SLASH;
+import static org.kie.pmml.commons.Constants.PMML_STRING;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
-public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
+public class PMMLRuntimeInternalImpl implements PMMLRuntime {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeInternalImpl.class);
 
-    private final KieBase knowledgeBase;
-    private final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder;
-    private final Set<PMMLListener> pmmlListeners = new HashSet<>();
+    private static final RuntimeManager runtimeManager = SPIUtils.getRuntimeManager(true).get();
 
-    public PMMLRuntimeInternalImpl(final KieBase knowledgeBase, final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
-        this.knowledgeBase = knowledgeBase;
-        this.pmmlModelExecutorFinder = pmmlModelExecutorFinder;
+    public PMMLRuntimeInternalImpl() {
     }
 
     @Override
-    public KieBase getKnowledgeBase() {
-        return knowledgeBase;
-    }
-
-    @Override
-    public List<KiePMMLModel> getKiePMMLModels() {
-        return KnowledgeBaseUtils.getModels(knowledgeBase);
-    }
-
-    @Override
-    public List<PMMLModel> getPMMLModels() {
-        List<KiePMMLModel> kiePMMLModels = getKiePMMLModels();
-        return new ArrayList<>(kiePMMLModels);
-    }
-
-    @Override
-    public Optional<KiePMMLModel> getKiePMMLModel(final String modelName) {
-        return KnowledgeBaseUtils.getModel(knowledgeBase, modelName);
-    }
-
-    @Override
-    public Optional<PMMLModel> getPMMLModel(String modelName) {
-        return getKiePMMLModel(modelName).map(KiePMMLModel.class::cast);
-    }
-
-    @Override
-    public PMML4Result evaluate(final String modelName, final PMMLContext context) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("evaluate {} {}", modelName, context);
+    public PMML4Result evaluate(String modelName, PMMLRuntimeContext context) {
+        String basePath = context.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
+        FRI fri = new FRI(basePath, PMML_STRING);
+        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
+        Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(context, darInputPMML);
+        if (retrieved.isEmpty()) {
+            throw new KiePMMLException("Failed to retrieve EfestoOutput");
         }
-        KiePMMLModel toEvaluate = getKiePMMLModel(modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve model with name " + modelName));
-        return evaluate(toEvaluate, context);
-    }
-
-    @Override
-    public void addPMMLListener(PMMLListener toAdd) {
-        pmmlListeners.add(toAdd);
-    }
-
-    @Override
-    public void removePMMLListener(PMMLListener toRemove) {
-        pmmlListeners.remove(toRemove);
-    }
-
-    @Override
-    public Set<PMMLListener> getPMMLListeners() {
-        return Collections.unmodifiableSet(pmmlListeners);
-    }
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    protected PMML4Result evaluate(final KiePMMLModel model, final PMMLContext context) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("evaluate {} {}", model, context);
+        EfestoOutput output = retrieved.iterator().next();
+        if (!(output instanceof EfestoOutputPMML)) {
+            throw new KiePMMLException("Expected EfestoOutputPMML, retrieved " + output.getClass());
         }
-        pmmlListeners.forEach(context::addPMMLListener);
-        addStep(() -> getStep(START, model, context.getRequestData()), context);
-        final ProcessingDTO processingDTO = preProcess(model, context);
-        addStep(() -> getStep(PRE_EVALUATION, model, context.getRequestData()), context);
-        PMMLModelEvaluator executor = getFromPMMLModelType(model.getPmmlMODEL())
-                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s",
-                                                                      model.getPmmlMODEL())));
-        PMML4Result toReturn = executor.evaluate(knowledgeBase, model, context);
-        addStep(() -> getStep(POST_EVALUATION, model, context.getRequestData()), context);
-        postProcess(toReturn, model, context, processingDTO);
-        addStep(() -> getStep(END, model, context.getRequestData()), context);
-        return toReturn;
+        return ((EfestoOutputPMML) output).getOutputData();
     }
 
-    /**
-     * Send the given <code>PMMLStep</code>
-     * to the <code>PMMLContext</code>
-     * @param stepSupplier
-     * @param pmmlContext
-     */
-    void addStep(final Supplier<PMMLStep> stepSupplier, final PMMLContext pmmlContext) {
-        stepExecuted(stepSupplier, pmmlContext);
+    @Override
+    public List<PMMLModel> getPMMLModels(PMMLRuntimeContext context) {
+        logger.debug("getPMMLModels {}", context);
+        return PMMLRuntimeHelper.getPMMLModels(context);
     }
 
-    PMMLStep getStep(final PMML_STEP pmmlStep, final KiePMMLModel model, final PMMLRequestData requestData) {
-        final PMMLStep toReturn = new PMMLRuntimeStep(pmmlStep);
-        toReturn.addInfo("MODEL", model.getName());
-        toReturn.addInfo("CORRELATION ID", requestData.getCorrelationId());
-        toReturn.addInfo("REQUEST MODEL", requestData.getModelName());
-        requestData.getRequestParams()
-                .forEach(requestParam -> toReturn.addInfo(requestParam.getName(), requestParam.getValue()));
-        return toReturn;
+    @Override
+    public Optional<PMMLModel> getPMMLModel(String fileName, String modelName, PMMLRuntimeContext context) {
+        return PMMLRuntimeHelper.getPMMLModel(fileName, modelName, context);
     }
 
-    /**
-     * Returns an <code>Optional&lt;PMMLModelExecutor&gt;</code> to allow
-     * incremental development of different model-specific executors
-     * @param pmmlMODEL
-     * @return
-     */
-    private Optional<PMMLModelEvaluator> getFromPMMLModelType(final PMML_MODEL pmmlMODEL) {
-        logger.trace("getFromPMMLModelType {}", pmmlMODEL);
-        return pmmlModelExecutorFinder.getImplementations(false)
-                .stream()
-                .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
-                .findFirst();
-    }
 }

@@ -43,18 +43,15 @@ import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.ScoreDistribution;
 import org.dmg.pmml.tree.Node;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils;
-import org.kie.pmml.models.tree.model.KiePMMLNode;
 import org.kie.pmml.models.tree.model.KiePMMLScoreDistribution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +68,6 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactory
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLPredicateFactory.getKiePMMLPredicate;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
 
 public class KiePMMLNodeFactory {
 
@@ -89,23 +85,6 @@ public class KiePMMLNodeFactory {
 
     private KiePMMLNodeFactory() {
         // Avoid instantiation
-    }
-
-    public static KiePMMLNode getKiePMMLNode(final Node node,
-                                             final List<Field<?>> fields,
-                                             final String packageName,
-                                             final Double missingValuePenalty,
-                                             final HasClassLoader hasClassLoader) {
-        logger.trace("getKiePMMLTreeNode {} {}", packageName, node);
-        final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, createNodeClassName(), null, missingValuePenalty);
-        final Map<String, String> sourcesMap = getKiePMMLNodeSourcesMap(nodeNamesDTO, fields, packageName);
-        String fullClassName = packageName + "." + nodeNamesDTO.nodeClassName;
-        try {
-            Class<?> kiePMMLNodeClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
-            return (KiePMMLNode) kiePMMLNodeClass.newInstance();
-        } catch (Exception e) {
-            throw new KiePMMLException(e);
-        }
     }
 
     public static Map<String, String> getKiePMMLNodeSourcesMap(final NodeNamesDTO nodeNamesDTO,

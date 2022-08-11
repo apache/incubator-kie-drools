@@ -41,11 +41,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-evaluator-assembler</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-tree-compiler</artifactId>
       <scope>test</scope>
     </dependency>
@@ -78,6 +73,21 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-api</artifactId>
       <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-compilation-manager-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-runtime-manager-core</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- KIE -->

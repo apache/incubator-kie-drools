@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "CompoundPredicateScorecard.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "CompoundPredicateScorecard";
     private static final String MODEL_NAME = "CompoundPredicateScorecard";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
@@ -63,7 +63,7 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -90,7 +90,7 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
         inputData.put("input2", input2);
         inputData.put("input3", input3);
         inputData.put("input4", input4);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);

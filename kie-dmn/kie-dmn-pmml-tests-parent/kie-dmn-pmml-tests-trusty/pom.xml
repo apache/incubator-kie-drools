@@ -12,6 +12,21 @@
   <name>KiE :: Decision Model Notation - PMML Trusty Tests</name>
   <artifactId>kie-dmn-pmml-tests-trusty</artifactId>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-compilation-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-map-input-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
@@ -33,7 +48,86 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-dependencies</artifactId>
+      <exclusions>
+        <!-- Tree -->
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-tree-model</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-tree-compiler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-tree-evaluator</artifactId>
+        </exclusion>
+        <!-- Scorecard -->
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-scorecard-model</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-scorecard-compiler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-pmml-models-scorecard-evaluator</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+    <!-- PMML Drools models -->
+    <!-- Tree -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-tree-model</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Scorecard -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Depends on kie-drl implementations -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-drl-compilation-common</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-drl-map-input-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Efesto dependency -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-runtime-manager-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-validation</artifactId>
@@ -61,6 +155,20 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <indexfile.directory>${project.build.testOutputDirectory}</indexfile.directory>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <profiles>
     <profile>

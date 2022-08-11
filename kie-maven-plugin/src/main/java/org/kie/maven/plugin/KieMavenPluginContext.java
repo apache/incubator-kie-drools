@@ -23,6 +23,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.kie.maven.plugin.mojos.AbstractKieMojo;
 import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.isModelCompilerInClassPath;
@@ -48,7 +49,27 @@ public class KieMavenPluginContext {
     private final JavaConfiguration.CompilerType compilerType;
     private final Log log;
 
-    public KieMavenPluginContext(String dumpKieSourcesFolder, String generateModel,
+    public static KieMavenPluginContext getKieMavenPluginContext(AbstractKieMojo abstractKieMojo) {
+        return new KieMavenPluginContext(abstractKieMojo.getDumpKieSourcesFolder(),
+                                         abstractKieMojo.getGenerateModel(),
+                                         abstractKieMojo.getGenerateDMNModel(),
+                                         abstractKieMojo.getResources(),
+                                         abstractKieMojo.getValidateDMN(),
+                                         abstractKieMojo.getProjectDir(),
+                                         abstractKieMojo.getTargetDirectory(),
+                                         abstractKieMojo.getProperties(),
+                                         abstractKieMojo.getProject(),
+                                         abstractKieMojo.getMavenSession(),
+                                         abstractKieMojo.getResourcesDirectories(),
+                                         abstractKieMojo.getOutputDirectory(),
+                                         abstractKieMojo.getTestDir(),
+                                         abstractKieMojo.getResourceFolder(),
+                                         abstractKieMojo.isModelParameterEnabled(),
+                                         abstractKieMojo.getCompilerType(),
+                                         abstractKieMojo.getLog());
+    }
+
+    private KieMavenPluginContext(String dumpKieSourcesFolder, String generateModel,
                                  String generateDMNModel,
                                  List<Resource> resources, String validateDMN,
                                  File projectDir, File targetDirectory, Map<String, String> properties, MavenProject project,
@@ -146,4 +167,5 @@ public class KieMavenPluginContext {
     public Log getLog() {
         return log;
     }
+
 }

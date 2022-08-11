@@ -16,15 +16,20 @@
 
 package org.kie.efesto.runtimemanager.api.model;
 
+import java.util.ServiceLoader;
+
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
+import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
-public interface EfestoRuntimeContext extends EfestoContext<EfestoListener> {
+public interface EfestoRuntimeContext<T extends EfestoListener> extends EfestoContext<T> {
 
-    public static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
+    static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
         return new EfestoRuntimeContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
     }
 
     Class<?> loadClass(String className) throws ClassNotFoundException;
+
+    ServiceLoader<KieRuntimeService> getKieRuntimeService();
 }

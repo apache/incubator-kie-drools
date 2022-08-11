@@ -41,7 +41,6 @@ import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
 import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristic;
-import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,18 +62,6 @@ public class KiePMMLCharacteristicsFactory {
 
     private KiePMMLCharacteristicsFactory() {
         // Avoid instantiation
-    }
-
-    public static KiePMMLCharacteristics getKiePMMLCharacteristics(final ScorecardCompilationDTO compilationDTO) {
-        logger.trace("getKiePMMLCharacteristics {} {}", compilationDTO.getPackageName(),
-                     compilationDTO.getCharacteristics());
-        final Map<String, String> sourcesMap = getKiePMMLCharacteristicsSourcesMap(compilationDTO);
-        try {
-            Class<?> kiePMMLCharacteristicsClass = compilationDTO.compileAndLoadCharacteristicsClass(sourcesMap);
-            return (KiePMMLCharacteristics) kiePMMLCharacteristicsClass.newInstance();
-        } catch (Exception e) {
-            throw new KiePMMLException(e);
-        }
     }
 
     static Map<String, String> getKiePMMLCharacteristicsSourcesMap(

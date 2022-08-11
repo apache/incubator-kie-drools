@@ -16,6 +16,7 @@
 
 package org.kie.memorycompiler;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -158,6 +159,7 @@ public class KieMemoryCompiler {
     public static class MemoryCompilerClassLoader extends ClassLoader {
 
         private Map<String, byte[]> customCompiledCode = new HashMap<>();
+        private Map<String, URL> customAddedResource = new HashMap<>();
 
         public MemoryCompilerClassLoader(ClassLoader parent) {
             super(parent);
@@ -165,6 +167,14 @@ public class KieMemoryCompiler {
 
         public void addCode(String name, byte[] bytes) {
             customCompiledCode.put(name, bytes);
+        }
+        public void addResource(String name, URL url) {
+            customAddedResource.put(name, url);
+        }
+
+
+        public byte[] getCode(String name) {
+            return customCompiledCode.get(name);
         }
 
         public void addCodeIfAbsent(String name, byte[] bytes) {
@@ -178,6 +188,12 @@ public class KieMemoryCompiler {
                 return super.findClass(name);
             }
             return defineClass(name, byteCode, 0, byteCode.length);
+        }
+
+        @Override
+        protected URL findResource(String name) {
+            URL url = customAddedResource.get(name);
+            return url != null ? url :  super.findResource(name);
         }
     }
 }

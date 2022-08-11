@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "SingleIrisKMeansClustering.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "SingleIrisKMeansClustering";
     private static final String MODEL_NAME = "SingleIrisKMeansClustering";
     private static final String TARGET_FIELD = "class";
 
@@ -85,7 +85,7 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
     
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     @MethodSource("data")
@@ -98,7 +98,7 @@ public class SingleIrisKMeansClusteringTest extends AbstractPMMLTest {
         inputData.put("petal_length", petalLength);
         inputData.put("petal_width", petalWidth);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(irisClass);

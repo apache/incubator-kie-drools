@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BostonHousingDataTreeTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "BostonHousingTree.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "BostonHousingTree";
     private static final String MODEL_NAME = "BostonHousingTreeModel";
     private static final String TARGET_FIELD = "medv";
     private static PMMLRuntime pmmlRuntime;
@@ -73,7 +73,7 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -110,7 +110,7 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTest {
         inputData.put("ptratio", ptratio);
         inputData.put("b", b);
         inputData.put("lstat", lstat);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

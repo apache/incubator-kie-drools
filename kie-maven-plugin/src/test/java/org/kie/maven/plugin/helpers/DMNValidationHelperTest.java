@@ -19,12 +19,10 @@ import java.util.List;
 
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.validation.DMNValidator;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
-
 public class DMNValidationHelperTest {
 
     private final static Log log = new SystemStreamLog();

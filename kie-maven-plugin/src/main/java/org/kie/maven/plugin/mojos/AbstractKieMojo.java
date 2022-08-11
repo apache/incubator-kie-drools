@@ -62,7 +62,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(defaultValue = "${session}", required = true, readonly = true)
     private MavenSession mavenSession;
 
-    @Parameter(defaultValue = "${project.resources}", required = true, readonly = true)
+    @Parameter(defaultValue = "${project.resources}", required = true)
     private List<org.apache.maven.model.Resource> resourcesDirectories;
 
     /**
@@ -83,31 +83,71 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(property = "javaCompiler", defaultValue = "ecj")
     private String javaCompiler;
 
-    protected KieMavenPluginContext getKieMavenPluginContext() {
-        return new KieMavenPluginContext(dumpKieSourcesFolder,
-                                         generateModel,
-                                         generateDMNModel,
-                                         resources,
-                                         validateDMN,
-                                         projectDir,
-                                         targetDirectory,
-                                         properties,
-                                         project,
-                                         mavenSession,
-                                         resourcesDirectories,
-                                         outputDirectory,
-                                         testDir,
-                                         resourceFolder,
-                                         isModelParameterEnabled(),
-                                         getCompilerType(),
-                                         getLog());
+    public String getDumpKieSourcesFolder() {
+        return dumpKieSourcesFolder;
     }
 
-    private boolean isModelParameterEnabled() {
+    public String getGenerateModel() {
+        return generateModel;
+    }
+
+    public String getGenerateDMNModel() {
+        return generateDMNModel;
+    }
+
+    public List<Resource> getResources() {
+        return resources;
+    }
+
+    public String getValidateDMN() {
+        return validateDMN;
+    }
+
+    public File getProjectDir() {
+        return projectDir;
+    }
+
+    public File getTargetDirectory() {
+        return targetDirectory;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public MavenProject getProject() {
+        return project;
+    }
+
+    public MavenSession getMavenSession() {
+        return mavenSession;
+    }
+
+    public List<Resource> getResourcesDirectories() {
+        return resourcesDirectories;
+    }
+
+    public File getOutputDirectory() {
+        return outputDirectory;
+    }
+
+    public File getTestDir() {
+        return testDir;
+    }
+
+    public File getResourceFolder() {
+        return resourceFolder;
+    }
+
+    public String getJavaCompiler() {
+        return javaCompiler;
+    }
+
+    public boolean isModelParameterEnabled() {
         return execModelParameterEnabled(generateModel);
     }
 
-    private JavaConfiguration.CompilerType getCompilerType() {
+    public JavaConfiguration.CompilerType getCompilerType() {
         return javaCompiler.equalsIgnoreCase("native") ? JavaConfiguration.CompilerType.NATIVE :
                 JavaConfiguration.CompilerType.ECLIPSE;
     }

@@ -24,15 +24,15 @@ import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 
-public abstract class AbstractMockKieCompilerService implements KieCompilerService {
+public abstract class AbstractMockKieCompilerService implements KieCompilerService<EfestoCompilationOutput, EfestoCompilationContext> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, EfestoCompilationContext context) {
+    public List<EfestoCompilationOutput> processResource(EfestoResource toProcess, EfestoCompilationContext context) {
         if (!canManageResource(toProcess)) {
             throw new KieCompilerServiceException(String.format("Unmanaged resource %s", toProcess.getClass()));
         }
-        return Collections.singletonList( (E) new MockEfestoCallableOutput() );
+        return Collections.singletonList(new MockEfestoCallableOutput());
     }
 
 }

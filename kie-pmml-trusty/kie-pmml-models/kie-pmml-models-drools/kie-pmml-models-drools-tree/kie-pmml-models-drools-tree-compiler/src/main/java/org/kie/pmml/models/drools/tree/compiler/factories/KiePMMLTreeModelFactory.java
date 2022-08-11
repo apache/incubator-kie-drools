@@ -33,7 +33,6 @@ import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
-import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,17 +54,6 @@ public class KiePMMLTreeModelFactory {
 
     private KiePMMLTreeModelFactory() {
         // Avoid instantiation
-    }
-
-    public static KiePMMLTreeModel getKiePMMLTreeModel(final DroolsCompilationDTO<TreeModel> compilationDTO) throws IllegalAccessException, InstantiationException {
-        logger.trace("getKiePMMLTreeModel {} {}", compilationDTO.getPackageName(), compilationDTO.getModel());
-        Map<String, String> sourcesMap = getKiePMMLTreeModelSourcesMap(compilationDTO);
-        try {
-            Class<?> kiePMMLTreeModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
-            return (KiePMMLTreeModel) kiePMMLTreeModelClass.newInstance();
-        } catch (Exception e) {
-            throw new KiePMMLException(e);
-        }
     }
 
     public static Map<String, String> getKiePMMLTreeModelSourcesMap(final DroolsCompilationDTO<TreeModel> compilationDTO) {

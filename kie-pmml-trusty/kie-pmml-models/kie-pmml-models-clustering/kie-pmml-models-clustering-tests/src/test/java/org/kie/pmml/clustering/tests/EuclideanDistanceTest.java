@@ -20,7 +20,7 @@ public class EuclideanDistanceTest extends AbstractPMMLTest {
 
     private static final double DOUBLE_VALID_PERCENTAGE = 0.99999;
 
-    private static final String FILE_NAME = "euclideanDistance.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "euclideanDistance";
     private static final String MODEL_NAME = "euclidianDistance";
     private static final String CLUSTER_ID_FIELD = "predictedValue";
     private static final String AFFINITY_FIELD = "predictedAffinity";
@@ -41,7 +41,7 @@ public class EuclideanDistanceTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -59,7 +59,7 @@ public class EuclideanDistanceTest extends AbstractPMMLTest {
         inputData.put("Dimension1", dimension1);
         inputData.put("Dimension2", dimension2);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
         assertThat(pmml4Result.getResultVariables().get(CLUSTER_ID_FIELD)).isEqualTo(classId);
         assertThat(pmml4Result.getResultVariables().get(AFFINITY_FIELD))
                 .asInstanceOf(InstanceOfAssertFactories.DOUBLE)

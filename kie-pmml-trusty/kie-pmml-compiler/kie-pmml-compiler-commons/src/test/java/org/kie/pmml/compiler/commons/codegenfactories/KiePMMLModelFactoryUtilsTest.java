@@ -65,15 +65,18 @@ import org.kie.pmml.commons.model.KiePMMLTargetValue;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileInputStream;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomCastInteger;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomDataField;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomMiningField;
@@ -90,12 +93,11 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactory
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
-import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLModelFactoryUtilsTest {
 
-    private static final String SOURCE = "TransformationsSample.pmml";
+    private static final String SOURCE_BASE = "TransformationsSample";
+    private static final String SOURCE = SOURCE_BASE + PMML_SUFFIX;
     private static final String TEMPLATE_SOURCE = "Template.tmpl";
     private static final String TEMPLATE_CLASS_NAME = "Template";
     private static final String TEST_01_SOURCE = "KiePMMLModelFactoryUtilsTest_01.txt";
@@ -152,7 +154,7 @@ public class KiePMMLModelFactoryUtilsTest {
         assertThat(optSuperInvocation).isPresent();
         superInvocation = optSuperInvocation.get();
         assertThat(constructorDeclaration.getName().asString()).isEqualTo("Template"); // as in the original template
-        assertThat(superInvocation.toString()).isEqualTo("super(name, Collections.emptyList(), operator, second);"); // as in
+        assertThat(superInvocation.toString()).isEqualTo("super(fileName, name, Collections.emptyList(), operator, second);"); // as in
         // the original template
         assertThat(clonedCompilationUnit.getClassByName(TEMPLATE_CLASS_NAME)).isPresent();
     }
@@ -160,16 +162,20 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void setKiePMMLConstructorSuperNameInvocation() {
         String generatedClassName = "generatedClassName";
+        String fileName = "fileName";
         String name = "newName";
-        KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation(generatedClassName,
-                constructorDeclaration,
-                name);
-        commonVerifySuperInvocation(generatedClassName, name);
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setKiePMMLConstructorSuperNameInvocation(generatedClassName,
+                                                                                                                         constructorDeclaration,
+                                                                                                                         fileName,
+                                                                                                                         name);
+        commonVerifySuperInvocation(generatedClassName, fileName, name);
     }
+
 
     @Test
     void setKiePMMLModelConstructor() {
         String generatedClassName = "generatedClassName";
+        String fileName = "fileName";
         String name = "newName";
         List<MiningField> miningFields = IntStream.range(0, 3)
                 .mapToObj(i -> ModelUtils.convertToKieMiningField(getRandomMiningField(),
@@ -182,13 +188,14 @@ public class KiePMMLModelFactoryUtilsTest {
         List<TargetField> targetFields = IntStream.range(0, 2)
                 .mapToObj(i -> ModelUtils.convertToKieTargetField(getRandomTarget()))
                 .collect(Collectors.toList());
-        KiePMMLModelFactoryUtils.setKiePMMLModelConstructor(generatedClassName,
-                constructorDeclaration,
-                name,
-                miningFields,
-                outputFields,
-                targetFields);
-        commonVerifySuperInvocation(generatedClassName, name);
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor(generatedClassName,
+                                                                                                           constructorDeclaration,
+                                                                                                           fileName,
+                                                                                                           name,
+                                                                                                           miningFields,
+                                                                                                           outputFields,
+                                                                                                           targetFields);
+        commonVerifySuperInvocation(generatedClassName,  fileName, name);
         List<MethodCallExpr> retrieved = getMethodCallExprList(constructorDeclaration.getBody(), miningFields.size(),
                                                                "miningFields",
                                                                "add");
@@ -212,12 +219,12 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void addGetCreatedKiePMMLMiningFieldsMethod() throws IOException {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                pmmlModel,
-                model,
-                new HasClassLoaderMock());
+                                                                                                     pmmlModel,
+                                                                                                     model,
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         ClassOrInterfaceDeclaration modelTemplate = new ClassOrInterfaceDeclaration();
-        KiePMMLModelFactoryUtils.addGetCreatedKiePMMLMiningFieldsMethod(modelTemplate,
-                compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.addGetCreatedKiePMMLMiningFieldsMethod(modelTemplate,
+                                                                                                                       compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
         final MethodDeclaration retrieved = modelTemplate.getMethodsByName(GET_CREATED_KIEPMMLMININGFIELDS).get(0);
         String text = getFileContent(TEST_12_SOURCE);
         BlockStmt expected = JavaParserUtils.parseBlock(text);
@@ -227,11 +234,11 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void populateGetCreatedMiningFieldsMethod() throws IOException {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                pmmlModel,
-                model,
-                new HasClassLoaderMock());
-        KiePMMLModelFactoryUtils.populateGetCreatedMiningFieldsMethod(classOrInterfaceDeclaration,
-                compilationDTO.getKieMiningFields());
+                                                                                                     pmmlModel,
+                                                                                                     model,
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateGetCreatedMiningFieldsMethod(classOrInterfaceDeclaration,
+                                                                                                                     compilationDTO.getKieMiningFields());
         final MethodDeclaration retrieved =
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_MININGFIELDS).get(0);
         String text = getFileContent(TEST_14_SOURCE);
@@ -242,11 +249,11 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void populateGetCreatedOutputFieldsMethod() throws IOException {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                pmmlModel,
-                model,
-                new HasClassLoaderMock());
-        KiePMMLModelFactoryUtils.populateGetCreatedOutputFieldsMethod(classOrInterfaceDeclaration,
-                compilationDTO.getKieOutputFields());
+                                                                                                     pmmlModel,
+                                                                                                     model,
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateGetCreatedOutputFieldsMethod(classOrInterfaceDeclaration,
+                                                                                                                     compilationDTO.getKieOutputFields());
         final MethodDeclaration retrieved =
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_OUTPUTFIELDS).get(0);
         String text = getFileContent(TEST_13_SOURCE);
@@ -257,11 +264,11 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void populateGetCreatedKiePMMLMiningFieldsMethod() throws IOException {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                pmmlModel,
-                model,
-                new HasClassLoaderMock());
-        KiePMMLModelFactoryUtils.populateGetCreatedKiePMMLMiningFieldsMethod(classOrInterfaceDeclaration,
-                compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
+                                                                                                     pmmlModel,
+                                                                                                     model,
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateGetCreatedKiePMMLMiningFieldsMethod(classOrInterfaceDeclaration,
+                                                                                                                            compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
         final MethodDeclaration retrieved =
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_KIEPMMLMININGFIELDS).get(0);
         String text = getFileContent(TEST_12_SOURCE);
@@ -346,8 +353,8 @@ public class KiePMMLModelFactoryUtilsTest {
 
     @Test
     void populateGetCreatedTransformationDictionaryMethod() throws IOException {
-        KiePMMLModelFactoryUtils.populateGetCreatedTransformationDictionaryMethod(classOrInterfaceDeclaration,
-                pmmlModel.getTransformationDictionary());
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateGetCreatedTransformationDictionaryMethod(classOrInterfaceDeclaration,
+                                                                                                                                 pmmlModel.getTransformationDictionary());
         final MethodDeclaration retrieved =
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_TRANSFORMATION_DICTIONARY).get(0);
         String text = getFileContent(TEST_09_SOURCE);
@@ -357,8 +364,8 @@ public class KiePMMLModelFactoryUtilsTest {
 
     @Test
     void populateGetCreatedLocalTransformationsMethod() throws IOException {
-        KiePMMLModelFactoryUtils.populateGetCreatedLocalTransformationsMethod(classOrInterfaceDeclaration,
-                model.getLocalTransformations());
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.populateGetCreatedLocalTransformationsMethod(classOrInterfaceDeclaration,
+                                                                                                                             model.getLocalTransformations());
         final MethodDeclaration retrieved =
                 classOrInterfaceDeclaration.getMethodsByName(GET_CREATED_LOCAL_TRANSFORMATIONS).get(0);
         String text = getFileContent(TEST_08_SOURCE);
@@ -389,10 +396,10 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void init() throws IOException {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                pmmlModel,
-                model,
-                new HasClassLoaderMock());
-        KiePMMLModelFactoryUtils.init(compilationDTO, classOrInterfaceDeclaration);
+                                                                                                     pmmlModel,
+                                                                                                     model,
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.init(compilationDTO, classOrInterfaceDeclaration);
         BlockStmt body = constructorDeclaration.getBody();
         String text = getFileContent(TEST_03_SOURCE);
         Statement expected = JavaParserUtils.parseConstructorBlock(text);
@@ -402,10 +409,11 @@ public class KiePMMLModelFactoryUtilsTest {
     @Test
     void initStaticGetter() throws IOException {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                pmmlModel,
-                model,
-                new HasClassLoaderMock());
-        KiePMMLModelFactoryUtils.initStaticGetter(compilationDTO, classOrInterfaceDeclaration);
+                                                                                                     pmmlModel,
+                                                                                                     model,
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
+        org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.initStaticGetter(compilationDTO,
+                                                                                                 classOrInterfaceDeclaration);
         String text = getFileContent(TEST_04_SOURCE);
         MethodDeclaration expected = JavaParserUtils.parseMethod(text);
         assertThat(staticGetterMethod.toString()).isEqualTo(expected.toString());
@@ -512,7 +520,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                      pmmlModel,
                                                                                                      model,
-                                                                                                     new HasClassLoaderMock());
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         final MethodDeclaration methodDeclaration = new MethodDeclaration();
         org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.commonPopulateGetCreatedKiePMMLMiningFieldsMethod(methodDeclaration,
                                                                                                                                   compilationDTO.getMiningSchema().getMiningFields(), compilationDTO.getFields());
@@ -526,7 +534,7 @@ public class KiePMMLModelFactoryUtilsTest {
         final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
                                                                                                      pmmlModel,
                                                                                                      model,
-                                                                                                     new HasClassLoaderMock());
+                                                                                                     new PMMLCompilationContextMock(), SOURCE_BASE);
         final MethodDeclaration methodDeclaration = new MethodDeclaration();
         KiePMMLModelFactoryUtils.commonPopulateGetCreatedKiePMMLOutputFieldsMethod(methodDeclaration,
                                                                                    compilationDTO.getOutput().getOutputFields());
@@ -662,9 +670,9 @@ public class KiePMMLModelFactoryUtilsTest {
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
-    private void commonVerifySuperInvocation(String generatedClassName, String name) {
+    private void commonVerifySuperInvocation(String generatedClassName, String fileName, String name) {
         assertThat(constructorDeclaration.getName().asString()).isEqualTo(generatedClassName); // modified by invocation
-        String expected = String.format("super(\"%s\", Collections.emptyList(), operator, second);", name);
+        String expected = String.format("super(\"%s\", \"%s\", Collections.emptyList(), operator, second);", fileName, name);
         assertThat(superInvocation.toString()).isEqualTo(expected); // modified by invocation
     }
 
@@ -672,6 +680,7 @@ public class KiePMMLModelFactoryUtilsTest {
     /**
      * Return a <code>List&lt;MethodCallExpr&gt;</code> where every element <b>scope' name</b> is <code>scope</code>
      * and every element <b>name</b> is <code>method</code>
+     *
      * @param blockStmt
      * @param expectedSize
      * @param scope

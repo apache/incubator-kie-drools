@@ -15,12 +15,11 @@
  */
 package org.kie.pmml.evaluator.core.executor;
 
-import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
+import org.kie.pmml.commons.model.KiePMMLModel;
 
 public interface PMMLModelEvaluator<E extends KiePMMLModel> {
 
@@ -32,12 +31,11 @@ public interface PMMLModelEvaluator<E extends KiePMMLModel> {
 
     /**
      * Evaluate the model, given the context
-     * @param knowledgeBase The <code>KieBase</code> we are currently working on.
      * It may be <code>null</code> for testing purpose for <b>not drools-related</b> models
      * @param model the model to evaluate
      * @param context the context with all the input variables
      * @return the result of the evaluation
      * @throws KiePMMLInternalException
      */
-    PMML4Result evaluate(final KieBase knowledgeBase, final E model, final PMMLContext context);
+    PMML4Result evaluate(final E model, final PMMLRuntimeContext context);
 }

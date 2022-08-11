@@ -48,12 +48,6 @@ private static final Logger logger = LoggerFactory.getLogger(ClusteringModelImpl
     }
 
     @Override
-    public KiePMMLClusteringModel getKiePMMLModel(final CompilationDTO<ClusteringModel> compilationDTO) {
-        logger.trace("getKiePMMLModel {}", compilationDTO);
-        return KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(ClusteringCompilationDTO.fromCompilationDTO(compilationDTO));
-    }
-
-    @Override
     public Map<String, String> getSourcesMap(final CompilationDTO<ClusteringModel> compilationDTO) {
         logger.trace("getKiePMMLModelWithSources {}", compilationDTO);
         try {

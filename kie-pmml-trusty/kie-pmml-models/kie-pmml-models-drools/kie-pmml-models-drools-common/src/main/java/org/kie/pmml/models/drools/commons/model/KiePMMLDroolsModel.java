@@ -15,29 +15,44 @@
  */
 package org.kie.pmml.models.drools.commons.model;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-import org.kie.api.KieBase;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
+import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
+import org.kie.efesto.runtimemanager.api.model.EfestoOriginalTypeGeneratedType;
+import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
+import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.IsDrools;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
-import org.kie.pmml.models.drools.utils.KiePMMLSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.efesto.common.api.model.FRI.SLASH;
+import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getRuntimeManager;
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 import static org.kie.pmml.models.drools.utils.KiePMMLAgendaListenerUtils.getAgendaEventListener;
 
 /**
@@ -57,9 +72,10 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
      */
     protected Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
 
-    protected KiePMMLDroolsModel(final String modelName,
+    protected KiePMMLDroolsModel(final String fileName,
+                                 final String modelName,
                                  final List<KiePMMLExtension> extensions) {
-        super(modelName, extensions);
+        super(fileName, modelName, extensions);
     }
 
     public Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap() {
@@ -67,26 +83,39 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
-                           final PMMLContext context) {
-        logger.trace("evaluate {} {}", knowledgeBase, requestData);
-        if (!(knowledgeBase instanceof KieBase)) {
-            throw new KiePMMLException(String.format("Expecting KieBase, received %s",
-                                                     knowledgeBase.getClass().getName()));
-        }
+    public Object evaluate(final Map<String, Object> requestData,
+                           final PMMLRuntimeContext context) {
+        logger.trace("evaluate {}", requestData);
         final PMML4Result toReturn = getPMML4Result(targetField);
-        String fullClassName = this.getClass().getName();
-        String packageName = fullClassName.contains(".") ?
-                fullClassName.substring(0, fullClassName.lastIndexOf('.')) : "";
-        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((KieBase) knowledgeBase, name, packageName,
-                                                                          toReturn)
-                .withObjectsInSession(requestData, fieldTypeMap)
-                .withOutputFieldsMap(context.getOutputFieldsMap());
-        if (logger.isDebugEnabled()) {
-            builder = builder.withAgendaEventListener(agendaEventListener);
+
+        List<Object> inserts = Arrays.asList(new KiePMMLStatusHolder());
+        final Map<String, Object> globals = new HashMap<>();
+        globals.put(PMML4_RESULT_IDENTIFIER, toReturn);
+        globals.put(OUTPUTFIELDS_MAP_IDENTIFIER, context.getOutputFieldsMap());
+
+        Map<String, EfestoOriginalTypeGeneratedType> convertedFieldTypeMap = fieldTypeMap.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                                          entry -> new EfestoOriginalTypeGeneratedType(entry.getValue().getOriginalType(),
+                                                                                       entry.getValue().getGeneratedType())));
+        EfestoMapInputDTO darMapInputDTO = new EfestoMapInputDTO(inserts, globals, requestData, convertedFieldTypeMap
+                , this.getName(), this.getKModulePackageName());
+
+        String basePath = context.getFileNameNoSuffix() + SLASH + this.getName();
+        FRI fri = new FRI(basePath, "drl");
+        EfestoInput<EfestoMapInputDTO> input = new AbstractEfestoInput<EfestoMapInputDTO>(fri, darMapInputDTO) {
+        };
+
+        Optional<RuntimeManager> runtimeManager = getRuntimeManager(true);
+        if (!runtimeManager.isPresent()) {
+            throw new KieRuntimeServiceException("Cannot find RuntimeManager");
         }
-        final KiePMMLSessionUtils kiePMMLSessionUtils = builder.build();
-        kiePMMLSessionUtils.fireAllRules();
+
+        Collection<EfestoOutput> output = runtimeManager.get().evaluateInput(context, input);
+        // TODO manage for different kind of retrieved output
+        if (output.isEmpty()) {
+            throw new KiePMMLException("Failed to retrieve value for " + this.getName());
+        }
         return toReturn;
     }
 
@@ -128,6 +157,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         return Objects.hash(kiePMMLOutputFields, fieldTypeMap);
     }
 
+    @SuppressWarnings("unchecked")
     private PMML4Result getPMML4Result(final String targetField) {
         PMML4Result toReturn = new PMML4Result();
         toReturn.setResultCode(ResultCode.FAIL.getName());

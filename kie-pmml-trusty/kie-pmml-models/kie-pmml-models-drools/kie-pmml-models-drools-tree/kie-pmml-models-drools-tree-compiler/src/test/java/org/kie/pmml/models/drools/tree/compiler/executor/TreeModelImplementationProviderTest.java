@@ -20,17 +20,15 @@ import java.io.Serializable;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.util.CloneUtil;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.commons.mocks.ExternalizableMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
-import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
-import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.kie.test.util.filesystem.FileUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,29 +44,15 @@ public class TreeModelImplementationProviderTest {
         assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.TREE_MODEL);
     }
 
-    @Test
-    void getKiePMMLModel() throws Exception {
-        final PMML pmml = getPMML(SOURCE_1);
-        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        (TreeModel) pmml.getModels().get(0),
-                        new HasKnowledgeBuilderMock(knowledgeBuilder));
-        final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
-        assertThat(retrieved).isNotNull();
-        commonVerifyIsDeepCloneable(retrieved);
-    }
 
     @Test
     void getKiePMMLModelWithSources() throws Exception {
         final PMML pmml = getPMML(SOURCE_1);
-        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final CommonCompilationDTO<TreeModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        (TreeModel) pmml.getModels().get(0),
-                        new HasKnowledgeBuilderMock(knowledgeBuilder));
+                                                                       pmml,
+                                                                       (TreeModel) pmml.getModels().get(0),
+                                                                       new PMMLCompilationContextMock(), "FILENAME");
         final KiePMMLDroolsModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
         commonVerifyIsDeepCloneable(retrieved);

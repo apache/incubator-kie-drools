@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getKieRuntimeService;
+import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getKieRuntimeServiceFromEfestoRuntimeContext;
 
 public class RuntimeManagerImpl implements RuntimeManager {
     private static final Logger logger = LoggerFactory.getLogger(RuntimeManagerImpl.class.getName());
@@ -43,6 +44,10 @@ public class RuntimeManagerImpl implements RuntimeManager {
 
     private Optional<EfestoOutput> getOptionalOutput(EfestoRuntimeContext context, EfestoInput input) {
         Optional<KieRuntimeService> retrieved = getKieRuntimeService(input, false, context);
+        if (!retrieved.isPresent()) {
+            logger.warn("Cannot find KieRuntimeService for {}, looking inside context classloader", input.getFRI());
+            retrieved = getKieRuntimeServiceFromEfestoRuntimeContext(input, context);
+        }
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieRuntimeService for {}", input.getFRI());
             return Optional.empty();

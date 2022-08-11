@@ -54,16 +54,6 @@ public class KiePMMLScorecardModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final ScorecardCompilationDTO compilationDTO) {
-        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(compilationDTO);
-        try {
-            Class<?> kiePMMLScorecardModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
-            return (KiePMMLScorecardModel) kiePMMLScorecardModelClass.newInstance();
-        } catch (Exception e) {
-            throw new KiePMMLException(e);
-        }
-    }
-
     public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final ScorecardCompilationDTO compilationDTO) {
         String className = compilationDTO.getSimpleClassName();
         String packageName = compilationDTO.getPackageName();
@@ -97,12 +87,12 @@ public class KiePMMLScorecardModelFactory {
         ClassOrInterfaceType characteristicsClass = parseClassOrInterfaceType(fullCharacteristicsClassName);
         ObjectCreationExpr characteristicsReference = new ObjectCreationExpr();
         characteristicsReference.setType(characteristicsClass);
-        superStatement.setArgument(2, characteristicsReference);
-        superStatement.setArgument(3, getExpressionForObject(compilationDTO.getInitialScore()));
-        superStatement.setArgument(4, getExpressionForObject(compilationDTO.isUseReasonCodes()));
+        superStatement.setArgument(3, characteristicsReference);
+        superStatement.setArgument(4, getExpressionForObject(compilationDTO.getInitialScore()));
+        superStatement.setArgument(5, getExpressionForObject(compilationDTO.isUseReasonCodes()));
         REASONCODE_ALGORITHM reasoncodeAlgorithm = compilationDTO.getREASONCODE_ALGORITHM();
         NameExpr reasonCodeExpr = new NameExpr(REASONCODE_ALGORITHM.class.getName() + "." + reasoncodeAlgorithm.name());
-        superStatement.setArgument(5, reasonCodeExpr);
-        superStatement.setArgument(6, getExpressionForObject(compilationDTO.getBaselineScore()));
+        superStatement.setArgument(6, reasonCodeExpr);
+        superStatement.setArgument(7, getExpressionForObject(compilationDTO.getBaselineScore()));
     }
 }

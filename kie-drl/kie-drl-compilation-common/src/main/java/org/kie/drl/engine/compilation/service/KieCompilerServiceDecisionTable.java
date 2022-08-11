@@ -28,15 +28,16 @@ import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 
 import static org.kie.drl.engine.compilation.utils.DrlCompilerHelper.dTableToDrl;
 
-public class KieCompilerServiceDecisionTable implements KieCompilerService {
+public class KieCompilerServiceDecisionTable implements KieCompilerService<EfestoCompilationOutput,
+        EfestoCompilationContext> {
 
     @Override
-    public <T extends EfestoResource> boolean canManageResource(T toProcess) {
+    public boolean canManageResource(EfestoResource toProcess) {
         return toProcess instanceof DecisionTableFileSetResource;
     }
 
     @Override
-    public <T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, EfestoCompilationContext context) {
+    public List<EfestoCompilationOutput> processResource(EfestoResource toProcess, EfestoCompilationContext context) {
         if (!canManageResource(toProcess)) {
             throw new KieCompilerServiceException(String.format("%s can not process %s",
                     this.getClass().getName(),
@@ -45,7 +46,7 @@ public class KieCompilerServiceDecisionTable implements KieCompilerService {
         if (!(context instanceof DrlCompilationContext)) {
             throw new KieCompilerServiceException("context has to be DrlCompilationContext");
         }
-        return Collections.singletonList( (E) dTableToDrl((DecisionTableFileSetResource) toProcess, (DrlCompilationContext) context) );
+        return Collections.singletonList(dTableToDrl((DecisionTableFileSetResource) toProcess, (DrlCompilationContext) context));
     }
 
 }

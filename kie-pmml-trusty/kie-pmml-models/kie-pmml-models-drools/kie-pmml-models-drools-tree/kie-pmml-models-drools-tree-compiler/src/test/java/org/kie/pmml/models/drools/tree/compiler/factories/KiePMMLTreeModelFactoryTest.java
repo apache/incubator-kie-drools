@@ -31,17 +31,15 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
-import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
-import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,39 +73,14 @@ public class KiePMMLTreeModelFactoryTest {
     }
 
     @Test
-    void getKiePMMLTreeModel() throws InstantiationException, IllegalAccessException {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
-                pmml.getTransformationDictionary(),
-                treeModel.getLocalTransformations());
-        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        treeModel,
-                        new HasKnowledgeBuilderMock(knowledgeBuilder));
-        final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
-                DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
-                        fieldTypeMap);
-        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(droolsCompilationDTO);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.getName()).isEqualTo(treeModel.getModelName());
-        assertThat(retrieved.getTargetField()).isEqualTo(TARGET_FIELD);
-    }
-
-    @Test
     void getKiePMMLScorecardModelSourcesMap() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
-                pmml.getTransformationDictionary(),
-                treeModel.getLocalTransformations());
-        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+                                                                                           pmml.getTransformationDictionary(), treeModel.getLocalTransformations());
         final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        treeModel,
-                        new HasKnowledgeBuilderMock(knowledgeBuilder));
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME, pmml, treeModel,
+                                                                       new PMMLCompilationContextMock(), "FILENAME");
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
-                DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
-                        fieldTypeMap);
+                DroolsCompilationDTO.fromCompilationDTO(compilationDTO, fieldTypeMap);
         Map<String, String> retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(droolsCompilationDTO);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSize(1);
@@ -132,19 +105,16 @@ public class KiePMMLTreeModelFactoryTest {
     void setConstructor() {
         final String targetField = "whatIdo";
         final ClassOrInterfaceDeclaration modelTemplate = classOrInterfaceDeclaration.clone();
-        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        treeModel,
-                        new HasKnowledgeBuilderMock(knowledgeBuilder));
+                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME, pmml, treeModel,
+                                                                       new PMMLCompilationContextMock(), "FILENAME");
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
-                DroolsCompilationDTO.fromCompilationDTO(compilationDTO,
-                        new HashMap<>());
+                DroolsCompilationDTO.fromCompilationDTO(compilationDTO, new HashMap<>());
         KiePMMLTreeModelFactory.setConstructor(droolsCompilationDTO, modelTemplate);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
-        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", treeModel.getModelName())));
-        superInvocationExpressionsMap.put(2, new NameExpr(String.format("\"%s\"", treeModel.getAlgorithmName())));
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", "FILENAME")));
+        superInvocationExpressionsMap.put(1, new NameExpr(String.format("\"%s\"", treeModel.getModelName())));
+        superInvocationExpressionsMap.put(3, new NameExpr(String.format("\"%s\"", treeModel.getAlgorithmName())));
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(treeModel.getMiningFunction().value());
         PMML_MODEL pmmlModel = PMML_MODEL.byName(treeModel.getClass().getSimpleName());
         Map<String, Expression> assignExpressionMap = new HashMap<>();

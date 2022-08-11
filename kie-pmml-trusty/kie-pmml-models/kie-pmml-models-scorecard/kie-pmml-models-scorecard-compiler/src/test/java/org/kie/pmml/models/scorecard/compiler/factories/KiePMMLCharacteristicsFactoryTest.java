@@ -47,7 +47,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.commons.utils.KiePMMLModelUtils;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
 import org.kie.pmml.models.scorecard.model.KiePMMLAttribute;
@@ -106,24 +106,13 @@ public class KiePMMLCharacteristicsFactoryTest {
     }
 
     @Test
-    void getKiePMMLCharacteristics() {
-        final CommonCompilationDTO<Scorecard> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        basicComplexPartialScorePmml,
-                        basicComplexPartialScore,
-                        new HasClassLoaderMock());
-        final KiePMMLCharacteristics retrieved =
-                KiePMMLCharacteristicsFactory.getKiePMMLCharacteristics(ScorecardCompilationDTO.fromCompilationDTO(source));
-        assertThat(retrieved).isNotNull();
-    }
-
-    @Test
     void getKiePMMLCharacteristicsSourcesMap() {
         final CommonCompilationDTO<Scorecard> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        basicComplexPartialScorePmml,
-                        basicComplexPartialScore,
-                        new HasClassLoaderMock());
+                                                                       basicComplexPartialScorePmml,
+                                                                       basicComplexPartialScore,
+                                                                       new PMMLCompilationContextMock(),
+                                                                       BASIC_COMPLEX_PARTIAL_SCORE_SOURCE);
         ScorecardCompilationDTO compilationDTO = ScorecardCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap(compilationDTO);

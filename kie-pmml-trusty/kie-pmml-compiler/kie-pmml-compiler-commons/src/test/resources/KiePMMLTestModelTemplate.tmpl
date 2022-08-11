@@ -16,7 +16,7 @@ public class KiePMMLTestModelTemplate extends KiePMMLTestingModel {
 
 
     public KiePMMLTestModelTemplate() {
-        super(name, Collections.emptyList());
+        super(fileName, name, Collections.emptyList());
         pmmlMODEL = null;
         transformationDictionary = null;
         localTransformations = null;
@@ -26,7 +26,7 @@ public class KiePMMLTestModelTemplate extends KiePMMLTestingModel {
     }
 
     public static KiePMMLTestingModel getModel() {
-            KiePMMLTestingModel toReturn = KiePMMLTestingModel.builder("name", Collections.emptyList(), null)
+            KiePMMLTestingModel toReturn = KiePMMLTestingModel.builder("fileName", "name", Collections.emptyList(), null)
                                     .withTargetField("targetField")
                                     .withMiningFields(getCreatedMiningFields())
                                     .withOutputFields(getCreatedOutputFields())

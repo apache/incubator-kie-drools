@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
-import org.kie.pmml.commons.testingutility.PMMLContextTest;
+import org.kie.pmml.commons.testingutility.PMMLRuntimeContextTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,15 +46,16 @@ public class KiePMMLScorecardModelTest {
     @Test
     void evaluate() {
         Double initialScore = 25.23;
-        PMMLContextTest pmmlContextTest = new PMMLContextTest();
-        KiePMMLScorecardModel kiePMMLScorecardModel = new KiePMMLScorecardModel(MODEL_NAME,
-                Collections.emptyList(),
-                getKiePMMLCharacteristics(),
-                initialScore,
-                true,
-                REASONCODE_ALGORITHM.POINTS_BELOW,
-                0);
-        Object retrieved = kiePMMLScorecardModel.evaluate(null, Collections.emptyMap(), pmmlContextTest);
+        PMMLRuntimeContextTest pmmlContextTest = new PMMLRuntimeContextTest();
+        KiePMMLScorecardModel kiePMMLScorecardModel = new KiePMMLScorecardModel("FILENAME",
+                                                                                MODEL_NAME,
+                                                                                Collections.emptyList(),
+                                                                                getKiePMMLCharacteristics(),
+                                                                                initialScore,
+                                                                                true,
+                                                                                REASONCODE_ALGORITHM.POINTS_BELOW,
+                                                                                0);
+        Object retrieved = kiePMMLScorecardModel.evaluate(Collections.emptyMap(), pmmlContextTest);
         assertThat(retrieved).isNotNull();
 
         Double EVALUATION_20 = baselineScore - value2;

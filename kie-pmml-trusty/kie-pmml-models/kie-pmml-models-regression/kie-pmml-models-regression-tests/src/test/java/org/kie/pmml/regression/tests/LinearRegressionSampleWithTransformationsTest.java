@@ -35,7 +35,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "LinearRegressionSampleWithTransformations.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "LinearRegressionSampleWithTransformations";
     private static final String MODEL_NAME = "LinearRegressionSampleWithTransformations";
     private static final String TARGET_FIELD = "number_of_claims";
 
@@ -84,7 +84,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -108,7 +108,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         inputData.put("text_input", TEXT_INPUT);
         inputData.put("input3", 34.1);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat((double) pmml4Result.getResultVariables().get(TARGET_FIELD)).isCloseTo(expectedResult,
@@ -178,7 +178,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
             inputData.put("salary", salary);
             inputData.put("car_location", car_location);
             inputData.put("text_input", TEXT_INPUT);
-            evaluate(pmmlRuntime, inputData, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
         });
     }
 
@@ -192,7 +192,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         inputData.put("car_location", car_location);
         inputData.put("text_input", TEXT_INPUT);
         inputData.put("input3", "34.1");
-        assertThat(evaluate(pmmlRuntime, inputData, MODEL_NAME)).isNotNull();
+        assertThat(evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME)).isNotNull();
     }
 
     @MethodSource("data")
@@ -206,7 +206,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
             inputData.put("car_location", car_location);
             inputData.put("text_input", TEXT_INPUT);
             inputData.put("input3", true);
-            evaluate(pmmlRuntime, inputData, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
         });
     }
 
@@ -221,7 +221,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
             inputData.put("car_location", car_location);
             inputData.put("text_input", TEXT_INPUT);
             inputData.put("input3", 4.1);
-            evaluate(pmmlRuntime, inputData, MODEL_NAME);
+            evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
         });
     }
 }

@@ -23,6 +23,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.maven.plugin.helpers.DMNModelModeHelper;
 
+import static org.kie.maven.plugin.KieMavenPluginContext.getKieMavenPluginContext;
 import static org.kie.maven.plugin.executors.BuildDrlExecutor.buildDrl;
 import static org.kie.maven.plugin.executors.GenerateANCExecutor.generateANC;
 import static org.kie.maven.plugin.executors.GenerateDMNModelExecutor.generateDMN;
@@ -39,8 +40,9 @@ import static org.kie.maven.plugin.helpers.ExecModelModeHelper.ancEnabled;
         defaultPhase = LifecyclePhase.COMPILE)
 public class BuildMojo extends AbstractKieMojo {
 
+
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final KieMavenPluginContext kieMavenPluginContext = getKieMavenPluginContext();
+        KieMavenPluginContext kieMavenPluginContext = getKieMavenPluginContext(this);
         executeGenerateModel(kieMavenPluginContext);
         executeGenerateDMNModel(kieMavenPluginContext);
         executeGeneratePMMLModel(kieMavenPluginContext);

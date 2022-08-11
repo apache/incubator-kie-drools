@@ -63,8 +63,10 @@ public class KiePMMLScorecardModelASTFactory extends KiePMMLAbstractModelASTFact
                                                        final List<KiePMMLDroolsType> types) {
         logger.trace("getKiePMMLDroolsAST {} {} {}", fields, model, fieldTypeMap);
         DATA_TYPE targetType = getTargetFieldType(fields, model);
-        List<OutputField> outputFields =  model.getOutput() != null ? model.getOutput().getOutputFields() : Collections.emptyList();
-        KiePMMLScorecardModelCharacteristicASTFactory factory = KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, outputFields, targetType);
+        List<OutputField> outputFields = model.getOutput() != null ? model.getOutput().getOutputFields() :
+                Collections.emptyList();
+        KiePMMLScorecardModelCharacteristicASTFactory factory =
+                KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, outputFields, targetType);
         if (model.isUseReasonCodes()) {
             factory = factory.withReasonCodes(model.getBaselineScore(), REASONCODE_ALGORITHM.byName(model.getReasonCodeAlgorithm().value()));
         }

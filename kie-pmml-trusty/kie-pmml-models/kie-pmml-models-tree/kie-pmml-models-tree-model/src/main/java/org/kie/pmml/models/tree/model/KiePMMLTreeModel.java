@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 public abstract class KiePMMLTreeModel extends KiePMMLModel {
@@ -28,13 +28,13 @@ public abstract class KiePMMLTreeModel extends KiePMMLModel {
 
     protected Function<Map<String, Object>, KiePMMLNodeResult> nodeFunction;
 
-    protected KiePMMLTreeModel(String modelName) {
-        super(modelName, Collections.emptyList());
+    protected KiePMMLTreeModel(String fileName, String modelName) {
+        super(fileName, modelName, Collections.emptyList());
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
-                           final PMMLContext context) {
+    public Object evaluate(final Map<String, Object> requestData,
+                           final PMMLRuntimeContext context) {
         KiePMMLNodeResult kiePMMLNodeResult = nodeFunction.apply(requestData);
         context.setProbabilityResultMap(kiePMMLNodeResult.getProbabilityMap());
         return kiePMMLNodeResult.getScore();

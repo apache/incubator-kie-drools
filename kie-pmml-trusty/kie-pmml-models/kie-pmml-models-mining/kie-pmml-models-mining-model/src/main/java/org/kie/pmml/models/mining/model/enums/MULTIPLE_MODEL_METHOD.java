@@ -145,6 +145,7 @@ public enum MULTIPLE_MODEL_METHOD {
      * Return the prediction of the input data
      * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> is the result of the model
      * evaluation
+     *
      * @param inputData
      * @return
      * @throws KieEnumException
@@ -157,6 +158,7 @@ public enum MULTIPLE_MODEL_METHOD {
      * Return the classification of the input data
      * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> is the result of the model
      * evaluation
+     *
      * @param inputData
      * @return
      * @throws KieEnumException
@@ -169,6 +171,7 @@ public enum MULTIPLE_MODEL_METHOD {
      * Return the probabilities of the input data
      * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> are the probabilities of the model
      * evaluation
+     *
      * @param inputData
      * @return
      * @throws KieEnumException

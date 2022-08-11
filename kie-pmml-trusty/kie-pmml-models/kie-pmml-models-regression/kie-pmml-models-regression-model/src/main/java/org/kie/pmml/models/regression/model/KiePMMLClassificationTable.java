@@ -26,7 +26,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
@@ -46,7 +46,7 @@ public final class KiePMMLClassificationTable extends AbstractKiePMMLTable {
     }
 
     @Override
-    public Object evaluateRegression(final Map<String, Object> input, final PMMLContext context) {
+    public Object evaluateRegression(final Map<String, Object> input, final PMMLRuntimeContext context) {
         final LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
         for (Map.Entry<String, KiePMMLRegressionTable> entry : categoryTableMap.entrySet()) {
             resultMap.put(entry.getKey(), (Double) entry.getValue().evaluateRegression(input, context));
@@ -60,6 +60,7 @@ public final class KiePMMLClassificationTable extends AbstractKiePMMLTable {
     /**
      * A <b>Classification</b> is considered <b>binary</b> if it is of <b>CATEGORICAL</b> type and contains
      * <b>exactly</b> two Regression tables
+     *
      * @return
      */
     public boolean isBinary() {
@@ -207,7 +208,7 @@ public final class KiePMMLClassificationTable extends AbstractKiePMMLTable {
 
         /**
          * @param probabilityMapFunction Keep in mind that insertion order matters, so provide an ordered map
-         * inside the <code>SerializableFunction</code>
+         *                               inside the <code>SerializableFunction</code>
          * @return
          */
         public Builder withProbabilityMapFunction(SerializableFunction<LinkedHashMap<String, Double>,

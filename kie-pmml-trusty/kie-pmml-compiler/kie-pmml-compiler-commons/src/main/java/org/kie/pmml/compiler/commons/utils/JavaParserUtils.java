@@ -95,6 +95,7 @@ public class JavaParserUtils {
     /**
      * Return the fully qualified name of the generated class.
      * It throws <code>KiePMMLException</code> if the package name is missing
+     *
      * @param cu
      * @return
      */

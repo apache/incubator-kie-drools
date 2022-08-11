@@ -51,7 +51,6 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactory
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMap;
-import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMapCompiled;
 
 public class KiePMMLSegmentationFactory {
 
@@ -69,15 +68,6 @@ public class KiePMMLSegmentationFactory {
                                                                    nestedModels);
         return getSegmentationSourcesMapCommon(compilationDTO,
                                                toReturn);
-    }
-
-    public static Map<String, String> getSegmentationSourcesMapCompiled(final MiningModelCompilationDTO compilationDTO,
-                                                                        final List<KiePMMLModel> nestedModels) {
-        logger.debug("getSegmentationSourcesMapCompiled {} {}", compilationDTO.getModel(),
-                     compilationDTO.getModel().getSegmentation());
-        final Map<String, String> toReturn = getSegmentsSourcesMapCompiled(compilationDTO,
-                                                                           nestedModels);
-        return getSegmentationSourcesMapCommon(compilationDTO, toReturn);
     }
 
     static Map<String, String> getSegmentationSourcesMapCommon(final MiningModelCompilationDTO compilationDTO,

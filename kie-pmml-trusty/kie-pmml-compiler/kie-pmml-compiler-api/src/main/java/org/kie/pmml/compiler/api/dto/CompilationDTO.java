@@ -31,22 +31,24 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.TransformationDictionary;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.TargetField;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
 
 /**
  * Interface to be implemented by all concrete <b>compilation dtos</b>
+ *
  * @param <T>
  */
 public interface CompilationDTO<T extends Model> extends Serializable {
 
     /**
      * The original <code>PMML</code>
+     *
      * @return
      */
     PMML getPmml();
@@ -82,6 +84,12 @@ public interface CompilationDTO<T extends Model> extends Serializable {
      */
     String getModelName();
 
+    /**
+     * Returns the <b>name of the file</b> containing the <code>Model</code>, <b>without the suffix `.pmml`</b>
+     * @return
+     */
+    String getFileName();
+
     String getTargetFieldName();
 
     /**
@@ -107,11 +115,10 @@ public interface CompilationDTO<T extends Model> extends Serializable {
      * Returns the <code>Class</code> with the current <b>canonicalClassName</b>
      * @param sourcesMap
      * @return
-     * @see HasClassLoader#compileAndLoadClass(Map, String)
      */
-    Class<?> compileAndLoadClass(Map<String, String> sourcesMap);
+    Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
 
-    HasClassLoader getHasClassloader();
+    PMMLCompilationContext getPmmlContext();
 
     PMML_MODEL getPMML_MODEL();
 

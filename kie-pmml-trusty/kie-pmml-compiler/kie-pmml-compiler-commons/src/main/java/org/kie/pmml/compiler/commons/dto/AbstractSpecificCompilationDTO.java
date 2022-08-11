@@ -15,29 +15,13 @@
  */
 package org.kie.pmml.compiler.commons.dto;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.dmg.pmml.DataField;
-import org.dmg.pmml.Field;
-import org.dmg.pmml.LocalTransformations;
-import org.dmg.pmml.MiningFunction;
-import org.dmg.pmml.MiningSchema;
-import org.dmg.pmml.Model;
-import org.dmg.pmml.OpType;
-import org.dmg.pmml.Output;
-import org.dmg.pmml.PMML;
-import org.dmg.pmml.Targets;
-import org.dmg.pmml.TransformationDictionary;
+import org.dmg.pmml.*;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.KiePMMLTarget;
@@ -45,11 +29,13 @@ import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
-import org.kie.pmml.compiler.commons.factories.KiePMMLLocalTransformationsInstanceFactory;
-import org.kie.pmml.compiler.commons.factories.KiePMMLMiningFieldInstanceFactory;
-import org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldInstanceFactory;
-import org.kie.pmml.compiler.commons.factories.KiePMMLTargetInstanceFactory;
-import org.kie.pmml.compiler.commons.factories.KiePMMLTransformationDictionaryInstanceFactory;
+import org.kie.pmml.compiler.commons.factories.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.kie.pmml.api.utils.SourceUtils.dumpSources;
 
@@ -70,21 +56,24 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
     /**
      * Protected constructor that generate a <code>CommonCompilationDTO</code> preserving given <b>packageName</b>
      * and <b>fields</b>
+     *
      * @param pmml
      * @param model
-     * @param hasClassloader
+     * @param pmmlContext
      * @param packageName
      */
     protected AbstractSpecificCompilationDTO(final PMML pmml,
                                              final T model,
-                                             final HasClassLoader hasClassloader,
+                                             final PMMLCompilationContext pmmlContext,
+                                             final String fileName,
                                              final String packageName,
                                              final List<Field<?>> fields) {
-        this(CommonCompilationDTO.fromPackageNameAndFields(pmml, model, hasClassloader, packageName, fields));
+        this(CommonCompilationDTO.fromPackageNameAndFields(pmml, model, pmmlContext, fileName, packageName, fields));
     }
 
     /**
      * Protected constructor that use given <code>CompilationDTO</code>
+     *
      * @param source
      */
     protected AbstractSpecificCompilationDTO(CompilationDTO<T> source) {
@@ -153,6 +142,11 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
     }
 
     @Override
+    public String getFileName() {
+        return source.getFileName();
+    }
+
+    @Override
     public String getTargetFieldName() {
         return source.getTargetFieldName();
     }
@@ -173,18 +167,18 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
     }
 
     @Override
-    public Class<?> compileAndLoadClass(Map<String, String> sourcesMap) {
+    public Map<String, byte[]> compileClasses(Map<String, String> sourcesMap) {
         try {
             dumpSources(sourcesMap, source.getPMML_MODEL());
-            return source.compileAndLoadClass(sourcesMap);
+            return source.compileClasses(sourcesMap);
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }
     }
 
     @Override
-    public HasClassLoader getHasClassloader() {
-        return source.getHasClassloader();
+    public PMMLCompilationContext getPmmlContext() {
+        return source.getPmmlContext();
     }
 
     @Override
@@ -209,6 +203,7 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
 
     /**
      * Add <code>Field</code>s to current instance, <b>eventually replacing them if already present</b>
+     *
      * @param toAdd
      */
     public void addFields(final List<Field<?>> toAdd) {

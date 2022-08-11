@@ -34,7 +34,7 @@ import static org.kie.pmml.api.enums.ResultCode.OK;
 
 public class PredicatesMiningTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "MiningModel_Predicates.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "MiningModel_Predicates";
     private static final String MODEL_NAME = "PredicatesMining";
     private static final String TARGET_FIELD = "categoricalResult";
     private static PMMLRuntime pmmlRuntime;
@@ -68,7 +68,7 @@ public class PredicatesMiningTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -96,7 +96,7 @@ public class PredicatesMiningTest extends AbstractPMMLTest {
         inputData.put("categoricalX", categoricalX);
         inputData.put("variable", variable);
         inputData.put("age", age);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         if (expectedResult != null) {
             assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();

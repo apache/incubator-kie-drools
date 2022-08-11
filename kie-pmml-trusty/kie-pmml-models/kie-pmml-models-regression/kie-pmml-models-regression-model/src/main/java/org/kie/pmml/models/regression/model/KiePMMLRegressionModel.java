@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.IsInterpreted;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
@@ -32,17 +32,17 @@ public class KiePMMLRegressionModel extends KiePMMLModel implements IsInterprete
     private static final long serialVersionUID = -6870859552385880008L;
     private AbstractKiePMMLTable regressionTable;
 
-    private KiePMMLRegressionModel(String modelName) {
-        super(modelName, Collections.emptyList());
+    private KiePMMLRegressionModel(String fileName, String modelName) {
+        super(fileName, modelName, Collections.emptyList());
     }
 
-    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
-        return new Builder(name, miningFunction);
+    public static Builder builder(String fileName, String name, MINING_FUNCTION miningFunction) {
+        return new Builder(fileName, name, miningFunction);
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
-                           final PMMLContext context) {
+    public Object evaluate(final Map<String, Object> requestData,
+                           final PMMLRuntimeContext context) {
         return regressionTable.evaluateRegression(requestData, context);
     }
 
@@ -52,8 +52,9 @@ public class KiePMMLRegressionModel extends KiePMMLModel implements IsInterprete
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLRegressionModel> {
 
-        private Builder(String name, MINING_FUNCTION miningFunction) {
-            super("Regression-", PMML_MODEL.REGRESSION_MODEL, miningFunction, () -> new KiePMMLRegressionModel(name));
+        private Builder(String fileName, String name, MINING_FUNCTION miningFunction) {
+            super("Regression-", PMML_MODEL.REGRESSION_MODEL, miningFunction,
+                  () -> new KiePMMLRegressionModel(fileName, name));
         }
 
         public Builder withAbstractKiePMMLTable(AbstractKiePMMLTable regressionTable) {

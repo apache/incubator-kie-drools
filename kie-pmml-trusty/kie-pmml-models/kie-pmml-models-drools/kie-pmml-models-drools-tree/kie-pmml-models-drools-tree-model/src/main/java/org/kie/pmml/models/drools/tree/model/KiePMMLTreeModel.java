@@ -29,13 +29,14 @@ public class KiePMMLTreeModel extends KiePMMLDroolsModel {
 
     private final String algorithmName;
 
-    protected KiePMMLTreeModel(String name, List<KiePMMLExtension> extensions, String algorithmName) {
-        super(name, extensions);
+    protected KiePMMLTreeModel(String fileName, String name, List<KiePMMLExtension> extensions, String algorithmName) {
+        super(fileName, name, extensions);
         this.algorithmName = algorithmName;
     }
 
-    public static Builder builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction, String algorithmName) {
-        return new Builder(name, extensions, miningFunction, algorithmName);
+    public static Builder builder(String fileName, String name, List<KiePMMLExtension> extensions,
+                                  MINING_FUNCTION miningFunction, String algorithmName) {
+        return new Builder(fileName, name, extensions, miningFunction, algorithmName);
     }
 
     public static PMML_MODEL getPmmlModelType() {
@@ -68,8 +69,9 @@ public class KiePMMLTreeModel extends KiePMMLDroolsModel {
 
     public static class Builder extends KiePMMLDroolsModel.Builder<KiePMMLTreeModel> {
 
-        private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction, String algorithmName) {
-            super("Tree-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLTreeModel(name, extensions, algorithmName));
+        private Builder(String fileName, String name, List<KiePMMLExtension> extensions,
+                        MINING_FUNCTION miningFunction, String algorithmName) {
+            super("Tree-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLTreeModel(fileName, name, extensions, algorithmName));
         }
     }
 }

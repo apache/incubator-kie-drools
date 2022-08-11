@@ -25,12 +25,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+import org.drools.io.ClassPathResource;
 import org.drools.io.ResourceConfigurationImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.io.ClassPathResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
@@ -72,7 +71,6 @@ public class DMNRuntimeBuilder {
         public final DMNCompilerConfigurationImpl cc;
         public final List<DMNProfile> dmnProfiles = new ArrayList<>();
         private RelativeImportResolver relativeResolver;
-        private Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction;
 
         public DMNRuntimeBuilderCtx() {
             this.cc = new DMNCompilerConfigurationImpl();
@@ -80,10 +78,6 @@ public class DMNRuntimeBuilder {
 
         public void setRelativeResolver(RelativeImportResolver relativeResolver) {
             this.relativeResolver = relativeResolver;
-        }
-
-        public void setKieRuntimeFactoryFunction(Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction) {
-            this.kieRuntimeFactoryFunction = kieRuntimeFactoryFunction;
         }
     }
 
@@ -122,11 +116,6 @@ public class DMNRuntimeBuilder {
 
     public DMNRuntimeBuilder setRelativeImportResolver(RelativeImportResolver relativeResolver) {
         ctx.setRelativeResolver(relativeResolver);
-        return this;
-    }
-
-    public DMNRuntimeBuilder setKieRuntimeFactoryFunction(Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction) {
-        ctx.setKieRuntimeFactoryFunction(kieRuntimeFactoryFunction);
         return this;
     }
 
@@ -222,7 +211,8 @@ public class DMNRuntimeBuilder {
                     return Either.ofLeft(new IllegalStateException("Unable to compile DMN model for the resource " + dmnRes.getResAndConfig().getResource()));
                 }
             }
-            return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(ctx.cc.getRootClassLoader(), dmnModels, ctx.dmnProfiles, ctx.kieRuntimeFactoryFunction)));
+            return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(ctx.cc.getRootClassLoader(), dmnModels,
+                                                                            ctx.dmnProfiles)));
         }
 
         private DMNMarshaller getMarshaller() {
@@ -240,14 +230,13 @@ public class DMNRuntimeBuilder {
         private final ClassLoader rootClassLoader;
         private final List<DMNProfile> dmnProfiles;
         private final List<DMNModel> models;
-        private final Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction;
 
-        private DMNRuntimeKBStatic(ClassLoader rootClassLoader, Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles, Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction) {
+        private DMNRuntimeKBStatic(ClassLoader rootClassLoader, Collection<DMNModel> models,
+                                   Collection<DMNProfile> dmnProfiles) {
             this.rootClassLoader = rootClassLoader;
             LOG.trace("DMNRuntimeKBStatic rootClassLoader is set to {}", rootClassLoader);
             this.models = Collections.unmodifiableList(new ArrayList<>(models));
             this.dmnProfiles = Collections.unmodifiableList(new ArrayList<>(dmnProfiles));
-            this.kieRuntimeFactoryFunction = kieRuntimeFactoryFunction;
         }
 
         @Override
@@ -285,9 +274,5 @@ public class DMNRuntimeBuilder {
             throw new UnsupportedOperationException();
         }
 
-        @Override
-        public KieRuntimeFactory getKieRuntimeFactory(String kieBaseName) {
-            return kieRuntimeFactoryFunction.apply(kieBaseName);
-        }
     }
 }

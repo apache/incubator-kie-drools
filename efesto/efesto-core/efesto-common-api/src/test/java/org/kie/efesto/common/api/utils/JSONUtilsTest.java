@@ -19,11 +19,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collections;
+import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.common.api.io.MemoryFile;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
@@ -32,6 +35,7 @@ import org.kie.efesto.common.api.model.GeneratedResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
 
 class JSONUtilsTest {
 
@@ -104,7 +108,7 @@ class JSONUtilsTest {
     }
 
     @Test
-    void getGeneratedResourcesObjectFromFile() throws IOException, URISyntaxException {
+    void getGeneratedResourcesObjectFromFile() throws Exception {
         String fileName = "IndexFile.test_json";
         URL resource = Thread.currentThread().getContextClassLoader().getResource(fileName);
         assert resource != null;
@@ -115,9 +119,30 @@ class JSONUtilsTest {
         GeneratedResource expected1 = new GeneratedClassResource(fullClassName);
         String model = "foo";
         FRI fri = new FRI("this/is/fri", model);
-            GeneratedResource expected2 = new GeneratedExecutableResource(fri, Collections.singletonList(fullClassName));
-            assertThat(retrieved).contains(expected1);
-            assertThat(retrieved).contains(expected2);
+        GeneratedResource expected2 = new GeneratedExecutableResource(fri, Collections.singletonList(fullClassName));
+        assertThat(retrieved).contains(expected1);
+        assertThat(retrieved).contains(expected2);
+    }
+
+    @Test
+    void getGeneratedResourcesObjectFromJar() throws Exception {
+        ClassLoader originalClassLoader = addJarToClassLoader();
+        Optional<File> optionalIndexFile = getFileFromFileName("IndexFile.testb_json");
+        assertThat(optionalIndexFile).isNotNull().isPresent();
+        assertThat(optionalIndexFile).get().isInstanceOf(MemoryFile.class);
+        MemoryFile memoryFile = (MemoryFile) optionalIndexFile.get();
+        IndexFile indexFile = new IndexFile((MemoryFile) optionalIndexFile.get());
+        assertThat(indexFile.getContent()).isEqualTo(memoryFile.getContent());
+        GeneratedResources retrieved = JSONUtils.getGeneratedResourcesObject(indexFile);
+        assertThat(retrieved).isNotNull();
+        String fullClassName = "full.class.Name";
+        GeneratedResource expected1 = new GeneratedClassResource(fullClassName);
+        String model = "foo";
+        FRI fri = new FRI("this/is/fri", model);
+        GeneratedResource expected2 = new GeneratedExecutableResource(fri, Collections.singletonList(fullClassName));
+        assertThat(retrieved).contains(expected1);
+        assertThat(retrieved).contains(expected2);
+        restoreClassLoader(originalClassLoader);
     }
 
     @Test
@@ -126,7 +151,8 @@ class JSONUtilsTest {
         String basePath = "this/is/fri";
         FRI fri = new FRI(basePath, model);
         String retrieved = JSONUtils.getFRIString(fri);
-        String expected = String.format("{\"basePath\":\"%1$s\",\"model\":\"%2$s\",\"fri\":\"/%2$s%1$s\"}", "/" + basePath, model);
+        String expected = String.format("{\"basePath\":\"%1$s\",\"model\":\"%2$s\",\"fri\":\"/%2$s%1$s\"}",
+                                        "/" + basePath, model);
         assertThat(retrieved).isEqualTo(expected);
     }
 
@@ -141,5 +167,21 @@ class JSONUtilsTest {
         assertThat(retrieved.getBasePath()).isEqualTo(expected);
         expected = "/foo/this/is/fri";
         assertThat(retrieved.getFri()).isEqualTo(expected);
+    }
+
+    private ClassLoader addJarToClassLoader() {
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        URL jarUrl = Thread.currentThread().getContextClassLoader().getResource("TestJar.jar");
+        assertThat(jarUrl).isNotNull();
+        URL fileUrl = Thread.currentThread().getContextClassLoader().getResource("IndexFile.testb_json");
+        assertThat(fileUrl).isNull();
+        URL[] urls = {jarUrl};
+        URLClassLoader testClassLoader = URLClassLoader.newInstance(urls, originalClassLoader);
+        Thread.currentThread().setContextClassLoader(testClassLoader);
+        return originalClassLoader;
+    }
+
+    private void restoreClassLoader(ClassLoader toRestore) {
+        Thread.currentThread().setContextClassLoader(toRestore);
     }
 }

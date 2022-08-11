@@ -26,10 +26,10 @@ import org.kie.efesto.compilationmanager.api.model.EfestoResource;
  * It will be looked for with SPI, so each engine should declare that implementation inside
  * <code>src/main/resources/META-INF/services/org.kie.efesto.compilationmanager.api.service.KieCompilerService</code> file
  */
-public interface KieCompilerService {
+public interface KieCompilerService<E extends EfestoCompilationOutput, U extends EfestoCompilationContext> {
 
 
-    <T extends EfestoResource> boolean canManageResource(T toProcess);
+    boolean canManageResource(EfestoResource toProcess);
 
     /**
      * Produce one <code>E</code> from the given <code>T</code>
@@ -42,6 +42,6 @@ public interface KieCompilerService {
      * @param context
      * @return
      */
-    <T extends EfestoResource, E extends EfestoCompilationOutput> List<E> processResource(T toProcess, EfestoCompilationContext context);
+    List<E> processResource(EfestoResource toProcess, U context);
 
 }

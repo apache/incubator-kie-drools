@@ -51,7 +51,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-evaluator-assembler</artifactId>
+      <artifactId>kie-pmml-evaluator-utils</artifactId>
     </dependency>
     <!-- Kie dep -->
     <!-- Drools -->

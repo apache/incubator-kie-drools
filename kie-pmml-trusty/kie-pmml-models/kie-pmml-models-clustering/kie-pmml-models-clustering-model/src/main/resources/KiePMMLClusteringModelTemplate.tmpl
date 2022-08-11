@@ -17,7 +17,7 @@ import org.kie.pmml.models.clustering.model.*;
 public class KiePMMLClusteringModelTemplate {
 
     public static KiePMMLClusteringModel getModel() {
-        KiePMMLClusteringModel toReturn = KiePMMLClusteringModel.builder(name, miningFunction)
+        KiePMMLClusteringModel toReturn = KiePMMLClusteringModel.builder(fileName, name, miningFunction)
                                         .withModelClass(modelClass)
                                         .withClusters(getClusters())
                                         .withClusteringFields(getClusteringFields())

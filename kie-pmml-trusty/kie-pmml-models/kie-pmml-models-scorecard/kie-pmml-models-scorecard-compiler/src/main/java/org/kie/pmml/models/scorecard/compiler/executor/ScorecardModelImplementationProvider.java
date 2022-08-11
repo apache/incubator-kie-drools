@@ -48,20 +48,11 @@ public class ScorecardModelImplementationProvider implements ModelImplementation
     }
 
     @Override
-    public KiePMMLScorecardModel getKiePMMLModel(final CompilationDTO<Scorecard> compilationDTO) {
-        logger.trace("getKiePMMLModel {} {} {} {}", compilationDTO.getPackageName(),
-                     compilationDTO.getFields(),
-                     compilationDTO.getModel(),
-                     compilationDTO.getHasClassloader());
-        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(ScorecardCompilationDTO.fromCompilationDTO(compilationDTO));
-    }
-
-    @Override
     public Map<String, String> getSourcesMap(final CompilationDTO<Scorecard> compilationDTO) {
         logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
                      compilationDTO.getFields(),
                      compilationDTO.getModel(),
-                     compilationDTO.getHasClassloader());
+                     compilationDTO.getPmmlContext());
         try {
             ScorecardCompilationDTO scorecardCompilationDTO =
                     ScorecardCompilationDTO.fromCompilationDTO(compilationDTO);

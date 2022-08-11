@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  org.kie.pmml.models.drools.scorecard.evaluator;
+package org.kie.pmml.models.drools.scorecard.evaluator;
 
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.executor.DroolsModelEvaluator;
@@ -24,7 +24,7 @@ import org.kie.pmml.models.drools.executor.DroolsModelEvaluator;
 public class PMMLScorecardModelEvaluator extends DroolsModelEvaluator {
 
     @Override
-    public PMML_MODEL getPMMLModelType(){
+    public PMML_MODEL getPMMLModelType() {
         return PMML_MODEL.SCORECARD_MODEL;
     }
 }

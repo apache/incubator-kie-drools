@@ -26,8 +26,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
  * It will be looked for with SPI, so each engine should declare that implementation inside
  * <code>src/main/resources/META-INF/services/org.kie.efesto.runtimemanager.api.service.KieRuntimeService</code> file
  */
-public interface KieRuntimeService<S, U, T extends EfestoInput<S>, E extends EfestoOutput<U>> {
-
+public interface KieRuntimeService<S, U, T extends EfestoInput<S>, E extends EfestoOutput<U>, K extends EfestoRuntimeContext> {
     /**
      * Every engine is responsible to verify if it can evaluate a result with the resource of the given <code>T</code>
      * (that contains a specific <code>FRI</code>)
@@ -36,7 +35,7 @@ public interface KieRuntimeService<S, U, T extends EfestoInput<S>, E extends Efe
      * @param context
      * @return
      */
-    boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context);
+    boolean canManageInput(EfestoInput toEvaluate, K context);
 
     /**
      * Produce one <code>EfestoOutput</code> from the given <code>EfestoInput</code>
@@ -45,6 +44,6 @@ public interface KieRuntimeService<S, U, T extends EfestoInput<S>, E extends Efe
      * @param context
      * @return
      */
-    Optional<E> evaluateInput(T toEvaluate, EfestoRuntimeContext context);
+    Optional<E> evaluateInput(T toEvaluate, K context);
 
 }

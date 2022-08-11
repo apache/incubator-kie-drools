@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MiningListenerTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "MultipleMining.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "MultipleMining";
     private static final String MODEL_NAME = "MixedMining";
     private static PMMLRuntime pmmlRuntime;
 
@@ -65,7 +65,7 @@ public class MiningListenerTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -93,7 +93,7 @@ public class MiningListenerTest extends AbstractPMMLTest {
         inputData.put("validLicense", validLicense);
         Set<PMMLListener> pmmlListeners = IntStream.range(0, 3)
                 .mapToObj(i -> getPMMLListener()).collect(Collectors.toSet());
-        evaluate(pmmlRuntime, inputData, MODEL_NAME, pmmlListeners);
+        evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME, pmmlListeners);
         final List<PMMLStep> retrieved = ((PMMLListenerTest) pmmlListeners.iterator().next()).getSteps();
         retrieved
                 .stream()

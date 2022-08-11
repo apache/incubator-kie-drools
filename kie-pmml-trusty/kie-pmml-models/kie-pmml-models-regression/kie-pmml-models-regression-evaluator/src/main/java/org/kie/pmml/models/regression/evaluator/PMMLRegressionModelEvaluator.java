@@ -18,11 +18,10 @@ package org.kie.pmml.models.regression.evaluator;
 import java.util.Map;
 
 import org.drools.util.StringUtils;
-import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.regression.model.AbstractKiePMMLTable;
@@ -49,15 +48,14 @@ public class PMMLRegressionModelEvaluator implements PMMLModelEvaluator<KiePMMLR
     }
 
     @Override
-    public PMML4Result evaluate(final KieBase knowledgeBase,
-                                final KiePMMLRegressionModel model,
-                                final PMMLContext pmmlContext) {
+    public PMML4Result evaluate(final KiePMMLRegressionModel model,
+                                final PMMLRuntimeContext pmmlContext) {
         validate(model);
         PMML4Result toReturn = new PMML4Result();
         String targetField = model.getTargetField();
         final Map<String, Object> requestData =
                 getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        Object result = model.evaluate(knowledgeBase, requestData, pmmlContext);
+        Object result = model.evaluate(requestData, pmmlContext);
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());

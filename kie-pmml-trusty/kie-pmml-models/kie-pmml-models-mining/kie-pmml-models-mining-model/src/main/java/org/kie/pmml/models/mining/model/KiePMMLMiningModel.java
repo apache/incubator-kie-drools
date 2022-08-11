@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -42,17 +42,16 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
     protected boolean scorable = true;
     protected KiePMMLSegmentation segmentation;
 
-    protected KiePMMLMiningModel(String name, List<KiePMMLExtension> extensions) {
-        super(name, extensions);
+    protected KiePMMLMiningModel(String fileName, String name, List<KiePMMLExtension> extensions) {
+        super(fileName,  name, extensions);
     }
 
-    public static Builder builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
-        return new Builder(name, extensions, miningFunction);
+    public static Builder builder(String fileName, String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+        return new Builder(fileName, name, extensions, miningFunction);
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
-                           final PMMLContext pmmlContext) {
+    public Object evaluate(final Map<String, Object> requestData, final PMMLRuntimeContext pmmlContext) {
         throw new KiePMMLException("KiePMMLMiningModel is not meant to be used for actual evaluation");
     }
 
@@ -75,16 +74,7 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
 
     @Override
     public String toString() {
-        return "KiePMMLMiningModel{" +
-                "miningFunction=" + miningFunction +
-                ", algorithmName='" + algorithmName + '\'' +
-                ", scorable=" + scorable +
-                ", segmentation=" + segmentation +
-                ", pmmlMODEL=" + pmmlMODEL +
-                ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                ", parentId='" + parentId + '\'' +
-                '}';
+        return "KiePMMLMiningModel{" + "miningFunction=" + miningFunction + ", algorithmName='" + algorithmName + '\'' + ", scorable=" + scorable + ", segmentation=" + segmentation + ", pmmlMODEL=" + pmmlMODEL + ", name='" + name + '\'' + ", id='" + id + '\'' + ", parentId='" + parentId + '\'' + '}';
     }
 
     @Override
@@ -125,8 +115,8 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLMiningModel> {
 
-        private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
-            super("MiningModel-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLMiningModel(name, extensions));
+        private Builder(String fileName, String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+            super("MiningModel-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLMiningModel(fileName, name, extensions));
         }
 
         public Builder withAlgorithmName(String algorithmName) {

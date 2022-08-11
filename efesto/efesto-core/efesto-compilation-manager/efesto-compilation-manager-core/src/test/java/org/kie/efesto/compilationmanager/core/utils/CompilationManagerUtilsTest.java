@@ -65,7 +65,7 @@ class CompilationManagerUtilsTest {
     }
 
     @Test
-    void populateIndexFile() throws IOException {
+    void populateIndexFile() throws Exception {
         IndexFile toPopulate = CompilationManagerUtils.getIndexFile(finalOutput);
         GeneratedResources originalGeneratedResources = getGeneratedResourcesObject(toPopulate);
         int expectedResources = 2; // 1 final resource + 1 intermediate resources

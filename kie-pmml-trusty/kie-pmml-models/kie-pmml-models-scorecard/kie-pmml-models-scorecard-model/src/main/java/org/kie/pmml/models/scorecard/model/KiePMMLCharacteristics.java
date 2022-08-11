@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
@@ -90,7 +90,7 @@ public class KiePMMLCharacteristics extends AbstractKiePMMLComponent {
                                      final List<KiePMMLDerivedField> derivedFields,
                                      final List<KiePMMLOutputField> outputFields,
                                      final Map<String, Object> inputData,
-                                     final PMMLContext context,
+                                     final PMMLRuntimeContext context,
                                      final Number initialScore,
                                      final REASONCODE_ALGORITHM reasoncodeAlgorithm,
                                      final boolean useReasonCodes,

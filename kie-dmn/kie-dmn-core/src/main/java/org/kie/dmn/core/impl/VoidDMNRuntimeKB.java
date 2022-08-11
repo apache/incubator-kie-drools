@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.compiler.DMNProfile;
@@ -62,8 +61,4 @@ public class VoidDMNRuntimeKB implements DMNRuntimeKB {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public KieRuntimeFactory getKieRuntimeFactory(String kieBaseName) {
-        throw new UnsupportedOperationException();
-    }
 }

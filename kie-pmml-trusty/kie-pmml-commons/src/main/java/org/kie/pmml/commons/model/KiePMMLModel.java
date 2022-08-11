@@ -26,10 +26,12 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.PMMLModel;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
+
+import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
 /**
  * KIE representation of PMML model
@@ -38,6 +40,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     private static final long serialVersionUID = 759750766311061701L;
 
+    private final String fileName;
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
@@ -49,8 +52,18 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     protected KiePMMLTransformationDictionary transformationDictionary;
     protected KiePMMLLocalTransformations localTransformations;
 
-    protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
+    protected KiePMMLModel(String fileName, String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
+        if (!fileName.endsWith(PMML_SUFFIX)) {
+            this.fileName = fileName + PMML_SUFFIX;
+        } else {
+            this.fileName = fileName;
+        }
+    }
+
+    @Override
+    public String getFileName() {
+        return fileName;
     }
 
     public PMML_MODEL getPmmlMODEL() {
@@ -110,15 +123,13 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     }
 
     /**
-     * @param knowledgeBase the knowledgeBase we are working on. Add as <code>Object</code> to avoid direct
-     * dependency. It is needed only by <b>Drools-dependent</b>
      * models, so it may be <b>ignored</b> by others
      * @param requestData
      * @param context used to accumulate additional evaluated values
      * @return
      */
-    public abstract Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
-                                    final PMMLContext context);
+    public abstract Object evaluate(final Map<String, Object> requestData,
+                                    final PMMLRuntimeContext context);
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLComponent.Builder<T> {
 

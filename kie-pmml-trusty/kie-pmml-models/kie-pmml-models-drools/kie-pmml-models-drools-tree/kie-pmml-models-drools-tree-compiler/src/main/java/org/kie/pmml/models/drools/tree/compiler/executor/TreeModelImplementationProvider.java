@@ -21,7 +21,6 @@ import java.util.Map;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
@@ -45,15 +44,6 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
     @Override
     public Class<KiePMMLTreeModel> getKiePMMLModelClass() {
         return KiePMMLTreeModel.class;
-    }
-
-    @Override
-    public KiePMMLTreeModel getKiePMMLDroolsModel(final DroolsCompilationDTO<TreeModel> compilationDTO) {
-        try {
-            return KiePMMLTreeModelFactory.getKiePMMLTreeModel(compilationDTO);
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new KiePMMLException(e.getMessage(), e);
-        }
     }
 
     @Override

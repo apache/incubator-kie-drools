@@ -62,25 +62,11 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModel(final CompilationDTO<RegressionModel> compilationDTO) {
-        logger.trace("getKiePMMLModel {} {} {} {}", compilationDTO.getPackageName(),
-                     compilationDTO.getFields(),
-                     compilationDTO.getModel(),
-                     compilationDTO.getHasClassloader());
-        validate(compilationDTO.getFields(), compilationDTO.getModel());
-        try {
-            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
-        } catch (IOException | IllegalAccessException | InstantiationException e) {
-            throw new KiePMMLException(e.getMessage(), e);
-        }
-    }
-
-    @Override
     public Map<String, String> getSourcesMap(final CompilationDTO<RegressionModel> compilationDTO) {
         logger.trace("getKiePMMLModelWithSources {} {} {} {}", compilationDTO.getPackageName(),
                      compilationDTO.getFields(),
                      compilationDTO.getModel(),
-                     compilationDTO.getHasClassloader());
+                     compilationDTO.getPmmlContext());
         try {
             return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(RegressionCompilationDTO.fromCompilationDTO(compilationDTO));
         } catch (IOException e) {

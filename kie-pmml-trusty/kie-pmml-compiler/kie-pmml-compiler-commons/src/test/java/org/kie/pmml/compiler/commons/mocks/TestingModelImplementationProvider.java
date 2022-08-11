@@ -15,18 +15,15 @@
  */
 package org.kie.pmml.compiler.commons.mocks;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 import org.kie.pmml.compiler.api.mocks.TestModel;
@@ -35,7 +32,7 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.testingutility.KiePMMLTestingModel.PMML_MODEL_TYPE;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setKiePMMLConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 
@@ -60,14 +57,6 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     }
 
     @Override
-    public KiePMMLTestingModel getKiePMMLModel(final CompilationDTO<TestModel> compilationDTO) {
-        return KiePMMLTestingModel.builder("TEST_MODEL",
-                                           Collections.emptyList(),
-                                           MINING_FUNCTION.REGRESSION)
-                .build();
-    }
-
-    @Override
     public Map<String, String> getSourcesMap(CompilationDTO<TestModel> compilationDTO) {
         return getKiePMMLTestModelSourcesMap(compilationDTO);
     }
@@ -84,7 +73,7 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
         String modelName = compilationDTO.getModelName();
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        setConstructor(className, constructorDeclaration, modelName);
+        setConstructor(className, constructorDeclaration, compilationDTO.getFileName(), modelName);
         Map<String, String> toReturn = new HashMap<>();
         toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
         return toReturn;
@@ -92,7 +81,8 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
 
     private void setConstructor(final String generatedClassName,
                                 final ConstructorDeclaration constructorDeclaration,
+                                final String fileName,
                                 final String modelName) {
-        setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, modelName);
+        setKiePMMLConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, fileName, modelName);
     }
 }

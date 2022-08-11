@@ -25,7 +25,7 @@ import java.util.Map;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -76,7 +76,7 @@ public class KiePMMLRegressionTableTest {
         input.put(SECOND_NUMERIC_INPUT, secondNumericalInput);
         input.put(FIRST_CATEGORICAL_INPUT, "unused");
         input.put(SECOND_CATEGORICAL_INPUT, "unused");
-        Object retrieved = regressionTable.evaluateRegression(input, mock(PMMLContext.class));
+        Object retrieved = regressionTable.evaluateRegression(input, mock(PMMLRuntimeContext.class));
         assertThat(retrieved).isEqualTo(expectedResult);
     }
 

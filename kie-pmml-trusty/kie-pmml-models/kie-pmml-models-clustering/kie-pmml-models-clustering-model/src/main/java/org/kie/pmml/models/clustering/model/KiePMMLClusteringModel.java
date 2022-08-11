@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  org.kie.pmml.models.clustering.model;
+package org.kie.pmml.models.clustering.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.Named;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KieEnumException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.IsInterpreted;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
@@ -63,12 +63,12 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
     private KiePMMLComparisonMeasure comparisonMeasure;
     private KiePMMLMissingValueWeights missingValueWeights;
 
-    private KiePMMLClusteringModel(String modelName) {
-        super(modelName, Collections.emptyList());
+    private KiePMMLClusteringModel(String fileName, String modelName) {
+        super(fileName, modelName, Collections.emptyList());
     }
 
-    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
-        return new Builder(name, miningFunction);
+    public static Builder builder(String fileName, String name, MINING_FUNCTION miningFunction) {
+        return new Builder(fileName, name, miningFunction);
     }
 
     public ModelClass getModelClass() {
@@ -92,8 +92,8 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
-                           final PMMLContext context) {
+    public Object evaluate(final Map<String, Object> requestData,
+                           final PMMLRuntimeContext context) {
         double adjustmentFactor = computeAdjustmentFactor(requestData);
 
         Double[] inputs = new Double[clusteringFields.size()];
@@ -157,8 +157,8 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLClusteringModel> {
 
-        private Builder(String name, MINING_FUNCTION miningFunction) {
-            super("Clustering-", PMML_MODEL.CLUSTERING_MODEL, miningFunction, () -> new KiePMMLClusteringModel(name));
+        private Builder(String fileName, String name, MINING_FUNCTION miningFunction) {
+            super("Clustering-", PMML_MODEL.CLUSTERING_MODEL, miningFunction, () -> new KiePMMLClusteringModel(fileName, name));
         }
 
         public Builder withModelClass(ModelClass modelClass) {

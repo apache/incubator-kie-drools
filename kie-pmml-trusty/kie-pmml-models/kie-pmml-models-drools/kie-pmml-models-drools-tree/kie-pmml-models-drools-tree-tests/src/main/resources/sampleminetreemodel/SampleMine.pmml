@@ -3,17 +3,17 @@
   <Header>
     <Application name="Drools-PMML" version="7.0.0-SNAPSHOT" />
   </Header>
-	
+
   <DataDictionary numberOfFields="3">
     <DataField name="temperature" dataType="double" optype="continuous" />
-    <DataField name="humidity" dataType="double" optype="continuous" />   
-    <DataField name="decision" dataType="string" optype="categorical"> 
+    <DataField name="humidity" dataType="double" optype="continuous" />
+    <DataField name="decision" dataType="string" optype="categorical">
       <Value value="sunglasses" />
       <Value value="umbrella" />
-      <Value value="nothing" />     
+      <Value value="nothing" />
     </DataField>
   </DataDictionary>
-  
+
   <TreeModel modelName="SampleMineTreeModel" functionName="classification">
     <MiningSchema>
       <MiningField name="temperature"  usageType="active" />
@@ -23,7 +23,7 @@
     <Output>
       <OutputField name="weatherdecision" targetField="decision" />
     </Output>
-    
+
     <Node score="nothing" id="1">
       <True />
       <Node score="sunglasses" id="2">

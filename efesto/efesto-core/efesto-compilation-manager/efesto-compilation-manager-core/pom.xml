@@ -23,7 +23,7 @@
   </parent>
 
   <artifactId>efesto-compilation-manager-core</artifactId>
-  <name>Efesto :: Compilation :: Manager :: Api</name>
+  <name>Efesto :: Compilation :: Manager :: Core</name>
 
   <properties>
     <skip.jdepend>false</skip.jdepend>

@@ -52,7 +52,6 @@ import org.dmg.pmml.tree.TreeModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.model.KiePMMLNode;
@@ -106,17 +105,6 @@ public class KiePMMLNodeFactoryTest {
         nodeRoot = model2.getNode();
         compoundPredicateNode = nodeRoot.getNodes().get(0);
         nodeLeaf = nodeRoot.getNodes().get(0).getNodes().get(0).getNodes().get(0);
-    }
-
-    @Test
-    void getKiePMMLNode() {
-        final KiePMMLNode retrieved = KiePMMLNodeFactory.getKiePMMLNode(node1,
-                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary1, derivedFields1),
-                PACKAGE_NAME,
-                1.0,
-                new HasClassLoaderMock());
-        assertThat(retrieved).isNotNull();
-        commonVerifyNode(retrieved, node1);
     }
 
     @Test

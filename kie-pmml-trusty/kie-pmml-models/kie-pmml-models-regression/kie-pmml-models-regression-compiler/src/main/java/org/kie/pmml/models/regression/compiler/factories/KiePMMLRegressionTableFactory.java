@@ -197,6 +197,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Create <b>NumericPredictor</b>s <code>Map</code>es
+     *
      * @param numericPredictors
      * @return
      */
@@ -208,6 +209,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Create a <b>NumericPredictor</b> <code>Entry</code>
+     *
      * @param numericPredictor
      * @return
      */
@@ -224,6 +226,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Create the <b>CategoricalPredictor</b>s <code>Map</code>
+     *
      * @param categoricalPredictors
      * @return
      */
@@ -246,19 +249,22 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Populate the <code>Map</code> for the given <b>categoricalPredictors</b>
+     *
      * @param categoricalPredictors
      * @return
      */
     static Map<String, Double> getGroupedCategoricalPredictorMap(final List<CategoricalPredictor> categoricalPredictors) {
         final Map<String, Double> toReturn = new LinkedHashMap<>();
-        for(CategoricalPredictor categoricalPredictor : categoricalPredictors) {
-            toReturn.put(categoricalPredictor.getValue().toString(), categoricalPredictor.getCoefficient().doubleValue());
+        for (CategoricalPredictor categoricalPredictor : categoricalPredictors) {
+            toReturn.put(categoricalPredictor.getValue().toString(),
+                         categoricalPredictor.getCoefficient().doubleValue());
         }
         return toReturn;
     }
 
     /**
      * Get the <code>Map</code> of <b>PredictorTerm</b>' <code>VariableDeclarationExpr</code>s
+     *
      * @param predictorTerms
      * @return
      */
@@ -278,6 +284,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Get the <b>PredictorTerm</b> <code>SerializableFunction</code>
+     *
      * @param predictorTerm
      * @return
      */
@@ -306,6 +313,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Create a <b>resultUpdater</b> <code>CastExpr</code>
+     *
      * @param normalizationMethod
      * @return
      */
@@ -405,6 +413,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Create a <b>resultUpdater</b> <code>CastExpr</code>
+     *
      * @param normalizationMethod
      * @return
      */
@@ -425,6 +434,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Create <b>NumericPredictor</b>s <code>CastExpr</code>es
+     *
      * @param numericPredictors
      * @return
      */
@@ -436,6 +446,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Create a <b>NumericPredictor</b> <code>CastExpr</code>
+     *
      * @param numericPredictor
      * @return
      */
@@ -471,6 +482,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Create the <b>CategoricalPredictor</b>s lambda <code>Expression</code>s map
+     *
      * @param categoricalPredictors
      * @param body
      * @return
@@ -495,6 +507,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Populate the given <b>body</b> with the creation of a <code>Map</code> for the given <b>categoricalPredictors</b>
+     *
      * @param categoricalPredictors
      * @param toPopulate
      * @param categoricalPredictorMapName
@@ -525,6 +538,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Create <b>CategoricalPredictor</b> <code>CastExpr</code> to the class
+     *
      * @param categoricalPredictorMapName
      * @return
      */
@@ -555,6 +569,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Get the <code>Map</code> of <b>PredictorTerm</b>' <code>VariableDeclarationExpr</code>s
+     *
      * @param predictorTerms
      * @return
      */
@@ -574,6 +589,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Get the <b>PredictorTerm</b> <code>VariableDeclarationExpr</code>
+     *
      * @param predictorTerm
      * @return
      */
@@ -593,6 +609,7 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Add a <b>PredictorTerm</b> <code>MethodDeclaration</code> to the class
+     *
      * @param predictorTerm
      * @return
      */

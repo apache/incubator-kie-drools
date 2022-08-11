@@ -17,20 +17,15 @@
 package org.kie.dmn.core.internal.utils;
 
 import java.util.Collections;
-import java.util.function.Function;
 
-import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNRuntimeBuilderTest {
 
-    private static final KieBase KIE_BASE = KnowledgeBaseFactory.newKnowledgeBase("DMN", null);
     private DMNRuntimeBuilder dmnRuntimeBuilder;
 
     @Before
@@ -40,15 +35,10 @@ public class DMNRuntimeBuilderTest {
     }
 
     @Test
-    public void setKieRuntimeFactoryFunction() {
-        KieRuntimeFactory toReturn = KieRuntimeFactory.of(KIE_BASE);
-        Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction = s -> toReturn;
+    public void buildFromConfiguration() {
         final DMNRuntimeImpl retrieved = (DMNRuntimeImpl) dmnRuntimeBuilder
-                .setKieRuntimeFactoryFunction(kieRuntimeFactoryFunction)
                 .buildConfiguration()
                 .fromResources(Collections.emptyList()).getOrElseThrow(RuntimeException::new);
         assertThat(retrieved).isNotNull();
-        KieRuntimeFactory kieRuntimeFactory = retrieved.getKieRuntimeFactory("TEST");
-        assertThat(kieRuntimeFactory).isEqualTo(toReturn);
     }
 }

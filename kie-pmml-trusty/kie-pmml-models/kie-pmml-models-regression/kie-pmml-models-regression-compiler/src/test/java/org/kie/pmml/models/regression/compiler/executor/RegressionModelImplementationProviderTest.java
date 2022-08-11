@@ -31,8 +31,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -69,23 +68,6 @@ public class RegressionModelImplementationProviderTest {
     }
 
     @Test
-    void getKiePMMLModel() throws Exception {
-        final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
-        assertThat(pmml).isNotNull();
-        assertThat(pmml.getModels()).hasSize(1);
-        assertThat(pmml.getModels().get(0)).isInstanceOf(RegressionModel.class);
-        RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
-        final CommonCompilationDTO<RegressionModel> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        regressionModel,
-                        new HasClassLoaderMock());
-        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(Serializable.class);
-    }
-
-    @Test
     void getKiePMMLModelWithSources() throws Exception {
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
         assertThat(pmml).isNotNull();
@@ -94,9 +76,10 @@ public class RegressionModelImplementationProviderTest {
         RegressionModel regressionModel = (RegressionModel) pmml.getModels().get(0);
         final CommonCompilationDTO<RegressionModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        regressionModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       regressionModel,
+                                                                       new PMMLCompilationContextMock(),
+                                                                       SOURCE_1);
         final KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
         final Map<String, String> sourcesMap = retrieved.getSourcesMap();

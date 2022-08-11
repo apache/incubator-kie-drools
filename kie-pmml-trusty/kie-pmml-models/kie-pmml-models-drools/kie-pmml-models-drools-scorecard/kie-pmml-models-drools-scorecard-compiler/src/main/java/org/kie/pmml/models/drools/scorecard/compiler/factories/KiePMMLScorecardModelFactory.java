@@ -28,7 +28,6 @@ import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
-import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,17 +47,6 @@ public class KiePMMLScorecardModelFactory {
 
     private KiePMMLScorecardModelFactory() {
         // Avoid instantiation
-    }
-
-    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final DroolsCompilationDTO<Scorecard> compilationDTO) throws IllegalAccessException, InstantiationException {
-        logger.trace("getKiePMMLScorecardModel {} {}", compilationDTO.getPackageName(), compilationDTO.getModel());
-        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(compilationDTO);
-        try {
-            Class<?> kiePMMLScorecardModelClass = compilationDTO.compileAndLoadClass(sourcesMap);
-            return (KiePMMLScorecardModel) kiePMMLScorecardModelClass.newInstance();
-        } catch (Exception e) {
-            throw new KiePMMLException(e);
-        }
     }
 
     public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DroolsCompilationDTO<Scorecard> compilationDTO) {
@@ -83,6 +71,7 @@ public class KiePMMLScorecardModelFactory {
      * <code>Scorecard</code>.
      * <b>It also populate the given <code>Map</code> that has to be used for final
      * <code>KiePMMLScorecardModel</code></b>
+     *
      * @param fields
      * @param model
      * @param fieldTypeMap

@@ -54,7 +54,6 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactory
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLPredicateFactory.getKiePMMLPredicate;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getInstantiationExpression;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
-import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 
@@ -87,39 +86,11 @@ public class KiePMMLSegmentFactory {
         return toReturn;
     }
 
-    public static Map<String, String> getSegmentsSourcesMapCompiled(final MiningModelCompilationDTO compilationDTO,
-                                                                    final List<KiePMMLModel> nestedModels) {
-        logger.debug(GET_SEGMENTS, compilationDTO.getSegments());
-        final Map<String, String> toReturn = new HashMap<>();
-        compilationDTO.getSegments().forEach(segment -> {
-            final SegmentCompilationDTO segmentCompilationDTO =
-                    SegmentCompilationDTO.fromGeneratedPackageNameAndFields(compilationDTO, segment,
-                                                                            compilationDTO.getFields());
-            toReturn.putAll(getSegmentSourcesMapCompiled(segmentCompilationDTO,
-                                                         nestedModels));
-            compilationDTO.addFields(segmentCompilationDTO.getFields());
-        });
-
-        return toReturn;
-    }
-
     public static Map<String, String> getSegmentSourcesMap(final SegmentCompilationDTO segmentCompilationDTO,
                                                            final List<KiePMMLModel> nestedModels) {
         logger.debug(GET_SEGMENT, segmentCompilationDTO.getSegment());
         final KiePMMLModel nestedModel =
                 getFromCommonDataAndTransformationDictionaryAndModelWithSources(segmentCompilationDTO)
-                        .orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segmentCompilationDTO.getModel().getModelName()));
-        final Map<String, String> toReturn = getSegmentSourcesMapCommon(segmentCompilationDTO, nestedModels,
-                                                                        nestedModel);
-        segmentCompilationDTO.addFields(getFieldsFromModel(segmentCompilationDTO.getModel()));
-        return toReturn;
-    }
-
-    public static Map<String, String> getSegmentSourcesMapCompiled(final SegmentCompilationDTO segmentCompilationDTO,
-                                                                   final List<KiePMMLModel> nestedModels) {
-        logger.debug(GET_SEGMENT, segmentCompilationDTO.getSegment());
-        final KiePMMLModel nestedModel =
-                getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(segmentCompilationDTO)
                         .orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segmentCompilationDTO.getModel().getModelName()));
         final Map<String, String> toReturn = getSegmentSourcesMapCommon(segmentCompilationDTO, nestedModels,
                                                                         nestedModel);

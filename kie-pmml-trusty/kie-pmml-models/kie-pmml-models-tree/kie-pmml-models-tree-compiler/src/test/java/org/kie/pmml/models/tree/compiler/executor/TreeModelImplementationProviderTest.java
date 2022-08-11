@@ -27,8 +27,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -51,26 +50,13 @@ public class TreeModelImplementationProviderTest {
     }
 
     @Test
-    void getKiePMMLModel() {
-        TreeModel treeModel = (TreeModel) pmml.getModels().get(0);
-        final CommonCompilationDTO<TreeModel> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        treeModel,
-                        new HasClassLoaderMock());
-        final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(compilationDTO);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(Serializable.class);
-    }
-
-    @Test
     void getKiePMMLModelWithSources() {
         TreeModel treeModel = (TreeModel) pmml.getModels().get(0);
         final CommonCompilationDTO<TreeModel> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        treeModel,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       treeModel,
+                                                                       new PMMLCompilationContextMock(), SOURCE_1);
         final KiePMMLModelWithSources retrieved = PROVIDER.getKiePMMLModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
         final Map<String, String> sourcesMap = retrieved.getSourcesMap();

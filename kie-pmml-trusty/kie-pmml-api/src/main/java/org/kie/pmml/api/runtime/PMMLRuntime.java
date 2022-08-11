@@ -17,7 +17,6 @@ package org.kie.pmml.api.runtime;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.models.PMMLModel;
@@ -30,14 +29,14 @@ public interface PMMLRuntime {
      * @param context the context with all the input variables
      * @return the result of the evaluation
      */
-    PMML4Result evaluate(final String modelName, final PMMLContext context);
+    PMML4Result evaluate(final String modelName, final PMMLRuntimeContext context);
 
     /**
      * Returns a list of all models available to this runtime
      * @return the list of available models. An empty list in
      * case no model is available.
      */
-    List<PMMLModel> getPMMLModels();
+    List<PMMLModel> getPMMLModels(final PMMLRuntimeContext context);
 
     /**
      * Returns the model registered with the given model name.
@@ -46,27 +45,6 @@ public interface PMMLRuntime {
      * the <code>PMMLModel</code> retrieved, or an <b>empty</b> one if none
      * is registered with the given name.
      */
-    Optional<PMMLModel> getPMMLModel(final String modelName);
+    Optional<PMMLModel> getPMMLModel(final String fileName, final String modelName, PMMLRuntimeContext context);
 
-    /**
-     * Add the given <code>PMMLListener</code> to the current <code>PMMLRuntime</code>
-     * That listener, in turn, will be added to any <code>PMMLContext</code> passed
-     * to the <code>evaluate</code> method
-     * @param toAdd
-     */
-    void addPMMLListener(final PMMLListener toAdd);
-
-    /**
-     * Remove the given <code>PMMLListener</code> from the current <code>PMMLRuntime</code>.
-     * That listener, in turn, will not be added anymore to <code>PMMLContext</code>s passed
-     * to the <code>evaluate</code> method
-     * @param toRemove
-     */
-    void removePMMLListener(final PMMLListener toRemove);
-
-    /**
-     * Returns an <b>unmodifiable set</b> of the <code>PMMLListener</code>s registered with the
-     * current instance
-     */
-    Set<PMMLListener> getPMMLListeners();
 }

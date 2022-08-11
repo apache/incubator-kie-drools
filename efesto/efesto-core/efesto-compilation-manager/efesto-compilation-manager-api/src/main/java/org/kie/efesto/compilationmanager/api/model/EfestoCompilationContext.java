@@ -16,9 +16,12 @@
 package org.kie.efesto.compilationmanager.api.model;
 
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
+import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
+import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 /**
@@ -26,13 +29,28 @@ import org.kie.memorycompiler.KieMemoryCompiler;
  * Wrap MemoryCompilerClassLoader and convey generated classes to be used by other CompilationManager or RuntimeManager
  *
  */
-public interface EfestoCompilationContext extends EfestoContext<EfestoListener> {
+public interface EfestoCompilationContext<T extends EfestoListener> extends EfestoContext<T> {
 
-    public static EfestoCompilationContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
+    static EfestoCompilationContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
         return new EfestoCompilationContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
     }
+
+    static EfestoCompilationContext buildFromContext(EfestoCompilationContextImpl original, Class<? extends EfestoCompilationContext> toInstantiate) {
+        try {
+            EfestoCompilationContext toReturn = toInstantiate.getDeclaredConstructor(KieMemoryCompiler.MemoryCompilerClassLoader.class).newInstance(original.memoryCompilerClassLoader);
+            return toReturn;
+        } catch (Exception e) {
+            throw new EfestoCompilationManagerException("Failed to instantiate " + toInstantiate.getName(), e);
+        }
+    }
+
 
     Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
 
     void loadClasses(Map<String, byte[]> compiledClassesMap);
+    ServiceLoader<KieCompilerService> getKieCompilerServiceLoader();
+
+    byte[] getCode(String name);
+
+
 }

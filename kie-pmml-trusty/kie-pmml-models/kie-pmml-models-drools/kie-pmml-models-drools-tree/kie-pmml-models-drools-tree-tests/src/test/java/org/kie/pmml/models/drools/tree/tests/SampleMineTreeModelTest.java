@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SampleMineTreeModelTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "SampleMine.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "SampleMine";
     private static final String MODEL_NAME = "SampleMineTreeModel";
     private static final String TARGET_FIELD = "decision";
     private static PMMLRuntime pmmlRuntime;
@@ -48,7 +48,7 @@ public class SampleMineTreeModelTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime =  getPMMLRuntime(FILE_NAME);
+        pmmlRuntime =  getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -66,7 +66,7 @@ public class SampleMineTreeModelTest extends AbstractPMMLTest {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("temperature", temperature);
         inputData.put("humidity", humidity);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

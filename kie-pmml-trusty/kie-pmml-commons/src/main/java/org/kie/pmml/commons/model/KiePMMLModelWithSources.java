@@ -23,7 +23,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.TargetField;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
 /**
  * Interface used to identify a given <code>HasSourcesMap</code> as <b>container</b> for KiePMMLModel' sources
@@ -38,14 +38,15 @@ public class KiePMMLModelWithSources extends KiePMMLModel implements HasSourcesM
     private final Map<String, String> sourcesMap;
     private final boolean isInterpreted;
 
-    public KiePMMLModelWithSources(final String modelName,
+    public KiePMMLModelWithSources(final String fileName,
+                                   final String modelName,
                                    final String kmodulePackageName,
                                    final List<MiningField> miningFields,
                                    final List<OutputField> outputFields,
                                    final List<TargetField> targetFields,
                                    final Map<String, String> sourcesMap,
                                    final boolean isInterpreted) {
-        super(modelName, Collections.emptyList());
+        super(fileName, modelName, Collections.emptyList());
         this.kmodulePackageName = kmodulePackageName;
         this.miningFields = miningFields;
         this.outputFields = outputFields;
@@ -55,8 +56,8 @@ public class KiePMMLModelWithSources extends KiePMMLModel implements HasSourcesM
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
-                           final PMMLContext context) {
+    public Object evaluate(final Map<String, Object> requestData,
+                           final PMMLRuntimeContext context) {
         throw new KiePMMLException("KiePMMLModelWithSources is not meant to be used for actual evaluation");
     }
 

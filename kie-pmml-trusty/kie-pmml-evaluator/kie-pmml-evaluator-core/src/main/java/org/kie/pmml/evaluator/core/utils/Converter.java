@@ -32,6 +32,7 @@ public class Converter {
 
     /**
      * <b>Extract</b> the objects from the <code>ParameterInfo</code> values of the given map.
+     *
      * @param parameterMap
      * @return
      */
@@ -45,6 +46,7 @@ public class Converter {
 
     /**
      * <b>Extract</b> the objects from the <code>ParameterInfo</code> of the given collection.
+     *
      * @param parameterInfos
      * @return
      */

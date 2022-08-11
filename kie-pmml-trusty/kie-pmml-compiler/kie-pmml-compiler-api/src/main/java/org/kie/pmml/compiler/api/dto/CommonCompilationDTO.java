@@ -33,9 +33,9 @@ import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.TransformationDictionary;
+import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
 
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
@@ -55,9 +55,11 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     private final TransformationDictionary transformationDictionary;
     private final T model;
     /**
-     * Using <code>HasClassloader</code> to avoid coupling with drools
+     * Using <code>PMMLCompilationContext</code> to avoid coupling with drools
      */
-    private final HasClassLoader hasClassloader;
+    private final PMMLCompilationContext pmmlContext;
+
+    private final String fileName;
     private final PMML pmml;
     private final PMML_MODEL pmmlModel;
     private final String simpleClassName;
@@ -70,14 +72,16 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
      * <code>CompilationDTO</code>
      * @param pmml
      * @param model
-     * @param hasClassloader
+     * @param pmmlContext
+     * @param fileName
      * @param packageName
      */
     private CommonCompilationDTO(final PMML pmml,
                                  final T model,
-                                 final HasClassLoader hasClassloader,
+                                 final PMMLCompilationContext pmmlContext,
+                                 final String fileName,
                                  final String packageName) {
-        this(pmml, model, hasClassloader, packageName,
+        this(pmml, model, pmmlContext, fileName, packageName,
              ModelUtils.getFieldsFromDataDictionaryTransformationDictionaryAndModel(pmml.getDataDictionary(),
                                                                                     pmml.getTransformationDictionary(),
                                                                                     model));
@@ -87,13 +91,14 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
      * Private constructor that preserve given <b>packageName</b> and <b>fields</b>
      * @param pmml
      * @param model
-     * @param hasClassloader
+     * @param pmmlContext
      * @param packageName
      * @param fields
      */
     private CommonCompilationDTO(final PMML pmml,
                                  final T model,
-                                 final HasClassLoader hasClassloader,
+                                 final PMMLCompilationContext pmmlContext,
+                                 final String fileName,
                                  final String packageName,
                                  final List<Field<?>> fields) {
         this.packageName = packageName;
@@ -101,7 +106,8 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
         this.transformationDictionary = pmml.getTransformationDictionary();
         this.fields = new ArrayList<>(fields);
         this.model = model;
-        this.hasClassloader = hasClassloader;
+        this.pmmlContext = pmmlContext;
+        this.fileName = fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
         this.pmmlModel = PMML_MODEL.byName(model.getClass().getSimpleName());
         simpleClassName = getSanitizedClassName(model.getModelName());
         packageCanonicalClassName = String.format(PACKAGE_CLASS_TEMPLATE, this.packageName, simpleClassName);
@@ -121,52 +127,62 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     /**
      * Private constructor that create the <b>packageName</b> name from the given one and retrieve <b>fields</b>
      * from <b>pmml</b> and <b>model</b>
+     *
      * @param pmml
      * @param model
-     * @param hasClassloader
+     * @param pmmlContext
      * @param packageName
      */
     private CommonCompilationDTO(final String packageName,
                                  final PMML pmml,
                                  final T model,
-                                 final HasClassLoader hasClassloader) {
-        this(pmml, model, hasClassloader, getSanitizedPackageName(String.format(PACKAGE_CLASS_TEMPLATE, packageName,
-                                                                                model.getModelName())));
+                                 final PMMLCompilationContext pmmlContext,
+                                 final String fileName) {
+        this(pmml, model, pmmlContext, fileName, getSanitizedPackageName(String.format(PACKAGE_CLASS_TEMPLATE,
+                                                                                          packageName,
+                                                                                          model.getModelName())));
     }
 
     /**
      * Builder that create the <b>packageName</b> name from the given one and retrieve <b>fields</b>
      * from <b>pmml</b> and <b>model</b>
+     *
+     * @param packageName
      * @param pmml
      * @param model
-     * @param hasClassloader
-     * @param packageName
+     * @param pmmlContext
+     * @param fileName
      **/
     public static <T extends Model> CommonCompilationDTO<T> fromGeneratedPackageNameAndFields(final String packageName,
                                                                                               final PMML pmml,
                                                                                               final T model,
-                                                                                              final HasClassLoader hasClassloader) {
+                                                                                              final PMMLCompilationContext pmmlContext,
+                                                                                              final String fileName) {
         return new CommonCompilationDTO(packageName,
                                         pmml,
                                         model,
-                                        hasClassloader);
+                                        pmmlContext,
+                                        fileName);
     }
 
     /**
      * Builder that preserve given <b>packageName</b> and <b>fields</b>
      * <code>CompilationDTO</code>
+     *
      * @param pmml
      * @param model
-     * @param hasClassloader
+     * @param pmmlContext
+     * @param fileName
      * @param packageName
      * @param fields
      */
     public static <T extends Model> CommonCompilationDTO<T> fromPackageNameAndFields(final PMML pmml,
                                                                                      final T model,
-                                                                                     final HasClassLoader hasClassloader,
+                                                                                     final PMMLCompilationContext pmmlContext,
+                                                                                     final String fileName,
                                                                                      final String packageName,
                                                                                      final List<Field<?>> fields) {
-        return new CommonCompilationDTO<>(pmml, model, hasClassloader, packageName, fields);
+        return new CommonCompilationDTO<>(pmml, model, pmmlContext, fileName, packageName, fields);
     }
 
     @Override
@@ -230,6 +246,11 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     }
 
     @Override
+    public String getFileName() {
+        return fileName;
+    }
+
+    @Override
     public String getTargetFieldName() {
         return targetDataFieldName;
     }
@@ -250,13 +271,13 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     }
 
     @Override
-    public Class<?> compileAndLoadClass(Map<String, String> sourcesMap) {
-        return hasClassloader.compileAndLoadClass(sourcesMap, packageCanonicalClassName);
+    public Map<String, byte[]> compileClasses(Map<String, String> sourcesMap) {
+        return pmmlContext.compileClasses(sourcesMap);
     }
 
     @Override
-    public HasClassLoader getHasClassloader() {
-        return hasClassloader;
+    public PMMLCompilationContext getPmmlContext() {
+        return pmmlContext;
     }
 
     @Override

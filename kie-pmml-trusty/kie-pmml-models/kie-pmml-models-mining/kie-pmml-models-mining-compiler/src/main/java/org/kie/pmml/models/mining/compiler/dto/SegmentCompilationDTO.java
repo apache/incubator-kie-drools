@@ -36,12 +36,13 @@ public class SegmentCompilationDTO<T extends Model> extends AbstractSpecificComp
      * source' <b>segmentationPackageName</b> and segment'
      * <b>id</b>, preserving given <b>fields</b>
      * <code>CompilationDTO</code>
+     *
      * @param source
      * @param segment
      * @param fields
      */
     private SegmentCompilationDTO(MiningModelCompilationDTO source, Segment segment, List<Field<?>> fields) {
-        super(source.getPmml(), (T) segment.getModel(), source.getHasClassloader(),
+        super(source.getPmml(), (T) segment.getModel(), source.getPmmlContext(), source.getFileName(),
               getSanitizedPackageName(source.getSegmentationPackageName() + "." + segment.getId()),
               fields);
         this.segment = segment;
@@ -52,6 +53,7 @@ public class SegmentCompilationDTO<T extends Model> extends AbstractSpecificComp
      * <b>segmentationPackageName</b> and segment' <b>id</b>,
      * preserving given <b>fields</b>
      * <code>CompilationDTO</code>
+     *
      * @param source
      * @param segment
      * @param fields

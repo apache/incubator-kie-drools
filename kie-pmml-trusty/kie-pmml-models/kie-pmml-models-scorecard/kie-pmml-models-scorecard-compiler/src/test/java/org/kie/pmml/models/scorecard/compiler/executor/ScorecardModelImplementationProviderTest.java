@@ -27,8 +27,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,23 +56,13 @@ public class ScorecardModelImplementationProviderTest {
     }
 
     @Test
-    void getKiePMMLModel() {
-        final CommonCompilationDTO<Scorecard> compilationDTO =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        basicComplexPartialScorePmml,
-                        basicComplexPartialScore,
-                        new HasClassLoaderMock());
-        KiePMMLScorecardModel retrieved = provider.getKiePMMLModel(compilationDTO);
-        assertThat(retrieved).isNotNull();
-    }
-
-    @Test
     void getKiePMMLModelWithSources() {
         final CommonCompilationDTO<Scorecard> compilationDTO =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        basicComplexPartialScorePmml,
-                        basicComplexPartialScore,
-                        new HasClassLoaderMock());
+                                                                       basicComplexPartialScorePmml,
+                                                                       basicComplexPartialScore,
+                                                                       new PMMLCompilationContextMock(),
+                                                                       BASIC_COMPLEX_PARTIAL_SCORE_SOURCE);
         KiePMMLModelWithSources retrieved = provider.getKiePMMLModelWithSources(compilationDTO);
         assertThat(retrieved).isNotNull();
         Map<String, String> retrievedSourcesMap = retrieved.getSourcesMap();

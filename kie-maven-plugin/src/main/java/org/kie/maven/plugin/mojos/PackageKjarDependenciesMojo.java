@@ -67,6 +67,8 @@ import org.apache.maven.shared.utils.io.IOUtil;
 import org.kie.maven.plugin.ArtifactItem;
 import org.kie.maven.plugin.KieMavenPluginContext;
 
+import static org.kie.maven.plugin.KieMavenPluginContext.getKieMavenPluginContext;
+
 @Mojo(name = "package-dependencies-kjar",
         defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
         threadSafe = true,
@@ -112,7 +114,7 @@ public class PackageKjarDependenciesMojo extends AbstractKieMojo {
             log.info("Skipping plugin execution");
             return;
         }
-        final KieMavenPluginContext kieMavenPluginContext = getKieMavenPluginContext();
+        final KieMavenPluginContext kieMavenPluginContext = getKieMavenPluginContext(this);
         final MavenSession mavenSession = kieMavenPluginContext.getMavenSession();
         final File outputDirectory = kieMavenPluginContext.getOutputDirectory();
         try {

@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
 
@@ -29,12 +28,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.models.mining.compiler.HasKnowledgeBuilderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
 import org.xml.sax.SAXException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
 public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
@@ -49,9 +47,10 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final CommonCompilationDTO<MiningModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        MINING_MODEL,
-                        new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
+                                                                       pmml,
+                                                                       MINING_MODEL,
+                                                                       new PMMLCompilationContextMock(),
+                                                                       "FILENAME");
         final MiningModelCompilationDTO compilationDTO =
                 MiningModelCompilationDTO.fromCompilationDTO(source);
         final Map<String, String> retrieved = KiePMMLSegmentationFactory.getSegmentationSourcesMap(compilationDTO,
@@ -61,39 +60,4 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
         assertThat(nestedModels).hasSize(expectedNestedModels);
     }
 
-    @Test
-    void getSegmentationSourcesMapCompiled() {
-        final HasKnowledgeBuilderMock hasKnowledgeBuilderMock = new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER);
-        final CommonCompilationDTO<MiningModel> source =
-                CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                        pmml,
-                        MINING_MODEL,
-                        hasKnowledgeBuilderMock);
-        final MiningModelCompilationDTO compilationDTO =
-                MiningModelCompilationDTO.fromCompilationDTO(source);
-        final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        final List<String> expectedGeneratedClasses =
-                MINING_MODEL.getSegmentation().getSegments().stream().map(this::getExpectedNestedModelClass).collect(Collectors.toList());
-        expectedGeneratedClasses.forEach(expectedGeneratedClass -> {
-            try {
-                hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
-                fail("Expecting class not found: " + expectedGeneratedClass);
-            } catch (Exception e) {
-                assertThat(e).isInstanceOf(ClassNotFoundException.class);
-            }
-        });
-        final Map<String, String> retrieved =
-                KiePMMLSegmentationFactory.getSegmentationSourcesMapCompiled(compilationDTO, nestedModels);
-        assertThat(retrieved).isNotNull();
-        int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
-        assertThat(nestedModels).hasSize(expectedNestedModels);
-        expectedGeneratedClasses.forEach(expectedGeneratedClass -> {
-            try {
-                hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
-            } catch (Exception e) {
-                fail("Expecting class to be loaded, but got: " + e.getClass().getName() + " -> " + e.getMessage());
-                e.printStackTrace();
-            }
-        });
-    }
 }

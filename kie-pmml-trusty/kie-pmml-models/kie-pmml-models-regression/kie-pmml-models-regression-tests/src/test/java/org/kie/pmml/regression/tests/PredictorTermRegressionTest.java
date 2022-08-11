@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PredictorTermRegressionTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "PredictorTermRegression.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "PredictorTermRegression";
     private static final String MODEL_NAME = "PredictorTermRegression";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -49,7 +49,7 @@ public class PredictorTermRegressionTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -71,7 +71,7 @@ public class PredictorTermRegressionTest extends AbstractPMMLTest {
         inputData.put("x", x);
         inputData.put("y", y);
         inputData.put("z", z);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result).isNotNull();
         assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);

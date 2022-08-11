@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
@@ -42,7 +42,7 @@ public abstract class AbstractKiePMMLTable extends AbstractKiePMMLComponent {
         return targetCategory;
     }
 
-    public Object evaluateRegression(final Map<String, Object> input, final PMMLContext context) {
+    public Object evaluateRegression(final Map<String, Object> input, final PMMLRuntimeContext context) {
         double result = intercept;
         final Map<String, Double> resultMap = new HashMap<>();
         for (Map.Entry<String, SerializableFunction<Double, Double>> entry : numericFunctionMap.entrySet()) {

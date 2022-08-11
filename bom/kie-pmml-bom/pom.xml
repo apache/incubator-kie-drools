@@ -104,13 +104,7 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-evaluator-assembler</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Kie dep -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-kie-internal</artifactId>
+        <artifactId>kie-pmml-evaluator-utils</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Drools -->
@@ -118,6 +112,38 @@
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-common</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <!-- Tree -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-tree-model</artifactId>
+        <version>${drools.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
+        <version>${drools.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+        <version>${drools.version}</version>
+      </dependency>
+      <!-- Scorecard -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
+        <version>${drools.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
+        <version>${drools.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
+        <version>${drools.version}</version>
       </dependency>
       <!-- Regression -->
       <dependency>
@@ -274,19 +300,6 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-core</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-evaluator-assembler</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <!-- Kie dep -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-kie-internal</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

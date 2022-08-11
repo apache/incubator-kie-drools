@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -150,15 +149,6 @@ public class DMNRuntimeImpl
             evaluateByNameInternal( model, context, result, name );
         }
         return result;
-    }
-
-    /**
-     *
-     * @param kieBaseName
-     * @return
-     */
-    public KieRuntimeFactory getKieRuntimeFactory(String kieBaseName) {
-        return runtimeKB.getKieRuntimeFactory(kieBaseName);
     }
 
     private void evaluateByNameInternal( DMNModel model, DMNContext context, DMNResultImpl result, String name ) {

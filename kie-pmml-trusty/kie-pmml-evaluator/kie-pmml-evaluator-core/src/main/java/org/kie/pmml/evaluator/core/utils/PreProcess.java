@@ -28,7 +28,7 @@ import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.MISSING_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInputDataException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLMiningField;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -50,11 +50,12 @@ public class PreProcess {
 
     /**
      * Method to create a <code>ProcessingDTO</code> with <b>fix</b> values from the given <code>KiePMMLModel</code>
+     *
      * @param model
      * @param context
      * @return
      */
-    public static ProcessingDTO preProcess(final KiePMMLModel model, final PMMLContext context) {
+    public static ProcessingDTO preProcess(final KiePMMLModel model, final PMMLRuntimeContext context) {
         final List<KiePMMLMiningField> notTargetMiningFields = model.getMiningFields() != null ?
                 model.getKiePMMLMiningFields().stream().filter(miningField -> !miningField.isTarget())
                         .collect(Collectors.toList())
@@ -71,6 +72,7 @@ public class PreProcess {
     /**
      * Try to convert input data to expected data-type, throwing exception when data are not
      * convertible
+     *
      * @param notTargetMiningFields
      * @param requestData
      */
@@ -108,6 +110,7 @@ public class PreProcess {
      * value specified by attribute invalidValueReplacement which must be present in this case,
      * or the PMML is invalid.
      * </p>
+     *
      * @param notTargetMiningFields
      * @param requestData
      * @see
@@ -141,6 +144,7 @@ public class PreProcess {
      * unless the value is returnInvalid, in which case if a missing value is encountered
      * in the given field, the model should return a value indicating an invalid result;
      * </p>
+     *
      * @param notTargetMiningFields
      * @param requestData
      * @see
@@ -201,6 +205,7 @@ public class PreProcess {
      * <code>INVALID_VALUE_TREATMENT_METHOD</code>
      * of the given <code>MiningField</code>, <b>eventually adding the ParameterInfo to the list of the ones to be
      * removed from input data</b>
+     *
      * @param miningField
      * @param parameterInfo
      * @param toRemove
@@ -239,6 +244,7 @@ public class PreProcess {
     /**
      * Manage the <b>missing value</b> depending on the <code>INVALID_VALUE_TREATMENT_METHOD</code>
      * of the given <code>MiningField</code>, <b>eventually adding default ont to input data</b>
+     *
      * @param miningField
      * @param requestData
      */
@@ -269,6 +275,7 @@ public class PreProcess {
 
     /**
      * Verify if the value of the given <code>ParameterInfo</code> is allowed for the given <code>MiningField</code>
+     *
      * @param parameterInfo
      * @param miningField
      * @return

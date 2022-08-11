@@ -28,7 +28,7 @@ import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KieRuntimeServiceDrlMapInput implements KieRuntimeService<EfestoMapInputDTO, Map<String, Object>, AbstractEfestoInput<EfestoMapInputDTO>, EfestoOutputDrlMap> {
+public class KieRuntimeServiceDrlMapInput implements KieRuntimeService<EfestoMapInputDTO, Map<String, Object>, AbstractEfestoInput<EfestoMapInputDTO>, EfestoOutputDrlMap, EfestoRuntimeContext> {
 
     private static final Logger logger = LoggerFactory.getLogger(KieRuntimeServiceDrlMapInput.class.getName());
 

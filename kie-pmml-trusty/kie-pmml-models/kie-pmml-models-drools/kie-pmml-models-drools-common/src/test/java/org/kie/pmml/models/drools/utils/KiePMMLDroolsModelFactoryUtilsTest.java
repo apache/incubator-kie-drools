@@ -55,7 +55,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
+import org.kie.pmml.compiler.commons.mocks.PMMLCompilationContextMock;
 import org.kie.pmml.models.drools.dto.DroolsCompilationDTO;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
@@ -104,9 +104,10 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         pmml.addModels(model);
         final CommonCompilationDTO<TreeModel> source =
                 CommonCompilationDTO.fromGeneratedPackageNameAndFields(packageName,
-                        pmml,
-                        model,
-                        new HasClassLoaderMock());
+                                                                       pmml,
+                                                                       model,
+                                                                       new PMMLCompilationContextMock(),
+                                                                       "FILENAME");
         final DroolsCompilationDTO<TreeModel> droolsCompilationDTO =
                 DroolsCompilationDTO.fromCompilationDTO(source, fieldTypeMap);
         CompilationUnit retrieved =

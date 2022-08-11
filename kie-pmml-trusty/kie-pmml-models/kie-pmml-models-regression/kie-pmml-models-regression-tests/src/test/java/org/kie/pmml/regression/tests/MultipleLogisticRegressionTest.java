@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultipleLogisticRegressionTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "MultipleRegression.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "MultipleRegression";
     private static final String MODEL_NAME = "LogisticRegression";
     private static final String TARGET_FIELD = "class";
     private static final String PROBABILITY_AUTHENTIC = "probability(Authentic)";
@@ -65,7 +65,7 @@ public class MultipleLogisticRegressionTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -87,7 +87,7 @@ public class MultipleLogisticRegressionTest extends AbstractPMMLTest {
         inputData.put("skewness", skewness);
         inputData.put("curtosis", curtosis);
         inputData.put("entropy", entropy);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

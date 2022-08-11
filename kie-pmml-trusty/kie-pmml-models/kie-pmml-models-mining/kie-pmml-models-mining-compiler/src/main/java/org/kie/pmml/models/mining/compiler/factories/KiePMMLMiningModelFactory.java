@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.mining.compiler.factories;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,11 +27,11 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.compiler.dto.MiningModelCompilationDTO;
-import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +40,6 @@ import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationFactory.getSegmentationSourcesMap;
-import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationFactory.getSegmentationSourcesMapCompiled;
 
 public class KiePMMLMiningModelFactory {
 
@@ -53,36 +51,20 @@ public class KiePMMLMiningModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLMiningModel getKiePMMLMiningModel(final MiningModelCompilationDTO compilationDTO) {
-        logger.debug("getKiePMMLMiningModel {}", compilationDTO.getModel());
-        final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        Map<String, String> sourcesMap = getKiePMMLMiningModelSourcesMapCompiled(compilationDTO,
-                                                                                 nestedModels);
-        try {
-            Class<?> kiePMMLMiningModel = compilationDTO.compileAndLoadClass(sourcesMap);
-            return (KiePMMLMiningModel) kiePMMLMiningModel.newInstance();
-        } catch (Exception e) {
-            throw new KiePMMLException(e);
-        }
-    }
-
     public static Map<String, String> getKiePMMLMiningModelSourcesMap(final MiningModelCompilationDTO compilationDTO,
                                                                       final List<KiePMMLModel> nestedModels) {
         logger.trace("getKiePMMLMiningModelSourcesMap {} {} {}", compilationDTO.getFields(),
                      compilationDTO.getModel(), compilationDTO.getPackageName());
         final Map<String, String> toReturn = getSegmentationSourcesMap(compilationDTO,
                                                                        nestedModels);
+        nestedModels.forEach(nestedModel -> {
+            if (!(nestedModel instanceof KiePMMLModelWithSources)) {
+                throw new KiePMMLException("Expecting only KiePMMLModelWithSources at this phase; retrieved " + nestedModel.getClass());
+            }
+            toReturn.putAll(((KiePMMLModelWithSources) nestedModel).getSourcesMap());
+        });
         return getKiePMMLMiningModelSourcesMapCommon(compilationDTO,
                                                      toReturn);
-    }
-
-    public static Map<String, String> getKiePMMLMiningModelSourcesMapCompiled(final MiningModelCompilationDTO compilationDTO,
-                                                                              final List<KiePMMLModel> nestedModels) {
-        logger.trace("getKiePMMLMiningModelSourcesMapCompiled {} {} {}", compilationDTO.getFields(),
-                     compilationDTO.getModel(), compilationDTO.getPackageName());
-        final Map<String, String> toReturn = getSegmentationSourcesMapCompiled(compilationDTO,
-                                                                               nestedModels);
-        return getKiePMMLMiningModelSourcesMapCommon(compilationDTO, toReturn);
     }
 
     static Map<String, String> getKiePMMLMiningModelSourcesMapCommon(final MiningModelCompilationDTO compilationDTO,

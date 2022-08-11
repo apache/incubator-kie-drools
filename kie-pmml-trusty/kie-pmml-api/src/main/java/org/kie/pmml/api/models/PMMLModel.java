@@ -22,6 +22,8 @@ import java.util.List;
  */
 public interface PMMLModel {
 
+    String getFileName();
+
     String getName();
 
     List<MiningField> getMiningFields();

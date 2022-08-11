@@ -1,0 +1,15 @@
+[
+  {
+    "step-type": "executable",
+    "fri": {
+      "basePath": "/testmod",
+      "model": "pmml",
+      "fri": "/pmml/testmod"
+    },
+    "fullClassNames": ["org.kie.pmml.compilation.model.TestingModelFactory"]
+  },
+  {
+    "step-type": "class",
+    "fullClassName": "full.path.Intermediate"
+  }
+]

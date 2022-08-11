@@ -26,8 +26,8 @@
       <artifactId>drools-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-commands</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-runtime-manager-api</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->

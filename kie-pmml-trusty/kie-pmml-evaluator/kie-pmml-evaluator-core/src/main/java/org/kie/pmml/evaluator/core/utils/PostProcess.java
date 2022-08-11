@@ -27,7 +27,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -49,7 +49,7 @@ public class PostProcess {
     }
 
     public static void postProcess(final PMML4Result toReturn, final KiePMMLModel model,
-                                   final PMMLContext pmmlContext, final ProcessingDTO processingDTO) {
+                                   final PMMLRuntimeContext pmmlContext, final ProcessingDTO processingDTO) {
         executeTargets(toReturn, processingDTO);
         updateTargetValueType(model, toReturn);
         populateProcessingDTO(toReturn, pmmlContext, processingDTO);
@@ -60,12 +60,13 @@ public class PostProcess {
      * Method used to populate a <code>ProcessingDTO</code> with values accumulated inside the given
      * <code>KiePMMLModel</code>
      * during evaluation
+     *
      * @param pmml4Result
      * @param pmmlContext
      * @param toPopulate
      */
     static void populateProcessingDTO(final PMML4Result pmml4Result,
-                                      final PMMLContext pmmlContext,
+                                      final PMMLRuntimeContext pmmlContext,
                                       final ProcessingDTO toPopulate) {
         pmml4Result.getResultVariables().forEach((key, value) -> toPopulate.addKiePMMLNameValue(new KiePMMLNameValue(key, value)));
         final Map<String, Double> sortedByValue
@@ -86,6 +87,7 @@ public class PostProcess {
 
     /**
      * Execute <b>modifications</b> on target result.
+     *
      * @param toModify
      * @param processingDTO
      * @see <a href="http://dmg.org/pmml/v4-4-1/Targets.html>Targets</a>
@@ -112,6 +114,7 @@ public class PostProcess {
 
     /**
      * Verify that the returned value has the required type as defined inside <code>DataDictionary/MiningSchema</code>
+     *
      * @param model
      * @param toUpdate
      */
@@ -130,6 +133,7 @@ public class PostProcess {
 
     /**
      * Populated the <code>PMML4Result</code> with <code>OutputField</code> results
+     *
      * @param toUpdate
      * @param processingDTO
      */

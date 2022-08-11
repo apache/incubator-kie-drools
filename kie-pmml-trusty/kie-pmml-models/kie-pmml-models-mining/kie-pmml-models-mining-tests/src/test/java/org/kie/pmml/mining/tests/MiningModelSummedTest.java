@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MiningModelSummedTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "MiningModelSummed.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "MiningModelSummed";
     private static final String MODEL_NAME = "MiningModelSummed";
     private static final String TARGET_FIELD = "result";
     private final String INPUT1 = "input1";
@@ -57,7 +57,7 @@ public class MiningModelSummedTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -75,7 +75,7 @@ public class MiningModelSummedTest extends AbstractPMMLTest {
         inputData.put(INPUT2, input2);
         inputData.put(INPUT3, input3);
 
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

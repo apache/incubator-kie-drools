@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "LogisticRegressionNoneNormalization.pmml";
+    private static final String FILE_NAME_NO_SUFFIX = "LogisticRegressionNoneNormalization";
     private static final String MODEL_NAME = "LogisticRegressionNoneNormalization";
     private static final String TARGET_FIELD = "Species";
     private static final String PROBABILITY_SETOSA_FIELD = "Probability_setosa";
@@ -68,7 +68,7 @@ public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
 
     @BeforeAll
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME_NO_SUFFIX);
     }
 
     public static Collection<Object[]> data() {
@@ -88,7 +88,7 @@ public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
         inputData.put("Sepal.Width", sepalWidth);
         inputData.put("Petal.Length", petalLength);
         inputData.put("Petal.Width", petalWidth);
-        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

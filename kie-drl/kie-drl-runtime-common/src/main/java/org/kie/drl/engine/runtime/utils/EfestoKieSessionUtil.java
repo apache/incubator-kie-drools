@@ -27,23 +27,37 @@ import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EfestoKieSessionUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(EfestoKieSessionUtil.class.getName());
 
     private EfestoKieSessionUtil() {
     }
 
     public static KieSession loadKieSession(FRI fri, EfestoRuntimeContext context) {
+        logger.debug("loadKieSession {} {}", fri, context);
         GeneratedExecutableResource finalResource = GeneratedResourceUtils.getGeneratedExecutableResource(fri, "drl")
-                .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource for " + fri));
+                .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource " +
+                                                                          "for " + fri));
         List<Model> models = finalResource.getFullClassNames().stream()
-                        .map(className -> loadModel(className, context))
-                        .collect(Collectors.toList());
+                .map(className -> loadModel(className, context))
+                .collect(Collectors.toList());
+        logger.debug("models {}", models);
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(models);
-
-        KieSession toReturn = kieBase.newKieSession();
-        // TODO find a way to set a unique identifier for the created session -
-        return toReturn;
+        logger.debug("kieBase {}", kieBase);
+        try {
+            KieSession toReturn = kieBase.newKieSession();
+            logger.debug("toReturn {}", toReturn);
+            // TODO find a way to set a unique identifier for the created session -
+            return toReturn;
+        } catch (Exception e) {
+            String errorMessage = String.format("Failed to create new session from %s due to %s", kieBase, e.getMessage());
+            logger.error(errorMessage, e);
+            throw new KieRuntimeServiceException(errorMessage, e);
+        }
     }
 
     static Model loadModel(String fullModelResourcesSourceClassName, EfestoRuntimeContext context) {

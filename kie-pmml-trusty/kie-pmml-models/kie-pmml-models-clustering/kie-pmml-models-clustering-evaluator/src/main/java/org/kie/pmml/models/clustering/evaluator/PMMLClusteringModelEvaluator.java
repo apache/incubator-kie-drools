@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  org.kie.pmml.models.clustering.evaluator;
+package org.kie.pmml.models.clustering.evaluator;
 
 import java.util.Map;
 
-import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 
@@ -33,18 +32,17 @@ import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParameters
 public class PMMLClusteringModelEvaluator implements PMMLModelEvaluator<KiePMMLClusteringModel> {
 
     @Override
-    public PMML_MODEL getPMMLModelType(){
+    public PMML_MODEL getPMMLModelType() {
         return PMML_MODEL.CLUSTERING_MODEL;
     }
 
     @Override
-    public PMML4Result evaluate(final KieBase knowledgeBase,
-                                final KiePMMLClusteringModel model,
-                                final PMMLContext context) {
+    public PMML4Result evaluate(final KiePMMLClusteringModel model,
+                                final PMMLRuntimeContext context) {
         final Map<String, Object> requestData =
                 getUnwrappedParametersMap(context.getRequestData().getMappedRequestParams());
 
-        Object result = model.evaluate(knowledgeBase, requestData, context);
+        Object result = model.evaluate(requestData, context);
 
         String targetField = model.getTargetField();
         PMML4Result toReturn = new PMML4Result();

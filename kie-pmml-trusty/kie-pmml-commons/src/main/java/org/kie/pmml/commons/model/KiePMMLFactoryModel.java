@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
 /**
  * This is the model used to store sources for <code>KiePMMLModelFactory</code> classes;
@@ -32,15 +32,15 @@ public class KiePMMLFactoryModel extends KiePMMLModel implements HasSourcesMap {
     private final String kmodulePackageName;
     protected Map<String, String> sourcesMap;
 
-    public KiePMMLFactoryModel(String name, String kmodulePackageName, Map<String, String> sourcesMap) {
-        super(name, Collections.emptyList());
+    public KiePMMLFactoryModel(String fileName, String name, String kmodulePackageName, Map<String, String> sourcesMap) {
+        super(fileName, name, Collections.emptyList());
         this.sourcesMap = sourcesMap;
         this.kmodulePackageName = kmodulePackageName;
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData,
-                           final PMMLContext pmmlContext) {
+    public Object evaluate(final Map<String, Object> requestData,
+                           final PMMLRuntimeContext pmmlContext) {
         throw new KiePMMLException("KiePMMLFactoryModel is not meant to be used for actual evaluation");
     }
 
