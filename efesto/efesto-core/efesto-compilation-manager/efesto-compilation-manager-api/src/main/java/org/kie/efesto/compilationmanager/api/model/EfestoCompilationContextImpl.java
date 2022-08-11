@@ -63,4 +63,8 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
     public ServiceLoader<KieCompilerService> getKieCompilerServiceLoader() {
         return ServiceLoader.load(KieCompilerService.class, memoryCompilerClassLoader);
     }
+    @Override
+    public byte[] getCode(String name) {
+        return memoryCompilerClassLoader.getCode(name);
+    }
 }

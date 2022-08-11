@@ -44,9 +44,7 @@ import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.compiler.PMMLCompilationContextImpl;
-import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +113,7 @@ public class GeneratePMMLModelExecutor {
 
         Map<String, byte[]> toReturn = new HashMap<>();
         for (IndexFile indexFile : allIndexFiles) {
-            toReturn.putAll(getCodeFromIndexFile(indexFile, memoryCompilerClassLoader));
+            toReturn.putAll(getCodeFromIndexFile(indexFile, pmmlContext));
         }
         return toReturn;
     }
@@ -155,16 +153,17 @@ public class GeneratePMMLModelExecutor {
     }
 
     private static Map<String, byte[]> getCodeFromIndexFile(IndexFile indexFile,
-                                                            KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+                                                            PMMLCompilationContext pmmlContext) {
         List<String> generatedClasses = getGeneratedClassesFromIndexFile(indexFile);
         return generatedClasses.stream().collect(Collectors.toMap(fullClassName -> fullClassName,
-                                                                  fullClassName -> getMappedCode(fullClassName, memoryCompilerClassLoader)));
+                                                                  fullClassName -> getMappedCode(fullClassName,
+                                                                                                 pmmlContext)));
     }
 
-    private static byte[] getMappedCode(String fullClassName, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) throws KiePMMLException {
-        byte[] toReturn = memoryCompilerClassLoader.getCode(fullClassName);
+    private static byte[] getMappedCode(String fullClassName, PMMLCompilationContext pmmlContext) throws KiePMMLException {
+        byte[] toReturn = pmmlContext.getCode(fullClassName);
         if (toReturn == null) {
-            throw new KiePMMLException(String.format("Failed to found %s in %s",  fullClassName, memoryCompilerClassLoader));
+            throw new KiePMMLException(String.format("Failed to found %s in %s", fullClassName, pmmlContext));
         }
         return toReturn;
     }

@@ -50,5 +50,7 @@ public interface EfestoCompilationContext<T extends EfestoListener> extends Efes
     void loadClasses(Map<String, byte[]> compiledClassesMap);
     ServiceLoader<KieCompilerService> getKieCompilerServiceLoader();
 
+    byte[] getCode(String name);
+
 
 }
