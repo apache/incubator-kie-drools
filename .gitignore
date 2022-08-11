@@ -19,3 +19,4 @@ target/
 .factorypath
 .vscode
 .run/
+.checkstyle
