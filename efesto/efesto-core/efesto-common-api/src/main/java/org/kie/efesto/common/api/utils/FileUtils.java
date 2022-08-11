@@ -42,6 +42,9 @@ public class FileUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(FileUtils.class.getName());
 
+    private static final String TO_RETURN_TEMPLATE = "toReturn {}";
+    private static final String TO_RETURN_GETABSOLUTEPATH_TEMPLATE = "toReturn.getAbsolutePath() {}";
+
     private FileUtils() {
     }
 
@@ -146,52 +149,46 @@ public class FileUtils {
         logger.debug("retrieved.getPath() {}", retrieved.getPath());
         switch (retrieved.getProtocol()) {
             case "jar":
-                try {
-                    File toReturn = getFileFromJar(retrieved);
-                    logger.debug("toReturn {}", toReturn);
-                    return Optional.of(toReturn);
-                } catch (Exception e) {
-                    throw new KieEfestoCommonException("Failed to read file " + retrieved, e);
-                }
+                return getOptionalFileFromJar(retrieved);
             case "resource":
-                try {
-                    File toReturn = getFileFromResource(retrieved);
-                    logger.debug("toReturn {}", toReturn);
-                    return Optional.of(toReturn);
-                } catch (Exception e) {
-                    throw new KieEfestoCommonException("Failed to read file " + retrieved, e);
-                }
+                return  getOptionalFileFromResource(retrieved);
             default:
-                File toReturn = new File(retrieved.getFile());
-                logger.debug("toReturn {}", toReturn);
-                logger.debug("toReturn.getAbsolutePath() {}", toReturn.getAbsolutePath());
-                return Optional.of(toReturn);
+                return getOptionalFileFromURLFile(retrieved);
         }
     }
 
-    static void debugURLContent(URL retrieved) {
-        if (retrieved != null) {
-            try(InputStream input = retrieved.openStream()) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                int read;
-                byte[] bytes = new byte[1024];
-                while ((read = input.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                logger.debug("retrieved.getContent() {}", out.toByteArray());
-                out.flush();
-                out.close();
-            } catch (Exception e) {
-                logger.warn("failed to read content for {}", retrieved);
-            }
+    static Optional<File> getOptionalFileFromJar(URL retrieved) {
+        try {
+            File toReturn = getFileFromJar(retrieved);
+            logger.debug(TO_RETURN_TEMPLATE, toReturn);
+            return Optional.of(toReturn);
+        } catch (Exception e) {
+            throw new KieEfestoCommonException("Failed to read file " + retrieved, e);
         }
+    }
+
+    static Optional<File> getOptionalFileFromResource(URL retrieved) {
+        try {
+            File toReturn = getFileFromResource(retrieved);
+            logger.debug(TO_RETURN_TEMPLATE, toReturn);
+            return Optional.of(toReturn);
+        } catch (Exception e) {
+            throw new KieEfestoCommonException("Failed to read file " + retrieved, e);
+        }
+    }
+
+    static Optional<File> getOptionalFileFromURLFile(URL retrieved) {
+        File toReturn = new File(retrieved.getFile());
+        logger.debug(TO_RETURN_TEMPLATE, toReturn);
+        logger.debug(TO_RETURN_GETABSOLUTEPATH_TEMPLATE, toReturn.getAbsolutePath());
+        return Optional.of(toReturn);
     }
 
     static File getFileFromResource(URL retrieved) throws IOException {
         logger.debug("getFileFromResource {}", retrieved);
         File toReturn = new MemoryFile(retrieved);
-        logger.debug("toReturn {}", toReturn);
-        logger.debug("toReturn.getAbsolutePath() {}", toReturn.getAbsolutePath());
+        logger.debug(TO_RETURN_TEMPLATE, toReturn);
+        logger.debug(TO_RETURN_GETABSOLUTEPATH_TEMPLATE, toReturn.getAbsolutePath());
         return toReturn;
     }
 
@@ -210,8 +207,26 @@ public class FileUtils {
             filePath = fs.getPath(fileName);
         }
         File toReturn = new MemoryFile(filePath);
-        logger.debug("toReturn {}", toReturn);
-        logger.debug("toReturn.getAbsolutePath() {}", toReturn.getAbsolutePath());
+        logger.debug(TO_RETURN_TEMPLATE, toReturn);
+        logger.debug(TO_RETURN_GETABSOLUTEPATH_TEMPLATE, toReturn.getAbsolutePath());
         return toReturn;
+    }
+
+    static void debugURLContent(URL retrieved) {
+        if (retrieved != null) {
+            try(InputStream input = retrieved.openStream()) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                int read;
+                byte[] bytes = new byte[1024];
+                while ((read = input.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                logger.debug("retrieved.getContent() {}", out.toByteArray());
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                logger.warn("failed to read content for {}", retrieved);
+            }
+        }
     }
 }

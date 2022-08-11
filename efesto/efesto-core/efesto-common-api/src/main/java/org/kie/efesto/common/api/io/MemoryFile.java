@@ -32,9 +32,9 @@ public class MemoryFile extends File implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(MemoryFile.class);
     private String name;
-    private Path filePath;
+    private transient Path filePath;
 
-    private URL url;
+    private final URL url;
 
     private byte[] content;
 
@@ -53,10 +53,14 @@ public class MemoryFile extends File implements Serializable {
         logger.debug("MemoryFile {}", url);
         logger.debug(this.getAbsolutePath());
         this.name = url.getFile();
+        if (name.contains(File.separator)) {
+            name = name.substring(name.lastIndexOf(File.separator) +1 );
+        }
         this.url = url;
         initContent(this.url);
     }
 
+    @Override
     public String getName() {
         return name;
     }
