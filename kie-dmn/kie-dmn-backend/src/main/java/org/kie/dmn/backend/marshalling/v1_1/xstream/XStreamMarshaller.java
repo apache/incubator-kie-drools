@@ -25,6 +25,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -37,7 +38,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.StaxWriter;
 import com.thoughtworks.xstream.security.TypeHierarchyPermission;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
-import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
 import org.kie.dmn.backend.marshalling.v1x.DMNXStream;

@@ -17,7 +17,7 @@
 package org.kie.dmn.core.compiler.extensions;
 
 import com.thoughtworks.xstream.XStream;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 
 public class FirstNameDescriptionRegister implements DMNExtensionRegister {
 
