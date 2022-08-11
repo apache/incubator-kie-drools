@@ -82,9 +82,7 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
         if (config.getMimicSelectorRef() != null) {
             return buildMimicReplaying(configPolicy);
         }
-        EntityDescriptor<Solution_> entityDescriptor =
-                config.getEntityClass() == null ? deduceEntityDescriptor(configPolicy.getSolutionDescriptor())
-                        : deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
+        EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy, config.getEntityClass());
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(config.getCacheType(), minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(config.getSelectionOrder(), inheritedSelectionOrder);
 
@@ -122,14 +120,13 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
                         config.getNearbySelectionConfig(), config.getFilterClass(), config.getSorterManner(),
                         config.getSorterComparatorClass(), config.getSorterWeightFactoryClass(), config.getSorterOrder(),
                         config.getSorterClass(), config.getProbabilityWeightFactoryClass(), config.getSelectedCountLimit())
-                .filter(Objects::nonNull).findFirst().isPresent();
+                .anyMatch(Objects::nonNull);
         if (anyConfigurationParameterDefined) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + config
                     + ") with mimicSelectorRef (" + config.getMimicSelectorRef()
                     + ") has another property that is not null.");
         }
-        EntityMimicRecorder<Solution_> entityMimicRecorder =
-                configPolicy.getEntityMimicRecorder(config.getMimicSelectorRef());
+        EntityMimicRecorder<Solution_> entityMimicRecorder = configPolicy.getEntityMimicRecorder(config.getMimicSelectorRef());
         if (entityMimicRecorder == null) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + config
                     + ") has a mimicSelectorRef (" + config.getMimicSelectorRef()

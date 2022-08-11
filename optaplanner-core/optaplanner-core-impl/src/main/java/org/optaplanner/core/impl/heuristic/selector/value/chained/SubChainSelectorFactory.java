@@ -54,12 +54,11 @@ public class SubChainSelectorFactory<Solution_> {
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the chains change every step.");
         }
-        ValueSelectorConfig valueSelectorConfig_ = config.getValueSelectorConfig() == null ? new ValueSelectorConfig()
-                : config.getValueSelectorConfig();
+        ValueSelectorConfig valueSelectorConfig =
+                Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new);
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
-        ValueSelector<Solution_> valueSelector =
-                ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
-                        .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
+                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The minimumCacheType (" + this
                     + ") needs to be based on an "

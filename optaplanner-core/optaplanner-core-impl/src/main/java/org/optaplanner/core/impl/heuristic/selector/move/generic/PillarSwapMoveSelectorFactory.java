@@ -26,17 +26,16 @@ public class PillarSwapMoveSelectorFactory<Solution_>
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         PillarSelectorConfig leftPillarSelectorConfig =
                 Objects.requireNonNullElseGet(config.getPillarSelectorConfig(), PillarSelectorConfig::new);
-        PillarSelector<Solution_> leftPillarSelector =
-                buildPillarSelector(leftPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
         PillarSelectorConfig rightPillarSelectorConfig =
                 Objects.requireNonNullElse(config.getSecondaryPillarSelectorConfig(), leftPillarSelectorConfig);
+        PillarSelector<Solution_> leftPillarSelector =
+                buildPillarSelector(leftPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
         PillarSelector<Solution_> rightPillarSelector =
                 buildPillarSelector(rightPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
 
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 deduceVariableDescriptorList(leftPillarSelector.getEntityDescriptor(), config.getVariableNameIncludeList());
-        return new PillarSwapMoveSelector<>(leftPillarSelector, rightPillarSelector, variableDescriptorList,
-                randomSelection);
+        return new PillarSwapMoveSelector<>(leftPillarSelector, rightPillarSelector, variableDescriptorList, randomSelection);
     }
 
     private PillarSelector<Solution_> buildPillarSelector(PillarSelectorConfig pillarSelectorConfig,

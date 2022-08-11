@@ -37,10 +37,17 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
         return entitySelectorConfig;
     }
 
-    protected EntityDescriptor<Solution_> deduceEntityDescriptor(SolutionDescriptor<Solution_> solutionDescriptor,
+    protected EntityDescriptor<Solution_> deduceEntityDescriptor(HeuristicConfigPolicy<Solution_> configPolicy,
             Class<?> entityClass) {
-        EntityDescriptor<Solution_> entityDescriptor =
-                solutionDescriptor.getEntityDescriptorStrict(Objects.requireNonNull(entityClass));
+        SolutionDescriptor<Solution_> solutionDescriptor = configPolicy.getSolutionDescriptor();
+        return entityClass == null
+                ? getTheOnlyEntityDescriptor(solutionDescriptor)
+                : getEntityDescriptorForClass(solutionDescriptor, entityClass);
+    }
+
+    private EntityDescriptor<Solution_> getEntityDescriptorForClass(SolutionDescriptor<Solution_> solutionDescriptor,
+            Class<?> entityClass) {
+        EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(entityClass);
         if (entityDescriptor == null) {
             throw new IllegalArgumentException("The config (" + config
                     + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
@@ -52,7 +59,7 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
         return entityDescriptor;
     }
 
-    protected EntityDescriptor<Solution_> deduceEntityDescriptor(SolutionDescriptor<Solution_> solutionDescriptor) {
+    protected EntityDescriptor<Solution_> getTheOnlyEntityDescriptor(SolutionDescriptor<Solution_> solutionDescriptor) {
         Collection<EntityDescriptor<Solution_>> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
         if (entityDescriptors.size() != 1) {
             throw new IllegalArgumentException("The config (" + config
@@ -63,10 +70,16 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
         return entityDescriptors.iterator().next();
     }
 
-    protected GenuineVariableDescriptor<Solution_> deduceVariableDescriptor(
-            EntityDescriptor<Solution_> entityDescriptor, String variableName) {
-        GenuineVariableDescriptor<Solution_> variableDescriptor =
-                entityDescriptor.getGenuineVariableDescriptor(Objects.requireNonNull(variableName));
+    protected GenuineVariableDescriptor<Solution_> deduceGenuineVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
+            String variableName) {
+        return variableName == null
+                ? getTheOnlyVariableDescriptor(entityDescriptor)
+                : getVariableDescriptorForName(entityDescriptor, variableName);
+    }
+
+    protected GenuineVariableDescriptor<Solution_> getVariableDescriptorForName(EntityDescriptor<Solution_> entityDescriptor,
+            String variableName) {
+        GenuineVariableDescriptor<Solution_> variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(variableName);
         if (variableDescriptor == null) {
             throw new IllegalArgumentException("The config (" + config
                     + ") has a variableName (" + variableName
@@ -77,8 +90,7 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
         return variableDescriptor;
     }
 
-    protected GenuineVariableDescriptor<Solution_> deduceVariableDescriptor(
-            EntityDescriptor<Solution_> entityDescriptor) {
+    protected GenuineVariableDescriptor<Solution_> getTheOnlyVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor) {
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 entityDescriptor.getGenuineVariableDescriptorList();
         if (variableDescriptorList.size() != 1) {

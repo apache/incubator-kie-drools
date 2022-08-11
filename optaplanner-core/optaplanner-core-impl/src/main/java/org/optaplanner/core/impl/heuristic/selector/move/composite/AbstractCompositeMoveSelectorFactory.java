@@ -23,8 +23,7 @@ abstract class AbstractCompositeMoveSelectorFactory<Solution_, MoveSelectorConfi
             boolean randomSelection) {
         return innerMoveSelectorList.stream()
                 .map(moveSelectorConfig -> {
-                    MoveSelectorFactory<Solution_> innerMoveSelectorFactory =
-                            MoveSelectorFactory.create(moveSelectorConfig);
+                    MoveSelectorFactory<Solution_> innerMoveSelectorFactory = MoveSelectorFactory.create(moveSelectorConfig);
                     SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
                     return innerMoveSelectorFactory.buildMoveSelector(configPolicy, minimumCacheType, selectionOrder);
                 }).collect(Collectors.toList());

@@ -56,10 +56,9 @@ public class PillarSelectorFactory<Solution_>
         }
         boolean subPillarEnabled = subPillarType != SubPillarType.NONE;
         // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
-        EntitySelectorConfig entitySelectorConfig_ =
-                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig()
-                        : config.getEntitySelectorConfig();
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
+        EntitySelectorConfig entitySelectorConfig =
+                Objects.requireNonNullElseGet(config.getEntitySelectorConfig(), EntitySelectorConfig::new);
+        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
                 .buildEntitySelector(configPolicy, minimumCacheType, SelectionOrder.ORIGINAL);
         List<GenuineVariableDescriptor<Solution_>> variableDescriptors =
                 deduceVariableDescriptorList(entitySelector.getEntityDescriptor(), variableNameIncludeList);

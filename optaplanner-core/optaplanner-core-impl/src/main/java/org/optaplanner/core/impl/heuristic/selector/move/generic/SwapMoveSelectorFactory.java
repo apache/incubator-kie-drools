@@ -36,26 +36,24 @@ public class SwapMoveSelectorFactory<Solution_>
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        EntitySelectorConfig entitySelectorConfig_ =
-                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig() : config.getEntitySelectorConfig();
-        EntitySelector<Solution_> leftEntitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
-                .buildEntitySelector(configPolicy, minimumCacheType,
-                        SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        EntitySelectorConfig rightEntitySelectorConfig = Objects.requireNonNullElse(config.getSecondaryEntitySelectorConfig(),
-                entitySelectorConfig_);
-        EntitySelector<Solution_> rightEntitySelector =
-                EntitySelectorFactory.<Solution_> create(rightEntitySelectorConfig)
-                        .buildEntitySelector(configPolicy, minimumCacheType,
-                                SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        EntitySelectorConfig entitySelectorConfig =
+                Objects.requireNonNullElseGet(config.getEntitySelectorConfig(), EntitySelectorConfig::new);
+        EntitySelectorConfig secondaryEntitySelectorConfig =
+                Objects.requireNonNullElse(config.getSecondaryEntitySelectorConfig(), entitySelectorConfig);
+        SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
+        EntitySelector<Solution_> leftEntitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
+                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
+        EntitySelector<Solution_> rightEntitySelector = EntitySelectorFactory.<Solution_> create(secondaryEntitySelectorConfig)
+                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
+        EntityDescriptor<Solution_> entityDescriptor = leftEntitySelector.getEntityDescriptor();
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
-                deduceVariableDescriptorList(leftEntitySelector.getEntityDescriptor(), config.getVariableNameIncludeList());
+                deduceVariableDescriptorList(entityDescriptor, config.getVariableNameIncludeList());
         if (variableDescriptorList.size() == 1 && variableDescriptorList.get(0).isListVariable()) {
             // TODO add ValueSelector to the config
-            ValueSelectorFactory<Solution_> valueSelectorFactory = ValueSelectorFactory.create(new ValueSelectorConfig());
             EntityIndependentValueSelector<Solution_> leftValueSelector = buildEntityIndependentValueSelector(
-                    valueSelectorFactory, configPolicy, leftEntitySelector, minimumCacheType, randomSelection);
+                    configPolicy, entityDescriptor, minimumCacheType, selectionOrder);
             EntityIndependentValueSelector<Solution_> rightValueSelector = buildEntityIndependentValueSelector(
-                    valueSelectorFactory, configPolicy, rightEntitySelector, minimumCacheType, randomSelection);
+                    configPolicy, entityDescriptor, minimumCacheType, selectionOrder);
             return new ListSwapMoveSelector<>(
                     (ListVariableDescriptor<Solution_>) variableDescriptorList.get(0),
                     leftValueSelector,
@@ -72,14 +70,12 @@ public class SwapMoveSelectorFactory<Solution_>
     }
 
     private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
-            ValueSelectorFactory<Solution_> valueSelectorFactory, HeuristicConfigPolicy<Solution_> configPolicy,
-            EntitySelector<Solution_> entitySelector, SelectionCacheType minimumCacheType,
-            boolean randomSelection) {
-        ValueSelector<Solution_> valueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
-                entitySelector.getEntityDescriptor(),
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+            HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor,
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig())
+                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
-            throw new IllegalArgumentException("The changeMoveSelector (" + this
+            throw new IllegalArgumentException("The swapMoveSelector (" + this
                     + ") for a list variable needs to be based on an "
                     + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                     + " Check your valueSelectorConfig.");

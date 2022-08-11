@@ -31,9 +31,7 @@ public class QueuedValuePlacerFactory<Solution_>
 
     @Override
     public QueuedValuePlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy) {
-        EntityDescriptor<Solution_> entityDescriptor =
-                config.getEntityClass() == null ? deduceEntityDescriptor(configPolicy.getSolutionDescriptor())
-                        : deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
+        EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy, config.getEntityClass());
         ValueSelectorConfig valueSelectorConfig_ = buildValueSelectorConfig(configPolicy, entityDescriptor);
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
                 .buildValueSelector(configPolicy, entityDescriptor, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL,
@@ -62,7 +60,7 @@ public class QueuedValuePlacerFactory<Solution_>
         if (config.getValueSelectorConfig() == null) {
             valueSelectorConfig_ = new ValueSelectorConfig();
             Class<?> entityClass = entityDescriptor.getEntityClass();
-            GenuineVariableDescriptor<Solution_> variableDescriptor = deduceVariableDescriptor(entityDescriptor);
+            GenuineVariableDescriptor<Solution_> variableDescriptor = getTheOnlyVariableDescriptor(entityDescriptor);
             valueSelectorConfig_.setId(entityClass.getName() + "." + variableDescriptor.getVariableName());
             valueSelectorConfig_.setVariableName(variableDescriptor.getVariableName());
             if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {

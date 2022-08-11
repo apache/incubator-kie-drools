@@ -39,18 +39,15 @@ public class ChangeMoveSelectorFactory<Solution_>
             throw new IllegalStateException("The entitySelectorConfig (" + config.getEntitySelectorConfig()
                     + ") should haven been initialized during unfolding.");
         }
-        EntitySelectorFactory<Solution_> entitySelectorFactory =
-                EntitySelectorFactory.create(config.getEntitySelectorConfig());
-        EntitySelector<Solution_> entitySelector = entitySelectorFactory.buildEntitySelector(configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         if (config.getValueSelectorConfig() == null) {
             throw new IllegalStateException("The valueSelectorConfig (" + config.getValueSelectorConfig()
                     + ") should haven been initialized during unfolding.");
         }
-        ValueSelectorFactory<Solution_> valueSelectorFactory = ValueSelectorFactory.create(config.getValueSelectorConfig());
-        ValueSelector<Solution_> valueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
-                entitySelector.getEntityDescriptor(),
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
+        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(config.getEntitySelectorConfig())
+                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(config.getValueSelectorConfig())
+                .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
         if (valueSelector.getVariableDescriptor().isListVariable()) {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The changeMoveSelector (" + this

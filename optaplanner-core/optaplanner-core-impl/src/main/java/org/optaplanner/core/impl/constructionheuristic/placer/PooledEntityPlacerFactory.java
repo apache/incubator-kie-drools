@@ -47,7 +47,7 @@ public class PooledEntityPlacerFactory<Solution_>
             }
             if (entitySelectorConfig == null) {
                 EntityDescriptor<Solution_> entityDescriptor = new PooledEntityPlacerFactory<Solution_>(config)
-                        .deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+                        .getTheOnlyEntityDescriptor(configPolicy.getSolutionDescriptor());
                 entitySelectorConfig =
                         AbstractFromConfigFactory.getDefaultEntitySelectorConfigForEntity(configPolicy, entityDescriptor);
                 changeMoveSelectorConfig.setEntitySelectorConfig(entitySelectorConfig);
@@ -73,7 +73,7 @@ public class PooledEntityPlacerFactory<Solution_>
     }
 
     private MoveSelectorConfig buildMoveSelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
-        EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+        EntityDescriptor<Solution_> entityDescriptor = getTheOnlyEntityDescriptor(configPolicy.getSolutionDescriptor());
         EntitySelectorConfig entitySelectorConfig =
                 AbstractFromConfigFactory.getDefaultEntitySelectorConfigForEntity(configPolicy, entityDescriptor);
 

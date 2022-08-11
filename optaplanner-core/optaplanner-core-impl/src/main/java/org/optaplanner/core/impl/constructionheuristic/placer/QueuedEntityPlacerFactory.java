@@ -99,7 +99,7 @@ public class QueuedEntityPlacerFactory<Solution_>
     public EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
         EntitySelectorConfig entitySelectorConfig_;
         if (config.getEntitySelectorConfig() == null) {
-            EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+            EntityDescriptor<Solution_> entityDescriptor = getTheOnlyEntityDescriptor(configPolicy.getSolutionDescriptor());
             entitySelectorConfig_ = getDefaultEntitySelectorConfigForEntity(configPolicy, entityDescriptor);
         } else {
             entitySelectorConfig_ = config.getEntitySelectorConfig();
