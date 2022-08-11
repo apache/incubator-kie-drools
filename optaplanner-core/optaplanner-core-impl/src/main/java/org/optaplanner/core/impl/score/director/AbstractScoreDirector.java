@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -28,7 +27,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 import org.optaplanner.core.impl.domain.lookup.LookUpManager;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -744,8 +742,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     private Map<Object, Set<ConstraintMatch<Score_>>> createConstraintMatchMap(
             Collection<ConstraintMatchTotal<Score_>> constraintMatchTotals) {
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
-        Comparator<Object> comparator = new ClassAndPlanningIdComparator(solutionDescriptor.getMemberAccessorFactory(),
-                solutionDescriptor.getDomainAccessType(), false);
         Map<Object, Set<ConstraintMatch<Score_>>> constraintMatchMap =
                 new LinkedHashMap<>(constraintMatchTotals.size() * 16);
         for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotals) {
@@ -755,7 +751,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                 // The order of justificationLists for constraints that include accumulates isn't stable, so we make it.
                 constraintMatch.getJustificationList()
                         .stream()
-                        .sorted(comparator)
+                        .sorted(solutionDescriptor.getClassAndPlanningIdComparator())
                         .forEach(keyStream);
                 // And now we store the reference to the constraint match.
                 // Constraint Streams with indistinct tuples may produce two different match instances for the same key.

@@ -51,6 +51,7 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionFieldMemberAccessor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 import org.optaplanner.core.impl.domain.lookup.LookUpStrategyResolver;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.score.descriptor.ScoreDescriptor;
@@ -137,6 +138,7 @@ public class SolutionDescriptor<Solution_> {
     // ************************************************************************
 
     private final Class<Solution_> solutionClass;
+    private final MemberAccessorFactory memberAccessorFactory;
 
     private DomainAccessType domainAccessType;
     private AutoDiscoverMemberType autoDiscoverMemberType;
@@ -158,27 +160,22 @@ public class SolutionDescriptor<Solution_> {
 
     private SolutionCloner<Solution_> solutionCloner;
     private boolean assertModelForCloning = false;
-
-    private MemberAccessorFactory memberAccessorFactory;
+    private Comparator<Object> classAndPlanningIdComparator;
 
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
 
     public SolutionDescriptor(Class<Solution_> solutionClass) {
+        this(solutionClass, null);
+    }
+
+    private SolutionDescriptor(Class<Solution_> solutionClass, Map<String, MemberAccessor> memberAccessorMap) {
         this.solutionClass = solutionClass;
         if (solutionClass.getPackage() == null) {
             LOGGER.warn("The solutionClass ({}) should be in a proper java package.", solutionClass);
         }
-    }
-
-    private SolutionDescriptor(Class<Solution_> solutionClass, Map<String, MemberAccessor> memberAccessorMap) {
-        this(solutionClass);
         this.memberAccessorFactory = new MemberAccessorFactory(memberAccessorMap);
-    }
-
-    public MemberAccessorFactory getMemberAccessorFactory() {
-        return memberAccessorFactory;
     }
 
     public void addEntityDescriptor(EntityDescriptor<Solution_> entityDescriptor) {
@@ -198,6 +195,7 @@ public class SolutionDescriptor<Solution_> {
     public void processAnnotations(DescriptorPolicy descriptorPolicy,
             List<Class<?>> entityClassList) {
         domainAccessType = descriptorPolicy.getDomainAccessType();
+        classAndPlanningIdComparator = new ClassAndPlanningIdComparator(memberAccessorFactory, domainAccessType, false);
         processSolutionAnnotations(descriptorPolicy);
         ArrayList<Method> potentiallyOverwritingMethodList = new ArrayList<>();
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
@@ -618,6 +616,10 @@ public class SolutionDescriptor<Solution_> {
         return solutionClass;
     }
 
+    public MemberAccessorFactory getMemberAccessorFactory() {
+        return memberAccessorFactory;
+    }
+
     public DomainAccessType getDomainAccessType() {
         return domainAccessType;
     }
@@ -668,6 +670,10 @@ public class SolutionDescriptor<Solution_> {
 
     public SolutionCloner<Solution_> getSolutionCloner() {
         return solutionCloner;
+    }
+
+    public Comparator<Object> getClassAndPlanningIdComparator() {
+        return classAndPlanningIdComparator;
     }
 
     public void setAssertModelForCloning(boolean assertModelForCloning) {
