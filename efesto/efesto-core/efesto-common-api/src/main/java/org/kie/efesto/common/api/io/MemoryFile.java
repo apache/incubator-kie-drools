@@ -53,8 +53,8 @@ public class MemoryFile extends File implements Serializable {
         logger.debug("MemoryFile {}", url);
         logger.debug(this.getAbsolutePath());
         this.name = url.getFile();
-        if (name.contains(File.separator)) {
-            name = name.substring(name.lastIndexOf(File.separator) +1 );
+        if (name.contains("/")) {
+            name = name.substring(name.lastIndexOf("/") +1 );
         }
         this.url = url;
         initContent(this.url);
