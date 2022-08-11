@@ -28,7 +28,7 @@
       <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-devtools-testing</artifactId>
-        <version>${version.io.quarkus}</version>
+        <version>${version.io.quarkus.quarkus-test}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

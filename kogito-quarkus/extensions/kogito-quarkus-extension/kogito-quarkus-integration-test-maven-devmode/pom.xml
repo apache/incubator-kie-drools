@@ -72,7 +72,7 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-test-maven</artifactId>
-      <version>${version.io.quarkus.quarkus-test-maven}</version>
+      <version>${version.io.quarkus.quarkus-test}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
