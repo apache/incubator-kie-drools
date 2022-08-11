@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.jackson.utils;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -36,29 +35,29 @@ public class MergeUtils {
         return merge(src, target, false);
     }
 
-    public static JsonNode merge(JsonNode src, JsonNode target, boolean skipDuplicates) {
+    public static JsonNode merge(JsonNode src, JsonNode target, boolean mergeArray) {
         if (target == null || target.isNull()) {
             return src;
         } else if (target.isArray()) {
-            return mergeArray(src, (ArrayNode) target, skipDuplicates);
+            return mergeArray(src, (ArrayNode) target, mergeArray);
         } else if (target.isObject()) {
-            return mergeObject(src, (ObjectNode) target, skipDuplicates);
+            return mergeObject(src, (ObjectNode) target, mergeArray);
         } else {
             if (src.isArray()) {
                 ArrayNode srcArray = (ArrayNode) src;
-                insert(srcArray, target, getExistingNodes(srcArray, skipDuplicates));
+                insert(srcArray, target, getExistingNodes(srcArray));
             }
             return src;
         }
     }
 
-    private static ObjectNode mergeObject(JsonNode src, ObjectNode target, boolean skipDuplicates) {
+    private static ObjectNode mergeObject(JsonNode src, ObjectNode target, boolean mergeArray) {
         if (src.isObject()) {
             Iterator<Map.Entry<String, JsonNode>> mergedIterator = src.fields();
             while (mergedIterator.hasNext()) {
                 Map.Entry<String, JsonNode> entry = mergedIterator.next();
                 JsonNode found = target.get(entry.getKey());
-                target.set(entry.getKey(), found != null ? merge(entry.getValue(), found, skipDuplicates) : entry.getValue());
+                target.set(entry.getKey(), found != null ? merge(entry.getValue(), found, mergeArray) : entry.getValue());
             }
         } else if (!src.isNull()) {
             target.set("response", src);
@@ -66,13 +65,16 @@ public class MergeUtils {
         return target;
     }
 
-    private static JsonNode mergeArray(JsonNode src, ArrayNode target, boolean skipDuplicates) {
+    private static JsonNode mergeArray(JsonNode src, ArrayNode target, boolean mergeArray) {
         if (src != target) {
-            Set<JsonNode> existingNodes = getExistingNodes(target, skipDuplicates);
             if (src.isArray()) {
-                ((ArrayNode) src).forEach(node -> add(target, node, existingNodes));
+                if (mergeArray) {
+                    ((ArrayNode) src).forEach(node -> add(target, node, getExistingNodes(target)));
+                } else {
+                    return src;
+                }
             } else {
-                add(target, src, existingNodes);
+                add(target, src, getExistingNodes(target));
             }
         }
         return target;
@@ -90,12 +92,9 @@ public class MergeUtils {
         }
     }
 
-    private static Set<JsonNode> getExistingNodes(ArrayNode arrayNode, boolean skipDuplicates) {
-        Set<JsonNode> existingNodes = Collections.emptySet();
-        if (skipDuplicates) {
-            existingNodes = new HashSet<>();
-            arrayNode.forEach(existingNodes::add);
-        }
+    private static Set<JsonNode> getExistingNodes(ArrayNode arrayNode) {
+        Set<JsonNode> existingNodes = new HashSet<>();
+        arrayNode.forEach(existingNodes::add);
         return existingNodes;
     }
 

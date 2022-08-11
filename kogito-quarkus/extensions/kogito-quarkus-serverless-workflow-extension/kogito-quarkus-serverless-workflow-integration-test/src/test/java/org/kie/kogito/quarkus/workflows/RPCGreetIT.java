@@ -25,6 +25,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.hasSize;
 
 @QuarkusTestResource(GrpcServerPortResource.class)
 @QuarkusIntegrationTest
@@ -40,7 +41,10 @@ class RPCGreetIT {
                 .statusCode(201)
                 .body("workflowdata.message", is("Hello from gRPC service John"))
                 .body("workflowdata.state", is("SUCCESS"))
-                .body("workflowdata.innerMessage.number", is(23));
+                .body("workflowdata.innerMessage.number", is(23))
+                .body("workflowdata.minority", hasSize(2))
+                .body("workflowdata.minority[0].message", is("marquitos"))
+                .body("workflowdata.minority[1].message", is("Boungiorno Marco"));
 
     }
 

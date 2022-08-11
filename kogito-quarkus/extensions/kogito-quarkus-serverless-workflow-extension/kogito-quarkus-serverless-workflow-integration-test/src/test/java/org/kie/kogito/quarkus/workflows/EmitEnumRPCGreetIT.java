@@ -31,7 +31,7 @@ import static org.hamcrest.CoreMatchers.is;
 class EmitEnumRPCGreetIT {
 
     @Test
-    void testSpanish() {
+    void testStateIsUnknown() {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)

@@ -32,7 +32,8 @@ public class MergeUtilsTest {
     @Test
     void testSrcTargetArray() {
         assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6),
-                JsonObjectUtils.toJavaValue(MergeUtils.merge(ObjectMapperFactory.get().createArrayNode().add(4).add(5).add(6), ObjectMapperFactory.get().createArrayNode().add(1).add(2).add(3))));
+                JsonObjectUtils
+                        .toJavaValue(MergeUtils.merge(ObjectMapperFactory.get().createArrayNode().add(4).add(5).add(6), ObjectMapperFactory.get().createArrayNode().add(1).add(2).add(3), true)));
     }
 
     @Test
@@ -72,14 +73,14 @@ public class MergeUtilsTest {
         ObjectNode vipCustomer = getCustomer("Messi", 69, 1221312.2, true, "Parla", Arrays.asList("Isla paradisiaca anonima", "Palacio presidencial S/N"));
         JsonNode expectedMerged =
                 getCustomer("Fulanito", 23, 999.9, false, "Parla", Arrays.asList("Isla paradisiaca anonima", "Palacio presidencial S/N", "percebe 13", "casa de mis padres en Mostoles"));
-        assertEquals(expectedMerged, MergeUtils.merge(dummyCustomer, vipCustomer));
+        assertEquals(expectedMerged, MergeUtils.merge(dummyCustomer, vipCustomer, true));
     }
 
     @Test
     void testObjectArrayMerge() {
         ObjectNode dummyCustomer = getCustomer("Fulanito", 23, 999.9, false, "Parla", Arrays.asList("percebe 13", "casa de mis padres en Mostoles"));
         ObjectNode vipCustomer = getCustomer("Messi", 69, 1221312.2, true, "Islas Virgenes", Arrays.asList("Isla paradisiaca anonima", "Palacio presidencial S/N"));
-        ArrayNode merged = (ArrayNode) MergeUtils.merge(ObjectMapperFactory.get().createArrayNode().add(dummyCustomer), ObjectMapperFactory.get().createArrayNode().add(vipCustomer));
+        ArrayNode merged = (ArrayNode) MergeUtils.merge(ObjectMapperFactory.get().createArrayNode().add(dummyCustomer), ObjectMapperFactory.get().createArrayNode().add(vipCustomer), true);
         assertEquals(2, merged.size());
         assertEquals(vipCustomer, merged.get(0));
         assertEquals(dummyCustomer, merged.get(1));

@@ -19,6 +19,11 @@
       "name": "doNothing",
       "type": "rpc",
       "operation": "greeting.proto#Greeter#DoNothing"
+    }, 
+    {
+       "name" : "expression",
+       "type" : "expression",
+       "operation" : ".minority[0].message = \"marquitos\""
     }
   ],
   "states": [
@@ -63,6 +68,9 @@
            "results" : ".replies",
            "toStateData" : ".minority"
           }
+        },
+        {
+          "functionRef" : "expression"
         }
       ],
       "end": {
