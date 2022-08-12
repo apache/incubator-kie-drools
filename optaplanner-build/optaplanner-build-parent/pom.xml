@@ -563,6 +563,31 @@
             </transformSchemas>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.20</version>
+          <configuration>
+            <signature>
+              <groupId>net.sf.androidscents.signature</groupId>
+              <artifactId>android-api-level-32</artifactId>
+              <version>12_r1</version>
+            </signature>
+            <ignores>
+              <ignore>java.lang.invoke.LambdaMetafactory</ignore>
+              <ignore>java.lang.invoke.MethodHandle</ignore>
+            </ignores>
+          </configuration>
+          <executions>
+            <execution>
+              <id>animal-sniffer</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -834,6 +859,7 @@
         <skipTests>true</skipTests>
         <skipITs>true</skipITs>
         <formatter.skip>true</formatter.skip>
+        <animal.sniffer.skip>true</animal.sniffer.skip>
       </properties>
     </profile>
 
@@ -845,35 +871,6 @@
         </property>
       </activation>
       <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>animal-sniffer-maven-plugin</artifactId>
-              <version>1.20</version>
-              <configuration>
-                <signature>
-                  <groupId>net.sf.androidscents.signature</groupId>
-                  <artifactId>android-api-level-32</artifactId>
-                  <version>12_r1</version>
-                </signature>
-                <ignores>
-                  <ignore>java.lang.invoke.LambdaMetafactory</ignore>
-                  <ignore>java.lang.invoke.MethodHandle</ignore>
-                </ignores>
-              </configuration>
-              <executions>
-                <execution>
-                  <id>animal-sniffer</id>
-                  <phase>verify</phase>
-                  <goals>
-                    <goal>check</goal>
-                  </goals>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
-        </pluginManagement>
         <plugins>
           <plugin> <!-- Make sure the build fails-fast on Javadoc issues. -->
             <artifactId>maven-javadoc-plugin</artifactId>
