@@ -7,7 +7,7 @@
 [WARNING]
 ====
 Drools score calculation is deprecated and will be removed in a future major version of OptaPlanner.
-Consider switching to xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] with the help of our https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html[migration recipe].
+Consider switching to xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] with the help of our https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html[migration recipe].
 ====
 
 

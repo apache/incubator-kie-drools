@@ -8,7 +8,7 @@ import org.optaplanner.core.api.score.Score;
  * This is the base interface for all score holder implementations.
  *
  * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
- *             See <a href="https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html">DRL to Constraint
+ *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
  *             Streams migration recipe</a>.
  * @param <Score_> the {@link Score} type
  */

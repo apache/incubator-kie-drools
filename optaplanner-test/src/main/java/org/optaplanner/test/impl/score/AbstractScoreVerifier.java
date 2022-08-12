@@ -28,7 +28,7 @@ import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see HardSoftScoreVerifier
  * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
- *             See <a href="https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html">DRL to Constraint
+ *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
  *             Streams migration recipe</a>.
  */
 @Deprecated(forRemoval = true)

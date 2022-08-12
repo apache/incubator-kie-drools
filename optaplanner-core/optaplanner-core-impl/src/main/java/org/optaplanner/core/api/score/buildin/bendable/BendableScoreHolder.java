@@ -8,7 +8,7 @@ import org.optaplanner.core.api.score.holder.ScoreHolder;
  *
  * @see BendableScore
  * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
- *             See <a href="https://www.optaplanner.org/learn/drl-to-constraint-streams-migration.html">DRL to Constraint
+ *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
  *             Streams migration recipe</a>.
  */
 @Deprecated(forRemoval = true)
