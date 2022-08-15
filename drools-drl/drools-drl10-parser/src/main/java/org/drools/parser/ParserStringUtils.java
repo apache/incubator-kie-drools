@@ -3,9 +3,9 @@ package org.drools.parser;
 /**
  * will be merged in drools-util
  */
-public class StringUtils {
+public class ParserStringUtils {
 
-    private StringUtils() {
+    private ParserStringUtils() {
     }
 
     public static String safeStripStringDelimiters(String value) {
