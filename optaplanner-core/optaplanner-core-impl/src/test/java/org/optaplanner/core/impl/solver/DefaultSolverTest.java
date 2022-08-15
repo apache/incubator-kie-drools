@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -69,6 +70,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.testutil.TestMeterRegistry;
 
 import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
 
@@ -78,6 +80,9 @@ class DefaultSolverTest {
     @BeforeEach
     void resetGlobalRegistry() {
         Metrics.globalRegistry.clear();
+        List<MeterRegistry> meterRegistryList = new ArrayList<>();
+        meterRegistryList.addAll(Metrics.globalRegistry.getRegistries());
+        meterRegistryList.forEach(Metrics.globalRegistry::remove);
     }
 
     @Test
