@@ -9,10 +9,27 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.drools.drl.ast.descr.*;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ConditionalElementDescr;
+import org.drools.drl.ast.descr.ExistsDescr;
+import org.drools.drl.ast.descr.ExprConstraintDescr;
+import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.FunctionImportDescr;
+import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.MVELExprDescr;
+import org.drools.drl.ast.descr.NotDescr;
+import org.drools.drl.ast.descr.OrDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.drl.ast.descr.UnitDescr;
 
 import static org.drools.parser.DRLParserHelper.getTextWithoutErrorNode;
-import static org.drools.parser.StringUtils.safeStripStringDelimiters;
+import static org.drools.parser.ParserStringUtils.safeStripStringDelimiters;
+import static org.drools.util.StringUtils.unescapeJava;
 
 public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
@@ -197,9 +214,15 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public Object visitAttribute(DRLParser.AttributeContext ctx) {
         AttributeDescr attributeDescr = new AttributeDescr(ctx.getChild(0).getText());
         if (ctx.getChildCount() > 1) {
-            attributeDescr.setValue(ctx.getChild(1).getText());
+            // TODO : will likely split visitAttribute methods using labels (e.g. #stringAttribute)
+            String value = unescapeJava(safeStripStringDelimiters(ctx.getChild(1).getText()));
+            attributeDescr.setValue(value);
         }
-        currentRule.addAttribute(attributeDescr);
+        if (currentRule != null) {
+            currentRule.addAttribute(attributeDescr);
+        } else {
+            packageDescr.addAttribute(attributeDescr);
+        }
         return super.visitAttribute(ctx);
     }
 
