@@ -371,6 +371,8 @@ class OptaPlannerProcessor {
         optaPlannerBuildTimeConfig.solver.environmentMode.ifPresent(solverConfig::setEnvironmentMode);
         optaPlannerBuildTimeConfig.solver.daemon.ifPresent(solverConfig::setDaemon);
         optaPlannerBuildTimeConfig.solver.domainAccessType.ifPresent(solverConfig::setDomainAccessType);
+        optaPlannerBuildTimeConfig.solver.constraintStreamImplType.ifPresent(solverConfig::withConstraintStreamImplType);
+
         if (solverConfig.getDomainAccessType() == null) {
             solverConfig.setDomainAccessType(DomainAccessType.GIZMO);
         }

@@ -45,6 +45,11 @@ Defaults to `REFLECTION`.
 The other possible value is `GIZMO`.
 endif::[]
 
+{property_prefix}optaplanner.solver.constraint-stream-impl-type::
+What Constraint Stream implementation to use.
+See xref:constraint-streams/constraint-streams.adoc#constraintStreamsImplementations[the variant implementation types section] for more details.
+Defaults to `DROOLS`. The other possible value is `BAVET`.
+
 {property_prefix}optaplanner.solver.termination.spent-limit::
 How long the solver can run.
 For example: `30s` is 30 seconds. `5m` is 5 minutes. `2h` is 2 hours. `1d` is 1 day.

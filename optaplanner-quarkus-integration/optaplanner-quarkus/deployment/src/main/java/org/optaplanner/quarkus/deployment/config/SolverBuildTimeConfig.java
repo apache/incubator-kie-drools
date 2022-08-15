@@ -3,6 +3,7 @@ package org.optaplanner.quarkus.deployment.config;
 import java.util.Optional;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.quarkus.config.SolverRuntimeConfig;
@@ -40,5 +41,11 @@ public class SolverBuildTimeConfig {
      */
     @ConfigItem
     public Optional<DomainAccessType> domainAccessType;
+
+    /**
+     * What constraint stream implementation to use. Defaults to {@link ConstraintStreamImplType#DROOLS}.
+     */
+    @ConfigItem
+    public Optional<ConstraintStreamImplType> constraintStreamImplType;
 
 }

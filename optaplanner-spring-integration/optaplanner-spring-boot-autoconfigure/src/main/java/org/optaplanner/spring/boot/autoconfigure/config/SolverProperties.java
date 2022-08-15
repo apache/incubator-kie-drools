@@ -1,6 +1,7 @@
 package org.optaplanner.spring.boot.autoconfigure.config;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -33,6 +34,11 @@ public class SolverProperties {
      * and all planning annotations must be on public members.
      */
     private DomainAccessType domainAccessType;
+
+    /**
+     * What constraint stream implementation to use. Defaults to {@link ConstraintStreamImplType#DROOLS}.
+     */
+    private ConstraintStreamImplType constraintStreamImplType;
 
     @NestedConfigurationProperty
     private TerminationProperties termination;
@@ -71,6 +77,14 @@ public class SolverProperties {
 
     public void setDomainAccessType(DomainAccessType domainAccessType) {
         this.domainAccessType = domainAccessType;
+    }
+
+    public ConstraintStreamImplType getConstraintStreamImplType() {
+        return constraintStreamImplType;
+    }
+
+    public void setConstraintStreamImplType(ConstraintStreamImplType constraintStreamImplType) {
+        this.constraintStreamImplType = constraintStreamImplType;
     }
 
     public TerminationProperties getTermination() {

@@ -197,6 +197,15 @@ class OptaPlannerAutoConfigurationTest {
                     assertThat(solverConfig.getMoveThreadCount()).isEqualTo("2");
                     assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
+        contextRunner
+                .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
+                .withPropertyValues("optaplanner.solver.constraint-stream-impl-type=BAVET")
+                .run(context -> {
+                    SolverConfig solverConfig = context.getBean(SolverConfig.class);
+                    assertThat(solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType())
+                            .isEqualTo(ConstraintStreamImplType.BAVET);
+                    assertThat(context.getBean(SolverFactory.class)).isNotNull();
+                });
     }
 
     @Test

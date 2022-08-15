@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -29,6 +30,7 @@ class OptaPlannerProcessorSolverPropertiesTest {
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .overrideConfigKey("quarkus.optaplanner.solver.environment-mode", "FULL_ASSERT")
             .overrideConfigKey("quarkus.optaplanner.solver.daemon", "true")
+            .overrideConfigKey("quarkus.optaplanner.solver.constraint-stream-impl-type", "BAVET")
             .overrideConfigKey("quarkus.optaplanner.solver.move-thread-count", "2")
             .overrideConfigKey("quarkus.optaplanner.solver.domain-access-type", "REFLECTION")
             .overrideConfigKey("quarkus.optaplanner.solver.termination.spent-limit", "4h")
@@ -49,6 +51,8 @@ class OptaPlannerProcessorSolverPropertiesTest {
         assertTrue(solverConfig.getDaemon());
         assertEquals("2", solverConfig.getMoveThreadCount());
         assertEquals(DomainAccessType.REFLECTION, solverConfig.getDomainAccessType());
+        assertEquals(ConstraintStreamImplType.BAVET,
+                solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType());
 
         assertNotNull(solverFactory);
     }
