@@ -85,7 +85,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <systemPropertyVariables>
-            <indexfile.directory>${project.build.testOutputDirectory}</indexfile.directory>
+            <indexfile.directory>${project.build.outputDirectory}</indexfile.directory>
           </systemPropertyVariables>
         </configuration>
       </plugin>
