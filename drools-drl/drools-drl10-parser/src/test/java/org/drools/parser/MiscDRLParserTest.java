@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import junit.framework.TestCase;
 import org.assertj.core.api.Assertions;
 import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.FromDescr;
@@ -47,7 +48,7 @@ public class MiscDRLParserTest extends TestCase {
         super.tearDown();
     }
 
-    private PackageDescr parseResource(final String filename) throws Exception {
+    private String readResource(final String filename) throws Exception {
         Path path = Paths.get(getClass().getResource(filename).toURI());
         final StringBuilder sb = new StringBuilder();
         try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
@@ -57,7 +58,7 @@ public class MiscDRLParserTest extends TestCase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return parser.parse(sb.toString());
+        return sb.toString();
     }
 
     @Test
@@ -210,26 +211,27 @@ public class MiscDRLParserTest extends TestCase {
 
     @Test
     public void testGlobalWithOrWithoutSemi() throws Exception {
-        PackageDescr pack = parseResource("globals.drl");
+        String source = readResource("globals.drl");
+        PackageDescr pkg = parser.parse(source);
 
         assertEquals(1,
-                     pack.getRules().size());
+                     pkg.getRules().size());
 
-        final RuleDescr rule = (RuleDescr) pack.getRules().get(0);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
         assertEquals(1,
                      rule.getLhs().getDescrs().size());
 
         assertEquals(1,
-                     pack.getImports().size());
+                     pkg.getImports().size());
         assertEquals(2,
-                     pack.getGlobals().size());
+                     pkg.getGlobals().size());
 
-        final GlobalDescr foo = (GlobalDescr) pack.getGlobals().get(0);
+        final GlobalDescr foo = (GlobalDescr) pkg.getGlobals().get(0);
         assertEquals("java.lang.String",
                      foo.getType());
         assertEquals("foo",
                      foo.getIdentifier());
-        final GlobalDescr bar = (GlobalDescr) pack.getGlobals().get(1);
+        final GlobalDescr bar = (GlobalDescr) pkg.getGlobals().get(1);
         assertEquals("java.lang.Integer",
                      bar.getType());
         assertEquals("bar",
@@ -238,7 +240,8 @@ public class MiscDRLParserTest extends TestCase {
 
     @Test
     public void testFunctionImportWithNotExist() throws Exception {
-        PackageDescr pkg = (PackageDescr) parseResource("test_FunctionImport.drl");
+        String source = readResource("test_FunctionImport.drl");
+        PackageDescr pkg = parser.parse(source);
 
         assertEquals(2,
                      pkg.getFunctionImports().size());
@@ -457,5 +460,38 @@ public class MiscDRLParserTest extends TestCase {
                       constraint.getDescrs().size() );
         assertEquals( "type matches \"\\..*\\\\.\"",
                       constraint.getDescrs().get( 0 ).toString() );
+    }
+
+    @Test
+    public void testDialect() throws Exception {
+        final String source = "dialect 'mvel'";
+        PackageDescr pkg = parser.parse(source);
+        AttributeDescr attr = (AttributeDescr) pkg.getAttributes().get(0);
+        assertEquals("dialect",
+                     attr.getName());
+        assertEquals("mvel",
+                     attr.getValue());
+    }
+
+    @Test
+    public void testDialect2() throws Exception {
+        final String source = "dialect \"mvel\"";
+        PackageDescr pkg = parser.parse(source);
+        AttributeDescr attr = pkg.getAttributes().get(0);
+        assertEquals("dialect",
+                     attr.getName());
+        assertEquals("mvel",
+                     attr.getValue());
+    }
+
+    @Test
+    public void testEmptyRuleWithoutWhen() throws Exception {
+        String source = readResource("empty_rule.drl"); // without WHEN
+        PackageDescr pkg = parser.parse(source);
+
+        assertTrue(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        // Note : RuleParserTest.testEmptyRule allows this DRL, but I think is doesn't make sense to pass this DRL
     }
 }

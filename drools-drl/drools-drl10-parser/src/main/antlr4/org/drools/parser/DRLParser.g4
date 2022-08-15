@@ -5,7 +5,7 @@ options { tokenVocab=DRLLexer; }
 import JavaParser;
 
 
-compilationUnit : packagedef? unitdef? importdef* globaldef* ruledef* ;
+compilationUnit : packagedef? unitdef? importdef* attributes* globaldef* ruledef* ;
 
 packagedef : PACKAGE name=qualifiedName SEMI? ;
 

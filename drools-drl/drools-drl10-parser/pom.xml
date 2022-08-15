@@ -20,6 +20,11 @@
       <artifactId>drools-drl-ast</artifactId>
       <version>${version.drools-drl-ast}</version>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-util</artifactId>
+      <version>${version.drools-drl-ast}</version>
+    </dependency>
 
     <!-- External dependencies -->
     <dependency>
