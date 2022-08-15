@@ -906,7 +906,8 @@ public class IndexingTest {
         KieSession ksession = kbase.newKieSession();
 
         try {
-            assertAlphaIndex(kbase, Person.class, 3);
+            // BigDecimal Index is disabled
+            assertAlphaIndex(kbase, Person.class, 0);
 
             List<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
@@ -929,8 +930,12 @@ public class IndexingTest {
             objectSinkPropagator = ((CompiledNetwork) objectSinkPropagator).getOriginalSinkPropagator();
         }
         CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) objectSinkPropagator;
-        assertThat(sinkAdapter.getHashedSinkMap()).isNotNull();
-        assertThat(sinkAdapter.getHashedSinkMap().size()).isEqualTo(hashedSize);
+        if (hashedSize == 0) {
+            assertThat(sinkAdapter.getHashedSinkMap()).isNull();
+        } else {
+            assertThat(sinkAdapter.getHashedSinkMap()).isNotNull();
+            assertThat(sinkAdapter.getHashedSinkMap().size()).isEqualTo(hashedSize);
+        }
     }
 
     @Test
@@ -962,7 +967,8 @@ public class IndexingTest {
         KieSession ksession = kbase.newKieSession();
 
         try {
-            assertAlphaIndex(kbase, Person.class, 3);
+            // BigDecimal Index is disabled
+            assertAlphaIndex(kbase, Person.class, 0);
 
             List<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
