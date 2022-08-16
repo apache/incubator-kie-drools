@@ -32,7 +32,7 @@ Soft constraints:
 ** **Shift off request**: An employee does not want to be assigned to a specific shift.
 * **Alternative skill**: An employee assigned to a shift should have a proficiency in every skill required by that shift.
 
-The problem is defined by https://www.kuleuven-kulak.be/~u0041139/nrpcompetition/nrpcompetition_description.pdf[the International Nurse Rostering Competition 2010].
+The problem is defined by https://nrpcompetition.kuleuven-kulak.be[the International Nurse Rostering Competition 2010].
 
 
 [[nurseRosteringValueProposition]]
