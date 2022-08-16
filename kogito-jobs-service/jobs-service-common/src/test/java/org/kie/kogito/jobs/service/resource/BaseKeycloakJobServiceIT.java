@@ -41,6 +41,12 @@ import io.restassured.specification.RequestSpecification;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.NODE_INSTANCE_ID;
+import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.PRIORITY;
+import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.PROCESS_ID;
+import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.PROCESS_INSTANCE_ID;
+import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.ROOT_PROCESS_ID;
+import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.ROOT_PROCESS_INSTANCE_ID;
 
 public abstract class BaseKeycloakJobServiceIT {
 
@@ -96,7 +102,12 @@ public abstract class BaseKeycloakJobServiceIT {
                 .id(id)
                 .expirationTime(DateUtil.now().plusSeconds(10))
                 .callbackEndpoint("http://localhost:8081/callback")
-                .priority(1)
+                .processId(PROCESS_ID)
+                .processInstanceId(PROCESS_INSTANCE_ID)
+                .rootProcessId(ROOT_PROCESS_ID)
+                .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
+                .nodeInstanceId(NODE_INSTANCE_ID)
+                .priority(PRIORITY)
                 .build();
     }
 

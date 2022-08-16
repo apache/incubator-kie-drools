@@ -42,11 +42,7 @@ public class VertxTimerServiceScheduler implements TimerService<ManageableJobHan
 
     protected TimerJobFactoryManager jobFactoryManager = DefaultTimerJobFactoryManager.instance;
 
-    protected Vertx vertx;
-
-    public VertxTimerServiceScheduler() {
-        vertx = Vertx.vertx();
-    }
+    protected final Vertx vertx;
 
     public VertxTimerServiceScheduler(Vertx vertx) {
         this.vertx = vertx;

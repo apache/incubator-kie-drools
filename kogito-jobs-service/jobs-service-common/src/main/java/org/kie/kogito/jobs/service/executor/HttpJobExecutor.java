@@ -22,11 +22,11 @@ import java.util.concurrent.CompletionStage;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.api.URIBuilder;
 import org.kie.kogito.jobs.service.converters.HttpConverters;
+import org.kie.kogito.jobs.service.exception.JobExecutionException;
 import org.kie.kogito.jobs.service.model.HTTPRequestCallback;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.job.JobDetails;
@@ -73,84 +73,87 @@ public class HttpJobExecutor implements JobExecutor {
                 uri.getPath());
         Optional.ofNullable(request.getQueryParams())
                 .ifPresent(params -> clientRequest.queryParams().addAll(params));
-
         return clientRequest.send();
     }
 
-    private String getResponseCode(HttpResponse<Buffer> response) {
-        return Optional.ofNullable(response.statusCode())
-                .map(String::valueOf)
-                .orElse(null);
-    }
-
-    private <T extends JobExecutionResponse> PublisherBuilder<T> handleResponse(T response) {
+    private <T extends JobExecutionResponse> Uni<T> handleResponse(T response) {
         LOGGER.debug("handle response {}", response);
-        return ReactiveStreams.of(response)
-                .map(JobExecutionResponse::getCode)
-                .flatMap(code -> code.equals("200")
+        return Uni.createFrom().item(response)
+                .onItem().transform(JobExecutionResponse::getCode)
+                .onItem().transform(Integer::valueOf)
+                .chain(code -> Response.Status.Family.SUCCESSFUL.equals(Response.Status.Family.familyOf(code))
                         ? handleSuccess(response)
                         : handleError(response));
     }
 
-    private <T extends JobExecutionResponse> PublisherBuilder<T> handleError(T response) {
+    private <T extends JobExecutionResponse> Uni<T> handleError(T response) {
         LOGGER.info("handle error {}", response);
-        return ReactiveStreams.of(response)
-                .peek(jobStreams::publishJobError)
-                .peek(r -> LOGGER.debug("Error executing job {}.", r));
+        return Uni.createFrom().item(response)
+                .onItem().invoke(jobStreams::publishJobError)
+                .onItem().invoke(r -> LOGGER.debug("Error executing job {}.", r));
     }
 
-    private <T extends JobExecutionResponse> PublisherBuilder<T> handleSuccess(T response) {
+    private <T extends JobExecutionResponse> Uni<T> handleSuccess(T response) {
         LOGGER.info("handle success {}", response);
-        return ReactiveStreams.of(response)
-                .peek(jobStreams::publishJobSuccess)
-                .peek(r -> LOGGER.debug("Success executing job {}.", r));
+        return Uni.createFrom().item(response)
+                .onItem().invoke(jobStreams::publishJobSuccess)
+                .onItem().invoke(r -> LOGGER.debug("Success executing job {}.", r));
     }
 
     @Override
     public CompletionStage<JobDetails> execute(CompletionStage<JobDetails> futureJob) {
-        return futureJob
-                .thenCompose(job -> {
+        return Uni.createFrom().completionStage(futureJob)
+                .chain(job -> {
                     //Using just POST method for now
-                    String callbackEndpoint =
-                            Optional.ofNullable(job.getRecipient())
-                                    .filter(HTTPRecipient.class::isInstance)
-                                    .map(HTTPRecipient.class::cast)
-                                    .map(HTTPRecipient::getEndpoint)
-                                    .orElse("");
-                    String limit = Optional.ofNullable(job.getTrigger())
-                            .filter(IntervalTrigger.class::isInstance)
-                            .map(interval -> getRepeatableJobCountDown(job))
-                            .map(String::valueOf)
-                            .orElse(null);
-
-                    final HTTPRequestCallback callback = HTTPRequestCallback.builder()
-                            .url(callbackEndpoint)
-                            .method(HTTPRequestCallback.HTTPMethod.POST)
-                            //in case of repeatable jobs add the limit parameter
-                            .addQueryParam("limit", limit)
-                            .build();
-
-                    return ReactiveStreams.fromPublisher(executeCallback(callback).convert().toPublisher())
-                            .map(response -> JobExecutionResponse.builder()
+                    final String callbackEndpoint = getCallbackEndpoint(job);
+                    final String limit = getLimit(job);
+                    final HTTPRequestCallback callback = buildCallbackRequest(callbackEndpoint, limit);
+                    return executeCallback(callback)
+                            .onItem().transform(response -> JobExecutionResponse.builder()
                                     .message(response.statusMessage())
-                                    .code(getResponseCode(response))
+                                    .code(String.valueOf(response.statusCode()))
                                     .now()
                                     .jobId(job.getId())
                                     .build())
-                            .flatMap(this::handleResponse)
-                            .findFirst()
-                            .run()
-                            .thenApply(response -> response.map(r -> job).orElse(null))
-                            .exceptionally(ex -> {
-                                LOGGER.error("Generic error executing job {}", job, ex);
-                                jobStreams.publishJobError(JobExecutionResponse.builder()
-                                        .message(ex.getMessage())
-                                        .now()
-                                        .jobId(job.getId())
-                                        .build());
-                                return job;
-                            });
-                });
+                            .chain(this::handleResponse)
+                            .onItem().transform(response -> job)
+                            .onFailure().transform(ex -> new JobExecutionException(job, ex.getMessage()));
+                })
+                .onFailure(JobExecutionException.class).invoke(ex -> {
+                    JobDetails job = ((JobExecutionException) ex).getJob();
+                    LOGGER.error("Generic error executing job {}", job, ex);
+                    jobStreams.publishJobError(JobExecutionResponse.builder()
+                            .message(ex.getMessage())
+                            .now()
+                            .jobId(job.getId())
+                            .build());
+                })
+                .convert().toCompletionStage();
+    }
+
+    private HTTPRequestCallback buildCallbackRequest(String callbackEndpoint, String limit) {
+        return HTTPRequestCallback.builder()
+                .url(callbackEndpoint)
+                .method(HTTPRequestCallback.HTTPMethod.POST)
+                //in case of repeatable jobs add the limit parameter
+                .addQueryParam("limit", limit)
+                .build();
+    }
+
+    private String getLimit(JobDetails job) {
+        return Optional.ofNullable(job.getTrigger())
+                .filter(IntervalTrigger.class::isInstance)
+                .map(interval -> getRepeatableJobCountDown(job))
+                .map(String::valueOf)
+                .orElse(null);
+    }
+
+    private String getCallbackEndpoint(JobDetails job) {
+        return Optional.ofNullable(job.getRecipient())
+                .filter(HTTPRecipient.class::isInstance)
+                .map(HTTPRecipient.class::cast)
+                .map(HTTPRecipient::getEndpoint)
+                .orElseThrow(() -> new IllegalArgumentException("Callback Endpoint is null for job " + job));
     }
 
     private int getRepeatableJobCountDown(JobDetails job) {

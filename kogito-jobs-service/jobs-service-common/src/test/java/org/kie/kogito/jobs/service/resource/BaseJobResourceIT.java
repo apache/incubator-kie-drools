@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobBuilder;
@@ -40,6 +41,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,6 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class BaseJobResourceIT {
 
+    private static final String HEALTH_ENDPOINT = "/q/health";
     private static final String CALLBACK_ENDPOINT = "http://localhost:%d/callback";
     public static final String PROCESS_ID = "processId";
     public static final String PROCESS_INSTANCE_ID = "processInstanceId";
@@ -56,16 +60,30 @@ public abstract class BaseJobResourceIT {
     public static final int PRIORITY = 1;
 
     @ConfigProperty(name = "quarkus.http.test-port")
-    private int port;
+    int port;
 
     @Inject
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @Inject
-    private TimerDelegateJobScheduler scheduler;
+    TimerDelegateJobScheduler scheduler;
 
     @Inject
-    private VertxTimerServiceScheduler timer;
+    VertxTimerServiceScheduler timer;
+
+    @BeforeEach
+    void init() {
+        //health check - wait to be ready
+        await()
+                .atMost(1, MINUTES)
+                .pollInterval(1, SECONDS)
+                .untilAsserted(() -> given()
+                        .contentType(ContentType.JSON)
+                        .accept(ContentType.JSON)
+                        .get(HEALTH_ENDPOINT)
+                        .then()
+                        .statusCode(200));
+    }
 
     @AfterEach
     void tearDown() {
@@ -80,6 +98,17 @@ public abstract class BaseJobResourceIT {
                 .extract()
                 .as(ScheduledJob.class);
         assertEquals(job, response);
+    }
+
+    @Test
+    void createWithMissingAttributes() throws Exception {
+        final Job job = JobBuilder
+                .builder()
+                .id("1")
+                .callbackEndpoint(getCallbackEndpoint())
+                .build();
+        create(jobToJson(job))
+                .statusCode(500);
     }
 
     private String getCallbackEndpoint() {
@@ -299,7 +328,12 @@ public abstract class BaseJobResourceIT {
                         .id(UUID.randomUUID().toString())
                         .expirationTime(DateUtil.now().minusMinutes(10))
                         .callbackEndpoint(getCallbackEndpoint())
-                        .priority(1)
+                        .processId(PROCESS_ID)
+                        .processInstanceId(PROCESS_INSTANCE_ID)
+                        .rootProcessId(ROOT_PROCESS_ID)
+                        .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
+                        .nodeInstanceId(NODE_INSTANCE_ID)
+                        .priority(PRIORITY)
                         .build();
         return create(jobToJson(job));
     }

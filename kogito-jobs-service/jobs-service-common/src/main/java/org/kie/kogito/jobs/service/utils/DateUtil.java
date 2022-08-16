@@ -16,6 +16,7 @@
 package org.kie.kogito.jobs.service.utils;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -55,5 +56,9 @@ public class DateUtil {
 
     public static Date toDate(ZonedDateTime zonedDateTime) {
         return new Date(zonedDateTime.toInstant().toEpochMilli());
+    }
+
+    public static OffsetDateTime dateToOffsetDateTime(Date date) {
+        return fromDate(date).toOffsetDateTime();
     }
 }
