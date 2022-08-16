@@ -320,8 +320,7 @@ public class SharingTest {
         ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class);
 
         assertSinksSize(otn, 3); // Not shared. For improvement, see DROOLS-6485
-        assertHashableSinksSize(otn, 2);
-        assertNonHashableConstraint(otn, "salary == new BigDecimal(\"1\")");
+        assertHashableSinksSize(otn, 0); // Not indexed, see DROOLS-7085
 
         final KieSession kieSession = kbase.newKieSession();
         try {
