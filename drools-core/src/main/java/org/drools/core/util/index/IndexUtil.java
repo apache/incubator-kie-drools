@@ -116,7 +116,15 @@ public class IndexUtil {
         }
 
         ConstraintType constraintType = ((IndexableConstraint)constraint).getConstraintType();
+        if (isBigDecimalEqualityConstraint((IndexableConstraint)constraint)) {
+            return false;
+        }
         return constraintType.isIndexableForNode(nodeType, (IndexableConstraint)constraint, config);
+    }
+
+    public static boolean isBigDecimalEqualityConstraint(IndexableConstraint indexableConstraint) {
+        // Note : BigDecimal is not indexable for equality, because new BigDecimal("10").equals(new BigDecimal("10.00")) returns false
+        return indexableConstraint.getConstraintType() == ConstraintType.EQUAL && indexableConstraint.getFieldExtractor() != null && indexableConstraint.getFieldExtractor().getValueType() == ValueType.BIG_DECIMAL_TYPE;
     }
 
     public static boolean[] isIndexableForNode(IndexPrecedenceOption indexPrecedenceOption, short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
@@ -326,7 +334,7 @@ public class IndexUtil {
 
     public static class Factory {
         public static BetaMemory createBetaMemory(RuleBaseConfiguration config, short nodeType, BetaNodeFieldConstraint... constraints) {
-            if (config.getCompositeKeyDepth() < 1) {
+            if (config.getCompositeKeyDepth() < 1 || containsBigDecimalEqualityConstraint(constraints)) {
                 return new BetaMemory( config.isSequential() ? null : new TupleList(),
                                        new TupleList(),
                                        createContext(constraints),
@@ -338,6 +346,15 @@ public class IndexUtil {
                                    createRightMemory(config, indexSpec),
                                    createContext(constraints),
                                    nodeType );
+        }
+
+        private static boolean containsBigDecimalEqualityConstraint(BetaNodeFieldConstraint[] constraints) {
+            for (BetaNodeFieldConstraint constraint : constraints) {
+                if (constraint instanceof IndexableConstraint && isBigDecimalEqualityConstraint((IndexableConstraint) constraint)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static TupleMemory createRightMemory(RuleBaseConfiguration config, IndexSpec indexSpec) {
