@@ -18,8 +18,6 @@
 
 :URL_COMPONENT_PRODUCT: drools
 
-:URL_BASE_GITHUB: {URL_BASE_GITHUB_DM}
-
 :RULE_ENGINE: Drools rule engine
 :RULE_ENGINE_CAP: Drools rule engine
 
@@ -29,3 +27,5 @@
 :KOGITO: Kogito
 :KIE_SERVER: KIE Server
 :OPENSHIFT: Openshift
+
+:RH-SSO: Red Hat Single Sign-On
