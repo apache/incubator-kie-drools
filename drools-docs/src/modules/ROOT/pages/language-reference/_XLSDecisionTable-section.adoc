@@ -1,0 +1,368 @@
+
+:context: decision-tables
+
+include::_decision-tables-con.adoc[]
+
+include::_decision-tables-use-case-con.adoc[leveloffset=+1]
+
+include::_decision-tables-defining-proc.adoc[leveloffset=+1]
+
+include::_decision-tables-rule-set-entries-ref.adoc[leveloffset=+2]
+
+include::_decision-tables-rule-table-entries-ref.adoc[leveloffset=+2]
+
+include::_decision-tables-attributes-ref.adoc[leveloffset=+2]
+
+=== Examples of decision table data interpolation
+
+
+The various interpolations of data in decision tables are illustrated in the following example.
+
+.Interpolating cell data
+====
+If the template is `Foo(bar == $param)` and the cell is ``42``, then the result is ``Foo(bar == 42)``.
+
+If the template is `Foo(bar < $1, baz == $2)` and the cell contains ``42,43``, the result will be ``Foo(bar < 42, baz ==43)``.
+
+The template `forall(&&){bar != $}` with a cell containing `42,43` results in ``bar != 42 && bar != 43``.
+====
+
+
+The next example demonstrates the joint effect of a cell defining the pattern type and the code snippet below it.
+
+
+[.center,cols="2*^",width=40%]
+|===
+2+|RuleTable Cheese fans
+
+|CONDITION{set:cellbgcolor:#fcedcd}
+|CONDITION
+
+2+|Person
+
+|age
+|type
+
+|Persons age
+{set:cellbgcolor:#c0edf7}|Cheese type
+
+
+|42
+{set:cellbgcolor!}|stilton
+
+|21
+|cheddar
+|===
+
+This spreadsheet section shows how the `Person` type declaration spans 2 columns, and thus both constraints will appear as ``Person(age == ..., type == ...)``.
+Since only the field names are present in the snippet, they imply an equality test.
+
+In the following example the marker symbol `$param` is used.
+
+[.center,cols="^",width=40%]
+|===
+
+|CONDITION{set:cellbgcolor:#fcedcd}
+
+|Person
+
+|age == $param
+
+|Persons age
+
+{set:cellbgcolor:#c0edf7}
+|42
+{set:cellbgcolor!}
+
+|===
+
+The result of this column is the pattern ``Person(age == 42))``.
+You may have noticed that the marker and the operator "==" are redundant.
+
+The next example illustrates that a trailing insertion marker can be omitted.
+
+[.center,cols="^",width=40%]
+|===
+
+|CONDITION{set:cellbgcolor:#fcedcd}
+
+|Person
+
+|age <
+
+|Persons age
+
+{set:cellbgcolor:#c0edf7}
+|42
+{set:cellbgcolor!}
+
+|===
+
+Here, appending the value from the cell is implied, resulting in `Person(age < 42)).`
+
+You can provide the definition of a binding variable, as in the example below.
+
+[.center,cols="^",width=40%]
+|===
+
+|CONDITION{set:cellbgcolor:#fcedcd}
+
+|c : Cheese
+
+|type
+
+|Cheese type
+
+{set:cellbgcolor:#c0edf7}
+|stilton
+{set:cellbgcolor!}
+
+|===
+
+Here, the result is `c: Cheese(type == "stilton").` Note that the quotes are provided automatically.
+Actually, anything can be placed in the object type row.
+Apart from the definition of a binding variable, it could also be an additional pattern that is to be inserted literally.
+
+A simple construction of an action statement with the insertion of a single value is shown below.
+
+[.center,cols="^",width=40%]
+|===
+
+|ACTION{set:cellbgcolor:#fcedcd}
+
+|
+
+|list.add("$param");
+
+|Log
+
+{set:cellbgcolor:#c0edf7}
+|Old man stilton
+{set:cellbgcolor!}
+
+|===
+
+The cell below the ACTION header is left blank.
+Using this style, anything can be placed in the consequence, not just a single method call.
+(The same technique is applicable within a CONDITION column as well.)
+
+Below is a comprehensive example, showing the use of various column headers.
+It is not an error to have no value below a column header (as in the NO-LOOP column): here, the attribute will not be applied in any of the rules.
+
+.Example usage of keywords for imports, headers, etc.
+image::language-reference/Key.png[align="center"]
+
+And, finally, here is an example of Import and Functions.
+
+.Example of functions for computing price and discount claim.
+[.center,cols="<1,<3",width="80%"]
+|===
+
+|[white]#RuleSet#{set:cellbgcolor:#000000}
+|[white]#Cheese Price#
+
+|Import{set:cellbgcolor:#fcedcd}
+|com.sample.Cheese, com.sample.Person
+
+|Functions
+a|
+----
+function int computePrice(Cheese cheese) {
+    if (cheese.getType() == "cheddar") {
+        return 10;
+    } else if (cheese.getType() == "stilton") {
+        return 15;
+    } else {
+        return 20;
+    }
+}
+
+function boolean hasDiscount(Person person) {
+    if (person.getAge() > 60) {
+        return true;
+    } else {
+        return false;
+    }
+}
+----
+|===
+
+Multiple package names within the same cell must be separated by a comma.
+Also, the pairs of type and variable names must be comma-separated.
+Functions, however, must be written as they appear in a DRL file.
+This should appear in the same column as the "RuleSet" keyword; it could be above, between or below all the rule rows.
+
+[NOTE]
+====
+It may be more convenient to use Import, Variables, Functions and Queries repeatedly rather than packing several definitions into a single cell.
+====
+
+== Creating and integrating spreadsheet decision tables
+
+The API to use spreadsheet decision tables is in the `drools-decisiontables` module.
+There is really only one class to look at: ``SpreadsheetCompiler``.
+This class will take spreadsheets in various formats, and generate rules in DRL (which you can then use in the normal way). The `SpreadsheetCompiler` can just be used to generate partial rule files if it is wished, and assemble it into a complete rule package after the fact (this allows the separation of technical and non-technical aspects of the rules if needed).
+
+== Decision table workflow and collaboration
+
+
+Spreadsheets are well established business tools (in use for over 25 years). Decision tables lend themselves to close collaboration between IT and domain experts, while making the business rules clear to business analysts, it is an ideal separation of concerns.
+
+Typically, the whole process of authoring rules (coming up with a new decision table) would be something like:
+
+. Business analyst takes a template decision table (from a repository, or from IT)
+. Decision table business language descriptions are entered in the table(s)
+. Decision table rules (rows) are entered (roughly)
+. Decision table is handed to a technical resource, who maps the business language (descriptions) to scripts (this may involve software development of course, if it is a new application or data model)
+. Technical person hands back and reviews the modifications with the business analyst.
+. The business analyst can continue editing the rule rows as needed (moving columns around is also fine etc).
+. In parallel, the technical person can develop test cases for the rules (liaising with business analysts) as these test cases can be used to verify rules and rule changes once the system is running.
+
+
+== Using spreadsheet features
+
+Features of applications like Excel can be used to provide assistance in entering data into spreadsheets, such as validating fields.
+Lists that are stored in other worksheets can be used to provide valid lists of values for cells, like in the following diagram.
+
+image::language-reference/lists.png[align="center"]
+
+Some applications provide a limited ability to keep a history of changes, but it is recommended to use an alternative means of revision control.
+When changes are being made to rules over time, older versions are archived (many open source solutions exist for this, such as Subversion or Git).
+
+== Rule templates
+
+Related to decision tables (but not necessarily requiring a spreadsheet) are "Rule Templates" (in the drools-templates module). These use any tabular data source as a source of rule data - populating a template to generate many rules.
+This can allow both for more flexible spreadsheets, but also rules in existing databases for instance (at the cost of developing the template up front to generate the rules).
+
+With Rule Templates the data is separated from the rule and there are no restrictions on which part of the rule is data-driven.
+So whilst you can do everything you could do in decision tables you can also do the following:
+
+* store your data in a database (or any other format)
+* conditionally generate rules based on the values in the data
+* use data for any part of your rules (e.g. condition operator, class name, property name)
+* run different templates over the same data
+
+
+As an example, a more classic decision table is shown, but without any hidden rows for the rule meta data (so the spreadsheet only contains the raw data to generate the rules).
+
+.Template data
+[.center,cols="^,^,^,^"]
+|===
+|Case{set:cellbgcolor:#c0edf7}
+|Person age
+|Cheese type
+|Log
+
+|Old guy
+{set:cellbgcolor!}
+|42
+|stilton
+|Old man stilton
+
+|Young guy
+|21
+|cheddar
+|Young man cheddar
+
+|===
+
+
+See the [path]_ExampleCheese.xls_ in the examples download for the above spreadsheet.
+
+If this was a regular decision table there would be hidden rows before row 1 and between rows 1 and 2 containing rule metadata.
+With rule templates the data is completely separate from the rules.
+This has two handy consequences - you can apply multiple rule templates to the same data and your data is not tied to your rules at all.
+So what does the template look like?
+
+[source]
+----
+1  template header
+2  age
+3  type
+4  log
+5
+6  package org.drools.examples.templates;
+7
+8  global java.util.List list;
+9
+10 template "cheesefans"
+11
+12 rule "Cheese fans_@{row.rowNumber}"
+13 when
+14    Person(age == @{age})
+15    Cheese(type == "@{type}")
+16 then
+17    list.add("@{log}");
+18 end
+19
+20 end template
+----
+
+Annotations to the preceding program listing:
+
+* Line 1: All rule templates start with ``template header``.
+* Lines 2-4: Following the header is the list of columns in the order they appear in the data. In this case we are calling the first column ``age``, the second `type` and the third ``log``.
+* Line 5: An empty line signifies the end of the column definitions.
+* Lines 6-9: Standard rule header text. This is standard rule DRL and will appear at the top of the generated DRL. Put the package statement and any imports and global and function definitions into this section.
+* Line 10: The keyword `template` signals the start of a rule template. There can be more than one template in a template file, but each template should have a unique name.
+* Lines 11-18: The rule template - see below for details.
+* Line 20: The keywords `end template` signify the end of the template.
+
+The rule templates rely on MVEL to do substitution using the syntax @\{token_name}. There is currently one built-in expression, @{row.rowNumber} which gives a unique number for each row of data and enables you to generate unique rule names.
+For each row of data a rule will be generated with the values in the data substituted for the tokens in the template.
+
+A rule template has to be included in a file with extension .drt and associated to the corresponding decision table when defining the kbase in the kmodule.xml file as in the following example
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://drools.org/xsd/kmodule">
+  <kbase name="TemplatesKB" packages="org.drools.examples.templates">
+    <ruleTemplate dtable="org/drools/examples/templates/ExampleCheese.xls"
+                  template="org/drools/examples/templates/Cheese.drt"
+                  row="2" col="2"/>
+      <ksession name="TemplatesKS"/>
+      </kbase>
+</kmodule>
+----
+
+
+With the example data above the following rule file would be generated:
+
+[source]
+----
+package org.drools.examples.templates;
+
+global java.util.List list;
+
+rule "Cheese fans_1"
+when
+  Person( age == 42 )
+  Cheese( type == "stilton" )
+then
+  list.add( "Old man stilton" );
+end
+
+rule "Cheese fans_2"
+when
+  Person( age == 21 )
+  Cheese( type == "cheddar" )
+then
+  list.add( "Young man cheddar" );
+end
+----
+
+At this point the `KieSession` named "TemplatesKS" and containing the rules generated from the template can be simply created from the `KieContainer` and used as any other ``KieSession``.
+
+[source,java]
+----
+KieSession ksession = kc.newKieSession("TemplatesKS");
+
+// now create some test data
+ksession.insert(new Cheese("stilton", 42));
+ksession.insert(new Person("michael", "stilton", 42));
+final List<String> list = new ArrayList<String>();
+ksession.setGlobal("list", list);
+
+ksession.fireAllRules();
+----
