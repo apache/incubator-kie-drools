@@ -32,6 +32,8 @@ public class MathUtils {
                 ret = (BigDecimal) value;
             } else if( value instanceof String ) {
                 ret = new BigDecimal( (String) value );
+            } else if( value instanceof Integer ) {
+                ret = new BigDecimal( (Integer) value );
             } else if( value instanceof BigInteger ) {
                 ret = new BigDecimal( (BigInteger) value );
             } else if( value instanceof Number ) {

@@ -16,12 +16,14 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.ancompiler.CompiledNetwork;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
@@ -37,6 +39,7 @@ import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.NotNode;
+import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
@@ -871,6 +874,146 @@ public class IndexingTest {
             assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
         } finally {
             wm.dispose();
+        }
+    }
+
+    @Test
+    public void testAlphaIndexWithBigDecimalCoercion() {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "global java.util.List list\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        Person( salary == 10 )\n" +
+                        "    then\n" +
+                        "        list.add(\"R1\");\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "    when\n" +
+                        "        Person( salary == 20 )\n" +
+                        "    then\n" +
+                        "        list.add(\"R2\");\n" +
+                        "end\n" +
+                        "rule R3\n" +
+                        "    when\n" +
+                        "        Person( salary == 30 )\n" +
+                        "    then\n" +
+                        "        list.add(\"R3\");\n" +
+                        "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            // BigDecimal Index is disabled
+            assertAlphaIndex(kbase, Person.class, 0);
+
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            Person john = new Person("John");
+            john.setSalary(new BigDecimal("10"));
+            ksession.insert(john);
+            ksession.fireAllRules();
+
+            assertThat(list).containsExactly("R1");
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    private void assertAlphaIndex(KieBase kbase, Class<?> clazz, int hashedSize) {
+        final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, clazz);
+        assertThat(otn).isNotNull();
+        ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
+        if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
+            objectSinkPropagator = ((CompiledNetwork) objectSinkPropagator).getOriginalSinkPropagator();
+        }
+        CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) objectSinkPropagator;
+        if (hashedSize == 0) {
+            assertThat(sinkAdapter.getHashedSinkMap()).isNull();
+        } else {
+            assertThat(sinkAdapter.getHashedSinkMap()).isNotNull();
+            assertThat(sinkAdapter.getHashedSinkMap().size()).isEqualTo(hashedSize);
+        }
+    }
+
+    @Test
+    public void testAlphaIndexWithBigDecimalDifferentScale() {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "global java.util.List list\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        Person( salary == 10 )\n" +
+                        "    then\n" +
+                        "        list.add(\"R1\");\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "    when\n" +
+                        "        Person( salary == 20 )\n" +
+                        "    then\n" +
+                        "        list.add(\"R2\");\n" +
+                        "end\n" +
+                        "rule R3\n" +
+                        "    when\n" +
+                        "        Person( salary == 30 )\n" +
+                        "    then\n" +
+                        "        list.add(\"R3\");\n" +
+                        "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            // BigDecimal Index is disabled
+            assertAlphaIndex(kbase, Person.class, 0);
+
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            Person john = new Person("John");
+            john.setSalary(new BigDecimal("10.00"));
+            ksession.insert(john);
+            ksession.fireAllRules();
+
+            assertThat(list).containsExactly("R1");
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testBetaIndexWithBigDecimalDifferentScale() {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "global java.util.List list\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        $p1 : Person( name == \"John\" )\n" +
+                        "        $p2 : Person( name == \"Paul\", salary == $p1.salary )\n" +
+                        "    then\n" +
+                        "        list.add(\"R1\");\n" +
+                        "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            Person john = new Person("John");
+            john.setSalary(new BigDecimal("10"));
+            Person paul = new Person("Paul");
+            paul.setSalary(new BigDecimal("10.00"));
+            ksession.insert(john);
+            ksession.insert(paul);
+            ksession.fireAllRules();
+
+            assertThat(list).containsExactly("R1");
+        } finally {
+            ksession.dispose();
         }
     }
 }
