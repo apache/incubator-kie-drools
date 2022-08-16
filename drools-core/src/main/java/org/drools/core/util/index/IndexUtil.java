@@ -350,10 +350,8 @@ public class IndexUtil {
 
         private static boolean containsBigDecimalEqualityConstraint(BetaNodeFieldConstraint[] constraints) {
             for (BetaNodeFieldConstraint constraint : constraints) {
-                if (constraint instanceof IndexableConstraint) {
-                    if (isBigDecimalEqualityConstraint((IndexableConstraint)constraint)) {
-                        return true;
-                    }
+                if (constraint instanceof IndexableConstraint && isBigDecimalEqualityConstraint((IndexableConstraint) constraint)) {
+                    return true;
                 }
             }
             return false;
