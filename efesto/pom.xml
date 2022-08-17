@@ -27,6 +27,7 @@
   <modules>
     <module>efesto-core</module>
     <module>efesto-dependencies</module>
+    <module>efesto-common-utils</module>
   </modules>
 
   <!-- Dependencies core to all modules. Keep that as limited as possible. Please avoid indirect or looped dependencies-->
@@ -159,19 +160,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>efesto-common-utils</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>
