@@ -31,7 +31,7 @@ public class PillarSelectorFactory<Solution_>
     /**
      * @param configPolicy never null
      * @param subPillarType if null, defaults to {@link SubPillarType#ALL} for backwards compatibility reasons.
-     * @param subPillarSequenceComparatorClass if not null, will force entites in the pillar to come in this order
+     * @param subPillarSequenceComparatorClass if not null, will force entities in the pillar to come in this order
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      *        then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      *        and less would be pointless.

@@ -16,7 +16,7 @@ public abstract class AbstractSelectorFactory<Solution_, SelectorConfig_ extends
             SelectionOrder resolvedSelectionOrder) {
         switch (resolvedSelectionOrder) {
             case INHERIT:
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                throw new IllegalArgumentException("The moveSelectorConfig (" + config
                         + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
                         + ") which should have been resolved by now.");
             case ORIGINAL:
@@ -26,7 +26,7 @@ public abstract class AbstractSelectorFactory<Solution_, SelectorConfig_ extends
             case SHUFFLED:
             case PROBABILISTIC:
                 if (resolvedCacheType.isNotCached()) {
-                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                    throw new IllegalArgumentException("The moveSelectorConfig (" + config
                             + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
                             + ") which does not support the resolvedCacheType (" + resolvedCacheType + ").");
                 }

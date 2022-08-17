@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * A config class is a user friendly, validating configuration class that maps XML input.
+ * A config class is a user-friendly, validating configuration class that maps XML input.
  * It builds the runtime impl classes (which are optimized for scalability and performance instead).
  * <p>
  * A config class should adhere to "configuration by exception" in its XML/JSON input/output,
@@ -31,7 +31,7 @@ public abstract class AbstractConfig<Config_ extends AbstractConfig<Config_>> {
     public abstract Config_ inherit(Config_ inheritedConfig);
 
     /**
-     * Typically implemented by constructing a new instance and calling {@link #inherit(AbstractConfig)} on it
+     * Typically implemented by constructing a new instance and calling {@link #inherit(AbstractConfig)} on it.
      *
      * @return new instance
      */
@@ -42,8 +42,7 @@ public abstract class AbstractConfig<Config_ extends AbstractConfig<Config_>> {
      * (including those provided in child configs).
      * Required to create the bean factory in Quarkus.
      *
-     * @param classVisitor The visitor of classes, never null. Can accept null instances
-     *        of Class
+     * @param classVisitor The visitor of classes, never null. Can accept null instances of Class.
      */
     public abstract void visitReferencedClasses(Consumer<Class<?>> classVisitor);
 

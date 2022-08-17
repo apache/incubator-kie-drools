@@ -50,7 +50,7 @@ public class ChangeMoveSelectorFactory<Solution_>
                 .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
         if (valueSelector.getVariableDescriptor().isListVariable()) {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
-                throw new IllegalArgumentException("The changeMoveSelector (" + this
+                throw new IllegalArgumentException("The changeMoveSelector (" + config
                         + ") for a list variable needs to be based on an "
                         + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                         + " Check your valueSelectorConfig.");

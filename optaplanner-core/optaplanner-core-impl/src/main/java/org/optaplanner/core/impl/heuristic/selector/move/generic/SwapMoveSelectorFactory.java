@@ -75,7 +75,7 @@ public class SwapMoveSelectorFactory<Solution_>
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig())
                 .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
-            throw new IllegalArgumentException("The swapMoveSelector (" + this
+            throw new IllegalArgumentException("The swapMoveSelector (" + config
                     + ") for a list variable needs to be based on an "
                     + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                     + " Check your valueSelectorConfig.");

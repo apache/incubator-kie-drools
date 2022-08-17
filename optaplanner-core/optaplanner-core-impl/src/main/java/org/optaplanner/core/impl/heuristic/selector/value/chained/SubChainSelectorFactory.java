@@ -49,7 +49,7 @@ public class SubChainSelectorFactory<Solution_> {
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
-            throw new IllegalArgumentException("The subChainSelectorConfig (" + this
+            throw new IllegalArgumentException("The subChainSelectorConfig (" + config
                     + ")'s minimumCacheType (" + minimumCacheType
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the chains change every step.");
@@ -60,7 +60,7 @@ public class SubChainSelectorFactory<Solution_> {
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
                 .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
-            throw new IllegalArgumentException("The minimumCacheType (" + this
+            throw new IllegalArgumentException("The subChainSelectorConfig (" + config
                     + ") needs to be based on an "
                     + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
