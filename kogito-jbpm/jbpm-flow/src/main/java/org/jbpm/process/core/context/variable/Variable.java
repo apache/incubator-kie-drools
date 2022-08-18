@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.lang.model.SourceVersion;
 
@@ -48,6 +49,7 @@ public class Variable implements TypeObject, ValueObject, Serializable {
     public static final String OUTPUT_TAG = "output";
     public static final String BUSINESS_RELEVANT = "business-relevant";
     public static final String TRACKED = "tracked";
+    public static final Set<String> KOGITO_RESERVED = Set.of("id");
 
     private String id;
     private String name;
@@ -76,11 +78,11 @@ public class Variable implements TypeObject, ValueObject, Serializable {
     }
 
     /**
-     * Return a valid unique Java identifier based on the given @param name. It consider valid characters and
+     * Return a valid unique Java identifier based on the given @param name. It considers valid characters and
      * reserved words.
      * In case the input is valid it is returned itself otherwise a valid identifier is generated prefixing v$ based
      * on the @param input excluding invalid characters.
-     * 
+     *
      * @param name the input
      * @return the output valid Java identifier
      */

@@ -18,6 +18,8 @@ package org.jbpm.ruleflow.core.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
@@ -161,6 +163,35 @@ public class RuleFlowProcessValidatorTest {
         assertNotNull(errors);
         assertEquals(0,
                 errors.length);
+    }
+
+    @Test
+    void testIdVariableName() {
+        StartNode startNode = new StartNode();
+        startNode.setName("Start");
+        startNode.setId(1);
+        process.addNode(startNode);
+        EndNode endNode = new EndNode();
+        endNode.setName("EndNode");
+        endNode.setId(2);
+        process.addNode(endNode);
+        new org.jbpm.workflow.core.impl.ConnectionImpl(
+                startNode,
+                Node.CONNECTION_DEFAULT_TYPE,
+                endNode,
+                Node.CONNECTION_DEFAULT_TYPE);
+
+        Variable idVariable = new Variable();
+        idVariable.setName("id");
+        idVariable.setType(new StringDataType());
+        process.getVariableScope().addVariable(idVariable);
+
+        ProcessValidationError[] errors = validator.validateProcess(process);
+        assertNotNull(errors);
+        assertEquals(1,
+                errors.length);
+        assertEquals("Variable 'id' is used by Kogito, please rename it.",
+                errors[0].getMessage());
     }
 
     @Test

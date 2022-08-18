@@ -30,7 +30,6 @@ class ValidationContextTest {
     private ValidationContext tested;
 
     private ValidationError error;
-
     private ValidationError error2;
     private RuntimeException exception;
 

@@ -1052,6 +1052,10 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                             "Variable '" + var.getName() + "' has no type."));
                 }
+
+                Variable.KOGITO_RESERVED.stream().filter(v -> v.equalsIgnoreCase(var.getName())).findFirst()
+                        .ifPresent(v -> errors.add(new ProcessValidationErrorImpl(process,
+                                "Variable '" + var.getName() + "' is used by Kogito, please rename it.")));
             }
         }
     }
