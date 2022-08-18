@@ -119,9 +119,12 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     }
 
     protected Constraint speakerUnavailableTimeslot(ConstraintFactory factory) {
-        return factory.forEach(Talk.class)
-                .filter(Talk::hasAnyUnavailableSpeaker)
-                .penalizeConfigurable(SPEAKER_UNAVAILABLE_TIMESLOT, Talk::getDurationInMinutes);
+        return factory.forEachIncludingNullVars(Talk.class)
+                .filter(talk -> talk.getTimeslot() != null)
+                .join(Speaker.class,
+                        filtering((talk, speaker) -> talk.hasSpeaker(speaker)
+                                && speaker.getUnavailableTimeslotSet().contains(talk.getTimeslot())))
+                .penalizeConfigurable(SPEAKER_UNAVAILABLE_TIMESLOT, (talk, speaker) -> talk.getDurationInMinutes());
     }
 
     protected Constraint speakerConflict(ConstraintFactory factory) {
@@ -334,9 +337,8 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
 
     protected Constraint sameDayTalks(ConstraintFactory factory) {
         return factory.forEachUniquePair(Talk.class)
-                .filter((talk1,
-                        talk2) -> (talk1.overlappingContentCount(talk2) > 0 || talk1.overlappingThemeTrackCount(talk2) > 0)
-                                && !talk1.getTimeslot().isOnSameDayAs(talk2.getTimeslot()))
+                .filter((talk1, talk2) -> !talk1.getTimeslot().isOnSameDayAs(talk2.getTimeslot()) &&
+                        (talk1.overlappingContentCount(talk2) > 0 || talk1.overlappingThemeTrackCount(talk2) > 0))
                 .penalizeConfigurable(SAME_DAY_TALKS,
                         (talk1, talk2) -> (talk2.overlappingThemeTrackCount(talk1) + talk2.overlappingContentCount(talk1))
                                 * talk1.combinedDurationInMinutes(talk2));

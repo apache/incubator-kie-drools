@@ -42,7 +42,8 @@ end
 
 rule "Speaker unavailable timeslot"
     when
-        $talk : Talk(timeslot != null, hasAnyUnavailableSpeaker())
+        $talk : Talk(timeslot != null, $speakers: speakerList)
+        Speaker(unavailableTimeslotSet contains $talk.timeslot) from $speakers
     then
         scoreHolder.penalize(kcontext,
                 $talk.getDurationInMinutes());
@@ -335,8 +336,8 @@ rule "Same day talks"
         $talk1 : Talk(timeslot != null,
                 $id1 : id)
         $talk2 :  Talk(timeslot != null,
-                overlappingContentCount($talk1) > 0 || overlappingThemeTrackCount($talk1) > 0,
                 !getTimeslot().isOnSameDayAs($talk1.getTimeslot()),
+                overlappingContentCount($talk1) > 0 || overlappingThemeTrackCount($talk1) > 0,
                 id > $id1)
     then
         scoreHolder.penalize(kcontext,

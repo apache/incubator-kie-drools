@@ -20,10 +20,6 @@ public class Room extends AbstractPersistable {
         super(id);
     }
 
-    public boolean hasTag(String tag) {
-        return tagSet.contains(tag);
-    }
-
     @Override
     public String toString() {
         return name;

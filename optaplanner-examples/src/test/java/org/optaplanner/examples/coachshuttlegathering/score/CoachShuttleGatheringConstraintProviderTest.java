@@ -114,49 +114,7 @@ class CoachShuttleGatheringConstraintProviderTest {
         coach.setPassengerQuantityTotal(3);
         constraintVerifier.verifyThat(CoachShuttleGatheringConstraintProvider::coachCapacity)
                 .given(coach, shuttle, transferStop, shuttlePickup1)
-                .penalizesBy(2L * 1000);
-    }
-
-    @Test
-    void coachCapacityCorrection() {
-        Coach coach = new Coach();
-        Shuttle shuttle = new Shuttle();
-        BusStop transferStop = new BusStop(0L, shuttle, coach);
-        shuttle.setDestination(transferStop);
-        BusStop shuttlePickup1 = new BusStop(1L, transferStop, shuttle, 1);
-        BusStop shuttlePickup2 = new BusStop(2L, transferStop, shuttle, 2);
-        BusStop shuttlePickup3 = new BusStop(3L, transferStop, shuttle, 3);
-
-        coach.setCapacity(2);
-        coach.setPassengerQuantityTotal(0);
-        constraintVerifier.verifyThat(CoachShuttleGatheringConstraintProvider::coachCapacityCorrection)
-                .given(coach, shuttle, transferStop)
-                .rewardsWith(0L);
-
-        coach.setPassengerQuantityTotal(1);
-        constraintVerifier.verifyThat(CoachShuttleGatheringConstraintProvider::coachCapacityCorrection)
-                .given(coach, shuttle, transferStop, shuttlePickup1)
-                .rewardsWith(0L);
-
-        coach.setPassengerQuantityTotal(1);
-        constraintVerifier.verifyThat(CoachShuttleGatheringConstraintProvider::coachCapacityCorrection)
-                .given(coach, shuttle, transferStop, shuttlePickup1, shuttlePickup2)
-                .rewardsWith(0L);
-
-        coach.setPassengerQuantityTotal(0);
-        constraintVerifier.verifyThat(CoachShuttleGatheringConstraintProvider::coachCapacityCorrection)
-                .given(coach, shuttle, transferStop, shuttlePickup1, shuttlePickup2)
-                .rewardsWith(0L);
-
-        coach.setPassengerQuantityTotal(0);
-        constraintVerifier.verifyThat(CoachShuttleGatheringConstraintProvider::coachCapacityCorrection)
-                .given(coach, shuttle, transferStop, shuttlePickup1, shuttlePickup2, shuttlePickup3)
-                .rewardsWith(0L);
-
-        coach.setPassengerQuantityTotal(3);
-        constraintVerifier.verifyThat(CoachShuttleGatheringConstraintProvider::coachCapacityCorrection)
-                .given(coach, shuttle, transferStop, shuttlePickup1)
-                .rewardsWith(1L * 1000);
+                .penalizesBy(1L * 1000);
     }
 
     @Test

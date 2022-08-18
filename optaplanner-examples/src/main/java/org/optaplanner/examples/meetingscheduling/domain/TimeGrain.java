@@ -3,19 +3,24 @@ package org.optaplanner.examples.meetingscheduling.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.Objects;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
-public class TimeGrain extends AbstractPersistable implements Labeled {
+public class TimeGrain extends AbstractPersistable
+        implements Comparable<TimeGrain>, Labeled {
+
+    private static final Comparator<TimeGrain> COMPARATOR = Comparator.comparing(TimeGrain::getDay)
+            .thenComparingInt(TimeGrain::getStartingMinuteOfDay);
 
     /**
      * Time granularity is 15 minutes (which is often recommended when dealing with humans for practical purposes).
      */
     public static final int GRAIN_LENGTH_IN_MINUTES = 15;
 
-    private int grainIndex; // unique
-
+    private int grainIndex;
     private Day day;
     private int startingMinuteOfDay;
 
@@ -74,5 +79,31 @@ public class TimeGrain extends AbstractPersistable implements Labeled {
     @Override
     public String toString() {
         return grainIndex + "(" + getDateTimeString() + ")";
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+
+        TimeGrain timeGrain = (TimeGrain) other;
+
+        if (startingMinuteOfDay != timeGrain.startingMinuteOfDay)
+            return false;
+        return Objects.equals(day, timeGrain.day);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = day != null ? day.hashCode() : 0;
+        result = 31 * result + startingMinuteOfDay;
+        return result;
+    }
+
+    @Override
+    public int compareTo(TimeGrain other) {
+        return COMPARATOR.compare(this, other);
     }
 }

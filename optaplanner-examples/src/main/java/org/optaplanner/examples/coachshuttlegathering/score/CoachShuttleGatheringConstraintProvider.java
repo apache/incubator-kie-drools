@@ -25,7 +25,6 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
                 shuttleCapacity(constraintFactory),
                 coachCapacity(constraintFactory),
                 coachCapacityShuttleButNoShuttle(constraintFactory),
-                coachCapacityCorrection(constraintFactory),
                 transportTime(constraintFactory),
                 shuttleDestinationIsCoachOrHub(constraintFactory),
                 shuttleSetupCost(constraintFactory),
@@ -63,31 +62,15 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
                         shuttlePassengerQuantityTotal) -> coach.getPassengerQuantityTotal()
                                 + shuttlePassengerQuantityTotal > coach.getCapacity())
                 .penalizeLong("coachCapacity", HardSoftLongScore.ONE_HARD,
-                        (coach, shuttlePassengerQuantityTotal) -> (coach.getPassengerQuantityTotal()
-                                + shuttlePassengerQuantityTotal - coach.getCapacity()) * 1000L);
-    }
-
-    /*
-     * Correct the double counting
-     * Explanation: groupBy is like accumulate, but it doesn't trigger on empty streams.
-     * We need something like
-     * .accumulate(Function<ConstraintStream, UniConstraintStream<T>>, T defaultValue): ConstraintStream+1
-     * To change it from 3 separate constraints (one for the normal case, one in the case of empty stream,
-     * one to remove double counting).
-     */
-    Constraint coachCapacityCorrection(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(Coach.class)
-                .join(Shuttle.class)
-                .join(BusStop.class, equal((coach, shuttle) -> shuttle.getDestination(), stop -> stop),
-                        equal((coach, shuttle) -> coach, BusStop::getBus))
-                .join(BusStop.class, equal((coach, shuttle, stop) -> shuttle, BusStop::getBus))
-                .groupBy((coach, shuttle, stop1, stop2) -> coach,
-                        sum((coach, shuttle, stop1, stop2) -> stop2.getPassengerQuantity()))
-                .filter((coach,
-                        shuttlePassengerQuantityTotal) -> coach.getPassengerQuantityTotal() > coach.getCapacity())
-                .rewardLong("coachCapacityCorrection", HardSoftLongScore.ONE_HARD,
-                        (coach, shuttlePassengerQuantityTotal) -> (coach.getPassengerQuantityTotal() - coach.getCapacity())
-                                * 1000L);
+                        (coach, shuttlePassengerQuantityTotal) -> {
+                            int totalPassengerCount = coach.getPassengerQuantityTotal();
+                            int coachCapacity = coach.getCapacity();
+                            long penalty =
+                                    Math.max(0L, (totalPassengerCount + shuttlePassengerQuantityTotal - coachCapacity) * 1000L);
+                            // Correct double-counting.
+                            penalty -= Math.max(0L, (totalPassengerCount - coachCapacity) * 1000L);
+                            return penalty;
+                        });
     }
 
     Constraint coachCapacityShuttleButNoShuttle(ConstraintFactory constraintFactory) {

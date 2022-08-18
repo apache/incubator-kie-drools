@@ -24,8 +24,19 @@ global HardMediumSoftScoreHolder scoreHolder;
 
 rule "Room conflict"
     when
-        $leftAssignment : MeetingAssignment(room != null, $leftId : id, $room : room)
-        $rightAssignment : MeetingAssignment(room == $room, calculateOverlap($leftAssignment) > 0, id > $leftId)
+        $leftAssignment : MeetingAssignment(room != null,
+            startingTimeGrain != null,
+            $leftId : id,
+            $room : room,
+            $leftMeetingStart: startingTimeGrain.getGrainIndex(),
+            $leftMeetingEnd: getLastTimeGrainIndex())
+        $rightAssignment : MeetingAssignment(room == $room,
+            startingTimeGrain != null,
+            id > $leftId,
+            $rightMeetingStart: startingTimeGrain.getGrainIndex(),
+            $rightMeetingEnd: getLastTimeGrainIndex(),
+            $leftMeetingStart <= $rightMeetingEnd,
+            $leftMeetingEnd >= $rightMeetingStart)
     then
         scoreHolder.penalize(kcontext, $rightAssignment.calculateOverlap($leftAssignment));
 end
@@ -44,8 +55,16 @@ rule "Required attendance conflict"
     when
         RequiredAttendance($leftId : id, $person : person, $leftMeeting : meeting)
         RequiredAttendance(person == $person, $rightMeeting : meeting, id > $leftId)
-        $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
-        $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
+        $leftAssignment : MeetingAssignment(meeting == $leftMeeting,
+            startingTimeGrain != null,
+            $leftMeetingStart: startingTimeGrain.getGrainIndex(),
+            $leftMeetingEnd: getLastTimeGrainIndex())
+        $rightAssignment : MeetingAssignment(meeting == $rightMeeting,
+            startingTimeGrain != null,
+            $rightMeetingStart: startingTimeGrain.getGrainIndex(),
+            $rightMeetingEnd: getLastTimeGrainIndex(),
+            $leftMeetingStart <= $rightMeetingEnd,
+            $leftMeetingEnd >= $rightMeetingStart)
     then
         scoreHolder.penalize(kcontext, $rightAssignment.calculateOverlap($leftAssignment));
 end
@@ -73,22 +92,38 @@ rule "Required and preferred attendance conflict"
     when
         RequiredAttendance($person : person, $leftMeeting : meeting)
         PreferredAttendance(person == $person, $rightMeeting : meeting)
-        $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
-        $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
+        $leftAssignment : MeetingAssignment(meeting == $leftMeeting,
+            startingTimeGrain != null,
+            $leftMeetingStart: startingTimeGrain.getGrainIndex(),
+            $leftMeetingEnd: getLastTimeGrainIndex())
+        $rightAssignment : MeetingAssignment(meeting == $rightMeeting,
+            startingTimeGrain != null,
+            $rightMeetingStart: startingTimeGrain.getGrainIndex(),
+            $rightMeetingEnd: getLastTimeGrainIndex(),
+            $leftMeetingStart <= $rightMeetingEnd,
+            $leftMeetingEnd >= $rightMeetingStart)
     then
         // Fairness not implemented (see tennis example)
-        scoreHolder.penalize(kcontext);
+        scoreHolder.penalize(kcontext, $rightAssignment.calculateOverlap($leftAssignment));
 end
 
 rule "Preferred attendance conflict"
     when
         PreferredAttendance($leftId : id, $person : person, $leftMeeting : meeting)
         PreferredAttendance(person == $person, $rightMeeting : meeting, id > $leftId)
-        $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
-        $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
+        $leftAssignment : MeetingAssignment(meeting == $leftMeeting,
+            startingTimeGrain != null,
+            $leftMeetingStart: startingTimeGrain.getGrainIndex(),
+            $leftMeetingEnd: getLastTimeGrainIndex())
+        $rightAssignment : MeetingAssignment(meeting == $rightMeeting,
+            startingTimeGrain != null,
+            $rightMeetingStart: startingTimeGrain.getGrainIndex(),
+            $rightMeetingEnd: getLastTimeGrainIndex(),
+            $leftMeetingStart <= $rightMeetingEnd,
+            $leftMeetingEnd >= $rightMeetingStart)
     then
         // Fairness not implemented (see tennis example)
-        scoreHolder.penalize(kcontext);
+        scoreHolder.penalize(kcontext, $rightAssignment.calculateOverlap($leftAssignment));
 end
 
 // ############################################################################
@@ -114,11 +149,11 @@ rule "Overlapping meetings"
     when
         $leftAssignment : MeetingAssignment(startingTimeGrain != null,
             $leftMeetingId: meeting.getId(),
-            $leftMeetingStart: getStartingTimeGrain().getGrainIndex(),
+            $leftMeetingStart: startingTimeGrain.getGrainIndex(),
             $leftMeetingEnd: getLastTimeGrainIndex())
         $rightAssignment : MeetingAssignment(startingTimeGrain != null,
             meeting.getId() < $leftMeetingId,
-            $rightMeetingStart: getStartingTimeGrain().getGrainIndex(),
+            $rightMeetingStart: startingTimeGrain.getGrainIndex(),
             $rightMeetingEnd: getLastTimeGrainIndex(),
             $leftMeetingStart <= $rightMeetingEnd,
             $leftMeetingEnd >= $rightMeetingStart)
@@ -138,9 +173,15 @@ rule "Room stability"
     when
         Attendance($person : person, $leftMeeting : meeting)
         Attendance(person == $person, meeting != $leftMeeting, $rightMeeting : meeting)
-        MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null, $leftStartTimeGrain : startingTimeGrain, $leftRoom : room)
-        MeetingAssignment(meeting == $rightMeeting, startingTimeGrain != null, $leftStartTimeGrain.getGrainIndex() < startingTimeGrain.getGrainIndex(),
-            $leftRoom != room, startingTimeGrain.getGrainIndex() - $leftMeeting.getDurationInGrains() - $leftStartTimeGrain.getGrainIndex() <= 2)
+        MeetingAssignment(meeting == $leftMeeting,
+            startingTimeGrain != null,
+            $leftStartTimeGrain : startingTimeGrain,
+            $leftRoom : room)
+        MeetingAssignment(meeting == $rightMeeting,
+            startingTimeGrain != null,
+            $leftStartTimeGrain.getGrainIndex() < startingTimeGrain.getGrainIndex(),
+            $leftRoom != room,
+            startingTimeGrain.getGrainIndex() - $leftMeeting.getDurationInGrains() - $leftStartTimeGrain.getGrainIndex() <= 2)
     then
         scoreHolder.penalize(kcontext);
 end

@@ -118,7 +118,9 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                         assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Required and preferred attendance conflict");
+                .penalizeConfigurable("Required and preferred attendance conflict",
+                        (requiredAttendance, preferredAttendance, leftAssignment, rightAssignment) -> rightAssignment
+                                .calculateOverlap(leftAssignment));
     }
 
     protected Constraint preferredAttendanceConflict(ConstraintFactory constraintFactory) {
@@ -138,7 +140,9 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                         assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Preferred attendance conflict");
+                .penalizeConfigurable("Preferred attendance conflict",
+                        (leftPreferredAttendance, rightPreferredAttendance, leftAssignment, rightAssignment) -> rightAssignment
+                                .calculateOverlap(leftAssignment));
     }
 
     // ************************************************************************
@@ -191,18 +195,14 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                         equal(Attendance::getPerson),
                         filtering((leftAttendance,
                                 rightAttendance) -> leftAttendance.getMeeting() != rightAttendance.getMeeting()))
-                .join(constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
-                        .filter(assignment -> assignment.getStartingTimeGrain() != null),
+                .join(MeetingAssignment.class,
                         equal((leftAttendance, rightAttendance) -> leftAttendance.getMeeting(),
                                 MeetingAssignment::getMeeting))
-                .join(constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
-                        .filter(assignment -> assignment.getStartingTimeGrain() != null),
+                .join(MeetingAssignment.class,
                         equal((leftAttendance, rightAttendance, leftAssignment) -> rightAttendance.getMeeting(),
                                 MeetingAssignment::getMeeting),
-                        lessThan(
-                                (leftAttendance, rightAttendance, leftAssignment) -> leftAssignment.getStartingTimeGrain()
-                                        .getGrainIndex(),
-                                (rightAssignment) -> rightAssignment.getStartingTimeGrain().getGrainIndex()),
+                        lessThan((leftAttendance, rightAttendance, leftAssignment) -> leftAssignment.getStartingTimeGrain(),
+                                MeetingAssignment::getStartingTimeGrain),
                         filtering((leftAttendance, rightAttendance, leftAssignment,
                                 rightAssignment) -> leftAssignment.getRoom() != rightAssignment.getRoom()),
                         filtering((leftAttendance, rightAttendance, leftAssignment,

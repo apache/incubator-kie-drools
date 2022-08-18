@@ -100,7 +100,7 @@ class ConferenceSchedulingConstraintProviderTest {
                 .withTimeslot(MONDAY_9_TO_10);
 
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::speakerUnavailableTimeslot)
-                .given(talk1, talk2)
+                .given(talk1, talk2, speaker1, speaker2)
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes()); // speaker1 is in an unavailable timeslot.
     }
 

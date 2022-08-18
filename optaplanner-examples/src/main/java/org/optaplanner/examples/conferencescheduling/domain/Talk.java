@@ -57,152 +57,207 @@ public class Talk extends AbstractPersistable {
         return speakerList.contains(speaker);
     }
 
-    public boolean hasAnyUnavailableSpeaker() {
-        if (timeslot == null) {
-            return false;
-        }
-        for (Speaker speaker : speakerList) {
-            if (speaker.getUnavailableTimeslotSet().contains(timeslot)) {
-                return true;
-            }
-        }
-        return false;
+    public int overlappingThemeTrackCount(Talk other) {
+        return overlappingCount(themeTrackTagSet, other.themeTrackTagSet);
     }
 
-    public int overlappingThemeTrackCount(Talk other) {
-        return (int) themeTrackTagSet.stream().filter(tag -> other.themeTrackTagSet.contains(tag)).count();
+    private static <Item_> int overlappingCount(Set<Item_> left, Set<Item_> right) {
+        int leftSize = left.size();
+        if (leftSize == 0) {
+            return 0;
+        }
+        int rightSize = right.size();
+        if (rightSize == 0) {
+            return 0;
+        }
+        Set<Item_> smaller = leftSize < rightSize ? left : right;
+        Set<Item_> other = smaller == left ? right : left;
+        int overlappingCount = 0;
+        for (Item_ item : smaller) { // Iterate over smaller set, lookup in the larger.
+            if (other.contains(item)) {
+                overlappingCount++;
+            }
+        }
+        return overlappingCount;
     }
 
     public int overlappingSectorCount(Talk other) {
-        return (int) sectorTagSet.stream().filter(tag -> other.sectorTagSet.contains(tag)).count();
+        return overlappingCount(sectorTagSet, other.sectorTagSet);
     }
 
     public int overlappingAudienceTypeCount(Talk other) {
-        return (int) audienceTypeSet.stream().filter(audienceType -> other.audienceTypeSet.contains(audienceType)).count();
+        return overlappingCount(audienceTypeSet, other.audienceTypeSet);
+
     }
 
     public int overlappingContentCount(Talk other) {
-        return (int) contentTagSet.stream().filter(tag -> other.contentTagSet.contains(tag)).count();
+        return overlappingCount(contentTagSet, other.contentTagSet);
+
     }
 
     public int missingRequiredTimeslotTagCount() {
         if (timeslot == null) {
             return 0;
         }
-        return (int) requiredTimeslotTagSet.stream().filter(tag -> !timeslot.hasTag(tag)).count();
+        return missingCount(requiredTimeslotTagSet, timeslot.getTagSet());
+
+    }
+
+    private static <Item_> int missingCount(Set<Item_> required, Set<Item_> available) {
+        int requiredCount = required.size();
+        if (requiredCount == 0) {
+            return 0; // If no items are required, none can be missing.
+        }
+        int availableCount = available.size();
+        if (availableCount == 0) {
+            return requiredCount; // All the items are missing.
+        }
+        int missingCount = 0;
+        for (Item_ item : required) {
+            if (!available.contains(item)) {
+                missingCount++;
+            }
+        }
+        return missingCount;
     }
 
     public int missingPreferredTimeslotTagCount() {
         if (timeslot == null) {
             return 0;
         }
-        return (int) preferredTimeslotTagSet.stream().filter(tag -> !timeslot.hasTag(tag)).count();
+        return missingCount(preferredTimeslotTagSet, timeslot.getTagSet());
     }
 
     public int prevailingProhibitedTimeslotTagCount() {
         if (timeslot == null) {
             return 0;
         }
-        return (int) prohibitedTimeslotTagSet.stream().filter(tag -> timeslot.hasTag(tag)).count();
+        return overlappingCount(prohibitedTimeslotTagSet, timeslot.getTagSet());
     }
 
     public int prevailingUndesiredTimeslotTagCount() {
         if (timeslot == null) {
             return 0;
         }
-        return (int) undesiredTimeslotTagSet.stream().filter(tag -> timeslot.hasTag(tag)).count();
+        return overlappingCount(undesiredTimeslotTagSet, timeslot.getTagSet());
     }
 
     public int missingRequiredRoomTagCount() {
         if (room == null) {
             return 0;
         }
-        return (int) requiredRoomTagSet.stream().filter(tag -> !room.hasTag(tag)).count();
+        return missingCount(requiredRoomTagSet, room.getTagSet());
+
     }
 
     public int missingPreferredRoomTagCount() {
         if (room == null) {
             return 0;
         }
-        return (int) preferredRoomTagSet.stream().filter(tag -> !room.hasTag(tag)).count();
+        return missingCount(preferredRoomTagSet, room.getTagSet());
     }
 
     public int prevailingProhibitedRoomTagCount() {
         if (room == null) {
             return 0;
         }
-        return (int) prohibitedRoomTagSet.stream().filter(tag -> room.hasTag(tag)).count();
+        return overlappingCount(prohibitedRoomTagSet, room.getTagSet());
+
     }
 
     public int prevailingUndesiredRoomTagCount() {
         if (room == null) {
             return 0;
         }
-        return (int) undesiredRoomTagSet.stream().filter(tag -> room.hasTag(tag)).count();
+        return overlappingCount(undesiredRoomTagSet, room.getTagSet());
     }
 
     public int missingSpeakerRequiredTimeslotTagCount() {
         if (timeslot == null) {
             return 0;
         }
-        return (int) speakerList.stream().flatMap(speaker -> speaker.getRequiredTimeslotTagSet().stream())
-                .filter(tag -> !timeslot.hasTag(tag)).count();
+        int count = 0;
+        for (Speaker speaker : speakerList) {
+            count += missingCount(speaker.getRequiredTimeslotTagSet(), timeslot.getTagSet());
+        }
+        return count;
     }
 
     public int missingSpeakerPreferredTimeslotTagCount() {
         if (timeslot == null) {
             return 0;
         }
-        return (int) speakerList.stream().flatMap(speaker -> speaker.getPreferredTimeslotTagSet().stream())
-                .filter(tag -> !timeslot.hasTag(tag)).count();
+        int count = 0;
+        for (Speaker speaker : speakerList) {
+            count += missingCount(speaker.getPreferredTimeslotTagSet(), timeslot.getTagSet());
+        }
+        return count;
     }
 
     public int prevailingSpeakerProhibitedTimeslotTagCount() {
         if (timeslot == null) {
             return 0;
         }
-        return (int) speakerList.stream().flatMap(speaker -> speaker.getProhibitedTimeslotTagSet().stream())
-                .filter(tag -> timeslot.hasTag(tag)).count();
+        int count = 0;
+        for (Speaker speaker : speakerList) {
+            count += overlappingCount(speaker.getProhibitedTimeslotTagSet(), timeslot.getTagSet());
+        }
+        return count;
     }
 
     public int prevailingSpeakerUndesiredTimeslotTagCount() {
         if (timeslot == null) {
             return 0;
         }
-        return (int) speakerList.stream().flatMap(speaker -> speaker.getUndesiredTimeslotTagSet().stream())
-                .filter(tag -> timeslot.hasTag(tag)).count();
+        int count = 0;
+        for (Speaker speaker : speakerList) {
+            count += overlappingCount(speaker.getUndesiredTimeslotTagSet(), timeslot.getTagSet());
+        }
+        return count;
     }
 
     public int missingSpeakerRequiredRoomTagCount() {
         if (room == null) {
             return 0;
         }
-        return (int) speakerList.stream().flatMap(speaker -> speaker.getRequiredRoomTagSet().stream())
-                .filter(tag -> !room.hasTag(tag)).count();
+        int count = 0;
+        for (Speaker speaker : speakerList) {
+            count += missingCount(speaker.getRequiredRoomTagSet(), room.getTagSet());
+        }
+        return count;
     }
 
     public int missingSpeakerPreferredRoomTagCount() {
         if (room == null) {
             return 0;
         }
-        return (int) speakerList.stream().flatMap(speaker -> speaker.getPreferredRoomTagSet().stream())
-                .filter(tag -> !room.hasTag(tag)).count();
+        int count = 0;
+        for (Speaker speaker : speakerList) {
+            count += missingCount(speaker.getPreferredRoomTagSet(), room.getTagSet());
+        }
+        return count;
     }
 
     public int prevailingSpeakerProhibitedRoomTagCount() {
         if (room == null) {
             return 0;
         }
-        return (int) speakerList.stream().flatMap(speaker -> speaker.getProhibitedRoomTagSet().stream())
-                .filter(tag -> room.hasTag(tag)).count();
+        int count = 0;
+        for (Speaker speaker : speakerList) {
+            count += overlappingCount(speaker.getProhibitedRoomTagSet(), room.getTagSet());
+        }
+        return count;
     }
 
     public int prevailingSpeakerUndesiredRoomTagCount() {
         if (room == null) {
             return 0;
         }
-        return (int) speakerList.stream().flatMap(speaker -> speaker.getUndesiredRoomTagSet().stream())
-                .filter(tag -> room.hasTag(tag)).count();
+        int count = 0;
+        for (Speaker speaker : speakerList) {
+            count += overlappingCount(speaker.getUndesiredRoomTagSet(), room.getTagSet());
+        }
+        return count;
     }
 
     public boolean hasUnavailableRoom() {
@@ -213,19 +268,12 @@ public class Talk extends AbstractPersistable {
     }
 
     public int overlappingMutuallyExclusiveTalksTagCount(Talk other) {
-        return (int) mutuallyExclusiveTalksTagSet.stream().filter(tag -> other.mutuallyExclusiveTalksTagSet.contains(tag))
-                .count();
+        return overlappingCount(mutuallyExclusiveTalksTagSet, other.mutuallyExclusiveTalksTagSet);
     }
 
-    public int missingPrerequisiteCount() {
-        return (int) prerequisiteTalkSet.stream()
-                .filter(prerequisite -> prerequisite.getTimeslot() == null || timeslot.endsBefore(prerequisite.getTimeslot()))
-                .count();
-    }
-
-    public boolean hasMutualSpeaker(Talk talk) {
-        for (Speaker speaker : talk.getSpeakerList()) {
-            if (speakerList.contains(speaker)) {
+    public boolean hasMutualSpeaker(Talk other) {
+        for (Speaker speaker : speakerList) {
+            if (other.hasSpeaker(speaker)) {
                 return true;
             }
         }

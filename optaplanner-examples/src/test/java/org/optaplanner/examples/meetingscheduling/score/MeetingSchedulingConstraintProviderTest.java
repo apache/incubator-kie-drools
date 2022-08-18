@@ -348,7 +348,7 @@ class MeetingSchedulingConstraintProviderTest {
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::requiredAndPreferredAttendanceConflict)
                 .given(requiredAttendance, preferredAttendance, leftAssignment, rightAssignment)
-                .penalizesBy(1);
+                .penalizesBy(4);
     }
 
     @Test
@@ -422,7 +422,7 @@ class MeetingSchedulingConstraintProviderTest {
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::preferredAttendanceConflict)
                 .given(leftAttendance, rightAttendance, leftAssignment, rightAssignment)
-                .penalizesBy(1);
+                .penalizesBy(4);
     }
 
     @Test
@@ -595,6 +595,8 @@ class MeetingSchedulingConstraintProviderTest {
 
     @Test
     void roomStabilityUnpenalized() {
+        Day day = new Day();
+        day.setDayOfYear(1);
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -612,6 +614,8 @@ class MeetingSchedulingConstraintProviderTest {
         rightAttendance.setPerson(person);
 
         TimeGrain leftStartTimeGrain = new TimeGrain();
+        leftStartTimeGrain.setDay(day);
+        leftStartTimeGrain.setStartingMinuteOfDay(0);
         leftStartTimeGrain.setGrainIndex(0);
 
         Room leftRoom = new Room();
@@ -619,6 +623,8 @@ class MeetingSchedulingConstraintProviderTest {
         MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftStartTimeGrain, leftRoom);
 
         TimeGrain rightStartTimeGrain = new TimeGrain();
+        rightStartTimeGrain.setDay(day);
+        rightStartTimeGrain.setStartingMinuteOfDay(8 * TimeGrain.GRAIN_LENGTH_IN_MINUTES);
         rightStartTimeGrain.setGrainIndex(8);
 
         Room rightRoom = new Room();
@@ -632,6 +638,8 @@ class MeetingSchedulingConstraintProviderTest {
 
     @Test
     void roomStabilityPenalized() {
+        Day day = new Day();
+        day.setDayOfYear(1);
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -649,6 +657,8 @@ class MeetingSchedulingConstraintProviderTest {
         rightAttendance.setPerson(person);
 
         TimeGrain leftStartTimeGrain = new TimeGrain();
+        leftStartTimeGrain.setDay(day);
+        leftStartTimeGrain.setStartingMinuteOfDay(0);
         leftStartTimeGrain.setGrainIndex(0);
 
         Room leftRoom = new Room();
@@ -656,6 +666,8 @@ class MeetingSchedulingConstraintProviderTest {
         MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftStartTimeGrain, leftRoom);
 
         TimeGrain rightStartTimeGrain = new TimeGrain();
+        rightStartTimeGrain.setDay(day);
+        rightStartTimeGrain.setStartingMinuteOfDay(4 * TimeGrain.GRAIN_LENGTH_IN_MINUTES);
         rightStartTimeGrain.setGrainIndex(4);
 
         Room rightRoom = new Room();
