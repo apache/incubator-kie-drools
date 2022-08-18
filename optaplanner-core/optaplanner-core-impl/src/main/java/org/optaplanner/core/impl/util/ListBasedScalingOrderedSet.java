@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.domain.variable.listener.support;
+package org.optaplanner.core.impl.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +16,7 @@ import java.util.Set;
  *
  * @param <E>
  */
-final class SmallScalingOrderedSet<E> implements Set<E> {
+public final class ListBasedScalingOrderedSet<E> implements Set<E> {
 
     protected static final int LIST_SIZE_THRESHOLD = 16;
 
@@ -24,7 +24,7 @@ final class SmallScalingOrderedSet<E> implements Set<E> {
     private List<E> list;
     private Set<E> set;
 
-    public SmallScalingOrderedSet() {
+    public ListBasedScalingOrderedSet() {
         belowThreshold = true;
         list = new ArrayList<>(LIST_SIZE_THRESHOLD);
         set = null;

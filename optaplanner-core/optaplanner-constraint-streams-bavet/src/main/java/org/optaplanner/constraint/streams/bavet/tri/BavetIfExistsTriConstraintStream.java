@@ -6,6 +6,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
@@ -60,15 +61,16 @@ final class BavetIfExistsTriConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentABC.getTupleSource());
-        int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeD.getTupleSource());
+        TupleLifecycle<TriTuple<A, B, C>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractIfExistsNode<TriTuple<A, B, C>, D> node = new IfExistsTriWithUniNode<>(shouldExist,
-                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
-                inputStoreIndexA, inputStoreIndexB,
-                buildHelper.getAggregatedTupleLifecycle(childStreamList),
-                indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false),
-                filtering);
+        AbstractIfExistsNode<TriTuple<A, B, C>, D> node = indexerFactory.hasJoiners()
+                ? new IndexedIfExistsTriNode<>(shouldExist,
+                        JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                        buildHelper.reserveTupleStoreIndex(parentABC.getTupleSource()),
+                        buildHelper.reserveTupleStoreIndex(parentBridgeD.getTupleSource()),
+                        downstream, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false),
+                        filtering)
+                : new UnindexedIfExistsTriNode<>(shouldExist, downstream, filtering);
         buildHelper.addNode(node, this, parentBridgeD);
     }
 

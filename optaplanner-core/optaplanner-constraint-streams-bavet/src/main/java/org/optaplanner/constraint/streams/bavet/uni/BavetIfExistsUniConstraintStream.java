@@ -7,6 +7,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
@@ -58,15 +59,16 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentA.getTupleSource());
-        int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource());
+        TupleLifecycle<UniTuple<A>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractIfExistsNode<UniTuple<A>, B> node = new IfExistsUniWithUniNode<>(shouldExist,
-                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
-                inputStoreIndexA, inputStoreIndexB,
-                buildHelper.getAggregatedTupleLifecycle(childStreamList),
-                indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false),
-                filtering);
+        AbstractIfExistsNode<UniTuple<A>, B> node = indexerFactory.hasJoiners()
+                ? new IndexedIfExistsUniNode<>(shouldExist,
+                        JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                        buildHelper.reserveTupleStoreIndex(parentA.getTupleSource()),
+                        buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource()),
+                        downstream, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false),
+                        filtering)
+                : new UnindexedIfExistsUniNode<>(shouldExist, downstream, filtering);
         buildHelper.addNode(node, this, parentBridgeB);
     }
 

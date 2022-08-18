@@ -3,18 +3,18 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
+import org.optaplanner.constraint.streams.bavet.common.AbstractIndexedJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
-final class JoinBiNode<A, B> extends AbstractJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> {
+final class IndexedJoinBiNode<A, B> extends AbstractIndexedJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> {
 
     private final Function<A, IndexProperties> mappingA;
     private final int outputStoreSize;
 
-    public JoinBiNode(Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
+    public IndexedJoinBiNode(Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
             int inputStoreIndexA, int inputStoreIndexB,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle,
             int outputStoreSize,

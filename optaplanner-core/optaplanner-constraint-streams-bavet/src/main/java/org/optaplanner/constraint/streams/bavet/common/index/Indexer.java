@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
+import org.optaplanner.constraint.streams.bavet.common.AbstractIndexedJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
@@ -18,7 +18,7 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
  * <p>
  * It returns a {@code Map<X, V>} instead of {@code Set<X>} for performance,
  * to avoid doing the same hash lookup twice in the client.
- * For example {@link AbstractJoinNode} uses the value to store a set of child tuples justified by the X instance.
+ * For example {@link AbstractIndexedJoinNode} uses the value to store a set of child tuples justified by the X instance.
  * <p>
  * The fact X is wrapped in a Tuple, because the {@link BavetTupleState} is needed by clients of
  * {@link #visit(IndexProperties, Consumer)}.

@@ -8,6 +8,7 @@ import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.ListVariableListener;
+import org.optaplanner.core.impl.util.ListBasedScalingOrderedSet;
 
 /**
  * Generic notifiable that receives and triggers {@link Notification}s for a specific variable listener of the type {@code T}.
@@ -48,7 +49,7 @@ abstract class AbstractNotifiable<Solution_, T extends AbstractVariableListener<
         this.globalOrder = globalOrder;
         this.variableListener = variableListener;
         if (variableListener.requiresUniqueEntityEvents()) {
-            notificationQueue = new SmallScalingOrderedSet<>();
+            notificationQueue = new ListBasedScalingOrderedSet<>();
         } else {
             notificationQueue = new ArrayDeque<>();
         }

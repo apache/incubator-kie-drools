@@ -29,7 +29,7 @@ final class IndexerKey {
         }
         int result = 1;
         for (int i = fromInclusive; i < toExclusive; i++) {
-            Object element = indexProperties.getProperty(i);
+            Object element = indexProperties.toKey(i);
             result = 31 * result + (element == null ? 0 : element.hashCode());
         }
         return result;
@@ -45,8 +45,8 @@ final class IndexerKey {
         }
         IndexerKey other = (IndexerKey) o;
         for (int i = fromInclusive; i < toExclusive; i++) {
-            Object a = indexProperties.getProperty(i);
-            Object b = other.indexProperties.getProperty(i);
+            Object a = indexProperties.toKey(i);
+            Object b = other.indexProperties.toKey(i);
             if (!Objects.equals(a, b)) {
                 return false;
             }
@@ -57,7 +57,7 @@ final class IndexerKey {
     @Override
     public String toString() {
         return "IndexerKey " + IntStream.range(fromInclusive, toExclusive)
-                .mapToObj(indexProperties::getProperty)
+                .mapToObj(indexProperties::toKey)
                 .map(Object::toString)
                 .collect(Collectors.joining(",", "[", "]"));
 

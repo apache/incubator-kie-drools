@@ -13,7 +13,7 @@ final class TwoIndexProperties implements IndexProperties {
     }
 
     @Override
-    public <Type_> Type_ getProperty(int index) {
+    public <Type_> Type_ toKey(int index) {
         switch (index) {
             case 0:
                 return (Type_) propertyA;
@@ -21,6 +21,21 @@ final class TwoIndexProperties implements IndexProperties {
                 return (Type_) propertyB;
             default:
                 throw new IllegalArgumentException("Impossible state: index (" + index + ") != 0");
+        }
+    }
+
+    @Override
+    public <Type_> Type_ toKey(int from, int to) {
+        switch (to - from) {
+            case 1:
+                return toKey(from);
+            case 2:
+                if (from != 0 || to != 2) {
+                    throw new IllegalArgumentException("Impossible state: key from (" + from + ") to (" + to + ").");
+                }
+                return (Type_) this;
+            default:
+                throw new IllegalArgumentException("Impossible state: key from (" + from + ") to (" + to + ").");
         }
     }
 

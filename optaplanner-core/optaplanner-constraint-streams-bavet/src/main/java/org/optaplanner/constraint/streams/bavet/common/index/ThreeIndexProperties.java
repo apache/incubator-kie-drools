@@ -2,6 +2,8 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Objects;
 
+import org.optaplanner.core.impl.util.Pair;
+
 final class ThreeIndexProperties implements IndexProperties {
 
     private final Object propertyA;
@@ -15,7 +17,7 @@ final class ThreeIndexProperties implements IndexProperties {
     }
 
     @Override
-    public <Type_> Type_ getProperty(int index) {
+    public <Type_> Type_ toKey(int index) {
         switch (index) {
             case 0:
                 return (Type_) propertyA;
@@ -25,6 +27,23 @@ final class ThreeIndexProperties implements IndexProperties {
                 return (Type_) propertyC;
             default:
                 throw new IllegalArgumentException("Impossible state: index (" + index + ") != 0");
+        }
+    }
+
+    @Override
+    public <Type_> Type_ toKey(int from, int to) {
+        switch (to - from) {
+            case 1:
+                return toKey(to);
+            case 2:
+                return (Type_) Pair.of(toKey(from), toKey(from + 1));
+            case 3:
+                if (from != 0 || to != 3) {
+                    throw new IllegalArgumentException("Impossible state: key from (" + from + ") to (" + to + ").");
+                }
+                return (Type_) this;
+            default:
+                throw new IllegalArgumentException("Impossible state: key from (" + from + ") to (" + to + ").");
         }
     }
 

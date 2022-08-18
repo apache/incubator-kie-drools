@@ -8,6 +8,7 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.tri.BavetJoinBridgeTriConstraintStream;
@@ -59,15 +60,17 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        int inputStoreIndexAB = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
-        int inputStoreIndexC = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
+        TupleLifecycle<QuadTuple<A, B, C, D>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>> node = new JoinQuadNode<>(
-                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
-                inputStoreIndexAB, inputStoreIndexC,
-                buildHelper.getAggregatedTupleLifecycle(childStreamList),
-                outputStoreSize, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false));
+        AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>> node =
+                indexerFactory.hasJoiners()
+                        ? new IndexedJoinQuadNode<>(
+                                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                                buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()), downstream, outputStoreSize,
+                                indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
+                        : new UnindexedJoinQuadNode<>(downstream, outputStoreSize);
         buildHelper.addNode(node, leftParent, rightParent);
     }
 

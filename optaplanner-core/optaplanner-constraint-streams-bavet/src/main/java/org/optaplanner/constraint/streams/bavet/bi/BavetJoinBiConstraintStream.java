@@ -8,6 +8,7 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
@@ -56,15 +57,16 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
-        int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
+        TupleLifecycle<BiTuple<A, B>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> node = new JoinBiNode<>(
-                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
-                inputStoreIndexA, inputStoreIndexB,
-                buildHelper.getAggregatedTupleLifecycle(childStreamList),
-                outputStoreSize, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false));
+        AbstractJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> node = indexerFactory.hasJoiners()
+                ? new IndexedJoinBiNode<>(
+                        JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                        buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                        buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()), downstream, outputStoreSize,
+                        indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
+                : new UnindexedJoinBiNode<>(downstream, outputStoreSize);
         buildHelper.addNode(node, leftParent, rightParent);
     }
 

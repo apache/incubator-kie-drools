@@ -10,6 +10,7 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
@@ -59,15 +60,16 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        int inputStoreIndexAB = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
-        int inputStoreIndexC = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
+        TupleLifecycle<TriTuple<A, B, C>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractJoinNode<BiTuple<A, B>, C, TriTuple<A, B, C>, TriTupleImpl<A, B, C>> node = new JoinTriNode<>(
-                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
-                inputStoreIndexAB, inputStoreIndexC,
-                buildHelper.getAggregatedTupleLifecycle(childStreamList),
-                outputStoreSize, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false));
+        AbstractJoinNode<BiTuple<A, B>, C, TriTuple<A, B, C>, TriTupleImpl<A, B, C>> node = indexerFactory.hasJoiners()
+                ? new IndexedJoinTriNode<>(
+                        JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                        buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                        buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()), downstream, outputStoreSize,
+                        indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
+                : new UnindexedJoinTriNode<>(downstream, outputStoreSize);
         buildHelper.addNode(node, leftParent, rightParent);
     }
 

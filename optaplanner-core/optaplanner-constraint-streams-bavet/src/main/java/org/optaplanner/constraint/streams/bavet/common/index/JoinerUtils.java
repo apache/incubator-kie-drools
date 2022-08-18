@@ -13,8 +13,6 @@ import org.optaplanner.core.api.function.TriFunction;
 
 public final class JoinerUtils {
 
-    private static final NoneIndexProperties NONE_INDEX_PROPERTY = NoneIndexProperties.INSTANCE;
-
     private JoinerUtils() {
 
     }
@@ -23,7 +21,7 @@ public final class JoinerUtils {
         int joinerCount = joiner.getJoinerCount();
         switch (joinerCount) {
             case 0:
-                return (A a) -> NONE_INDEX_PROPERTY;
+                return (A a) -> NoneIndexProperties.INSTANCE;
             case 1:
                 Function<A, Object> mapping = joiner.getLeftMapping(0);
                 return (A a) -> new SingleIndexProperties(mapping.apply(a));
@@ -51,7 +49,7 @@ public final class JoinerUtils {
         int joinerCount = joiner.getJoinerCount();
         switch (joinerCount) {
             case 0:
-                return (A a, B b) -> NONE_INDEX_PROPERTY;
+                return (A a, B b) -> NoneIndexProperties.INSTANCE;
             case 1:
                 BiFunction<A, B, Object> mapping = joiner.getLeftMapping(0);
                 return (A a, B b) -> new SingleIndexProperties(mapping.apply(a, b));
@@ -80,7 +78,7 @@ public final class JoinerUtils {
         int joinerCount = joiner.getJoinerCount();
         switch (joinerCount) {
             case 0:
-                return (A a, B b, C c) -> NONE_INDEX_PROPERTY;
+                return (A a, B b, C c) -> NoneIndexProperties.INSTANCE;
             case 1:
                 TriFunction<A, B, C, Object> mapping = joiner.getLeftMapping(0);
                 return (A a, B b, C c) -> new SingleIndexProperties(mapping.apply(a, b, c));
@@ -110,7 +108,7 @@ public final class JoinerUtils {
         int joinerCount = joiner.getJoinerCount();
         switch (joinerCount) {
             case 0:
-                return (A a, B b, C c, D d) -> NONE_INDEX_PROPERTY;
+                return (A a, B b, C c, D d) -> NoneIndexProperties.INSTANCE;
             case 1:
                 QuadFunction<A, B, C, D, Object> mapping = joiner.getLeftMapping(0);
                 return (A a, B b, C c, D d) -> new SingleIndexProperties(mapping.apply(a, b, c, d));
@@ -140,7 +138,7 @@ public final class JoinerUtils {
         int joinerCount = joiner.getJoinerCount();
         switch (joinerCount) {
             case 0:
-                return (Right_ right) -> NONE_INDEX_PROPERTY;
+                return (Right_ right) -> NoneIndexProperties.INSTANCE;
             case 1:
                 Function<Right_, Object> mapping = joiner.getRightMapping(0);
                 return (Right_ right) -> new SingleIndexProperties(mapping.apply(right));

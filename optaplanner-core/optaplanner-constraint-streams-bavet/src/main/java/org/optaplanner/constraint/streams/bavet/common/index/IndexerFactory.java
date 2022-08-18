@@ -32,6 +32,10 @@ public class IndexerFactory {
         }
     }
 
+    public boolean hasJoiners() {
+        return joinerTypes.length > 0;
+    }
+
     public <Tuple_ extends Tuple, Value_> Indexer<Tuple_, Value_> buildIndexer(boolean isLeftBridge) {
         /*
          * Indexers form a parent-child hierarchy, each child has exactly one parent.
