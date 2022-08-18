@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.core.common.BetaConstraints;
@@ -46,6 +47,10 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.kie.internal.event.rule.RuleEventListener;
+import org.kie.internal.event.rule.RuleEventManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -551,5 +556,66 @@ public class JoinNodeRangeIndexingTest {
         } finally {
             ksession.dispose();
         }
+    }
+
+    @Test
+    public void testRangeBetaIndex() {
+        // DROOLS-7070
+        final String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global " + AtomicInteger.class.getCanonicalName() + " score;\n" +
+                "rule R1 when\n" +
+                "   $p1 : Person( $a1 : age )\n" +
+                "   $p2 : Person( age < $a1 )\n" +
+                "then\n" +
+                "   score.incrementAndGet();\n" +
+                "   String out = \"[p1: \" + $p1.getName() + \"; p2: \" + $p2.getName() + \"]\";\n" +
+                "   System.out.println(\"MATCHED: \" + out);\n" +
+                "end\n";
+
+        KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        KieSession ksession = kbase.newKieSession();
+
+        AtomicInteger score = new AtomicInteger(0);
+        ksession.setGlobal("score", score);
+
+        ((RuleEventManager) ksession).addEventListener(new RuleEventListener() {
+            @Override
+            public void onDeleteMatch(Match match) {
+                Person p1 = (Person) match.getObjects().get(0);
+                Person p2 = (Person) match.getObjects().get(1);
+                String out = "[p1: " + p1.getName() + "; p2: " + p2.getName() + "]";
+                System.out.println("UNmatched: " + out);
+                score.decrementAndGet();
+            }
+
+            @Override
+            public void onUpdateMatch(Match match) {
+                onDeleteMatch(match);
+            }
+        });
+
+        Person a = new Person("A", 1);
+        Person b = new Person("B", 2);
+        Person c = new Person("C", 3);
+        Person d = new Person("D", 4);
+
+        FactHandle dFh = ksession.insert(d);
+        FactHandle cFh = ksession.insert(c);
+        FactHandle bFh = ksession.insert(b);
+        FactHandle aFh = ksession.insert(a);
+
+        ksession.fireAllRules();
+        assertThat(score.get()).isEqualTo(6);
+
+        System.out.println("*** Update of C");
+        ksession.update(cFh, c);
+        ksession.fireAllRules();
+        assertThat(score.get()).isEqualTo(6);
+
+        System.out.println("*** Update of A");
+        ksession.update(aFh, a);
+        ksession.fireAllRules();
+        assertThat(score.get()).isEqualTo(6);
     }
 }
