@@ -86,7 +86,7 @@ public final class MvelParser {
 
     public MvelParser(ParserConfiguration configuration, boolean optionalSemicolon) {
         this.configuration = configuration;
-        configuration.getPostProcessors().clear();
+        configuration.getProcessors().clear();
         this.optionalSemicolon = optionalSemicolon;
     }
 
@@ -146,8 +146,8 @@ public final class MvelParser {
             N resultNode = start.parse(parser);
             ParseResult<N> result = new ParseResult<>(resultNode, parser.problems, parser.getCommentsCollection());
 
-            configuration.getPostProcessors().forEach(postProcessor ->
-                    postProcessor.process(result, configuration));
+            configuration.getProcessors().forEach(processor ->
+                    processor.get().postProcess(result, configuration));
 
             result.getProblems().sort(PROBLEM_BY_BEGIN_POSITION);
 
