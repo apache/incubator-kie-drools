@@ -3,7 +3,7 @@ name: Drools Docs
 on:
   pull_request:
     paths:
-      - 'drools-docs/**/**.adoc'
+      - 'drools-docs/**'
       - '.github/workflows/drools-docs-pr.yml'
 
 jobs:
