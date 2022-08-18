@@ -1,0 +1,68 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.kie.kogito.process.impl;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.process.ProcessConfig;
+import org.kie.kogito.process.WorkItemHandlerConfig;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.mock;
+
+public class AbstractProcessConfigTest {
+
+    private static class MockProcessConfig extends AbstractProcessConfig {
+        protected MockProcessConfig(Iterable<WorkItemHandlerConfig> workItemHandlerConfig) {
+            super(workItemHandlerConfig, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+                    Collections.emptyList(), null, Collections.emptyList(), Collections.emptyList());
+        }
+    }
+
+    @Test
+    void testOneWorkItemHandlerConfig() {
+        CachedWorkItemHandlerConfig workItemConfig = new CachedWorkItemHandlerConfig();
+        ProcessConfig config = new MockProcessConfig(List.of(workItemConfig));
+        assertSame(workItemConfig, config.workItemHandlers());
+    }
+
+    @Test
+    void testMultipleWorkItemHandlerConfig() {
+        CachedWorkItemHandlerConfig workItemConfig1 = new CachedWorkItemHandlerConfig();
+        CachedWorkItemHandlerConfig workItemConfig2 = new CachedWorkItemHandlerConfig();
+        final String name1 = "Javierito1";
+        final String name2 = "Javierito2";
+        final KogitoWorkItemHandler workItem1 = mock(KogitoWorkItemHandler.class);
+        final KogitoWorkItemHandler workItem2 = mock(KogitoWorkItemHandler.class);
+        workItemConfig1.register(name1, workItem1);
+        workItemConfig2.register(name2, workItem2);
+        ProcessConfig config = new MockProcessConfig(List.of(workItemConfig1, workItemConfig2));
+        assertEquals(Set.of(name1, name2), config.workItemHandlers().names());
+        assertSame(workItem1, config.workItemHandlers().forName(name1));
+        assertSame(workItem2, config.workItemHandlers().forName(name2));
+        final String name3 = "Javierito3";
+        final KogitoWorkItemHandler workItem3 = mock(KogitoWorkItemHandler.class);
+        workItemConfig2.register(name3, workItem3);
+        assertEquals(Set.of(name1, name2, name3), config.workItemHandlers().names());
+        assertSame(workItem3, config.workItemHandlers().forName(name3));
+    }
+
+}
