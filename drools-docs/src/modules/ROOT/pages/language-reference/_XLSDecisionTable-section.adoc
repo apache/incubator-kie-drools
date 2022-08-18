@@ -190,7 +190,7 @@ function boolean hasDiscount(Person person) {
 Multiple package names within the same cell must be separated by a comma.
 Also, the pairs of type and variable names must be comma-separated.
 Functions, however, must be written as they appear in a DRL file.
-This should appear in the same column as the "RuleSet" keyword; it could be above, between or below all the rule rows.
+This should appear in the same column as the "RuleSet" keyword; it could be above, between, or below all the rule rows.
 
 [NOTE]
 ====
