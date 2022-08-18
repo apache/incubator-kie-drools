@@ -210,7 +210,7 @@ Spreadsheets are well-established business tools (in use for over 25 years). Dec
 
 Typically, the whole process of authoring rules (coming up with a new decision table) would be something like:
 
-. Business analyst takes a template decision table (from a repository, or from IT)
+. A business analyst takes a template decision table (from a repository, or IT)
 . Decision table business language descriptions are entered in the table(s)
 . Decision table rules (rows) are entered (roughly)
 . Decision table is handed to a technical resource, who maps the business language (descriptions) to scripts (this may involve software development of course, if it is a new application or data model)
