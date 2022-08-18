@@ -206,7 +206,7 @@ This class will take spreadsheets in various formats, and generate rules in DRL 
 == Decision table workflow and collaboration
 
 
-Spreadsheets are well established business tools (in use for over 25 years). Decision tables lend themselves to close collaboration between IT and domain experts, while making the business rules clear to business analysts, it is an ideal separation of concerns.
+Spreadsheets are well-established business tools (in use for over 25 years). Decision tables lend themselves to close collaboration between IT and domain experts while making the business rules clear to business analysts, it is an ideal separation of concerns.
 
 Typically, the whole process of authoring rules (coming up with a new decision table) would be something like:
 
