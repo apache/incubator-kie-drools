@@ -213,7 +213,7 @@ Typically, the whole process of authoring rules (coming up with a new decision t
 . A business analyst takes a template decision table (from a repository, or IT)
 . Decision table business language descriptions are entered in the table(s)
 . Decision table rules (rows) are entered (roughly)
-. Decision table is handed to a technical resource, who maps the business language (descriptions) to scripts (this may involve software development of course, if it is a new application or data model)
+. A decision table is handed to a technical resource, who maps the business language (descriptions) to scripts (this may involve software development of course if it is a new application or data model)
 . Technical person hands back and reviews the modifications with the business analyst.
 . The business analyst can continue editing the rule rows as needed (moving columns around is also fine etc).
 . In parallel, the technical person can develop test cases for the rules (liaising with business analysts) as these test cases can be used to verify rules and rule changes once the system is running.
