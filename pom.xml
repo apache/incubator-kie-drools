@@ -282,10 +282,11 @@
         <module>drools-templates</module>
         <module>drools-decisiontables</module>
         <module>drools-alphanetwork-compiler</module>
+        <module>kie-dmn</module>
+        <module>kie-drl</module>
+        <module>kie-pmml-trusty</module>
         <module>kie-internal</module>
         <module>kie-test-util</module>
-        <module>kie-dmn</module>
-        <module>kie-pmml-trusty</module>
         <module>drools-drl-quarkus-extension</module>
       </modules>
     </profile>
