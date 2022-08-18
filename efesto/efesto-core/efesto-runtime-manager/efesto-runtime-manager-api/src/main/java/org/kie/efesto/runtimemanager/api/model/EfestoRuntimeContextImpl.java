@@ -15,11 +15,14 @@
  */
 package org.kie.efesto.runtimemanager.api.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
@@ -27,9 +30,16 @@ public class EfestoRuntimeContextImpl<T extends EfestoListener> implements Efest
 
     private final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 
+    protected final Map<String, GeneratedResources> generatedResourcesMap = new HashMap<>();
+
     protected EfestoRuntimeContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         this.memoryCompilerClassLoader = memoryCompilerClassLoader;
         prepareClassLoader();
+    }
+
+    protected EfestoRuntimeContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, Map<String, GeneratedResources> generatedResourcesMap) {
+        this(memoryCompilerClassLoader);
+        this.generatedResourcesMap.putAll(generatedResourcesMap);
     }
 
     private void prepareClassLoader() {
@@ -37,6 +47,11 @@ public class EfestoRuntimeContextImpl<T extends EfestoListener> implements Efest
         friKeySet.stream()
                  .map(this::getGeneratedClasses)
                  .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
+    }
+
+    @Override
+    public Map<String, GeneratedResources> getGeneratedResourcesMap() {
+        return generatedResourcesMap;
     }
 
     @Override

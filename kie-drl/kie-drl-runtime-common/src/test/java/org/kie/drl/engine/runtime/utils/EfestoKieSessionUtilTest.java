@@ -17,6 +17,7 @@ package org.kie.drl.engine.runtime.utils;
 
 import org.drools.model.Model;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.efesto.common.api.model.FRI;
@@ -36,6 +37,7 @@ class EfestoKieSessionUtilTest {
         context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
+    @Disabled("DROOLS-7090 : This test depends on existing IndexFile")
     @Test
     void loadKieSession() {
         FRI fri = new FRI(basePath, "drl");

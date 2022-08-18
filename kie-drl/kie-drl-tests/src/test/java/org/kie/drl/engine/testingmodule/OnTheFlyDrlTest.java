@@ -61,7 +61,7 @@ class OnTheFlyDrlTest {
         Collection<IndexFile> indexFiles = compilationManager.processResource(compilationContext, toProcess);
 
         // Suppose we cannot access the previous compilationContext
-        EfestoRuntimeContext runtimeContext = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        EfestoRuntimeContext runtimeContext = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader(), compilationContext.getGeneratedResourcesMap());
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(onTheFlyPath, "drl"), "");
         Collection<EfestoOutput> output = runtimeManager.evaluateInput(runtimeContext, toEvaluate);
         assertThat(output).isNotNull().hasSize(1);

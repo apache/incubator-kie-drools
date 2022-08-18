@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -59,6 +60,28 @@ public class GeneratedResourceUtils {
 
     public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, IndexFile indexFile) {
         Collection<GeneratedExecutableResource> allExecutableResources = getAllGeneratedExecutableResources(indexFile);
+        return findAtMostOne(allExecutableResources,
+                             generatedResource -> generatedResource.getFri().equals(fri),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + fri));
+    }
+
+    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, Map<String, GeneratedResources> generatedResourcesMap) {
+        if (!generatedResourcesMap.containsKey(fri.getModel())) {
+            return Optional.empty();
+        } else {
+            return getGeneratedExecutableResource(fri, generatedResourcesMap.get(fri.getModel()));
+        }
+    }
+
+    /**
+     * find GeneratedExecutableResource from GeneratedResources without IndexFile
+     */
+    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, GeneratedResources generatedResources) {
+        Collection<GeneratedExecutableResource> allExecutableResources = new HashSet<>();
+        allExecutableResources.addAll(generatedResources.stream()
+                                    .filter(GeneratedExecutableResource.class::isInstance)
+                                    .map(GeneratedExecutableResource.class::cast)
+                                    .collect(Collectors.toSet()));
         return findAtMostOne(allExecutableResources,
                              generatedResource -> generatedResource.getFri().equals(fri),
                              (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + fri));

@@ -38,6 +38,7 @@ public interface EfestoCompilationContext<T extends EfestoListener> extends Efes
     static EfestoCompilationContext buildFromContext(EfestoCompilationContextImpl original, Class<? extends EfestoCompilationContext> toInstantiate) {
         try {
             EfestoCompilationContext toReturn = toInstantiate.getDeclaredConstructor(KieMemoryCompiler.MemoryCompilerClassLoader.class).newInstance(original.memoryCompilerClassLoader);
+            toReturn.getGeneratedResourcesMap().putAll(original.getGeneratedResourcesMap());
             return toReturn;
         } catch (Exception e) {
             throw new EfestoCompilationManagerException("Failed to instantiate " + toInstantiate.getName(), e);

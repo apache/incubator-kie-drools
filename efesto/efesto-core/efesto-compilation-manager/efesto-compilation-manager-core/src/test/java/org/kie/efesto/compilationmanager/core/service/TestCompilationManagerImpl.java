@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
@@ -51,6 +52,7 @@ class TestCompilationManagerImpl {
         context = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
     }
 
+    @Disabled("DROOLS-7090 : Do not write IndexFile. This test asserts IndexFile")
     @Test
     void processResource() {
         MANAGED_Efesto_RESOURCES.forEach(managedResource -> {

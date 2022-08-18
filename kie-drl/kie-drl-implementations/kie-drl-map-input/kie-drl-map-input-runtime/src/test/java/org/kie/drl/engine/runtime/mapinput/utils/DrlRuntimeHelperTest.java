@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.drl.engine.mapinput.compilation.model.test.Applicant;
 import org.kie.drl.engine.mapinput.compilation.model.test.LoanApplication;
@@ -58,6 +59,7 @@ class DrlRuntimeHelperTest {
         assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isFalse();
     }
 
+    @Disabled("DROOLS-7090 : This test depends on existing IndexFile")
     @Test
     void execute() {
         List<Object> inserts = new ArrayList<>();

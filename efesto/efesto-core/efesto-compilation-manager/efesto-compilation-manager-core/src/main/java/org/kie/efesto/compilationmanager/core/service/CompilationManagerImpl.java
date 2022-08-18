@@ -26,7 +26,7 @@ import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.compilationmanager.core.utils.CompilationManagerUtils.getIndexFilesWithProcessedResource;
+import static org.kie.efesto.compilationmanager.core.utils.CompilationManagerUtils.processedResourceWithContext;
 
 public class CompilationManagerImpl implements CompilationManager {
 
@@ -35,8 +35,7 @@ public class CompilationManagerImpl implements CompilationManager {
     @Override
     public Collection<IndexFile> processResource(EfestoCompilationContext context, EfestoResource... toProcess) {
         return Arrays.stream(toProcess)
-                .flatMap(resource -> getIndexFilesWithProcessedResource(resource, context).stream())
+                .flatMap(resource -> processedResourceWithContext(resource, context).stream())
                 .collect(Collectors.toList());
     }
-
 }

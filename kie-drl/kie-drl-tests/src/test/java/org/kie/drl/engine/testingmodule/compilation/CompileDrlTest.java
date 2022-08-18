@@ -28,6 +28,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.io.FileSystemResource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
@@ -66,6 +67,7 @@ class CompileDrlTest {
         }
     }
 
+    @Disabled("DROOLS-7090 : Do not write IndexFile. This test asserts IndexFile")
     @Test
     void compileDrlFromFile() {
         String basePath = UUID.randomUUID().toString();
@@ -74,6 +76,7 @@ class CompileDrlTest {
         assertThat(retrieved).isNotNull().hasSize(1);
     }
 
+    @Disabled("DROOLS-7090 : Do not write IndexFile. This test asserts IndexFile")
     @Test
     void compileDrlFromPackageDescr() {
         String basePath = UUID.randomUUID().toString();

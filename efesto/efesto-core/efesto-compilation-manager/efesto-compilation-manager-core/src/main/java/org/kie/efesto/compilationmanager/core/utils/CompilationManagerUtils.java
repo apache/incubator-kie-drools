@@ -85,6 +85,39 @@ public class CompilationManagerUtils {
         return toPopulate;
     }
 
+    /**
+     * Process resources and populate generatedResources into context without writing to IndexFile
+     * @param toProcess
+     * @param context
+     * @return empty Set<IndexFile>
+     */
+    public static Set<IndexFile> processedResourceWithContext(EfestoResource toProcess, EfestoCompilationContext context) {
+        Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
+        if (!retrieved.isPresent()) {
+            logger.warn("Cannot find KieCompilerService for {}, trying in context classloader", toProcess.getClass());
+            retrieved = getKieCompilerServiceFromEfestoCompilationContext(toProcess, context);
+        }
+        if (!retrieved.isPresent()) {
+            logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
+            return new HashSet<>();
+        }
+        List<EfestoCompilationOutput> efestoCompilationOutputList = retrieved.get().processResource(toProcess, context);
+        for (EfestoCompilationOutput compilationOutput : efestoCompilationOutputList) {
+            if (compilationOutput instanceof EfestoCallableOutput) {
+                populateContext(context, (EfestoCallableOutput) compilationOutput);
+                if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
+                    EfestoCallableOutputClassesContainer classesContainer =
+                            (EfestoCallableOutputClassesContainer) compilationOutput;
+                    context.loadClasses(classesContainer.getCompiledClassesMap());
+                    context.addGeneratedClasses(classesContainer.getFri(), classesContainer.getCompiledClassesMap());
+                }
+            } else if (compilationOutput instanceof EfestoResource) {
+                processedResourceWithContext((EfestoResource) compilationOutput, context);
+            }
+        }
+        return new HashSet<>();
+    }
+
     public static Optional<IndexFile> getExistingIndexFile(String model) {
         String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY);
         IndexFile toReturn = new IndexFile(parentPath, model);
@@ -116,6 +149,16 @@ public class CompilationManagerUtils {
             GeneratedResources generatedResources = getGeneratedResourcesObject(toPopulate);
             populateGeneratedResources(generatedResources, compilationOutput);
             writeGeneratedResourcesObject(generatedResources, toPopulate);
+        } catch (Exception e) {
+            throw new KieCompilerServiceException(e);
+        }
+    }
+
+    static void populateContext(EfestoCompilationContext context, EfestoCallableOutput compilationOutput) {
+        try {
+            String model = compilationOutput.getFri().getModel();
+            GeneratedResources generatedResources = (GeneratedResources) context.getGeneratedResourcesMap().computeIfAbsent(model, key -> new GeneratedResources());
+            populateGeneratedResources(generatedResources, compilationOutput);
         } catch (Exception e) {
             throw new KieCompilerServiceException(e);
         }

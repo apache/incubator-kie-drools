@@ -15,6 +15,7 @@
  */
 package org.kie.efesto.compilationmanager.core.utils;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.*;
@@ -64,6 +65,7 @@ class CompilationManagerUtilsTest {
         assertThat(retrieved.getName()).isEqualTo(expectedName);
     }
 
+    @Disabled("DROOLS-7090 : Do not write IndexFile. This test asserts IndexFile")
     @Test
     void populateIndexFile() throws Exception {
         IndexFile toPopulate = CompilationManagerUtils.getIndexFile(finalOutput);

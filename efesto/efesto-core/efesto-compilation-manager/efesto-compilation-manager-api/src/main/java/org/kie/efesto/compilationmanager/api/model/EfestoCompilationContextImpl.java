@@ -15,12 +15,14 @@
  */
 package org.kie.efesto.compilationmanager.api.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
@@ -29,6 +31,8 @@ import org.kie.memorycompiler.KieMemoryCompilerException;
 public class EfestoCompilationContextImpl<T extends EfestoListener> implements EfestoCompilationContext<T> {
 
     protected final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+
+    protected final Map<String, GeneratedResources> generatedResourcesMap = new HashMap<>();
 
     protected EfestoCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         this.memoryCompilerClassLoader = memoryCompilerClassLoader;
@@ -40,6 +44,16 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
         friKeySet.stream()
                  .map(this::getGeneratedClasses)
                  .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
+    }
+
+    @Override
+    public Map<String, GeneratedResources> getGeneratedResourcesMap() {
+        return generatedResourcesMap;
+    }
+
+    @Override
+    public void addGeneratedResources(String model, GeneratedResources generatedResources) {
+        generatedResourcesMap.put(model, generatedResources);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<St
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return DrlRuntimeHelper.canManage(toEvaluate);
+        return DrlRuntimeHelper.canManage(toEvaluate, context);
     }
 
     @Override

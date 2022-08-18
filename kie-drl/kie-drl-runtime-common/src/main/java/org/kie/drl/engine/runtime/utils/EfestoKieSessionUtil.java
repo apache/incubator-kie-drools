@@ -16,6 +16,7 @@
 package org.kie.drl.engine.runtime.utils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.model.Model;
@@ -39,9 +40,10 @@ public class EfestoKieSessionUtil {
 
     public static KieSession loadKieSession(FRI fri, EfestoRuntimeContext context) {
         logger.debug("loadKieSession {} {}", fri, context);
-        GeneratedExecutableResource finalResource = GeneratedResourceUtils.getGeneratedExecutableResource(fri, "drl")
-                .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource " +
-                                                                          "for " + fri));
+        Optional<GeneratedExecutableResource> generatedExecutableResourceOpt = GeneratedResourceUtils.getGeneratedExecutableResource(fri, context.getGeneratedResourcesMap());
+        GeneratedExecutableResource finalResource = generatedExecutableResourceOpt.orElseThrow(
+                () -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource for " + fri));
+
         List<Model> models = finalResource.getFullClassNames().stream()
                 .map(className -> loadModel(className, context))
                 .collect(Collectors.toList());
