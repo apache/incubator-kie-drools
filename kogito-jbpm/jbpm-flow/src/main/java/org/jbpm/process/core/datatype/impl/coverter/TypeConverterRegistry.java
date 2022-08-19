@@ -17,7 +17,6 @@ package org.jbpm.process.core.datatype.impl.coverter;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -32,7 +31,7 @@ public class TypeConverterRegistry {
 
     private Map<String, Function<String, ? extends Object>> converters = new HashMap<>();
     private Map<String, Function<? extends Object, String>> unconverters = new HashMap<>();
-    private Map<String, UnaryOperator<Object>> cloners = new HashMap<>();
+    private Map<Class<?>, UnaryOperator<Object>> cloners = new HashMap<>();
 
     private Function<String, String> defaultConverter = new NoOpTypeConverter();
 
@@ -40,7 +39,7 @@ public class TypeConverterRegistry {
         converters.put("java.util.Date", new DateTypeConverter());
         converters.put(JsonNode.class.getName(), new JsonNodeConverter());
         unconverters.put(JsonNode.class.getName(), new StringConverter());
-        cloners.put(JsonNode.class.getName(), o -> ((JsonNode) o).deepCopy());
+        cloners.put(JsonNode.class, o -> ((JsonNode) o).deepCopy());
     }
 
     public boolean isRegistered(String type) {
@@ -61,22 +60,23 @@ public class TypeConverterRegistry {
         return result == null ? Object::toString : result;
     }
 
-    public UnaryOperator<Object> forTypeCloner(String type) {
-        return cloners.getOrDefault(type, CloneHelper::clone);
+    public UnaryOperator<Object> forTypeCloner(Class<?> type) {
+        return cloners.getOrDefault(type, CloneHelperFactory.getCloner(type));
     }
 
-    public void register(String type, Function<String, ? extends Object> converter) {
-        register(type, converter, Optional.empty(), Optional.empty());
+    public TypeConverterRegistry register(String type, Function<String, ? extends Object> converter) {
+        converters.put(type, converter);
+        return this;
     }
 
-    public <T> void register(String type, Function<String, T> converter, Function<T, String> unconverter) {
-        register(type, converter, Optional.of(unconverter), Optional.empty());
+    public <T> TypeConverterRegistry registerUnconverter(String type, Function<T, String> unconverter) {
+        unconverters.put(type, unconverter);
+        return this;
     }
 
-    public <T> void register(String type, Function<String, T> converter, Optional<Function<T, String>> unconverter, Optional<UnaryOperator<Object>> cloner) {
-        this.converters.put(type, converter);
-        unconverter.ifPresent(u -> this.unconverters.put(type, u));
-        cloner.ifPresent(c -> this.cloners.put(type, c));
+    public <T> TypeConverterRegistry registerCloner(Class<T> type, UnaryOperator<T> cloner) {
+        cloners.put(type, (UnaryOperator<Object>) cloner);
+        return this;
     }
 
     public static TypeConverterRegistry get() {

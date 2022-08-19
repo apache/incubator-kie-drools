@@ -99,7 +99,7 @@ public class ObjectDataType implements DataType {
 
     @Override
     public Object clone(Object value) {
-        return TypeConverterRegistry.get().forTypeCloner(getStringType()).apply(value);
+        return TypeConverterRegistry.get().forTypeCloner(getObjectClass()).apply(value);
     }
 
     @Override

@@ -18,6 +18,8 @@ package org.jbpm.process.core.datatype.impl.coverter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CloneHelperTest {
 
-    public static class CollectionHolder<T> {
+    private static class CollectionHolder<T> {
 
         private final Collection<T> collection;
 
@@ -41,7 +43,7 @@ public class CloneHelperTest {
         }
     }
 
-    public static class CloneableCollectionHolder<T> extends CollectionHolder<T> implements Cloneable {
+    private static class CloneableCollectionHolder<T> extends CollectionHolder<T> implements Cloneable {
         public CloneableCollectionHolder(Collection<T> collection) {
             super(collection);
         }
@@ -52,7 +54,7 @@ public class CloneHelperTest {
         }
     }
 
-    public static class DumbCloneableCollectionHolder<T> extends CollectionHolder<T> implements Cloneable {
+    private static class DumbCloneableCollectionHolder<T> extends CollectionHolder<T> implements Cloneable {
         public DumbCloneableCollectionHolder(Collection<T> collection) {
             super(collection);
         }
@@ -63,7 +65,13 @@ public class CloneHelperTest {
         }
     }
 
-    public static class DumbCopyCollectionHolder<T> extends CollectionHolder<T> {
+    private static class LierCloneableCollectionHolder<T> extends CollectionHolder<T> implements Cloneable {
+        public LierCloneableCollectionHolder(Collection<T> collection) {
+            super(collection);
+        }
+    }
+
+    private static class DumbCopyCollectionHolder<T> extends CollectionHolder<T> {
         public DumbCopyCollectionHolder(Collection<T> collection) {
             super(collection);
         }
@@ -74,7 +82,7 @@ public class CloneHelperTest {
         }
     }
 
-    public static class CopyCollectionHolder<T> extends CollectionHolder<T> {
+    private static class CopyCollectionHolder<T> extends CollectionHolder<T> {
         public CopyCollectionHolder(Collection<T> collection) {
             super(collection);
         }
@@ -84,10 +92,37 @@ public class CloneHelperTest {
         }
     }
 
+    private static class CustomCloneable {
+        private final String name;
+
+        public CustomCloneable(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (!(obj instanceof CustomCloneable))
+                return false;
+            CustomCloneable other = (CustomCloneable) obj;
+            return Objects.equals(name, other.name);
+        }
+    }
+
     @Test
     void testCloneable() {
         CollectionHolder<Integer> toClone = new CloneableCollectionHolder<>(Arrays.asList(1, 2, 3, 4));
-        CollectionHolder<Integer> cloned = CloneHelper.clone(toClone);
+        CollectionHolder<Integer> cloned = (CollectionHolder<Integer>) TypeConverterRegistry.get().forTypeCloner(toClone.getClass()).apply(toClone);
         assertNotSame(toClone.getCollection(), cloned.getCollection());
         assertEquals(toClone.getCollection(), cloned.getCollection());
     }
@@ -95,7 +130,7 @@ public class CloneHelperTest {
     @Test
     void testCopyConstructor() {
         CollectionHolder<Integer> toClone = new CopyCollectionHolder<>(Arrays.asList(1, 2, 3, 4));
-        CollectionHolder<Integer> cloned = CloneHelper.clone(toClone);
+        CollectionHolder<Integer> cloned = (CollectionHolder<Integer>) TypeConverterRegistry.get().forTypeCloner(toClone.getClass()).apply(toClone);
         assertNotSame(toClone.getCollection(), cloned.getCollection());
         assertEquals(toClone.getCollection(), cloned.getCollection());
     }
@@ -103,19 +138,34 @@ public class CloneHelperTest {
     @Test
     void testDefault() {
         CollectionHolder<Integer> toClone = new CollectionHolder<>(Arrays.asList(1, 2, 3, 4));
-        CollectionHolder<Integer> cloned = CloneHelper.clone(toClone);
+        CollectionHolder<Integer> cloned = (CollectionHolder<Integer>) TypeConverterRegistry.get().forTypeCloner(toClone.getClass()).apply(toClone);
         assertSame(toClone.getCollection(), cloned.getCollection());
     }
 
     @Test
     void testCloneableError() {
         CollectionHolder<Integer> toClone = new DumbCloneableCollectionHolder<>(Arrays.asList(1, 2, 3, 4));
-        assertThrows(IllegalStateException.class, () -> CloneHelper.clone(toClone));
+        UnaryOperator<Object> cloner = TypeConverterRegistry.get().forTypeCloner(toClone.getClass());
+        assertThrows(IllegalStateException.class, () -> cloner.apply(toClone));
     }
 
     @Test
     void testCopyError() {
         CollectionHolder<Integer> toClone = new DumbCopyCollectionHolder<>(Arrays.asList(1, 2, 3, 4));
-        assertThrows(IllegalStateException.class, () -> CloneHelper.clone(toClone));
+        UnaryOperator<Object> cloner = TypeConverterRegistry.get().forTypeCloner(toClone.getClass());
+        assertThrows(IllegalStateException.class, () -> cloner.apply(toClone));
+    }
+
+    @Test
+    void NoCloneableError() {
+        CollectionHolder<Integer> toClone = new LierCloneableCollectionHolder<>(Arrays.asList(1, 2, 3, 4));
+        assertSame(toClone, TypeConverterRegistry.get().forTypeCloner(toClone.getClass()).apply(toClone));
+    }
+
+    @Test
+    void testCloneRegister() {
+        TypeConverterRegistry.get().registerCloner(CustomCloneable.class, o -> new CustomCloneable(o.getName() + "_" + o.getName()));
+        CustomCloneable toClone = new CustomCloneable("Javierito");
+        assertEquals(new CustomCloneable("Javierito_Javierito"), TypeConverterRegistry.get().forTypeCloner(toClone.getClass()).apply(toClone));
     }
 }
