@@ -28,7 +28,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.antlr</groupId>
+      <groupId>org.antlr4gwt</groupId>
       <artifactId>antlr4gwt-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
