@@ -17,6 +17,7 @@ package org.kie.efesto.runtimemanager.core.service;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,6 +38,9 @@ public class RuntimeManagerImpl implements RuntimeManager {
 
     @Override
     public Collection<EfestoOutput> evaluateInput(EfestoRuntimeContext context, EfestoInput... toEvaluate) {
+        if (toEvaluate.length == 1) { // minor optimization for the (most typical) case with 1 input
+            return getOptionalOutput(context, toEvaluate[0]).map(Collections::singletonList).orElse(Collections.emptyList());
+        }
         return Arrays.stream(toEvaluate)
                 .flatMap(input -> getOptionalOutput(context, input).map(Stream::of).orElse(Stream.empty()))
                 .collect(Collectors.toList());
