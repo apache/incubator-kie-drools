@@ -20,6 +20,7 @@
   <modules>
     <module>kie-drl-compilation-common</module>
     <module>kie-drl-implementations</module>
+    <module>kie-drl-runtime-common</module>
   </modules>
 
   <dependencyManagement>
@@ -111,7 +112,6 @@
       </activation>
       <modules>
         <module>kie-drl-api</module>
-        <module>kie-drl-runtime-common</module>
         <module>kie-drl-tests</module>
       </modules>
     </profile>
