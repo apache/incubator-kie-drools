@@ -41,6 +41,8 @@ public class SPIUtils {
 
     private static final ServiceLoader<KieRuntimeService> kieRuntimeServiceLoader = ServiceLoader.load(KieRuntimeService.class);
 
+    private static List<KieRuntimeService> kieRuntimeServices = getKieRuntimeServices(kieRuntimeServiceLoader);
+
     public static Optional<KieRuntimeService> getKieRuntimeService(EfestoInput<?> input, boolean refresh, EfestoRuntimeContext context) {
         if ( logger.isTraceEnabled() ) {
             logger.trace("getKieRuntimeService {} {}", input, refresh);
@@ -62,9 +64,15 @@ public class SPIUtils {
         if ( logger.isTraceEnabled() ) {
             logger.trace("getKieRuntimeServices {}", refresh);
         }
+        if (!refresh) {
+            return kieRuntimeServices;
+        }
+        return kieRuntimeServices = getKieRuntimeServices(getServices(refresh));
+    }
+
+    private static List<KieRuntimeService> getKieRuntimeServices(Iterable<KieRuntimeService> serviceIterable) {
         List<KieRuntimeService> toReturn = new ArrayList<>();
-        Iterable<KieRuntimeService> services = getServices(refresh);
-        services.forEach(toReturn::add);
+        serviceIterable.forEach(toReturn::add);
         if (logger.isTraceEnabled()) {
             logger.trace("toReturn {} {}", toReturn, toReturn.size());
             toReturn.forEach(provider -> logger.trace("{}", provider));
