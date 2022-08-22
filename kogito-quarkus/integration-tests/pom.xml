@@ -35,6 +35,7 @@
         <module>integration-tests-kogito-plugin</module>
         <module>integration-tests-quarkus-norest</module>
         <module>integration-tests-quarkus-processes</module>
+        <module>integration-tests-quarkus-processes-reactive</module>
         <module>integration-tests-quarkus-processes-persistence</module>
         <module>integration-tests-quarkus-source-files</module>
         <module>integration-tests-quarkus-gradle</module>
