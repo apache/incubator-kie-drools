@@ -412,4 +412,30 @@ public class ImportsTest {
             session.dispose();
         }
     }
+
+    @Test
+    public void testWrongImportWithDeclaredType() {
+        // KOGITO-7729
+
+        final String drl =
+                "package org.acme.order\n" +
+                "\n" +
+                "import org.kie.order.Order\n" +
+                "\n" +
+                "declare ExpressDeliverer\n" +
+                "  term: int\n" +
+                "end\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $order: Order ()\n" +
+                "    $deliverer: ExpressDeliverer ()\n" +
+                "then\n" +
+                "    $order.setDiscount(0);\n" +
+                "    $deliverer.setTerm(5);\n" +
+                "end";
+
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        assertThat(kieBuilder.getResults().getMessages()).extracting(Message::getText).doesNotContain("");
+    }
 }
