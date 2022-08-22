@@ -137,8 +137,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
-     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
-     *             Streams migration recipe</a>.
+     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL
+     *             to Constraint Streams migration recipe</a>.
      */
     @Deprecated(forRemoval = true)
     public List<String> getScoreDrlList() {
@@ -147,7 +147,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
-     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
+     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL
+     *             to Constraint
      *             Streams migration recipe</a>.
      */
     @Deprecated(forRemoval = true)
@@ -157,7 +158,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
-     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
+     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL
+     *             to Constraint
      *             Streams migration recipe</a>.
      */
     @Deprecated(forRemoval = true)
@@ -167,7 +169,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
-     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
+     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL
+     *             to Constraint
      *             Streams migration recipe</a>.
      */
     @Deprecated(forRemoval = true)
@@ -199,7 +202,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
-     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
+     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL
+     *             to Constraint
      *             Streams migration recipe</a>.
      */
     @Deprecated(forRemoval = true)
@@ -209,7 +213,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
-     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
+     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL
+     *             to Constraint
      *             Streams migration recipe</a>.
      */
     @Deprecated(forRemoval = true)
@@ -279,7 +284,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
-     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
+     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL
+     *             to Constraint
      *             Streams migration recipe</a>.
      */
     @Deprecated(forRemoval = true)
@@ -290,7 +296,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
-     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
+     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL
+     *             to Constraint
      *             Streams migration recipe</a>.
      */
     @Deprecated(forRemoval = true)
@@ -301,7 +308,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
-     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
+     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL
+     *             to Constraint
      *             Streams migration recipe</a>.
      */
     @Deprecated(forRemoval = true)
@@ -312,7 +320,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
-     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
+     *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL
+     *             to Constraint
      *             Streams migration recipe</a>.
      */
     @Deprecated(forRemoval = true)

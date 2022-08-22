@@ -14,8 +14,8 @@ import org.optaplanner.test.impl.score.AbstractScoreVerifier;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @deprecated Score DRL is deprecated and will be removed in a future major version of OptaPlanner.
- *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to Constraint
- *             Streams migration recipe</a>.
+ *             See <a href="https://www.optaplanner.org/download/upgradeRecipe/drl-to-constraint-streams-migration.html">DRL to
+ *             Constraint Streams migration recipe</a>.
  */
 @Deprecated(forRemoval = true)
 public class HardMediumSoftLongScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {
