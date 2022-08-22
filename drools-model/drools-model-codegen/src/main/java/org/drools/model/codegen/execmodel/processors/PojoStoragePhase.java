@@ -17,6 +17,11 @@
 
 package org.drools.model.codegen.execmodel.processors;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -26,10 +31,6 @@ import org.drools.model.codegen.execmodel.CanonicalModelBuildContext;
 import org.drools.model.codegen.execmodel.GeneratedClassWithPackage;
 import org.drools.util.TypeResolver;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 
 import static com.github.javaparser.StaticJavaParser.parseImport;
 
@@ -54,7 +55,9 @@ public class PojoStoragePhase implements CompilationPhase {
             InternalKnowledgePackage pkg = pkgRegistryManager.getPackageRegistry(packageDescr.getNamespace()).getPackage();
             allGeneratedPojos.stream()
                     .filter( pojo -> isInPackage(pkg, pojo) )
-                    .forEach( pojo -> registerType(pkg.getTypeResolver(), allCompiledClasses.get(pojo.getFullyQualifiedName())) );
+                    .map( pojo -> allCompiledClasses.get(pojo.getFullyQualifiedName()) )
+                    .filter( Objects::nonNull )
+                    .forEach( pojoClass -> registerType(pkg.getTypeResolver(), pojoClass) );
         }
     }
 
