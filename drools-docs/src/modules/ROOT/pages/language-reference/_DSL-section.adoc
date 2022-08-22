@@ -41,7 +41,7 @@ The form of this string depends on its destination, RHS or  LHS.
 If it is for the LHS, then it ought to be a term according to the regular LHS syntax; if it is for the RHS then it might be a Java statement.
 
 Whenever the DSL parser matches a line from the rule file written in the DSL with an expression in the DSL definition, it performs three steps of string manipulation.
-First, it extracts the string values appearing where the expression contains variable names in braces (here: ``{colour}``). Then, the values obtained from these captures are then interpolated wherever that name, again enclosed in braces, occurs on the right hand side of the mapping.
+First, it extracts the string values appearing where the expression contains variable names in braces (here: ``\{colour}``). Then, the values obtained from these captures are then interpolated wherever that name, again enclosed in braces, occurs on the right hand side of the mapping.
 Finally, the interpolated string replaces whatever was matched by the entire expression in the line of the DSL rule file.
 
 Note that the expressions (i.e., the strings on the left hand side of the equal sign) are used as regular expressions in a pattern matching operation against a line of the DSL rule file, matching all or part of a line.
@@ -50,7 +50,7 @@ One good reason to use this is to overcome variations in natural language phrase
 But, given that these expressions are regular expression patterns, this also means that all "magic" characters of Java's pattern syntax have to be escaped with a preceding backslash ('\').
 
 It is important to note that the compiler transforms DSL rule files line by line.
-In the previous example, all the text after "Something is " to the end of the line is captured as the replacement value for "{colour}", and this is used for interpolating the target string.
+In the previous example, all the text after "Something is " to the end of the line is captured as the replacement value for "\{colour}", and this is used for interpolating the target string.
 This may not be exactly what you want.
 For instance, when you intend to merge different DSL expressions to generate a composite DRL pattern, you need to transform a DSLR line in several independent operations.
 The best way to achieve this is to ensure that the captures are surrounded by characteristic text - words or  even single characters.

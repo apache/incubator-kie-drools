@@ -8,6 +8,7 @@ title: Drools User Guide ${project.version}
 version: ~
 asciidoc:
   attributes:
+    doctype: book
     drools-version: ${project.version}
     java-version: ${maven.compiler.release}
     maven-version: ${maven.min.version}
