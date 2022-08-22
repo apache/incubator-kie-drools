@@ -51,6 +51,23 @@ A DRL file can contain single or multiple rules and queries, and can define reso
 
 Each rule must have a unique name within the rule unit. If you use the same rule name more than once in any DRL file in the unit, the rules fail to compile. Rule names generally must follow standard Java identifier conventions. However, you can enclose rule names with double quotation marks (`rule "rule name"`) to  prevent possible compilation errors, especially if you use spaces in rule names.
 
+[id="new-and-traditional-syntax_{context}"]
+== New and Traditional syntax
+In Drools 8, we promote a new DRL syntax based on rule unit, data source, and OOPath. Hence, you will see such a new syntax in DRL syntax examples. However, Drools 8 still fully supports traditional DRL syntax that has been used in version 7 and prior.
+
+.Example rule for loan application with traditional syntax
+[source]
+----
+rule "Underage"
+  when
+    Applicant( applicantName : name, age < 21 )
+    $application : LoanApplication( applicant == applicantName )
+  then
+    $application.setApproved( false );
+    $application.setExplanation( "Underage" );
+end
+----
+
 [id="con-drl-packages_{context}"]
 == Packages in DRL
 
