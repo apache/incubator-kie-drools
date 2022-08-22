@@ -3037,6 +3037,11 @@ rule isAdult
 end
 ----
 
+[IMPORTANT]
+====
+Using OOPath, you can write nested paths. For example, `/persons[name == "Mark"]/addresses[city == "london"]/...`. The first path `persons` is translated into a normal pattern matching, but all other paths after that first one are rendered with a `from` clause that has performance inefficiency. Hence, you have to be careful about using nested paths the same as too much use of `from`.
+====
+
 === Legacy DRL rule condition elements
 
 The following rule condition elements (keywords) are obsolete in {PRODUCT}:
