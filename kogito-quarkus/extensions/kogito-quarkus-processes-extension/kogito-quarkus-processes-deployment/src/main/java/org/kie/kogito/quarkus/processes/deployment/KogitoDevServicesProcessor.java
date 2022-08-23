@@ -128,7 +128,7 @@ public class KogitoDevServicesProcessor {
             additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DataIndexEventPublisher.class).build());
             Integer port = ConfigProvider.getConfig().getOptionalValue("quarkus.http.port", Integer.class).orElse(8080);
             Testcontainers.exposeHostPorts(port);
-            systemProperties.produce(new SystemPropertyBuildItem("kogito.service.url", "http://host.testcontainers.internal:" + port));
+            systemProperties.produce(new SystemPropertyBuildItem("kogito.service.url", "http://localhost:" + port));
         }
 
         LOGGER.info("Dev Services for Kogito Data Index using image {}", configuration.imageName);
