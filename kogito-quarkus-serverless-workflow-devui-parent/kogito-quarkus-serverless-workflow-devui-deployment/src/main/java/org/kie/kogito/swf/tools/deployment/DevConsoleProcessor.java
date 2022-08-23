@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import org.kie.kogito.quarkus.common.deployment.KogitoDataIndexServiceAvailableBuildItem;
+import org.kie.kogito.swf.tools.dataindex.config.DevConsoleRuntimeConfig;
 
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -47,7 +48,7 @@ public class DevConsoleProcessor {
 
     @BuildStep(onlyIf = IsDevelopment.class)
     public void setUpDataIndexServiceURL(
-            final DevConsoleBuildTimeConfig config,
+            final DevConsoleRuntimeConfig config,
             final BuildProducer<SystemPropertyBuildItem> systemProperties) throws IOException {
 
         systemProperties.produce(new SystemPropertyBuildItem(DATA_INDEX_CLIENT_KEY, config.dataIndexUrl));

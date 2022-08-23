@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,16 +37,11 @@ import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormFi
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormInfo;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormResources;
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.TestProfile;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.impl.FormsStorageImpl.PROJECT_FORM_STORAGE_PROP;
 
-@QuarkusTest
-@TestProfile(FormsTestProfile.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FormsStorageImplTest {
 
@@ -60,7 +56,12 @@ public class FormsStorageImplTest {
     private FormsStorage formsStorage;
 
     @BeforeAll
-    public void init() {
+    public void init() throws IOException {
+        File storage = Files.createTempDirectory("FormsTestProfile").toFile();
+        storage.deleteOnExit();
+        storage.mkdir();
+        System.setProperty(PROJECT_FORM_STORAGE_PROP, storage.getAbsolutePath());
+
         URL formsFolder = Thread.currentThread().getContextClassLoader().getResource("forms");
 
         formsStorage = new FormsStorageImpl(formsFolder);

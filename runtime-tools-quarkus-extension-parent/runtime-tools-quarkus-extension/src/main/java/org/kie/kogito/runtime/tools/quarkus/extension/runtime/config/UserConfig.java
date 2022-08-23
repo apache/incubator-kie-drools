@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.runtime.tools.quarkus.extension.deployment;
+package org.kie.kogito.runtime.tools.quarkus.extension.runtime.config;
 
+import java.util.List;
+
+import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
 
-@ConfigRoot(name = "kogito", prefix = "", phase = ConfigPhase.BUILD_TIME)
-public class DevConsoleBuildTimeConfig {
+@ConfigGroup
+public class UserConfig {
 
     /**
-     * Configuration for Runtime Tools DevConsole services. It should keep data-index url to initialize DataIndexClient accordingly
+     * Groups which the user belong to.
      */
-    @ConfigItem(name = "data-index.url", defaultValue = "http://localhost:8180")
-    public String dataIndexUrl;
+    @ConfigItem(name = "groups")
+    public List<String> groups;
 }

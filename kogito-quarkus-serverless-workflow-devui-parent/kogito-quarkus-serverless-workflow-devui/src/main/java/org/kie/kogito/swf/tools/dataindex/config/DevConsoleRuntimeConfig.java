@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.swf.tools.deployment;
+package org.kie.kogito.swf.tools.dataindex.config;
 
 import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
 
-@ConfigRoot(name = "kogito", prefix = "", phase = ConfigPhase.BUILD_TIME)
-public class DevConsoleBuildTimeConfig {
+@ConfigRoot(name = "", prefix = "kogito", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
+public class DevConsoleRuntimeConfig {
 
     /**
      * Configuration for Serverless Workflow DevConsole services. It should keep data-index url to initialize DataIndexClient accordingly

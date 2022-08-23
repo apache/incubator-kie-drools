@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.runtime.tools.quarkus.extension.runtime.user;
+package org.kie.kogito.runtime.tools.quarkus.extension.runtime.config;
 
-import java.util.List;
+import io.quarkus.runtime.annotations.ConfigGroup;
+import io.quarkus.runtime.annotations.ConfigItem;
 
-public class User {
+@ConfigGroup
+public class DataIndexConfig {
 
-    private String id;
-
-    private List<String> groups;
-
-    public User(final String id,
-            final List<String> groups) {
-        this.id = id;
-        this.groups = groups;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public List<String> getGroups() {
-        return groups;
-    }
+    /**
+     * Data index URL
+     */
+    @ConfigItem(name = "url", defaultValue = "http://localhost:8180")
+    public String url;
 }

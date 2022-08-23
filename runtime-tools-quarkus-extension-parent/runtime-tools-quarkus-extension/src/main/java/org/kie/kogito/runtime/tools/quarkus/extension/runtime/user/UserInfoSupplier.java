@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +16,27 @@
 
 package org.kie.kogito.runtime.tools.quarkus.extension.runtime.user;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.kie.kogito.runtime.tools.quarkus.extension.runtime.config.UserConfig;
 
 public class UserInfoSupplier implements Supplier<UserInfo> {
 
+    private final Map<String, UserConfig> userConfigByUser;
+
+    public UserInfoSupplier(final Map<String, UserConfig> userConfigByUser) {
+        this.userConfigByUser = userConfigByUser;
+    }
+
     public UserInfo get() {
-        Optional<String[]> userNames = ConfigProvider.getConfig().getOptionalValue("quarkus.kogito-runtime-tools.users", String[].class);
-        if (!userNames.isPresent()) {
+        if (userConfigByUser == null || userConfigByUser.size() == 0) {
             return new UserInfo(Collections.emptyList());
         }
 
-        List<User> users = new ArrayList<>();
-        for (String userName : userNames.get()) {
-            Optional<String[]> groups = ConfigProvider.getConfig().getOptionalValue("quarkus.kogito-runtime-tools.users." + userName + ".groups",
-                    String[].class);
-
-            users.add(new User(userName, Arrays.asList(groups.orElse(new String[] {}))));
-        }
-
-        return new UserInfo(users);
+        return new UserInfo(userConfigByUser.entrySet().stream()
+                .map(entry -> new User(entry.getKey(), entry.getValue().groups)).collect(Collectors.toList()));
     }
 }
