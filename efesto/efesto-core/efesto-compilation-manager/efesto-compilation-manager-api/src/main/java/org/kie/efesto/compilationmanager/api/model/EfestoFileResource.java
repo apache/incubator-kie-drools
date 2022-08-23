@@ -15,12 +15,14 @@
  */
 package org.kie.efesto.compilationmanager.api.model;
 
+import org.kie.efesto.common.api.io.MemoryFile;
 import org.kie.efesto.common.api.utils.FileNameUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 public final class EfestoFileResource implements EfestoResource<File> {
 
@@ -40,7 +42,7 @@ public final class EfestoFileResource implements EfestoResource<File> {
     }
 
     public InputStream getInputStream() throws IOException {
-        return new FileInputStream(modelFile);
+        return modelFile instanceof MemoryFile ? ((MemoryFile) modelFile).getInputStream() : Files.newInputStream(modelFile.toPath());
     }
 
     public String getSourcePath() {

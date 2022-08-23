@@ -27,6 +27,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -140,7 +141,7 @@ public class FileUtils {
         return file.exists() ? Optional.of(file) : Optional.empty();
     }
 
-    static Optional<File> getFileFromURL(URL retrieved) {
+    public static Optional<File> getFileFromURL(URL retrieved) {
         logger.debug("getFileFromURL {}", retrieved);
         logger.debug("retrieved.getProtocol() {}", retrieved.getProtocol());
         if (logger.isDebugEnabled()) {
@@ -194,9 +195,9 @@ public class FileUtils {
 
     static File getFileFromJar(URL retrieved) throws URISyntaxException, IOException {
         logger.debug("getFileFromJar {}", retrieved);
-        String fileName = retrieved.getFile();
-        if (fileName.contains("/")) {
-            fileName = fileName.substring(fileName.lastIndexOf('/'));
+        String fileStringPath = retrieved.getFile();
+        if (fileStringPath.contains("!/")) {
+            fileStringPath = fileStringPath.substring(fileStringPath.lastIndexOf("!/") + 2);
         }
         String jarPath = retrieved.toString();
         jarPath = jarPath.substring(0, jarPath.lastIndexOf("!/") + 2);
@@ -204,9 +205,13 @@ public class FileUtils {
         Map<String, ?> env = new HashMap<>();
         Path filePath;
         try (FileSystem fs = FileSystems.newFileSystem(uri, env)) {
-            filePath = fs.getPath(fileName);
+            filePath = fs.getPath(fileStringPath);
         }
-        File toReturn = new MemoryFile(filePath);
+        String absoluteFilePath = retrieved.toString();
+//        if (absoluteFilePath.contains(":")) {
+//            absoluteFilePath = absoluteFilePath.substring(absoluteFilePath.lastIndexOf(':') + 1);
+//        }
+        File toReturn = new MemoryFile(filePath, Paths.get(absoluteFilePath));
         logger.debug(TO_RETURN_TEMPLATE, toReturn);
         logger.debug(TO_RETURN_GETABSOLUTEPATH_TEMPLATE, toReturn.getAbsolutePath());
         return toReturn;

@@ -14,6 +14,7 @@
  */
 package org.kie.efesto.common.api.io;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -34,16 +35,22 @@ public class MemoryFile extends File implements Serializable {
     private String name;
     private transient Path filePath;
 
+    private transient Path absoluteFilePath;
+
     private final URL url;
 
     private byte[] content;
 
     public MemoryFile(Path filePath) throws IOException {
+        this(filePath, filePath);
+    }
+
+    public MemoryFile(Path filePath, Path absoluteFilePath) throws IOException {
         super(filePath.getFileName().toString());
-        logger.debug("MemoryFile {}", filePath);
-        logger.debug(this.getAbsolutePath());
+        logger.debug("MemoryFile {} {}", filePath, absoluteFilePath);
         this.name = filePath.getFileName().toString();
         this.filePath = filePath;
+        this.absoluteFilePath = absoluteFilePath;
         url = filePath.toUri().toURL();
         initContent(url);
     }
@@ -66,8 +73,17 @@ public class MemoryFile extends File implements Serializable {
     }
 
     @Override
+    public Path toPath() {
+        return absoluteFilePath;
+    }
+
+    @Override
     public boolean exists() {
         return url != null;
+    }
+
+    public InputStream getInputStream() {
+        return new ByteArrayInputStream(content);
     }
 
     private void initContent(URL url) throws IOException {

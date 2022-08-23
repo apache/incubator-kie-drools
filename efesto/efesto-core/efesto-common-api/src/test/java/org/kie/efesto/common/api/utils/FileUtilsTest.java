@@ -148,6 +148,31 @@ class FileUtilsTest {
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.isPresent()).isTrue();
         assertThat(retrieved).get().isInstanceOf(MemoryFile.class);
+        MemoryFile fileRetrieved = (MemoryFile) retrieved.get();
+        assertThat(fileRetrieved).exists();
+        try (InputStream ignored = fileRetrieved.getInputStream()) {
+
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e);
+        }
+    }
+
+    @Test
+    void getOptionalNestedFileFromJar() throws IOException {
+        URL jarUrl = getJarNestedUrl();
+        assertThat(jarUrl).isNotNull();
+        Optional<File> retrieved = FileUtils.getOptionalFileFromJar(jarUrl);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.isPresent()).isTrue();
+        assertThat(retrieved).get().isInstanceOf(MemoryFile.class);
+        MemoryFile fileRetrieved = (MemoryFile) retrieved.get();
+        assertThat(fileRetrieved.getName()).isEqualTo("TestingNestedEmptyFile.txt");
+        assertThat(fileRetrieved).exists();
+        try (InputStream ignored = fileRetrieved.getInputStream()) {
+
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e);
+        }
     }
 
     @Test
@@ -197,6 +222,13 @@ class FileUtilsTest {
         URL retrieved = Thread.currentThread().getContextClassLoader().getResource("TestJar.jar");
         assertThat(retrieved).isNotNull();
         String newString = "jar:" + retrieved + "!/IndexFile.testb_json";
+        return new URL(newString);
+    }
+
+    private static URL getJarNestedUrl() throws MalformedURLException {
+        URL retrieved = Thread.currentThread().getContextClassLoader().getResource("TestJar.jar");
+        assertThat(retrieved).isNotNull();
+        String newString = "jar:" + retrieved + "!/nest/TestingNestedEmptyFile.txt";
         return new URL(newString);
     }
 }

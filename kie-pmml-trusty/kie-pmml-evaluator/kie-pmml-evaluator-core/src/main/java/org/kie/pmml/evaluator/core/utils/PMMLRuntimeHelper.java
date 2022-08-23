@@ -79,7 +79,7 @@ public class PMMLRuntimeHelper {
         } catch (Exception e) {
             logger.warn("{} can not execute {}",
                         PMMLRuntimeHelper.class.getName(),
-                        toEvaluate.getFRI());
+                        toEvaluate.getFRI(), e);
             return Optional.empty();
         }
         try {
