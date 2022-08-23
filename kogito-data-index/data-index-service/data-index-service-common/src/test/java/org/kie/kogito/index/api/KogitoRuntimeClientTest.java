@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -100,6 +101,7 @@ public class KogitoRuntimeClientTest {
         httpRequestMock = mock(HttpRequest.class);
 
         client = spy(new KogitoRuntimeClientImpl(vertx, identityMock));
+        client.gatewayTargetUrl = Optional.empty();
         client.serviceWebClientMap.put(SERVICE_URL, webClientMock);
     }
 
@@ -514,6 +516,14 @@ public class KogitoRuntimeClientTest {
     @Test
     public void testMalformedURL() {
         assertThat(client.getWebClientToURLOptions("malformedURL")).isNull();
+    }
+
+    @Test
+    void testOverrideURL() {
+        String host = "host.testcontainers.internal";
+        client.gatewayTargetUrl = Optional.of(host);
+        WebClientOptions webClientOptions = client.getWebClientToURLOptions("http://service.com");
+        assertThat(webClientOptions.getDefaultHost()).isEqualTo(host);
     }
 
     @Test

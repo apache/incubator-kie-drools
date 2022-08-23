@@ -20,12 +20,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessInstance;
@@ -80,6 +82,9 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     private SecurityIdentity identity;
     protected Map<String, WebClient> serviceWebClientMap = new HashMap<>();
 
+    @ConfigProperty(name = "kogito.dataindex.gateway.url")
+    protected Optional<String> gatewayTargetUrl;
+
     @Inject
     public KogitoRuntimeClientImpl(Vertx vertx, SecurityIdentity identity) {
         this.vertx = vertx;
@@ -98,7 +103,7 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
         try {
             URL dataIndexURL = new URL(targetHttpURL);
             return new WebClientOptions()
-                    .setDefaultHost(dataIndexURL.getHost())
+                    .setDefaultHost(gatewayTargetUrl.orElse(dataIndexURL.getHost()))
                     .setDefaultPort((dataIndexURL.getPort() != -1 ? dataIndexURL.getPort() : dataIndexURL.getDefaultPort()))
                     .setSsl(dataIndexURL.getProtocol().compareToIgnoreCase("https") == 0);
         } catch (MalformedURLException ex) {
