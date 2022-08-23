@@ -12,13 +12,11 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
 /**
  * Runs an example solver.
- * All tests ending with the suffix <code>PerformanceTest</code> are reported on by hudson
- * in graphs which show the execution time over builds.
  * <p>
  * Recommended courtesy notes: Always use a timeout value on @Test.
- * The timeout should be the triple of the timeout on a normal 3 year old desktop computer,
- * because some of the hudson machines are old.
- * For example, on a normal 3 year old desktop computer it always finishes in less than 1 minute,
+ * The timeout should be the triple of the timeout on a normal desktop computer,
+ * as some CI nodes are slow.
+ * For example, if on a normal desktop computer it always finishes in less than 1 minute,
  * then specify a timeout of 3 minutes.
  */
 public abstract class PlannerBenchmarkTest extends LoggingTest {

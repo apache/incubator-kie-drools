@@ -34,7 +34,7 @@ final class ThreeIndexProperties implements IndexProperties {
     public <Type_> Type_ toKey(int from, int to) {
         switch (to - from) {
             case 1:
-                return toKey(to);
+                return toKey(from);
             case 2:
                 return (Type_) Pair.of(toKey(from), toKey(from + 1));
             case 3:

@@ -2,22 +2,22 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="800"
    height="600"
    id="svg2"
    version="1.1"
-   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    sodipodi:docname="methodologyOverview.svg"
    inkscape:export-filename="methodologyOverview.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4">
     <inkscape:perspective
@@ -509,9 +509,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.61"
-     inkscape:cx="495.35744"
-     inkscape:cy="253.01864"
+     inkscape:zoom="1.0724508"
+     inkscape:cx="446.1743"
+     inkscape:cy="414.47121"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -519,9 +519,9 @@
      borderlayer="true"
      gridtolerance="10"
      inkscape:window-width="1920"
-     inkscape:window-height="1016"
+     inkscape:window-height="1003"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
      inkscape:snap-bbox="false"
@@ -529,7 +529,10 @@
      inkscape:guide-bbox="true"
      inkscape:object-paths="true"
      inkscape:object-nodes="true"
-     inkscape:snap-smooth-nodes="true">
+     inkscape:snap-smooth-nodes="true"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        empspacing="10"
        visible="true"
@@ -586,7 +589,8 @@
            y="220.0002"
            style="font-size:36px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara4621"
-         style="font-size:36px;line-height:1.25">Methodology overview</flowPara></flowRoot>    <g
+         style="font-size:36px;line-height:1.25">Methodology overview</flowPara></flowRoot>
+    <g
        id="g3709"
        transform="translate(0,19.999997)" />
     <flowRoot
@@ -602,7 +606,8 @@
            y="-53.932568"
            style="font-family:sans-serif" /></flowRegion><flowPara
          id="flowPara4163"
-         style="font-size:40px;line-height:1.25;font-family:sans-serif"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:40px;line-height:1.25;font-family:sans-serif"> </flowPara></flowRoot>
+    <flowRoot
        transform="translate(-19.999998,362.36182)"
        xml:space="preserve"
        id="flowRoot4302-6"
@@ -615,7 +620,8 @@
            y="150.00014"
            style="font-size:14px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara3157"
-         style="font-size:14px;line-height:1.25">Relation between code, examples, unit tests, integration tests, stress tests, documentation and slides</flowPara></flowRoot>    <rect
+         style="font-size:14px;line-height:1.25">Relation between code, examples, unit tests, integration tests, stress tests and documentation</flowPara></flowRoot>
+    <rect
        ry="5"
        rx="5"
        style="fill:#8ae234;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -639,7 +645,8 @@
          id="flowPara3976"
          style="font-size:20px;line-height:1.25">api</flowPara><flowPara
          id="flowPara3978"
-         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot3980"
        xml:space="preserve"
@@ -664,7 +671,8 @@
    style="font-style:italic"
    id="flowSpan3486">Solver </flowSpan></flowPara><flowPara
          id="flowPara3996"
-         style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"> </flowPara></flowRoot>    <rect
+         style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"> </flowPara></flowRoot>
+    <rect
        y="672.86218"
        x="570.5"
        height="109"
@@ -688,7 +696,8 @@
          id="flowPara4006"
          style="font-size:20px;line-height:1.25">Examples</flowPara><flowPara
          id="flowPara4008"
-         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>
+    <flowRoot
        transform="translate(230,634.95947)"
        xml:space="preserve"
        id="flowRoot4010"
@@ -711,7 +720,8 @@
          style="font-style:italic;font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
          id="flowPara3609"><flowSpan
    id="flowSpan3660"
-   style="font-style:normal;fill:#000000;fill-opacity:1">See </flowSpan>CloudBalance</flowPara></flowRoot>    <rect
+   style="font-style:normal;fill:#000000;fill-opacity:1">See </flowSpan>CloudBalance</flowPara></flowRoot>
+    <rect
        ry="5"
        rx="5"
        style="fill:#8ae234;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -735,7 +745,8 @@
          id="flowPara4066"
          style="font-size:20px;line-height:1.25">config</flowPara><flowPara
          id="flowPara4068"
-         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot4070"
        xml:space="preserve"
@@ -756,7 +767,8 @@
          id="flowPara4086"
          style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1">See <flowSpan
    style="font-style:italic"
-   id="flowSpan4328">AcceptorConfig</flowSpan></flowPara></flowRoot>    <rect
+   id="flowSpan4328">AcceptorConfig</flowSpan></flowPara></flowRoot>
+    <rect
        y="672.86218"
        x="210.5"
        height="109"
@@ -780,7 +792,8 @@
          id="flowPara4096"
          style="font-size:20px;line-height:1.25">impl</flowPara><flowPara
          id="flowPara4098"
-         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>
+    <flowRoot
        transform="translate(-130,634.95947)"
        xml:space="preserve"
        id="flowRoot4100"
@@ -805,7 +818,8 @@
    style="font-style:italic"
    id="flowSpan3531">EntityTabuAcceptor</flowSpan></flowPara><flowPara
          style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
-         id="flowPara4116"> </flowPara></flowRoot>    <rect
+         id="flowPara4116"> </flowPara></flowRoot>
+    <rect
        ry="5"
        rx="5"
        style="fill:#729fcf;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -827,7 +841,8 @@
            y="74.277588"
            style="font-size:20px" /></flowRegion><flowPara
          id="flowPara4128"
-         style="font-size:20px;line-height:1.25">Swing examples</flowPara></flowRoot>    <flowRoot
+         style="font-size:20px;line-height:1.25">Swing examples</flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot4130"
        xml:space="preserve"
@@ -850,7 +865,8 @@
          id="flowPara4146"
          style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1">See <flowSpan
    style="font-style:italic"
-   id="flowSpan3592">CloudBalancingPanel</flowSpan></flowPara></flowRoot>    <rect
+   id="flowSpan3592">CloudBalancingPanel</flowSpan></flowPara></flowRoot>
+    <rect
        y="702.86218"
        x="390.5"
        height="79"
@@ -874,7 +890,8 @@
          id="flowPara4186"
          style="font-size:20px;line-height:1.25">benchmark</flowPara><flowPara
          id="flowPara4188"
-         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>
+    <flowRoot
        transform="translate(50,664.95974)"
        xml:space="preserve"
        id="flowRoot4190"
@@ -897,7 +914,8 @@
            style="font-style:italic"
            id="flowSpan3764"> SingleBench...Result</flowSpan></flowPara><flowPara
          style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
-         id="flowPara4206"> </flowPara></flowRoot>    <rect
+         id="flowPara4206"> </flowPara></flowRoot>
+    <rect
        ry="5"
        rx="5"
        style="fill:#8ae234;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -921,7 +939,8 @@
          id="flowPara4216"
          style="font-size:20px;line-height:1.25">Unit tests</flowPara><flowPara
          id="flowPara4218"
-         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot4220"
        xml:space="preserve"
@@ -948,7 +967,8 @@
            style="font-style:italic"
            id="flowSpan3529"> EntityTabuAcc...Test  </flowSpan></flowPara><flowPara
          id="flowPara4236"
-         style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"> </flowPara></flowRoot>    <rect
+         style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"> </flowPara></flowRoot>
+    <rect
        y="802.86218"
        x="430.5"
        height="109"
@@ -972,7 +992,8 @@
          id="flowPara4246"
          style="font-size:20px;line-height:1.25">Integration tests</flowPara><flowPara
          id="flowPara4248"
-         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>
+    <flowRoot
        transform="translate(90,764.95947)"
        xml:space="preserve"
        id="flowRoot4250"
@@ -993,7 +1014,8 @@
          style="font-style:italic;font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
          id="flowPara3558"><flowSpan
    id="flowSpan3624"
-   style="font-style:normal;font-size:12px;fill:#000000;fill-opacity:1">See</flowSpan> CBPerformanceTest </flowPara></flowRoot>    <rect
+   style="font-style:normal;font-size:12px;fill:#000000;fill-opacity:1">See</flowSpan> CBSmokeTest </flowPara></flowRoot>
+    <rect
        ry="5"
        rx="5"
        style="fill:#729fcf;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
@@ -1017,7 +1039,8 @@
          id="flowPara4276"
          style="font-size:20px;line-height:1.25">Stress tests</flowPara><flowPara
          id="flowPara4278"
-         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot4280"
        xml:space="preserve"
@@ -1042,7 +1065,8 @@
    style="font-size:12px"
    id="flowSpan3652">See</flowSpan> CB<flowSpan
    style="font-style:italic"
-   id="flowSpan3575">SolveAllTurtleTest</flowSpan></flowPara></flowRoot>    <path
+   id="flowSpan3575">SolveAllTurtleTest</flowSpan></flowPara></flowRoot>
+    <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 190,692.36214 20,0"
        id="path3577"
@@ -1072,7 +1096,8 @@
            y="102.80164"
            style="font-family:sans-serif" /></flowRegion><flowPara
          id="flowPara3618"
-         style="font-size:40px;line-height:1.25;font-family:sans-serif"> </flowPara></flowRoot>    <path
+         style="font-size:40px;line-height:1.25;font-family:sans-serif"> </flowPara></flowRoot>
+    <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 150,672.36214 0,-20"
        id="path3768"
@@ -1167,8 +1192,8 @@
        id="g4029"
        transform="translate(-110,-10.00004)">
       <rect
-         y="942.86218"
-         x="430.5"
+         y="943.2337"
+         x="504.00644"
          height="79"
          width="159"
          id="rect3878"
@@ -1179,7 +1204,7 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot3880"
          xml:space="preserve"
-         transform="translate(89.50001,868.08486)"><flowRegion
+         transform="translate(163.00644,868.45638)"><flowRegion
            id="flowRegion3882"><rect
              style="font-size:20px"
              y="74.277588"
@@ -1190,8 +1215,9 @@
            id="flowPara3886"
            style="font-size:20px;line-height:1.25">Documentation</flowPara><flowPara
            id="flowPara3888"
-           style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>      <flowRoot
-         transform="translate(90,904.95978)"
+           style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>
+      <flowRoot
+         transform="translate(163.50643,905.3313)"
          xml:space="preserve"
          id="flowRoot3890"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
@@ -1203,7 +1229,7 @@
              y="67.402672"
              style="font-size:12px;text-align:start;text-anchor:start" /></flowRegion><flowPara
            style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
-           id="flowPara3898">DocBook text</flowPara><flowPara
+           id="flowPara3898">AsciiDoc text</flowPara><flowPara
            id="flowPara3913"
            style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1">SVG diagrams</flowPara><flowPara
            style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
@@ -1211,54 +1237,10 @@
    id="flowSpan3908"
    style="font-style:italic">cBClassDiagram.svg</flowSpan></flowPara><flowPara
            style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
-           id="flowPara3906"> </flowPara></flowRoot>      <rect
-         ry="5"
-         rx="5"
-         style="fill:#eeeeec;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
-         id="rect3915"
-         width="159"
-         height="79"
-         x="610.5"
-         y="942.86218" />
-      <flowRoot
-         transform="translate(269.50001,868.08486)"
-         xml:space="preserve"
-         id="flowRoot3917"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
-           id="flowRegion3919"><rect
-             id="rect3921"
-             width="159.49998"
-             height="26.226416"
-             x="340.5"
-             y="74.277588"
-             style="font-size:20px" /></flowRegion><flowPara
-           id="flowPara3923"
-           style="font-size:20px;line-height:1.25">Slides</flowPara><flowPara
-           id="flowPara3925"
-           style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>      <flowRoot
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
-         id="flowRoot3927"
-         xml:space="preserve"
-         transform="translate(270,904.95978)"><flowRegion
-           id="flowRegion3929"><rect
-             style="font-size:12px;text-align:start;text-anchor:start"
-             y="67.402672"
-             x="350"
-             height="49.999729"
-             width="150"
-             id="rect3931" /></flowRegion><flowPara
-           id="flowPara3949"
-           style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1">Reveal.js html slides</flowPara><flowPara
-           id="flowPara4027"
-           style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"> </flowPara><flowPara
-           id="flowPara3937"
-           style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1">See <flowSpan
-   id="flowSpan4023"
-   style="font-style:italic">index.html</flowSpan></flowPara><flowPara
-           id="flowPara3941"
-           style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"> </flowPara></flowRoot>      <rect
-         y="942.86218"
-         x="250.5"
+           id="flowPara3906"> </flowPara></flowRoot>
+      <rect
+         y="943.2337"
+         x="324.00644"
          height="79"
          width="159"
          id="rect3995"
@@ -1269,7 +1251,7 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          id="flowRoot3997"
          xml:space="preserve"
-         transform="translate(-90.49999,868.08486)"><flowRegion
+         transform="translate(-16.993562,868.45638)"><flowRegion
            id="flowRegion3999"><rect
              style="font-size:20px"
              y="74.277588"
@@ -1280,8 +1262,9 @@
            id="flowPara4003"
            style="font-size:20px;line-height:1.25">Website</flowPara><flowPara
            id="flowPara4005"
-           style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>      <flowRoot
-         transform="translate(-90,904.95978)"
+           style="font-size:20px;line-height:1.25"> </flowPara></flowRoot>
+      <flowRoot
+         transform="translate(-16.493572,905.3313)"
          xml:space="preserve"
          id="flowRoot4007"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
@@ -1295,32 +1278,23 @@
            style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
            id="flowPara4013">Source for optaplanner.org</flowPara><flowPara
            style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
-           id="flowPara4015">Awestruct: AsciiDoc, HAML</flowPara><flowPara
+           id="flowPara4015">JBake: AsciiDoc</flowPara><flowPara
            style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
            id="flowPara4017">See <flowSpan
    id="flowSpan4021"
    style="font-style:italic">download.adoc</flowSpan></flowPara><flowPara
            style="font-size:12px;line-height:1.25;fill:#000000;fill-opacity:1"
-           id="flowPara4019"> </flowPara></flowRoot>    </g>
+           id="flowPara4019"> </flowPara></flowRoot>
+    </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 300,952.36214 20,0"
+       d="m 373.50643,952.73366 h 20"
        id="path4073"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 310,942.36214 10,10 -10,10"
+       d="m 383.50643,942.73366 10,10 -10,10"
        id="path4075"
-       inkscape:connector-curvature="0" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 500,952.36214 -20,0"
-       id="path4077"
-       inkscape:connector-curvature="0" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 490,942.36214 -10,10 10,10"
-       id="path4081"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -1356,5 +1330,6 @@
    style="fill:#5c3566"
    id="flowSpan4109"> </flowSpan><flowSpan
    style="fill:#8f5902"
-   id="flowSpan4111">optaplanner-docs</flowSpan></flowPara></flowRoot>  </g>
+   id="flowSpan4111">optaplanner-docs</flowSpan></flowPara></flowRoot>
+  </g>
 </svg>
