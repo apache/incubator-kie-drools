@@ -41,26 +41,40 @@ public class SPIUtils {
 
     private static final ServiceLoader<KieRuntimeService> kieRuntimeServiceLoader = ServiceLoader.load(KieRuntimeService.class);
 
+    private static List<KieRuntimeService> kieRuntimeServices = getKieRuntimeServices(kieRuntimeServiceLoader);
+
     public static Optional<KieRuntimeService> getKieRuntimeService(EfestoInput<?> input, boolean refresh, EfestoRuntimeContext context) {
-        logger.debug("getKieRuntimeService {} {}", input, refresh);
+        if ( logger.isTraceEnabled() ) {
+            logger.trace("getKieRuntimeService {} {}", input, refresh);
+        }
         return findAtMostOne(getKieRuntimeServices(refresh), service -> service.canManageInput(input, context),
                 (s1, s2) -> new KieRuntimeServiceException("Found more than one compiler services: " + s1 + " and " + s2));
     }
 
     public static Optional<KieRuntimeService> getKieRuntimeServiceFromEfestoRuntimeContext(EfestoInput<?> input, EfestoRuntimeContext context) {
-        logger.debug("getKieCompilerServiceFromEfestoCompilationContext {} {}", input, context);
+        if ( logger.isTraceEnabled() ) {
+            logger.trace("getKieCompilerServiceFromEfestoCompilationContext {} {}", input, context);
+        }
         ServiceLoader<KieRuntimeService> contextServiceLoader = context.getKieRuntimeService();
         return findAtMostOne(contextServiceLoader, service -> service.canManageInput(input, context),
                              (s1, s2) -> new KieRuntimeServiceException("Found more than one compiler services: " + s1 + " and " + s2));
     }
 
     public static List<KieRuntimeService> getKieRuntimeServices(boolean refresh) {
-        logger.debug("getKieRuntimeServices {}", refresh);
+        if ( logger.isTraceEnabled() ) {
+            logger.trace("getKieRuntimeServices {}", refresh);
+        }
+        if (!refresh) {
+            return kieRuntimeServices;
+        }
+        return kieRuntimeServices = getKieRuntimeServices(getServices(refresh));
+    }
+
+    private static List<KieRuntimeService> getKieRuntimeServices(Iterable<KieRuntimeService> serviceIterable) {
         List<KieRuntimeService> toReturn = new ArrayList<>();
-        Iterable<KieRuntimeService> services = getServices(refresh);
-        services.forEach(toReturn::add);
-        logger.debug("toReturn {} {}", toReturn, toReturn.size());
+        serviceIterable.forEach(toReturn::add);
         if (logger.isTraceEnabled()) {
+            logger.trace("toReturn {} {}", toReturn, toReturn.size());
             toReturn.forEach(provider -> logger.trace("{}", provider));
         }
         return toReturn;
