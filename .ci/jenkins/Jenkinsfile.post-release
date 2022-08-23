@@ -129,7 +129,7 @@ pipeline {
                         githubscm.setUserConfigFromCreds()
                         githubscm.createBranch(localBranch)
                         // update version.org.optaplanner property in kie-benchmarks
-                        maven.mvnSetVersionProperty('version.org.optaplanner', getProjectVersion())
+                        maven.mvnSetVersionProperty('version.org.optaplanner', getNextMinorSnapshotVersion(getProjectVersion()))
                         // Add changed files, commit, open and merge PR
                         prLink = commitAndCreatePR(commitMsg, { sh "git add --all" }, localBranch, targetBranch)
                         sh "git checkout ${targetBranch}"
