@@ -7,11 +7,11 @@ import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
-import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetesDependentResource;
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 
 @KubernetesDependent
-public final class ConfigMapDependentResource extends CRUKubernetesDependentResource<ConfigMap, OptaPlannerSolver> {
+public final class ConfigMapDependentResource extends CRUDKubernetesDependentResource<ConfigMap, OptaPlannerSolver> {
 
     public static final String SOLVER_MESSAGE_INPUT_KEY = "solver.message.input";
     public static final String SOLVER_MESSAGE_OUTPUT_KEY = "solver.message.output";

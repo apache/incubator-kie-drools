@@ -8,7 +8,7 @@ import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
-import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetesDependentResource;
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 
 /*
@@ -40,7 +40,7 @@ spec:
 */
 
 @KubernetesDependent
-public final class ScaledObjectDependentResource extends CRUKubernetesDependentResource<ScaledObject, OptaPlannerSolver> {
+public final class ScaledObjectDependentResource extends CRUDKubernetesDependentResource<ScaledObject, OptaPlannerSolver> {
 
     public static final String ARTEMIS_QUEUE_TRIGGER = "artemis-queue";
 

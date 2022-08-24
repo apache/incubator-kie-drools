@@ -13,11 +13,11 @@ import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.api.model.apps.DeploymentSpecBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
-import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetesDependentResource;
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 
 @KubernetesDependent
-public final class DeploymentDependentResource extends CRUKubernetesDependentResource<Deployment, OptaPlannerSolver> {
+public final class DeploymentDependentResource extends CRUDKubernetesDependentResource<Deployment, OptaPlannerSolver> {
 
     private static final String ENV_SOLVER_MESSAGE_IN = "SOLVER_MESSAGE_INPUT";
     private static final String ENV_SOLVER_MESSAGE_OUT = "SOLVER_MESSAGE_OUTPUT";

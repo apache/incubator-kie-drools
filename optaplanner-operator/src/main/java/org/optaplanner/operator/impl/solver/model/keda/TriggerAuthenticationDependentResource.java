@@ -7,7 +7,7 @@ import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.api.model.SecretKeySelector;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
-import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetesDependentResource;
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 
 /*
@@ -30,7 +30,7 @@ spec:
 
 @KubernetesDependent
 public final class TriggerAuthenticationDependentResource
-        extends CRUKubernetesDependentResource<TriggerAuthentication, OptaPlannerSolver> {
+        extends CRUDKubernetesDependentResource<TriggerAuthentication, OptaPlannerSolver> {
 
     public static final String PARAM_USERNAME = "username";
     public static final String PARAM_PASSWORD = "password";

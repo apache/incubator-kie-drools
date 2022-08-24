@@ -26,8 +26,7 @@
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.17.2</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
-    <version.io.javaoperatorsdk>3.0.2</version.io.javaoperatorsdk>
-    <version.io.quarkiverse.operatorsdk>4.0.0.RC</version.io.quarkiverse.operatorsdk>
+    <version.io.quarkiverse.operatorsdk>4.0.0</version.io.quarkiverse.operatorsdk>
     <version.io.quarkus>2.11.2.Final</version.io.quarkus>
     <version.io.strimzi>0.28.0</version.io.strimzi>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
@@ -149,11 +148,6 @@
         <groupId>io.quarkiverse.operatorsdk</groupId>
         <artifactId>quarkus-operator-sdk</artifactId>
         <version>${version.io.quarkiverse.operatorsdk}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.javaoperatorsdk</groupId>
-        <artifactId>operator-framework-core</artifactId>
-        <version>${version.io.javaoperatorsdk}</version>
       </dependency>
       <dependency>
         <groupId>io.strimzi</groupId>

@@ -8,11 +8,11 @@ import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
-import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetesDependentResource;
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 
 @KubernetesDependent
-public final class ArtemisQueueDependentResource extends CRUKubernetesDependentResource<ArtemisQueue, OptaPlannerSolver> {
+public final class ArtemisQueueDependentResource extends CRUDKubernetesDependentResource<ArtemisQueue, OptaPlannerSolver> {
 
     public ArtemisQueueDependentResource(MessageAddress messageAddress, KubernetesClient kubernetesClient) {
         super(ArtemisQueue.class);

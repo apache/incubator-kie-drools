@@ -124,6 +124,7 @@
     <module>optaplanner-spring-integration</module>
     <module>optaplanner-quarkus-integration</module>
     <module>optaplanner-examples</module>
+    <module>optaplanner-operator</module>
   </modules>
 
   <profiles>
@@ -140,19 +141,5 @@
         <module>build/optaplanner-distribution-internal</module>
       </modules>
     </profile>
-    <profile>
-      <!-- TODO: This profile excludes the optaplanner-operator module from the default build. Remove the profile when
-           the io.quarkiverse.operatorsdk:quarkus-operator-sdk:4.0.0.Final is released. -->
-      <id>operator</id>
-      <activation>
-        <property>
-          <name>operator</name>
-        </property>
-      </activation>
-      <modules>
-        <module>optaplanner-operator</module>
-      </modules>
-    </profile>
   </profiles>
-
 </project>
