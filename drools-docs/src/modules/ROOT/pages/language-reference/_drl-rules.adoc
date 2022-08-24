@@ -44,6 +44,7 @@ rule "Underage"
   then
     $application.setApproved( false );
     $application.setExplanation( "Underage" );
+    update($application);
 end
 ----
 
@@ -65,6 +66,7 @@ rule "Underage"
   then
     $application.setApproved( false );
     $application.setExplanation( "Underage" );
+    update($application);
 end
 ----
 
