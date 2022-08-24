@@ -7,6 +7,7 @@ import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.EnvVar;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
+import io.fabric8.kubernetes.api.model.SecretKeySelector;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.api.model.apps.DeploymentSpecBuilder;
@@ -20,7 +21,10 @@ public final class DeploymentDependentResource extends CRUKubernetesDependentRes
 
     private static final String ENV_SOLVER_MESSAGE_IN = "SOLVER_MESSAGE_INPUT";
     private static final String ENV_SOLVER_MESSAGE_OUT = "SOLVER_MESSAGE_OUTPUT";
-    private static final String KAFKA_BOOTSTRAP_SERVERS = "KAFKA_BOOTSTRAP_SERVERS";
+    private static final String ENV_AMQ_HOST = "SOLVER_MESSAGE_AMQ_HOST";
+    private static final String ENV_AMQ_PORT = "SOLVER_MESSAGE_AMQ_PORT";
+    private static final String ENV_AMQ_USERNAME = "SOLVER_MESSAGE_AMQ_USERNAME";
+    private static final String ENV_AMQ_PASSWORD = "SOLVER_MESSAGE_AMQ_PASSWORD";
 
     public DeploymentDependentResource(KubernetesClient k8s) {
         super(Deployment.class);
@@ -34,7 +38,7 @@ public final class DeploymentDependentResource extends CRUKubernetesDependentRes
         Container container = new ContainerBuilder()
                 .withName(deploymentName)
                 .withImage(solver.getSpec().getSolverImage())
-                .withEnv(buildEnvironmentVariablesMapping(solver.getConfigMapName()))
+                .withEnv(buildEnvironmentVariablesMapping(solver))
                 .build();
 
         DeploymentSpecBuilder deploymentSpecBuilder = new DeploymentSpecBuilder()
@@ -60,27 +64,45 @@ public final class DeploymentDependentResource extends CRUKubernetesDependentRes
                 .build();
     }
 
-    private List<EnvVar> buildEnvironmentVariablesMapping(String configMapName) {
-        EnvVar envVarMessageInput = new EnvVarBuilder()
-                .withName(ENV_SOLVER_MESSAGE_IN)
-                .withNewValueFrom()
-                .withNewConfigMapKeyRef(ConfigMapDependentResource.SOLVER_MESSAGE_INPUT_KEY, configMapName, false)
-                .endValueFrom()
-                .build();
+    private List<EnvVar> buildEnvironmentVariablesMapping(OptaPlannerSolver solver) {
+        String configMapName = solver.getConfigMapName();
+        EnvVar envVarMessageInput = buildEnvVarFromConfigMap(ENV_SOLVER_MESSAGE_IN, configMapName,
+                ConfigMapDependentResource.SOLVER_MESSAGE_INPUT_KEY);
 
-        EnvVar envVarMessageOutput = new EnvVarBuilder()
-                .withName(ENV_SOLVER_MESSAGE_OUT)
-                .withNewValueFrom()
-                .withNewConfigMapKeyRef(ConfigMapDependentResource.SOLVER_MESSAGE_OUTPUT_KEY, configMapName, false)
-                .endValueFrom()
-                .build();
+        EnvVar envVarMessageOutput = buildEnvVarFromConfigMap(ENV_SOLVER_MESSAGE_OUT, configMapName,
+                ConfigMapDependentResource.SOLVER_MESSAGE_OUTPUT_KEY);
 
-        EnvVar envVarKafkaServers = new EnvVarBuilder()
-                .withName(KAFKA_BOOTSTRAP_SERVERS)
+        EnvVar envVarAmqHost = buildEnvVarFromConfigMap(ENV_AMQ_HOST, configMapName,
+                ConfigMapDependentResource.SOLVER_MESSAGE_AMQ_HOST_KEY);
+
+        EnvVar envVarAmqPort = buildEnvVarFromConfigMap(ENV_AMQ_PORT, configMapName,
+                ConfigMapDependentResource.SOLVER_MESSAGE_AMQ_PORT_KEY);
+
+        EnvVar envVarAmqUsername = buildEnvVarFromSecretKeySelector(ENV_AMQ_USERNAME,
+                solver.getSpec().getAmqBroker().getUsernameSecretRef());
+
+        EnvVar envVarAmqPassword = buildEnvVarFromSecretKeySelector(ENV_AMQ_PASSWORD,
+                solver.getSpec().getAmqBroker().getPasswordSecretRef());
+
+        return List.of(envVarMessageInput, envVarMessageOutput, envVarAmqHost, envVarAmqPort, envVarAmqUsername,
+                envVarAmqPassword);
+    }
+
+    private EnvVar buildEnvVarFromConfigMap(String envVariable, String configMapName, String configMapKey) {
+        return new EnvVarBuilder()
+                .withName(envVariable)
                 .withNewValueFrom()
-                .withNewConfigMapKeyRef(ConfigMapDependentResource.SOLVER_KAFKA_BOOTSTRAP_SERVERS_KEY, configMapName, false)
+                .withNewConfigMapKeyRef(configMapKey, configMapName, false)
                 .endValueFrom()
                 .build();
-        return List.of(envVarMessageInput, envVarMessageOutput, envVarKafkaServers);
+    }
+
+    private EnvVar buildEnvVarFromSecretKeySelector(String envVariable, SecretKeySelector secretKeySelector) {
+        return new EnvVarBuilder()
+                .withName(envVariable)
+                .withNewValueFrom()
+                .withNewSecretKeyRef(secretKeySelector.getKey(), secretKeySelector.getName(), secretKeySelector.getOptional())
+                .endValueFrom()
+                .build();
     }
 }

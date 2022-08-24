@@ -1,10 +1,19 @@
 package org.optaplanner.operator.impl.solver.model;
 
-public class Scaling {
+public final class Scaling {
 
-    private boolean dynamic;
+    private boolean dynamic = false;
 
     private int replicas = 1;
+
+    public Scaling() {
+        // Required by Jackson
+    }
+
+    public Scaling(boolean dynamic, int replicas) {
+        this.dynamic = dynamic;
+        this.replicas = replicas;
+    }
 
     public boolean isDynamic() {
         return dynamic;

@@ -48,7 +48,23 @@ public final class OptaPlannerSolver extends CustomResource<OptaPlannerSolverSpe
     }
 
     @JsonIgnore
+    public String getTriggerAuthenticationName() {
+        return getSolverName();
+    }
+
+    @JsonIgnore
+    public String getScaledObjectName() {
+        return getSolverName();
+    }
+
+    @JsonIgnore
+    public String getScaledObjectTriggerName() {
+        return getSolverName();
+    }
+
+    @JsonIgnore
     private String getSolverName() {
         return getMetadata().getName();
     }
+
 }

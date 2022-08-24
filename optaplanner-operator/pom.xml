@@ -40,10 +40,6 @@
       <groupId>io.javaoperatorsdk</groupId>
       <artifactId>operator-framework-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.strimzi</groupId>
-      <artifactId>api</artifactId>
-    </dependency>
 
     <!-- Test dependencies. -->
     <dependency>

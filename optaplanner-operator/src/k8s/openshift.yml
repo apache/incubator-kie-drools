@@ -114,7 +114,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: solverreconciler-cluster-role
+  name: optaplanner-solver-cluster-role
 rules:
   - apiGroups:
       - ""
@@ -161,10 +161,11 @@ rules:
       - patch
       - update
   - apiGroups:
-      - "kafka.strimzi.io"
+      - "keda.sh"
     resources:
-      - kafkatopics
-      - kafkatopics/status
+      - scaledobjects
+      - scaledobjects/status
+      - triggerauthentications
     verbs:
       - get
       - list
@@ -177,11 +178,11 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: solverreconciler-cluster-role-binding
+  name: optaplanner-solver-cluster-role-binding
 roleRef:
   kind: ClusterRole
   apiGroup: rbac.authorization.k8s.io
-  name: solverreconciler-cluster-role
+  name: optaplanner-solver-cluster-role
 subjects:
   - kind: ServiceAccount
     name: optaplanner-operator
@@ -190,7 +191,7 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: solverreconciler-crd-validating-role-binding
+  name: optaplanner-solver-crd-validating-role-binding
 roleRef:
   kind: ClusterRole
   apiGroup: rbac.authorization.k8s.io
