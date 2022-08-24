@@ -55,6 +55,9 @@ Map getMultijobPRConfig(Folder jobFolder) {
 // PR checks
 KogitoJobUtils.createAllEnvsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
 
+// Init branch
+setupInitBranchJob()
+
 // Nightly jobs
 setupNativeJob()
 setupMandrelJob()
@@ -102,6 +105,33 @@ void setupMandrelJob() {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+        }
+    }
+}
+
+void setupInitBranchJob() {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools', Folder.INIT_BRANCH, "${jenkins_path}/Jenkinsfile.init-branch", 'Drools Init branch')
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    jobParams.env.putAll([
+        REPO_NAME: 'drools',
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+
+        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
+
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+
+            stringParam('DROOLS_VERSION', '', 'Drools version to set.')
+
+            booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
     }
 }
