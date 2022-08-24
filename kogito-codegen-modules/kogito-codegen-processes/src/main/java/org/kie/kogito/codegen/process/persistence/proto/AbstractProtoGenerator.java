@@ -30,6 +30,8 @@ import org.drools.codegen.common.GeneratedFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static java.lang.String.format;
+
 public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
 
     private static final String GENERATED_PROTO_RES_PATH = "persistence/protobuf/";
@@ -52,6 +54,8 @@ public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
 
     @Override
     public Collection<GeneratedFile> generateProtoFiles() {
+        validateClasses();
+
         List<GeneratedFile> generatedFiles = new ArrayList<>();
 
         modelClasses.stream()
@@ -69,9 +73,25 @@ public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
         return generatedFiles;
     }
 
+    private void validateClasses() {
+        Set<String> modelNames = modelClasses.stream()
+                .map(this::extractName)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(String::toLowerCase)
+                .collect(Collectors.toSet());
+        dataClasses.forEach(c -> extractName(c).ifPresent(name -> {
+            if (modelNames.contains(name.toLowerCase())) {
+                throw new IllegalStateException(
+                        format("The data class '%s' name, used as process variable, conflicts with the generated process model classes for Data Index protobuf. Please rename either the process '%s' or the Java class.",
+                                modelClassName(c), name));
+            }
+        }));
+    }
+
     protected abstract boolean isEnum(T dataModel);
 
-    protected abstract Optional<String> extractName(T dataModel) throws Exception;
+    protected abstract Optional<String> extractName(T dataModel);
 
     protected abstract ProtoEnum enumFromClass(Proto proto, T clazz) throws Exception;
 

@@ -17,6 +17,7 @@ package org.kie.kogito.codegen.process.persistence;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -91,7 +92,6 @@ public class PersistenceGenerator extends AbstractGenerator {
      */
     public static final String GENERATOR_NAME = "persistence";
     protected static final String CLASS_TEMPLATES_PERSISTENCE = "/class-templates/persistence/";
-
     private final ProtoGenerator protoGenerator;
     private final MarshallerGenerator marshallerGenerator;
 
@@ -162,7 +162,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             String typesURI = "META-INF/kogito-types.proto";
             protoFiles.add(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE,
                     typesURI,
-                    IOUtils.toString(context().getClassLoader().getResourceAsStream(typesURI))));
+                    IOUtils.toString(context().getClassLoader().getResourceAsStream(typesURI), StandardCharsets.UTF_8)));
         } catch (IOException e) {
             throw new UncheckedIOException("Cannot find kogito types protobuf!", e);
         }
@@ -248,7 +248,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             try {
                 //try to find an existing ObjectMarshallerStrategy descriptor in the classpath to be appended to the ProtoStream generated one
                 objectMarshallerStrategyServiceDescriptor =
-                        IOUtils.toString(getClass().getResourceAsStream("/META-INF/services/org.kie.kogito.serialization.process.ObjectMarshallerStrategy"), "UTF-8");
+                        IOUtils.toString(getClass().getResourceAsStream("/META-INF/services/org.kie.kogito.serialization.process.ObjectMarshallerStrategy"), StandardCharsets.UTF_8);
             } catch (Exception e) {
                 LOGGER.warn("No existing ObjectMarshallerStrategy found the the classpath to be included with the ProtoS generated one for SPI.");
             }

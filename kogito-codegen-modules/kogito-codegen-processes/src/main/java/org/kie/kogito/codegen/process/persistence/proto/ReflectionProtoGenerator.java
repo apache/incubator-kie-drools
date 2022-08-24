@@ -163,8 +163,13 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
     }
 
     @Override
-    protected Optional<String> extractName(Class<?> clazz) throws Exception {
-        BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
+    protected Optional<String> extractName(Class<?> clazz) {
+        BeanInfo beanInfo;
+        try {
+            beanInfo = Introspector.getBeanInfo(clazz);
+        } catch (IntrospectionException e) {
+            throw new RuntimeException(e);
+        }
         String name = beanInfo.getBeanDescriptor().getBeanClass().getSimpleName();
 
         Predicate<String> typeExclusions = ExclusionTypeUtils.createTypeExclusions();

@@ -181,7 +181,6 @@ public class ProcessCodegen extends AbstractGenerator {
     private static GeneratedInfo<KogitoWorkflowProcess> validate(GeneratedInfo<KogitoWorkflowProcess> processInfo) {
         Process process = processInfo.info();
         try {
-
             ProcessValidatorRegistry.getInstance().getValidator(process, process.getResource()).validate(process);
         } catch (ValidationException e) {
             //TODO: add all errors during parsing phase in the ValidationContext itself

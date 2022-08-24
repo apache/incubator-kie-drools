@@ -34,6 +34,8 @@ import org.kie.kogito.codegen.data.AnswerBrokenV2;
 import org.kie.kogito.codegen.data.AnswerWithAnnotations;
 import org.kie.kogito.codegen.data.EmptyConstructor;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
+import org.kie.kogito.codegen.data.Hello;
+import org.kie.kogito.codegen.data.HelloModel;
 import org.kie.kogito.codegen.data.JacksonData;
 import org.kie.kogito.codegen.data.ListWithoutType;
 import org.kie.kogito.codegen.data.NotEmptyConstructor;
@@ -63,6 +65,8 @@ public final class JandexTestUtils {
             AnswerBrokenV2.class,
             EmptyConstructor.class,
             GeneratedPOJO.class,
+            Hello.class,
+            HelloModel.class,
             NotEmptyConstructor.class,
             Person.class,
             PersonVarInfo.class,

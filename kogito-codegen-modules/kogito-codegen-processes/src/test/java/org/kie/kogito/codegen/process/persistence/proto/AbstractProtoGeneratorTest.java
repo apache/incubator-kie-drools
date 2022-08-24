@@ -30,6 +30,8 @@ import org.kie.kogito.codegen.data.AnswerBroken;
 import org.kie.kogito.codegen.data.AnswerBrokenV2;
 import org.kie.kogito.codegen.data.AnswerWithAnnotations;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
+import org.kie.kogito.codegen.data.Hello;
+import org.kie.kogito.codegen.data.HelloModel;
 import org.kie.kogito.codegen.data.JacksonData;
 import org.kie.kogito.codegen.data.ListWithoutType;
 import org.kie.kogito.codegen.data.Person;
@@ -548,6 +550,18 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThatThrownBy(() -> generatorBroken2.protoOfDataClasses("org.kie.kogito.test.persons"))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Cannot mix annotation");
+    }
+
+    @Test
+    void testDataClassNameConflict() {
+        AbstractProtoGenerator<T> generatorBroken = protoGeneratorBuilder()
+                .withDataClasses(Collections.singleton(convertToType(Hello.class)))
+                .build(Collections.singleton(convertToType(HelloModel.class)));
+
+        assertThatThrownBy(() -> generatorBroken.generateProtoFiles())
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining(
+                        "The data class 'org.kie.kogito.codegen.data.Hello' name, used as process variable, conflicts with the generated process model classes for Data Index protobuf. Please rename either the process 'Hello' or the Java class.");
     }
 
     @Test

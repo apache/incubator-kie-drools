@@ -83,7 +83,6 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
         String name = clazz.simpleName();
         String altName = getReferenceOfModel(clazz, "name");
         if (altName != null) {
-
             name = altName;
         }
         return Optional.of(name);
@@ -283,7 +282,6 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
         AnnotationInstance generatedData = modelClazz.classAnnotation(generatedAnnotation);
 
         if (generatedData != null) {
-
             return generatedData.value("hidden").asBoolean();
         }
 
