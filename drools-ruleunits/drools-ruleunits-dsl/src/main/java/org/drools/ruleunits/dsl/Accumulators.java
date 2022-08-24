@@ -15,17 +15,44 @@
  */
 package org.drools.ruleunits.dsl;
 
+import java.util.List;
+import java.util.Set;
+
 import org.drools.core.base.accumulators.AverageAccumulateFunction;
+import org.drools.core.base.accumulators.CollectListAccumulateFunction;
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
+import org.drools.core.base.accumulators.CountAccumulateFunction;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
 import org.drools.core.base.accumulators.IntegerMinAccumulateFunction;
 import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
+import org.drools.core.base.accumulators.LongMaxAccumulateFunction;
+import org.drools.core.base.accumulators.LongMinAccumulateFunction;
+import org.drools.core.base.accumulators.LongSumAccumulateFunction;
 import org.drools.model.functions.Function1;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
 
+import static org.drools.model.functions.Function1.identity;
+
 public class Accumulators {
+
+    public static <A, B> Accumulator1<A, Long> count() {
+        return new Accumulator1<>(identity(), CountAccumulateFunction::new, Long.class);
+    }
+
+    public static <A, B> Accumulator1<A, List> collect() {
+        return new Accumulator1<>(identity(), CollectListAccumulateFunction::new, List.class);
+    }
+
+    public static <A, B> Accumulator1<A, Set> collectSet() {
+        return new Accumulator1<>(identity(), CollectSetAccumulateFunction::new, Set.class);
+    }
 
     public static <A, B> Accumulator1<A, Integer> sum(Function1<A, B> bindingFunc) {
         return new Accumulator1<>(bindingFunc, IntegerSumAccumulateFunction::new, Integer.class);
+    }
+
+    public static <A, B> Accumulator1<A, Long> sumLong(Function1<A, B> bindingFunc) {
+        return new Accumulator1<>(bindingFunc, LongSumAccumulateFunction::new, Long.class);
     }
 
     public static <A, B> Accumulator1<A, Double> avg(Function1<A, B> bindingFunc) {
@@ -36,7 +63,15 @@ public class Accumulators {
         return new Accumulator1<>(bindingFunc, IntegerMinAccumulateFunction::new, Integer.class);
     }
 
+    public static <A, B> Accumulator1<A, Long> minLong(Function1<A, B> bindingFunc) {
+        return new Accumulator1<>(bindingFunc, LongMinAccumulateFunction::new, Long.class);
+    }
+
     public static <A, B> Accumulator1<A, Integer> max(Function1<A, B> bindingFunc) {
         return new Accumulator1<>(bindingFunc, IntegerMaxAccumulateFunction::new, Integer.class);
+    }
+
+    public static <A, B> Accumulator1<A, Long> maxLong(Function1<A, B> bindingFunc) {
+        return new Accumulator1<>(bindingFunc, LongMaxAccumulateFunction::new, Long.class);
     }
 }

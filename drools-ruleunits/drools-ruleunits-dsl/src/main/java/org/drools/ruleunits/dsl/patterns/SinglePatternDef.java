@@ -41,7 +41,7 @@ public abstract class SinglePatternDef<A> implements InternalPatternDef {
         return constraints;
     }
 
-    protected Variable getVariable() {
+    public Variable getVariable() {
         return variable;
     }
 

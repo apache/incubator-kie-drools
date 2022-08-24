@@ -100,7 +100,7 @@ public class RuleUnitsTest {
         assertThat(unit.getResults()).containsExactlyInAnyOrder(
                 "Sum of length of Strings starting with A is 12",
                 "Max length of Strings not starting with A is 5",
-                "Sum of length of Strings above threshold is 0"
+                "Count of Strings above threshold is 0"
         );
 
         unit.getResults().clear();
@@ -110,8 +110,25 @@ public class RuleUnitsTest {
         assertThat(fireNr).isEqualTo(2);
         assertThat(unit.getResults()).containsExactlyInAnyOrder(
                 "Average length of Strings longer than threshold 4 is 5.5",
-                "Sum of length of Strings above threshold is 11"
+                "Count of Strings above threshold is 2"
         );
+    }
+
+    @Test
+    public void testGroupBy() {
+        GroupByUnit unit = new GroupByUnit();
+
+        unit.getPersons().add(new Person("Mario", 48));
+        unit.getPersons().add(new Person("Matteo", 10));
+        unit.getPersons().add(new Person("Edson", 38));
+        unit.getPersons().add(new Person("Edoardo", 33));
+        unit.getPersons().add(new Person("Mark", 45));
+        unit.getPersons().add(new Person("Daniele", 13));
+
+        assertThat(unit.fire()).isEqualTo(2);
+        assertThat(unit.getResults().keySet()).containsExactlyInAnyOrder("M", "E");
+        assertThat(unit.getResults().get("M")).isEqualTo(93);
+        assertThat(unit.getResults().get("E")).isEqualTo(71);
     }
 
     @Test

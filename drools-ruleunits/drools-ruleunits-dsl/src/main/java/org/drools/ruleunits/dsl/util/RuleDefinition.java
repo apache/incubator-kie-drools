@@ -35,11 +35,13 @@ import org.drools.ruleunits.dsl.RuleUnitDefinition;
 import org.drools.ruleunits.dsl.RulesFactory;
 import org.drools.ruleunits.dsl.accumulate.AccumulatePattern1;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
+import org.drools.ruleunits.dsl.accumulate.GroupByPattern;
 import org.drools.ruleunits.dsl.patterns.CombinedPatternDef;
 import org.drools.ruleunits.dsl.patterns.ExistentialPatternDef;
-import org.drools.ruleunits.dsl.patterns.Pattern1DefImpl;
-import org.drools.ruleunits.dsl.patterns.Pattern2DefImpl;
 import org.drools.ruleunits.dsl.patterns.InternalPatternDef;
+import org.drools.ruleunits.dsl.patterns.Pattern1DefImpl;
+import org.drools.ruleunits.dsl.patterns.Pattern2Def;
+import org.drools.ruleunits.dsl.patterns.Pattern2DefImpl;
 import org.drools.ruleunits.dsl.patterns.PatternDef;
 
 import static org.drools.model.DSL.declarationOf;
@@ -105,8 +107,7 @@ public class RuleDefinition implements RuleFactory {
 
     @Override
     public <A, B> Pattern1DefImpl<B> accumulate(Function1<RuleFactory, PatternDef> patternBuilder, Accumulator1<A, B> acc) {
-        InternalPatternDef patternDef = internalCreatePattern(this, patternBuilder);
-        Pattern1DefImpl accPattern = asAccumulatePattern(patternDef, acc);
+        Pattern1DefImpl accPattern = asAccumulatePattern(internalCreatePattern(this, patternBuilder), acc);
         addPattern(accPattern);
         return accPattern;
     }
@@ -120,6 +121,14 @@ public class RuleDefinition implements RuleFactory {
             return new AccumulatePattern1<>(this, new CombinedPatternDef(Condition.Type.AND, pattern.getPatternA(), pattern.getPatternB()), acc);
         }
         throw new UnsupportedOperationException();
+    }
+
+
+    @Override
+    public <A, K, V> Pattern2Def<K, V> groupBy(Function1<RuleFactory, PatternDef> patternBuilder, Function1<A, K> groupingFunction, Accumulator1<A, V> acc) {
+        GroupByPattern groupByPattern = new GroupByPattern(this, internalCreatePattern(this, patternBuilder), groupingFunction, acc);
+        addPattern(groupByPattern);
+        return groupByPattern;
     }
 
     public void setConsequence(RuleItemBuilder consequence) {

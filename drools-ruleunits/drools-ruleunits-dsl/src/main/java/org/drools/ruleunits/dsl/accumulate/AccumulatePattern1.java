@@ -51,7 +51,7 @@ public class AccumulatePattern1<A, B> extends Pattern1DefImpl<B> {
         return DSL.accumulate(patternDef, accFunction(acc.getAccFuncSupplier(), boundVar).as(variable));
     }
 
-    private static void bindAccVar(Accumulator1 acc, ViewItem patternDef, Variable boundVar) {
+    static void bindAccVar(Accumulator1 acc, ViewItem patternDef, Variable boundVar) {
         if (patternDef instanceof PatternDSL.PatternDef) {
             ((PatternDSL.PatternDef) patternDef).bind(boundVar, acc.getBindingFunc());
         } else {

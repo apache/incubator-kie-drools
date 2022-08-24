@@ -27,6 +27,7 @@ import static org.drools.model.Index.ConstraintType.GREATER_THAN;
 import static org.drools.model.Index.ConstraintType.NOT_EQUAL;
 import static org.drools.model.functions.Function1.identity;
 import static org.drools.ruleunits.dsl.Accumulators.avg;
+import static org.drools.ruleunits.dsl.Accumulators.count;
 import static org.drools.ruleunits.dsl.Accumulators.max;
 import static org.drools.ruleunits.dsl.Accumulators.sum;
 
@@ -80,7 +81,7 @@ public class AccumulateUnit implements RuleUnitDefinition {
         // the join is in the accumulate, so this rule fires (having 0 as result) even without any matching tuple
         // accumulate( $i : /threshold and $s: /strings[ length >= $i ]; sum($s.length) )
         rulesFactory.addRule()
-                .accumulate( rule -> rule.from(threshold).from(strings).filter(String::length, GREATER_THAN, identity()), sum(String::length) )
-                .execute(results, (r, sum) -> r.add("Sum of length of Strings above threshold is " + sum));
+                .accumulate( rule -> rule.from(threshold).from(strings).filter(String::length, GREATER_THAN, identity()), count() )
+                .execute(results, (r, count) -> r.add("Count of Strings above threshold is " + count));
     }
 }

@@ -28,6 +28,8 @@ import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.constraints.Beta1Constraint;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
 
+import static org.drools.model.functions.Function1.identity;
+
 public class Pattern2DefImpl<A, B> extends SinglePatternDef<B> implements Pattern2Def<A, B> {
 
     protected final Pattern1DefImpl<A> patternA;
@@ -47,7 +49,7 @@ public class Pattern2DefImpl<A, B> extends SinglePatternDef<B> implements Patter
 
     @Override
     public Pattern2DefImpl<A, B> filter(Index.ConstraintType constraintType, Function1<A, B> rightExtractor) {
-        return filter("this", a -> a, constraintType, rightExtractor);
+        return filter("this", identity(), constraintType, rightExtractor);
     }
 
     @Override

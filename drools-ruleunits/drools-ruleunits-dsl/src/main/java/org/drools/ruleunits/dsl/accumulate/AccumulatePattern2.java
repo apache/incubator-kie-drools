@@ -26,7 +26,7 @@ public class AccumulatePattern2<A, B, C> extends Pattern2DefImpl<A, C> {
 
     private final Accumulator1<B, C> acc;
 
-    public AccumulatePattern2(RuleDefinition rule, Pattern1DefImpl<A> patternA, Pattern1DefImpl<C> patternC, Accumulator1<B, C> acc) {
+    private AccumulatePattern2(RuleDefinition rule, Pattern1DefImpl<A> patternA, Pattern1DefImpl<C> patternC, Accumulator1<B, C> acc) {
         super(rule, patternA, patternC);
         this.acc = acc;
     }

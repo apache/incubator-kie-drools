@@ -55,7 +55,7 @@ public class HelloWorldUnit implements RuleUnitDefinition {
     @Override
     public void defineRules(RulesFactory rulesFactory) {
         // /strings[ this == "Hello World" ]
-        rulesFactory.addRule() // for simple use cases it is possible to define the rule with a single fluent statement
+        rulesFactory.addRule()
                     .from(strings)
                     .filter(EQUAL, "Hello World") // when no extractor is provided "this" is implicit
                     .execute(results, r -> r.add("it worked!")); // the consequence can ignore the matched facts
