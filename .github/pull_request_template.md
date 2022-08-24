@@ -34,4 +34,6 @@ How to retest this PR or trigger a specific build:
 * <b>a full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
 
 * <b>an upstream build</b> please add comment: <b>Jenkins run upstream</b>
+
+* <b>for windows os job</b> add the label `windows_check`
 </details>
