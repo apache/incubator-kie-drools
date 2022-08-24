@@ -96,7 +96,7 @@ pipeline {
 
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
-        mailer.sendMarkdownTestSummaryNotification('Init', "[${getBuildBranch()}] Drools", [env.KOGITO_CI_EMAIL_TO])
+        mailer.sendMarkdownTestSummaryNotification('Setup branch', "[${getBuildBranch()}] Drools", [env.KOGITO_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
     }
