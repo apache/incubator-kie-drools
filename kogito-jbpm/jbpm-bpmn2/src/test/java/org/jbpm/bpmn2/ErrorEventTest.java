@@ -44,6 +44,7 @@ import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ErrorEventTest extends JbpmBpmn2TestCase {
 
@@ -447,6 +448,15 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         assertEquals(processInstance.getState(), KogitoProcessInstance.STATE_ABORTED);
     }
 
+    @Test
+    public void testErrorVariable() throws Exception {
+        kruntime = createKogitoProcessRuntime("error/ErrorVariable.bpmn2");
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", new WorkItemExecutionErrorWorkItemHandler("MY_ERROR"));
+        KogitoProcessInstance processInstance = kruntime.startProcess("ErrorVariable");
+        Object theException = processInstance.getVariables().get("theException");
+        assertTrue(theException instanceof WorkItemExecutionException);
+    }
+
     class ExceptionWorkItemHandler implements KogitoWorkItemHandler {
 
         @Override
@@ -462,9 +472,19 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
     class WorkItemExecutionErrorWorkItemHandler implements KogitoWorkItemHandler {
 
+        private final String errorCode;
+
+        public WorkItemExecutionErrorWorkItemHandler() {
+            this("500");
+        }
+
+        public WorkItemExecutionErrorWorkItemHandler(String errorCode) {
+            this.errorCode = errorCode;
+        }
+
         @Override
         public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-            throw new WorkItemExecutionException("500");
+            throw new WorkItemExecutionException(errorCode);
         }
 
         @Override

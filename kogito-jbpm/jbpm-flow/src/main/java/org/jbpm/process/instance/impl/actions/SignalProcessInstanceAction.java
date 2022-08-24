@@ -80,14 +80,17 @@ public class SignalProcessInstanceAction implements Action, Serializable {
         Object signal = null;
         if (inputVariable != null) {
             signal = context.getContextData().get(inputVariable);
-        } else {
+        }
+        if (signal == null) {
             if (variableName != null) {
                 signal = context.getVariable(variableName);
             } else {
                 signal = eventDataSupplier.apply(context);
             }
         }
-        signal = signal != null ? signal : variableName;
+        if (signal == null) {
+            signal = variableName;
+        }
         // compute inputs for throwing
         Map<String, Object> inputSet = new HashMap<>();
         inputSet.put("Data", signal);
