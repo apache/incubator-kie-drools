@@ -41,6 +41,7 @@ import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.efesto.common.api.constants.Constants.DEFAULT_INDEXFILE_DIRECTORY;
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileNameOrFilePath;
 import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
@@ -51,7 +52,6 @@ import static org.kie.efesto.compilationmanager.api.utils.SPIUtils.getKieCompile
 public class CompilationManagerUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(CompilationManagerUtils.class.getName());
-    private static final String DEFAULT_INDEXFILE_DIRECTORY = "./target/classes";
 
     private CompilationManagerUtils() {}
 
@@ -88,7 +88,7 @@ public class CompilationManagerUtils {
     public static Optional<IndexFile> getExistingIndexFile(String model) {
         String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY);
         IndexFile toReturn = new IndexFile(parentPath, model);
-        return getFileFromFileNameOrFilePath(toReturn.getName(), toReturn.getAbsolutePath()).map(IndexFile::new);
+        return getFileFromFileNameOrFilePath(toReturn.getName(), toReturn.getParentFile().getPath()).map(IndexFile::new);
     }
 
     static IndexFile getIndexFile(EfestoCallableOutput compilationOutput) {

@@ -25,7 +25,6 @@ import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileByFilePath;
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileNameOrFilePath;
 
 class IndexFileTest {
@@ -75,17 +74,6 @@ class IndexFileTest {
         String expected = "model";
         IndexFile indexFile = new IndexFile(fileName);
         assertThat(indexFile.getModel()).isEqualTo(expected);
-    }
-
-    @Test
-    void isEqualExisting() {
-        IndexFile compareFile = getFileByFilePath("./target/test-classes/IndexFile.test_json")
-                .map(IndexFile::new)
-                .orElseThrow(() -> new RuntimeException("Failed to retrieve IndexFile.test_json"));
-        assertThat(compareFile.getName()).isEqualTo(testingFile.getName());
-        assertThat(compareFile.getPath()).isNotEqualTo(testingFile.getPath());
-        assertThat(compareFile.getAbsolutePath()).isNotEqualTo(testingFile.getAbsolutePath());
-        assertThat(compareFile.equals(testingFile)).isTrue();
     }
 
     @Test

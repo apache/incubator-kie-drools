@@ -110,10 +110,8 @@ class FileUtilsTest {
     void getFileFromFileNameOrFilePathExisting() {
         Optional<File> retrieved = FileUtils.getFileFromFileNameOrFilePath(TEST_FILE, TEST_FILE);
         assertThat(retrieved).isNotNull().isNotEmpty();
-        String path = String.format("target%1$stest-classes%1$s%2$s", File.separator, TEST_FILE);
-        retrieved = FileUtils.getFileFromFileNameOrFilePath(NOT_EXISTING_FILE, path);
-        assertThat(retrieved).isNotNull().isNotEmpty();
-        retrieved = FileUtils.getFileFromFileNameOrFilePath(path, NOT_EXISTING_FILE);
+        String parentPath = String.format("target%stest-classes", File.separator);
+        retrieved = FileUtils.getFileFromFileNameOrFilePath(TEST_FILE, parentPath);
         assertThat(retrieved).isNotNull().isNotEmpty();
     }
 

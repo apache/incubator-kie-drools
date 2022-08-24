@@ -109,9 +109,9 @@ public class FileUtils {
         }
     }
 
-    public static Optional<File> getFileFromFileNameOrFilePath(String fileName, String filePath) {
+    public static Optional<File> getFileFromFileNameOrFilePath(String fileName, String parentPath) {
         return Stream.of(getFileByFileNameFromClassloader(fileName, Thread.currentThread().getContextClassLoader()),
-                         getFileByFilePath(filePath))
+                         getFileByFileNameAndParentPath(fileName, parentPath))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst();
@@ -122,22 +122,32 @@ public class FileUtils {
         return getFileByFileNameFromClassloader(fileName, Thread.currentThread().getContextClassLoader());
     }
 
-    public static Optional<File> getFileByFileNameFromClassloader(String fileName, ClassLoader classLoader) {
-        logger.debug("getFileByFileNameFromClassloader {} {}", fileName, classLoader);
-        URL retrieved = classLoader.getResource(fileName);
-        if (retrieved != null) {
-            logger.debug("retrieved {}", retrieved);
-            return getFileFromURL(retrieved);
+    static Optional<File> getFileByFileNameAndParentPath(String fileName, String parentPath) {
+        logger.debug("getFileByFileNameAndParentPath {} {}", fileName, parentPath);
+        File parentDirectory = new File(parentPath);
+        if (!parentDirectory.exists()) {
+            logger.error("Parent path {} does not exists!", parentDirectory.getAbsolutePath());
+            return Optional.empty();
         }
-        File file = new File(fileName);
+        if (!parentDirectory.isDirectory() || !parentDirectory.canRead()) {
+            logger.error("Parent path {} is not a directory or can't be read", parentDirectory.getAbsolutePath());
+            return Optional.empty();
+        }
+        File file = new File(parentDirectory, fileName);
         logger.debug("file {}", file);
         logger.debug("file.exists() {}", file.exists());
         return file.exists() ? Optional.of(file) : Optional.empty();
     }
 
-    public static Optional<File> getFileByFilePath(String filePath) {
-        File file = new File(filePath);
-        return file.exists() ? Optional.of(file) : Optional.empty();
+    static Optional<File> getFileByFileNameFromClassloader(String fileName, ClassLoader classLoader) {
+        logger.debug("getFileByFileNameFromClassloader {} {}", fileName, classLoader);
+        URL retrieved = classLoader.getResource(fileName);
+        if (retrieved != null) {
+            logger.debug("retrieved {}", retrieved);
+            return getFileFromURL(retrieved);
+        } else {
+            return Optional.empty();
+        }
     }
 
     static Optional<File> getFileFromURL(URL retrieved) {

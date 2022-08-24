@@ -35,8 +35,10 @@ import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.efesto.common.api.constants.Constants.DEFAULT_INDEXFILE_DIRECTORY;
+import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 import static org.kie.efesto.common.api.utils.CollectionUtils.findAtMostOne;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileNameOrFilePath;
 import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 
 public class GeneratedResourceUtils {
@@ -119,7 +121,8 @@ public class GeneratedResourceUtils {
     public static Optional<IndexFile> getIndexFile(String modelType) {
         logger.debug("getIndexFile {}", modelType);
         IndexFile toSearch = new IndexFile(modelType);
-        Optional<File> retrieved = getFileFromFileName(toSearch.getName());
+        String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY);
+        Optional<File> retrieved = getFileFromFileNameOrFilePath(toSearch.getName(), parentPath);
         if (retrieved.isPresent()) {
             File actualFile = retrieved.get();
             IndexFile toReturn = actualFile instanceof MemoryFile ?

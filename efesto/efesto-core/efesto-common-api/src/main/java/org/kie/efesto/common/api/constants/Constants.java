@@ -35,6 +35,8 @@ public class Constants {
     //
     public static final String INDEXFILE_DIRECTORY_PROPERTY = "indexfile.directory";
 
+    public static final String DEFAULT_INDEXFILE_DIRECTORY = "./target/classes";
+
     private Constants() {
         // Avoid instantiation
     }
