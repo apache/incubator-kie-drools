@@ -124,7 +124,6 @@
     <module>optaplanner-spring-integration</module>
     <module>optaplanner-quarkus-integration</module>
     <module>optaplanner-examples</module>
-    <module>optaplanner-operator</module>
   </modules>
 
   <profiles>
@@ -139,6 +138,20 @@
         <module>optaplanner-docs</module>
         <module>build/optaplanner-javadoc</module>
         <module>build/optaplanner-distribution-internal</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- TODO: Remove the profile and add optaplanner-operator among default modules when
+           https://github.com/quarkiverse/quarkus-operator-sdk/pull/390 is merged and a new version
+           with the fix released. -->
+      <id>operator</id>
+      <activation>
+        <property>
+          <name>operator</name>
+        </property>
+      </activation>
+      <modules>
+        <module>optaplanner-operator</module>
       </modules>
     </profile>
   </profiles>
