@@ -15,7 +15,7 @@
  */
 package org.kie.drl.engine.runtime.model;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 
 /**
@@ -25,8 +25,8 @@ import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 public abstract class EfestoInputDrl<T>  extends AbstractEfestoInput<T> {
 
     // TODO {mfusco} Define a generic (instead of "String") that could reasonably contain any given "input" for rule execution
-    protected EfestoInputDrl(FRI fri, T inputData) {
-        super(fri, inputData);
+    protected EfestoInputDrl(LocalUri localUri, T inputData) {
+        super(localUri, inputData);
     }
 
 

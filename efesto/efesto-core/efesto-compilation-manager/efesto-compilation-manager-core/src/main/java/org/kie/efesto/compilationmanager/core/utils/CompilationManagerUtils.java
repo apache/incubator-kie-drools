@@ -76,7 +76,7 @@ public class CompilationManagerUtils {
                     EfestoCallableOutputClassesContainer classesContainer =
                             (EfestoCallableOutputClassesContainer) compilationOutput;
                     context.loadClasses(classesContainer.getCompiledClassesMap());
-                    context.addGeneratedClasses(classesContainer.getFri(), classesContainer.getCompiledClassesMap());
+                    context.addGeneratedClasses(classesContainer.getLocalUri(), classesContainer.getCompiledClassesMap());
                 }
             } else if (compilationOutput instanceof EfestoResource) {
                 toPopulate.addAll(getIndexFilesWithProcessedResource((EfestoResource) compilationOutput, context));
@@ -93,8 +93,8 @@ public class CompilationManagerUtils {
 
     static IndexFile getIndexFile(EfestoCallableOutput compilationOutput) {
         String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY);
-        IndexFile toReturn = new IndexFile(parentPath, compilationOutput.getFri().getModel());
-        return getExistingIndexFile(compilationOutput.getFri().getModel()).orElseGet(() -> createIndexFile(toReturn));
+        IndexFile toReturn = new IndexFile(parentPath, compilationOutput.getLocalUri().model());
+        return getExistingIndexFile(compilationOutput.getLocalUri().model()).orElseGet(() -> createIndexFile(toReturn));
     }
 
     private static IndexFile createIndexFile(IndexFile toCreate) {
@@ -130,9 +130,9 @@ public class CompilationManagerUtils {
 
     static GeneratedResource getGeneratedResource(EfestoCompilationOutput compilationOutput) {
         if (compilationOutput instanceof EfestoRedirectOutput) {
-            return new GeneratedRedirectResource(((EfestoRedirectOutput) compilationOutput).getFri(), ((EfestoRedirectOutput) compilationOutput).getTargetEngine());
+            return new GeneratedRedirectResource(((EfestoRedirectOutput) compilationOutput).getLocalUri(), ((EfestoRedirectOutput) compilationOutput).getTargetEngine());
         } else if (compilationOutput instanceof EfestoCallableOutput) {
-            return new GeneratedExecutableResource(((EfestoCallableOutput) compilationOutput).getFri(), ((EfestoCallableOutput) compilationOutput).getFullClassNames());
+            return new GeneratedExecutableResource(((EfestoCallableOutput) compilationOutput).getLocalUri(), ((EfestoCallableOutput) compilationOutput).getFullClassNames());
         } else {
             throw new KieCompilerServiceException("Unmanaged type " + compilationOutput.getClass().getName());
         }

@@ -15,7 +15,7 @@
  */
 package org.kie.drl.engine.runtime.model;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoOutput;
 
 /**
@@ -24,9 +24,10 @@ import org.kie.efesto.runtimemanager.api.model.AbstractEfestoOutput;
  */
 public class EfestoOutputDrl<T> extends AbstractEfestoOutput<T> {
 
-    // TODO {mfusco} Define a generic (instead of "String") that could reasonably contain any given "output" from rule execution
-    public EfestoOutputDrl(FRI fri, T outputData) {
-        super(fri, outputData);
+    // TODO {mfusco} Define a generic (instead of "String") that could reasonably contain any given "output" from
+    //  rule execution
+    public EfestoOutputDrl(LocalUri localUri, T outputData) {
+        super(localUri, outputData);
     }
 
 }

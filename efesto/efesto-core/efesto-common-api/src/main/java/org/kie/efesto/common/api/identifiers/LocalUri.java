@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.StringTokenizer;
 
 /**
- * A uri of the form: kogito-local:///a/b/c...
+ * A uri of the form: efesto-local:///a/b/c...
  * <p>
  * For instance: for "/a/b/c" the {@link LocalUri} is represented as:
  *
@@ -45,17 +45,20 @@ import java.util.StringTokenizer;
  * </pre>
  */
 public abstract class LocalUri {
-    public static final String SCHEME = "kogito-local";
+
+    public static final String SCHEME = "efesto-local";
     public static final LocalUri Root = new LocalUriRoot();
+    public static final String SLASH = "/";
 
     public static LocalUri parse(String path) {
         if (path.startsWith(SCHEME)) {
             URI parsed = URI.create(path);
             path = parsed.getPath();
         }
-        if (!path.startsWith("/"))
+        if (!path.startsWith(SLASH)) {
             throw new IllegalArgumentException("Path must start at root /");
-        StringTokenizer tok = new StringTokenizer(path, "/");
+        }
+        StringTokenizer tok = new StringTokenizer(path, SLASH);
         LocalUri hpath = Root;
         while (tok.hasMoreTokens()) {
             hpath = hpath.append(tok.nextToken());
@@ -63,8 +66,32 @@ public abstract class LocalUri {
         return hpath;
     }
 
+    private static LocalUriPathComponent getFirstLocalUriPathComponent(LocalUri localUri) {
+        if (localUri.parent() != null && localUri.parent() instanceof LocalUriPathComponent) {
+            return getFirstLocalUriPathComponent(localUri.parent());
+        } else {
+            return localUri instanceof LocalUriPathComponent ? (LocalUriPathComponent) localUri : null;
+        }
+    }
+
     // this is a closed hierarchy
     private LocalUri() {
+    }
+
+    public String model() {
+        LocalUriPathComponent firstLocalUriPathComponent = getFirstLocalUriPathComponent(this);
+        return firstLocalUriPathComponent != null ? firstLocalUriPathComponent.component : null;
+    }
+
+    public String basePath() {
+        String path = path();
+        String model = model();
+        if (model == null || model.isEmpty()) {
+            return path;
+        } else {
+            String start = SLASH + model;
+            return path.substring(path.indexOf(start) + start.length());
+        }
     }
 
     public abstract String path();
@@ -94,6 +121,7 @@ public abstract class LocalUri {
      * Root of a {@link LocalUri}: "/"
      */
     public static class LocalUriRoot extends LocalUri {
+
         private LocalUriRoot() {
         }
 
@@ -108,7 +136,7 @@ public abstract class LocalUri {
 
         @Override
         public String path() {
-            return "/";
+            return SLASH;
         }
 
         // it is a singleton: we don't need to override equals, hashCode
@@ -148,7 +176,7 @@ public abstract class LocalUri {
 
         @Override
         public String path() {
-            return parent == Root ? ("/" + component) : (parent.path() + "/" + component);
+            return parent == Root ? (SLASH + component) : (parent.path() + SLASH + component);
         }
 
         @Override

@@ -37,12 +37,14 @@ import org.drools.model.codegen.project.KogitoPackageSources;
 import org.drools.model.codegen.project.RuleCodegenError;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
 import org.kie.api.io.Resource;
+import org.kie.drl.api.identifiers.DrlIdFactory;
 import org.kie.drl.engine.compilation.model.DecisionTableFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -103,12 +105,18 @@ public class DrlCompilerHelper {
 
         Map<String, String> sourceCode = modelFiles.stream()
                 .collect(Collectors.toMap(generatedFile -> generatedFile.getPath()
-                                .replace(".java", "")
-                                .replace(File.separatorChar, '.'),
-                        generatedFile -> new String(generatedFile.getData(), StandardCharsets.UTF_8)));
+                                                  .replace(".java", "")
+                                                  .replace(File.separatorChar, '.'),
+                                          generatedFile -> new String(generatedFile.getData(),
+                                                                      StandardCharsets.UTF_8)));
 
         Map<String, byte[]> compiledClasses = context.compileClasses(sourceCode);
-        return new ExecutableModelClassesContainer(new FRI(basePath, "drl"), generatedRulesModels, compiledClasses);
+        LocalUri localUri = new ReflectiveAppRoot("")
+                .get(DrlIdFactory.class)
+                .get(basePath)
+                .toLocalId()
+                .asLocalUri();
+        return new ExecutableModelClassesContainer(localUri, generatedRulesModels, compiledClasses);
     }
 
     private static Collection<CompositePackageDescr> buildCompositePackageDescrs(DrlFileSetResource resources, KnowledgeBuilderConfigurationImpl conf) {

@@ -17,6 +17,8 @@ package org.kie.efesto.common.api.model;
 
 import java.util.Objects;
 
+import org.kie.efesto.common.api.identifiers.LocalUri;
+
 /**
  * A <code>GeneratedResource</code> not meant to be directly executed, linking to another <code>GeneratedResource</code>
  */
@@ -26,7 +28,7 @@ public final class GeneratedRedirectResource implements GeneratedResource {
     /**
      * the full reference identifier (e.g. "bar/resource/some_final_model")
      */
-    private final FRI fri;
+    private final LocalUri localUri;
 
     /**
      * the full reference identifier (e.g. "bar/resource/some_final_model")
@@ -37,13 +39,13 @@ public final class GeneratedRedirectResource implements GeneratedResource {
         this(null, null);
     }
 
-    public GeneratedRedirectResource(FRI fri, String target) {
-        this.fri = fri;
+    public GeneratedRedirectResource(LocalUri localUri, String target) {
+        this.localUri = localUri;
         this.target = target;
     }
 
-    public FRI getFri() {
-        return fri;
+    public LocalUri getLocalUri() {
+        return localUri;
     }
 
     public String getTarget() {
@@ -53,7 +55,7 @@ public final class GeneratedRedirectResource implements GeneratedResource {
     @Override
     public String toString() {
         return "GeneratedRedirectResource{" +
-                "fri='" + fri + '\'' +
+                "localUri='" + localUri + '\'' +
                 ", target='" + target + '\'' +
                 "} " + super.toString();
     }
@@ -64,11 +66,11 @@ public final class GeneratedRedirectResource implements GeneratedResource {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         GeneratedRedirectResource that = (GeneratedRedirectResource) o;
-        return Objects.equals(fri, that.fri) && Objects.equals(target, that.target);
+        return Objects.equals(localUri, that.localUri) && Objects.equals(target, that.target);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), fri, target);
+        return Objects.hash(super.hashCode(), localUri, target);
     }
 }

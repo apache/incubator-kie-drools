@@ -29,7 +29,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -72,21 +72,21 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void canManage() {
-        FRI fri = new FRI(basePath, PMML_STRING);
-        AbstractEfestoInput darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME));
+        LocalUri localUri = LocalUri.parse("/" + PMML_STRING + "/" + basePath);
+        AbstractEfestoInput darInputPMML = new EfestoInputPMML(localUri, getPMMLContext(FILE_NAME, MODEL_NAME));
         assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isTrue();
-        darInputPMML = new AbstractEfestoInput<String>(fri, "") {
+        darInputPMML = new AbstractEfestoInput<String>(localUri, "") {
         };
         assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isFalse();
-        fri = new FRI("darfoo", PMML_STRING);
-        darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME));
+        localUri =  LocalUri.parse("/" + PMML_STRING + "/darfoo");
+        darInputPMML = new EfestoInputPMML(localUri, getPMMLContext(FILE_NAME, MODEL_NAME));
         assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isFalse();
     }
 
     @Test
     void execute() {
-        FRI fri = new FRI(basePath, PMML_STRING);
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME));
+        LocalUri localUri = LocalUri.parse("/" + PMML_STRING + "/" + basePath);
+        EfestoInputPMML darInputPMML = new EfestoInputPMML(localUri, getPMMLContext(FILE_NAME, MODEL_NAME));
         Optional<EfestoOutputPMML> retrieved = PMMLRuntimeHelper.execute(darInputPMML, getPMMLContext(FILE_NAME,
                                                                                                       MODEL_NAME));
         assertThat(retrieved).isNotNull().isPresent();
@@ -102,8 +102,8 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void getPMMLModelFromClassLoader() {
-        FRI fri = new FRI(basePath, PMML_STRING);
-        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri,
+        LocalUri localUri = LocalUri.parse("/" + PMML_STRING + "/" + basePath);
+        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(localUri,
                                                                                           getPMMLContext(FILE_NAME,
                                                                                                          MODEL_NAME));
         Optional<KiePMMLModel> retrieved = PMMLRuntimeHelper.getPMMLModel(kiePmmlModelFactory.getKiePMMLModels(),
@@ -116,9 +116,9 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void evaluate() {
-        FRI fri = new FRI(basePath, PMML_STRING);
+        LocalUri localUri = LocalUri.parse("/" + PMML_STRING + "/" + basePath);
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
-        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri, pmmlContext);
+        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(localUri, pmmlContext);
         List<KiePMMLModel> kiePMMLModels = kiePmmlModelFactory.getKiePMMLModels();
         PMML4Result retrieved = PMMLRuntimeHelper.evaluate(kiePMMLModels, pmmlContext);
         commonEvaluatePMML4Result(retrieved, pmmlContext.getRequestData());
@@ -126,12 +126,11 @@ class PMMLRuntimeHelperTest {
 
     @Test
     public void evaluateWithPMMLContextListeners() {
-
-        FRI fri = new FRI(basePath, PMML_STRING);
+        LocalUri localUri = LocalUri.parse("/" + PMML_STRING + "/" + basePath);
         final List<PMMLStep> pmmlSteps = new ArrayList<>();
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME,
                                                         Collections.singleton(getPMMLListener(pmmlSteps)));
-        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri, pmmlContext);
+        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(localUri, pmmlContext);
         KiePMMLModel kiePMMLModel = kiePmmlModelFactory.getKiePMMLModels().get(0);
         PMMLRuntimeHelper.evaluate(kiePMMLModel, pmmlContext);
         Arrays.stream(PMML_STEP.values()).forEach(pmml_step -> {
@@ -146,11 +145,11 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void getEfestoOutput() {
-        FRI fri = new FRI(basePath, PMML_STRING);
+        LocalUri localUri = LocalUri.parse("/" + PMML_STRING + "/" + basePath);
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
 
-        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri, pmmlContext);
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, pmmlContext);
+        KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(localUri, pmmlContext);
+        EfestoInputPMML darInputPMML = new EfestoInputPMML(localUri, pmmlContext);
         EfestoOutputPMML retrieved = PMMLRuntimeHelper.getEfestoOutput(kiePmmlModelFactory, darInputPMML);
         commonEvaluateEfestoOutputPMML(retrieved, darInputPMML);
     }
@@ -190,7 +189,7 @@ class PMMLRuntimeHelperTest {
 
     private void commonEvaluateEfestoOutputPMML(EfestoOutputPMML toEvaluate, EfestoInputPMML darInputPMML) {
         assertThat(toEvaluate).isNotNull();
-        assertThat(toEvaluate.getFRI()).isEqualTo(darInputPMML.getFRI());
+        assertThat(toEvaluate.getLocalUri()).isEqualTo(darInputPMML.getLocalUri());
         commonEvaluatePMML4Result(toEvaluate.getOutputData(), darInputPMML.getInputData().getRequestData());
     }
 

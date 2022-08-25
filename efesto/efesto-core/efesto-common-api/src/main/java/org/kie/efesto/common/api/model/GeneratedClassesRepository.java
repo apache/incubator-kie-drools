@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.kie.efesto.common.api.identifiers.LocalUri;
+
 /**
  * package private Singleton repository to cache generated classes. Accessed by EfestoContext
  */
@@ -26,25 +28,25 @@ enum GeneratedClassesRepository {
 
     INSTANCE;
 
-    private Map<FRI, Map<String, byte[]>> generatedClassesMap = new ConcurrentHashMap<>();
+    private Map<LocalUri, Map<String, byte[]>> generatedClassesMap = new ConcurrentHashMap<>();
 
-    public void addGeneratedClasses(FRI fri, Map<String, byte[]> generatedClasses) {
-        generatedClassesMap.put(fri, generatedClasses);
+    public void addGeneratedClasses(LocalUri localUri, Map<String, byte[]> generatedClasses) {
+        generatedClassesMap.put(localUri, generatedClasses);
     }
 
-    public Map<String, byte[]> getGeneratedClasses(FRI fri) {
-        return generatedClassesMap.get(fri);
+    public Map<String, byte[]> getGeneratedClasses(LocalUri localUri) {
+        return generatedClassesMap.get(localUri);
     }
 
-    public Map<String, byte[]> removeGeneratedClasses(FRI fri) {
-        return generatedClassesMap.remove(fri);
+    public Map<String, byte[]> removeGeneratedClasses(LocalUri localUri) {
+        return generatedClassesMap.remove(localUri);
     }
 
-    public boolean containsKey(FRI fri) {
-        return generatedClassesMap.containsKey(fri);
+    public boolean containsKey(LocalUri localUri) {
+        return generatedClassesMap.containsKey(localUri);
     }
 
-    public Set<FRI> friKeySet() {
+    public Set<LocalUri> localUriKeySet() {
         return generatedClassesMap.keySet();
     }
 

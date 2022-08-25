@@ -20,11 +20,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
@@ -34,8 +36,6 @@ import org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.common.api.model.FRI.SLASH;
-import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 public class PMMLRuntimeInternalImpl implements PMMLRuntime {
@@ -49,9 +49,13 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntime {
 
     @Override
     public PMML4Result evaluate(String modelName, PMMLRuntimeContext context) {
-        String basePath = context.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
-        FRI fri = new FRI(basePath, PMML_STRING);
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, context);
+        LocalUri localUri = new ReflectiveAppRoot("")
+                .get(PmmlIdFactory.class)
+                .get(context.getFileNameNoSuffix(), getSanitizedClassName(modelName))
+                .toLocalId()
+                .asLocalUri();
+
+        EfestoInputPMML darInputPMML = new EfestoInputPMML(localUri, context);
         Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(context, darInputPMML);
         if (retrieved.isEmpty()) {
             throw new KiePMMLException("Failed to retrieve EfestoOutput");

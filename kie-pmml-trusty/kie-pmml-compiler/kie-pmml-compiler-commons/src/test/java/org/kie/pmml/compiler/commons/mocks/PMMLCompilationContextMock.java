@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.memorycompiler.KieMemoryCompilerException;
@@ -35,8 +35,8 @@ public class PMMLCompilationContextMock implements PMMLCompilationContext {
     }
 
     @Override
-    public Set<FRI> getFRIForFile() {
-        return friKeySet();
+    public Set<LocalUri> getLocalUriForFile() {
+        return localUriKeySet();
     }
 
     @Override

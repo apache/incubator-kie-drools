@@ -18,11 +18,10 @@ package org.kie.pmml.commons.utils;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.pmml.api.PMMLContext;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLModelFactory;
 
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedExecutableResource;
@@ -40,10 +39,10 @@ public class PMMLLoaderUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static KiePMMLModelFactory loadKiePMMLModelFactory(FRI fri, PMMLContext pmmlContext) {
-        GeneratedExecutableResource finalResource = getGeneratedExecutableResource(fri, PMML_STRING)
+    public static KiePMMLModelFactory loadKiePMMLModelFactory(LocalUri localUri, PMMLContext pmmlContext) {
+        GeneratedExecutableResource finalResource = getGeneratedExecutableResource(localUri, PMML_STRING)
                 .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource " +
-                                                                          "for " + fri));
+                                                                          "for " + localUri));
         return loadKiePMMLModelFactory(finalResource, pmmlContext);
     }
 

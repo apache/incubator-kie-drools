@@ -18,8 +18,8 @@ package org.kie.efesto.runtimemanager.api.model;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.listener.EfestoListener;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
@@ -33,8 +33,8 @@ public class EfestoRuntimeContextImpl<T extends EfestoListener> implements Efest
     }
 
     private void prepareClassLoader() {
-        Set<FRI> friKeySet = friKeySet();
-        friKeySet.stream()
+        Set<LocalUri> localUriKeySet = localUriKeySet();
+        localUriKeySet.stream()
                  .map(this::getGeneratedClasses)
                  .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
     }

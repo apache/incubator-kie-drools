@@ -40,7 +40,7 @@ public abstract class EfestoSetResource<T> implements EfestoResource<Set<T>> {
     }
 
     /**
-     * This should return the string used as <b>base path</b> in the generated <code>FRI</code>
+     * This should return the string used as <b>base path</b> in the generated <code>LocalUri</code>
      * @return
      */
     public String getBasePath() {

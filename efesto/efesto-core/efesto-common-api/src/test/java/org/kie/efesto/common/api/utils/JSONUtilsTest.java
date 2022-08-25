@@ -16,8 +16,6 @@
 package org.kie.efesto.common.api.utils;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
@@ -25,9 +23,13 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
+import org.kie.efesto.common.api.identifiers.componentroots.ComponentFoo;
+import org.kie.efesto.common.api.identifiers.componentroots.ComponentRootB;
+import org.kie.efesto.common.api.identifiers.componentroots.LocalComponentIdFoo;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.io.MemoryFile;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
@@ -47,23 +49,27 @@ class JSONUtilsTest {
         String retrieved = JSONUtils.getGeneratedResourceString(generatedResource);
         assertThat(retrieved).isEqualTo(expected);
 
-        String model = "foo";
-        FRI fri = new FRI("this/is/fri", model);
-        String target = "foo";
-        generatedResource = new GeneratedRedirectResource(fri, target);
-        expected = String.format("{\"step-type\":\"redirect\",\"fri\":%s,\"target\":\"%s\"}", JSONUtils.getFRIString(fri), target);
+        LocalUri localUri = new ReflectiveAppRoot("test")
+                .get(ComponentFoo.class)
+                .get("this", "is", "localUri")
+                .asLocalUri();
+        String target = LocalComponentIdFoo.PREFIX;
+        generatedResource = new GeneratedRedirectResource(localUri, target);
+        expected = String.format("{\"step-type\":\"redirect\",\"localUri\":%s,\"target\":\"%s\"}",
+                                 JSONUtils.getLocalUriString(localUri), target);
         retrieved = JSONUtils.getGeneratedResourceString(generatedResource);
         assertThat(retrieved).isEqualTo(expected);
 
-        generatedResource = new GeneratedExecutableResource(fri, Collections.singletonList(fullClassName));
-        expected = String.format("{\"step-type\":\"executable\",\"fri\":%s,\"fullClassNames\":[\"%s\"]}", JSONUtils.getFRIString(fri), fullClassName);
+        generatedResource = new GeneratedExecutableResource(localUri, Collections.singletonList(fullClassName));
+        expected = String.format("{\"step-type\":\"executable\",\"localUri\":%s,\"fullClassNames\":[\"%s\"]}",
+                                 JSONUtils.getLocalUriString(localUri), fullClassName);
         retrieved = JSONUtils.getGeneratedResourceString(generatedResource);
         assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
     void getGeneratedResourceObject() throws JsonProcessingException {
-        String generatedResourceString = "{\"step-type\":\"redirect\",\"fri\":{\"basePath\":\"this/is/fri\",\"fri\":\"this/is/fri_foo\"},\"target\":\"foo\"}";
+        String generatedResourceString = "{\"step-type\":\"redirect\",\"localUri\":{\"path\":\"/this/is/fri_foo\"},\"target\":\"foo\"}";
         GeneratedResource retrieved = JSONUtils.getGeneratedResourceObject(generatedResourceString);
         assertThat(retrieved).isNotNull().isInstanceOf(GeneratedRedirectResource.class);
 
@@ -71,7 +77,7 @@ class JSONUtilsTest {
         retrieved = JSONUtils.getGeneratedResourceObject(generatedResourceString);
         assertThat(retrieved).isNotNull().isInstanceOf(GeneratedClassResource.class);
 
-        generatedResourceString = "{\"step-type\":\"executable\",\"fri\":{\"basePath\":\"this/is/fri\",\"fri\":\"this/is/fri_foo\",\"model\":\"foo\"},\"fullClassNames\":[\"full.class.Name\"]}";
+        generatedResourceString = "{\"step-type\":\"executable\",\"localUri\":{\"path\":\"/this/is/fri_foo\",\"model\":\"foo\"},\"fullClassNames\":[\"full.class.Name\"]}";
         retrieved = JSONUtils.getGeneratedResourceObject(generatedResourceString);
         assertThat(retrieved).isNotNull().isInstanceOf(GeneratedExecutableResource.class);
     }
@@ -81,28 +87,36 @@ class JSONUtilsTest {
         String fullClassName = "full.class.Name";
         GeneratedResource generatedIntermediateResource = new GeneratedClassResource(fullClassName);
         String model = "foo";
-        FRI fri = new FRI("this/is/fri", model);
-        GeneratedResource generatedFinalResource = new GeneratedExecutableResource(fri, Collections.singletonList(fullClassName));
+        LocalUri localUri = new ReflectiveAppRoot(model)
+                .get(ComponentRootB.class)
+                .get("this", "is", "localUri")
+                .asLocalUri();
+        GeneratedResource generatedFinalResource = new GeneratedExecutableResource(localUri,
+                                                                                   Collections.singletonList(fullClassName));
         GeneratedResources generatedResources = new GeneratedResources();
         generatedResources.add(generatedIntermediateResource);
         generatedResources.add(generatedFinalResource);
         String retrieved = JSONUtils.getGeneratedResourcesString(generatedResources);
         String expected1 = String.format("{\"step-type\":\"class\",\"fullClassName\":\"%s\"}", fullClassName);
-        String expected2 = String.format("{\"step-type\":\"executable\",\"fri\":%s,\"fullClassNames\":[\"%s\"]}", JSONUtils.getFRIString(fri), fullClassName);
+        String expected2 = String.format("{\"step-type\":\"executable\",\"localUri\":%s,\"fullClassNames\":[\"%s\"]}",
+                                         JSONUtils.getLocalUriString(localUri), fullClassName);
         assertThat(retrieved).contains(expected1);
         assertThat(retrieved).contains(expected2);
     }
 
     @Test
     void getGeneratedResourcesObjectFromString() throws JsonProcessingException {
-        String generatedResourcesString = "[{\"step-type\":\"executable\",\"fri\":{\"basePath\":\"this/is/fri\",\"fri\":\"/foo/this/is/fri\"}},{\"step-type\":\"class\",\"fullClassName\":\"full.class.Name\"}]";
+        String generatedResourcesString = "[{\"step-type\":\"executable\",\"localUri\":{" +
+                "\"path\":\"/foo/this/is/fri\"}},{\"step-type\":\"class\",\"fullClassName\":\"full.class.Name\"}]";
         GeneratedResources retrieved = JSONUtils.getGeneratedResourcesObject(generatedResourcesString);
         assertThat(retrieved).isNotNull();
         String fullClassName = "full.class.Name";
         GeneratedResource expected1 = new GeneratedClassResource(fullClassName);
-        String model = "foo";
-        FRI fri = new FRI("this/is/fri", model);
-        GeneratedResource expected2 = new GeneratedExecutableResource(fri, Collections.singletonList(fullClassName));
+        LocalUri localUri = new ReflectiveAppRoot("test")
+                .get(ComponentFoo.class)
+                .get("this", "is", "fri")
+                .asLocalUri();
+        GeneratedResource expected2 = new GeneratedExecutableResource(localUri, Collections.singletonList(fullClassName));
         assertThat(retrieved).contains(expected1);
         assertThat(retrieved).contains(expected2);
     }
@@ -117,9 +131,11 @@ class JSONUtilsTest {
         assertThat(retrieved).isNotNull();
         String fullClassName = "full.class.Name";
         GeneratedResource expected1 = new GeneratedClassResource(fullClassName);
-        String model = "foo";
-        FRI fri = new FRI("this/is/fri", model);
-        GeneratedResource expected2 = new GeneratedExecutableResource(fri, Collections.singletonList(fullClassName));
+        LocalUri localUri = new ReflectiveAppRoot("test")
+                .get(ComponentFoo.class)
+                .get("this", "is", "fri")
+                .asLocalUri();
+        GeneratedResource expected2 = new GeneratedExecutableResource(localUri, Collections.singletonList(fullClassName));
         assertThat(retrieved).contains(expected1);
         assertThat(retrieved).contains(expected2);
     }
@@ -137,36 +153,40 @@ class JSONUtilsTest {
         assertThat(retrieved).isNotNull();
         String fullClassName = "full.class.Name";
         GeneratedResource expected1 = new GeneratedClassResource(fullClassName);
-        String model = "foo";
-        FRI fri = new FRI("this/is/fri", model);
-        GeneratedResource expected2 = new GeneratedExecutableResource(fri, Collections.singletonList(fullClassName));
+        LocalUri localUri = new ReflectiveAppRoot("test")
+                .get(ComponentFoo.class)
+                .get("this", "is", "fri")
+                .asLocalUri();
+        GeneratedResource expected2 = new GeneratedExecutableResource(localUri,
+                                                                      Collections.singletonList(fullClassName));
         assertThat(retrieved).contains(expected1);
         assertThat(retrieved).contains(expected2);
         restoreClassLoader(originalClassLoader);
     }
 
     @Test
-    void getFRIString() throws JsonProcessingException {
+    void getLocalUriString() throws JsonProcessingException {
         String model = "foo";
-        String basePath = "this/is/fri";
-        FRI fri = new FRI(basePath, model);
-        String retrieved = JSONUtils.getFRIString(fri);
-        String expected = String.format("{\"basePath\":\"%1$s\",\"model\":\"%2$s\",\"fri\":\"/%2$s%1$s\"}",
+        String basePath = "this/is/localUri";
+        LocalUri localUri = new ReflectiveAppRoot("test")
+                .get(ComponentFoo.class)
+                .get("this", "is", "localUri")
+                .asLocalUri();
+        String retrieved = JSONUtils.getLocalUriString(localUri);
+        String expected = String.format("{\"path\":\"/%2$s%1$s\"}",
                                         "/" + basePath, model);
         assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
-    void getFRIObject() throws JsonProcessingException {
-        String friString = "{\"basePath\":\"this/is/fri\",\"model\":\"foo\",\"fri\":\"/foo/this/is/fri\"}";
-        FRI retrieved = JSONUtils.getFRIObject(friString);
+    void getLocalUriObject() throws JsonProcessingException {
+        String friString = "{\"path\":\"/foo/this/is/localUri\"}";
+        LocalUri retrieved = JSONUtils.getLocalUriObject(friString);
         assertThat(retrieved).isNotNull();
         String expected = "foo";
-        assertThat(retrieved.getModel()).isEqualTo(expected);
-        expected = "this/is/fri";
-        assertThat(retrieved.getBasePath()).isEqualTo(expected);
-        expected = "/foo/this/is/fri";
-        assertThat(retrieved.getFri()).isEqualTo(expected);
+        assertThat(retrieved.model()).isEqualTo(expected);
+        expected = "/foo/this/is/localUri";
+        assertThat(retrieved.path()).isEqualTo(expected);
     }
 
     private ClassLoader addJarToClassLoader() {

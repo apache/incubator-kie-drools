@@ -16,11 +16,22 @@
 
 package org.kie.efesto.common.api.identifiers;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LocalUriTest {
+
+    private static AppRoot appRoot;
+
+    @BeforeAll
+    public static void setup() {
+        appRoot = new ReflectiveAppRoot("testing");
+    }
+
     @Test
     public void testToString() {
         LocalUri hpath = LocalUri.Root.append("example").append("some-id").append("instances").append("some-instance-id");
@@ -67,6 +78,23 @@ public class LocalUriTest {
         String path = "/example/some-id/instances/some-instance-id";
         LocalUri parsed = LocalUri.parse(path);
         assertEquals(parsed.toUri().toString(), String.format("%s://%s", LocalUri.SCHEME, parsed.path()));
+    }
+
+    @Test
+    public void testModel() {
+        String path = "/example/some-id/instances/some-instance-id";
+        LocalUri parsed = LocalUri.parse(path);
+        assertEquals("example", parsed.model());
+    }
+
+    @Test
+    public void testBasePath() {
+        String path = "/example/some-id/instances/some-instance-id";
+        LocalUri parsed = LocalUri.parse(path);
+        assertEquals("/some-id/instances/some-instance-id", parsed.basePath());
+        path = "/example";
+        parsed = LocalUri.parse(path);
+        assertEquals("", parsed.basePath());
     }
 
 }

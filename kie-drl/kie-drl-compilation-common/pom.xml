@@ -27,5 +27,9 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-model-codegen</artifactId>
       </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-api</artifactId>
+      </dependency>
     </dependencies>
 </project>

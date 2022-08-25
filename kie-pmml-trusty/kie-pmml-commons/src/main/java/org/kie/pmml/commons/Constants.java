@@ -46,7 +46,7 @@ public class Constants {
     public static final String EXPRESSION_NOT_MANAGED = "Expression %s not managed";
 
     //
-    public static final String GET_MODEL = "getModel";
+    public static final String GET_MODEL = "model";
     public static final String PACKAGE_NAME = "PACKAGE_NAME";
     public static final String EVALUATE_PREDICATE = "evaluatePredicate";
     public static final String PREDICATE_FUNCTION = "predicateFunction";

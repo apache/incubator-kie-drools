@@ -18,6 +18,8 @@ package org.kie.efesto.common.api.model;
 import java.util.List;
 import java.util.Objects;
 
+import org.kie.efesto.common.api.identifiers.LocalUri;
+
 /**
  * A <code>GeneratedResource</code> meant to be directly executed, with a <b>full reference name (frn)</b> identifier
  */
@@ -27,7 +29,7 @@ public final class GeneratedExecutableResource implements GeneratedResource {
     /**
      * the full reference identifier (e.g. "bar/resource/some_final_model")
      */
-    private final FRI fri;
+    private final LocalUri localUri;
 
 
     private final List<String> fullClassNames;
@@ -36,13 +38,13 @@ public final class GeneratedExecutableResource implements GeneratedResource {
         this(null, null);
     }
 
-    public GeneratedExecutableResource(FRI fri, List<String> fullClassNames) {
-        this.fri = fri;
+    public GeneratedExecutableResource(LocalUri localUri, List<String> fullClassNames) {
+        this.localUri = localUri;
         this.fullClassNames = fullClassNames;
     }
 
-    public FRI getFri() {
-        return fri;
+    public LocalUri getLocalUri() {
+        return localUri;
     }
 
     public List<String> getFullClassNames() {
@@ -51,7 +53,7 @@ public final class GeneratedExecutableResource implements GeneratedResource {
 
     @Override
     public int hashCode() {
-        return Objects.hash(fri);
+        return Objects.hash(localUri);
     }
 
     /**
@@ -67,13 +69,13 @@ public final class GeneratedExecutableResource implements GeneratedResource {
             return false;
         }
         GeneratedExecutableResource that = (GeneratedExecutableResource) o;
-        return fri.equals(that.fri);
+        return localUri.equals(that.localUri);
     }
 
     @Override
     public String toString() {
         return "GeneratedExecutableResource{" +
-                "fri='" + fri + '\'' +
+                "fri='" + localUri + '\'' +
                 "} " + super.toString();
     }
 }

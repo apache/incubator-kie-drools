@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
+import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.commons.HasRedirectOutput;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
@@ -35,9 +37,7 @@ import org.kie.pmml.compiler.model.EfestoCallableOutputPMMLClassesContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.common.api.model.FRI.SLASH;
 import static org.kie.efesto.common.api.utils.FileNameUtils.removeSuffix;
-import static org.kie.pmml.commons.Constants.PMML_STRING;
 
 /**
  * Class meant to <b>compile</b> resources
@@ -70,11 +70,16 @@ public class PMMLCompilerService {
         kiePMMLFactoryModels.forEach(kiePMMLFactoryModel -> allSourcesMap.putAll(kiePMMLFactoryModel.getSourcesMap()));
         Map<String, byte[]> compiledClasses = pmmlContext.compileClasses(allSourcesMap);
         kiePMMLFactoryModels.forEach(kiePMMLFactoryModel -> {
-            String modelName = kiePMMLFactoryModel.getName().substring(0, kiePMMLFactoryModel.getName().lastIndexOf("Factory"));
-            String basePath = fileName + SLASH + modelName;
-            FRI fri = new FRI(basePath, PMML_STRING);
+            String modelName = kiePMMLFactoryModel.getName().substring(0, kiePMMLFactoryModel.getName().lastIndexOf(
+                    "Factory"));
+            LocalUri localUri = new ReflectiveAppRoot("")
+                    .get(PmmlIdFactory.class)
+                    .get(fileName, modelName)
+                    .asLocalUri();
+
             String fullResourceClassName = kiePMMLFactoryModel.getSourcesMap().keySet().iterator().next();
-            toReturn.add(new EfestoCallableOutputPMMLClassesContainer(fri, fullResourceClassName, compiledClasses));
+            toReturn.add(new EfestoCallableOutputPMMLClassesContainer(localUri, fullResourceClassName,
+                                                                      compiledClasses));
         });
         return toReturn;
     }

@@ -33,8 +33,9 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
@@ -45,6 +46,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
+import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.compiler.PMMLCompilationContextImpl;
 import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
@@ -53,7 +55,6 @@ import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.common.api.model.FRI.SLASH;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
@@ -129,9 +130,11 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     protected PMML4Result evaluate(String modelName, String pmmlFileName, DMNResult dmnr, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         PMMLRuntimeContext pmmlContext = getPMMLPMMLContext(UUID.randomUUID().toString(), pmmlFileName, modelName, dmnr,
                                                             memoryCompilerClassLoader);
-        String basePath = pmmlContext.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
-        FRI fri = new FRI(basePath, PMML_STRING);
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, pmmlContext);
+        LocalUri localUri = new ReflectiveAppRoot("")
+                .get(PmmlIdFactory.class)
+                .get(pmmlContext.getFileNameNoSuffix(), getSanitizedClassName(modelName))
+                .asLocalUri();
+        EfestoInputPMML darInputPMML = new EfestoInputPMML(localUri, pmmlContext);
         Collection<EfestoOutput> retrieved = evaluateInput(darInputPMML);
         if (retrieved.isEmpty()) {
             LOG.warn("Failed to get a result for {}@{}: trying to invoke compilation....", pmmlContext.getFileName(),

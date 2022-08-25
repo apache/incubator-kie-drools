@@ -15,19 +15,19 @@
  */
 package org.kie.efesto.compilationmanager.core.mocks;
 
-import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutput;
-
 import java.util.Collections;
 import java.util.List;
 
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutput;
+
 public class MockEfestoCallableOutput implements EfestoCallableOutput {
 
-    private FRI fri = new FRI("mock/efesto/output/module", "mock");
+    private LocalUri localUri = LocalUri.parse("/mock/efesto/output/module");
 
     @Override
-    public FRI getFri() {
-        return fri;
+    public LocalUri getLocalUri() {
+        return localUri;
     }
 
     @Override
