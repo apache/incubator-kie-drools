@@ -278,7 +278,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             // Everything is fine, proceed.
             Score<?> score = scoreDirector.calculateScore();
             basicPlumbingTermination.endProblemFactChangesProcessing();
-            bestSolutionRecaller.updateBestSolutionWithoutFiring(solverScope);
+            bestSolutionRecaller.updateBestSolutionAndFireIfInitialized(solverScope);
             logger.info("Real-time problem fact changes done: step total ({}), new best score ({}).",
                     stepIndex, score);
             return true;

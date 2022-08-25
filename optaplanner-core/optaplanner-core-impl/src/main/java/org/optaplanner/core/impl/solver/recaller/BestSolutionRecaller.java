@@ -114,15 +114,22 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         solverEventSupport.fireBestSolutionChanged(solverScope, solverScope.getBestSolution());
     }
 
-    public void updateBestSolutionWithoutFiring(SolverScope<Solution_> solverScope) {
-        Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
-        Score newBestScore = solverScope.getSolutionDescriptor().getScore(newBestSolution);
-        updateBestSolutionWithoutFiring(solverScope, newBestScore, newBestSolution);
+    public void updateBestSolutionAndFireIfInitialized(SolverScope<Solution_> solverScope) {
+        updateBestSolutionWithoutFiring(solverScope);
+        if (solverScope.isBestSolutionInitialized()) {
+            solverEventSupport.fireBestSolutionChanged(solverScope, solverScope.getBestSolution());
+        }
     }
 
     private void updateBestSolutionAndFire(SolverScope<Solution_> solverScope, Score bestScore, Solution_ bestSolution) {
         updateBestSolutionWithoutFiring(solverScope, bestScore, bestSolution);
         solverEventSupport.fireBestSolutionChanged(solverScope, solverScope.getBestSolution());
+    }
+
+    private void updateBestSolutionWithoutFiring(SolverScope<Solution_> solverScope) {
+        Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
+        Score newBestScore = solverScope.getSolutionDescriptor().getScore(newBestSolution);
+        updateBestSolutionWithoutFiring(solverScope, newBestScore, newBestSolution);
     }
 
     private void updateBestSolutionWithoutFiring(SolverScope<Solution_> solverScope, Score bestScore, Solution_ bestSolution) {
