@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.drl.engine.mapinput.compilation.model.test.Applicant;
 import org.kie.drl.engine.mapinput.compilation.model.test.LoanApplication;
@@ -39,12 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DrlRuntimeHelperTest {
 
     private static final String basePath = "LoanApplication";
-    private static EfestoRuntimeContext context;
-
-    @BeforeAll
-    static void setUp() {
-        context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
-    }
 
     @Test
     void canManage() {
@@ -59,7 +51,6 @@ class DrlRuntimeHelperTest {
         assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isFalse();
     }
 
-    @Disabled("DROOLS-7090 : This test depends on existing IndexFile")
     @Test
     void execute() {
         List<Object> inserts = new ArrayList<>();
@@ -74,8 +65,10 @@ class DrlRuntimeHelperTest {
         globals.put("maxAmount", 5000);
 
         EfestoMapInputDTO darMapInputDTO = new EfestoMapInputDTO(inserts, globals, Collections.emptyMap(), Collections.emptyMap(), "modelname", "packageName");
-
         EfestoInputDrlMap darInputDrlMap = new EfestoInputDrlMap(new FRI(basePath, "drl"), darMapInputDTO);
+
+        EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader(), "drl");
+
         Optional<EfestoOutputDrlMap> retrieved = DrlRuntimeHelper.execute(darInputDrlMap, context);
         assertThat(retrieved).isNotNull().isPresent();
         assertThat(approvedApplications).hasSize(1);

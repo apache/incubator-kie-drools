@@ -15,9 +15,12 @@
  */
 package org.kie.efesto.compilationmanager.api.model;
 
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 
+import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
@@ -53,5 +56,7 @@ public interface EfestoCompilationContext<T extends EfestoListener> extends Efes
 
     byte[] getCode(String name);
 
-
+    default Map<String, IndexFile> createIndexFiles(Path targetDirectory) {
+        throw new UnsupportedOperationException();
+    }
 }

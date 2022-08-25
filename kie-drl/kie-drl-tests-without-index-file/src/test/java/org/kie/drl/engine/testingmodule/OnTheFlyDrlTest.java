@@ -47,7 +47,6 @@ class OnTheFlyDrlTest {
 
     @BeforeAll
     static void setUp() {
-        DrlTestUtils.refreshDrlIndexFile();
         runtimeManager = new RuntimeManagerImpl();
         compilationManager = new CompilationManagerImpl();
     }

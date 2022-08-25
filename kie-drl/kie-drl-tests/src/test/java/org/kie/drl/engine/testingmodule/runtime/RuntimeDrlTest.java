@@ -18,7 +18,6 @@ package org.kie.drl.engine.testingmodule.runtime;
 import java.util.Collection;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
@@ -43,10 +42,9 @@ class RuntimeDrlTest {
     static void setUp() {
         DrlTestUtils.refreshDrlIndexFile();
         runtimeManager = new RuntimeManagerImpl();
-        context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader(), "drl");
     }
 
-    @Disabled("DROOLS-7090 : This test depends on existing IndexFile")
     @Test
     void evaluateWithKieSessionLocalStaticCompilation() {
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(basePath, "drl"), "");

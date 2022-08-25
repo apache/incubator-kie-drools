@@ -16,7 +16,6 @@
 package org.kie.efesto.compilationmanager.core.utils;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -54,36 +53,6 @@ public class CompilationManagerUtils {
     private static final String DEFAULT_INDEXFILE_DIRECTORY = "./target/classes";
 
     private CompilationManagerUtils() {}
-
-    public static Set<IndexFile> getIndexFilesWithProcessedResource(EfestoResource toProcess, EfestoCompilationContext context) {
-        Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
-        if (!retrieved.isPresent()) {
-            logger.warn("Cannot find KieCompilerService for {}, trying in context classloader", toProcess.getClass());
-            retrieved = getKieCompilerServiceFromEfestoCompilationContext(toProcess, context);
-        }
-        if (!retrieved.isPresent()) {
-            logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
-            return Collections.emptySet();
-        }
-        Set<IndexFile> toPopulate = new HashSet<>();
-        List<EfestoCompilationOutput> efestoCompilationOutputList = retrieved.get().processResource(toProcess, context);
-        for (EfestoCompilationOutput compilationOutput : efestoCompilationOutputList) {
-            if (compilationOutput instanceof EfestoCallableOutput) {
-                IndexFile indexFile = CompilationManagerUtils.getIndexFile((EfestoCallableOutput) compilationOutput);
-                toPopulate.add(indexFile);
-                populateIndexFile(indexFile, compilationOutput);
-                if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
-                    EfestoCallableOutputClassesContainer classesContainer =
-                            (EfestoCallableOutputClassesContainer) compilationOutput;
-                    context.loadClasses(classesContainer.getCompiledClassesMap());
-                    context.addGeneratedClasses(classesContainer.getFri(), classesContainer.getCompiledClassesMap());
-                }
-            } else if (compilationOutput instanceof EfestoResource) {
-                toPopulate.addAll(getIndexFilesWithProcessedResource((EfestoResource) compilationOutput, context));
-            }
-        }
-        return toPopulate;
-    }
 
     /**
      * Process resources and populate generatedResources into context without writing to IndexFile

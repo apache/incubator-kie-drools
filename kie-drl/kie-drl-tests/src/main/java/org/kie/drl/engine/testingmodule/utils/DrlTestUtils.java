@@ -15,8 +15,8 @@ import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_
 
 public class DrlTestUtils {
 
-    private static final String SRC_MAIN_RESOURCES = "src/main/resources";
-    private static final String TARGET_CLASSES = "target/classes"; // for the case running tests without maven
+    private static final String SRC_TEST_RESOURCES = "src/test/resources";
+    private static final String TARGET_TEST_CLASSES = "target/test-classes"; // for the case running tests without maven
 
     private DrlTestUtils() {}
 
@@ -24,8 +24,8 @@ public class DrlTestUtils {
      * refresh target/classes/IndexFile.drl_json with src/main/resources/IndexFile.drl_json because basically, unit tests should not depend on the file's state
      */
     public static void refreshDrlIndexFile() {
-        IndexFile source = new IndexFile(SRC_MAIN_RESOURCES, "drl");
-        String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, TARGET_CLASSES);
+        IndexFile source = new IndexFile(SRC_TEST_RESOURCES, "drl");
+        String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, TARGET_TEST_CLASSES);
         IndexFile target = new IndexFile(parentPath, "drl");
 
         Path sourcePath = source.getAbsoluteFile().toPath();
