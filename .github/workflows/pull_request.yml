@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: OS Preparation
         id: set-os
-        uses: lampajr/droolsjbpm-build-bootstrap/.ci/actions/os-preparation@BXMSPROD-1770_os_preparation
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/os-preparation@main
   build-chain:
     needs: os-prep
     concurrency:
