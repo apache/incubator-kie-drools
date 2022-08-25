@@ -45,7 +45,6 @@ public class JsonObjectUtils {
      * Although we can use directly ObjectMapper.convertValue for implementing fromValue and toJavaValue methods,
      * the performance gain of avoiding an intermediate buffer is so tempting that we cannot avoid it
      */
-
     public static JsonNode fromValue(Object value) {
         if (value == null) {
             return NullNode.instance;
@@ -76,7 +75,7 @@ public class JsonObjectUtils {
         } else if (value instanceof Map) {
             return mapToNode((Map<String, Object>) value);
         } else {
-            return ObjectMapperFactory.get().convertValue(value, JsonNode.class);
+            return ObjectMapperFactory.listenerAware().convertValue(value, JsonNode.class);
         }
     }
 
@@ -94,7 +93,7 @@ public class JsonObjectUtils {
         } else if (obj instanceof JsonNode) {
             return convertValue((JsonNode) obj, returnType);
         } else {
-            return ObjectMapperFactory.get().convertValue(obj, returnType);
+            return ObjectMapperFactory.listenerAware().convertValue(obj, returnType);
         }
     }
 
@@ -111,7 +110,7 @@ public class JsonObjectUtils {
         } else if (String.class.isAssignableFrom(returnType)) {
             obj = jsonNode.asText();
         } else {
-            obj = ObjectMapperFactory.get().convertValue(jsonNode, returnType);
+            obj = ObjectMapperFactory.listenerAware().convertValue(jsonNode, returnType);
         }
         return returnType.cast(obj);
     }
@@ -155,7 +154,7 @@ public class JsonObjectUtils {
     }
 
     private static ObjectNode mapToNode(Map<String, Object> value) {
-        ObjectNode objectNode = ObjectMapperFactory.get().createObjectNode();
+        ObjectNode objectNode = ObjectMapperFactory.listenerAware().createObjectNode();
         for (Map.Entry<String, Object> entry : value.entrySet()) {
             addToNode(entry.getKey(), entry.getValue(), objectNode);
         }
@@ -163,7 +162,7 @@ public class JsonObjectUtils {
     }
 
     private static ArrayNode mapToArray(Iterable<?> iterable) {
-        return mapToArray(iterable, ObjectMapperFactory.get().createArrayNode());
+        return mapToArray(iterable, ObjectMapperFactory.listenerAware().createArrayNode());
     }
 
     private static ArrayNode mapToArray(Iterable<?> iterable, ArrayNode arrayNode) {

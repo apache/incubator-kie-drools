@@ -76,7 +76,7 @@ public class ProcessEventListenerTest extends AbstractBaseTest {
         assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance) ((org.jbpm.process.instance.ProcessInstance) processInstance)
                 .getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
-        assertEquals(28, processEventList.size());
+        assertEquals(26, processEventList.size());
         for (ProcessEvent e : processEventList) {
             logger.debug(e.toString());
         }
@@ -87,42 +87,52 @@ public class ProcessEventListenerTest extends AbstractBaseTest {
     private ProcessEventListener createProcessEventListener(final List<ProcessEvent> processEventList) {
         return new ProcessEventListener() {
 
+            @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 processEventList.add(event);
             }
 
+            @Override
             public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
                 processEventList.add(event);
             }
 
+            @Override
             public void afterProcessCompleted(ProcessCompletedEvent event) {
                 processEventList.add(event);
             }
 
+            @Override
             public void afterProcessStarted(ProcessStartedEvent event) {
                 processEventList.add(event);
             }
 
+            @Override
             public void beforeNodeLeft(ProcessNodeLeftEvent event) {
                 processEventList.add(event);
             }
 
+            @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
                 processEventList.add(event);
             }
 
+            @Override
             public void beforeProcessCompleted(ProcessCompletedEvent event) {
                 processEventList.add(event);
             }
 
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 processEventList.add(event);
             }
 
+            @Override
             public void beforeVariableChanged(ProcessVariableChangedEvent event) {
                 processEventList.add(event);
             }
 
+            @Override
             public void afterVariableChanged(ProcessVariableChangedEvent event) {
                 processEventList.add(event);
             }

@@ -92,7 +92,7 @@ public class ServerlessWorkflowParser {
                 .packageName(workflow.getMetadata() != null ? workflow.getMetadata().getOrDefault("package",
                         DEFAULT_PACKAGE) : DEFAULT_PACKAGE)
                 .visibility("Public")
-                .variable(DEFAULT_WORKFLOW_VAR, new ObjectDataType(JsonNode.class), ObjectMapperFactory.get().createObjectNode())
+                .variable(DEFAULT_WORKFLOW_VAR, new ObjectDataType(JsonNode.class), ObjectMapperFactory.listenerAware().createObjectNode())
                 .type(KogitoWorkflowProcess.SW_TYPE);
         ParserContext parserContext =
                 new ParserContext(idGenerator, factory, context, WorkflowOperationIdFactoryProvider.getFactory(context.getApplicationProperty(WorkflowOperationIdFactoryProvider.PROPERTY_NAME)));

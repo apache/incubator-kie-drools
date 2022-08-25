@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import org.kie.kogito.jackson.utils.JsonNodeConverter;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.jackson.utils.StringConverter;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -37,7 +38,7 @@ public class TypeConverterRegistry {
 
     private TypeConverterRegistry() {
         converters.put("java.util.Date", new DateTypeConverter());
-        converters.put(JsonNode.class.getName(), new JsonNodeConverter());
+        converters.put(JsonNode.class.getName(), new JsonNodeConverter(ObjectMapperFactory::listenerAware));
         unconverters.put(JsonNode.class.getName(), new StringConverter());
         cloners.put(JsonNode.class, o -> ((JsonNode) o).deepCopy());
     }

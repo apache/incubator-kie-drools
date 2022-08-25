@@ -28,9 +28,6 @@ public class CollectorAction extends BaseExpressionAction {
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        ActionUtils.setOutput(context, outputVar, modelVar, (input, output) -> {
-            expr.assign(output, input, context);
-            return output;
-        });
+        expr.assign(ActionUtils.getJsonNode(context, modelVar), ActionUtils.getJsonNode(context, outputVar), context);
     }
 }

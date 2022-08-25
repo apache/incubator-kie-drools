@@ -50,11 +50,30 @@ import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
-import org.jbpm.workflow.core.node.*;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.BoundaryEventNode;
+import org.jbpm.workflow.core.node.CatchLinkNode;
+import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.CompositeNode.CompositeNodeEnd;
 import org.jbpm.workflow.core.node.CompositeNode.NodeAndType;
+import org.jbpm.workflow.core.node.DynamicNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.jbpm.workflow.core.node.FaultNode;
+import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.ForEachNode.ForEachJoinNode;
 import org.jbpm.workflow.core.node.ForEachNode.ForEachSplitNode;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.MilestoneNode;
+import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.StateNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.ThrowLinkNode;
+import org.jbpm.workflow.core.node.TimerNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
@@ -1087,7 +1106,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
             Variable variable = process.getVariableScope().findVariable(var);
             DataType dataType = DataTypeResolver.fromType(type, Thread.currentThread().getContextClassLoader());
-            if (!variable.getType().isAssignableFrom(dataType)) {
+            if (!dataType.isAssignableFrom(variable.getType())) {
                 addErrorMessage(process, node, errors,
                         format("Target variable '%s':'%s' has different data type from '%s':'%s' in data output assignment", var,
                                 variable.getType().getStringType(),
@@ -1110,7 +1129,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
             Variable variable = process.getVariableScope().findVariable(var);
             DataType dataType = DataTypeResolver.fromType(type, Thread.currentThread().getContextClassLoader());
-            if (!variable.getType().isAssignableFrom(dataType)) {
+            if (!dataType.isAssignableFrom(variable.getType())) {
                 addErrorMessage(process, node, errors,
                         format("Source variable '%s':'%s' has different data type from '%s':'%s' in data input assignment", var,
                                 variable.getType().getStringType(),

@@ -41,7 +41,7 @@ class ProtobufUtilRPCConverter implements RPCConverter {
         StringBuilder sb = new StringBuilder();
         try {
             JsonFormat.printer().appendTo(message, sb);
-            return ObjectMapperFactory.get().readTree(sb.toString());
+            return ObjectMapperFactory.listenerAware().readTree(sb.toString());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

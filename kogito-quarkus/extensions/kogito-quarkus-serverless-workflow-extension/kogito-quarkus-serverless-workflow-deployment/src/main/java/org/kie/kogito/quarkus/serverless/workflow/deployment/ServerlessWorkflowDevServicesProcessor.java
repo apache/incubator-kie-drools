@@ -18,8 +18,6 @@ package org.kie.kogito.quarkus.serverless.workflow.deployment;
 
 import org.kie.kogito.quarkus.processes.deployment.KogitoBuildTimeConfig;
 import org.kie.kogito.serverless.workflow.devservices.DevModeServerlessWorkflowLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.processor.DotNames;
@@ -28,9 +26,6 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 
 public class ServerlessWorkflowDevServicesProcessor {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowDevServicesProcessor.class);
-
     @BuildStep
     public void logger(BuildProducer<AdditionalBeanBuildItem> additionalBean, LaunchModeBuildItem launchMode, KogitoBuildTimeConfig config) {
         if (shouldInclude(launchMode, config)) {

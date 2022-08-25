@@ -46,7 +46,7 @@ public class InvalidProcessIT extends AbstractCodegenIT {
                         "Node 'processedconsumers' [2] Source variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Boolean' in data input assignment" }),
                 Arguments.of(new String[] { "invalid/invalid-message-start-event.bpmn2",
                         "Errors during validation for processes [MessageStartEvent]",
-                        "Node 'StartProcess' [1] Target variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Object' in data output assignment" }),
+                        "Node 'StartProcess' [1] Target variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Boolean' in data output assignment" }),
                 Arguments.of(new String[] { "invalid/intermediate-throw-event-message.bpmn2",
                         "Errors during validation for processes [IntermediateThrowEventMessage]",
                         "Node 'Intermediate Throw Event 1' [3] Source variable 'customerId':'java.lang.String' has different data type from 'input':'java.lang.Float' in data input assignment" }),

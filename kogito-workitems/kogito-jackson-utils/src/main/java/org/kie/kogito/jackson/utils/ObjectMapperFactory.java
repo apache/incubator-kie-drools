@@ -26,10 +26,8 @@ public class ObjectMapperFactory {
     private ObjectMapperFactory() {
     }
 
-    private static ObjectMapper objectMapper = initObjectMapper();
-
-    private static ObjectMapper initObjectMapper() {
-        return JsonMapper.builder()
+    private static class DefaultObjectMapper {
+        private static ObjectMapper instance = JsonMapper.builder()
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                 .build()
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL)
@@ -37,7 +35,15 @@ public class ObjectMapperFactory {
                 .findAndRegisterModules();
     }
 
+    private static class ListenerAwareMapper {
+        private static ObjectMapper instance = DefaultObjectMapper.instance.copy().setNodeFactory(new JsonNodeFactoryListener());
+    }
+
     public static ObjectMapper get() {
-        return objectMapper;
+        return DefaultObjectMapper.instance;
+    }
+
+    public static ObjectMapper listenerAware() {
+        return ListenerAwareMapper.instance;
     }
 }

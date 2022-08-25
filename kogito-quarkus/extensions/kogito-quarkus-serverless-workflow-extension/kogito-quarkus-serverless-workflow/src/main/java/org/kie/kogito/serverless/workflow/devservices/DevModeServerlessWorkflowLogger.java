@@ -60,18 +60,19 @@ public class DevModeServerlessWorkflowLogger extends DevModeWorkflowLogger {
     }
 
     protected boolean isSWEvent(ProcessEvent event) {
-        return event.getProcessInstance().getProcess().getType().equals(KogitoWorkflowProcess.SW_TYPE);
+        return LOGGER.isInfoEnabled() && event.getProcessInstance().getProcess().getType().equals(KogitoWorkflowProcess.SW_TYPE);
     }
 
     @Override
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
         if (isSWEvent(event)) {
-            if (SWFConstants.DEFAULT_WORKFLOW_VAR.equals(event.getVariableId())) {
-                if (event.getNewValue() instanceof JsonNode) {
-                    JsonNode node = (JsonNode) event.getNewValue();
-                    if (!node.isEmpty()) {
-                        LOGGER.info("Workflow data change\n{}", node.toPrettyString());
+            if (event.getVariableId().startsWith(SWFConstants.DEFAULT_WORKFLOW_VAR) && event.getNewValue() instanceof JsonNode) {
+                if (event.getVariableId().length() == SWFConstants.DEFAULT_WORKFLOW_VAR.length()) {
+                    if (event.getOldValue() != null) {
+                        LOGGER.info("Workflow data change\n{}", ((JsonNode) event.getNewValue()).toPrettyString());
                     }
+                } else {
+                    LOGGER.info("Property '{}' changed value from: '{}', to: '{}'", event.getVariableId(), event.getOldValue(), event.getNewValue());
                 }
             }
         } else {
