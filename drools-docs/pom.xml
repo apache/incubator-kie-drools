@@ -18,11 +18,6 @@
   <url>https://www.drools.org/</url>
 
   <properties>
-    <!--
-    Antora ignores hidden files. The docs website should not incorporate this file as it brings the single-paged docs
-    duplicating the other content.
-    -->
-    <source.document.name>.index.adoc</source.document.name>
     <antora.playbook>antora-playbook.yml</antora.playbook>
     <antora.binary>node_modules/.bin/antora</antora.binary>
     <version.node>v16.2.0</version.node>
@@ -31,65 +26,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.asciidoctor</groupId>
-        <artifactId>asciidoctor-maven-plugin</artifactId>
-        <configuration>
-          <sourceDirectory>${basedir}/src/modules/ROOT/pages</sourceDirectory>
-          <resources>
-            <resource>
-              <directory>${basedir}/src/modules/ROOT/images</directory>
-            </resource>
-          </resources>
-          <attributes>
-            <drools-repo-dir>${basedir}/..</drools-repo-dir>
-            <drools-version>${project.version}</drools-version>
-            <java-version>${maven.compiler.release}</java-version>
-            <maven-version>${maven.min.version}</maven-version>
-            <quarkus-version>${version.io.quarkus}</quarkus-version>
-          </attributes>
-        </configuration>
-        <executions>
-          <execution>
-            <id>generate-single-html</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>process-asciidoc</goal>
-            </goals>
-            <configuration>
-              <sourceDocumentName>${source.document.name}</sourceDocumentName>
-              <backend>html5</backend>
-              <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
-              <outputFile>index.html</outputFile>
-              <attributes>
-                <imagesdir>.</imagesdir>
-                <source-highlighter>highlightjs</source-highlighter>
-              </attributes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-pdf</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>process-asciidoc</goal>
-            </goals>
-            <configuration>
-              <sourceDocumentName>${source.document.name}</sourceDocumentName>
-              <backend>pdf</backend>
-              <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
-              <outputFile>index.pdf</outputFile>
-              <attributes>
-                <imagesdir>${basedir}/src/modules/ROOT/images</imagesdir>
-                <source-highlighter>coderay</source-highlighter>
-              </attributes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -181,34 +117,6 @@
       </plugin>
 
     </plugins>
-
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>package-generated-docs</id>
-              <phase>package</phase>
-              <goals>
-                <goal>single</goal>
-              </goals>
-              <configuration>
-                <finalName>${project.artifactId}-${project.version}</finalName>
-                <appendAssemblyId>false</appendAssemblyId>
-                <descriptors>
-                  <descriptor>src/main/assembly/generated-docs-zip.xml</descriptor>
-                </descriptors>
-                <archive>
-                  <addMavenDescriptor>true</addMavenDescriptor>
-                </archive>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <profiles>
