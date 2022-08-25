@@ -15,6 +15,7 @@
  */
 package org.drools.ruleunits.dsl;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.ruleunits.api.DataHandle;
@@ -120,6 +121,7 @@ public class RuleUnitsTest {
 
         unit.getPersons().add(new Person("Mario", 48));
         unit.getPersons().add(new Person("Matteo", 10));
+        unit.getPersons().add(new Person("Marilena", 17));
         unit.getPersons().add(new Person("Edson", 38));
         unit.getPersons().add(new Person("Edoardo", 33));
         unit.getPersons().add(new Person("Mark", 45));
@@ -129,6 +131,15 @@ public class RuleUnitsTest {
         assertThat(unit.getResults().keySet()).containsExactlyInAnyOrder("M", "E");
         assertThat(unit.getResults().get("M")).isEqualTo(93);
         assertThat(unit.getResults().get("E")).isEqualTo(71);
+
+        unit.getResults().clear();
+        unit.getThreshold().set(12);
+
+        assertThat(unit.fire()).isEqualTo(3);
+        assertThat(unit.getResults().keySet()).containsExactlyInAnyOrder("M", "E", "D");
+        assertThat((List)unit.getResults().get("M")).containsExactlyInAnyOrder("Mario", "Marilena", "Mark");
+        assertThat((List)unit.getResults().get("E")).containsExactlyInAnyOrder("Edson", "Edoardo");
+        assertThat((List)unit.getResults().get("D")).containsExactlyInAnyOrder("Daniele");
     }
 
     @Test

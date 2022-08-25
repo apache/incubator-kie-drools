@@ -40,11 +40,19 @@ public class Accumulators {
     }
 
     public static <A, B> Accumulator1<A, List> collect() {
-        return new Accumulator1<>(identity(), CollectListAccumulateFunction::new, List.class);
+        return collect(identity());
+    }
+
+    public static <A, B> Accumulator1<A, List> collect(Function1<A, B> bindingFunc) {
+        return new Accumulator1<>(bindingFunc, CollectListAccumulateFunction::new, List.class);
     }
 
     public static <A, B> Accumulator1<A, Set> collectSet() {
-        return new Accumulator1<>(identity(), CollectSetAccumulateFunction::new, Set.class);
+        return collectSet(identity());
+    }
+
+    public static <A, B> Accumulator1<A, Set> collectSet(Function1<A, B> bindingFunc) {
+        return new Accumulator1<>(bindingFunc, CollectSetAccumulateFunction::new, Set.class);
     }
 
     public static <A, B> Accumulator1<A, Integer> sum(Function1<A, B> bindingFunc) {

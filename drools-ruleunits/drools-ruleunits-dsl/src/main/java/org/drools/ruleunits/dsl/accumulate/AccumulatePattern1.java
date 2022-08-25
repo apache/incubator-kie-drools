@@ -41,10 +41,10 @@ public class AccumulatePattern1<A, B> extends Pattern1DefImpl<B> {
 
     @Override
     public ViewItem toExecModelItem() {
-        return toAccumulate1Item(pattern, getVariable(), acc);
+        return createAccumulate1Item(pattern, getVariable(), acc);
     }
 
-    static ExprViewItem<Object> toAccumulate1Item(InternalPatternDef pattern, Variable variable, Accumulator1 acc) {
+    static ExprViewItem<Object> createAccumulate1Item(InternalPatternDef pattern, Variable variable, Accumulator1 acc) {
         ViewItem patternDef = pattern.toExecModelItem();
         Variable boundVar = declarationOf( acc.getAccClass());
         bindAccVar(acc, patternDef, boundVar);

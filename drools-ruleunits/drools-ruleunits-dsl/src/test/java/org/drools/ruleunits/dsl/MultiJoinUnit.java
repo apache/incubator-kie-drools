@@ -66,8 +66,8 @@ public class MultiJoinUnit implements RuleUnitDefinition {
         rulesFactory.addRule()
                     .from(strings)
                     .filter("length", s -> s.length(), GREATER_THAN, 5)
-                    .join( rule -> rule.from(ints).filter(GREATER_THAN, 5) )
-                    .filter(EQUAL, String::length)
+                    .join( rule -> rule.from(ints).filter(GREATER_THAN, 5) ) // alpha constraint
+                    .filter(EQUAL, String::length) // beta constraint
                     .join( rule -> rule.from(persons).filter("age", Person::getAge, GREATER_THAN, "name", p -> p.getName().length()) )
                     .filter( (s, i, p) -> p.getAge() == ( i + s.length() ) * 2 + 4 )
                     .filter( "age", Person::getAge, EQUAL, (s, i) -> i + s.length() + 26 )

@@ -46,6 +46,8 @@ public interface Pattern1Def<A> extends PatternDef {
 
     <B, C> Pattern2Def<A, C> accumulate(Function1<Pattern1Def<A>, PatternDef> patternBuilder, Accumulator1<B, C> acc);
 
+    <B, K, V> Pattern3Def<A, K, V> groupBy(Function1<Pattern1Def<A>, PatternDef> patternBuilder, Function1<B, K> groupingFunction, Accumulator1<B, V> acc);
+
     Pattern1Def<A> exists(Function1<Pattern1Def<A>, PatternDef> patternBuilder);
 
     Pattern1Def<A> not(Function1<Pattern1Def<A>, PatternDef> patternBuilder);

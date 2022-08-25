@@ -28,13 +28,14 @@ import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.dsl.RuleFactory;
+import org.drools.ruleunits.dsl.accumulate.AccumulatePattern2;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
+import org.drools.ruleunits.dsl.accumulate.GroupByPattern2;
 import org.drools.ruleunits.dsl.constraints.AlphaConstraintWithRightExtractor;
 import org.drools.ruleunits.dsl.constraints.AlphaConstraintWithRightValue;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 import static org.drools.model.functions.Function1.identity;
-import static org.drools.ruleunits.dsl.accumulate.AccumulatePattern2.createAccumulatePattern2;
 
 public class Pattern1DefImpl<A> extends SinglePatternDef<A> implements Pattern1Def<A> {
 
@@ -107,10 +108,17 @@ public class Pattern1DefImpl<A> extends SinglePatternDef<A> implements Pattern1D
 
     @Override
     public <B, C> Pattern2Def<A, C> accumulate(Function1<Pattern1Def<A>, PatternDef> patternBuilder, Accumulator1<B, C> acc) {
-        Pattern1DefImpl patternB = (Pattern1DefImpl) rule.internalCreatePattern(this, patternBuilder);
-        Pattern2DefImpl<A, C> accPattern = createAccumulatePattern2(rule, this, patternB, acc);
+        Pattern1DefImpl<C> patternC = (Pattern1DefImpl) rule.internalCreatePattern(this, patternBuilder);
+        Pattern2DefImpl<A, C> accPattern = new AccumulatePattern2<>(rule, this, patternC, acc);
         rule.addPattern(accPattern);
         return accPattern;
+    }
+
+    @Override
+    public <B, K, V> Pattern3Def<A, K, V> groupBy(Function1<Pattern1Def<A>, PatternDef> patternBuilder, Function1<B, K> groupingFunction, Accumulator1<B, V> acc) {
+        GroupByPattern2 groupByPattern = new GroupByPattern2(rule, this, rule.internalCreatePattern(this, patternBuilder), groupingFunction, acc);
+        rule.addPattern(groupByPattern);
+        return groupByPattern;
     }
 
     @Override

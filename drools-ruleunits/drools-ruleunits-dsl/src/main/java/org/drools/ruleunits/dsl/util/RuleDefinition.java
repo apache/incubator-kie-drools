@@ -35,7 +35,7 @@ import org.drools.ruleunits.dsl.RuleUnitDefinition;
 import org.drools.ruleunits.dsl.RulesFactory;
 import org.drools.ruleunits.dsl.accumulate.AccumulatePattern1;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
-import org.drools.ruleunits.dsl.accumulate.GroupByPattern;
+import org.drools.ruleunits.dsl.accumulate.GroupByPattern1;
 import org.drools.ruleunits.dsl.patterns.CombinedPatternDef;
 import org.drools.ruleunits.dsl.patterns.ExistentialPatternDef;
 import org.drools.ruleunits.dsl.patterns.InternalPatternDef;
@@ -126,7 +126,7 @@ public class RuleDefinition implements RuleFactory {
 
     @Override
     public <A, K, V> Pattern2Def<K, V> groupBy(Function1<RuleFactory, PatternDef> patternBuilder, Function1<A, K> groupingFunction, Accumulator1<A, V> acc) {
-        GroupByPattern groupByPattern = new GroupByPattern(this, internalCreatePattern(this, patternBuilder), groupingFunction, acc);
+        GroupByPattern1 groupByPattern = new GroupByPattern1(this, internalCreatePattern(this, patternBuilder), groupingFunction, acc);
         addPattern(groupByPattern);
         return groupByPattern;
     }
