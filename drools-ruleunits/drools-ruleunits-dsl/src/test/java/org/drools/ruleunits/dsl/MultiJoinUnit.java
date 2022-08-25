@@ -20,26 +20,30 @@ import java.util.List;
 
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.dsl.domain.Cheese;
 import org.drools.ruleunits.dsl.domain.Person;
 
 import static org.drools.model.Index.ConstraintType.EQUAL;
 import static org.drools.model.Index.ConstraintType.GREATER_THAN;
+import static org.drools.model.Index.ConstraintType.LESS_THAN;
 
 public class MultiJoinUnit implements RuleUnitDefinition {
 
     private final DataStore<String> strings;
     private final DataStore<Integer> ints;
     private final DataStore<Person> persons;
+    private final DataStore<Cheese> cheeses;
     private final List<String> results = new ArrayList<>();
 
     public MultiJoinUnit() {
-        this(DataSource.createStore(), DataSource.createStore(), DataSource.createStore());
+        this(DataSource.createStore(), DataSource.createStore(), DataSource.createStore(), DataSource.createStore());
     }
 
-    public MultiJoinUnit(DataStore<String> strings, DataStore<Integer> ints, DataStore<Person> persons) {
+    public MultiJoinUnit(DataStore<String> strings, DataStore<Integer> ints, DataStore<Person> persons, DataStore<Cheese> cheeses) {
         this.strings = strings;
         this.ints = ints;
         this.persons = persons;
+        this.cheeses = cheeses;
     }
 
     public DataStore<String> getStrings() {
@@ -54,6 +58,10 @@ public class MultiJoinUnit implements RuleUnitDefinition {
         return persons;
     }
 
+    public DataStore<Cheese> getCheeses() {
+        return cheeses;
+    }
+
     public List<String> getResults() {
         return results;
     }
@@ -63,6 +71,7 @@ public class MultiJoinUnit implements RuleUnitDefinition {
         // $s: /strings[ length > 5 ]
         // $i: /ints[ this > 5, this == $s.length ]
         // $p: /persons[ age > name.length, age == ($i + $s.length) * 2 + 4, age == $i + $s.length + 26 ]
+        // $p: /cheeses[ price < $p.name.length + $i ]
         rulesFactory.addRule()
                     .from(strings)
                     .filter("length", s -> s.length(), GREATER_THAN, 5)
@@ -71,6 +80,8 @@ public class MultiJoinUnit implements RuleUnitDefinition {
                     .join( rule -> rule.from(persons).filter("age", Person::getAge, GREATER_THAN, "name", p -> p.getName().length()) )
                     .filter( (s, i, p) -> p.getAge() == ( i + s.length() ) * 2 + 4 )
                     .filter( "age", Person::getAge, EQUAL, (s, i) -> i + s.length() + 26 )
-                    .execute(results, (r, s, i, p) -> r.add("Found '" + p.getName() + "'")); // the consequence captures all the joined variables positionally
+                    .from(cheeses)
+                    .filter( "price", Cheese::getPrice, LESS_THAN, (s, i, p) -> p.getName().length() + i )
+                    .execute(results, (r, s, i, p, c) -> r.add("Found " + p.getName() + " who eats " + c.getName())); // the consequence captures all the joined variables positionally
     }
 }

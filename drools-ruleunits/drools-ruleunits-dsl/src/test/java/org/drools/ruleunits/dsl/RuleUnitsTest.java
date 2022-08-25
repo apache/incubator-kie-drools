@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
+import org.drools.ruleunits.dsl.domain.Cheese;
 import org.drools.ruleunits.dsl.domain.Person;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
@@ -175,6 +176,8 @@ public class RuleUnitsTest {
         unit.getStrings().add("Hello World");
         unit.getInts().add(11);
         unit.getPersons().add(new Person("Sofia", 4));
+        unit.getCheeses().add(new Cheese("Gorgonzola", 20));
+        unit.getCheeses().add(new Cheese("Mozzarella", 12));
 
         assertThat(unit.fire()).isEqualTo(0);
 
@@ -183,7 +186,7 @@ public class RuleUnitsTest {
 
         unit.getPersons().add(new Person("Mario", 48));
         assertThat(unit.fire()).isEqualTo(1);
-        assertThat(unit.getResults()).containsExactly("Found 'Mario'");
+        assertThat(unit.getResults()).containsExactly("Found Mario who eats Mozzarella");
     }
 
     @Test

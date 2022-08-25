@@ -21,6 +21,8 @@ import org.drools.model.functions.Block4;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate3;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.dsl.RuleFactory;
 
 public interface Pattern3Def<A, B, C> extends PatternDef {
 
@@ -28,6 +30,10 @@ public interface Pattern3Def<A, B, C> extends PatternDef {
 
     <V> Pattern3Def<A, B, C> filter(Function1<C, V> leftExtractor, Index.ConstraintType constraintType, Function2<A, B, V> rightExtractor);
     <V> Pattern3Def<A, B, C> filter(String fieldName, Function1<C, V> leftExtractor, Index.ConstraintType constraintType, Function2<A, B, V> rightExtractor);
+
+    <D> Pattern4Def<A, B, C, D> from(DataSource<D> dataSource);
+
+    <D> Pattern4Def<A, B, C, D> join(Function1<RuleFactory, Pattern1Def<D>> patternBuilder);
 
     void execute(Block3<A, B, C> block);
 

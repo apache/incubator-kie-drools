@@ -24,6 +24,8 @@ import org.drools.model.functions.Block4;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate3;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.constraints.Beta2Constraint;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
 
@@ -55,6 +57,20 @@ public class Pattern3DefImpl<A, B, C> extends SinglePatternDef<C> implements Pat
     public <V> Pattern3DefImpl<A, B, C> filter(String fieldName, Function1<C, V> leftExtractor, Index.ConstraintType constraintType, Function2<A, B, V> rightExtractor) {
         patternC.constraints.add(new Beta2Constraint<>(variable, fieldName, leftExtractor, constraintType, patternA.variable, patternB.variable, rightExtractor));
         return this;
+    }
+
+    @Override
+    public <D> Pattern4Def<A, B, C, D> from(DataSource<D> dataSource) {
+        return join(rule.from(dataSource));
+    }
+
+    @Override
+    public <D> Pattern4Def<A, B, C, D> join(Function1<RuleFactory, Pattern1Def<D>> patternBuilder) {
+        return join((Pattern1DefImpl) patternBuilder.apply(rule));
+    }
+
+    private <D> Pattern4Def<A, B, C, D> join(Pattern1DefImpl<D> other) {
+        return new Pattern4DefImpl<>(rule, patternA, patternB, patternC, other);
     }
 
     @Override
