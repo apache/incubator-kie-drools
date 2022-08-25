@@ -1,0 +1,154 @@
+import org.jenkinsci.plugins.workflow.libs.Library
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g && !master'
+    }
+
+    tools {
+        maven env.BUILD_MAVEN_TOOL
+        jdk env.BUILD_JDK_TOOL
+    }
+
+    options {
+        timestamps()
+        timeout(time: 60, unit: 'MINUTES')
+    }
+
+    // parameters {
+    // For parameters, check into ./dsl/jobs.groovy file
+    // }
+
+    environment {
+        // Static env is defined into ./dsl/jobs.groovy file
+
+        OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
+        // Keep here for visitibility
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
+    }
+
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    cleanWs()
+
+                    if (params.DISPLAY_NAME) {
+                        currentBuild.displayName = params.DISPLAY_NAME
+                    }
+
+                    checkoutRepo(getRepoName(), getBuildBranch())
+                }
+            }
+        }
+        stage('Update project version') {
+            steps {
+                script {
+                    maven.mvnVersionsSet(getMavenCommand(getRepoName()), getOptaPlannerVersion(), true)
+                }
+            }
+        }
+        stage('Deploy to repository') {
+            when {
+                expression { return shouldDeployToRepository() }
+            }
+            steps {
+                script {
+                    runMavenDeploy(getRepoName())
+                }
+            }
+        }
+        stage('Update branch') {
+            steps {
+                script {
+                    dir(getRepoName()) {
+                        if (githubscm.isThereAnyChanges()) {
+                            def commitMsg = "Update version to ${getOptaPlannerVersion()}"
+
+                            githubscm.commitChanges(commitMsg, {
+                                githubscm.findAndStageNotIgnoredFiles('pom.xml')
+                                githubscm.findAndStageNotIgnoredFiles('antora.yml')
+                            })
+                            githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
+                        } else {
+                            println '[WARN] no changes to commit'
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendNotification()
+        }
+        cleanup {
+            script {
+                util.cleanNode('docker')
+            }
+        }
+    }
+}
+
+void sendNotification() {
+    if (params.SEND_NOTIFICATION) {
+        mailer.sendMarkdownTestSummaryNotification('Init', "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO])
+    } else {
+        echo 'No notification sent per configuration'
+    }
+}
+
+void checkoutRepo(String repository, String branch) {
+    dir(repository) {
+        deleteDir()
+        checkout(githubscm.resolveRepository(repository, getGitAuthor(), branch, false))
+        // need to manually checkout branch since on a detached branch after checkout command
+        sh "git checkout ${branch}"
+    }
+}
+
+boolean shouldDeployToRepository() {
+    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'kiegroup'
+}
+
+String getRepoName() {
+    return env.REPO_NAME
+}
+
+String getGitAuthor() {
+    // GIT_AUTHOR can be env or param
+    return "${GIT_AUTHOR}"
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
+}
+
+String getOptaPlannerVersion() {
+    return params.OPTAPLANNER_VERSION
+}
+
+String getGitAuthorCredsID() {
+    return env.AUTHOR_CREDS_ID
+}
+
+MavenCommand getMavenCommand(String directory) {
+    return new MavenCommand(this, ['-fae', '-ntp'])
+                .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
+                .inDirectory(directory)
+                .withProperty('full')
+}
+
+void runMavenDeploy(String directory) {
+    mvnCmd = getMavenCommand(directory)
+
+    if (env.MAVEN_DEPLOY_REPOSITORY) {
+        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
+    }
+
+    mvnCmd.skipTests(true).run('clean deploy')
+}
