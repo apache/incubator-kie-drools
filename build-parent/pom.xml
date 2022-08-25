@@ -1599,14 +1599,14 @@
                       <!-- antlr4gwt and antlr4-c3-gwt (javax.json) rely on duplicated resources to provide a GWT-compatible
                            implementation for ANTLR -->
                       <dependency>
-                        <groupId>org.antlr</groupId>
+                        <groupId>org.antlr4gwt</groupId>
                         <artifactId>antlr4gwt-runtime</artifactId>
                         <ignoreClasses>
                           <ignoreClass>org.antlr.v4.*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
                       <dependency>
-                        <groupId>org.antlr</groupId>
+                        <groupId>org.antlr4gwt</groupId>
                         <artifactId>antlr4gwt-annotations</artifactId>
                         <ignoreClasses>
                           <ignoreClass>org.antlr.v4.runtime.misc.*</ignoreClass>
