@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.io.MemoryFile;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
@@ -45,31 +46,31 @@ public class GeneratedResourceUtils {
     private GeneratedResourceUtils() {
     }
 
-    public static boolean isPresentExecutableOrRedirect(LocalUri localUri, String modelType) {
+    public static boolean isPresentExecutableOrRedirect(ModelLocalUriId modelLocalUriId, String modelType) {
         return Stream
-                .of(getGeneratedExecutableResource(localUri, modelType),
-                        getGeneratedRedirectResource(localUri, modelType))
+                .of(getGeneratedExecutableResource(modelLocalUriId, modelType),
+                        getGeneratedRedirectResource(modelLocalUriId, modelType))
                 .anyMatch(Optional::isPresent);
     }
 
-    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(LocalUri localUri, String modelType) {
-        return getIndexFile(modelType).flatMap(indexFile -> getGeneratedExecutableResource(localUri, indexFile));
+    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(ModelLocalUriId modelLocalUriId, String modelType) {
+        return getIndexFile(modelType).flatMap(indexFile -> getGeneratedExecutableResource(modelLocalUriId, indexFile));
     }
 
-    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(LocalUri localUri, IndexFile indexFile) {
+    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(ModelLocalUriId modelLocalUriId, IndexFile indexFile) {
         Collection<GeneratedExecutableResource> allExecutableResources = getAllGeneratedExecutableResources(indexFile);
         return findAtMostOne(allExecutableResources,
-                             generatedResource -> generatedResource.getLocalUri().equals(localUri),
-                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + localUri));
+                             generatedResource -> generatedResource.getModelLocalUriId().equals(modelLocalUriId),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + modelLocalUriId));
     }
 
-    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(LocalUri localUri, String modelType) {
+    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(ModelLocalUriId modelLocalUriId, String modelType) {
         return getIndexFile(modelType).flatMap(indexFile -> {
             try {
                 GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
                 return generatedResources.stream()
                         .filter(generatedResource -> generatedResource instanceof GeneratedRedirectResource &&
-                                ((GeneratedRedirectResource) generatedResource).getLocalUri().equals(localUri))
+                                ((GeneratedRedirectResource) generatedResource).getModelLocalUriId().equals(modelLocalUriId))
                         .findFirst()
                         .map(GeneratedRedirectResource.class::cast);
             } catch (Exception e) {

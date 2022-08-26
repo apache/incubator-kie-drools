@@ -19,18 +19,19 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 public abstract class AbstractEfestoCallableCompilationOutput implements EfestoCallableOutput {
 
-    private final LocalUri localUri;
+    private final ModelLocalUriId modelLocalUriId;
     private final List<String> fullClassNames;
 
-    protected AbstractEfestoCallableCompilationOutput(LocalUri localUri, String fullClassName) {
-        this(localUri, Collections.singletonList(fullClassName));
+    protected AbstractEfestoCallableCompilationOutput(ModelLocalUriId modelLocalUriId, String fullClassName) {
+        this(modelLocalUriId, Collections.singletonList(fullClassName));
     }
 
-    protected AbstractEfestoCallableCompilationOutput(LocalUri localUri, List<String> fullClassNames) {
-        this.localUri = localUri;
+    protected AbstractEfestoCallableCompilationOutput(ModelLocalUriId modelLocalUriId, List<String> fullClassNames) {
+        this.modelLocalUriId = modelLocalUriId;
         this.fullClassNames = fullClassNames;
     }
 
@@ -41,8 +42,8 @@ public abstract class AbstractEfestoCallableCompilationOutput implements EfestoC
      * @return
      */
     @Override
-    public LocalUri getLocalUri() {
-        return localUri;
+    public ModelLocalUriId getModelLocalUriId() {
+        return modelLocalUriId;
     }
 
     @Override

@@ -18,6 +18,7 @@ package org.kie.efesto.compilationmanager.core.mocks;
 import java.util.List;
 
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.AbstractEfestoCallableCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
@@ -31,8 +32,8 @@ public abstract class AbstractMockOutput<T> extends AbstractEfestoCallableCompil
      */
     private final T content;
 
-    protected AbstractMockOutput(LocalUri localUri, T content) {
-        super(localUri, (List<String>) null);
+    protected AbstractMockOutput(ModelLocalUriId modelLocalUriId, T content) {
+        super(modelLocalUriId, (List<String>) null);
         this.content = content;
     }
 

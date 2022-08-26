@@ -19,15 +19,16 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutput;
 
 public class MockEfestoCallableOutput implements EfestoCallableOutput {
 
-    private LocalUri localUri = LocalUri.parse("/mock/efesto/output/module");
+    private ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/mock/efesto/output/module"));
 
     @Override
-    public LocalUri getLocalUri() {
-        return localUri;
+    public ModelLocalUriId getModelLocalUriId() {
+        return modelLocalUriId;
     }
 
     @Override

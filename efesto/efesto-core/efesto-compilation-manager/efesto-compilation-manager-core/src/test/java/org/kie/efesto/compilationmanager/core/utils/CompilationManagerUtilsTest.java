@@ -22,6 +22,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
@@ -37,10 +38,10 @@ import static org.kie.efesto.common.api.utils.JSONUtils.writeGeneratedResourcesO
 class CompilationManagerUtilsTest {
 
     private final static String modelType = "test";
-    private final static LocalUri localUri = LocalUri.parse("/" + modelType + "/this/is/fri");
-    private final static LocalUri notExistingLocalUri =  LocalUri.parse("/notexisting/this/is/fri");
+    private final static ModelLocalUriId MODEL_LOCAL_URI_ID = new ModelLocalUriId(LocalUri.parse("/" + modelType + "/this/is/fri"));
+    private final static ModelLocalUriId NOT_EXISTING_MODEL_LOCAL_URI_ID =  new ModelLocalUriId(LocalUri.parse("/notexisting/this/is/fri"));
     private final static Map<String, byte[]> compiledClassMap = IntStream.range(0, 3).boxed().collect(Collectors.toMap(integer -> "class_" + integer, integer -> new byte[0]));
-    private final static EfestoCallableOutputClassesContainer finalOutput = getEfestoFinalOutputClassesContainer(localUri);
+    private final static EfestoCallableOutputClassesContainer finalOutput = getEfestoFinalOutputClassesContainer(MODEL_LOCAL_URI_ID);
 
     @Test
     void populateIndexFilesWithProcessedResource() {
@@ -60,7 +61,7 @@ class CompilationManagerUtilsTest {
 
     @Test
     void getIndexFileNotExisting() {
-        EfestoCallableOutputClassesContainer notExistingOutput = getEfestoFinalOutputClassesContainer(notExistingLocalUri);
+        EfestoCallableOutputClassesContainer notExistingOutput = getEfestoFinalOutputClassesContainer(NOT_EXISTING_MODEL_LOCAL_URI_ID);
         IndexFile retrieved = CompilationManagerUtils.getIndexFile(notExistingOutput);
         assertThat(retrieved).isNotNull();
         String expectedName = "IndexFile.notexisting_json";
@@ -81,7 +82,7 @@ class CompilationManagerUtilsTest {
         expectedResources = 2; // 2 final resource
         assertThat(executableResources).hasSize(expectedResources);
 
-        GeneratedExecutableResource finalResource = executableResources.stream().filter(generatedExecutableResource -> finalOutput.getLocalUri().equals(generatedExecutableResource.getLocalUri())).findFirst().orElse(null);
+        GeneratedExecutableResource finalResource = executableResources.stream().filter(generatedExecutableResource -> finalOutput.getModelLocalUriId().equals(generatedExecutableResource.getModelLocalUriId())).findFirst().orElse(null);
 
         commonEvaluateGeneratedExecutableResource(finalResource);
         List<GeneratedClassResource> classResources = generatedResources.stream().filter(generatedResource -> generatedResource instanceof GeneratedClassResource).map(GeneratedClassResource.class::cast).collect(Collectors.toList());
@@ -131,7 +132,7 @@ class CompilationManagerUtilsTest {
     private void commonEvaluateGeneratedExecutableResource(GeneratedResource generatedResource) {
         assertThat(generatedResource).isNotNull();
         assertThat(generatedResource instanceof GeneratedExecutableResource).isTrue();
-        assertThat(((GeneratedExecutableResource) generatedResource).getLocalUri()).isEqualTo(finalOutput.getLocalUri());
+        assertThat(((GeneratedExecutableResource) generatedResource).getModelLocalUriId()).isEqualTo(finalOutput.getModelLocalUriId());
     }
 
     private void commonEvaluateGeneratedIntermediateResources(List<GeneratedResource> retrieved) {
@@ -142,8 +143,8 @@ class CompilationManagerUtilsTest {
         });
     }
 
-    private static EfestoCallableOutputClassesContainer getEfestoFinalOutputClassesContainer(LocalUri localUri) {
-        return new EfestoCallableOutputClassesContainer(localUri, localUri.model() + "Resources", compiledClassMap) {
+    private static EfestoCallableOutputClassesContainer getEfestoFinalOutputClassesContainer(ModelLocalUriId modelLocalUriId) {
+        return new EfestoCallableOutputClassesContainer(modelLocalUriId, modelLocalUriId.model() + "Resources", compiledClassMap) {
         };
     }
 }

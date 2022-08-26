@@ -18,7 +18,7 @@ package org.kie.efesto.common.api.model;
 import java.util.List;
 import java.util.Objects;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
  * A <code>GeneratedResource</code> meant to be directly executed, with a <b>full reference name (frn)</b> identifier
@@ -29,7 +29,7 @@ public final class GeneratedExecutableResource implements GeneratedResource {
     /**
      * the full reference identifier (e.g. "bar/resource/some_final_model")
      */
-    private final LocalUri localUri;
+    private final ModelLocalUriId modelLocalUriId;
 
 
     private final List<String> fullClassNames;
@@ -38,13 +38,13 @@ public final class GeneratedExecutableResource implements GeneratedResource {
         this(null, null);
     }
 
-    public GeneratedExecutableResource(LocalUri localUri, List<String> fullClassNames) {
-        this.localUri = localUri;
+    public GeneratedExecutableResource(ModelLocalUriId modelLocalUriId, List<String> fullClassNames) {
+        this.modelLocalUriId = modelLocalUriId;
         this.fullClassNames = fullClassNames;
     }
 
-    public LocalUri getLocalUri() {
-        return localUri;
+    public ModelLocalUriId getModelLocalUriId() {
+        return modelLocalUriId;
     }
 
     public List<String> getFullClassNames() {
@@ -53,7 +53,7 @@ public final class GeneratedExecutableResource implements GeneratedResource {
 
     @Override
     public int hashCode() {
-        return Objects.hash(localUri);
+        return Objects.hash(modelLocalUriId);
     }
 
     /**
@@ -69,13 +69,13 @@ public final class GeneratedExecutableResource implements GeneratedResource {
             return false;
         }
         GeneratedExecutableResource that = (GeneratedExecutableResource) o;
-        return localUri.equals(that.localUri);
+        return modelLocalUriId.equals(that.modelLocalUriId);
     }
 
     @Override
     public String toString() {
         return "GeneratedExecutableResource{" +
-                "fri='" + localUri + '\'' +
+                "fri='" + modelLocalUriId + '\'' +
                 "} " + super.toString();
     }
 }

@@ -19,6 +19,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.common.api.identifiers.componentroots.ComponentRootA;
 import org.kie.efesto.common.api.identifiers.componentroots.ComponentRootB;
@@ -36,33 +37,35 @@ class GeneratedResourcesTest {
                 .get(ComponentRootB.class)
                 .get("this", "is", "localUri")
                 .asLocalUri();
-        GeneratedResource generatedFinalResource = new GeneratedExecutableResource(localUri, Collections.singletonList(fullClassName));
+        ModelLocalUriId localUriId = new ModelLocalUriId(localUri);
+        GeneratedResource generatedFinalResource = new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName));
         GeneratedResources generatedResources = new GeneratedResources();
         generatedResources.add(generatedClassResource);
         generatedResources.add(generatedFinalResource);
         assertThat(generatedResources).hasSize(2);
 
         generatedResources = new GeneratedResources();
-        generatedResources.add(new GeneratedExecutableResource(localUri, Collections.singletonList(fullClassName)));
-        generatedResources.add(new GeneratedExecutableResource(localUri, Collections.singletonList(fullClassName)));
+        generatedResources.add(new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName)));
+        generatedResources.add(new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName)));
         assertThat(generatedResources).hasSize(1);
 
         generatedResources = new GeneratedResources();
-        generatedResources.add(new GeneratedExecutableResource(localUri, Collections.singletonList(fullClassName)));
-        generatedResources.add(new GeneratedExecutableResource(localUri, Collections.singletonList(fullClassName)));
+        generatedResources.add(new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName)));
+        generatedResources.add(new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName)));
         assertThat(generatedResources).hasSize(1);
 
         generatedResources = new GeneratedResources();
-        generatedResources.add(new GeneratedExecutableResource(localUri, Collections.singletonList(fullClassName)));
+        generatedResources.add(new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName)));
         LocalUri localUriDifferent = new ReflectiveAppRoot(model)
                 .get(ComponentRootA.class)
                 .get("this", "different-localUri")
                 .asLocalUri();
-        generatedResources.add(new GeneratedExecutableResource(localUriDifferent, Collections.singletonList(fullClassName)));
+        ModelLocalUriId localUriIdDifferent = new ModelLocalUriId(localUriDifferent);
+        generatedResources.add(new GeneratedExecutableResource(localUriIdDifferent, Collections.singletonList(fullClassName)));
         assertThat(generatedResources).hasSize(2);
 
         generatedClassResource = new GeneratedClassResource(fullClassName);
-        generatedFinalResource = new GeneratedExecutableResource(localUri, Collections.singletonList(fullClassName));
+        generatedFinalResource = new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName));
         generatedResources = new GeneratedResources();
         generatedResources.add(generatedClassResource);
         generatedResources.add(generatedFinalResource);

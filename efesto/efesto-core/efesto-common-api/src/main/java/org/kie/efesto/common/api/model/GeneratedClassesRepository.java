@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
  * package private Singleton repository to cache generated classes. Accessed by EfestoContext
@@ -28,25 +28,25 @@ enum GeneratedClassesRepository {
 
     INSTANCE;
 
-    private Map<LocalUri, Map<String, byte[]>> generatedClassesMap = new ConcurrentHashMap<>();
+    private Map<ModelLocalUriId, Map<String, byte[]>> generatedClassesMap = new ConcurrentHashMap<>();
 
-    public void addGeneratedClasses(LocalUri localUri, Map<String, byte[]> generatedClasses) {
-        generatedClassesMap.put(localUri, generatedClasses);
+    public void addGeneratedClasses(ModelLocalUriId modelLocalUriId, Map<String, byte[]> generatedClasses) {
+        generatedClassesMap.put(modelLocalUriId, generatedClasses);
     }
 
-    public Map<String, byte[]> getGeneratedClasses(LocalUri localUri) {
-        return generatedClassesMap.get(localUri);
+    public Map<String, byte[]> getGeneratedClasses(ModelLocalUriId modelLocalUriId) {
+        return generatedClassesMap.get(modelLocalUriId);
     }
 
-    public Map<String, byte[]> removeGeneratedClasses(LocalUri localUri) {
-        return generatedClassesMap.remove(localUri);
+    public Map<String, byte[]> removeGeneratedClasses(ModelLocalUriId modelLocalUriId) {
+        return generatedClassesMap.remove(modelLocalUriId);
     }
 
-    public boolean containsKey(LocalUri localUri) {
-        return generatedClassesMap.containsKey(localUri);
+    public boolean containsKey(ModelLocalUriId modelLocalUriId) {
+        return generatedClassesMap.containsKey(modelLocalUriId);
     }
 
-    public Set<LocalUri> localUriKeySet() {
+    public Set<ModelLocalUriId> localUriIdKeySet() {
         return generatedClassesMap.keySet();
     }
 

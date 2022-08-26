@@ -17,7 +17,7 @@ package org.kie.efesto.compilationmanager.api.model;
 
 import java.util.List;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
  * A <code>CompilationOutput</code>.
@@ -29,10 +29,9 @@ public interface EfestoCallableOutput extends EfestoCompilationOutput {
 
     /**
      * Returns the <b>full resource identifier</b> to be invoked for execution
-     *
      * @return
      */
-    LocalUri getLocalUri();
+    ModelLocalUriId getModelLocalUriId();
 
     /**
      * Returns the <b>full class names</b> to be instantiated for execution

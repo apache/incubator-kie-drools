@@ -17,7 +17,7 @@ package org.kie.drl.engine.runtime.kiesession.local.model;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.drl.engine.runtime.model.EfestoOutputDrl;
-import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
  * <code>EfestoOutputDrl</code> specific for local kiesession usage.
@@ -27,7 +27,7 @@ import org.kie.efesto.common.api.identifiers.LocalUri;
  */
 public class EfestoOutputDrlKieSessionLocal extends EfestoOutputDrl<KieSession> {
 
-    public EfestoOutputDrlKieSessionLocal(LocalUri localUri, KieSession kieSession) {
-        super(localUri, kieSession);
+    public EfestoOutputDrlKieSessionLocal(ModelLocalUriId modelLocalUriId, KieSession kieSession) {
+        super(modelLocalUriId, kieSession);
     }
 }

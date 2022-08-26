@@ -23,21 +23,22 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class LocalUriDeSerializer extends StdDeserializer<LocalUri> {
+public class ModelLocalUriIdDeSerializer extends StdDeserializer<ModelLocalUriId> {
 
-    public LocalUriDeSerializer() {
+    public ModelLocalUriIdDeSerializer() {
         this(null);
     }
 
-    public LocalUriDeSerializer(Class<LocalUri> t) {
+    public ModelLocalUriIdDeSerializer(Class<ModelLocalUriId> t) {
         super(t);
     }
 
     @Override
-    public LocalUri deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public ModelLocalUriId deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
         JsonNode node = p.getCodec().readTree(p);
-        String path = node.get("path").asText();
-        return LocalUri.parse(path);
+        String path = node.get("fullPath").asText();
+        return new ModelLocalUriId(LocalUri.parse(path));
     }
 }

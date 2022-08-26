@@ -18,6 +18,7 @@ package org.kie.efesto.compilationmanager.api.model;
 import java.util.List;
 
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
  * A  <code>CompilationOutput</code> from one engine that will
@@ -34,8 +35,8 @@ public abstract class EfestoRedirectOutput<T> extends AbstractEfestoCallableComp
      */
     private final T content;
 
-    protected EfestoRedirectOutput(LocalUri localUri, String targetEngine, T content) {
-        super(localUri, (List<String>) null);
+    protected EfestoRedirectOutput(ModelLocalUriId modelLocalUriId, String targetEngine, T content) {
+        super(modelLocalUriId, (List<String>) null);
         this.targetEngine = targetEngine;
         this.content = content;
     }

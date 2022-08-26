@@ -66,32 +66,8 @@ public abstract class LocalUri {
         return hpath;
     }
 
-    private static LocalUriPathComponent getFirstLocalUriPathComponent(LocalUri localUri) {
-        if (localUri.parent() != null && localUri.parent() instanceof LocalUriPathComponent) {
-            return getFirstLocalUriPathComponent(localUri.parent());
-        } else {
-            return localUri instanceof LocalUriPathComponent ? (LocalUriPathComponent) localUri : null;
-        }
-    }
-
     // this is a closed hierarchy
     private LocalUri() {
-    }
-
-    public String model() {
-        LocalUriPathComponent firstLocalUriPathComponent = getFirstLocalUriPathComponent(this);
-        return firstLocalUriPathComponent != null ? firstLocalUriPathComponent.component : null;
-    }
-
-    public String basePath() {
-        String path = path();
-        String model = model();
-        if (model == null || model.isEmpty()) {
-            return path;
-        } else {
-            String start = SLASH + model;
-            return path.substring(path.indexOf(start) + start.length());
-        }
     }
 
     public abstract String path();
@@ -121,7 +97,6 @@ public abstract class LocalUri {
      * Root of a {@link LocalUri}: "/"
      */
     public static class LocalUriRoot extends LocalUri {
-
         private LocalUriRoot() {
         }
 
@@ -148,7 +123,7 @@ public abstract class LocalUri {
     public static class LocalUriPathComponent extends LocalUri {
 
         private final LocalUri parent;
-        private final String component;
+        final String component;
 
         private LocalUriPathComponent(LocalUri parent, String component) {
             this.parent = parent;

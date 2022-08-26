@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
@@ -31,34 +32,36 @@ class GeneratedResourceUtilsTest {
 
     @Test
     void getGeneratedExecutableResource() {
-        LocalUri localUri = LocalUri.parse("/test/testmod");
-        Optional<GeneratedExecutableResource> retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(localUri, "test");
+        ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/test/testmod"));
+        Optional<GeneratedExecutableResource> retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(modelLocalUriId, "test");
         assertThat(retrieved).isNotNull().isPresent();
-        localUri = LocalUri.parse("/test/notestmod");
-        retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(localUri, "test");
+        modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/test/notestmod"));
+        retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(modelLocalUriId, "test");
         assertThat(retrieved).isNotNull().isNotPresent();
     }
 
     @Test
     void getGeneratedRedirectResourceFromFile() {
-        LocalUri localUri = LocalUri.parse("/test/redirecttestmod");
-        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(localUri,
+        ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/test/redirecttestmod"));
+        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(modelLocalUriId,
                                                                                                             "test");
         assertThat(retrieved).isNotNull().isPresent();
-        localUri = LocalUri.parse("/test/redirectnotestmod");
-        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(localUri, "test");
+        modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/test/redirectnotestmod"));
+        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(modelLocalUriId, "test");
         assertThat(retrieved).isNotNull().isNotPresent();
     }
 
     @Test
     void getGeneratedRedirectResourceFromJar() {
         ClassLoader originalClassLoader = addJarToClassLoader();
-        LocalUri fri = LocalUri.parse("/testb/redirecttestmod");
-        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri,
+        ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/testb/redirecttestmod"));
+
+
+        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(modelLocalUriId,
                                                                                                             "testb");
         assertThat(retrieved).isNotNull().isPresent();
-        fri = LocalUri.parse("/testb/redirectnotestmod");
-        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, "testb");
+        modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/testb/redirectnotestmod"));
+        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(modelLocalUriId, "testb");
         assertThat(retrieved).isNotNull().isNotPresent();
         restoreClassLoader(originalClassLoader);
     }

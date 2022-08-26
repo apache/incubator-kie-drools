@@ -15,21 +15,21 @@
  */
 package org.kie.efesto.runtimemanager.api.model;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 public abstract class AbstractEfestoOutput<T> implements EfestoOutput<T> {
 
-    private final LocalUri localUri;
+    private final ModelLocalUriId modelLocalUriId;
     private final T outputData;
 
-    protected AbstractEfestoOutput(LocalUri localUri, T outputData) {
-        this.localUri = localUri;
+    protected AbstractEfestoOutput(ModelLocalUriId modelLocalUriId, T outputData) {
+        this.modelLocalUriId = modelLocalUriId;
         this.outputData = outputData;
     }
 
     @Override
-    public LocalUri getLocalUri() {
-        return localUri;
+    public ModelLocalUriId getModelLocalUriId() {
+        return modelLocalUriId;
     }
 
     @Override

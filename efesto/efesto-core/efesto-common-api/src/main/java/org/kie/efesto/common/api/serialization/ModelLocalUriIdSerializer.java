@@ -21,21 +21,24 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class LocalUriSerializer extends StdSerializer<LocalUri> {
+public class ModelLocalUriIdSerializer extends StdSerializer<ModelLocalUriId> {
 
-    public LocalUriSerializer() {
+    public ModelLocalUriIdSerializer() {
         this(null);
     }
 
-    public LocalUriSerializer(Class<LocalUri> t) {
+    public ModelLocalUriIdSerializer(Class<ModelLocalUriId> t) {
         super(t);
     }
 
     @Override
-    public void serialize(LocalUri value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(ModelLocalUriId value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStartObject();
-        gen.writeStringField("path", value.path());
+        gen.writeStringField("model", value.model());
+        gen.writeStringField("basePath", value.basePath());
+        gen.writeStringField("fullPath", value.fullPath());
         gen.writeEndObject();
     }
 }
