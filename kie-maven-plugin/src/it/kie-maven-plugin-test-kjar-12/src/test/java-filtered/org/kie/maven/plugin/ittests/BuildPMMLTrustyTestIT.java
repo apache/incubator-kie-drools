@@ -35,6 +35,8 @@ public class BuildPMMLTrustyTestIT {
     private static final String GAV_VERSION = "${org.kie.version}";
 
     private static final String PMML_FILE_NAME = "logisticregressionirisdata/logisticRegressionIrisData.pmml";
+
+    private static final String INDEX_FILE_NAME = "IndexFile.pmml_json";
     private static final List<String> EXAMPLE_PMML_CLASSES = Arrays.asList("compoundnestedpredicatescorecard/CompoundNestedPredicateScorecardFactory.class");
 
     @Test
@@ -52,6 +54,7 @@ public class BuildPMMLTrustyTestIT {
 
         Assertions.assertThat(jarContent).isNotEmpty();
         Assertions.assertThat(jarContent).contains(PMML_FILE_NAME);
+        Assertions.assertThat(jarContent).contains(INDEX_FILE_NAME);
         EXAMPLE_PMML_CLASSES.forEach(examplePMMLClass ->  Assertions.assertThat(jarContent).contains(examplePMMLClass));
     }
 }
