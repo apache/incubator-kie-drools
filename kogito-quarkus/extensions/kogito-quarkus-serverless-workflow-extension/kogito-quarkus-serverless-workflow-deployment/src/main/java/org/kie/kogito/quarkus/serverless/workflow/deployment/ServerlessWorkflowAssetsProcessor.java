@@ -63,10 +63,10 @@ public class ServerlessWorkflowAssetsProcessor {
         IndexView index = indexBuildItem.getIndex();
         Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         for (WorkflowHandlerGenerator generator : generators) {
-            generatedFiles.addAll(generator.generateHandlerClasses(context, index));
-        }
-        if (!generatedFiles.isEmpty()) {
-            generatedFiles.add(WorkflowCodeGenUtils.generateWorkItemHandlerConfig(context, generatedFiles));
+            for (GeneratedFile generated : generator.generateHandlerClasses(context, index)) {
+                generatedFiles.add(generated);
+                context.addGeneratedHandler(WorkflowCodeGenUtils.getRefHandler(generated));
+            }
         }
         sources.produce(new KogitoAddonsPreGeneratedSourcesBuildItem(generatedFiles));
     }
