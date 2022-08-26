@@ -4,10 +4,10 @@
 The following scenarios illustrate common variations of {PRODUCT} installation, asset authoring, project storage, project deployment, and asset execution in a decision management architecture. Each section summarizes the methods and tools used and the advantages for the given architecture. The examples are basic and are only a few of the many combinations you might consider, depending on your specific goals and needs with {PRODUCT}.
 
 ifdef::DM,PAM[]
-{PRODUCT} authoring and managed server environments on OpenShift with {CENTRAL} and {KIE_SERVER}::
+{PRODUCT} environments on OpenShift with {CENTRAL} and {KIE_SERVER}::
 +
 --
-* *Installation environment*: {PRODUCT} on {OPENSHIFT}, using the `{PRODUCT_INIT}{ENTERPRISE_VERSION_SHORT}-authoring.yaml` and `{PRODUCT_INIT}{ENTERPRISE_VERSION_SHORT}-kieserver.yaml` template files
+* *Installation environment*: {PRODUCT} on {OPENSHIFT}, using the operator to deploy an `{PRODUCT_INIT}-authoring` environment and other types of environment as necessary.
 * *Project storage and build environment*: External Git repository for project versioning synchronized with the {CENTRAL} Git repository using Git hooks, and external Maven repository for project management and building configured with {KIE_SERVER}
 * *Asset-authoring tool*: {CENTRAL}
 * *Main asset types*: Decision Model and Notation (DMN) models for decisions
@@ -72,10 +72,7 @@ endif::[]
 ifdef::DM,PAM[{EAP_LONG}]
 ifdef::DROOLS,JBPM,OP[Wildfly]
 * *Project storage and build environment*: External Git repository for project versioning (not synchronized with {CENTRAL}) and external Maven repository for project management and building configured with {KIE_SERVER}
-* *Asset-authoring tools*: Integrated development environment (IDE), such as
-ifdef::DM,PAM[Red Hat CodeReady Studio,]
-ifdef::DROOLS,JBPM,OP[Eclipse,]
-and a spreadsheet editor or a Decision Model and Notation (DMN) modeling tool for other decision formats
+* *Asset-authoring tools*: Integrated development environment (IDE), such as VSCode, and a spreadsheet editor or a Decision Model and Notation (DMN) modeling tool for other decision formats
 * *Main asset types*:
 ifdef::DM,DROOLS[Drools Rule Language (DRL) rules, spreadsheet decision tables, and Decision Model and Notation (DMN) models for decisions]
 ifdef::PAM,JBPM[Drools Rule Language (DRL) rules, spreadsheet decision tables, and Decision Model and Notation (DMN) models for decisions, and Business Process Model and Notation (BPMN) models for processes]
@@ -100,10 +97,7 @@ endif::[]
 --
 * *Installation environment*: {PRODUCT} libraries embedded within a custom application
 * *Project storage and build environment*: External Git repository for project versioning (not synchronized with {CENTRAL}) and external Maven repository for project management and building configured with your embedded Java application (not configured with {KIE_SERVER})
-* *Asset-authoring tools*: Integrated development environment (IDE), such as
-ifdef::DM,PAM[Red Hat CodeReady Studio,]
-ifdef::DROOLS,JBPM,OP[Eclipse,]
-and a spreadsheet editor or a Decision Model and Notation (DMN) modeling tool for other decision formats
+* *Asset-authoring tools*: Integrated development environment (IDE), such as VSCode, and a spreadsheet editor or a Decision Model and Notation (DMN) modeling tool for other decision formats
 * *Main asset types*:
 ifdef::DM,DROOLS[Drools Rule Language (DRL) rules, spreadsheet decision tables, and Decision Model and Notation (DMN) models for decisions]
 ifdef::PAM,JBPM[Drools Rule Language (DRL) rules, spreadsheet decision tables, and Decision Model and Notation (DMN) models for decisions, and Business Process Model and Notation (BPMN) models for processes]

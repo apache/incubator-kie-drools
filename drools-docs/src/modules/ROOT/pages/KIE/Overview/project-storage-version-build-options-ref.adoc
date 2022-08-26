@@ -103,8 +103,12 @@ endif::[]
 ifdef::DM,PAM[]
 |S2I in OpenShift (container image)
 |If you use {PRODUCT} on {OPENSHIFT}, you can build your {PRODUCT} projects as KJAR files in the typical way or use Source-to-Image (S2I) to build your projects as container images. S2I is a framework and a tool that allows you to write images that use the application source code as an input and produce a new image that runs the assembled application as an output. The main advantage of using the S2I tool for building reproducible container images is the ease of use for developers.
-a|
-https://access.redhat.com/documentation/en-us/openshift_container_platform/3.3/html/creating_images/creating-images-s2i[_Creating Images in OpenShift_]
+
+The {PRODUCT} images build the KJAR files as S2I automatically, using the source from a Git repository that you can specify. You do not need to create scripts or manage an S2I build.
+|
+For the S2I concept: https://access.redhat.com/documentation/en-us/openshift_container_platform/4.10/html/images/creating-images#images-create-s2i_create-images[_Images_] in the {OPENSHIFT} product documentation.
+
+For the operator-based deployment process: {URL_DEPLOYING_ON_OPENSHIFT}#operator-environment-deploy-assy_openshift-operator[_{DEPLOYING_OPENSHIFT_OPERATOR}_]. In the {KIE_SERVER} settings, add a {KIE_SERVER} instance and then click *Set Immutable server configuration* to configure the source Git repository for an S2I deployment.
 endif::[]
 |===
 
