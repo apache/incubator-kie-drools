@@ -49,4 +49,8 @@ public class KieCompilerServiceDecisionTable implements KieCompilerService<Efest
         return Collections.singletonList(dTableToDrl((DecisionTableFileSetResource) toProcess, (DrlCompilationContext) context));
     }
 
+    @Override
+    public String getModelType() {
+        return "drl";
+    }
 }

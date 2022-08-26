@@ -41,4 +41,9 @@ public class KieRuntimeServiceDrlMapInput implements KieRuntimeService<EfestoMap
     public Optional<EfestoOutputDrlMap> evaluateInput(AbstractEfestoInput<EfestoMapInputDTO> toEvaluate, EfestoRuntimeContext context) {
         return DrlRuntimeHelper.execute(toEvaluate, context);
     }
+
+    @Override
+    public String getModelType() {
+        return "drl";
+    }
 }

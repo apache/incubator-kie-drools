@@ -46,4 +46,8 @@ public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeConte
         return execute(toEvaluate, context);
     }
 
+    @Override
+    public String getModelType() {
+        return "pmml";
+    }
 }

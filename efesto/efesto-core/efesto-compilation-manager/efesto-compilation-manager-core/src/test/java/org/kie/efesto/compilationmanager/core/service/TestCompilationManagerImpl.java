@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +57,7 @@ class TestCompilationManagerImpl {
             IndexFile indexFile = null;
             try {
                 AbstractMockOutput toProcess = managedResource.getDeclaredConstructor().newInstance();
-                Collection<IndexFile> retrieved = compilationManager.processResource(context,
-                                                                                     toProcess);
+                compilationManager.processResource(context, toProcess);
                 assertThat(context.getGeneratedResourcesMap()).hasSize(1);
 
                 // This test repeatedly overwrites context.generatedResourcesMap
@@ -77,8 +75,7 @@ class TestCompilationManagerImpl {
         });
 
         EfestoCompilationContext newContext = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
-        Collection<IndexFile> retrieved = compilationManager.processResource(newContext,
-                                                                             new MockEfestoRedirectOutputD());
+        compilationManager.processResource(newContext, new MockEfestoRedirectOutputD());
         assertThat(newContext.getGeneratedResourcesMap()).isEmpty();
         Map<String, IndexFile> indexFiles = newContext.createIndexFiles(TARGET_TEST_CLASSES_DIRECTORY);
         assertThat(indexFiles).isEmpty();
@@ -97,8 +94,7 @@ class TestCompilationManagerImpl {
             }
         });
         toProcess.add(new MockEfestoRedirectOutputD());
-        Collection<IndexFile> retrieved = compilationManager.processResource(context,
-                                                                             toProcess.toArray(new EfestoResource[0]));
+        compilationManager.processResource(context, toProcess.toArray(new EfestoResource[0]));
         assertThat(context.getGeneratedResourcesMap()).hasSize(1);
 
         IndexFile indexFile = null;

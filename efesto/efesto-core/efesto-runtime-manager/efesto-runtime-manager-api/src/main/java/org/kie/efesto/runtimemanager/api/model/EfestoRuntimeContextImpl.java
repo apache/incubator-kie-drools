@@ -16,6 +16,7 @@
 package org.kie.efesto.runtimemanager.api.model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -28,6 +29,7 @@ import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.common.api.utils.JSONUtils;
 import org.kie.efesto.runtimemanager.api.exceptions.EfestoRuntimeManagerException;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
+import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 public class EfestoRuntimeContextImpl<T extends EfestoListener> implements EfestoRuntimeContext<T> {
@@ -36,10 +38,10 @@ public class EfestoRuntimeContextImpl<T extends EfestoListener> implements Efest
 
     protected final Map<String, GeneratedResources> generatedResourcesMap = new HashMap<>();
 
-    protected EfestoRuntimeContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, String... models) {
+    protected EfestoRuntimeContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         this.memoryCompilerClassLoader = memoryCompilerClassLoader;
         prepareClassLoader();
-        populateGeneratedResourcesMap(models);
+        populateGeneratedResourcesMap();
     }
 
     protected EfestoRuntimeContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, Map<String, GeneratedResources> generatedResourcesMap) {
@@ -55,18 +57,17 @@ public class EfestoRuntimeContextImpl<T extends EfestoListener> implements Efest
                  .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
     }
 
-    private void populateGeneratedResourcesMap(String... models) {
-        for (String model : models) {
-            Optional<IndexFile> optIndexFile = IndexFile.findIndexFileFromClassLoader(model, memoryCompilerClassLoader);
-            if (optIndexFile.isPresent()) {
-                try {
-                    GeneratedResources generatedResources = JSONUtils.getGeneratedResourcesObject(optIndexFile.get());
-                    generatedResourcesMap.put(model, generatedResources);
-                } catch (Exception e) {
-                    throw new EfestoRuntimeManagerException("Failed to read IndexFile content : " + optIndexFile.get().getAbsolutePath(), e);
-                }
+    private void populateGeneratedResourcesMap() {
+        Set<String> modelTypes = SPIUtils.collectModelTypes(this);
+        Map<String, IndexFile> indexFileMap = IndexFile.findIndexFilesFromClassLoader(memoryCompilerClassLoader, modelTypes);
+        indexFileMap.forEach((model, indexFile) -> {
+            try {
+                GeneratedResources generatedResources = JSONUtils.getGeneratedResourcesObject(indexFile);
+                generatedResourcesMap.put(model, generatedResources);
+            } catch (Exception e) {
+                throw new EfestoRuntimeManagerException("Failed to read IndexFile content : " + indexFile.getAbsolutePath(), e);
             }
-        }
+        });
     }
 
     @Override

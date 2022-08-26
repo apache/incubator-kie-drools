@@ -21,8 +21,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.utils.FileNameUtils;
@@ -164,19 +167,25 @@ public final class IndexFile extends File {
     }
 
     // TODO: For now, this method assumes only one or zero IndexFile per modelType will be found in classpath.
-    //       In the future, we may merge them when we find multiple IndexFiles of the same modelType
-    public static Optional<IndexFile> findIndexFileFromClassLoader(String modelType, ClassLoader classLoader) {
-        logger.debug("findIndexFile for {}", modelType);
-        IndexFile toSearch = new IndexFile(modelType);
-        Optional<File> retrieved = getFileByFileNameFromClassloader(toSearch.getName(), classLoader);
-        if (retrieved.isPresent()) {
-            File actualFile = retrieved.get();
-            IndexFile toReturn = actualFile instanceof MemoryFile ?
-                    new IndexFile((MemoryFile)actualFile) : new IndexFile(actualFile);
-            logger.debug("returning {}", toReturn);
-            return Optional.of(toReturn);
+    //       If we find multiple IndexFiles of the same modelType, throw an Exception.
+    //       In the future, we may merge them 
+    public static Map<String, IndexFile> findIndexFilesFromClassLoader(ClassLoader classLoader, Set<String> modelTypes) {
+        logger.debug("findAllIndexFilesFromClassLoader");
+        Map<String, IndexFile> indexFileMap = new HashMap<>();
+        for (String modelType : modelTypes) {
+            IndexFile toSearch = new IndexFile(modelType);
+            Optional<File> retrieved = getFileByFileNameFromClassloader(toSearch.getName(), classLoader);
+            if (retrieved.isPresent()) {
+                File actualFile = retrieved.get();
+                IndexFile toReturn = actualFile instanceof MemoryFile ? new IndexFile((MemoryFile) actualFile) : new IndexFile(actualFile);
+                logger.debug("found {}", toReturn);
+                if (indexFileMap.containsKey(modelType)) {
+                    throw new KieEfestoCommonException("Multiple IndexFiles for " + modelType + " found. " +
+                                                       indexFileMap.get(modelType).getAbsolutePath() + ", " + toReturn.getAbsolutePath());
+                }
+                indexFileMap.put(modelType, toReturn);
+            }
         }
-        logger.debug("returning empty");
-        return Optional.empty();
+        return indexFileMap;
     }
 }

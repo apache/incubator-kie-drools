@@ -16,10 +16,8 @@
 package org.kie.efesto.compilationmanager.core.utils;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.kie.efesto.common.api.io.IndexFile;
@@ -58,9 +56,8 @@ public class CompilationManagerUtils {
      * Process resources and populate generatedResources into context without writing to IndexFile
      * @param toProcess
      * @param context
-     * @return empty Set<IndexFile>
      */
-    public static Set<IndexFile> processedResourceWithContext(EfestoResource toProcess, EfestoCompilationContext context) {
+    public static void processResourceWithContext(EfestoResource toProcess, EfestoCompilationContext context) {
         Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieCompilerService for {}, trying in context classloader", toProcess.getClass());
@@ -68,7 +65,7 @@ public class CompilationManagerUtils {
         }
         if (!retrieved.isPresent()) {
             logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
-            return new HashSet<>();
+            return;
         }
         List<EfestoCompilationOutput> efestoCompilationOutputList = retrieved.get().processResource(toProcess, context);
         for (EfestoCompilationOutput compilationOutput : efestoCompilationOutputList) {
@@ -81,10 +78,9 @@ public class CompilationManagerUtils {
                     context.addGeneratedClasses(classesContainer.getFri(), classesContainer.getCompiledClassesMap());
                 }
             } else if (compilationOutput instanceof EfestoResource) {
-                processedResourceWithContext((EfestoResource) compilationOutput, context);
+                processResourceWithContext((EfestoResource) compilationOutput, context);
             }
         }
-        return new HashSet<>();
     }
 
     public static Optional<IndexFile> getExistingIndexFile(String model) {

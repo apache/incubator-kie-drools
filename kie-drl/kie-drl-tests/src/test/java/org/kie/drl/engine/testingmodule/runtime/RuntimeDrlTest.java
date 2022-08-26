@@ -42,7 +42,7 @@ class RuntimeDrlTest {
     static void setUp() {
         DrlTestUtils.refreshDrlIndexFile();
         runtimeManager = new RuntimeManagerImpl();
-        context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader(), "drl");
+        context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
     @Test

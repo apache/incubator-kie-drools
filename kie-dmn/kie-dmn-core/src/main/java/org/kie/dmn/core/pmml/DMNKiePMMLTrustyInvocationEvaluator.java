@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core.pmml;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +67,8 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     private static final CompilationManager compilationManager =
             org.kie.efesto.compilationmanager.api.utils.SPIUtils.getCompilationManager(false).orElseThrow(() -> new EfestoCompilationManagerException("Failed to find an instance of CompilationManager: please check classpath and dependencies"));
     private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLTrustyInvocationEvaluator.class);
+
+    private static final Path TARGET_TEST_CLASSES_DIRECTORY = Paths.get("target/test-classes/");
 
     public DMNKiePMMLTrustyInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model,
                                                PMMLInfo<?> pmmlInfo) {
@@ -167,11 +171,20 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     }
 
     protected void compileFile(String fileName, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        Collection<IndexFile> retrievedIndexFiles;
+        Map<String, IndexFile> retrievedIndexFiles = null;
         try {
             PMMLCompilationContext compilationContext = new PMMLCompilationContextImpl(fileName, memoryCompilerClassLoader);
             EfestoInputStreamResource toProcess = new EfestoInputStreamResource(documentResource.getInputStream(), fileName);
-            retrievedIndexFiles = compilationManager.processResource(compilationContext, toProcess);
+            compilationManager.processResource(compilationContext, toProcess);
+            retrievedIndexFiles = compilationContext.createIndexFiles(TARGET_TEST_CLASSES_DIRECTORY);
+
+            if (retrievedIndexFiles == null || retrievedIndexFiles.isEmpty() || !retrievedIndexFiles.get(PMML_STRING).getModel().equals(PMML_STRING)) {
+                String errorMessage = String.format("Failed to create index files for %s: please" +
+                                                            " check classpath and dependencies!",
+                                                    fileName);
+                LOG.error(errorMessage);
+                throw new KieCompilerServiceException(errorMessage);
+            }
         } catch (Throwable t) {
             String errorMessage = String.format("Compilation error for %s due to %s: please" +
                                                         " check classpath and dependencies!",
@@ -179,13 +192,13 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
                                                 t.getMessage());
             LOG.error(errorMessage);
             throw new KieCompilerServiceException(errorMessage, t);
-        }
-        if (retrievedIndexFiles == null || retrievedIndexFiles.isEmpty() || retrievedIndexFiles.stream().noneMatch(indexFile -> indexFile.getModel().equals(PMML_STRING))) {
-            String errorMessage = String.format("Failed to create index files for %s: please" +
-                                                        " check classpath and dependencies!",
-                                                fileName);
-            LOG.error(errorMessage);
-            throw new KieCompilerServiceException(errorMessage);
+        } finally {
+            if (retrievedIndexFiles != null) {
+                IndexFile indexFile = retrievedIndexFiles.get(PMML_STRING);
+                if (indexFile.exists()) {
+                    indexFile.delete();
+                }
+            }
         }
     }
 

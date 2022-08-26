@@ -70,7 +70,7 @@ class CompileDrlTest {
     void compileDrlFromFile() {
         String basePath = UUID.randomUUID().toString();
         DrlFileSetResource toProcess = new DrlFileSetResource(drlFiles, basePath);
-        Collection<IndexFile> retrieved = compilationManager.processResource(context, toProcess);
+        compilationManager.processResource(context, toProcess);
         assertThat(context.getGeneratedResourcesMap()).hasSize(1);
     }
 
@@ -78,7 +78,7 @@ class CompileDrlTest {
     void compileDrlFromPackageDescr() {
         String basePath = UUID.randomUUID().toString();
         DrlPackageDescrSetResource toProcess = new DrlPackageDescrSetResource(packageDescrs, basePath);
-        Collection<IndexFile> retrieved = compilationManager.processResource(context, toProcess);
+        compilationManager.processResource(context, toProcess);
         assertThat(context.getGeneratedResourcesMap()).hasSize(1);
     }
 

@@ -57,7 +57,7 @@ class OnTheFlyDrlTest {
         Set<File> files = DrlTestUtils.collectDrlFiles("src/test/resources/org/drools/model/project/codegen");
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, onTheFlyPath);
         DrlCompilationContext compilationContext = DrlCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
-        Collection<IndexFile> indexFiles = compilationManager.processResource(compilationContext, toProcess);
+        compilationManager.processResource(compilationContext, toProcess);
 
         // Suppose we cannot access the previous compilationContext
         EfestoRuntimeContext runtimeContext = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader(), compilationContext.getGeneratedResourcesMap());

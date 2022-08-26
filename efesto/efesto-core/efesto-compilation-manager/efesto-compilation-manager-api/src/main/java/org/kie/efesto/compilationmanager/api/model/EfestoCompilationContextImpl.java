@@ -18,7 +18,6 @@ package org.kie.efesto.compilationmanager.api.model;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -27,12 +26,15 @@ import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedResources;
+import org.kie.efesto.common.api.utils.JSONUtils;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
+import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.memorycompiler.KieMemoryCompilerException;
 
+import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.efesto.common.api.utils.JSONUtils.writeGeneratedResourcesObject;
 
 public class EfestoCompilationContextImpl<T extends EfestoListener> implements EfestoCompilationContext<T> {
@@ -44,6 +46,7 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
     protected EfestoCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         this.memoryCompilerClassLoader = memoryCompilerClassLoader;
         prepareClassLoader();
+        populateGeneratedResourcesMap();
     }
 
     private void prepareClassLoader() {
@@ -51,6 +54,19 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
         friKeySet.stream()
                  .map(this::getGeneratedClasses)
                  .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
+    }
+
+    private void populateGeneratedResourcesMap() {
+        Set<String> modelTypes = SPIUtils.collectModelTypes(this);
+        Map<String, IndexFile> indexFileMap = IndexFile.findIndexFilesFromClassLoader(memoryCompilerClassLoader, modelTypes);
+        indexFileMap.forEach((model, indexFile) -> {
+            try {
+                GeneratedResources generatedResources = JSONUtils.getGeneratedResourcesObject(indexFile);
+                generatedResourcesMap.put(model, generatedResources);
+            } catch (Exception e) {
+                throw new EfestoCompilationManagerException("Failed to read IndexFile content : " + indexFile.getAbsolutePath(), e);
+            }
+        });
     }
 
     @Override
@@ -93,12 +109,17 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
     @Override
     public Map<String, IndexFile> createIndexFiles(Path targetDirectory) {
         Map<String, IndexFile> indexFiles = new HashMap<>();
-        for (String model : generatedResourcesMap.keySet()) {
+        for (Map.Entry<String, GeneratedResources> entry : generatedResourcesMap.entrySet()) {
+            String model = entry.getKey();
+            GeneratedResources generatedResources = entry.getValue();
             IndexFile indexFile = new IndexFile(targetDirectory.toString(), model);
-            GeneratedResources generatedResources = generatedResourcesMap.get(model);
             try {
+                if (indexFile.exists()) {
+                    GeneratedResources existingGeneratedResources = getGeneratedResourcesObject(indexFile);
+                    generatedResources.addAll(existingGeneratedResources);
+                }
                 writeGeneratedResourcesObject(generatedResources, indexFile);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new EfestoCompilationManagerException("Failed to write to IndexFile : " + indexFile.getAbsolutePath(), e);
             }
             indexFiles.put(model, indexFile);

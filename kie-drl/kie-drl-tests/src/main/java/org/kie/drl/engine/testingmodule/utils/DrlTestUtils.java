@@ -2,12 +2,14 @@ package org.kie.drl.engine.testingmodule.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.efesto.common.api.io.IndexFile;
 
@@ -33,7 +35,7 @@ public class DrlTestUtils {
         try {
             Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -41,10 +43,11 @@ public class DrlTestUtils {
      * Collect drl files under `startPath`
      */
     public static Set<File> collectDrlFiles(String startPath) throws IOException {
-        return Files.walk(Paths.get(startPath))
-                    .map(Path::toFile)
+        try (Stream<Path> paths = Files.walk(Paths.get(startPath))) {
+            return paths.map(Path::toFile)
                     .filter(File::isFile)
                     .filter(f -> f.getName().endsWith(".drl"))
                     .collect(Collectors.toSet());
+        }
     }
 }

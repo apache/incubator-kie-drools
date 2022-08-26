@@ -18,7 +18,6 @@ package org.kie.efesto.compilationmanager.api.model;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.ServiceLoader;
-import java.util.Set;
 
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;

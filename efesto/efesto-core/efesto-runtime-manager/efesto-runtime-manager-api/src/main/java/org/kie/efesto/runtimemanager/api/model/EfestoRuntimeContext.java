@@ -21,15 +21,14 @@ import java.util.ServiceLoader;
 
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 public interface EfestoRuntimeContext<T extends EfestoListener> extends EfestoContext<T> {
 
-    static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader, String... models) {
-        return new EfestoRuntimeContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader), models);
+    static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
+        return new EfestoRuntimeContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
     }
 
     static EfestoRuntimeContext buildWithParentClassLoader(ClassLoader parentClassLoader, Map<String, GeneratedResources> generatedResourcesMap) {
