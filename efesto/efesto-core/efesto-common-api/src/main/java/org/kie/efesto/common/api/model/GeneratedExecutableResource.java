@@ -75,7 +75,7 @@ public final class GeneratedExecutableResource implements GeneratedResource {
     @Override
     public String toString() {
         return "GeneratedExecutableResource{" +
-                "fri='" + modelLocalUriId + '\'' +
+                "modelLocalUriId='" + modelLocalUriId + '\'' +
                 "} " + super.toString();
     }
 }

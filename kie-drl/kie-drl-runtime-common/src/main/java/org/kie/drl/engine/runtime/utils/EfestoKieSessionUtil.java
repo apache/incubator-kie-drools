@@ -23,6 +23,7 @@ import org.drools.modelcompiler.KieBaseBuilder;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
@@ -37,11 +38,11 @@ public class EfestoKieSessionUtil {
     private EfestoKieSessionUtil() {
     }
 
-    public static KieSession loadKieSession(LocalUri localUri, EfestoRuntimeContext context) {
-        logger.debug("loadKieSession {} {}", localUri, context);
-        GeneratedExecutableResource finalResource = GeneratedResourceUtils.getGeneratedExecutableResource(localUri, "drl")
+    public static KieSession loadKieSession(ModelLocalUriId modelLocalUriId, EfestoRuntimeContext context) {
+        logger.debug("loadKieSession {} {}", modelLocalUriId, context);
+        GeneratedExecutableResource finalResource = GeneratedResourceUtils.getGeneratedExecutableResource(modelLocalUriId, "drl")
                 .orElseThrow(() -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource " +
-                                                                          "for " + localUri));
+                                                                          "for " + modelLocalUriId));
         List<Model> models = finalResource.getFullClassNames().stream()
                 .map(className -> loadModel(className, context))
                 .collect(Collectors.toList());

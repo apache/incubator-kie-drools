@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.drl.api.identifiers.DrlSessionIdFactory;
+import org.kie.drl.api.identifiers.LocalComponentIdDrlSession;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.efesto.common.api.identifiers.LocalUri;
@@ -40,17 +41,17 @@ public class DrlRuntimeHelper {
     }
 
     public static boolean canManage(EfestoInput toEvaluate) {
-        return (toEvaluate instanceof EfestoInputDrlKieSessionLocal) && getGeneratedExecutableResource(toEvaluate.getLocalUri(), "drl").isPresent();
+        return (toEvaluate instanceof EfestoInputDrlKieSessionLocal) && getGeneratedExecutableResource(toEvaluate.getModelLocalUriId(), "drl").isPresent();
     }
 
     public static Optional<EfestoOutputDrlKieSessionLocal> execute(EfestoInputDrlKieSessionLocal toEvaluate, EfestoRuntimeContext context) {
         KieSession kieSession;
         try {
-            kieSession = loadKieSession(toEvaluate.getLocalUri(), context);
+            kieSession = loadKieSession(toEvaluate.getModelLocalUriId(), context);
         } catch (Exception e) {
             logger.warn("{} can not execute {}",
                         DrlRuntimeHelper.class.getName(),
-                        toEvaluate.getLocalUri(),
+                        toEvaluate.getModelLocalUriId(),
                         e);
             return Optional.empty();
         }
@@ -58,16 +59,14 @@ public class DrlRuntimeHelper {
             return Optional.empty();
         }
         try {
-            LocalUri localUri = new ReflectiveAppRoot("")
+            LocalComponentIdDrlSession modelLocalUriId = new ReflectiveAppRoot("")
                     .get(DrlSessionIdFactory.class)
-                    .get(toEvaluate.getLocalUri().basePath(), kieSession.getIdentifier())
-                    .asLocalUri();
-
-            return Optional.of(new EfestoOutputDrlKieSessionLocal(localUri, kieSession));
+                    .get(toEvaluate.getModelLocalUriId().basePath(), kieSession.getIdentifier());
+            return Optional.of(new EfestoOutputDrlKieSessionLocal(modelLocalUriId, kieSession));
         } catch (Exception e) {
             throw new KieRuntimeServiceException(String.format("%s failed to execute %s",
                     DrlRuntimeHelper.class.getName(),
-                    toEvaluate.getLocalUri()));
+                    toEvaluate.getModelLocalUriId()));
         }
     }
 

@@ -25,6 +25,7 @@ import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessio
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
@@ -49,11 +50,10 @@ class RuntimeDrlTest {
 
     @Test
     void evaluateWithKieSessionLocalStaticCompilation() {
-        LocalUri localUri = new ReflectiveAppRoot("")
+        ModelLocalUriId modelLocalUriId = new ReflectiveAppRoot("")
                 .get(DrlIdFactory.class)
-                .get(basePath)
-                .asLocalUri();
-        EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(localUri, "");
+                .get(basePath);
+        EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(modelLocalUriId, "");
         Collection<EfestoOutput> output = runtimeManager.evaluateInput(context, toEvaluate);
         assertThat(output).isNotNull().hasSize(1);
         EfestoOutput<?> retrievedRaw = output.iterator().next();

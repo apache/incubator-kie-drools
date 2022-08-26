@@ -1,10 +1,10 @@
 [
   {
     "step-type": "executable",
-    "fri": {
-      "basePath": "/TestingRule",
+    "modelLocalUriId": {
       "model": "drl",
-      "fri": "/drl/TestingRule"
+      "basePath": "/TestingRule",
+      "fullPath": "/drl/TestingRule"
     },
     "fullClassNames": ["org.kie.drl.engine.compilation.model.test.Rulesefe9b92fdd254fbabc9e9002be0d51d6"]
   },

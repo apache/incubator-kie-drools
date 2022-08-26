@@ -38,12 +38,12 @@ import org.drools.model.codegen.project.RuleCodegenError;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
 import org.kie.api.io.Resource;
 import org.kie.drl.api.identifiers.DrlIdFactory;
+import org.kie.drl.api.identifiers.LocalComponentIdDrl;
 import org.kie.drl.engine.compilation.model.DecisionTableFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
@@ -111,12 +111,10 @@ public class DrlCompilerHelper {
                                                                       StandardCharsets.UTF_8)));
 
         Map<String, byte[]> compiledClasses = context.compileClasses(sourceCode);
-        LocalUri localUri = new ReflectiveAppRoot("")
+        LocalComponentIdDrl modelLocalUriId = new ReflectiveAppRoot("")
                 .get(DrlIdFactory.class)
-                .get(basePath)
-                .toLocalId()
-                .asLocalUri();
-        return new ExecutableModelClassesContainer(localUri, generatedRulesModels, compiledClasses);
+                .get(basePath);
+        return new ExecutableModelClassesContainer(modelLocalUriId, generatedRulesModels, compiledClasses);
     }
 
     private static Collection<CompositePackageDescr> buildCompositePackageDescrs(DrlFileSetResource resources, KnowledgeBuilderConfigurationImpl conf) {

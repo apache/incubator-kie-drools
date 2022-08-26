@@ -16,6 +16,7 @@
 package org.kie.efesto.common.api.identifiers;
 
 import java.util.Objects;
+import java.util.StringTokenizer;
 
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 
@@ -52,10 +53,10 @@ public class ModelLocalUriId extends LocalUriId {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null) {
             return false;
         }
-        if (!super.equals(o)) {
+        if (!(o instanceof ModelLocalUriId)) {
             return false;
         }
         ModelLocalUriId that = (ModelLocalUriId) o;
@@ -66,7 +67,6 @@ public class ModelLocalUriId extends LocalUriId {
     public int hashCode() {
         return Objects.hash(super.hashCode(), model, basePath, fullPath);
     }
-
     static LocalUri.LocalUriPathComponent getFirstLocalUriPathComponent(LocalUri localUri) {
         if (localUri.parent() != null && localUri.parent() instanceof LocalUri.LocalUriPathComponent) {
             return getFirstLocalUriPathComponent(localUri.parent());
@@ -88,5 +88,13 @@ public class ModelLocalUriId extends LocalUriId {
             String start = SLASH + model;
             return uriPath.substring(uriPath.indexOf(start) + start.length());
         }
+    }
+
+    protected static LocalUri appendBasePath(LocalUri parent, String basePath) {
+        StringTokenizer tok = new StringTokenizer(basePath, SLASH);
+        while (tok.hasMoreTokens()) {
+            parent = parent.append(tok.nextToken());
+        }
+        return parent;
     }
 }

@@ -19,10 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
 
 public class ExecutableModelClassesContainer extends EfestoCallableOutputClassesContainer {
-    public ExecutableModelClassesContainer(LocalUri localUri, List<String> fullClassNames, Map<String, byte[]> compiledClassMap) {
-        super(localUri, fullClassNames, compiledClassMap);
+    public ExecutableModelClassesContainer(ModelLocalUriId modelLocalUriId, List<String> fullClassNames, Map<String, byte[]> compiledClassMap) {
+        super(modelLocalUriId, fullClassNames, compiledClassMap);
     }
 }

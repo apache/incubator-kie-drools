@@ -30,6 +30,7 @@ import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessio
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
@@ -64,11 +65,10 @@ class OnTheFlyDrlTest {
 
         // Suppose we cannot access the previous compilationContext
         EfestoRuntimeContext runtimeContext = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
-        LocalUri localUri = new ReflectiveAppRoot("")
+        ModelLocalUriId modelLocalUriId = new ReflectiveAppRoot("")
                 .get(DrlIdFactory.class)
-                .get(onTheFlyPath)
-                .asLocalUri();
-        EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(localUri, "");
+                .get(onTheFlyPath);
+        EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(modelLocalUriId, "");
         Collection<EfestoOutput> output = runtimeManager.evaluateInput(runtimeContext, toEvaluate);
         assertThat(output).isNotNull().hasSize(1);
         EfestoOutput retrievedRaw = output.iterator().next();

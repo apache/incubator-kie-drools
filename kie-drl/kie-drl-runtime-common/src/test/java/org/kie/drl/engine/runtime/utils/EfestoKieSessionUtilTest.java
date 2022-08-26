@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +39,7 @@ class EfestoKieSessionUtilTest {
 
     @Test
     void loadKieSession() {
-        LocalUri localUri = LocalUri.parse("/drl" + basePath);
+        ModelLocalUriId localUri = new ModelLocalUriId(LocalUri.parse("/drl" + basePath));
         KieSession retrieved = EfestoKieSessionUtil.loadKieSession(localUri, context);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getIdentifier()).isZero();

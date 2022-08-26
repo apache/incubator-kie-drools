@@ -18,20 +18,14 @@ package org.kie.drl.api.identifiers;
 import org.kie.efesto.common.api.identifiers.Id;
 import org.kie.efesto.common.api.identifiers.LocalId;
 import org.kie.efesto.common.api.identifiers.LocalUri;
-import org.kie.efesto.common.api.identifiers.LocalUriId;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class LocalComponentIdDrl extends LocalUriId implements Id {
+public class LocalComponentIdDrl extends ModelLocalUriId implements Id {
 
     public static final String PREFIX = "drl";
-    private final String basePath;
 
     public LocalComponentIdDrl(String basePath) {
-        super(LocalUri.Root.append(PREFIX).append(basePath));
-        this.basePath = basePath;
-    }
-
-    public String getBasePath() {
-        return basePath;
+        super(appendBasePath(LocalUri.Root.append(PREFIX),basePath));
     }
 
     @Override
@@ -39,4 +33,13 @@ public class LocalComponentIdDrl extends LocalUriId implements Id {
         return this;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

@@ -29,6 +29,7 @@ import org.kie.drl.engine.mapinput.compilation.model.test.LoanApplication;
 import org.kie.drl.engine.runtime.mapinput.model.EfestoInputDrlMap;
 import org.kie.drl.engine.runtime.mapinput.model.EfestoOutputDrlMap;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
@@ -47,14 +48,16 @@ class DrlRuntimeHelperTest {
 
     @Test
     void canManage() {
-        LocalUri localUri = LocalUri.parse("/drl/" + basePath);
-        AbstractEfestoInput darInputDrlMap = new EfestoInputDrlMap(localUri, new EfestoMapInputDTO(null, null, null, null, null, null));
+        ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/drl/" + basePath));
+        AbstractEfestoInput darInputDrlMap = new EfestoInputDrlMap(modelLocalUriId, new EfestoMapInputDTO(null, null,
+                                                                                                          null, null,
+                                                                                                          null, null));
         assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isTrue();
-        darInputDrlMap = new AbstractEfestoInput(localUri, "") {
+        darInputDrlMap = new AbstractEfestoInput(modelLocalUriId, "") {
         };
         assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isFalse();
-        localUri = LocalUri.parse("/drl/notexisting");
-        darInputDrlMap = new EfestoInputDrlMap(localUri, null);
+        modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/drl/notexisting"));
+        darInputDrlMap = new EfestoInputDrlMap(modelLocalUriId, null);
         assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isFalse();
     }
 
@@ -73,7 +76,8 @@ class DrlRuntimeHelperTest {
 
         EfestoMapInputDTO darMapInputDTO = new EfestoMapInputDTO(inserts, globals, Collections.emptyMap(), Collections.emptyMap(), "modelname", "packageName");
 
-        EfestoInputDrlMap darInputDrlMap = new EfestoInputDrlMap(LocalUri.parse("/drl/" + basePath), darMapInputDTO);
+        EfestoInputDrlMap darInputDrlMap =
+                new EfestoInputDrlMap(new ModelLocalUriId(LocalUri.parse("/drl/" + basePath)), darMapInputDTO);
         Optional<EfestoOutputDrlMap> retrieved = DrlRuntimeHelper.execute(darInputDrlMap, context);
         assertThat(retrieved).isNotNull().isPresent();
         assertThat(approvedApplications).hasSize(1);
