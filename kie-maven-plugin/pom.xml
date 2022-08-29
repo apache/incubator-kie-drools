@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -17,7 +17,6 @@
   <name>KIE :: Maven Plugin</name>
 
   <properties>
-    <skipITs>false</skipITs>
     <plugin.testing.harness.version>3.3.0</plugin.testing.harness.version>
     <plugin.plugin.version>3.6.4</plugin.plugin.version>
     <maven.version>3.8.4</maven.version>
@@ -386,4 +385,5 @@
       </exclusions>
     </dependency>
   </dependencies>
+
 </project>
