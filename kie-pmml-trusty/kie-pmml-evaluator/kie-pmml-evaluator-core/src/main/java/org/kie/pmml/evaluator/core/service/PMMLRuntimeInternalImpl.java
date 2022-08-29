@@ -16,11 +16,14 @@
 package org.kie.pmml.evaluator.core.service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
@@ -44,7 +47,18 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntime {
 
     private static final RuntimeManager runtimeManager = SPIUtils.getRuntimeManager(true).get();
 
+    private final Map<String, GeneratedResources> generatedResourcesMap;
+
     public PMMLRuntimeInternalImpl() {
+        this(Collections.emptyMap());
+    }
+
+    public PMMLRuntimeInternalImpl(Map<String, GeneratedResources> generatedResourcesMap) {
+        this.generatedResourcesMap = generatedResourcesMap;
+    }
+
+    public Map<String, GeneratedResources> getGeneratedResourcesMap() {
+        return generatedResourcesMap;
     }
 
     @Override

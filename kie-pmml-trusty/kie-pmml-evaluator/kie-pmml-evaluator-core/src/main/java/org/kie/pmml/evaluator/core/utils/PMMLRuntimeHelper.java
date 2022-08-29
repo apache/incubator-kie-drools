@@ -27,6 +27,7 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.PMML_STEP;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -70,6 +71,10 @@ public class PMMLRuntimeHelper {
 
     public static boolean canManage(EfestoInput toEvaluate) {
         return (toEvaluate instanceof EfestoInputPMML) && isPresentExecutableOrRedirect(toEvaluate.getFRI(), PMML_STRING);
+    }
+
+    public static boolean canManage(EfestoInput toEvaluate, EfestoRuntimeContext runtimeContext) {
+        return (toEvaluate instanceof EfestoInputPMML) && isPresentExecutableOrRedirect(toEvaluate.getFRI(), runtimeContext);
     }
 
     public static Optional<EfestoOutputPMML> execute(EfestoInputPMML toEvaluate, PMMLRuntimeContext pmmlContext) {
