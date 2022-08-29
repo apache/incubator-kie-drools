@@ -34,6 +34,7 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
@@ -130,13 +131,10 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     protected PMML4Result evaluate(String modelName, String pmmlFileName, DMNResult dmnr, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         PMMLRuntimeContext pmmlContext = getPMMLPMMLContext(UUID.randomUUID().toString(), pmmlFileName, modelName, dmnr,
                                                             memoryCompilerClassLoader);
-
-        // TODO FIX with proper builder
-        LocalUri localUri = new ReflectiveAppRoot("")
+        ModelLocalUriId modelLocalUriId = new ReflectiveAppRoot("")
                 .get(PmmlIdFactory.class)
-                .get(pmmlContext.getFileNameNoSuffix(), getSanitizedClassName(modelName))
-                .asLocalUri();
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(localUri, pmmlContext);
+                .get(pmmlContext.getFileNameNoSuffix(), getSanitizedClassName(modelName));
+        EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, pmmlContext);
         Collection<EfestoOutput> retrieved = evaluateInput(darInputPMML);
         if (retrieved.isEmpty()) {
             LOG.warn("Failed to get a result for {}@{}: trying to invoke compilation....", pmmlContext.getFileName(),

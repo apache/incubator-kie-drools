@@ -52,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getRuntimeManager;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 import static org.kie.pmml.models.drools.utils.KiePMMLAgendaListenerUtils.getAgendaEventListener;
@@ -104,7 +105,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
 
         LocalComponentIdRedirectPmml modelLocalUriId = new ReflectiveAppRoot("")
                 .get(PmmlIdRedirectFactory.class)
-                .get("drl", context.getFileNameNoSuffix(), this.getName());
+                .get("drl", context.getFileNameNoSuffix(), getSanitizedClassName(this.getName()));
 
         EfestoInput<EfestoMapInputDTO> input = new AbstractEfestoInput<EfestoMapInputDTO>(modelLocalUriId,
                                                                                           darMapInputDTO) {
