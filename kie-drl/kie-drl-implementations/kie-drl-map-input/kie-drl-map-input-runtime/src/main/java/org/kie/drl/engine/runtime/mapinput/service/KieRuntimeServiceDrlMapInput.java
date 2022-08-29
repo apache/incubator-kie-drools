@@ -34,7 +34,7 @@ public class KieRuntimeServiceDrlMapInput implements KieRuntimeService<EfestoMap
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return DrlRuntimeHelper.canManage(toEvaluate);
+        return DrlRuntimeHelper.canManage(toEvaluate, context);
     }
 
     @Override

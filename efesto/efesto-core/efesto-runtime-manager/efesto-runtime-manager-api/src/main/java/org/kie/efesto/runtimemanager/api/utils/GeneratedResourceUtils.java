@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.io.MemoryFile;
+import org.kie.efesto.common.api.model.EfestoContext;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
@@ -51,6 +52,13 @@ public class GeneratedResourceUtils {
         return Stream
                 .of(getGeneratedExecutableResource(fri, modelType),
                         getGeneratedRedirectResource(fri, modelType))
+                .anyMatch(Optional::isPresent);
+    }
+
+    public static boolean isPresentExecutableOrRedirect(FRI fri, EfestoContext context) {
+        return Stream
+                .of(getGeneratedExecutableResource(fri, context.getGeneratedResourcesMap()),
+                    getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap()))
                 .anyMatch(Optional::isPresent);
     }
 
@@ -101,6 +109,25 @@ public class GeneratedResourceUtils {
                 return Optional.empty();
             }
         });
+    }
+
+    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(FRI fri, Map<String, GeneratedResources> generatedResourcesMap) {
+        if (!generatedResourcesMap.containsKey(fri.getModel())) {
+            return Optional.empty();
+        } else {
+            return getGeneratedRedirectResource(fri, generatedResourcesMap.get(fri.getModel()));
+        }
+    }
+
+    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(FRI fri, GeneratedResources generatedResources) {
+        Collection<GeneratedRedirectResource> allExecutableResources = new HashSet<>();
+        allExecutableResources.addAll(generatedResources.stream()
+                                              .filter(GeneratedRedirectResource.class::isInstance)
+                                              .map(GeneratedRedirectResource.class::cast)
+                                              .collect(Collectors.toSet()));
+        return findAtMostOne(allExecutableResources,
+                             generatedResource -> generatedResource.getFri().equals(fri),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Redirect Resource (" + s1 + " and " + s2 + ") for " + fri));
     }
 
     public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(String modelType) {

@@ -16,11 +16,17 @@
 package org.kie.pmml.commons.utils;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.model.GeneratedResources;
+import org.kie.efesto.common.api.utils.JSONUtils;
+import org.kie.efesto.runtimemanager.api.exceptions.EfestoRuntimeManagerException;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.PMMLContext;
@@ -42,12 +48,23 @@ class PMMLLoaderUtilsTest {
     private static final String FILE_NAME = "FileName";
 
     private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+    private static Map<String, GeneratedResources> generatedResourcesMap;
 
 
     @BeforeAll
     static void setUp() {
         memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        Map<String, IndexFile> indexFileMap = IndexFile.findIndexFilesFromClassLoader(memoryCompilerClassLoader, Collections.singleton(PMML_STRING));
+        generatedResourcesMap = new HashMap<>();
+        indexFileMap.forEach((model, indexFile) -> {
+            try {
+                GeneratedResources generatedResources = JSONUtils.getGeneratedResourcesObject(indexFile);
+                generatedResourcesMap.put(model, generatedResources);
+            } catch (Exception e) {
+                throw new EfestoRuntimeManagerException("Failed to read IndexFile content : " + indexFile.getAbsolutePath(), e);
+            }
+        });
     }
 
 
@@ -72,9 +89,8 @@ class PMMLLoaderUtilsTest {
         }
     }
 
-
-
     private PMMLContext getPMMLContext(String fileName, String modelName, Set<PMMLListener> listeners) {
+
         return new PMMLContext<PMMLListener>() {
 
             @Override
@@ -105,6 +121,11 @@ class PMMLLoaderUtilsTest {
             @Override
             public Class<?> loadClass(String className) throws ClassNotFoundException {
                 return memoryCompilerClassLoader.loadClass(className);
+            }
+
+            @Override
+            public Map<String, GeneratedResources> getGeneratedResourcesMap() {
+                return generatedResourcesMap;
             }
         };
     }
