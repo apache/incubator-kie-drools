@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContextImpl;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
@@ -65,10 +66,10 @@ public class PMMLCompilationContextImpl extends EfestoCompilationContextImpl<PMM
     }
 
     @Override
-    public Set<LocalUri> getLocalUriForFile() {
-        Set<LocalUri> allFri = localUriKeySet();
+    public Set<ModelLocalUriId> getLocalUriForFile() {
+        Set<ModelLocalUriId> localUriIds = localUriIdKeySet();
         String matchingBase = SLASH + fileNameNoSuffix;
-        return allFri.stream().filter(fri -> fri.path().startsWith(matchingBase)).collect(Collectors.toSet());
+        return localUriIds.stream().filter(modelLocalUriId -> modelLocalUriId.basePath().startsWith(matchingBase)).collect(Collectors.toSet());
     }
 
     @Override

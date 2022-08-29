@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
@@ -40,6 +40,8 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.identifiers.LocalComponentIdRedirectPmml;
+import org.kie.pmml.api.identifiers.PmmlIdRedirectFactory;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.IsDrools;
 import org.kie.pmml.commons.model.KiePMMLExtension;
@@ -49,7 +51,6 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getRuntimeManager;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
@@ -101,10 +102,12 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         EfestoMapInputDTO darMapInputDTO = new EfestoMapInputDTO(inserts, globals, requestData, convertedFieldTypeMap
                 , this.getName(), this.getKModulePackageName());
 
-        String basePath = SLASH + context.getFileNameNoSuffix() + SLASH + this.getName();
+        LocalComponentIdRedirectPmml modelLocalUriId = new ReflectiveAppRoot("")
+                .get(PmmlIdRedirectFactory.class)
+                .get("drl", context.getFileNameNoSuffix(), this.getName());
 
-        LocalUri localUri = LocalUri.parse(SLASH + "drl" + basePath);
-        EfestoInput<EfestoMapInputDTO> input = new AbstractEfestoInput<EfestoMapInputDTO>(localUri, darMapInputDTO) {
+        EfestoInput<EfestoMapInputDTO> input = new AbstractEfestoInput<EfestoMapInputDTO>(modelLocalUriId,
+                                                                                          darMapInputDTO) {
         };
 
         Optional<RuntimeManager> runtimeManager = getRuntimeManager(true);

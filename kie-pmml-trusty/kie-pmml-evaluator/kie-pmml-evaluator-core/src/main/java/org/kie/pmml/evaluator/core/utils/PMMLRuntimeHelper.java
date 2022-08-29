@@ -69,17 +69,17 @@ public class PMMLRuntimeHelper {
 
 
     public static boolean canManage(EfestoInput toEvaluate) {
-        return (toEvaluate instanceof EfestoInputPMML) && isPresentExecutableOrRedirect(toEvaluate.getLocalUri(), PMML_STRING);
+        return (toEvaluate instanceof EfestoInputPMML) && isPresentExecutableOrRedirect(toEvaluate.getModelLocalUriId(), PMML_STRING);
     }
 
     public static Optional<EfestoOutputPMML> execute(EfestoInputPMML toEvaluate, PMMLRuntimeContext pmmlContext) {
         KiePMMLModelFactory kiePMMLModelFactory;
         try {
-            kiePMMLModelFactory = loadKiePMMLModelFactory(toEvaluate.getLocalUri(), pmmlContext);
+            kiePMMLModelFactory = loadKiePMMLModelFactory(toEvaluate.getModelLocalUriId(), pmmlContext);
         } catch (Exception e) {
             logger.warn("{} can not execute {}",
                         PMMLRuntimeHelper.class.getName(),
-                        toEvaluate.getLocalUri());
+                        toEvaluate.getModelLocalUriId());
             return Optional.empty();
         }
         try {
@@ -89,7 +89,7 @@ public class PMMLRuntimeHelper {
         } catch (Exception e) {
             throw new KieRuntimeServiceException(String.format("%s failed to execute %s",
                     PMMLRuntimeHelper.class.getName(),
-                    toEvaluate.getLocalUri()), e);
+                    toEvaluate.getModelLocalUriId()), e);
         }
     }
 
@@ -133,7 +133,7 @@ public class PMMLRuntimeHelper {
     static EfestoOutputPMML getEfestoOutput(KiePMMLModelFactory kiePMMLModelFactory, EfestoInputPMML darInputPMML) {
         List<KiePMMLModel> kiePMMLModels = kiePMMLModelFactory.getKiePMMLModels();
         PMML4Result result = evaluate(kiePMMLModels, darInputPMML.getInputData());
-        return new EfestoOutputPMML(darInputPMML.getLocalUri(), result);
+        return new EfestoOutputPMML(darInputPMML.getModelLocalUriId(), result);
     }
 
     static PMML4Result evaluate(final List<KiePMMLModel> kiePMMLModels, final PMMLRuntimeContext pmmlContext) {

@@ -130,6 +130,8 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     protected PMML4Result evaluate(String modelName, String pmmlFileName, DMNResult dmnr, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
         PMMLRuntimeContext pmmlContext = getPMMLPMMLContext(UUID.randomUUID().toString(), pmmlFileName, modelName, dmnr,
                                                             memoryCompilerClassLoader);
+
+        // TODO FIX with proper builder
         LocalUri localUri = new ReflectiveAppRoot("")
                 .get(PmmlIdFactory.class)
                 .get(pmmlContext.getFileNameNoSuffix(), getSanitizedClassName(modelName))

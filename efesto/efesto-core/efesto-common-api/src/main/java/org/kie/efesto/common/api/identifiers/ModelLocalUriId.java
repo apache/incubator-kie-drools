@@ -15,6 +15,8 @@
  */
 package org.kie.efesto.common.api.identifiers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
@@ -93,8 +95,16 @@ public class ModelLocalUriId extends LocalUriId {
     protected static LocalUri appendBasePath(LocalUri parent, String basePath) {
         StringTokenizer tok = new StringTokenizer(basePath, SLASH);
         while (tok.hasMoreTokens()) {
-            parent = parent.append(tok.nextToken());
+            parent = parent.append(decodeString(tok.nextToken()));
         }
         return parent;
+    }
+
+    private static String decodeString(String toDecode) {
+        try {
+            return URLDecoder.decode(toDecode, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

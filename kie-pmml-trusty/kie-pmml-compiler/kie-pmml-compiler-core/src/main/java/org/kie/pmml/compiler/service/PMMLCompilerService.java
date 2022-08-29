@@ -25,6 +25,7 @@ import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
+import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
 import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.commons.HasRedirectOutput;
 import org.kie.pmml.commons.model.HasNestedModels;
@@ -72,13 +73,12 @@ public class PMMLCompilerService {
         kiePMMLFactoryModels.forEach(kiePMMLFactoryModel -> {
             String modelName = kiePMMLFactoryModel.getName().substring(0, kiePMMLFactoryModel.getName().lastIndexOf(
                     "Factory"));
-            LocalUri localUri = new ReflectiveAppRoot("")
+            LocalComponentIdPmml modelLocalUriId = new ReflectiveAppRoot("")
                     .get(PmmlIdFactory.class)
-                    .get(fileName, modelName)
-                    .asLocalUri();
+                    .get(fileName, modelName);
 
             String fullResourceClassName = kiePMMLFactoryModel.getSourcesMap().keySet().iterator().next();
-            toReturn.add(new EfestoCallableOutputPMMLClassesContainer(localUri, fullResourceClassName,
+            toReturn.add(new EfestoCallableOutputPMMLClassesContainer(modelLocalUriId, fullResourceClassName,
                                                                       compiledClasses));
         });
         return toReturn;

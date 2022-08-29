@@ -16,12 +16,17 @@
 package org.kie.efesto.common.api.serialization;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.StringTokenizer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+
+import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 
 public class ModelLocalUriIdSerializer extends StdSerializer<ModelLocalUriId> {
 
@@ -37,8 +42,28 @@ public class ModelLocalUriIdSerializer extends StdSerializer<ModelLocalUriId> {
     public void serialize(ModelLocalUriId value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("model", value.model());
-        gen.writeStringField("basePath", value.basePath());
-        gen.writeStringField("fullPath", value.fullPath());
+        gen.writeStringField("basePath", decodedPath(value.basePath()));
+        gen.writeStringField("fullPath", decodedPath(value.fullPath()));
         gen.writeEndObject();
     }
+
+
+    private String decodedPath(String toDecode) {
+        StringTokenizer tok = new StringTokenizer(toDecode, SLASH);
+        StringBuilder builder = new StringBuilder();
+        while (tok.hasMoreTokens()) {
+            builder.append(SLASH);
+            builder.append(decodeString(tok.nextToken()));
+        }
+        return builder.toString();
+    }
+
+    private String decodeString(String toDecode) {
+        try {
+            return URLDecoder.decode(toDecode, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

@@ -20,18 +20,16 @@ import java.util.Objects;
 import org.kie.efesto.common.api.identifiers.Id;
 import org.kie.efesto.common.api.identifiers.LocalId;
 import org.kie.efesto.common.api.identifiers.LocalUri;
-import org.kie.efesto.common.api.identifiers.LocalUriId;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class LocalComponentIdPmml extends ModelLocalUriId implements Id {
-    public static final String PREFIX = "pmml";
+public class LocalComponentIdRedirectPmml extends ModelLocalUriId implements Id {
 
     private final String fileName;
 
     private final String name;
 
-    public LocalComponentIdPmml(String fileName, String name) {
-        super(LocalUri.Root.append(PREFIX).append(fileName).append(name));
+    public LocalComponentIdRedirectPmml(String redirectModel, String fileName, String name) {
+        super(LocalUri.Root.append(redirectModel).append(fileName).append(name));
         this.fileName = fileName;
         this.name = name;
     }
@@ -57,13 +55,12 @@ public class LocalComponentIdPmml extends ModelLocalUriId implements Id {
         if (!super.equals(o)) {
             return false;
         }
-        LocalComponentIdPmml that = (LocalComponentIdPmml) o;
-        return Objects.equals(fileName, that.fileName) && Objects.equals(name, that.name) ;
+        LocalComponentIdRedirectPmml that = (LocalComponentIdRedirectPmml) o;
+        return Objects.equals(fileName, that.fileName) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), fileName, name);
     }
-
 }

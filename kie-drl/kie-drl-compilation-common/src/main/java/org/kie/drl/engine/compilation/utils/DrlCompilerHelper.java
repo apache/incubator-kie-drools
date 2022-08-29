@@ -66,17 +66,17 @@ public class DrlCompilerHelper {
     public static DrlPackageDescrSetResource drlToPackageDescrs(DrlFileSetResource resources, DrlCompilationContext context) {
         KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
         Set<PackageDescr> packageDescrSet = buildCompositePackageDescrs(resources, conf).stream().collect(Collectors.toSet());
-        return new DrlPackageDescrSetResource(packageDescrSet, resources.getBasePath());
+        return new DrlPackageDescrSetResource(packageDescrSet, resources.getModelLocalUriId().basePath());
     }
 
     public static ExecutableModelClassesContainer pkgDescrToExecModel(EfestoSetResource<PackageDescr> resources, DrlCompilationContext context) {
-        return pkgDescrToExecModel(toCompositePackageDescrs(resources.getContent()), resources.getBasePath(), new KnowledgeBuilderConfigurationImpl(), context);
+        return pkgDescrToExecModel(toCompositePackageDescrs(resources.getContent()), resources.getModelLocalUriId().basePath(), new KnowledgeBuilderConfigurationImpl(), context);
     }
 
     public static ExecutableModelClassesContainer drlToExecutableModel(DrlFileSetResource resources, DrlCompilationContext context) {
         KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
 
-        return pkgDescrToExecModel(buildCompositePackageDescrs(resources, conf), resources.getBasePath(), conf, context);
+        return pkgDescrToExecModel(buildCompositePackageDescrs(resources, conf), resources.getModelLocalUriId().basePath(), conf, context);
     }
 
     public static ExecutableModelClassesContainer pkgDescrToExecModel(Collection<CompositePackageDescr> packages, String basePath, KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, DrlCompilationContext context) {

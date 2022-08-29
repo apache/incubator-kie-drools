@@ -26,6 +26,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
 import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.runtime.PMMLRuntime;
@@ -49,13 +50,11 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntime {
 
     @Override
     public PMML4Result evaluate(String modelName, PMMLRuntimeContext context) {
-        LocalUri localUri = new ReflectiveAppRoot("")
+        LocalComponentIdPmml modelLocalUriId = new ReflectiveAppRoot("")
                 .get(PmmlIdFactory.class)
-                .get(context.getFileNameNoSuffix(), getSanitizedClassName(modelName))
-                .toLocalId()
-                .asLocalUri();
+                .get(context.getFileNameNoSuffix(), getSanitizedClassName(modelName));
 
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(localUri, context);
+        EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, context);
         Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(context, darInputPMML);
         if (retrieved.isEmpty()) {
             throw new KiePMMLException("Failed to retrieve EfestoOutput");
