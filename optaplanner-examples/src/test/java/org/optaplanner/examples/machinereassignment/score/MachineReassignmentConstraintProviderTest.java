@@ -6,8 +6,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
 import org.optaplanner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
@@ -24,14 +25,15 @@ import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDepen
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class MachineReassignmentConstraintProviderTest {
+class MachineReassignmentConstraintProviderTest
+        extends AbstractConstraintProviderTest<MachineReassignmentConstraintProvider, MachineReassignment> {
 
     private final ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier =
-            ConstraintVerifier
-                    .build(new MachineReassignmentConstraintProvider(), MachineReassignment.class, MrProcessAssignment.class);
+            ConstraintVerifier.build(new MachineReassignmentConstraintProvider(), MachineReassignment.class,
+                    MrProcessAssignment.class);
 
-    @Test
-    void maximumCapacity() {
+    @ConstraintProviderTest
+    void maximumCapacity(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrResource resource1 = new MrResource(0, false, 1);
         MrMachine machine = new MrMachine();
         MrProcess process = new MrProcess();
@@ -46,8 +48,8 @@ class MachineReassignmentConstraintProviderTest {
                 .penalizesBy(10L);
     }
 
-    @Test
-    void transientUsage() {
+    @ConstraintProviderTest
+    void transientUsage(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrResource normalResource = new MrResource(0, false, 5);
         MrResource transientlyConsumerResource = new MrResource(1, true, 10);
 
@@ -72,8 +74,8 @@ class MachineReassignmentConstraintProviderTest {
                 .penalizesBy(15L);
     }
 
-    @Test
-    void serviceConflict() {
+    @ConstraintProviderTest
+    void serviceConflict(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         // 3 of 4 processes of the same service run on the same machine
         MrService service = new MrService();
 
@@ -99,8 +101,9 @@ class MachineReassignmentConstraintProviderTest {
                 .penalizesBy(3L);
     }
 
-    @Test
-    void serviceLocationSpread() {
+    @ConstraintProviderTest
+    void serviceLocationSpread(
+            ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrLocation location1 = new MrLocation(1L);
         MrLocation location2 = new MrLocation(2L);
 
@@ -127,8 +130,8 @@ class MachineReassignmentConstraintProviderTest {
                 .penalizesBy(3L); // 5 - 3 (expected - real location spread)
     }
 
-    @Test
-    void serviceDependency() {
+    @ConstraintProviderTest
+    void serviceDependency(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrNeighborhood neighborhood1 = new MrNeighborhood(1L);
         MrNeighborhood neighborhood2 = new MrNeighborhood(2L);
 
@@ -161,8 +164,8 @@ class MachineReassignmentConstraintProviderTest {
                 .penalizesBy(1L);
     }
 
-    @Test
-    void loadCost() {
+    @ConstraintProviderTest
+    void loadCost(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrResource resource1 = new MrResource(0, false, 5);
         MrResource resource2 = new MrResource(1, false, 10);
         MrMachine machine = new MrMachine();
@@ -184,8 +187,8 @@ class MachineReassignmentConstraintProviderTest {
                 .penalizesBy(25L + 50L);
     }
 
-    @Test
-    void processMoveCost() {
+    @ConstraintProviderTest
+    void processMoveCost(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
         globalPenaltyInfo.setProcessMoveCostWeight(10);
 
@@ -208,8 +211,8 @@ class MachineReassignmentConstraintProviderTest {
                 .penalizesBy(20L);
     }
 
-    @Test
-    void serviceMoveCost() {
+    @ConstraintProviderTest
+    void serviceMoveCost(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
         globalPenaltyInfo.setServiceMoveCostWeight(10);
 
@@ -233,8 +236,8 @@ class MachineReassignmentConstraintProviderTest {
                 .penalizesBy(2 * 10L);
     }
 
-    @Test
-    void machineMoveCost() {
+    @ConstraintProviderTest
+    void machineMoveCost(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
         globalPenaltyInfo.setMachineMoveCostWeight(10);
 
@@ -266,8 +269,8 @@ class MachineReassignmentConstraintProviderTest {
 
     }
 
-    @Test
-    void balanceCost() {
+    @ConstraintProviderTest
+    void balanceCost(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrResource cpu = new MrResource(0, false, 0);
         MrResource mem = new MrResource(1, false, 0);
         MrResource disk = new MrResource(2, false, 0);
@@ -310,8 +313,9 @@ class MachineReassignmentConstraintProviderTest {
                 .penalizesBy(7_001L);
     }
 
-    @Test
-    void balanceCostSingleMachine() {
+    @ConstraintProviderTest
+    void balanceCostSingleMachine(
+            ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrResource cpu = new MrResource(0L, 0, false, 1);
         MrResource mem = new MrResource(1L, 1, false, 1);
         MrResource disk = new MrResource(2L, 2, false, 1);
@@ -339,8 +343,10 @@ class MachineReassignmentConstraintProviderTest {
                 .penalizesBy(2L);
     }
 
-    @Test
-    void solutionWithMultipleConstraints() throws IOException {
+    @ConstraintProviderTest
+    void solutionWithMultipleConstraints(
+            ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier)
+            throws IOException {
         constraintVerifier.verifyThat()
                 .givenSolution(readSolution("model-a1-1-0hard-44306501soft.xml"))
                 .scores(HardSoftLongScore.of(-0, -44306501));
@@ -351,5 +357,11 @@ class MachineReassignmentConstraintProviderTest {
         try (InputStream inputStream = MachineReassignmentConstraintProviderTest.class.getResourceAsStream(resource)) {
             return solutionFileIO.read(inputStream);
         }
+    }
+
+    @Override
+    protected ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> createConstraintVerifier() {
+        return ConstraintVerifier.build(new MachineReassignmentConstraintProvider(), MachineReassignment.class,
+                MrProcessAssignment.class);
     }
 }

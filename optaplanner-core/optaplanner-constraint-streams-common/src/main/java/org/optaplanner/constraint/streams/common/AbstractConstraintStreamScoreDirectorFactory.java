@@ -22,6 +22,12 @@ public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Sc
         super(solutionDescriptor);
     }
 
+    /**
+     * Creates a new score director, inserts facts and calculates score.
+     *
+     * @param facts never null
+     * @return never null
+     */
     public abstract AbstractScoreInliner<Score_> fireAndForget(Object... facts);
 
     public abstract Constraint[] getConstraints();

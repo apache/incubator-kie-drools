@@ -30,7 +30,7 @@ public final class DefaultMultiConstraintAssertion<Score_ extends Score<Score_>>
     }
 
     @Override
-    public final void scores(Score<?> score, String message) {
+    public void scores(Score<?> score, String message) {
         if (actualScore.equals(score)) {
             return;
         }

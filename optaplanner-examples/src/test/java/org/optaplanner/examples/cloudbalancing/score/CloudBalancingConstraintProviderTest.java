@@ -1,18 +1,17 @@
 package org.optaplanner.examples.cloudbalancing.score;
 
-import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class CloudBalancingConstraintProviderTest {
+class CloudBalancingConstraintProviderTest
+        extends AbstractConstraintProviderTest<CloudBalancingConstraintProvider, CloudBalance> {
 
-    private final ConstraintVerifier<CloudBalancingConstraintProvider, CloudBalance> constraintVerifier =
-            ConstraintVerifier.build(new CloudBalancingConstraintProvider(), CloudBalance.class, CloudProcess.class);
-
-    @Test
-    void requiredCpuPowerTotal() {
+    @ConstraintProviderTest
+    void requiredCpuPowerTotal(ConstraintVerifier<CloudBalancingConstraintProvider, CloudBalance> constraintVerifier) {
         CloudComputer computer1 = new CloudComputer(1, 1, 1, 1, 2);
         CloudComputer computer2 = new CloudComputer(2, 2, 2, 2, 4);
         CloudProcess unassignedProcess = new CloudProcess(0, 1, 1, 1);
@@ -30,8 +29,8 @@ class CloudBalancingConstraintProviderTest {
                 .penalizesBy(1); // Only the first computer.
     }
 
-    @Test
-    void requiredMemoryTotal() {
+    @ConstraintProviderTest
+    void requiredMemoryTotal(ConstraintVerifier<CloudBalancingConstraintProvider, CloudBalance> constraintVerifier) {
         CloudComputer computer1 = new CloudComputer(1, 1, 1, 1, 2);
         CloudComputer computer2 = new CloudComputer(2, 2, 2, 2, 4);
         CloudProcess unassignedProcess = new CloudProcess(0, 1, 1, 1);
@@ -49,8 +48,8 @@ class CloudBalancingConstraintProviderTest {
                 .penalizesBy(1); // Only the first computer.
     }
 
-    @Test
-    void requiredNetworkBandwidthTotal() {
+    @ConstraintProviderTest
+    void requiredNetworkBandwidthTotal(ConstraintVerifier<CloudBalancingConstraintProvider, CloudBalance> constraintVerifier) {
         CloudComputer computer1 = new CloudComputer(1, 1, 1, 1, 2);
         CloudComputer computer2 = new CloudComputer(2, 2, 2, 2, 4);
         CloudProcess unassignedProcess = new CloudProcess(0, 1, 1, 1);
@@ -68,8 +67,8 @@ class CloudBalancingConstraintProviderTest {
                 .penalizesBy(1); // Only the first computer.
     }
 
-    @Test
-    void computerCost() {
+    @ConstraintProviderTest
+    void computerCost(ConstraintVerifier<CloudBalancingConstraintProvider, CloudBalance> constraintVerifier) {
         CloudComputer computer1 = new CloudComputer(1, 1, 1, 1, 2);
         CloudComputer computer2 = new CloudComputer(2, 2, 2, 2, 4);
         CloudProcess unassignedProcess = new CloudProcess(0, 1, 1, 1);
@@ -81,4 +80,9 @@ class CloudBalancingConstraintProviderTest {
                 .penalizesBy(2);
     }
 
+    @Override
+    protected ConstraintVerifier<CloudBalancingConstraintProvider, CloudBalance> createConstraintVerifier() {
+        return ConstraintVerifier.build(new CloudBalancingConstraintProvider(), CloudBalance.class, CloudProcess.class);
+
+    }
 }

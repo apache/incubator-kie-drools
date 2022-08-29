@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.junit.jupiter.api.Test;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
@@ -17,11 +18,8 @@ import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class ConferenceSchedulingConstraintProviderTest {
-
-    private final ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier =
-            ConstraintVerifier.build(new ConferenceSchedulingConstraintProvider(), ConferenceSolution.class,
-                    Talk.class);
+class ConferenceSchedulingConstraintProviderTest
+        extends AbstractConstraintProviderTest<ConferenceSchedulingConstraintProvider, ConferenceSolution> {
 
     private static final LocalDateTime START = LocalDateTime.of(2000, 2, 1, 9, 0);
 
@@ -46,8 +44,9 @@ class ConferenceSchedulingConstraintProviderTest {
     // Hard constraints
     // ************************************************************************
 
-    @Test
-    void roomUnavailableTimeslot() {
+    @ConstraintProviderTest
+    void roomUnavailableTimeslot(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room1 = new Room(1)
                 .withUnavailableTimeslotSet(singleton(MONDAY_9_TO_10));
         Room room2 = new Room(2)
@@ -64,8 +63,8 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes()); // room1 is in an unavailable timeslot.
     }
 
-    @Test
-    void roomConflict() {
+    @ConstraintProviderTest
+    void roomConflict(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(1)
                 .withUnavailableTimeslotSet(singleton(MONDAY_9_TO_10));
         Talk talk1 = new Talk(1)
@@ -83,8 +82,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes()); // talk1 and talk2 are in conflict.
     }
 
-    @Test
-    void speakerUnavailableTimeslot() {
+    @ConstraintProviderTest
+    void speakerUnavailableTimeslot(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
                 .withUnavailableTimeslotSet(singleton(MONDAY_9_TO_10));
@@ -104,8 +104,8 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes()); // speaker1 is in an unavailable timeslot.
     }
 
-    @Test
-    void speakerConflict() {
+    @ConstraintProviderTest
+    void speakerConflict(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Speaker speaker = new Speaker(1);
         Talk talk1 = new Talk(1)
@@ -126,8 +126,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes()); // talk1 and talk2 are in conflict.
     }
 
-    @Test
-    void talkPrerequisiteTalks() {
+    @ConstraintProviderTest
+    void talkPrerequisiteTalks(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -147,8 +148,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes() * 2); // talk2 is not after talk1.
     }
 
-    @Test
-    void talkMutuallyExclusiveTalksTags() {
+    @ConstraintProviderTest
+    void talkMutuallyExclusiveTalksTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -168,8 +170,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes() * 2); // talk2 and talk3 excluded twice.
     }
 
-    @Test
-    void consecutiveTalksPause() {
+    @ConstraintProviderTest
+    void consecutiveTalksPause(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1);
         Speaker speaker2 = new Speaker(2);
@@ -197,8 +200,8 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes() * 4); // talk1+talk2 , talk2+talk3.
     }
 
-    @Test
-    void crowdControl() {
+    @ConstraintProviderTest
+    void crowdControl(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -229,8 +232,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes() * 3); // talk1, talk2, talk3.
     }
 
-    @Test
-    void speakerRequiredTimeslotTags() {
+    @ConstraintProviderTest
+    void speakerRequiredTimeslotTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
                 .withRequiredTimeslotTagSet(singleton("a"));
@@ -252,8 +256,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
-    @Test
-    void speakerProhibitedTimeslotTags() {
+    @ConstraintProviderTest
+    void speakerProhibitedTimeslotTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
                 .withProhibitedTimeslotTagSet(singleton("a"));
@@ -275,8 +280,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
-    @Test
-    void talkRequiredTimeslotTags() {
+    @ConstraintProviderTest
+    void talkRequiredTimeslotTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -292,8 +298,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
-    @Test
-    void talkProhibitedTimeslotTags() {
+    @ConstraintProviderTest
+    void talkProhibitedTimeslotTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -309,8 +316,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
-    @Test
-    void speakerRequiredRoomTags() {
+    @ConstraintProviderTest
+    void speakerRequiredRoomTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Speaker speaker1 = new Speaker(1)
@@ -331,8 +339,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
-    @Test
-    void speakerProhibitedRoomTags() {
+    @ConstraintProviderTest
+    void speakerProhibitedRoomTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Speaker speaker1 = new Speaker(1)
@@ -353,8 +362,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
-    @Test
-    void talkRequiredRoomTags() {
+    @ConstraintProviderTest
+    void talkRequiredRoomTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Talk talk1 = new Talk(1)
@@ -371,8 +381,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
-    @Test
-    void talkProhibitedRoomTags() {
+    @ConstraintProviderTest
+    void talkProhibitedRoomTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Talk talk1 = new Talk(1)
@@ -393,8 +404,8 @@ class ConferenceSchedulingConstraintProviderTest {
     // Medium constraints
     // ************************************************************************
 
-    @Test
-    void publishedTimeslot() {
+    @ConstraintProviderTest
+    void publishedTimeslot(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -414,8 +425,8 @@ class ConferenceSchedulingConstraintProviderTest {
     // Soft constraints
     // ************************************************************************
 
-    @Test
-    void publishedRoom() {
+    @ConstraintProviderTest
+    void publishedRoom(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room1 = new Room(0);
         Room room2 = new Room(1);
         Talk talk1 = new Talk(1)
@@ -432,8 +443,8 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void themeTrackConflict() {
+    @ConstraintProviderTest
+    void themeTrackConflict(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -457,8 +468,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(60); // talk1 + talk2.
     }
 
-    @Test
-    void themeTrackRoomStability() {
+    @ConstraintProviderTest
+    void themeTrackRoomStability(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room1 = new Room(0);
         Room room2 = new Room(1);
         Talk talk1 = new Talk(1)
@@ -483,8 +495,8 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(120); // talk1 + talk2.
     }
 
-    @Test
-    void sectorConflict() {
+    @ConstraintProviderTest
+    void sectorConflict(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -508,8 +520,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(60); // talk1 + talk2.
     }
 
-    @Test
-    void audienceTypeDiversity() {
+    @ConstraintProviderTest
+    void audienceTypeDiversity(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -533,8 +546,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .rewardsWith(60); // talk1 + talk2.
     }
 
-    @Test
-    void audienceTypeThemeTrackConflict() {
+    @ConstraintProviderTest
+    void audienceTypeThemeTrackConflict(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -572,8 +586,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(60); // talk1 + talk2.
     }
 
-    @Test
-    void audienceLevelDiversity() {
+    @ConstraintProviderTest
+    void audienceLevelDiversity(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -597,8 +612,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .rewardsWith(120); // talk1 + talk2 v. talk3.
     }
 
-    @Test
-    void contentAudienceLevelFlowViolation() {
+    @ConstraintProviderTest
+    void contentAudienceLevelFlowViolation(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -626,8 +642,8 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(240); // talk1 + talk2, talk2 + talk1, talk2 + talk4, talk4 + talk2.
     }
 
-    @Test
-    void contentConflict() {
+    @ConstraintProviderTest
+    void contentConflict(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -651,8 +667,8 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(60); // talk1 + talk2.
     }
 
-    @Test
-    void languageDiversity() {
+    @ConstraintProviderTest
+    void languageDiversity(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -676,8 +692,8 @@ class ConferenceSchedulingConstraintProviderTest {
                 .rewardsWith(120); // talk1 + talk3.
     }
 
-    @Test
-    void sameDayTalks() {
+    @ConstraintProviderTest
+    void sameDayTalks(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -715,8 +731,8 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(960);
     }
 
-    @Test
-    void popularTalks() {
+    @ConstraintProviderTest
+    void popularTalks(ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room smallerRoom = new Room(0)
                 .withCapacity(10);
         Room biggerRoom = new Room(1)
@@ -739,8 +755,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(120); // talk1 + talk3
     }
 
-    @Test
-    void speakerPreferredTimeslotTags() {
+    @ConstraintProviderTest
+    void speakerPreferredTimeslotTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
                 .withPreferredTimeslotTagSet(singleton("a"));
@@ -762,8 +779,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
-    @Test
-    void speakerUndesiredTimeslotTags() {
+    @ConstraintProviderTest
+    void speakerUndesiredTimeslotTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Speaker speaker1 = new Speaker(1)
                 .withUndesiredTimeslotTagSet(singleton("a"));
@@ -785,8 +803,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
-    @Test
-    void talkPreferredTimeslotTags() {
+    @ConstraintProviderTest
+    void talkPreferredTimeslotTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -802,8 +821,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
-    @Test
-    void talkUndesiredTimeslotTags() {
+    @ConstraintProviderTest
+    void talkUndesiredTimeslotTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0);
         Talk talk1 = new Talk(1)
                 .withRoom(room)
@@ -819,8 +839,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
-    @Test
-    void speakerPreferredRoomTags() {
+    @ConstraintProviderTest
+    void speakerPreferredRoomTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Speaker speaker1 = new Speaker(1)
@@ -841,8 +862,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
-    @Test
-    void speakerUndesiredRoomTags() {
+    @ConstraintProviderTest
+    void speakerUndesiredRoomTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Speaker speaker1 = new Speaker(1)
@@ -863,8 +885,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
     }
 
-    @Test
-    void talkPreferredRoomTags() {
+    @ConstraintProviderTest
+    void talkPreferredRoomTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Talk talk1 = new Talk(1)
@@ -881,8 +904,9 @@ class ConferenceSchedulingConstraintProviderTest {
                 .penalizesBy(MONDAY_10_TO_11.getDurationInMinutes());
     }
 
-    @Test
-    void talkUndesiredRoomTags() {
+    @ConstraintProviderTest
+    void talkUndesiredRoomTags(
+            ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> constraintVerifier) {
         Room room = new Room(0)
                 .withTagSet(singleton("a"));
         Talk talk1 = new Talk(1)
@@ -897,5 +921,10 @@ class ConferenceSchedulingConstraintProviderTest {
         constraintVerifier.verifyThat(ConferenceSchedulingConstraintProvider::talkUndesiredRoomTags)
                 .given(talk1, talk2)
                 .penalizesBy(MONDAY_9_TO_10.getDurationInMinutes());
+    }
+
+    @Override
+    protected ConstraintVerifier<ConferenceSchedulingConstraintProvider, ConferenceSolution> createConstraintVerifier() {
+        return ConstraintVerifier.build(new ConferenceSchedulingConstraintProvider(), ConferenceSolution.class, Talk.class);
     }
 }

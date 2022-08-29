@@ -15,16 +15,16 @@ public final class DefaultSingleConstraintVerification<Solution_, Score_ extends
 
     DefaultSingleConstraintVerification(AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
-        this.sessionBasedAssertionBuilder = new SessionBasedAssertionBuilder(scoreDirectorFactory);
+        this.sessionBasedAssertionBuilder = new SessionBasedAssertionBuilder<>(scoreDirectorFactory);
     }
 
     @Override
-    public final DefaultSingleConstraintAssertion<Solution_, Score_> given(Object... facts) {
+    public DefaultSingleConstraintAssertion<Solution_, Score_> given(Object... facts) {
         return sessionBasedAssertionBuilder.singleConstraintGiven(facts);
     }
 
     @Override
-    public final DefaultSingleConstraintAssertion<Solution_, Score_> givenSolution(Solution_ solution) {
+    public DefaultSingleConstraintAssertion<Solution_, Score_> givenSolution(Solution_ solution) {
         try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
             return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, scoreDirector.calculateScore(),

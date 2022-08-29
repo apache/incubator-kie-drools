@@ -19,16 +19,16 @@ public final class DefaultMultiConstraintVerification<Solution_, Score_ extends 
             ConstraintProvider constraintProvider) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.constraintProvider = constraintProvider;
-        this.sessionBasedAssertionBuilder = new SessionBasedAssertionBuilder(scoreDirectorFactory);
+        this.sessionBasedAssertionBuilder = new SessionBasedAssertionBuilder<>(scoreDirectorFactory);
     }
 
     @Override
-    public final DefaultMultiConstraintAssertion<Score_> given(Object... facts) {
+    public DefaultMultiConstraintAssertion<Score_> given(Object... facts) {
         return sessionBasedAssertionBuilder.multiConstraintGiven(constraintProvider, facts);
     }
 
     @Override
-    public final DefaultMultiConstraintAssertion<Score_> givenSolution(Solution_ solution) {
+    public DefaultMultiConstraintAssertion<Score_> givenSolution(Solution_ solution) {
         try (InnerScoreDirector<Solution_, Score_> scoreDirector =
                 scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));

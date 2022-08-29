@@ -23,7 +23,6 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.definition.rule.Rule;
-import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.DirectFiringOption;
@@ -137,17 +136,19 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
     private static KieSession buildKieSessionFromKieBase(KieBase kieBase) {
         KieSessionConfiguration config = KieServices.get().newKieSessionConfiguration();
         config.setOption(DirectFiringOption.YES); // For performance; not applicable to DRL due to insertLogical etc.
-        Environment environment = KieServices.get().newEnvironment();
-        return kieBase.newKieSession(config, environment);
+        return kieBase.newKieSession(config, null);
     }
 
     @Override
     public AbstractScoreInliner<Score_> fireAndForget(Object... facts) {
         SessionDescriptor<Score_> sessionDescriptor = newSession(true, null);
         KieSession session = sessionDescriptor.getSession();
-        Arrays.stream(facts).forEach(session::insert);
-        session.fireAllRules();
-        session.dispose();
+        try {
+            Arrays.stream(facts).forEach(session::insert);
+            session.fireAllRules();
+        } finally {
+            session.dispose();
+        }
         return sessionDescriptor.getScoreInliner();
     }
 

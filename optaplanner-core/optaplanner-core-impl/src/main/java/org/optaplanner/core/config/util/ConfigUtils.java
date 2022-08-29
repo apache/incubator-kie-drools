@@ -471,18 +471,6 @@ public class ConfigUtils {
         return memberAccessor;
     }
 
-    public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz, DomainAccessType domainAccessType) {
-        Member member = getSingleMember(clazz, PlanningId.class);
-        if (member == null) {
-            return null;
-        }
-        MemberAccessor memberAccessor =
-                MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class,
-                        domainAccessType);
-        assertPlanningIdMemberIsComparable(clazz, member, memberAccessor);
-        return memberAccessor;
-    }
-
     private static void assertPlanningIdMemberIsComparable(Class<?> clazz, Member member, MemberAccessor memberAccessor) {
         if (!memberAccessor.getType().isPrimitive() && !Comparable.class.isAssignableFrom(memberAccessor.getType())) {
             throw new IllegalArgumentException("The class (" + clazz

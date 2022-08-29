@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
@@ -36,14 +38,12 @@ import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class NurseRosteringConstraintProviderTest {
-    private final ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier =
-            ConstraintVerifier.build(new NurseRosteringConstraintProvider(), NurseRoster.class,
-                    ShiftAssignment.class);
+class NurseRosteringConstraintProviderTest
+        extends AbstractConstraintProviderTest<NurseRosteringConstraintProvider, NurseRoster> {
 
     private final AtomicLong idSupplier = new AtomicLong(0);
-    private final Map<Pair<Integer, ShiftType>, Shift> indexShiftTypePairToShiftMap = new HashMap<>();
-    private final Map<Integer, ShiftDate> indexToShiftDateMap = new HashMap<>();
+    private final Map<Pair<Integer, ShiftType>, Shift> indexShiftTypePairToShiftMap = new ConcurrentHashMap<>();
+    private final Map<Integer, ShiftDate> indexToShiftDateMap = new ConcurrentHashMap<>();
     private final ShiftType dayShiftType = new ShiftType();
     private final ShiftType nightShiftType = new ShiftType();
 
@@ -68,6 +68,11 @@ class NurseRosteringConstraintProviderTest {
         nightShiftType.setCode("ShiftType - Night");
         nightShiftType.setIndex(1);
         nightShiftType.setDescription("Night Shift");
+    }
+
+    @Override
+    protected ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> createConstraintVerifier() {
+        return ConstraintVerifier.build(new NurseRosteringConstraintProvider(), NurseRoster.class, ShiftAssignment.class);
     }
 
     // ******************************************************
@@ -369,8 +374,8 @@ class NurseRosteringConstraintProviderTest {
     // ******************************************************
     // TESTS
     // ******************************************************
-    @Test
-    void oneShiftPerDay() {
+    @ConstraintProviderTest
+    void oneShiftPerDay(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Employee employee = getEmployee();
         ShiftAssignment shift1 = getShiftAssignment(0, employee);
         ShiftAssignment shift2 = getShiftAssignment(0, employee);
@@ -382,8 +387,9 @@ class NurseRosteringConstraintProviderTest {
                 .given(shift1, shift2, shift3, shift4, shift5).penalizesBy(2);
     }
 
-    @Test
-    void minimumAndMaximumNumberOfAssignments() {
+    @ConstraintProviderTest
+    void minimumAndMaximumNumberOfAssignments(
+            ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Contract contract = new MinMaxContractBuilder(ContractLineType.TOTAL_ASSIGNMENTS)
                 .withMinimum(2)
                 .withMaximum(3)
@@ -421,8 +427,9 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void minimumNumberOfAssignmentsNoAssignments() {
+    @ConstraintProviderTest
+    void minimumNumberOfAssignmentsNoAssignments(
+            ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Contract contract = new MinMaxContractBuilder(ContractLineType.TOTAL_ASSIGNMENTS)
                 .withMinimum(2)
                 .withMinimumWeight(5)
@@ -440,8 +447,8 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(10);
     }
 
-    @Test
-    void consecutiveWorkingDays() {
+    @ConstraintProviderTest
+    void consecutiveWorkingDays(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Contract contract = new MinMaxContractBuilder(ContractLineType.CONSECUTIVE_WORKING_DAYS)
                 .withMinimum(2)
                 .withMaximum(3)
@@ -484,8 +491,8 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void consecutiveFreeDays() {
+    @ConstraintProviderTest
+    void consecutiveFreeDays(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Contract contract = new MinMaxContractBuilder(ContractLineType.CONSECUTIVE_FREE_DAYS)
                 .withMinimum(2)
                 .withMaximum(3)
@@ -549,8 +556,9 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(12);
     }
 
-    @Test
-    void maximumConsecutiveFreeDaysNoAssignments() {
+    @ConstraintProviderTest
+    void maximumConsecutiveFreeDaysNoAssignments(
+            ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Contract contract = new MinMaxContractBuilder(ContractLineType.CONSECUTIVE_FREE_DAYS)
                 .withMaximum(1)
                 .withMaximumWeight(1)
@@ -574,8 +582,8 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(5);
     }
 
-    @Test
-    void consecutiveWorkingWeekends() {
+    @ConstraintProviderTest
+    void consecutiveWorkingWeekends(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Contract contract = new MinMaxContractBuilder(ContractLineType.CONSECUTIVE_WORKING_WEEKENDS)
                 .withMinimum(2)
                 .withMinimumWeight(2)
@@ -622,8 +630,8 @@ class NurseRosteringConstraintProviderTest {
 
     }
 
-    @Test
-    void startOnNotFirstDayOfWeekend() {
+    @ConstraintProviderTest
+    void startOnNotFirstDayOfWeekend(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Contract contract = new BooleanContractBuilder(ContractLineType.COMPLETE_WEEKENDS)
                 .withWeight(3)
                 .build();
@@ -667,8 +675,8 @@ class NurseRosteringConstraintProviderTest {
 
     }
 
-    @Test
-    void endOnNotLastDayOfWeekend() {
+    @ConstraintProviderTest
+    void endOnNotLastDayOfWeekend(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Contract contract = new BooleanContractBuilder(ContractLineType.COMPLETE_WEEKENDS)
                 .withWeight(3)
                 .build();
@@ -712,8 +720,9 @@ class NurseRosteringConstraintProviderTest {
 
     }
 
-    @Test
-    void identicalShiftTypesDuringWeekend() {
+    @ConstraintProviderTest
+    void identicalShiftTypesDuringWeekend(
+            ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Contract contract = new BooleanContractBuilder(ContractLineType.IDENTICAL_SHIFT_TYPES_DURING_WEEKEND)
                 .withWeight(3)
                 .build();
@@ -759,8 +768,8 @@ class NurseRosteringConstraintProviderTest {
 
     }
 
-    @Test
-    void dayOffRequest() {
+    @ConstraintProviderTest
+    void dayOffRequest(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Employee employee = getEmployee();
         DayOffRequest dayOffRequest1 = getDayOffRequest(employee, getShiftDate(1), 3);
         DayOffRequest dayOffRequest2 = getDayOffRequest(employee, getShiftDate(3), 5);
@@ -791,8 +800,8 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void dayOnRequest() {
+    @ConstraintProviderTest
+    void dayOnRequest(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Employee employee = getEmployee();
         DayOnRequest dayOnRequest1 = getDayOnRequest(employee, getShiftDate(1), 3);
         DayOnRequest dayOnRequest2 = getDayOnRequest(employee, getShiftDate(3), 5);
@@ -823,8 +832,8 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(8);
     }
 
-    @Test
-    void shiftOffRequest() {
+    @ConstraintProviderTest
+    void shiftOffRequest(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Employee employee = getEmployee();
         ShiftAssignment shift1Day = getShiftAssignment(1, employee, dayShiftType);
         ShiftAssignment shift1Night = getShiftAssignment(1, employee, nightShiftType);
@@ -860,8 +869,8 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void shiftOnRequest() {
+    @ConstraintProviderTest
+    void shiftOnRequest(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Employee employee = getEmployee();
         ShiftAssignment shift1Day = getShiftAssignment(1, employee, dayShiftType);
         ShiftAssignment shift1Night = getShiftAssignment(1, employee, nightShiftType);
@@ -897,8 +906,8 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(8);
     }
 
-    @Test
-    void alternativeSkill() {
+    @ConstraintProviderTest
+    void alternativeSkill(ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Contract contract = new BooleanContractBuilder(ContractLineType.ALTERNATIVE_SKILL_CATEGORY)
                 .withWeight(3)
                 .build();
@@ -936,8 +945,9 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test
-    void unwantedPatternFreeBefore2DaysWithAWorkDayPattern() {
+    @ConstraintProviderTest
+    void unwantedPatternFreeBefore2DaysWithAWorkDayPattern(
+            ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Pair<PatternContractLine, Contract> patternContractPair = new PatternContractBuilder()
                 .freeBefore2DaysWithAWorkDay(DayOfWeek.WEDNESDAY)
                 .build();
@@ -993,8 +1003,9 @@ class NurseRosteringConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void unwantedPatternShiftType2DaysPattern() {
+    @ConstraintProviderTest
+    void unwantedPatternShiftType2DaysPattern(
+            ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Pair<PatternContractLine, Contract> patternContractPair = new PatternContractBuilder()
                 .shiftType2DaysPattern(dayShiftType, nightShiftType)
                 .build();
@@ -1046,8 +1057,9 @@ class NurseRosteringConstraintProviderTest {
 
     }
 
-    @Test
-    void unwantedPatternShiftType2DaysPatternNullSecondShiftType() {
+    @ConstraintProviderTest
+    void unwantedPatternShiftType2DaysPatternNullSecondShiftType(
+            ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Pair<PatternContractLine, Contract> patternContractPair = new PatternContractBuilder()
                 .shiftType2DaysPattern(dayShiftType, null)
                 .build();
@@ -1099,8 +1111,9 @@ class NurseRosteringConstraintProviderTest {
 
     }
 
-    @Test
-    void unwantedPatternShiftType3DaysPattern() {
+    @ConstraintProviderTest
+    void unwantedPatternShiftType3DaysPattern(
+            ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> constraintVerifier) {
         Pair<PatternContractLine, Contract> patternContractPair = new PatternContractBuilder()
                 .shiftType3DaysPattern(dayShiftType, nightShiftType, nightShiftType)
                 .build();

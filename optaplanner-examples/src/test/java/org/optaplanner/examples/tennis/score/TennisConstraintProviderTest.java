@@ -1,6 +1,7 @@
 package org.optaplanner.examples.tennis.score;
 
-import org.junit.jupiter.api.Test;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.examples.tennis.domain.Day;
 import org.optaplanner.examples.tennis.domain.Team;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
@@ -8,7 +9,8 @@ import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class TennisConstraintProviderTest {
+class TennisConstraintProviderTest
+        extends AbstractConstraintProviderTest<TennisConstraintProvider, TennisSolution> {
 
     private static final Day DAY0 = new Day(0, 0);
     private static final Day DAY1 = new Day(1, 1);
@@ -17,11 +19,8 @@ class TennisConstraintProviderTest {
     private static final Team TEAM1 = new Team(1, "B");
     private static final Team TEAM2 = new Team(2, "C");
 
-    private final ConstraintVerifier<TennisConstraintProvider, TennisSolution> constraintVerifier =
-            ConstraintVerifier.build(new TennisConstraintProvider(), TennisSolution.class, TeamAssignment.class);
-
-    @Test
-    void oneAssignmentPerDayPerTeam() {
+    @ConstraintProviderTest
+    void oneAssignmentPerDayPerTeam(ConstraintVerifier<TennisConstraintProvider, TennisSolution> constraintVerifier) {
         TeamAssignment assignment1 = new TeamAssignment(0, DAY0, 0);
         assignment1.setTeam(TEAM0);
         TeamAssignment assignment2 = new TeamAssignment(1, DAY0, 1);
@@ -38,8 +37,8 @@ class TennisConstraintProviderTest {
                 .penalizesBy(3); // TEAM0 by 2, TEAM1 by 1.
     }
 
-    @Test
-    void unavailabilityPenalty() {
+    @ConstraintProviderTest
+    void unavailabilityPenalty(ConstraintVerifier<TennisConstraintProvider, TennisSolution> constraintVerifier) {
         TeamAssignment assignment1 = new TeamAssignment(0, DAY0, 0);
         assignment1.setTeam(TEAM0);
         TeamAssignment assignment2 = new TeamAssignment(1, DAY1, 0);
@@ -57,8 +56,8 @@ class TennisConstraintProviderTest {
                 .penalizesBy(2); // TEAM0 by 1, TEAM1 by 1.
     }
 
-    @Test
-    void fairAssignmentCountPerTeam() {
+    @ConstraintProviderTest
+    void fairAssignmentCountPerTeam(ConstraintVerifier<TennisConstraintProvider, TennisSolution> constraintVerifier) {
         TeamAssignment assignment1 = new TeamAssignment(0, DAY0, 0);
         assignment1.setTeam(TEAM0);
         TeamAssignment assignment2 = new TeamAssignment(1, DAY1, 0);
@@ -77,8 +76,8 @@ class TennisConstraintProviderTest {
                 .penalizesBy(2449);
     }
 
-    @Test
-    void evenlyConfrontationCount() {
+    @ConstraintProviderTest
+    void evenlyConfrontationCount(ConstraintVerifier<TennisConstraintProvider, TennisSolution> constraintVerifier) {
         TeamAssignment assignment1 = new TeamAssignment(0, DAY0, 0);
         assignment1.setTeam(TEAM0);
         TeamAssignment assignment2 = new TeamAssignment(1, DAY0, 0);
@@ -97,4 +96,8 @@ class TennisConstraintProviderTest {
                 .penalizesBy(3000);
     }
 
+    @Override
+    protected ConstraintVerifier<TennisConstraintProvider, TennisSolution> createConstraintVerifier() {
+        return ConstraintVerifier.build(new TennisConstraintProvider(), TennisSolution.class, TeamAssignment.class);
+    }
 }

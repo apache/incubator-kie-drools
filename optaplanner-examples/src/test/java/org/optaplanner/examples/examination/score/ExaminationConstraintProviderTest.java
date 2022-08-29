@@ -1,6 +1,7 @@
 package org.optaplanner.examples.examination.score;
 
-import org.junit.jupiter.api.Test;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.ExaminationConstraintConfiguration;
@@ -16,17 +17,16 @@ import org.optaplanner.examples.examination.domain.Topic;
 import org.optaplanner.examples.examination.domain.solver.TopicConflict;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class ExaminationConstraintProviderTest {
-    private final ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier = ConstraintVerifier
-            .build(new ExaminationConstraintProvider(), Examination.class, Exam.class);
+class ExaminationConstraintProviderTest
+        extends AbstractConstraintProviderTest<ExaminationConstraintProvider, Examination> {
 
     private final Student student1 = new Student(1L);
     private final Student student2 = new Student(2L);
     private final Student student3 = new Student(3L);
     private final Student student4 = new Student(4L);
 
-    @Test
-    void conflictingExamsInSamePeriodTest() {
+    @ConstraintProviderTest
+    void conflictingExamsInSamePeriodTest(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Topic topic1 = new Topic();
         Topic topic2 = new Topic();
         TopicConflict conflict = new TopicConflict(0, topic1, topic2, 2);
@@ -49,8 +49,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(2);
     }
 
-    @Test
-    void periodDurationTooShortTest() {
+    @ConstraintProviderTest
+    void periodDurationTooShortTest(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         LeadingExam exam = new LeadingExam()
                 .withTopic(new Topic().withDuration(2).withStudents(student1, student2))
                 .withPeriod(new Period().withDuration(1))
@@ -61,8 +61,9 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(2);
     }
 
-    @Test
-    void roomCapacityTooSmallSingleLargeExamTest() {
+    @ConstraintProviderTest
+    void roomCapacityTooSmallSingleLargeExamTest(
+            ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room().withCapacity(2);
 
@@ -76,8 +77,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(2);
     }
 
-    @Test
-    void roomCapacityTooSmallTwoExamsTest() {
+    @ConstraintProviderTest
+    void roomCapacityTooSmallTwoExamsTest(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room().withCapacity(2);
 
@@ -97,8 +98,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(2);
     }
 
-    @Test
-    void periodPenaltyTypeTest() {
+    @ConstraintProviderTest
+    void periodPenaltyTypeTest(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Topic topic1 = new Topic().withStudents(student1, student2);
         Topic topic2 = new Topic().withStudents(student1, student2);
 
@@ -147,8 +148,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void roomPenaltyExclusiveTest() {
+    @ConstraintProviderTest
+    void roomPenaltyExclusiveTest(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Topic topic1 = new Topic().withStudents(student1, student2);
         Topic topic2 = new Topic().withStudents(student3, student4);
 
@@ -173,8 +174,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(4);
     }
 
-    @Test
-    void twoExamsInARowAndInADayTest() {
+    @ConstraintProviderTest
+    void twoExamsInARowAndInADayTest(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Topic topic1 = new Topic();
         Topic topic2 = new Topic();
         TopicConflict conflict = new TopicConflict(0, topic1, topic2, 2);
@@ -229,8 +230,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void periodSpreadTest() {
+    @ConstraintProviderTest
+    void periodSpreadTest(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         ExaminationConstraintConfiguration config = new ExaminationConstraintConfiguration()
                 // At least 1 period apart.
                 .withPeriodSpreadLength(1);
@@ -272,8 +273,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void mixedDurations11Test() {
+    @ConstraintProviderTest
+    void mixedDurations11Test(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -297,8 +298,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void mixedDurations12Test() {
+    @ConstraintProviderTest
+    void mixedDurations12Test(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -322,8 +323,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void mixedDurations123Test() {
+    @ConstraintProviderTest
+    void mixedDurations123Test(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -354,8 +355,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(2);
     }
 
-    @Test
-    void mixedDurations113Test() {
+    @ConstraintProviderTest
+    void mixedDurations113Test(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -386,8 +387,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void mixedDurations133Test() {
+    @ConstraintProviderTest
+    void mixedDurations133Test(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -418,8 +419,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void mixedDurations131Test() {
+    @ConstraintProviderTest
+    void mixedDurations131Test(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -450,8 +451,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void mixedDurations431Test() {
+    @ConstraintProviderTest
+    void mixedDurations431Test(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -482,8 +483,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(2);
     }
 
-    @Test
-    void mixedDurations411Test() {
+    @ConstraintProviderTest
+    void mixedDurations411Test(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -514,8 +515,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void mixedDurations441Test() {
+    @ConstraintProviderTest
+    void mixedDurations441Test(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -546,8 +547,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void frontLoadTest() {
+    @ConstraintProviderTest
+    void frontLoadTest(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         LeadingExam exam = new LeadingExam()
                 .withPeriod(new Period().withFrontLoadLast(true))
                 .withTopic(new Topic().withFrontLoadLarge(true))
@@ -558,8 +559,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void periodPenaltyTest() {
+    @ConstraintProviderTest
+    void periodPenaltyTest(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Period period = new Period().withPenalty(5);
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
@@ -582,8 +583,8 @@ class ExaminationConstraintProviderTest {
                 .penalizesBy(10);
     }
 
-    @Test
-    void roomPenaltyTest() {
+    @ConstraintProviderTest
+    void roomPenaltyTest(ConstraintVerifier<ExaminationConstraintProvider, Examination> constraintVerifier) {
         Room room = new Room().withPenalty(5);
         LeadingExam exam1 = new LeadingExam()
                 .withId(1L)
@@ -603,5 +604,10 @@ class ExaminationConstraintProviderTest {
         constraintVerifier.verifyThat(ExaminationConstraintProvider::roomPenalty)
                 .given(room, exam1, exam2)
                 .penalizesBy(10);
+    }
+
+    @Override
+    protected ConstraintVerifier<ExaminationConstraintProvider, Examination> createConstraintVerifier() {
+        return ConstraintVerifier.build(new ExaminationConstraintProvider(), Examination.class, Exam.class);
     }
 }

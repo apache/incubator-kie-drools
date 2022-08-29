@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactoryService;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -74,4 +75,10 @@ public final class DroolsConstraintStreamScoreDirectorFactoryService<Solution_, 
         return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
                 droolsAlphaNetworkCompilationEnabled);
     }
+
+    @Override
+    public ConstraintFactory buildConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
+        return new DroolsConstraintFactory<>(solutionDescriptor);
+    }
+
 }

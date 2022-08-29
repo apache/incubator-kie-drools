@@ -1,6 +1,5 @@
 package org.optaplanner.examples.cheaptime.score;
 
-import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
@@ -9,9 +8,12 @@ import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class CheapTimeConstraintProviderTest {
+class CheapTimeConstraintProviderTest extends
+        AbstractConstraintProviderTest<CheapTimeConstraintProvider, CheapTimeSolution> {
 
     private static final Period PERIOD_0 = new Period(0, 100_000);
     private static final Period PERIOD_1 = new Period(1, 150_000);
@@ -46,11 +48,8 @@ class CheapTimeConstraintProviderTest {
     private static final Task TASK_2 = new Task(2, PERIOD_1, PERIOD_3, 1, 3_000_000,
             REQUIREMENT_TASK2_RESOURCE0, REQUIREMENT_TASK2_RESOURCE1, REQUIREMENT_TASK2_RESOURCE2);
 
-    private final ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> constraintVerifier =
-            ConstraintVerifier.build(new CheapTimeConstraintProvider(), CheapTimeSolution.class, TaskAssignment.class);
-
-    @Test
-    void startTimeLimitsFrom() {
+    @ConstraintProviderTest
+    void startTimeLimitsFrom(ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> constraintVerifier) {
         // Actual task assignment falls on the minimum prescribed by the task.
         TaskAssignment correctTaskAssignment1 = new TaskAssignment(TASK_0, MACHINE_O, PERIOD_0);
         // Actual task assignment falls past the minimum prescribed by the task.
@@ -62,8 +61,8 @@ class CheapTimeConstraintProviderTest {
                 .penalizesBy(1); // Wrong task assignment is penalized by one period.
     }
 
-    @Test
-    void startTimeLimitsTo() {
+    @ConstraintProviderTest
+    void startTimeLimitsTo(ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> constraintVerifier) {
         // Actual task assignment falls on the maximum prescribed by the task.
         TaskAssignment correctTaskAssignment1 = new TaskAssignment(TASK_2, MACHINE_O, PERIOD_3);
         // Actual task assignment falls before the maximum prescribed by the task.
@@ -75,8 +74,8 @@ class CheapTimeConstraintProviderTest {
                 .penalizesBy(1); // Wrong task assignment is penalized by one period.
     }
 
-    @Test
-    void maximumCapacity() {
+    @ConstraintProviderTest
+    void maximumCapacity(ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> constraintVerifier) {
         TaskAssignment taskAssignment1 = new TaskAssignment(TASK_0, MACHINE_O, PERIOD_0);
         TaskAssignment taskAssignment2 = new TaskAssignment(TASK_1, MACHINE_O, PERIOD_1);
         TaskAssignment taskAssignment3 = new TaskAssignment(TASK_2, MACHINE_1, PERIOD_1);
@@ -86,8 +85,9 @@ class CheapTimeConstraintProviderTest {
                 .penalizesBy(2);
     }
 
-    @Test
-    void activeMachinePowerCost() { // Machines with task assignments are penalized based on task duration.
+    @ConstraintProviderTest
+    void activeMachinePowerCost(ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> constraintVerifier) {
+        // Machines with task assignments are penalized based on task duration.
         TaskAssignment taskAssignment = new TaskAssignment(TASK_0, MACHINE_O, PERIOD_0);
         constraintVerifier.verifyThat(CheapTimeConstraintProvider::activeMachinePowerCost)
                 .given(taskAssignment, MACHINE_O, MACHINE_1, PERIOD_0, PERIOD_1, PERIOD_2, PERIOD_3)
@@ -100,8 +100,8 @@ class CheapTimeConstraintProviderTest {
                 .penalizesBy(3);
     }
 
-    @Test
-    void activeMachineSpinUpAndDownCost() {
+    @ConstraintProviderTest
+    void activeMachineSpinUpAndDownCost(ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> constraintVerifier) {
         TaskAssignment taskAssignment = new TaskAssignment(TASK_0, MACHINE_O, PERIOD_0);
         constraintVerifier.verifyThat(CheapTimeConstraintProvider::activeMachineSpinUpAndDownCost)
                 .given(taskAssignment, MACHINE_O, MACHINE_1, PERIOD_0, PERIOD_1, PERIOD_2, PERIOD_3)
@@ -112,8 +112,9 @@ class CheapTimeConstraintProviderTest {
                 .penalizesBy(5);
     }
 
-    @Test
-    void idleCosts() { // When a machine is on without a task, we incur a cost.
+    @ConstraintProviderTest
+    void idleCosts(ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> constraintVerifier) {
+        // When a machine is on without a task, we incur a cost.
         TaskAssignment taskAssignment1 = new TaskAssignment(TASK_0, MACHINE_O, PERIOD_0);
         TaskAssignment taskAssignment2 = new TaskAssignment(TASK_2, MACHINE_O, PERIOD_3);
         constraintVerifier.verifyThat(CheapTimeConstraintProvider::idleCosts)
@@ -122,8 +123,8 @@ class CheapTimeConstraintProviderTest {
 
     }
 
-    @Test
-    void taskPowerCost() {
+    @ConstraintProviderTest
+    void taskPowerCost(ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> constraintVerifier) {
         TaskAssignment taskAssignment1 = new TaskAssignment(TASK_0, MACHINE_O, PERIOD_0);
         TaskAssignment taskAssignment2 = new TaskAssignment(TASK_1, MACHINE_1, PERIOD_1);
         constraintVerifier.verifyThat(CheapTimeConstraintProvider::taskPowerCost)
@@ -136,13 +137,18 @@ class CheapTimeConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test
-    void startEarly() {
+    @ConstraintProviderTest
+    void startEarly(ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> constraintVerifier) {
         TaskAssignment taskAssignment1 = new TaskAssignment(TASK_0, MACHINE_O, PERIOD_1);
         TaskAssignment taskAssignment2 = new TaskAssignment(TASK_1, MACHINE_1, PERIOD_2);
         constraintVerifier.verifyThat(CheapTimeConstraintProvider::startEarly)
                 .given(taskAssignment1, taskAssignment2)
                 .penalizesBy(taskAssignment1.getStartPeriod() + taskAssignment2.getStartPeriod());
+    }
+
+    @Override
+    protected ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> createConstraintVerifier() {
+        return ConstraintVerifier.build(new CheapTimeConstraintProvider(), CheapTimeSolution.class, TaskAssignment.class);
     }
 
 }

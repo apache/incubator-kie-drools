@@ -1,6 +1,7 @@
 package org.optaplanner.examples.vehiclerouting.score;
 
-import org.junit.jupiter.api.Test;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
@@ -12,18 +13,16 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedC
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class VehicleRoutingConstraintProviderTest {
-
-    private final ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier =
-            ConstraintVerifier.build(new VehicleRoutingConstraintProvider(), VehicleRoutingSolution.class, Standstill.class,
-                    Customer.class, TimeWindowedCustomer.class);
+class VehicleRoutingConstraintProviderTest
+        extends AbstractConstraintProviderTest<VehicleRoutingConstraintProvider, VehicleRoutingSolution> {
 
     private final Location location1 = new AirLocation(1L, 0.0, 0.0);
     private final Location location2 = new AirLocation(2L, 0.0, 4.0);
     private final Location location3 = new AirLocation(3L, 3.0, 0.0);
 
-    @Test
-    void vehicleCapacityUnpenalized() {
+    @ConstraintProviderTest
+    void vehicleCapacityUnpenalized(
+            ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier) {
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
         Customer customer1 = new Customer(2L, location2, 80);
         customer1.setPreviousStandstill(vehicleA);
@@ -35,8 +34,9 @@ class VehicleRoutingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void vehicleCapacityPenalized() {
+    @ConstraintProviderTest
+    void vehicleCapacityPenalized(
+            ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier) {
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
         Customer customer1 = new Customer(2L, location2, 80);
         customer1.setPreviousStandstill(vehicleA);
@@ -52,8 +52,9 @@ class VehicleRoutingConstraintProviderTest {
                 .penalizesBy(20);
     }
 
-    @Test
-    void distanceToPreviousStandstill() {
+    @ConstraintProviderTest
+    void distanceToPreviousStandstill(
+            ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier) {
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
         Customer customer1 = new Customer(2L, location2, 80);
         customer1.setPreviousStandstill(vehicleA);
@@ -69,8 +70,9 @@ class VehicleRoutingConstraintProviderTest {
                 .penalizesBy(9000L);
     }
 
-    @Test
-    void distanceFromLastCustomerToDepot() {
+    @ConstraintProviderTest
+    void distanceFromLastCustomerToDepot(
+            ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier) {
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
         Customer customer1 = new Customer(2L, location2, 80);
         customer1.setPreviousStandstill(vehicleA);
@@ -86,8 +88,8 @@ class VehicleRoutingConstraintProviderTest {
                 .penalizesBy(3000L);
     }
 
-    @Test
-    void arrivalAfterDueTime() {
+    @ConstraintProviderTest
+    void arrivalAfterDueTime(ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier) {
         Vehicle vehicleA = new Vehicle(1L, 100, new TimeWindowedDepot(1L, location1, 8_00_00L, 18_00_00L));
         TimeWindowedCustomer customer1 = new TimeWindowedCustomer(2L, location2, 1, 8_00_00L, 18_00_00L, 1_00_00L);
         customer1.setPreviousStandstill(vehicleA);
@@ -105,4 +107,9 @@ class VehicleRoutingConstraintProviderTest {
                 .penalizesBy(90_00L);
     }
 
+    @Override
+    protected ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> createConstraintVerifier() {
+        return ConstraintVerifier.build(new VehicleRoutingConstraintProvider(), VehicleRoutingSolution.class, Standstill.class,
+                Customer.class, TimeWindowedCustomer.class);
+    }
 }

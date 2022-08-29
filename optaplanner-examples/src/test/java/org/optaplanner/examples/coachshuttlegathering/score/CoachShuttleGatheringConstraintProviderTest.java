@@ -2,7 +2,6 @@ package org.optaplanner.examples.coachshuttlegathering.score;
 
 import java.util.Collections;
 
-import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusOrStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
@@ -12,16 +11,16 @@ import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
 import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocationArc;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class CoachShuttleGatheringConstraintProviderTest {
-    private final ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier =
-            ConstraintVerifier
-                    .build(new CoachShuttleGatheringConstraintProvider(), CoachShuttleGatheringSolution.class,
-                            BusOrStop.class, StopOrHub.class, BusStop.class, Shuttle.class, Coach.class);
+class CoachShuttleGatheringConstraintProviderTest
+        extends AbstractConstraintProviderTest<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> {
 
-    @Test
-    void coachStopLimit() {
+    @ConstraintProviderTest
+    void coachStopLimit(
+            ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier) {
         Coach coach = new Coach();
         coach.setStopLimit(2);
         BusStop stop1 = new BusStop(0L, coach, coach);
@@ -46,8 +45,9 @@ class CoachShuttleGatheringConstraintProviderTest {
                 .penalizesBy(2L * 1000000);
     }
 
-    @Test
-    void shuttleCapacity() {
+    @ConstraintProviderTest
+    void shuttleCapacity(
+            ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier) {
         Shuttle shuttle = new Shuttle();
         BusStop destination = new BusStop();
         shuttle.setDestination(destination);
@@ -75,8 +75,9 @@ class CoachShuttleGatheringConstraintProviderTest {
                 .penalizesBy(2L * 1000);
     }
 
-    @Test
-    void coachCapacity() {
+    @ConstraintProviderTest
+    void coachCapacity(
+            ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier) {
         Coach coach = new Coach();
         Shuttle shuttle = new Shuttle();
         BusStop transferStop = new BusStop(0L, shuttle, coach);
@@ -117,8 +118,9 @@ class CoachShuttleGatheringConstraintProviderTest {
                 .penalizesBy(1L * 1000);
     }
 
-    @Test
-    void coachCapacityShuttleButNoShuttle() {
+    @ConstraintProviderTest
+    void coachCapacityShuttleButNoShuttle(
+            ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier) {
         Coach coach = new Coach();
         BusHub destination = new BusHub();
         coach.setDestination(destination);
@@ -145,8 +147,9 @@ class CoachShuttleGatheringConstraintProviderTest {
                 .penalizesBy(2L * 1000);
     }
 
-    @Test
-    void transportTime() {
+    @ConstraintProviderTest
+    void transportTime(
+            ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier) {
         Coach bus = new Coach();
         BusStop busStop = new BusStop();
         busStop.setPreviousBusOrStop(bus);
@@ -170,8 +173,9 @@ class CoachShuttleGatheringConstraintProviderTest {
                 .penalizesBy(5L);
     }
 
-    @Test
-    void shuttleDestinationIsCoachOrHub() {
+    @ConstraintProviderTest
+    void shuttleDestinationIsCoachOrHub(
+            ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier) {
         Shuttle shuttle = new Shuttle();
         Coach coach = new Coach();
         BusStop destination = new BusStop();
@@ -189,8 +193,9 @@ class CoachShuttleGatheringConstraintProviderTest {
                 .penalizesBy(0L);
     }
 
-    @Test
-    void shuttleSetupCost() {
+    @ConstraintProviderTest
+    void shuttleSetupCost(
+            ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier) {
         Shuttle shuttle = new Shuttle();
         Coach coach = new Coach();
         BusStop destination = new BusStop();
@@ -218,8 +223,9 @@ class CoachShuttleGatheringConstraintProviderTest {
                 .penalizesBy(0L);
     }
 
-    @Test
-    void distanceFromPrevious() {
+    @ConstraintProviderTest
+    void distanceFromPrevious(
+            ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier) {
         Coach bus = new Coach();
         BusStop busStop = new BusStop();
 
@@ -244,8 +250,9 @@ class CoachShuttleGatheringConstraintProviderTest {
                 .penalizesBy(1L);
     }
 
-    @Test
-    void distanceBusStopToBusDestination() {
+    @ConstraintProviderTest
+    void distanceBusStopToBusDestination(
+            ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier) {
         Coach bus = new Coach();
         BusStop busStop = new BusStop();
         BusHub busHub = new BusHub();
@@ -273,8 +280,9 @@ class CoachShuttleGatheringConstraintProviderTest {
                 .penalizesBy(1L);
     }
 
-    @Test
-    void distanceCoachDirectlyToDestination() {
+    @ConstraintProviderTest
+    void distanceCoachDirectlyToDestination(
+            ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution> constraintVerifier) {
         Coach bus = new Coach();
         BusHub busHub = new BusHub();
 
@@ -296,5 +304,12 @@ class CoachShuttleGatheringConstraintProviderTest {
         constraintVerifier.verifyThat(CoachShuttleGatheringConstraintProvider::distanceCoachDirectlyToDestination)
                 .given(bus)
                 .penalizesBy(1L);
+    }
+
+    @Override
+    protected ConstraintVerifier<CoachShuttleGatheringConstraintProvider, CoachShuttleGatheringSolution>
+            createConstraintVerifier() {
+        return ConstraintVerifier.build(new CoachShuttleGatheringConstraintProvider(), CoachShuttleGatheringSolution.class,
+                BusOrStop.class, StopOrHub.class, BusStop.class, Shuttle.class, Coach.class);
     }
 }

@@ -3,12 +3,13 @@ package org.optaplanner.examples.pas.score;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.BedDesignation;
@@ -28,7 +29,8 @@ import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class PatientAdmissionScheduleConstraintProviderTest {
+class PatientAdmissionScheduleConstraintProviderTest
+        extends AbstractConstraintProviderTest<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> {
 
     private static final Night ZERO_NIGHT = new Night(0);
     private static final Night FIVE_NIGHT = new Night(5);
@@ -40,7 +42,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
                     .build(new PatientAdmissionScheduleConstraintProvider(), PatientAdmissionSchedule.class,
                             BedDesignation.class);
 
-    private static Stream genderLimitationsProvider() {
+    private static Stream<Arguments> genderLimitationsProvider() {
         return Stream.of(
                 Arguments.of(Gender.FEMALE, GenderLimitation.MALE_ONLY,
                         (BiFunction<PatientAdmissionScheduleConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionScheduleConstraintProvider::femaleInMaleRoomConstraint),
@@ -48,7 +50,7 @@ class PatientAdmissionScheduleConstraintProviderTest {
                         (BiFunction<PatientAdmissionScheduleConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionScheduleConstraintProvider::maleInFemaleRoomConstraint));
     }
 
-    private static Stream departmentAgeLimitationProvider() {
+    private static Stream<Arguments> departmentAgeLimitationProvider() {
         Department adultDepartment = new Department();
         adultDepartment.setMinimumAge(18);
         adultDepartment.setId(1L);
@@ -64,10 +66,11 @@ class PatientAdmissionScheduleConstraintProviderTest {
                         (BiFunction<PatientAdmissionScheduleConstraintProvider, ConstraintFactory, Constraint>) PatientAdmissionScheduleConstraintProvider::departmentMaximumAgeConstraint));
     }
 
-    @ParameterizedTest
+    // Not using @ConstraintProviderTest as it does not mix with custom parameters.
+    @ParameterizedTest(name = "gender = {0}, limitation = {1}")
     @MethodSource("genderLimitationsProvider")
     void genderRoomLimitationConstraintTest(Gender gender, GenderLimitation genderLimitation,
-            BiFunction constraintFunction) {
+            BiFunction<PatientAdmissionScheduleConstraintProvider, ConstraintFactory, Constraint> constraintFunction) {
 
         Room room = new Room();
         room.setGenderLimitation(genderLimitation);
@@ -86,8 +89,9 @@ class PatientAdmissionScheduleConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test
-    void sameBedInSameNightConstraintTest() {
+    @ConstraintProviderTest
+    void sameBedInSameNightConstraintTest(
+            ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier) {
 
         Patient patient = new Patient();
         Bed bed = new Bed();
@@ -102,9 +106,11 @@ class PatientAdmissionScheduleConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @ParameterizedTest
+    // Not using @ConstraintProviderTest as it does not mix with custom parameters.
+    @ParameterizedTest(name = "department = {0}, patientAge = {1}")
     @MethodSource("departmentAgeLimitationProvider")
-    void departmentAgeLimitationConstraintTest(Department department, int patientAge, BiFunction constraintFunction) {
+    void departmentAgeLimitationConstraintTest(Department department, int patientAge,
+            BiFunction<PatientAdmissionScheduleConstraintProvider, ConstraintFactory, Constraint> constraintFunction) {
 
         Room room = new Room();
         room.setDepartment(department);
@@ -123,8 +129,9 @@ class PatientAdmissionScheduleConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test
-    void requiredPatientEquipmentConstraintTest() {
+    @ConstraintProviderTest
+    void requiredPatientEquipmentConstraintTest(
+            ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier) {
 
         Patient patient = new Patient();
         Room room = new Room();
@@ -156,8 +163,9 @@ class PatientAdmissionScheduleConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test
-    void differentGenderInSameGenderRoomInSameNightConstraintTest() {
+    @ConstraintProviderTest
+    void differentGenderInSameGenderRoomInSameNightConstraintTest(
+            ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier) {
 
         Room room = new Room();
         room.setGenderLimitation(GenderLimitation.SAME_GENDER);
@@ -188,8 +196,9 @@ class PatientAdmissionScheduleConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test
-    void assignEveryPatientToABedConstraintTest() {
+    @ConstraintProviderTest
+    void assignEveryPatientToABedConstraintTest(
+            ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier) {
 
         Patient patient = new Patient();
 
@@ -202,8 +211,9 @@ class PatientAdmissionScheduleConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test()
-    void preferredMaximumRoomCapacityConstraintTest() {
+    @ConstraintProviderTest()
+    void preferredMaximumRoomCapacityConstraintTest(
+            ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier) {
 
         Patient patientWithRoomPreferences = new Patient();
         patientWithRoomPreferences.setPreferredMaximumRoomCapacity(3);
@@ -223,8 +233,9 @@ class PatientAdmissionScheduleConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test
-    void preferredPatientEquipmentConstraintTest() {
+    @ConstraintProviderTest
+    void preferredPatientEquipmentConstraintTest(
+            ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier) {
 
         Patient patient = new Patient();
 
@@ -256,8 +267,9 @@ class PatientAdmissionScheduleConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test
-    void departmentSpecialismConstraintTest() {
+    @ConstraintProviderTest
+    void departmentSpecialismConstraintTest(
+            ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier) {
 
         Patient patient = new Patient();
 
@@ -291,8 +303,9 @@ class PatientAdmissionScheduleConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test
-    void roomSpecialismConstraintTest() {
+    @ConstraintProviderTest
+    void roomSpecialismConstraintTest(
+            ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier) {
 
         Patient patient = new Patient();
 
@@ -319,8 +332,9 @@ class PatientAdmissionScheduleConstraintProviderTest {
                 .penalizesBy(6);
     }
 
-    @Test
-    void roomSpecialismNotFirstPriorityConstraintConstraintTest() {
+    @ConstraintProviderTest
+    void roomSpecialismNotFirstPriorityConstraintConstraintTest(
+            ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier) {
 
         Patient patient = new Patient();
 
@@ -346,5 +360,12 @@ class PatientAdmissionScheduleConstraintProviderTest {
         constraintVerifier.verifyThat(PatientAdmissionScheduleConstraintProvider::roomSpecialismNotFirstPriorityConstraint)
                 .given(designationWithRoomSpecialism1, designationWithRoomSpecialism2, roomSpecialism)
                 .penalizesBy(6);
+    }
+
+    @Override
+    protected ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule>
+            createConstraintVerifier() {
+        return ConstraintVerifier.build(new PatientAdmissionScheduleConstraintProvider(), PatientAdmissionSchedule.class,
+                BedDesignation.class);
     }
 }

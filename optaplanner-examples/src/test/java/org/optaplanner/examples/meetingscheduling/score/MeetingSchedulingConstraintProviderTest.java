@@ -3,7 +3,8 @@ package org.optaplanner.examples.meetingscheduling.score;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
+import org.optaplanner.examples.common.score.ConstraintProviderTest;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
@@ -15,14 +16,11 @@ import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
-class MeetingSchedulingConstraintProviderTest {
+class MeetingSchedulingConstraintProviderTest
+        extends AbstractConstraintProviderTest<MeetingSchedulingConstraintProvider, MeetingSchedule> {
 
-    private final ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier =
-            ConstraintVerifier.build(new MeetingSchedulingConstraintProvider(), MeetingSchedule.class,
-                    MeetingAssignment.class);
-
-    @Test
-    void roomConflictUnpenalized() {
+    @ConstraintProviderTest
+    void roomConflictUnpenalized(ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Room room = new Room();
 
         TimeGrain timeGrain1 = new TimeGrain();
@@ -46,8 +44,8 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void roomConflictPenalized() {
+    @ConstraintProviderTest
+    void roomConflictPenalized(ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Room room = new Room();
 
         TimeGrain timeGrain1 = new TimeGrain();
@@ -71,8 +69,8 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(2);
     }
 
-    @Test
-    void avoidOvertimeUnpenalized() {
+    @ConstraintProviderTest
+    void avoidOvertimeUnpenalized(ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         TimeGrain timeGrain = new TimeGrain();
         timeGrain.setGrainIndex(3);
 
@@ -91,8 +89,8 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void avoidOvertimePenalized() {
+    @ConstraintProviderTest
+    void avoidOvertimePenalized(ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         TimeGrain assignmentTimeGrain = new TimeGrain();
         assignmentTimeGrain.setGrainIndex(0);
 
@@ -108,8 +106,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(3);
     }
 
-    @Test
-    void requiredAttendanceConflictUnpenalized() {
+    @ConstraintProviderTest
+    void requiredAttendanceConflictUnpenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Person person = new Person();
         Meeting leftMeeting = new Meeting();
         leftMeeting.setDurationInGrains(4);
@@ -144,8 +143,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void requiredAttendanceConflictPenalized() {
+    @ConstraintProviderTest
+    void requiredAttendanceConflictPenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Person person = new Person();
         Meeting leftMeeting = new Meeting();
         leftMeeting.setDurationInGrains(4);
@@ -180,8 +180,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(2);
     }
 
-    @Test
-    void requiredRoomCapacityUnpenalized() {
+    @ConstraintProviderTest
+    void requiredRoomCapacityUnpenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Room room = new Room();
         room.setCapacity(2);
 
@@ -206,8 +207,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void requiredRoomCapacityPenalized() {
+    @ConstraintProviderTest
+    void requiredRoomCapacityPenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Room room = new Room();
         room.setCapacity(1);
 
@@ -232,8 +234,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void startAndEndOnSameDayUnpenalized() {
+    @ConstraintProviderTest
+    void startAndEndOnSameDayUnpenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Day day = new Day();
         day.setDayOfYear(0);
 
@@ -257,8 +260,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void startAndEndOnSameDayPenalized() {
+    @ConstraintProviderTest
+    void startAndEndOnSameDayPenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Day day = new Day();
         day.setDayOfYear(0);
 
@@ -281,8 +285,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void requiredAndPreferredAttendanceConflictUnpenalized() {
+    @ConstraintProviderTest
+    void requiredAndPreferredAttendanceConflictUnpenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -316,8 +321,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void requiredAndPreferredAttendanceConflictPenalized() {
+    @ConstraintProviderTest
+    void requiredAndPreferredAttendanceConflictPenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -351,8 +357,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(4);
     }
 
-    @Test
-    void preferredAttendanceConflictUnpenalized() {
+    @ConstraintProviderTest
+    void preferredAttendanceConflictUnpenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -388,8 +395,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void preferredAttendanceConflictPenalized() {
+    @ConstraintProviderTest
+    void preferredAttendanceConflictPenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Person person = new Person();
 
         Meeting leftMeeting = new Meeting();
@@ -425,8 +433,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(4);
     }
 
-    @Test
-    void doMeetingsAsSoonAsPossibleUnpenalized() {
+    @ConstraintProviderTest
+    void doMeetingsAsSoonAsPossibleUnpenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         TimeGrain timeGrain = new TimeGrain();
         timeGrain.setGrainIndex(0);
 
@@ -442,8 +451,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void doMeetingsAsSoonAsPossiblePenalized() {
+    @ConstraintProviderTest
+    void doMeetingsAsSoonAsPossiblePenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         TimeGrain timeGrain = new TimeGrain();
         timeGrain.setGrainIndex(0);
 
@@ -459,8 +469,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(3);
     }
 
-    @Test
-    void oneBreakBetweenConsecutiveMeetingsUnpenalized() {
+    @ConstraintProviderTest
+    void oneBreakBetweenConsecutiveMeetingsUnpenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
 
@@ -481,8 +492,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void oneBreakBetweenConsecutiveMeetingsPenalized() {
+    @ConstraintProviderTest
+    void oneBreakBetweenConsecutiveMeetingsPenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
 
@@ -503,8 +515,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void overlappingMeetingsUnpenalized() {
+    @ConstraintProviderTest
+    void overlappingMeetingsUnpenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
 
@@ -530,8 +543,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void overlappingMeetingsPenalized() {
+    @ConstraintProviderTest
+    void overlappingMeetingsPenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(1);
 
@@ -557,8 +571,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(2);
     }
 
-    @Test
-    void assignLargerRoomsFirstUnpenalized() {
+    @ConstraintProviderTest
+    void assignLargerRoomsFirstUnpenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Room meetingRoom = new Room();
         meetingRoom.setCapacity(1);
 
@@ -574,8 +589,9 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void assignLargerRoomsFirstPenalized() {
+    @ConstraintProviderTest
+    void assignLargerRoomsFirstPenalized(
+            ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Room meetingRoom = new Room();
         meetingRoom.setCapacity(1);
 
@@ -593,8 +609,8 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(1);
     }
 
-    @Test
-    void roomStabilityUnpenalized() {
+    @ConstraintProviderTest
+    void roomStabilityUnpenalized(ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Day day = new Day();
         day.setDayOfYear(1);
         Person person = new Person();
@@ -636,8 +652,8 @@ class MeetingSchedulingConstraintProviderTest {
                 .penalizesBy(0);
     }
 
-    @Test
-    void roomStabilityPenalized() {
+    @ConstraintProviderTest
+    void roomStabilityPenalized(ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> constraintVerifier) {
         Day day = new Day();
         day.setDayOfYear(1);
         Person person = new Person();
@@ -677,5 +693,11 @@ class MeetingSchedulingConstraintProviderTest {
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::roomStability)
                 .given(leftAttendance, rightAttendance, leftAssignment, rightAssignment)
                 .penalizesBy(1);
+    }
+
+    @Override
+    protected ConstraintVerifier<MeetingSchedulingConstraintProvider, MeetingSchedule> createConstraintVerifier() {
+        return ConstraintVerifier.build(new MeetingSchedulingConstraintProvider(), MeetingSchedule.class,
+                MeetingAssignment.class);
     }
 }

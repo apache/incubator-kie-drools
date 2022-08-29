@@ -1,17 +1,11 @@
 package org.optaplanner.test.impl.score.stream;
 
 import static java.util.Objects.requireNonNull;
-import static org.optaplanner.core.api.score.stream.ConstraintStreamImplType.DROOLS;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
-import java.util.ServiceLoader;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
-import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
-import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactoryService;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -19,45 +13,67 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryService;
-import org.optaplanner.core.impl.score.director.ScoreDirectorType;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public final class DefaultConstraintVerifier<ConstraintProvider_ extends ConstraintProvider, Solution_, Score_ extends Score<Score_>>
         implements ConstraintVerifier<ConstraintProvider_, Solution_> {
 
-    private final ServiceLoader<ScoreDirectorFactoryService> serviceLoader;
     private final ConstraintProvider_ constraintProvider;
     private final SolutionDescriptor<Solution_> solutionDescriptor;
-    private ConstraintStreamImplType constraintStreamImplType;
-    private Boolean droolsAlphaNetworkCompilationEnabled;
+    /**
+     * {@link ConstraintVerifier} is mutable,
+     * due to {@link #withConstraintStreamImplType(ConstraintStreamImplType)} and
+     * {@link #withDroolsAlphaNetworkCompilationEnabled(boolean)}.
+     * Since these methods can be run at any time, possibly invalidating the pre-built score director factories,
+     * the easiest way of dealing with the issue is to keep an internal immutable constraint verifier instance
+     * and clearing it every time the configuration changes.
+     * The code that was using the old configuration will continue running on the old instance,
+     * which will eventually be garbage-collected.
+     * Any new code will get a new instance with the new configuration applied.
+     */
+    private final AtomicReference<ConfiguredConstraintVerifier<ConstraintProvider_, Solution_, Score_>> configuredConstraintVerifierRef =
+            new AtomicReference<>();
+    private final AtomicReference<ConstraintStreamImplType> constraintStreamImplTypeRef = new AtomicReference<>();
+    private final AtomicReference<Boolean> droolsAlphaNetworkCompilationEnabledRef = new AtomicReference<>();
 
     public DefaultConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
-        this.serviceLoader = ServiceLoader.load(ScoreDirectorFactoryService.class);
         this.constraintProvider = constraintProvider;
         this.solutionDescriptor = solutionDescriptor;
     }
 
     public ConstraintStreamImplType getConstraintStreamImplType() {
-        return constraintStreamImplType;
+        return constraintStreamImplTypeRef.get();
     }
 
     @Override
     public ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
             ConstraintStreamImplType constraintStreamImplType) {
         requireNonNull(constraintStreamImplType);
-        this.constraintStreamImplType = constraintStreamImplType;
+        var droolsAlphaNetworkCompilationEnabled = this.droolsAlphaNetworkCompilationEnabledRef.get();
+        if (droolsAlphaNetworkCompilationEnabled != null &&
+                droolsAlphaNetworkCompilationEnabled &&
+                constraintStreamImplType != ConstraintStreamImplType.DROOLS) {
+            throw new IllegalArgumentException("Can not switch to " + ConstraintStreamImplType.class.getSimpleName()
+                    + "." + constraintStreamImplType + " while Drools Alpha Network Compilation enabled.");
+        }
+        this.constraintStreamImplTypeRef.set(constraintStreamImplType);
+        this.configuredConstraintVerifierRef.set(null);
         return this;
     }
 
     public boolean isDroolsAlphaNetworkCompilationEnabled() {
-        return Objects.requireNonNullElse(droolsAlphaNetworkCompilationEnabled, !ConfigUtils.isNativeImage());
+        return Objects.requireNonNullElse(droolsAlphaNetworkCompilationEnabledRef.get(), !ConfigUtils.isNativeImage());
     }
 
     @Override
     public ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
             boolean droolsAlphaNetworkCompilationEnabled) {
-        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
+        if (droolsAlphaNetworkCompilationEnabled && getConstraintStreamImplType() == ConstraintStreamImplType.BAVET) {
+            throw new IllegalArgumentException("Can not enable Drools Alpha Network Compilation with "
+                    + ConstraintStreamImplType.class.getSimpleName() + "." + ConstraintStreamImplType.BAVET + ".");
+        }
+        this.droolsAlphaNetworkCompilationEnabledRef.set(droolsAlphaNetworkCompilationEnabled);
+        this.configuredConstraintVerifierRef.set(null);
         return this;
     }
 
@@ -68,57 +84,22 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     @Override
     public DefaultSingleConstraintVerification<Solution_, Score_> verifyThat(
             BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
-        requireNonNull(constraintFunction);
-        AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                createScoreDirectorFactory(constraintFunction);
-        return new DefaultSingleConstraintVerification<>(scoreDirectorFactory);
+        return getOrCreateConfiguredConstraintVerifier().verifyThat(constraintFunction);
     }
 
-    private AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> createScoreDirectorFactory(
-            BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
-        ConstraintProvider actualConstraintProvider = constraintFactory -> new Constraint[] {
-                constraintFunction.apply(constraintProvider, constraintFactory)
-        };
-        return createScoreDirectorFactory(actualConstraintProvider);
-    }
-
-    private AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> createScoreDirectorFactory(
-            ConstraintProvider constraintProvider) {
-        List<AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_>> services = serviceLoader.stream()
-                .map(ServiceLoader.Provider::get)
-                .filter(s -> s.getSupportedScoreDirectorType() == ScoreDirectorType.CONSTRAINT_STREAMS)
-                .map(s -> (AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_>) s)
-                .filter(s -> {
-                    ConstraintStreamImplType implType = constraintStreamImplType;
-                    return implType == null || s.supportsImplType(implType);
-                })
-                .sorted(Comparator
-                        .comparingInt(
-                                (AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> service) -> service
-                                        .getPriority())
-                        .reversed()) // CS-D will be picked if both are available.
-                .collect(Collectors.toList());
-        if (services.isEmpty()) {
-            throw new IllegalStateException(
-                    "Constraint Streams implementation was not found on the classpath.\n"
-                            + "Maybe include org.optaplanner:optaplanner-constraint-streams-drools dependency "
-                            + "or org.optaplanner:optaplanner-constraint-streams-bavet in your project?\n"
-                            + "Maybe ensure your uberjar bundles META-INF/services from included JAR files?");
-        }
-        AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> service = services.get(0);
-        boolean isDroolsAlphaNetworkCompilationEnabled =
-                droolsAlphaNetworkCompilationEnabled == null
-                        ? service.supportsImplType(DROOLS) && isDroolsAlphaNetworkCompilationEnabled()
-                        : droolsAlphaNetworkCompilationEnabled;
-        return service.buildScoreDirectorFactory(solutionDescriptor, constraintProvider,
-                isDroolsAlphaNetworkCompilationEnabled);
+    private ConfiguredConstraintVerifier<ConstraintProvider_, Solution_, Score_> getOrCreateConfiguredConstraintVerifier() {
+        return configuredConstraintVerifierRef.updateAndGet(v -> {
+            if (v == null) {
+                return new ConfiguredConstraintVerifier<>(constraintProvider, solutionDescriptor,
+                        getConstraintStreamImplType(), isDroolsAlphaNetworkCompilationEnabled());
+            }
+            return v;
+        });
     }
 
     @Override
     public DefaultMultiConstraintVerification<Solution_, Score_> verifyThat() {
-        AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                createScoreDirectorFactory(constraintProvider);
-        return new DefaultMultiConstraintVerification<>(scoreDirectorFactory, constraintProvider);
+        return getOrCreateConfiguredConstraintVerifier().verifyThat();
     }
 
 }
