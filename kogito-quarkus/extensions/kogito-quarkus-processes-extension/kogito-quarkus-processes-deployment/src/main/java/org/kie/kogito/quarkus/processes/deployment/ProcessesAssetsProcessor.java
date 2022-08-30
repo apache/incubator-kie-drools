@@ -16,11 +16,6 @@
 package org.kie.kogito.quarkus.processes.deployment;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -102,12 +96,10 @@ import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.compileGeneratedSources;
 import static org.kie.kogito.codegen.core.utils.GeneratedFileValidation.validateGeneratedFileTypes;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.dumpFilesToDisk;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.generateAggregatedIndex;
-import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.getTargetClassesPath;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.registerResources;
 
 /**
@@ -118,8 +110,6 @@ public class ProcessesAssetsProcessor {
     private static final DotName persistenceFactoryClass = DotName.createSimple("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
     private static final String PROCESS_SVG_SERVICE = "org.kie.kogito.svg.service.QuarkusProcessSvgService";
     private static final String PERSISTENCE_CAPABILITY = "org.kie.kogito.addons.persistence";
-
-    private static final PathMatcher svgFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.svg");
 
     @Inject
     ArchiveRootBuildItem root;
@@ -271,8 +261,6 @@ public class ProcessesAssetsProcessor {
 
         // register resources to the Quarkus environment
         registerResources(generatedFiles, staticResProducer, resource, genResBI);
-
-        registerProcessSVG(context, resource);
     }
 
     private Collection<GeneratedFile> generatePersistenceInfo(
@@ -317,24 +305,6 @@ public class ProcessesAssetsProcessor {
         asList(superClass.getDeclaredClasses()).forEach(c -> {
             addInnerClasses(c, reflectiveHierarchyClass);
         });
-    }
-
-    private void registerProcessSVG(KogitoBuildContext context, BuildProducer<NativeImageResourceBuildItem> resource) throws IOException {
-        if (!context.hasClassAvailable(PROCESS_SVG_SERVICE)) {
-            return;
-        }
-
-        Path relativePath = Paths.get("META-INF", "processSVG");
-        Path targetClasses = getTargetClassesPath(context.getAppPaths());
-
-        //batik
-        resource.produce(new NativeImageResourceBuildItem("org/apache/batik/util/resources/XMLResourceDescriptor.properties"));
-
-        Path resolvedPath = targetClasses.resolve(relativePath);
-        try (Stream<Path> filePathFound = Files.find(resolvedPath, Integer.MAX_VALUE, (filePath, attrs) -> svgFileMatcher.matches(filePath))) {
-            List<String> svgs = filePathFound.map(svgPath -> targetClasses.relativize(svgPath).toString()).collect(toList());
-            resource.produce(new NativeImageResourceBuildItem(svgs));
-        }
     }
 
     private Collection<GeneratedFile> generateJsonSchema(KogitoBuildContext context, IndexView index, Map<String, byte[]> generatedClasses) throws IOException {
