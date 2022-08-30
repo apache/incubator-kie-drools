@@ -15,5 +15,5 @@ mvn clean install
 ----
 Maven build executed without tests:
 ----
-mvn clean install -DskipTests
+mvn clean install -Dquickly
 ----
