@@ -9,6 +9,9 @@ git:
   - name: main
     seed:
       branch: main
+  - name: 8.27.x
+    seed:
+      branch: seed-optaplanner-8.27.x
   main_branch:
     default: main
 seed:
