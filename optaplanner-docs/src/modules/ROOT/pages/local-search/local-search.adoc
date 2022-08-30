@@ -131,7 +131,7 @@ image::local-search/localSearchScoreOverTime.png[align="center"]
 [[localSearchAcceptor]]
 === Acceptor
 
-An `Acceptor` is used (together with a ``Forager``) to active Tabu Search, Simulated Annealing, Late Acceptance, ... For each move it checks whether it is accepted or not.
+Use an `Acceptor` (together with a `Forager`) to activate Tabu Search, Simulated Annealing, Late Acceptance, ... For each move it checks whether it is accepted or not.
 
 By changing a few lines of configuration, you can easily switch from Tabu Search to Simulated Annealing or Late Acceptance and back.
 
