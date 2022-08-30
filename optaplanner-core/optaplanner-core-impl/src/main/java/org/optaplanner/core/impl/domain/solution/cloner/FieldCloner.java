@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.function.Consumer;
 
 @FunctionalInterface
-interface FieldCloner<C> {
+interface FieldCloner {
 
     static Object getFieldValue(Object bean, Field field) {
         try {
@@ -43,7 +43,7 @@ interface FieldCloner<C> {
      * @param deferredValueConsumer null if {@link #mayDeferClone()} is false
      * @throws RuntimeException if reflective field read or write fails
      */
-    void clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original, C clone,
+    <C> void clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original, C clone,
             Consumer<Object> deferredValueConsumer);
 
     /**

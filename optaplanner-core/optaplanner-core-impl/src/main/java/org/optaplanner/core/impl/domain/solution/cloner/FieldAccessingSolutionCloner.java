@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
     private final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
-    private final ConcurrentMap<Class<?>, Map<Field, FieldCloner<?>>> fieldListMemoization = new ConcurrentMemoization<>();
+    private final ConcurrentMap<Class<?>, Map<Field, FieldCloner>> fieldListMemoization = new ConcurrentMemoization<>();
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final DeepCloningUtils deepCloningUtils;
 
@@ -83,13 +83,12 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
      * This method is thread-safe.
      *
      * @param clazz never null
-     * @param <C> type
      * @return never null
      */
-    private <C> Map<Field, FieldCloner<?>> retrieveCachedFields(Class<C> clazz) {
+    private Map<Field, FieldCloner> retrieveCachedFields(Class<?> clazz) {
         return fieldListMemoization.computeIfAbsent(clazz, key -> {
             Field[] fields = key.getDeclaredFields();
-            Map<Field, FieldCloner<?>> fieldMap = new IdentityHashMap<>(fields.length);
+            Map<Field, FieldCloner> fieldMap = new IdentityHashMap<>(fields.length);
             for (Field field : fields) {
                 if (!Modifier.isStatic(field.getModifiers())) {
                     field.setAccessible(true);
@@ -100,33 +99,33 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         });
     }
 
-    private static <C> FieldCloner<C> getCloner(Class<C> clazz, Field field) {
+    private static FieldCloner getCloner(Class<?> clazz, Field field) {
         Class<?> fieldType = field.getType();
         if (fieldType.isPrimitive()) {
             if (fieldType == boolean.class) {
-                return BooleanFieldCloner.getInstance();
+                return BooleanFieldCloner.INSTANCE;
             } else if (fieldType == byte.class) {
-                return ByteFieldCloner.getInstance();
+                return ByteFieldCloner.INSTANCE;
             } else if (fieldType == char.class) {
-                return CharFieldCloner.getInstance();
+                return CharFieldCloner.INSTANCE;
             } else if (fieldType == short.class) {
-                return ShortFieldCloner.getInstance();
+                return ShortFieldCloner.INSTANCE;
             } else if (fieldType == int.class) {
-                return IntFieldCloner.getInstance();
+                return IntFieldCloner.INSTANCE;
             } else if (fieldType == long.class) {
-                return LongFieldCloner.getInstance();
+                return LongFieldCloner.INSTANCE;
             } else if (fieldType == float.class) {
-                return FloatFieldCloner.getInstance();
+                return FloatFieldCloner.INSTANCE;
             } else if (fieldType == double.class) {
-                return DoubleFieldCloner.getInstance();
+                return DoubleFieldCloner.INSTANCE;
             } else {
                 throw new IllegalStateException("Impossible state: The class (" + clazz + ") has a field (" + field
                         + ") of an unknown primitive type (" + fieldType + ").");
             }
         } else if (fieldType.isEnum() || DeepCloningUtils.IMMUTABLE_CLASSES.contains(fieldType)) {
-            return ShallowCloningFieldCloner.getInstance();
+            return ShallowCloningFieldCloner.INSTANCE;
         } else {
-            return DeepCloningFieldCloner.getInstance();
+            return DeepCloningFieldCloner.INSTANCE;
         }
     }
 
@@ -177,9 +176,9 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         }
 
         private <C> void copyFields(Class<C> clazz, Class<? extends C> instanceClass, C original, C clone) {
-            for (Map.Entry<Field, FieldCloner<?>> entry : retrieveCachedFields(clazz).entrySet()) {
+            for (Map.Entry<Field, FieldCloner> entry : retrieveCachedFields(clazz).entrySet()) {
                 Field field = entry.getKey();
-                FieldCloner<C> fieldCloner = (FieldCloner<C>) entry.getValue();
+                FieldCloner fieldCloner = entry.getValue();
                 Consumer<Object> unprocessedValueConsumer = fieldCloner.mayDeferClone()
                         ? originalValue -> unprocessedQueue.add(new Unprocessed(clone, field, originalValue))
                         : null;
