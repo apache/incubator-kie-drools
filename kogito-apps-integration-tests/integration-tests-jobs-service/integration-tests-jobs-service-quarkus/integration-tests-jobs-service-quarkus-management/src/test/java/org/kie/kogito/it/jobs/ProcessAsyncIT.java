@@ -34,7 +34,7 @@ import static org.awaitility.Awaitility.await;
 class ProcessAsyncIT extends BaseProcessAsyncIT {
 
     @BeforeEach
-    private void setup() {
+    public void setup() {
         //health check - wait to be ready
         await()
                 .atMost(TIMEOUT)

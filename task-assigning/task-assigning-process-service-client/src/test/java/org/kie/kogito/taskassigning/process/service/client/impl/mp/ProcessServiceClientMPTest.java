@@ -49,7 +49,7 @@ class ProcessServiceClientMPTest {
     private ProcessServiceClientMP client;
 
     @BeforeEach
-    private void setUp() {
+    public void setUp() {
         client = new ProcessServiceClientMP(clientRest);
     }
 
