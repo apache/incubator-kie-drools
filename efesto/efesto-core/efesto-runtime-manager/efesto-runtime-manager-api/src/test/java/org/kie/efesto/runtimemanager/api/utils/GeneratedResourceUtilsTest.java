@@ -20,10 +20,8 @@ import java.net.URLClassLoader;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;

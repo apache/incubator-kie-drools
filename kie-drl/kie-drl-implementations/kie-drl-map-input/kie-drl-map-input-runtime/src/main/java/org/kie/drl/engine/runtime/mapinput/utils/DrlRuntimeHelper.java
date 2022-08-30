@@ -44,7 +44,7 @@ public class DrlRuntimeHelper {
 
     public static boolean canManage(EfestoInput toEvaluate, EfestoRuntimeContext context) {
         return (toEvaluate instanceof AbstractEfestoInput) && (toEvaluate.getInputData() instanceof EfestoMapInputDTO) &&
-                getGeneratedExecutableResource(toEvaluate.getFRI(), context.getGeneratedResourcesMap()).isPresent();
+                getGeneratedExecutableResource(toEvaluate.getModelLocalUriId(), context.getGeneratedResourcesMap()).isPresent();
     }
 
     public static Optional<EfestoOutputDrlMap> execute(AbstractEfestoInput<EfestoMapInputDTO> toEvaluate, EfestoRuntimeContext context) {

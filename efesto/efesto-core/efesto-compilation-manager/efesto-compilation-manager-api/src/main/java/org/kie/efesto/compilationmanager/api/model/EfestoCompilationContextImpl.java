@@ -15,6 +15,8 @@
  */
 package org.kie.efesto.compilationmanager.api.model;
 
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -22,6 +24,9 @@ import java.util.Set;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;
+import org.kie.efesto.common.api.model.GeneratedResources;
+import org.kie.efesto.common.api.utils.JSONUtils;
+import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
 import org.kie.memorycompiler.JavaConfiguration;

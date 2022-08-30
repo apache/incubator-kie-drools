@@ -123,7 +123,7 @@ public class CompilationManagerUtils {
 
     static void populateContext(EfestoCompilationContext context, EfestoCallableOutput compilationOutput) {
         try {
-            String model = compilationOutput.getFri().getModel();
+            String model = compilationOutput.getModelLocalUriId().model();
             GeneratedResources generatedResources = (GeneratedResources) context.getGeneratedResourcesMap().computeIfAbsent(model, key -> new GeneratedResources());
             populateGeneratedResources(generatedResources, compilationOutput);
         } catch (Exception e) {
