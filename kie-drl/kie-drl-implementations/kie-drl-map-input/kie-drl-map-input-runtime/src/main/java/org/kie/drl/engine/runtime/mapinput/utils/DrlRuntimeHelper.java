@@ -42,9 +42,9 @@ public class DrlRuntimeHelper {
     private DrlRuntimeHelper() {
     }
 
-
-    public static boolean canManage(EfestoInput toEvaluate) {
-        return (toEvaluate instanceof AbstractEfestoInput) && (toEvaluate.getInputData() instanceof EfestoMapInputDTO) && getGeneratedExecutableResource(toEvaluate.getModelLocalUriId(), "drl").isPresent();
+    public static boolean canManage(EfestoInput toEvaluate, EfestoRuntimeContext context) {
+        return (toEvaluate instanceof AbstractEfestoInput) && (toEvaluate.getInputData() instanceof EfestoMapInputDTO) &&
+                getGeneratedExecutableResource(toEvaluate.getFRI(), context.getGeneratedResourcesMap()).isPresent();
     }
 
     public static Optional<EfestoOutputDrlMap> execute(AbstractEfestoInput<EfestoMapInputDTO> toEvaluate, EfestoRuntimeContext context) {

@@ -74,14 +74,16 @@ class PMMLRuntimeHelperTest {
     @Test
     void canManage() {
         ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/" + PMML_STRING + "/" + basePath));
-        AbstractEfestoInput darInputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME));
-        assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isTrue();
+        PMMLRuntimeContext context = getPMMLContext(FILE_NAME, MODEL_NAME);
+        AbstractEfestoInput darInputPMML = new EfestoInputPMML(modelLocalUriId, context);
+        assertThat(PMMLRuntimeHelper.canManage(darInputPMML, context)).isTrue();
         darInputPMML = new AbstractEfestoInput<String>(modelLocalUriId, "") {
         };
-        assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isFalse();
+        assertThat(PMMLRuntimeHelper.canManage(darInputPMML, context)).isFalse();
         modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/" + PMML_STRING + "/darfoo"));
-        darInputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME));
-        assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isFalse();
+        context = getPMMLContext(FILE_NAME, MODEL_NAME);
+        darInputPMML = new EfestoInputPMML(modelLocalUriId, context);
+        assertThat(PMMLRuntimeHelper.canManage(darInputPMML, context)).isFalse();
     }
 
     @Test

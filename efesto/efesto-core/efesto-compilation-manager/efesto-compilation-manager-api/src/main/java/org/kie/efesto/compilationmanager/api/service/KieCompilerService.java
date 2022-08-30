@@ -44,4 +44,10 @@ public interface KieCompilerService<E extends EfestoCompilationOutput, U extends
      */
     List<E> processResource(EfestoResource toProcess, U context);
 
+    /**
+     * Return the model type that the CompilerService handles
+     *
+     * @return model type
+     */
+    String getModelType();
 }

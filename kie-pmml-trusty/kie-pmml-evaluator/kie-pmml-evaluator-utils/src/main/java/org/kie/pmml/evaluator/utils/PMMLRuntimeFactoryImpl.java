@@ -47,7 +47,7 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
         PMMLCompilationContext pmmlContext = new PMMLCompilationContextImpl(pmmlFile.getName(), memoryCompilerClassLoader);
         compilationManager.processResource(pmmlContext, efestoFileResource);
-        return new PMMLRuntimeInternalImpl();
+        return new PMMLRuntimeInternalImpl(pmmlContext.getGeneratedResourcesMap());
     }
 
     @Override

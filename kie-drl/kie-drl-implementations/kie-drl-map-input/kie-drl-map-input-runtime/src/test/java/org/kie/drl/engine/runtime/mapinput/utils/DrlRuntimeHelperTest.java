@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.drl.engine.mapinput.compilation.model.test.Applicant;
 import org.kie.drl.engine.mapinput.compilation.model.test.LoanApplication;
@@ -39,26 +38,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DrlRuntimeHelperTest {
 
     private static final String basePath = "LoanApplication";
-    private static EfestoRuntimeContext context;
-
-    @BeforeAll
-    static void setUp() {
-        context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
-    }
 
     @Test
     void canManage() {
         ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/drl/" + basePath));
+        EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         AbstractEfestoInput darInputDrlMap = new EfestoInputDrlMap(modelLocalUriId, new EfestoMapInputDTO(null, null,
                                                                                                           null, null,
                                                                                                           null, null));
-        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isTrue();
+        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap, context)).isTrue();
         darInputDrlMap = new AbstractEfestoInput(modelLocalUriId, "") {
         };
-        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isFalse();
+        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap, context)).isFalse();
         modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/drl/notexisting"));
         darInputDrlMap = new EfestoInputDrlMap(modelLocalUriId, null);
-        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isFalse();
+        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap, context)).isFalse();
     }
 
     @Test
@@ -75,9 +69,10 @@ class DrlRuntimeHelperTest {
         globals.put("maxAmount", 5000);
 
         EfestoMapInputDTO darMapInputDTO = new EfestoMapInputDTO(inserts, globals, Collections.emptyMap(), Collections.emptyMap(), "modelname", "packageName");
-
         EfestoInputDrlMap darInputDrlMap =
                 new EfestoInputDrlMap(new ModelLocalUriId(LocalUri.parse("/drl/" + basePath)), darMapInputDTO);
+
+        EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         Optional<EfestoOutputDrlMap> retrieved = DrlRuntimeHelper.execute(darInputDrlMap, context);
         assertThat(retrieved).isNotNull().isPresent();
         assertThat(approvedApplications).hasSize(1);

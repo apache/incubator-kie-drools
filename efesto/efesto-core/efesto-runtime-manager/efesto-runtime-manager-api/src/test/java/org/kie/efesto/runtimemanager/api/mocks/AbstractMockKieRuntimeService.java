@@ -31,4 +31,8 @@ public abstract class AbstractMockKieRuntimeService<T extends AbstractMockEfesto
         return Optional.of(new MockEfestoOutput());
     }
 
+    @Override
+    public String getModelType() {
+        return "mock";
+    }
 }

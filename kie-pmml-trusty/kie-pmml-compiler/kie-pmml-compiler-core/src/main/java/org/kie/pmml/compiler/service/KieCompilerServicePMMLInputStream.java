@@ -44,4 +44,9 @@ public class KieCompilerServicePMMLInputStream implements KieCompilerService<Efe
         }
         return getEfestoCompilationOutputPMML((EfestoInputStreamResource) toProcess, context);
     }
+
+    @Override
+    public String getModelType() {
+        return "pmml";
+    }
 }

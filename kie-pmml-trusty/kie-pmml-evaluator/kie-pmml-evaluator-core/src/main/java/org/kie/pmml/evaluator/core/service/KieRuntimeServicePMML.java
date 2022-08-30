@@ -38,7 +38,7 @@ public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeConte
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, PMMLRuntimeContext context) {
-        return canManage(toEvaluate);
+        return canManage(toEvaluate, context);
     }
 
     @Override
@@ -46,4 +46,8 @@ public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeConte
         return execute(toEvaluate, context);
     }
 
+    @Override
+    public String getModelType() {
+        return "pmml";
+    }
 }

@@ -15,10 +15,12 @@
  */
 package org.kie.efesto.compilationmanager.core.service;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -33,44 +35,55 @@ import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputC;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputD;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class TestCompilationManagerImpl {
 
     private static CompilationManager compilationManager;
-    private static EfestoCompilationContext context;
 
     private static final List<Class<? extends AbstractMockOutput>> MANAGED_Efesto_RESOURCES = Arrays.asList(MockEfestoRedirectOutputA.class, MockEfestoRedirectOutputB.class, MockEfestoRedirectOutputC.class);
 
+    private static final Path TARGET_TEST_CLASSES_DIRECTORY = Paths.get("target/test-classes/");
 
     @BeforeAll
     static void setUp() {
         compilationManager = new CompilationManagerImpl();
-        context = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
     }
 
     @Test
     void processResource() {
+        EfestoCompilationContext context = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
         MANAGED_Efesto_RESOURCES.forEach(managedResource -> {
+            IndexFile indexFile = null;
             try {
                 AbstractMockOutput toProcess = managedResource.getDeclaredConstructor().newInstance();
-                Collection<IndexFile> retrieved = compilationManager.processResource(context,
-                                                                                     toProcess);
-                assertEquals(1, retrieved.size());
-                retrieved.clear();
+                compilationManager.processResource(context, toProcess);
+                assertThat(context.getGeneratedResourcesMap()).hasSize(1);
+
+                // This test repeatedly overwrites context.generatedResourcesMap
+                Map<String, IndexFile> indexFiles = context.createIndexFiles(TARGET_TEST_CLASSES_DIRECTORY);
+                assertThat(indexFiles).hasSize(1);
+                indexFile = indexFiles.get("mock");
+                assertThat(indexFile).exists();
             } catch (Exception e) {
                 fail(e);
+            } finally {
+                if (indexFile != null) {
+                    indexFile.delete();
+                }
             }
         });
-        Collection<IndexFile> retrieved = compilationManager.processResource(context,
-                                                                             new MockEfestoRedirectOutputD());
-        assertThat(retrieved.isEmpty()).isTrue();
+
+        EfestoCompilationContext newContext = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
+        compilationManager.processResource(newContext, new MockEfestoRedirectOutputD());
+        assertThat(newContext.getGeneratedResourcesMap()).isEmpty();
+        Map<String, IndexFile> indexFiles = newContext.createIndexFiles(TARGET_TEST_CLASSES_DIRECTORY);
+        assertThat(indexFiles).isEmpty();
     }
 
     @Test
     void processResources() {
+        EfestoCompilationContext context = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
         List<AbstractMockOutput> toProcess = new ArrayList<>();
         MANAGED_Efesto_RESOURCES.forEach(managedResource -> {
             try {
@@ -81,8 +94,19 @@ class TestCompilationManagerImpl {
             }
         });
         toProcess.add(new MockEfestoRedirectOutputD());
-        Collection<IndexFile> retrieved = compilationManager.processResource(context,
-                                                                             toProcess.toArray(new EfestoResource[0]));
-        assertNotNull(retrieved);
+        compilationManager.processResource(context, toProcess.toArray(new EfestoResource[0]));
+        assertThat(context.getGeneratedResourcesMap()).hasSize(1);
+
+        IndexFile indexFile = null;
+        try {
+            Map<String, IndexFile> indexFiles = context.createIndexFiles(TARGET_TEST_CLASSES_DIRECTORY);
+            assertThat(indexFiles).hasSize(1);
+            indexFile = indexFiles.get("mock");
+            assertThat(indexFile).exists();
+        } finally {
+            if (indexFile != null) {
+                indexFile.delete();
+            }
+        }
     }
 }
