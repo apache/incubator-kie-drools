@@ -4,23 +4,74 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.util.Pair;
 
 public final class DeepCloningUtils {
+
+    // Instances of these classes will never be deep-cloned.
+    public static final Set<Class<?>> IMMUTABLE_CLASSES = Set.of(
+            // Numbers
+            Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, BigInteger.class, BigDecimal.class,
+            // Optional
+            Optional.class, OptionalInt.class, OptionalLong.class, OptionalDouble.class,
+            // Date and time
+            Duration.class, Instant.class, LocalDate.class, LocalDateTime.class, LocalTime.class, MonthDay.class,
+            OffsetDateTime.class, OffsetTime.class, Period.class, Year.class, YearMonth.class, ZonedDateTime.class,
+            ZoneId.class, ZoneOffset.class,
+            // Others
+            Boolean.class, Character.class, String.class, UUID.class,
+            // Score
+            SimpleScore.class, SimpleLongScore.class, SimpleBigDecimalScore.class,
+            HardSoftScore.class, HardSoftLongScore.class, HardSoftBigDecimalScore.class,
+            HardMediumSoftScore.class, HardMediumSoftLongScore.class, HardMediumSoftBigDecimalScore.class,
+            BendableScore.class, BendableLongScore.class, BendableBigDecimalScore.class);
     private final SolutionDescriptor<?> solutionDescriptor;
     private final ConcurrentMap<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization;
     private final ConcurrentMap<Class<?>, Boolean> actualValueClassDeepClonedMemoization;
@@ -47,8 +98,7 @@ public final class DeepCloningUtils {
      *        class might be ArrayList).
      * @return true iff the field should be deep cloned with a particular value.
      */
-    public boolean getDeepCloneDecision(Field field,
-            Class<?> owningClass, Class<?> actualValueClass) {
+    public boolean getDeepCloneDecision(Field field, Class<?> owningClass, Class<?> actualValueClass) {
         Pair<Field, Class<?>> pair = Pair.of(field, owningClass);
         Boolean deepCloneDecision = fieldDeepClonedMemoization.computeIfAbsent(pair,
                 key -> isFieldDeepCloned(field, owningClass));
@@ -76,7 +126,10 @@ public final class DeepCloningUtils {
      * @return True iff the field should always be deep cloned (regardless of value).
      */
     public boolean isFieldDeepCloned(Field field, Class<?> owningClass) {
-        if (field.getType().isEnum()) {
+        Class<?> fieldType = field.getType();
+        if (fieldType.isPrimitive() || fieldType.isEnum()) {
+            return false;
+        } else if (IMMUTABLE_CLASSES.contains(fieldType)) {
             return false;
         }
         return isFieldAnEntityPropertyOnSolution(field, owningClass)
@@ -139,6 +192,9 @@ public final class DeepCloningUtils {
     }
 
     public boolean isClassDeepCloned(Class<?> type) {
+        if (IMMUTABLE_CLASSES.contains(type)) {
+            return false;
+        }
         return solutionDescriptor.hasEntityDescriptor(type)
                 || solutionDescriptor.getSolutionClass().isAssignableFrom(type)
                 || type.isAnnotationPresent(DeepPlanningClone.class);
@@ -217,7 +273,7 @@ public final class DeepCloningUtils {
                     deepClonedClassSet.add(clazz);
                     for (Field field : getAllFields(clazz)) {
                         deepClonedClassSet.addAll(getDeepClonedTypeArguments(field.getGenericType()));
-                        if (isClassDeepCloned(field.getType())) {
+                        if (isFieldDeepCloned(field, clazz)) {
                             deepClonedClassSet.add(field.getType());
                         }
                     }
