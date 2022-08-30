@@ -69,8 +69,6 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
             org.kie.efesto.compilationmanager.api.utils.SPIUtils.getCompilationManager(false).orElseThrow(() -> new EfestoCompilationManagerException("Failed to find an instance of CompilationManager: please check classpath and dependencies"));
     private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLTrustyInvocationEvaluator.class);
 
-    private static final Path TARGET_TEST_CLASSES_DIRECTORY = Paths.get("target/test-classes/");
-
     public DMNKiePMMLTrustyInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model,
                                                PMMLInfo<?> pmmlInfo) {
         super(dmnNS, node, pmmlResource, model, pmmlInfo);

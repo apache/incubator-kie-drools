@@ -64,13 +64,7 @@ public class PMMLRuntimeHelper {
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeHelper.class.getName());
     private static final PMMLModelEvaluatorFinder pmmlModelExecutorFinder = new PMMLModelEvaluatorFinderImpl();
 
-
     private PMMLRuntimeHelper() {
-    }
-
-
-    public static boolean canManage(EfestoInput toEvaluate) {
-        return (toEvaluate instanceof EfestoInputPMML) && isPresentExecutableOrRedirect(toEvaluate.getFRI(), PMML_STRING);
     }
 
     public static boolean canManage(EfestoInput toEvaluate, EfestoRuntimeContext runtimeContext) {
@@ -100,7 +94,7 @@ public class PMMLRuntimeHelper {
 
     public static List<PMMLModel> getPMMLModels(PMMLRuntimeContext pmmlContext) {
         logger.debug("getPMMLModels {}", pmmlContext);
-        Collection<GeneratedExecutableResource> finalResources = getAllGeneratedExecutableResources(PMML_STRING);
+        Collection<GeneratedExecutableResource> finalResources = getAllGeneratedExecutableResources(pmmlContext.getGeneratedResourcesMap().get(PMML_STRING));
         logger.debug("finalResources {}", finalResources);
         return finalResources.stream()
                 .map(finalResource -> loadKiePMMLModelFactory(finalResource, pmmlContext))

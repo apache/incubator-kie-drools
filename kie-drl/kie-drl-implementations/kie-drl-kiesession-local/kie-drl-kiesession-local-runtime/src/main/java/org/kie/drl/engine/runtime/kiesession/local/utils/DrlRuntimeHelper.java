@@ -15,14 +15,12 @@
  */
 package org.kie.drl.engine.runtime.kiesession.local.utils;
 
-import java.util.Map;
 import java.util.Optional;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;

@@ -15,7 +15,6 @@
  */
 package org.kie.efesto.compilationmanager.api.model;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;

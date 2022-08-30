@@ -41,14 +41,15 @@ class DrlRuntimeHelperTest {
     @Test
     void canManage() {
         FRI fri = new FRI(basePath, "drl");
+        EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         AbstractEfestoInput darInputDrlMap = new EfestoInputDrlMap(fri, new EfestoMapInputDTO(null, null, null, null, null, null));
-        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isTrue();
+        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap, context)).isTrue();
         darInputDrlMap = new AbstractEfestoInput(fri, "") {
         };
-        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isFalse();
+        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap, context)).isFalse();
         fri = new FRI("notexisting", "drl");
         darInputDrlMap = new EfestoInputDrlMap(fri, null);
-        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap)).isFalse();
+        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap, context)).isFalse();
     }
 
     @Test
