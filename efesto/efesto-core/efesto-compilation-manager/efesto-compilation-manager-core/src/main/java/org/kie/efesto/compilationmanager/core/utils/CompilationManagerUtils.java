@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
@@ -76,7 +77,7 @@ public class CompilationManagerUtils {
                     EfestoCallableOutputClassesContainer classesContainer =
                             (EfestoCallableOutputClassesContainer) compilationOutput;
                     context.loadClasses(classesContainer.getCompiledClassesMap());
-                    context.addGeneratedClasses(classesContainer.getModelLocalUriId(),
+                    context.addGeneratedClasses(classesContainer.getModelLocalUriId().asModelLocalUriId(),
                                                 classesContainer.getCompiledClassesMap());
                 }
             } else if (compilationOutput instanceof EfestoResource) {

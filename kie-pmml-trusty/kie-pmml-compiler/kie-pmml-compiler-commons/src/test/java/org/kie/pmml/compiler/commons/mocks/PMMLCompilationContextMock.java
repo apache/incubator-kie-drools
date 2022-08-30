@@ -36,7 +36,7 @@ public class PMMLCompilationContextMock implements PMMLCompilationContext {
     }
 
     @Override
-    public Set<ModelLocalUriId> getLocalUriForFile() {
+    public Set<ModelLocalUriId> getModelLocalUriIdsForFile() {
         return localUriIdKeySet();
     }
 

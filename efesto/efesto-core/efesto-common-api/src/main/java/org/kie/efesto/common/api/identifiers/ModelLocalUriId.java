@@ -50,6 +50,10 @@ public class ModelLocalUriId extends LocalUriId {
         return fullPath;
     }
 
+    public ModelLocalUriId asModelLocalUriId() {
+        return this.getClass().equals(ModelLocalUriId.class) ? this : new ModelLocalUriId(this.asLocalUri());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -67,7 +71,7 @@ public class ModelLocalUriId extends LocalUriId {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), model, basePath, fullPath);
+        return Objects.hash(model, basePath, fullPath);
     }
     static LocalUri.LocalUriPathComponent getFirstLocalUriPathComponent(LocalUri localUri) {
         if (localUri.parent() != null && localUri.parent() instanceof LocalUri.LocalUriPathComponent) {

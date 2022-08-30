@@ -66,7 +66,7 @@ public class PMMLCompilationContextImpl extends EfestoCompilationContextImpl<PMM
     }
 
     @Override
-    public Set<ModelLocalUriId> getLocalUriForFile() {
+    public Set<ModelLocalUriId> getModelLocalUriIdsForFile() {
         Set<ModelLocalUriId> localUriIds = localUriIdKeySet();
         String matchingBase = SLASH + fileNameNoSuffix;
         return localUriIds.stream().filter(modelLocalUriId -> modelLocalUriId.basePath().startsWith(matchingBase)).collect(Collectors.toSet());

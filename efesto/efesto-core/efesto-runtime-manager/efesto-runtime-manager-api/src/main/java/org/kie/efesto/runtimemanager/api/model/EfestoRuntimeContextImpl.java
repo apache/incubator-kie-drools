@@ -18,7 +18,6 @@ package org.kie.efesto.runtimemanager.api.model;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
