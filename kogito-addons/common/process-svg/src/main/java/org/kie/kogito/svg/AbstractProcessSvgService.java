@@ -41,7 +41,7 @@ public abstract class AbstractProcessSvgService implements ProcessSvgService {
     public static final String DEFAULT_ACTIVE_BORDER_COLOR = "#FF0000";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractProcessSvgService.class);
-    private static final String SVG_RELATIVE_PATH = "META-INF/processSVG/";
+    public static final String SVG_RELATIVE_PATH = "META-INF/processSVG/";
     protected DataIndexClient dataIndexClient;
     protected Optional<String> svgResourcesPath;
     protected String completedColor;

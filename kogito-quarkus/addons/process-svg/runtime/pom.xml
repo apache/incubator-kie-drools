@@ -76,6 +76,9 @@
               <goal>extension-descriptor</goal>
             </goals>
             <configuration>
+              <runnerParentFirstArtifacts>
+                <runnerParentFirstArtifact>xml-apis:xml-apis</runnerParentFirstArtifact>
+              </runnerParentFirstArtifacts>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
                 <provides>org.kie.kogito.addons.process.svg</provides>

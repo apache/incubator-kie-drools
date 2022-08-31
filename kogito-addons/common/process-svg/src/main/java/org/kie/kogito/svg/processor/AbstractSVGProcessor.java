@@ -20,6 +20,7 @@ import java.io.StringWriter;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -41,8 +42,11 @@ public abstract class AbstractSVGProcessor implements SVGProcessor {
     public AbstractSVGProcessor(Document svgDocument, boolean mapById) {
         this.svgDocument = svgDocument;
         this.mapById = mapById;
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        try {
+            transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        } catch (TransformerConfigurationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

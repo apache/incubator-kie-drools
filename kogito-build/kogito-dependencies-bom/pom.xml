@@ -617,11 +617,6 @@
       <!-- Process SVG -->
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
-        <artifactId>batik-util</artifactId>
-        <version>${version.org.apache.xmlgraphics.batik}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-anim</artifactId>
         <version>${version.org.apache.xmlgraphics.batik}</version>
       </dependency>

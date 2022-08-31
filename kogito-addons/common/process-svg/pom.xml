@@ -37,25 +37,7 @@
     <!-- image processor -->
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>batik-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>batik-anim</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>xalan</groupId>
-          <artifactId>xalan</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- test dependencies -->
