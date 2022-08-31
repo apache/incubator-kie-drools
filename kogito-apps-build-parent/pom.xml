@@ -25,6 +25,7 @@
         <failsafe.exclude>**/Native*IT.java</failsafe.exclude>
         <tests.quarkus.http.port>0</tests.quarkus.http.port>
 
+        <version.rename.plugin>1.0.1</version.rename.plugin>
         <version.frontend.plugin>1.9.1</version.frontend.plugin>
         <version.node>v16.2.0</version.node>
         <version.npm>6.10.3</version.npm>
@@ -63,6 +64,11 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>com.coderplus.maven.plugins</groupId>
+                    <artifactId>copy-rename-maven-plugin</artifactId>
+                    <version>${version.rename.plugin}</version>
+                </plugin>
                 <plugin>
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
