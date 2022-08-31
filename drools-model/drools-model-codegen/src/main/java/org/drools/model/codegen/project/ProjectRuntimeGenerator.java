@@ -30,14 +30,15 @@ import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.context.JavaDroolsModelBuildContext;
+import org.drools.model.codegen.execmodel.ModelSourceClass;
 import org.drools.model.codegen.project.template.InvalidTemplateException;
 import org.drools.model.codegen.project.template.TemplatedGenerator;
-import org.drools.model.codegen.execmodel.ModelSourceClass;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
-import static org.drools.model.codegen.project.RuleCodegen.TEMPLATE_RULE_FOLDER;
 
 public class ProjectRuntimeGenerator {
+
+    private static final String TEMPLATE_RULE_FOLDER = "/class-templates/rules/";
 
     private final ModelSourceClass.KieModuleModelMethod modelMethod;
     private final DroolsModelBuildContext context;
