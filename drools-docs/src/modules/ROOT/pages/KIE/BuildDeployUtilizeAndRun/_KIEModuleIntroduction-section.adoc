@@ -1,17 +1,16 @@
 [[_kiemoduleintroductionbuildingintroductionsection]]
 = Introduction
 
+{PRODUCT} since version `6.0` introduced a new configuration and convention approach to building KIE bases, instead of using the programmatic builder approach of the `5.x` series.
+// The builder is still available to fall back on, as it's used for the tooling integration.
 
-6.0 introduces a new configuration and convention approach to building KIE bases, instead of using the programmatic builder approach in 5.x.
-The builder is still available to fall back on, as it's used for the tooling integration.
-
-Building now uses Maven, and aligns with Maven practices.
+Building {PRODUCT}-based KIE project make use of Maven, and aligns with Maven practices.
 A KIE project or module is simply a Maven Java project or module; with an additional metadata file META-INF/kmodule.xml.
 The kmodule.xml file is the descriptor that selects resources to KIE bases and configures those KIE bases and sessions.
 There is also alternative XML support via Spring and OSGi BluePrints.
 
 While standard Maven can build and package KIE resources, it will not provide validation at build time.
-There is a Maven plugin which is recommended to use to get build time validation.
+There is a Maven plugin (`kie-maven-plugin`) which is recommended to use to get build time validation.
 The plugin also generates many classes, making the runtime loading faster too.
 
 The example project layout and Maven POM descriptor is illustrated in the screenshot

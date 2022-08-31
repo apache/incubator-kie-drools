@@ -43,8 +43,7 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();
 ----
 ====
 
-`
-KieServices` is the interface from where it possible to access all the Kie building and runtime facilities:
+`KieServices` is the interface from where it possible to access all the Kie building and runtime facilities:
 
 .KieServices
 image::KIE/BuildDeployUtilizeAndRun/KieServices.png[align="center"]
@@ -291,7 +290,7 @@ To use the plugin simply add it to the build section of the Maven pom.xml and ac
       <plugin>
         <groupId>org.kie</groupId>
         <artifactId>kie-maven-plugin</artifactId>
-        <version>{revnumber}</version>
+        <version>${version.org.drools}</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>

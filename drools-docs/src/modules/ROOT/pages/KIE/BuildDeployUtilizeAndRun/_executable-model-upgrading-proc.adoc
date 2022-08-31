@@ -32,7 +32,7 @@ In the `pom.xml` file of your Maven project or on the relevant class path of you
 </dependency>
 ----
 
-This dependency compiles the executable model into {PRODUCT} internal data structures so that it can be executed by the {DECISION_ENGINE}.
+This dependency compiles the executable model into {PRODUCT} internal data structures so that it can be executed by the {RULE_ENGINE}.
 
 The `<version>` is the Maven artifact version for {PRODUCT} currently used in your project (for example, {MAVEN_ARTIFACT_VERSION}).
 

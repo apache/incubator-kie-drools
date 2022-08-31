@@ -82,7 +82,7 @@ KieScanner kScanner = kieServices.newKieScanner( kContainer, "/myrepo/kjars" );
 ====
 
 where "/myrepo/kjars" will be the folder where the `KieScanner` will look for kjar updates. The jar files placed in this folder
-have to follow the maven convention and then have to be a name in the form {artifactId}-{versionId}.jar
+have to follow the maven convention and then have to be a name in the form `\{artifactId}-\{versionId}.jar`.
 
 == Maven Versions and Dependencies
 
