@@ -71,6 +71,8 @@ public class WorkflowRPCHandlerGenerator implements WorkflowHandlerGenerator {
         addAnnotation(constructor, boolean.class, "enumDefault", RPCWorkItemHandler.GRPC_ENUM_DEFAULT_PROPERTY, Boolean.toString(RPCWorkItemHandler.GRPC_ENUM_DEFAULT_VALUE));
         addAnnotation(constructor, int.class, "streamTimeout", RPCWorkItemHandler.GRPC_STREAM_TIMEOUT_PROPERTY, Integer.toString(RPCWorkItemHandler.GRPC_STREAM_TIMEOUT_VALUE));
         constructor.setBody(new BlockStmt().addStatement(new MethodCallExpr(null, "super").addArgument("enumDefault").addArgument("streamTimeout")));
+        clazz.addMethod("getName", Keyword.PUBLIC).setType(parseClassOrInterfaceType(String.class.getCanonicalName()))
+                .setBody(new BlockStmt().addStatement(new ReturnStmt(new StringLiteralExpr(className))));
         return WorkflowCodeGenUtils.fromCompilationUnit(context, unit, className);
     }
 

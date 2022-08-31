@@ -112,6 +112,8 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
         }
         clazz.addMethod("getRestClass", Keyword.PROTECTED).setType(parseClassOrInterfaceType(Class.class.getCanonicalName()).setTypeArguments(classNameType))
                 .setBody(new BlockStmt().addStatement(new ReturnStmt(new ClassExpr(classNameType))));
+        clazz.addMethod("getName", Keyword.PUBLIC).setType(parseClassOrInterfaceType(String.class.getCanonicalName()))
+                .setBody(new BlockStmt().addStatement(new ReturnStmt(new StringLiteralExpr(className))));
         return WorkflowCodeGenUtils.fromCompilationUnit(context, unit, className);
     }
 
