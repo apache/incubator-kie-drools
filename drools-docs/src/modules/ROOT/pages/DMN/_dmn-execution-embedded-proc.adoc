@@ -15,7 +15,7 @@ mvn clean install
 ----
 
 For more information about project packaging and deployment and executable models, see
-<<_builddeployutilizeandrunsection>>.
+the xref:KIE/index.adoc[Build, Deploy, Utilize and Run section].
 --
 
 .Procedure

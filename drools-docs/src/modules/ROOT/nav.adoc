@@ -1,4 +1,5 @@
 * xref:getting-started/index.adoc[leveloffset=+1]
+* xref:KIE/index.adoc[leveloffset=+1]
 * xref:rule-engine/index.adoc[leveloffset=+1]
 * xref:language-reference/index.adoc[leveloffset=+1]
 * xref:DMN/index.adoc[leveloffset=+1]

@@ -2,6 +2,8 @@
 [[_securitymanager]]
 = Security Manager
 
+IMPORTANT: Starting with JDK17, the Java Platform has deprecated the Security Manager for removal; consequently, this {PRODUCT} feature may become unsupported in the future. +
+For more information: https://openjdk.org/jeps/411
 
 The KIE engine is a platform for the modelling and execution of business behavior, using a multitude of declarative abstractions and metaphors, like rules, processes, decision tables and etc.
 

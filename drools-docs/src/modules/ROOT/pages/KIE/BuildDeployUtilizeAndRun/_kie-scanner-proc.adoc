@@ -55,7 +55,7 @@ The project group ID, artifact ID, and version (GAV) settings in the example are
     <repository>
       <id>guvnor-m2-repo</id>
       <name>BA Repository</name>
-      <url>http://localhost:8080/{URL_COMPONENT_CENTRAL}/maven2/</url>
+      <url>http://localhost:8080/\{URL_COMPONENT_CENTRAL}/maven2/</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
