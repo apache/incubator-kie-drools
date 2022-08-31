@@ -21,11 +21,8 @@
   "functions": [
     {
       "name": "callbackFunction",
-      "metadata": {
-        "interface": "org.kie.kogito.HelloService",
-        "operation": "helloJson",
-        "type": "service"
-      }
+      "type": "custom",
+      "operation": "service:java:org.kie.kogito.HelloService::helloJson"
     }
   ],
   "states": [
