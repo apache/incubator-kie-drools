@@ -16,8 +16,6 @@
 
 package org.kie.dmn.core.pmml;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
