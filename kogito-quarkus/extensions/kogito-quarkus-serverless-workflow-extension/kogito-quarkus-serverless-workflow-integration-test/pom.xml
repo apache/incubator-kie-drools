@@ -122,6 +122,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-builder</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

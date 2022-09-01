@@ -21,11 +21,11 @@ import java.net.URI;
 import java.util.Optional;
 
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.serverless.workflow.extensions.URIDefinitions;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.handlers.ActionResource;
-import org.kie.kogito.serverless.workflow.parser.handlers.ActionType;
+import org.kie.kogito.serverless.workflow.parser.handlers.ActionResourceFactory;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
-import org.kie.kogito.serverless.workflow.utils.URIDefinitions;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -37,10 +37,10 @@ import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.o
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.removeExt;
 
 public abstract class AbstractWorkflowOperationIdFactory implements WorkflowOperationIdFactory {
+
     @Override
     public WorkflowOperationId from(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context) {
-        ActionType actionType = ActionType.from(function);
-        ActionResource actionResource = actionType.getActionResource(function);
+        ActionResource actionResource = ActionResourceFactory.getActionResource(function);
         Optional<String> convertedUri = convertURI(workflow, context, actionResource.getUri());
         final URI uri;
         final String fileName;
@@ -55,7 +55,7 @@ public abstract class AbstractWorkflowOperationIdFactory implements WorkflowOper
     }
 
     private Optional<String> convertURI(Workflow workflow, Optional<ParserContext> context, String uri) {
-        return workflow.getExtensions().stream().filter(e -> e.getExtensionId().equals(URIDefinitions.URI_DEFINITIONS)).findFirst().map(URIDefinitions.class::cast)
+        return ServerlessWorkflowUtils.getExtension(workflow, URIDefinitions.class)
                 .map(def -> getUriDefinitions(workflow, context, def)).filter(node -> node.has(uri)).map(node -> node.get(uri).asText());
     }
 

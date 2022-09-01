@@ -27,6 +27,8 @@ import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.util.StringUtils;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.serverless.workflow.extensions.FunctionNamespaces;
+import org.kie.kogito.serverless.workflow.extensions.URIDefinitions;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.suppliers.ConfigWorkItemSupplier;
@@ -36,8 +38,10 @@ import org.slf4j.LoggerFactory;
 import com.github.javaparser.ast.expr.Expression;
 
 import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.deserializers.ExtensionDeserializer;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
+import io.serverlessworkflow.api.interfaces.Extension;
 import io.serverlessworkflow.api.mapper.BaseObjectMapper;
 import io.serverlessworkflow.api.mapper.JsonObjectMapper;
 import io.serverlessworkflow.api.mapper.YamlObjectMapper;
@@ -76,7 +80,9 @@ public class ServerlessWorkflowUtils {
 
     public static Workflow getWorkflow(Reader workflowFile, String workflowFormat) throws IOException {
         BaseObjectMapper objectMapper = getObjectMapper(workflowFormat);
-        objectMapper.getWorkflowModule().getExtensionDeserializer().addExtension(URIDefinitions.URI_DEFINITIONS, URIDefinitions.class);
+        ExtensionDeserializer deserializer = objectMapper.getWorkflowModule().getExtensionDeserializer();
+        deserializer.addExtension(URIDefinitions.URI_DEFINITIONS, URIDefinitions.class);
+        deserializer.addExtension(FunctionNamespaces.FUNCTION_NAMESPACES, FunctionNamespaces.class);
         return objectMapper.readValue(workflowFile, Workflow.class);
     }
 
@@ -195,6 +201,10 @@ public class ServerlessWorkflowUtils {
 
     public static String replaceNonAlphanumeric(final String name) {
         return filterString(name, Character::isLetterOrDigit, Optional.of(() -> '_'));
+    }
+
+    public static <T extends Extension> Optional<T> getExtension(Workflow workflow, Class<T> extensionClass) {
+        return workflow.getExtensions().stream().filter(extensionClass::isInstance).findFirst().map(extensionClass::cast);
     }
 
     protected static String getValidIdentifier(String name) {

@@ -28,6 +28,8 @@ import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.openapi.WorkflowOpenApiHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.rpc.WorkflowRPCHandlerGenerator;
+import org.kie.kogito.serverless.workflow.parser.FunctionNamespace;
+import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandler;
 import org.kie.kogito.serverless.workflow.rpc.FileDescriptorHolder;
 
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -54,6 +56,8 @@ public class ServerlessWorkflowAssetsProcessor {
     @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
     NativeImageResourceBuildItem addExpressionHandlers(BuildProducer<ServiceProviderBuildItem> serviceProvider) {
         serviceProvider.produce(ServiceProviderBuildItem.allProvidersFromClassPath(ExpressionHandler.class.getCanonicalName()));
+        serviceProvider.produce(ServiceProviderBuildItem.allProvidersFromClassPath(FunctionNamespace.class.getCanonicalName()));
+        serviceProvider.produce(ServiceProviderBuildItem.allProvidersFromClassPath(FunctionTypeHandler.class.getCanonicalName()));
         return new NativeImageResourceBuildItem(FileDescriptorHolder.DESCRIPTOR_PATH);
     }
 

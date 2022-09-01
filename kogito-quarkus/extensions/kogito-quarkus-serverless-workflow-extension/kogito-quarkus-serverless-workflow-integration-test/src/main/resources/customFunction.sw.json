@@ -1,0 +1,19 @@
+{
+  "id": "customFunction",
+  "version": "1.0",
+  "name": "Test Custom function",
+  "description": "This test a custom function can be added  in the classpath",
+  "start": "start",
+  "states": [
+    {
+      "name": "start",
+      "type": "operation",
+      "actions": [
+       {
+          "functionRef": "ansible:doSomething"
+       }
+      ],
+      "end": true
+ 	}
+  ]
+}
