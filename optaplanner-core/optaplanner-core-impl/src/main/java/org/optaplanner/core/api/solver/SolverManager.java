@@ -312,8 +312,10 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * Here, that distinction is not supported because it would cause a memory leak.
      * <p>
      * Waits for the termination or cancellation to complete before returning.
-     * During termination, a {@code bestSolutionConsumer} could still be called (on a consumer thread),
-     * before this method returns.
+     * During termination, a {@code bestSolutionConsumer} could still be called. When the solver terminates,
+     * the {@code finalBestSolutionConsumer} is executed with the latest best solution.
+     * These consumers run on a consumer thread independently of the termination and may still run even after
+     * this method returns.
      *
      * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
      *        or {@link #solveAndListen(Object, Function, Consumer)}

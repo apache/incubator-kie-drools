@@ -54,8 +54,10 @@ public interface SolverJob<Solution_, ProblemId_> {
      * Does nothing if the solver already terminated.
      * <p>
      * Waits for the termination or cancellation to complete before returning.
-     * During termination, a {@code bestSolutionConsumer} could still be called (on a consumer thread),
-     * before this method returns.
+     * During termination, a {@code bestSolutionConsumer} could still be called. When the solver terminates,
+     * the {@code finalBestSolutionConsumer} is executed with the latest best solution.
+     * These consumers run on a consumer thread independently of the termination and may still run even after
+     * this method returns.
      */
     void terminateEarly();
 
