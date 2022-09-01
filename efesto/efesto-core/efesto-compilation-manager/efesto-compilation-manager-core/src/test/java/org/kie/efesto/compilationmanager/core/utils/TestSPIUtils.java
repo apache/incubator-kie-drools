@@ -15,20 +15,26 @@
  */
 package org.kie.efesto.compilationmanager.core.utils;
 
-import org.junit.jupiter.api.Test;
-import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
-import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
-import org.kie.efesto.compilationmanager.core.mocks.*;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
+import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
+import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputA;
+import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputB;
+import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputC;
+import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputD;
+import org.kie.efesto.compilationmanager.core.mocks.MockKieCompilerServiceAB;
+import org.kie.efesto.compilationmanager.core.mocks.MockKieCompilerServiceC;
+import org.kie.efesto.compilationmanager.core.mocks.MockKieCompilerServiceE;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TestSPIUtils {
 
-    private static final List<Class<? extends KieCompilerService>> KIE_COMPILER_SERVICES = Arrays.asList(MockKieCompilerServiceAB.class, MockKieCompilerServiceC.class);
+    private static final List<Class<? extends KieCompilerService>> KIE_COMPILER_SERVICES = Arrays.asList(MockKieCompilerServiceAB.class, MockKieCompilerServiceC.class, MockKieCompilerServiceE.class);
 
     @Test
     void getKieCompilerService() {
