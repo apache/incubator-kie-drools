@@ -44,7 +44,7 @@ if (Utils.isMainBranch(this)) {
 KogitoJobUtils.createMainQuarkusUpdateToolsJob(this, 'OptaPlanner Pipelines', [ 'optaplanner', 'optaplanner-quickstarts' ])
 
 void setupProjectQuarkusJob(Folder quarkusFolder) {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-all', quarkusFolder, "${jenkins_path_project}/project/Jenkinsfile.quarkus", 'Optaplanner Quarkus Snapshot')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-all', quarkusFolder, "${jenkins_path_project}/Jenkinsfile.quarkus", 'Optaplanner Quarkus Snapshot')
     KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 4 * * *' ]
     jobParams.env.putAll([
@@ -60,7 +60,7 @@ void setupProjectQuarkusJob(Folder quarkusFolder) {
 }
 
 void setupProjectNativeJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_NATIVE, "${jenkins_path_project}/project/Jenkinsfile.native", 'Optaplanner Native Testing')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_NATIVE, "${jenkins_path_project}/Jenkinsfile.native", 'Optaplanner Native Testing')
     KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 6 * * *' ]
     jobParams.env.putAll([
@@ -76,7 +76,7 @@ void setupProjectNativeJob() {
 }
 
 void setupProjectMandrelJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_MANDREL, "${jenkins_path_project}/project/Jenkinsfile.native", 'Optaplanner Mandrel Testing')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_MANDREL, "${jenkins_path_project}/Jenkinsfile.native", 'Optaplanner Mandrel Testing')
     KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 8 * * *' ]
     jobParams.env.putAll([
@@ -92,7 +92,7 @@ void setupProjectMandrelJob() {
 }
 
 void setupProjectDroolsJob(String droolsBranch) {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-drools-snapshot', Folder.NIGHTLY_ECOSYSTEM, "${jenkins_path_project}/project/Jenkinsfile.drools", 'Optaplanner testing against Drools snapshot')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-drools-snapshot', Folder.NIGHTLY_ECOSYSTEM, "${jenkins_path_project}/Jenkinsfile.drools", 'Optaplanner testing against Drools snapshot')
     KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 2 * * *' ]
     jobParams.env.putAll([
@@ -120,7 +120,7 @@ void setupProjectInitBranchJob() {
 }
 
 void setupProjectNightlyJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-nightly', Folder.NIGHTLY, "${jenkins_path_project}/project/Jenkinsfile.nightly", 'Optaplanner Nightly')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-nightly', Folder.NIGHTLY, "${jenkins_path_project}/Jenkinsfile.nightly", 'Optaplanner Nightly')
     jobParams.triggers = [cron : '@midnight']
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -139,7 +139,7 @@ void setupProjectNightlyJob() {
 }
 
 void setupProjectReleaseJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-release', Folder.RELEASE, "${jenkins_path_project}/project/Jenkinsfile.release", 'Optaplanner Release')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-release', Folder.RELEASE, "${jenkins_path_project}/Jenkinsfile.release", 'Optaplanner Release')
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
@@ -162,7 +162,7 @@ void setupProjectReleaseJob() {
 }
 
 void setupProjectPostReleaseJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-post-release', Folder.RELEASE, "${jenkins_path_project}/project/Jenkinsfile.post-release", 'Optaplanner Post Release')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-post-release', Folder.RELEASE, "${jenkins_path_project}/Jenkinsfile.post-release", 'Optaplanner Post Release')
     KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
