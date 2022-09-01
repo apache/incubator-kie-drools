@@ -12,7 +12,7 @@ environment:
     enabled: true
   mandrel:
     enabled: true
-    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.0-java11
+    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
   runtimes_bdd:
     enabled: true
 productized_branch: true
