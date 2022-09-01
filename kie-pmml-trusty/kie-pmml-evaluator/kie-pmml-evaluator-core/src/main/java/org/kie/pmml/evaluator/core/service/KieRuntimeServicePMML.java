@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManage;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.execute;
 
-public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeContext, PMML4Result, EfestoInputPMML, EfestoOutputPMML, PMMLRuntimeContext> {
+public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeContext, PMML4Result, EfestoInput<PMMLRuntimeContext>, EfestoOutputPMML, PMMLRuntimeContext> {
 
     private static final Logger logger = LoggerFactory.getLogger(KieRuntimeServicePMML.class.getName());
 
@@ -42,7 +42,7 @@ public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeConte
     }
 
     @Override
-    public Optional<EfestoOutputPMML> evaluateInput(EfestoInputPMML toEvaluate, PMMLRuntimeContext context) {
+    public Optional<EfestoOutputPMML> evaluateInput(EfestoInput toEvaluate, PMMLRuntimeContext context) {
         return execute(toEvaluate, context);
     }
 

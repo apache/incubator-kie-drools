@@ -48,7 +48,6 @@ import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.compiler.PMMLCompilationContextImpl;
 import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
-import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,14 +130,14 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
                                                             memoryCompilerClassLoader);
         String basePath = pmmlContext.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
         FRI fri = new FRI(basePath, PMML_STRING);
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, pmmlContext);
-        Collection<EfestoOutput> retrieved = evaluateInput(darInputPMML);
+        PMMLInput pmmlInput = new PMMLInput(fri, pmmlContext);
+        Collection<EfestoOutput> retrieved = evaluateInput(pmmlInput);
         if (retrieved.isEmpty()) {
             LOG.warn("Failed to get a result for {}@{}: trying to invoke compilation....", pmmlContext.getFileName(),
                      pmmlContext.getRequestData().getModelName());
             compileFile(pmmlFileName, memoryCompilerClassLoader);
         }
-        retrieved = evaluateInput(darInputPMML);
+        retrieved = evaluateInput(pmmlInput);
         if (retrieved.isEmpty()) {
             String errorMessage = String.format("Failed to get result for %s@%s: please" +
                                                         " check classpath and dependencies!",
@@ -150,16 +149,16 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         return (PMML4Result) retrieved.iterator().next().getOutputData();
     }
 
-    protected Collection<EfestoOutput> evaluateInput(EfestoInputPMML darInputPMML) {
-        PMMLRuntimeContext context = darInputPMML.getInputData();
+    protected Collection<EfestoOutput> evaluateInput(PMMLInput pmmlInput) {
+        PMMLRuntimeContext context = pmmlInput.getInputData();
         try {
-            return runtimeManager.evaluateInput(context, darInputPMML);
+            return runtimeManager.evaluateInput(context, pmmlInput);
         } catch (Throwable t) {
             String errorMessage = String.format("Evaluation error for %s@%s using %s due to %s: please" +
                                                         " check classpath and dependencies!",
                                                 context.getFileName(),
                                                 context.getRequestData().getModelName(),
-                                                darInputPMML,
+                                                pmmlInput,
                                                 t.getMessage());
             LOG.error(errorMessage);
             throw new KieRuntimeServiceException(errorMessage, t);

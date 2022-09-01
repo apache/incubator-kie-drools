@@ -69,10 +69,10 @@ public class PMMLRuntimeHelper {
 
 
     public static boolean canManage(EfestoInput toEvaluate) {
-        return (toEvaluate instanceof EfestoInputPMML) && isPresentExecutableOrRedirect(toEvaluate.getFRI(), PMML_STRING);
+        return (toEvaluate.getInputData() instanceof PMMLRuntimeContext) && isPresentExecutableOrRedirect(toEvaluate.getFRI(), PMML_STRING);
     }
 
-    public static Optional<EfestoOutputPMML> execute(EfestoInputPMML toEvaluate, PMMLRuntimeContext pmmlContext) {
+    public static Optional<EfestoOutputPMML> execute(EfestoInput toEvaluate, PMMLRuntimeContext pmmlContext) {
         KiePMMLModelFactory kiePMMLModelFactory;
         try {
             kiePMMLModelFactory = loadKiePMMLModelFactory(toEvaluate.getFRI(), pmmlContext);
@@ -130,9 +130,9 @@ public class PMMLRuntimeHelper {
         return toReturn;
     }
 
-    static EfestoOutputPMML getEfestoOutput(KiePMMLModelFactory kiePMMLModelFactory, EfestoInputPMML darInputPMML) {
+    static EfestoOutputPMML getEfestoOutput(KiePMMLModelFactory kiePMMLModelFactory, EfestoInput darInputPMML) {
         List<KiePMMLModel> kiePMMLModels = kiePMMLModelFactory.getKiePMMLModels();
-        PMML4Result result = evaluate(kiePMMLModels, darInputPMML.getInputData());
+        PMML4Result result = evaluate(kiePMMLModels, (PMMLRuntimeContext)darInputPMML.getInputData());
         return new EfestoOutputPMML(darInputPMML.getFRI(), result);
     }
 
