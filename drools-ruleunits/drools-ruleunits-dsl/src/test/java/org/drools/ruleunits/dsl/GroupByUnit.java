@@ -58,17 +58,17 @@ public class GroupByUnit implements RuleUnitDefinition {
     @Override
     public void defineRules(RulesFactory rulesFactory) {
         // groupBy( $p: /persons[ age >= 18 ]; $p.substring(0, 1); sum($p.age) )
-        rulesFactory.addRule("Sum adults ages grouped by initial")
-                    .groupBy( rule -> rule.from(persons).filter("age", Person::getAge, GREATER_OR_EQUAL, 18),
+        rulesFactory.rule("Sum adults ages grouped by initial")
+                    .groupBy( rule -> rule.on(persons).filter("age", Person::getAge, GREATER_OR_EQUAL, 18),
                               p -> p.getName().substring(0, 1), // grouping function
                               sum(Person::getAge) )
                     .execute(results, (r, initial, sum) -> r.put(initial, sum));
 
         // $i : /threshold
         // groupBy( $p: /persons[ age >= threshold ]; $p.substring(0, 1); sum($p.age) )
-        rulesFactory.addRule("Collect persons name with ages above threshold grouped by initial")
-                .from(threshold)
-                .groupBy( rule -> rule.from(persons).filter("age", Person::getAge, GREATER_OR_EQUAL, identity()),
+        rulesFactory.rule("Collect persons name with ages above threshold grouped by initial")
+                .on(threshold)
+                .groupBy( rule -> rule.on(persons).filter("age", Person::getAge, GREATER_OR_EQUAL, identity()),
                         p -> p.getName().substring(0, 1), // grouping function
                         collect(Person::getName) )
                 .execute(results, (r, t, initial, sum) -> r.put(initial, sum));

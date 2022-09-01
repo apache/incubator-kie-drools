@@ -64,8 +64,8 @@ public class Pattern2DefImpl<A, B> extends SinglePatternDef<B> implements Patter
     }
 
     @Override
-    public <C> Pattern3Def<A, B, C> from(DataSource<C> dataSource) {
-        return join(rule.from(dataSource));
+    public <C> Pattern3Def<A, B, C> on(DataSource<C> dataSource) {
+        return join(rule.on(dataSource));
     }
 
     @Override

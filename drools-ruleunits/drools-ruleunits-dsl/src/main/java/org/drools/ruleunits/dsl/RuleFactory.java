@@ -25,7 +25,7 @@ import org.drools.ruleunits.dsl.patterns.PatternDef;
 
 public interface RuleFactory {
 
-    <A> Pattern1Def<A> from(DataSource<A> dataSource);
+    <A> Pattern1Def<A> on(DataSource<A> dataSource);
 
     RuleFactory not(Function1<RuleFactory, PatternDef> patternBuilder);
 

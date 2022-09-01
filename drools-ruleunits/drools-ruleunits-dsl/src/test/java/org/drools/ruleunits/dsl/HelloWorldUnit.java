@@ -55,30 +55,30 @@ public class HelloWorldUnit implements RuleUnitDefinition {
     @Override
     public void defineRules(RulesFactory rulesFactory) {
         // /strings[ this == "Hello World" ]
-        rulesFactory.addRule()
-                    .from(strings)
+        rulesFactory.rule()
+                    .on(strings)
                     .filter(EQUAL, "Hello World") // when no extractor is provided "this" is implicit
                     .execute(results, r -> r.add("it worked!")); // the consequence can ignore the matched facts
 
         // /strings[ length > 5 ]
-        rulesFactory.addRule()
-                    .from(strings) // since the datasource has been already initialized its class can be inferred without the need of explicitly passing it
+        rulesFactory.rule()
+                    .on(strings) // since the datasource has been already initialized its class can be inferred without the need of explicitly passing it
                     .filter(s -> s.length(), GREATER_THAN, 5) // when no property name is provided it's impossible to generate indexes and property reactivity
                     .execute(results, (r, s) -> r.add("it also worked with " + s.toUpperCase())); // this consequence also uses the matched fact
 
         // /strings[ length < 5 ]
-        rulesFactory.addRule("MyRule") // it is possible to optionally set a name for the rule
-                    .from(strings)
+        rulesFactory.rule("MyRule") // it is possible to optionally set a name for the rule
+                    .on(strings)
                     .filter("length", s -> s.length(), LESS_THAN, 5) // providing the name of the property used in the constraint allows index and property reactivity generation
                     .execute(results, r -> r.add("this shouldn't fire"));
 
         // $s: /strings[ length > 5 ]
         // /ints[ this > 5, this == $s.length ]
-        rulesFactory.addRule()
-                    .from(strings)
+        rulesFactory.rule()
+                    .on(strings)
                     .filter("length", s -> s.length() > 5) // it is also possible to use a plain lambda predicate, but in this case no index can be generated
                     .join(
-                          rule -> rule.from(ints) // creates a new pattern ...
+                          rule -> rule.on(ints) // creates a new pattern ...
                                       .filter(GREATER_THAN, 5) // ... add an alpha filter to it
                     ) // ... and join it with the former one
                     .filter(EQUAL, String::length) // this filter is applied to the result of the join, so it is a beta constraint

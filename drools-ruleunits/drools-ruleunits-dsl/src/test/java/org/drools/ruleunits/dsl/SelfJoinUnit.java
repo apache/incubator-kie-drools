@@ -46,9 +46,9 @@ public class SelfJoinUnit implements RuleUnitDefinition {
 
     @Override
     public void defineRules(RulesFactory rulesFactory) {
-        rulesFactory.addRule()
-                .from(strings)
-                .from(strings)
+        rulesFactory.rule("Self join")
+                .on(strings)
+                .on(strings)
                 .filter(s -> s.substring(0,1), EQUAL, s -> s.substring(1,2))
                 .execute(results, (r, s1, s2) -> r.add("Found '" + s1 + "' and '" + s2 + "'"));
     }

@@ -72,15 +72,15 @@ public class MultiJoinUnit implements RuleUnitDefinition {
         // $i: /ints[ this > 5, this == $s.length ]
         // $p: /persons[ age > name.length, age == ($i + $s.length) * 2 + 4, age == $i + $s.length + 26 ]
         // $p: /cheeses[ price < $p.name.length + $i ]
-        rulesFactory.addRule()
-                    .from(strings)
+        rulesFactory.rule("Complex multiple joins")
+                    .on(strings)
                     .filter("length", s -> s.length(), GREATER_THAN, 5)
-                    .join( rule -> rule.from(ints).filter(GREATER_THAN, 5) ) // alpha constraint
+                    .join( rule -> rule.on(ints).filter(GREATER_THAN, 5) ) // alpha constraint
                     .filter(EQUAL, String::length) // beta constraint
-                    .join( rule -> rule.from(persons).filter("age", Person::getAge, GREATER_THAN, "name", p -> p.getName().length()) )
+                    .join( rule -> rule.on(persons).filter("age", Person::getAge, GREATER_THAN, "name", p -> p.getName().length()) )
                     .filter( (s, i, p) -> p.getAge() == ( i + s.length() ) * 2 + 4 )
                     .filter( "age", Person::getAge, EQUAL, (s, i) -> i + s.length() + 26 )
-                    .from(cheeses)
+                    .on(cheeses)
                     .filter( "price", Cheese::getPrice, LESS_THAN, (s, i, p) -> p.getName().length() + i )
                     .execute(results, (r, s, i, p, c) -> r.add("Found " + p.getName() + " who eats " + c.getName())); // the consequence captures all the joined variables positionally
     }

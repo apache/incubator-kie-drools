@@ -44,8 +44,8 @@ public class UnitOne implements RuleUnitDefinition {
 
     @Override
     public void defineRules(RulesFactory rulesFactory) {
-        rulesFactory.addRule()
-                    .from(strings)
+        rulesFactory.rule()
+                    .on(strings)
                     .filter("length", String::length, GREATER_THAN, 5)
                     .execute(ints, (i, s) -> i.add(s.length()));
     }

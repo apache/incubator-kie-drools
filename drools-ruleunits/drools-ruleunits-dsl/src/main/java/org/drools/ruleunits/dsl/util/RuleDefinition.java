@@ -84,7 +84,7 @@ public class RuleDefinition implements RuleFactory {
     }
 
     @Override
-    public <A> Pattern1DefImpl<A> from(DataSource<A> dataSource) {
+    public <A> Pattern1DefImpl<A> on(DataSource<A> dataSource) {
         Pattern1DefImpl<A> pattern1 = new Pattern1DefImpl<>(this,
                 declarationOf(findDataSourceClass(dataSource), entryPoint(asGlobal(dataSource).getName())));
         if (registerNewPattern) {

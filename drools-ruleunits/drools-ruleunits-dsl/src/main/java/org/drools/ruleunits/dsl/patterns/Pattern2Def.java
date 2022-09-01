@@ -33,7 +33,7 @@ public interface Pattern2Def<A, B> extends PatternDef {
 
     <V> Pattern2Def<A, B> filter(String fieldName, Function1<B, V> leftExtractor, Index.ConstraintType constraintType, Function1<A, V> rightExtractor);
 
-    <C> Pattern3Def<A, B, C> from(DataSource<C> dataSource);
+    <C> Pattern3Def<A, B, C> on(DataSource<C> dataSource);
 
     <C> Pattern3Def<A, B, C> join(Function1<RuleFactory, Pattern1Def<C>> patternBuilder);
 

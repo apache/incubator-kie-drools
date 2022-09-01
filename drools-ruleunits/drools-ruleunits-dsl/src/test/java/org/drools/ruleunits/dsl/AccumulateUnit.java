@@ -62,31 +62,31 @@ public class AccumulateUnit implements RuleUnitDefinition {
     @Override
     public void defineRules(RulesFactory rulesFactory) {
         // accumulate( $s: /strings[ this.substring(0, 1) == "A" ]; sum($s.length) )
-        rulesFactory.addRule("Sum length of String starting with A")
-                .accumulate( rule -> rule.from(strings).filter(s -> s.substring(0, 1), EQUAL, "A"),
+        rulesFactory.rule("Sum length of String starting with A")
+                .accumulate( rule -> rule.on(strings).filter(s -> s.substring(0, 1), EQUAL, "A"),
                              sum(String::length) )
                 .execute(results, (r, sum) -> r.add("Sum of length of Strings starting with A is " + sum));
 
         // accumulate( $s: /strings[ this.substring(0, 1) != "A" ]; max($s.length) )
-        rulesFactory.addRule("Find mac length of String not starting with A")
-                .accumulate( rule -> rule.from(strings).filter(s -> s.substring(0, 1), NOT_EQUAL, "A"),
+        rulesFactory.rule("Find mac length of String not starting with A")
+                .accumulate( rule -> rule.on(strings).filter(s -> s.substring(0, 1), NOT_EQUAL, "A"),
                              max(String::length) )
                 .execute(results, (r, max) -> r.add("Max length of Strings not starting with A is " + max));
 
         // $t : /threshold
         // accumulate( $s: /strings[ length >= $t ]; avg($s.length) )
-        rulesFactory.addRule("Find average length of String above a threshold")
-                .from(threshold)
+        rulesFactory.rule("Find average length of String above a threshold")
+                .on(threshold)
                 // the context inside the accumulate brings in the patterns bind so far to allow using them
-                .accumulate( rule -> rule.from(strings)
+                .accumulate( rule -> rule.on(strings)
                                          .filter(String::length, GREATER_THAN, identity()), // beta constraint with the threshold as right field
                              avg(String::length) )
                 .execute(results, (r, t, avg) -> r.add("Average length of Strings longer than threshold " + t + " is " + avg));
 
         // the join is in the accumulate, so this rule fires (having 0 as result) even without any matching tuple
         // accumulate( $t : /threshold and $s: /strings[ length >= $t ]; sum($s.length) )
-        rulesFactory.addRule("Count Strings having length above a threshold")
-                .accumulate( rule -> rule.from(threshold).from(strings).filter(String::length, GREATER_THAN, identity()),
+        rulesFactory.rule("Count Strings having length above a threshold")
+                .accumulate( rule -> rule.on(threshold).on(strings).filter(String::length, GREATER_THAN, identity()),
                              count() )
                 .execute(results, (r, count) -> r.add("Count of Strings above threshold is " + count));
     }

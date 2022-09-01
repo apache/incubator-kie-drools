@@ -56,20 +56,20 @@ public class ExistentialUnit implements RuleUnitDefinition {
     @Override
     public void defineRules(RulesFactory rulesFactory) {
         // not( /strings[ this == "Hello World" ] )
-        rulesFactory.addRule()
-                .not( rule -> rule.from(strings).filter(EQUAL, "Hello World") )
+        rulesFactory.rule("Not exists string 'Hello World'")
+                .not( rule -> rule.on(strings).filter(EQUAL, "Hello World") )
                 .execute(results, r -> r.add("There's no Hello World"));
 
         // exists( /strings[ this == "Hello World" ] )
-        rulesFactory.addRule()
-                .exists( rule -> rule.from(strings).filter(EQUAL, "Hello World") )
+        rulesFactory.rule("Exists string 'Hello World'")
+                .exists( rule -> rule.on(strings).filter(EQUAL, "Hello World") )
                 .execute(results, r -> r.add("There is at least one Hello World"));
 
         // $i : /threshold
         // exists( $s: /strings[ length >= $i ] )
-        rulesFactory.addRule()
-                .from(threshold)
-                .exists( rule -> rule.from(strings).filter(String::length, GREATER_THAN, identity()) )
+        rulesFactory.rule("Exists string longer than threshold")
+                .on(threshold)
+                .exists( rule -> rule.on(strings).filter(String::length, GREATER_THAN, identity()) )
                 .execute(results, (r, t) -> r.add("There is at least a String longer than threshold " + t));
     }
 }

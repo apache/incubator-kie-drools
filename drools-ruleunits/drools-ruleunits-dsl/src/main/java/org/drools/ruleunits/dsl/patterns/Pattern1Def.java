@@ -40,7 +40,7 @@ public interface Pattern1Def<A> extends PatternDef {
 
     <V> Pattern1Def<A> filter(String fieldName, Function1<A, V> extractor, Index.ConstraintType constraintType, String rightFieldName, Function1<A, V> rightExtractor);
 
-    <B> Pattern2Def<A, B> from(DataSource<B> dataSource);
+    <B> Pattern2Def<A, B> on(DataSource<B> dataSource);
 
     <B> Pattern2Def<A, B> join(Function1<RuleFactory, Pattern1Def<B>> patternBuilder);
 

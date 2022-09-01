@@ -46,8 +46,8 @@ public class UnitTwo implements RuleUnitDefinition {
 
     @Override
     public void defineRules(RulesFactory rulesFactory) {
-        rulesFactory.addRule()
-                    .from(ints)
+        rulesFactory.rule()
+                    .on(ints)
                     .filter(GREATER_THAN, 5)
                     .execute(results, (r, i) -> r.add("Found " + i));
 

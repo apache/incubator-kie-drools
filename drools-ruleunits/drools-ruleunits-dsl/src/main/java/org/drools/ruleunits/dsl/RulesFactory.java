@@ -40,11 +40,11 @@ public class RulesFactory {
         this.globals = new UnitGlobals(unit);
     }
 
-    public RuleFactory addRule() {
-        return addRule(UUID.randomUUID().toString());
+    public RuleFactory rule() {
+        return rule(UUID.randomUUID().toString());
     }
 
-    public RuleFactory addRule(String name) {
+    public RuleFactory rule(String name) {
         RuleDefinition rule = new RuleDefinition(name, unit, globals);
         rules.add(rule);
         return rule;
