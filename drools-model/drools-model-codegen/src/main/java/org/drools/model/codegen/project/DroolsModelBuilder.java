@@ -15,6 +15,14 @@
  */
 package org.drools.model.codegen.project;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.compiler.builder.impl.BuildResultCollector;
@@ -33,13 +41,6 @@ import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourceConfiguration;
 
@@ -54,8 +55,10 @@ public class DroolsModelBuilder {
     private final Collection<Resource> resources;
     private final boolean decisionTableSupported;
     private final KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration;
+    private final DroolsModelBuildContext context;
 
-    public DroolsModelBuilder(Collection<Resource> resources, boolean decisionTableSupported) {
+    public DroolsModelBuilder(DroolsModelBuildContext context, Collection<Resource> resources, boolean decisionTableSupported) {
+        this.context = context;
         this.resources = resources;
         this.decisionTableSupported = decisionTableSupported;
         this.knowledgeBuilderConfiguration = new KnowledgeBuilderConfigurationImpl();
@@ -87,7 +90,7 @@ public class DroolsModelBuilder {
                 ExplicitCanonicalModelCompiler.of(
                 packages.values(),
                 knowledgeBuilderConfiguration,
-                KogitoPackageSources::dumpSources);
+                KogitoPackageSources::dumpSources).setContext(context);
 
         compiler.process();
         BuildResultCollector buildResults = compiler.getBuildResults();
@@ -100,6 +103,10 @@ public class DroolsModelBuilder {
         }
 
         this.kogitoPackageSources = compiler.getPackageSources();
+    }
+
+    public boolean hasRuleUnits() {
+        return kogitoPackageSources.stream().anyMatch(pkg -> !pkg.getRuleUnits().isEmpty());
     }
 
     private void handleDtable(DecisionTableResourceHandler decisionTableHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException {

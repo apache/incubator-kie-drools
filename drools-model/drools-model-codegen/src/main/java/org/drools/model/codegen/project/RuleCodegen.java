@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 public class RuleCodegen {
 
     public static final GeneratedFileType RULE_TYPE = GeneratedFileType.of("RULE", GeneratedFileType.Category.SOURCE);
-    public static final String TEMPLATE_RULE_FOLDER = "/class-templates/rules/";
+
     public static final String GENERATOR_NAME = "rules";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleCodegen.class);
@@ -62,14 +62,16 @@ public class RuleCodegen {
     protected Collection<GeneratedFile> internalGenerate() {
 
         DroolsModelBuilder droolsModelBuilder =
-                new DroolsModelBuilder(resources, decisionTableSupported);
+                new DroolsModelBuilder(context(), resources, decisionTableSupported);
 
         droolsModelBuilder.build();
         Collection<GeneratedFile> generatedFiles = droolsModelBuilder.generateCanonicalModelSources();
 
-        KieSessionModelBuilder kieSessionModelBuilder =
-                new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources());
-        generatedFiles.addAll(kieSessionModelBuilder.generate());
+        if (!droolsModelBuilder.hasRuleUnits()) {
+            KieSessionModelBuilder kieSessionModelBuilder =
+                    new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources());
+            generatedFiles.addAll(kieSessionModelBuilder.generate());
+        }
 
         if (LOGGER.isDebugEnabled()) {
             generatedFiles.stream().forEach(genFile -> LOGGER.debug(genFile.toStringWithContent()));

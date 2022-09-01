@@ -44,6 +44,7 @@
         <module>drools-drl-quarkus-deployment</module>
         <module>drools-drl-quarkus-integration-test</module>
         <module>drools-drl-quarkus-integration-test-hotreload</module>
+        <module>drools-drl-quarkus-ruleunit-integration-test</module>
       </modules>
     </profile>
   </profiles>

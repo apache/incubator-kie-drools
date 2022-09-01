@@ -56,6 +56,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.TypeDeclarationUtils;
@@ -72,7 +73,6 @@ import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.RulesSupplier;
 import org.drools.model.WindowReference;
-import org.drools.model.functions.PredicateInformation;
 import org.drools.model.codegen.execmodel.generator.DRLIdGenerator;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
 import org.drools.model.codegen.execmodel.generator.FunctionGenerator;
@@ -81,6 +81,7 @@ import org.drools.model.codegen.execmodel.generator.QueryParameter;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.WindowReferenceGenerator;
 import org.drools.model.codegen.execmodel.util.lambdareplace.CreatedClass;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.util.StringUtils;
 import org.drools.util.TypeResolver;
 import org.kie.api.builder.ReleaseId;
@@ -165,6 +166,8 @@ public class PackageModel {
     private final Map<String, CreatedClass> lambdaClasses = new ConcurrentHashMap<>();
 
     private boolean oneClassPerRule;
+
+    private DroolsModelBuildContext context;
 
     private PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(releaseId, name));
@@ -938,4 +941,12 @@ public class PackageModel {
         return classDefinitionsMap.get(cls);
     }
 
+    public PackageModel setContext(DroolsModelBuildContext context) {
+        this.context = context;
+        return this;
+    }
+
+    public DroolsModelBuildContext getContext() {
+        return context;
+    }
 }
