@@ -1,6 +1,0 @@
-[[_ch.commands]]
-= Drools commands
-:context: kie-apis
-
-include::runtime-commands-con.adoc[leveloffset=+1]
-include::runtime-commands-samples-ref.adoc[leveloffset=+2]
