@@ -61,47 +61,43 @@ postliminary actions.
 === 1. Release the version in Jira
 
 Navigate to the https://issues.redhat.com/projects/PLANNER?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page[Releases page in JIRA],
-find the version to be released and pick “Release” from the Actions.
+find the version to be released and pick “Release” from the Actions. Create a next version for OptaPlanner and release the current version but WITHOUT
+release date.
 
-=== 2. Run `kogito-release-pipeline`
+=== 2. Create a new branch for OptaPlanner release
 
-OptaPlanner is released as a part of the Kogito release pipeline. Thus, a person releasing Kogito triggers the pipeline.
-Make sure you agree with this person on setting the correct OptaPlanner version before running the pipeline.
+Run on Jenkins https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/0-prepare-release-branch[0-prepare-release-branch]
+to create a new branch where to release from. +
+Most links in this document take the 8.27.x branch as an example!
 
-=== 3. Upgrade versions to the next snapshot
-*_This step is yet to be automated._*
+=== 3. Update Drools
 
-After the pipeline finishes, upgrade the version on the `main` branch of OptaPlanner to the next minor snapshot version,
-e.g. 8.0.0.Final -> 8.1.0-SNAPSHOT. Upgrade also the version of Drools by editing
-the value of the property `version.org.drools` in the `optaplanner-build-parent`.
+Run
+https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/tools/job/update-drools-optaplanner/[update-drools-optaplanner]. +
+IMPORTANT: this job should be triggered only if the artifacts of Drools version (as an example `drools-bom`) are already on https://repo1.maven.org/maven2/org/drools/drools-bom[Maven Central].
+Also, the Drools version has to be updated on the OptaPlanner main branch by running
+https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/main/job/tools/job/update-drools-optaplanner/[update-drools-optaplanner] on main branch.
 
-=== 4. Release OptaPlanner Quickstarts
-*_This step is yet to be automated._*
+=== 4. Release OptaPlanner
 
-. Create a release branch from the `development` branch.
-. Upgrade the OptaPlanner version in the `parent` section of the `pom.xml` and via the `version.org.optaplanner`
-property in all quickstarts, including Gradle build files, to the release version.
-. https://issues.redhat.com/browse/PLANNER-2230[Sync-up the stable branch from the release branch.]
-. Open a PR to the `stable` branch.
-. Create and push a tag for the release.
-. Upgrade the version to the next patch snapshot version on the release branch.
-.. Make sure the project builds.
-. Push the release branch.
-. Upgrade the version of the project to the next minor snapshot version via a PR to the `development` branch.
+The OptaPlanner release pipeline can now be triggered using the branch created in step 2.
+Run https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/release/job/optaplanner-release[optaplanner-release].
+The OptaPlanner release pipeline runs the https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/release/job/optaplanner-deploy[optaplanner-deploy] job
+which updates the project versions of OptaPlanner, Quickstarts and OptaWeb Vehicle Routing, builds these projects and deploys their artifacts to Nexus.
+After this deployment step it promotes the projects. In this promote step PRs to upgrade the projects will be raised and merged as well as the tag created and pushed.
 
-== Kogito Release Pipeline
+=== 5. OptaPlanner post release steps
+Once OptaPlanner has been released and its artifacts are on Maven Central the release procedure can proceed
+with https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/release/job/optaplanner-post-release[optaplanner-post-release]. +
+This job +
 
-The `kogito-release-pipeline` is a Jenkins pipeline that covers releases of the Kogito and the OptaPlanner projects
-together. As both projects consist of several Github repositories, the top-level `kogito-release-pipeline` orchestrates
-multiple pipelines that operate on the project, or the repository level.
+* resets https://github.com/kiegroup/optaplanner-quickstarts[Quickstarts] to stable branch
+* uploads OptaPlanner distribution from https://github.com/kiegroup/optaplanner-quickstarts[Quickstarts]
+* updates the https://github.com/kiegroup/optaplanner-website[OptaPlanner website]
+* updates OptaPlanner version in https://github.com/kiegroup/kie-benchmarks/blob/main/optaplanner-benchmarks/pom.xml#L21[kie-benchmarks]
 
-Please refer to the https://github.com/kiegroup/kogito-pipelines/blob/main/docs/nightly_and_release.md[Kogito release pipeline documentation]
-for more details.
+=== 6. Set release date for OptaPlanner release into JIRA
 
-=== Actions covered by the Kogito release pipeline
-* Create releases branches and upgrade the projects to the release version.
-* Build the projects and deploy maven artefacts into a staging repository on JBoss Nexus.
-* Promote maven artifacts from the staging repository to a public one and later release this repository to Maven Central.
-* Upload the documentation and the distribution of all projects to the `filemgmt.jboss.org`.
-* Update links in the optaplanner-website to point to the released artifacts.
-* Upgrade version to the next bugfix snapshot on the release branch.
+Navigate to the https://issues.redhat.com/projects/PLANNER?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page[Releases page in JIRA],
+find the already released and current version and edit it. Add the release date.
+
