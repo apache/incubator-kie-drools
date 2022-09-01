@@ -156,6 +156,7 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
     public void startHashedAlphaNodes(IndexableConstraint indexableConstraint) {
         final ReadAccessor fieldExtractor = indexableConstraint.getFieldExtractor();
         fieldType = fieldExtractor.getExtractToClass();
+        BlockStmt currentBlockStatement = getCurrentBlockStatement();
 
         final SwitchStmt switchStmt;
         final Statement nullCheck;
@@ -166,7 +167,7 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
                                                                              switchVariableName,
                                                                              parseExpression("readAccessor.getValue(fact)"));
 
-            this.allStatements.addStatement(switchVariable);
+            currentBlockStatement.addStatement(switchVariable);
             switchStmt = new SwitchStmt().setSelector(new NameExpr(switchVariableName));
 
             if (fieldType.isPrimitive()) {
@@ -174,7 +175,7 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
             } else {
                 nullCheck = new IfStmt()
                         .setCondition(new BinaryExpr(new NameExpr(switchVariableName), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS))
-                        .setThenStmt(switchStmt);
+                        .setThenStmt(new BlockStmt().addStatement(switchStmt));
             }
         } else { // Hashable but not inlinable
 
@@ -184,17 +185,17 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
                                                                              localVariableName,
                                                                              parseExpression("ToNodeId.get(readAccessor.getValue(fact))"));
 
-            this.allStatements.addStatement(expressionStmt);
+            currentBlockStatement.addStatement(expressionStmt);
 
             switchStmt = new SwitchStmt().setSelector(new MethodCallExpr(new NameExpr(localVariableName), "intValue", nodeList()));
 
             // ensure that the value is present in the node map
             nullCheck = new IfStmt()
                     .setCondition(new BinaryExpr(new NameExpr(localVariableName), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS))
-                    .setThenStmt(switchStmt);
+                    .setThenStmt(new BlockStmt().addStatement(switchStmt));
         }
 
-        this.allStatements.addStatement(nullCheck);
+        currentBlockStatement.addStatement(nullCheck);
         this.currentStatement.push(switchStmt);
     }
 

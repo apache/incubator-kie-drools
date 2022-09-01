@@ -543,4 +543,90 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Hello World");
     }
 
+    @Test
+    public void testNodeHashingWith2LevelConditionsCheckFirstCondition() {
+        // DROOLS-7137
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "global java.util.List results;\n" +
+                        "rule r1 when\n" +
+                        "  $p : Person( name == \"Luca\", likes == \"food\")\n" +
+                        "then\n" +
+                        "  results.add($p);\n" +
+                        "end\n" +
+                        "rule r2 when\n" +
+                        "  $p : Person( name == \"Luca\", likes == \"videogames\")\n" +
+                        "then\n" +
+                        "  results.add($p);\n" +
+                        "end\n" +
+                        "rule r3 when\n" +
+                        "  $p : Person( name == \"Luca\", likes == \"music\")\n" +
+                        "then\n" +
+                        "  results.add($p);\n" +
+                        "end";
+
+        final List<Person> results = new ArrayList<>();
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.setGlobal("results", results);
+
+        // Note Person.equals/hashCode depend on name+age
+        final Person mario33 = new Person("Mario", 33).setLikes("food");
+        final Person luca20 = new Person("Luca", 20).setLikes("music");
+        final Person luca18 = new Person("Luca", 18).setLikes("videogames");
+
+        ksession.insert(mario33);
+        ksession.insert(luca20);
+        ksession.insert(luca18);
+
+        ksession.fireAllRules();
+
+        assertThat(results).containsExactlyInAnyOrder(luca20, luca18);
+    }
+
+    @Test
+    public void testNodeHashingWith2LevelConditionsCheckFirstConditionWithLong() {
+        // DROOLS-7137
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "global java.util.List results;\n" +
+                        "rule r1 when\n" +
+                        "  $p : Person( name == \"Luca\", ageLong == 33)\n" +
+                        "then\n" +
+                        "  results.add($p);\n" +
+                        "end\n" +
+                        "rule r2 when\n" +
+                        "  $p : Person( name == \"Luca\", ageLong == 20)\n" +
+                        "then\n" +
+                        "  results.add($p);\n" +
+                        "end\n" +
+                        "rule r3 when\n" +
+                        "  $p : Person( name == \"Luca\", ageLong == 18)\n" +
+                        "then\n" +
+                        "  results.add($p);\n" +
+                        "end";
+
+        final List<Person> results = new ArrayList<>();
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.setGlobal("results", results);
+
+        // Note Person.equals/hashCode depend on name+age
+        final Person mario33 = new Person("Mario", 33);
+        mario33.setAgeLong(33);
+        final Person luca20 = new Person("Luca", 20);
+        luca20.setAgeLong(20);
+        final Person luca18 = new Person("Luca", 18);
+        luca18.setAgeLong(18);
+
+        ksession.insert(mario33);
+        ksession.insert(luca20);
+        ksession.insert(luca18);
+
+        ksession.fireAllRules();
+
+        assertThat(results).containsExactlyInAnyOrder(luca20, luca18);
+    }
 }

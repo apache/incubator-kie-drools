@@ -266,6 +266,8 @@ public class ObjectTypeNodeCompiler {
                     // need to quote value if it is a string
                     if (value.getClass().equals(String.class)) {
                         value = "\"" + value + "\"";
+                    } else if (value instanceof Long) {
+                        value = value + "L";
                     } else if (value instanceof BigDecimal) {
                         value = "new java.math.BigDecimal(\"" + value + "\")";
                     } else if (value instanceof BigInteger) {
