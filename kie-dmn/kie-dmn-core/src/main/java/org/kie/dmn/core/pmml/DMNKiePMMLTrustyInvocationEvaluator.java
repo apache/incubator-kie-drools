@@ -36,7 +36,7 @@ import org.kie.dmn.model.api.DMNElement;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
-import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
@@ -136,9 +136,10 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
                 .get(PmmlIdFactory.class)
                 .get(pmmlContext.getFileNameNoSuffix(), getSanitizedClassName(modelName));
         EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, pmmlContext);
-        Collection<EfestoOutput> retrieved = evaluateInput(darInputPMML);
-        if (retrieved.isEmpty()) {
-            LOG.warn("Failed to get a result for {}@{}: trying to invoke compilation....", pmmlContext.getFileName(),
+        Collection<EfestoOutput> retrieved;
+        if (!(isPresentExecutableOrRedirect(fri, pmmlContext))) {
+            LOG.warn("GeneratedResources for {}@{} are not present: trying to invoke compilation....",
+                     pmmlContext.getFileName(),
                      pmmlContext.getRequestData().getModelName());
             Map<String, GeneratedResources> generatedResourcesMap = compileFile(pmmlFileName,
                                                                                 memoryCompilerClassLoader);

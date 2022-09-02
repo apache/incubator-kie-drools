@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
+import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
@@ -62,6 +63,8 @@ public class ExplicitCanonicalModelCompiler<T extends PackageSources> {
     private final Function<PackageModel, T> sourceDumpFunction;
     private final boolean hasMvel = false;
     private final boolean oneClassPerRule = true;
+
+    private DroolsModelBuildContext context;
 
     public static <T extends PackageSources> ExplicitCanonicalModelCompiler<T> of(
             Collection<CompositePackageDescr> packages,
@@ -127,7 +130,7 @@ public class ExplicitCanonicalModelCompiler<T extends PackageSources> {
         phases.add(iteratingPhase((reg, acc) -> new RuleValidator(reg, acc, configuration))); // validateUniqueRuleNames
         phases.add(iteratingPhase((reg, acc) -> new ModelGeneratorPhase(reg, acc, packageModelManager.getPackageModel(acc, reg, acc.getName()), typeDeclarationContext))); // validateUniqueRuleNames
         phases.add(iteratingPhase((reg, acc) -> new SourceCodeGenerationPhase<>(
-                packageModelManager.getPackageModel(acc, reg, acc.getName()), packageSourceManager, sourceDumpFunction, oneClassPerRule))); // validateUniqueRuleNames
+                packageModelManager.getPackageModel(acc, reg, acc.getName()).setContext(context), packageSourceManager, sourceDumpFunction, oneClassPerRule))); // validateUniqueRuleNames
 
 
         for (CompilationPhase phase : phases) {
@@ -150,5 +153,10 @@ public class ExplicitCanonicalModelCompiler<T extends PackageSources> {
 
     public Collection<T> getPackageSources() {
         return packageSourceManager.getPackageSources();
+    }
+
+    public ExplicitCanonicalModelCompiler<T> setContext(DroolsModelBuildContext context) {
+        this.context = context;
+        return this;
     }
 }

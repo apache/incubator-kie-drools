@@ -34,12 +34,18 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.codegen.common.context.JavaDroolsModelBuildContext;
+import org.drools.model.codegen.project.template.TemplatedGenerator;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static org.drools.model.codegen.execmodel.JavaParserCompiler.getPrettyPrinter;
 
 public class RuleUnitWriter {
+
+    private static final String TEMPLATE_RULE_UNITS_FOLDER = "/class-templates/ruleunits/";
+
+    private final TemplatedGenerator.Builder templateBuilder;
 
     private final RuleUnitDescription ruleUnitDescr;
     private final PackageModel.RuleSourceResult ruleSourceResult;
@@ -51,6 +57,10 @@ public class RuleUnitWriter {
         this.pkgModel = pkgModel;
         this.ruleSourceResult = ruleSourceResult;
         this.ruleUnitDescr = ruleUnitDescr;
+        this.templateBuilder = TemplatedGenerator.builder()
+                .withTemplateBasePath(TEMPLATE_RULE_UNITS_FOLDER)
+                .withPackageName(pkgModel.getName())
+                .withFallbackContext(JavaDroolsModelBuildContext.CONTEXT_NAME);
     }
 
     public String getUnitName() {
@@ -74,12 +84,7 @@ public class RuleUnitWriter {
     }
 
     public String getUnitSource() {
-        CompilationUnit cu;
-        try {
-            cu = StaticJavaParser.parseResource("RuleUnitTemplate.java");
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        CompilationUnit cu = templateBuilder.build(pkgModel.getContext(), "RuleUnit").compilationUnitOrThrow("Could not create CompilationUnit");
 
         ClassOrInterfaceDeclaration parsedClass = cu
                 .getClassByName("CLASS_NAME")

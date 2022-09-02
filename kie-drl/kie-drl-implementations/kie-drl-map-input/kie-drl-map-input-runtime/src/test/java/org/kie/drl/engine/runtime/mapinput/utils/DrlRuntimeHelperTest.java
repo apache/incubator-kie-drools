@@ -43,6 +43,7 @@ class DrlRuntimeHelperTest {
     void canManage() {
         ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/drl/" + basePath));
         EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         AbstractEfestoInput darInputDrlMap = new EfestoInputDrlMap(modelLocalUriId, new EfestoMapInputDTO(null, null,
                                                                                                           null, null,
                                                                                                           null, null));

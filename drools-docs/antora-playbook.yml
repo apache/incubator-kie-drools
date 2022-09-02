@@ -5,7 +5,7 @@ site:
   start_page: drools::getting-started/index.adoc
   robots: allow
 content:
-  edit_url: '{web_url}/edit/main/{path}'
+  edit_url: ~
   sources:
     - url: ..
       branches: [HEAD]

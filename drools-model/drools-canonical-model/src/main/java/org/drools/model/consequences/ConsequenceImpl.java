@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import org.drools.model.Consequence;
 import org.drools.model.Variable;
+import org.drools.model.functions.Block0;
 import org.drools.model.functions.BlockN;
 import org.drools.model.impl.ModelComponent;
 
@@ -35,6 +36,8 @@ public class ConsequenceImpl implements Consequence, ModelComponent {
     private final boolean breaking;
 
     private final String language;
+
+    public static final Consequence EMPTY = new ConsequenceImpl(((Block0)(() -> {})).asBlockN(), new Variable[0], false, false, "java");
 
     public ConsequenceImpl(BlockN block, Variable[] variables, boolean usingDrools, boolean breaking, String language) {
         this.variables = variables;

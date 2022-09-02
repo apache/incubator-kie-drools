@@ -103,6 +103,9 @@
             </goals>
             <phase>compile</phase>
             <configuration>
+              <environmentVariables>
+                <CI>true</CI>
+              </environmentVariables>
               <executable>node/node</executable>
               <arguments>
                 <argument>${antora.binary}</argument>

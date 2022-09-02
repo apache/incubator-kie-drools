@@ -5,7 +5,7 @@ This guide walks you through the process of creating a simple Drools application
 
 == Prerequisites
 
-* https://adoptopenjdk.net/[JDK] {java-version}+ with `JAVA_HOME` configured appropriately
+* https://adoptium.net[JDK] {java-version}+ with `JAVA_HOME` configured appropriately
 * https://maven.apache.org/download.html[Apache Maven] {maven-version}+ 
 * Optionally, an IDE, such as IntelliJ IDEA, VSCode or Eclipse
 

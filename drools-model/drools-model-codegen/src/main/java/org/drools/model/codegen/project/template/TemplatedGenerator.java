@@ -15,14 +15,14 @@
  */
 package org.drools.model.codegen.project.template;
 
-import com.github.javaparser.ParseProblemException;
-import com.github.javaparser.ast.CompilationUnit;
-import org.drools.codegen.common.DroolsModelBuildContext;
-
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Optional;
+
+import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ast.CompilationUnit;
+import org.drools.codegen.common.DroolsModelBuildContext;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
@@ -54,16 +54,16 @@ public final class TemplatedGenerator {
 
     protected final String targetTypeName;
     protected final String fallbackContext;
-    protected final DroolsModelBuildContext context;
+    protected final String contextName;
 
     private TemplatedGenerator(
-            DroolsModelBuildContext context,
+            String contextName,
             String packageName,
             String targetTypeName,
             String templateBasePath,
             String templateName,
             String fallbackContext) {
-        this.context = context;
+        this.contextName = contextName;
         this.packageName = packageName;
         this.targetTypeName = targetTypeName;
         this.fallbackContext = fallbackContext;
@@ -119,12 +119,11 @@ public final class TemplatedGenerator {
      */
     public String templatePath() {
         String resourcePath = uncheckedTemplatePath();
-        String fallbackPath = createTemplatePath(templateBasePath, templateName, fallbackContext);
-
         if (getResource(resourcePath) != null) {
             return resourcePath;
         }
 
+        String fallbackPath = createTemplatePath(templateBasePath, templateName, fallbackContext);
         if (fallbackContext != null && getResource(fallbackPath) != null) {
             return fallbackPath;
         }
@@ -138,7 +137,7 @@ public final class TemplatedGenerator {
      * @return
      */
     public String uncheckedTemplatePath() {
-        return createTemplatePath(templateBasePath, templateName, context.name());
+        return createTemplatePath(templateBasePath, templateName, contextName);
     }
 
     private InputStream getResource(String path) {
@@ -183,11 +182,10 @@ public final class TemplatedGenerator {
         }
 
         public TemplatedGenerator build(DroolsModelBuildContext context, String templateName) {
-            Objects.requireNonNull(context, "context cannot be null");
             Objects.requireNonNull(templateName, "templateName cannot be null");
             String aPackageName = packageName == null ? context.getPackageName() : packageName;
             String aTargetTypeName = targetTypeName == null ? templateName : targetTypeName;
-            return new TemplatedGenerator(context, aPackageName, aTargetTypeName, templateBasePath, templateName, fallbackContext);
+            return new TemplatedGenerator(context != null ? context.name() : null, aPackageName, aTargetTypeName, templateBasePath, templateName, fallbackContext);
         }
     }
 }
