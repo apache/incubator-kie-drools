@@ -16,6 +16,11 @@ import io.fabric8.kubernetes.model.annotation.Version;
 public final class OptaPlannerSolver extends CustomResource<OptaPlannerSolverSpec, OptaPlannerSolverStatus>
         implements Namespaced {
 
+    @Override
+    protected OptaPlannerSolverStatus initStatus() {
+        return new OptaPlannerSolverStatus();
+    }
+
     // TODO: Move all the following methods away if this class ever becomes an API.
     @JsonIgnore
     public String getNamespace() {

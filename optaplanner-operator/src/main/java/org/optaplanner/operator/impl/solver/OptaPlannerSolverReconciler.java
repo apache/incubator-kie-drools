@@ -72,29 +72,39 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
 
     @Override
     public UpdateControl<OptaPlannerSolver> reconcile(OptaPlannerSolver solver, Context<OptaPlannerSolver> context) {
+        boolean isReady = true;
         deploymentDependentResource.reconcile(solver, context);
         inputQueueDependentResource.reconcile(solver, context);
         outputQueueDependentResource.reconcile(solver, context);
-
         if (solver.getSpec().getScaling().isDynamic()) {
             triggerAuthenticationDependentResource.reconcile(solver, context);
             scaledObjectDependentResource.reconcile(solver, context);
+
+            if (scaledObjectDependentResource.getSecondaryResource(solver).isEmpty() ||
+                    triggerAuthenticationDependentResource.getSecondaryResource(solver).isEmpty()) {
+                isReady = false;
+            }
         }
 
         Optional<ArtemisQueue> inputQueue = inputQueueDependentResource.getSecondaryResource(solver);
         Optional<ArtemisQueue> outputQueue = outputQueueDependentResource.getSecondaryResource(solver);
-
-        OptaPlannerSolverStatus solverStatus = OptaPlannerSolverStatus.success();
-        solver.setStatus(solverStatus);
-        if (inputQueue.isPresent()) {
-            solverStatus.setInputMessageAddress(inputQueue.get().getSpec().getQueueName());
-        }
-        if (outputQueue.isPresent()) {
-            solverStatus.setOutputMessageAddress(outputQueue.get().getSpec().getQueueName());
+        if (inputQueue.isEmpty() || outputQueue.isEmpty()) {
+            isReady = false;
         }
 
         if (inputQueue.isPresent() && outputQueue.isPresent()) {
             configMapDependentResource.reconcile(solver, context);
+            if (configMapDependentResource.getSecondaryResource(solver).isEmpty()) {
+                isReady = false;
+            }
+        }
+
+        if (isReady) {
+            solver.setStatus(OptaPlannerSolverStatus.ready(solver.getMetadata().getGeneration()));
+            solver.getStatus().setInputMessageAddress(inputQueue.get().getSpec().getQueueName());
+            solver.getStatus().setOutputMessageAddress(outputQueue.get().getSpec().getQueueName());
+        } else {
+            solver.setStatus(OptaPlannerSolverStatus.unknown(solver.getMetadata().getGeneration()));
         }
         return UpdateControl.updateStatus(solver);
     }
@@ -102,7 +112,7 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
     @Override
     public ErrorStatusUpdateControl<OptaPlannerSolver> updateErrorStatus(OptaPlannerSolver solver,
             Context<OptaPlannerSolver> context, Exception e) {
-        solver.setStatus(OptaPlannerSolverStatus.error(e));
+        solver.setStatus(OptaPlannerSolverStatus.error(solver.getMetadata().getGeneration(), e));
         return ErrorStatusUpdateControl.updateStatus(solver);
     }
 }

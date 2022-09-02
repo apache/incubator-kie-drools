@@ -18,6 +18,7 @@ import org.optaplanner.operator.impl.solver.model.AmqBroker;
 import org.optaplanner.operator.impl.solver.model.ConfigMapDependentResource;
 import org.optaplanner.operator.impl.solver.model.OptaPlannerSolver;
 import org.optaplanner.operator.impl.solver.model.OptaPlannerSolverSpec;
+import org.optaplanner.operator.impl.solver.model.OptaPlannerSolverStatus;
 import org.optaplanner.operator.impl.solver.model.Scaling;
 import org.optaplanner.operator.impl.solver.model.keda.ScaledObject;
 import org.optaplanner.operator.impl.solver.model.keda.ScaledObjectDependentResource;
@@ -26,6 +27,7 @@ import org.optaplanner.operator.impl.solver.model.keda.Trigger;
 import org.optaplanner.operator.impl.solver.model.keda.TriggerAuthentication;
 import org.optaplanner.operator.impl.solver.model.keda.TriggerAuthenticationDependentResource;
 
+import io.fabric8.kubernetes.api.model.Condition;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.SecretKeySelector;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
@@ -77,12 +79,15 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
                     .withName(solver.getMetadata().getName())
                     .get();
             assertThat(updatedSolver.getStatus()).isNotNull();
+            assertThat(updatedSolver.getStatus().getConditions()).isNotEmpty();
+            Condition condition = updatedSolver.getStatus().getConditions().get(0);
+            assertStatusCondition(condition, updatedSolver, OptaPlannerSolverStatus.ConditionStatus.TRUE);
+
             assertThat(updatedSolver.getStatus().getInputMessageAddress())
                     .isEqualTo(expectedMessageAddressIn);
             assertThat(updatedSolver.getStatus().getOutputMessageAddress())
                     .isEqualTo(expectedMessageAddressOut);
         });
-
         ConfigMap configMap = getClient()
                 .resources(ConfigMap.class)
                 .inNamespace(solver.getMetadata().getNamespace())
@@ -156,6 +161,28 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
         });
     }
 
+    @Test
+    void incorrectSolverResource_FailedCondition() {
+        final OptaPlannerSolver solver = new OptaPlannerSolver();
+        final String solverName = "incorrect-solver";
+        solver.getMetadata().setName(solverName);
+        solver.getMetadata().setNamespace(namespace);
+        solver.setSpec(new OptaPlannerSolverSpec()); // Empty spec.
+        getClient().resources(OptaPlannerSolver.class).create(solver);
+
+        await().ignoreException(NullPointerException.class).atMost(1, MINUTES).untilAsserted(() -> {
+            OptaPlannerSolver updatedSolver = getClient()
+                    .resources(OptaPlannerSolver.class)
+                    .inNamespace(solver.getMetadata().getNamespace())
+                    .withName(solver.getMetadata().getName())
+                    .get();
+
+            assertThat(updatedSolver.getStatus().getConditions()).isNotEmpty();
+            Condition condition = updatedSolver.getStatus().getConditions().get(0);
+            assertStatusCondition(condition, updatedSolver, OptaPlannerSolverStatus.ConditionStatus.FALSE);
+        });
+    }
+
     private KubernetesClient getClient() {
         return getMockServer().getClient().inNamespace(namespace);
     }
@@ -165,6 +192,17 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(secretTargetRef.getName()).isEqualTo(secretKeySelector.getName());
             softly.assertThat(secretTargetRef.getKey()).isEqualTo(secretKeySelector.getKey());
+        });
+    }
+
+    private void assertStatusCondition(Condition condition, OptaPlannerSolver optaPlannerSolver,
+            OptaPlannerSolverStatus.ConditionStatus expectedStatus) {
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(condition.getType()).isEqualTo(OptaPlannerSolverStatus.CONDITION_TYPE_READY);
+            softly.assertThat(condition.getStatus()).isEqualTo(expectedStatus.getName());
+            softly.assertThat(condition.getLastTransitionTime()).isNotEmpty();
+            softly.assertThat(condition.getObservedGeneration())
+                    .isEqualTo(optaPlannerSolver.getMetadata().getGeneration());
         });
     }
 

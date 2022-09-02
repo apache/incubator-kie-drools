@@ -26,10 +26,8 @@ public final class ConfigMapDependentResource extends CRUDKubernetesDependentRes
     @Override
     protected ConfigMap desired(OptaPlannerSolver solver, Context<OptaPlannerSolver> context) {
         Map<String, String> data = new HashMap<>();
-        if (solver.getStatus() != null) {
-            data.put(SOLVER_MESSAGE_INPUT_KEY, solver.getStatus().getInputMessageAddress());
-            data.put(SOLVER_MESSAGE_OUTPUT_KEY, solver.getStatus().getOutputMessageAddress());
-        }
+        data.put(SOLVER_MESSAGE_INPUT_KEY, solver.getInputMessageAddressName());
+        data.put(SOLVER_MESSAGE_OUTPUT_KEY, solver.getOutputMessageAddressName());
         data.put(SOLVER_MESSAGE_AMQ_HOST_KEY, solver.getSpec().getAmqBroker().getHost());
         data.put(SOLVER_MESSAGE_AMQ_PORT_KEY, String.valueOf(solver.getSpec().getAmqBroker().getPort()));
 
