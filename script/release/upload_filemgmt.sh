@@ -54,10 +54,12 @@ cd filemgmt_links
 touch ${kieVersion}
 ln -s ${kieVersion} latest
 
-# Comment out until Drools 8 GA
-#echo "Uploading normal links..."
-#rsync -e "ssh -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --protocol=28 -a latest $rsync_filemgmt:${droolsDocs}
-#rsync -e "ssh -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --protocol=28 -a latest $rsync_filemgmt:${droolsHtdocs}
+# do not link latest to Beta
+if [[ "${kieVersion}" == *Final* ]]; then
+    echo "Uploading normal links..."
+    rsync -e "ssh -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --protocol=28 -a latest $rsync_filemgmt:${droolsDocs}
+    rsync -e "ssh -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --protocol=28 -a latest $rsync_filemgmt:${droolsHtdocs}
+fi
 
 ###############################################################################
 # latestFinal drools links
