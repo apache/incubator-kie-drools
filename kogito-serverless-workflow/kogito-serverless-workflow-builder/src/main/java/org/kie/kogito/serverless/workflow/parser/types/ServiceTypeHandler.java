@@ -47,12 +47,10 @@ public class ServiceTypeHandler extends WorkItemTypeHandler {
     @Override
     protected WorkItemNodeFactory<?> buildWorkItem(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             ParserContext context,
-            FunctionDefinition functionDef,
             String inputVar,
             String outputVar) {
         return embeddedSubProcess
                 .workItemNode(context.newId())
-                .name(functionDef.getName())
                 .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, SERVICE_TASK_TYPE)
                 .workName(SERVICE_TASK_TYPE)
                 .inMapping(inputVar, WORKITEM_PARAM)
