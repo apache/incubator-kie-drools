@@ -15,9 +15,11 @@
  */
 package org.kie.efesto.compilationmanager.api.model;
 
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoContext;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
@@ -38,6 +40,7 @@ public interface EfestoCompilationContext<T extends EfestoListener> extends Efes
     static EfestoCompilationContext buildFromContext(EfestoCompilationContextImpl original, Class<? extends EfestoCompilationContext> toInstantiate) {
         try {
             EfestoCompilationContext toReturn = toInstantiate.getDeclaredConstructor(KieMemoryCompiler.MemoryCompilerClassLoader.class).newInstance(original.memoryCompilerClassLoader);
+            toReturn.getGeneratedResourcesMap().putAll(original.getGeneratedResourcesMap());
             return toReturn;
         } catch (Exception e) {
             throw new EfestoCompilationManagerException("Failed to instantiate " + toInstantiate.getName(), e);
@@ -52,5 +55,7 @@ public interface EfestoCompilationContext<T extends EfestoListener> extends Efes
 
     byte[] getCode(String name);
 
-
+    default Map<String, IndexFile> createIndexFiles(Path targetDirectory) {
+        throw new UnsupportedOperationException();
+    }
 }

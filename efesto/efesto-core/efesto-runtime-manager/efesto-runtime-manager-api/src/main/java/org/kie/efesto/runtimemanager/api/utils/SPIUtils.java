@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
@@ -101,5 +103,15 @@ public class SPIUtils {
             runtimeManagerLoader.reload();
         }
         return runtimeManagerLoader;
+    }
+
+    public static Set<String> collectModelTypes(EfestoRuntimeContext context) {
+        List<KieRuntimeService> kieRuntimeServices = getKieRuntimeServices(false);
+        Set<String> modelTypes = kieRuntimeServices.stream().map(KieRuntimeService::getModelType).collect(Collectors.toSet());
+        ServiceLoader<KieRuntimeService> serviceLoader = context.getKieRuntimeService();
+        for (KieRuntimeService kieRuntimeService : serviceLoader) {
+            modelTypes.add(kieRuntimeService.getModelType());
+        }
+        return modelTypes;
     }
 }

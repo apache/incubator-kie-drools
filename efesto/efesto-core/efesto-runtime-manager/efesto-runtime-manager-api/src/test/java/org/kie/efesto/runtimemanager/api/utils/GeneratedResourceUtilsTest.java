@@ -20,10 +20,10 @@ import java.net.URLClassLoader;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,21 +32,22 @@ class GeneratedResourceUtilsTest {
     @Test
     void getGeneratedExecutableResource() {
         FRI fri = new FRI("testmod", "test");
-        Optional<GeneratedExecutableResource> retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(fri, "test");
+        EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        Optional<GeneratedExecutableResource> retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(fri, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isPresent();
         fri = new FRI("notestmod", "test");
-        retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(fri, "test");
+        retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(fri, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isNotPresent();
     }
 
     @Test
     void getGeneratedRedirectResourceFromFile() {
         FRI fri = new FRI("redirecttestmod", "test");
-        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri,
-                                                                                                            "test");
+        EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isPresent();
         fri = new FRI("redirectnotestmod", "test");
-        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, "test");
+        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isNotPresent();
     }
 
@@ -54,28 +55,12 @@ class GeneratedResourceUtilsTest {
     void getGeneratedRedirectResourceFromJar() {
         ClassLoader originalClassLoader = addJarToClassLoader();
         FRI fri = new FRI("redirecttestmod", "testb");
-        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri,
-                                                                                                            "testb");
+        EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isPresent();
         fri = new FRI("redirectnotestmod", "testb");
-        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, "testb");
+        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isNotPresent();
-        restoreClassLoader(originalClassLoader);
-    }
-
-    @Test
-    void getIndexFileFromFile() {
-        Optional<IndexFile> retrieved = GeneratedResourceUtils.getIndexFile("test");
-        assertThat(retrieved).isNotNull().isPresent();
-    }
-
-    @Test
-    void getIndexFileFromJar() {
-        ClassLoader originalClassLoader = addJarToClassLoader();
-        Optional<IndexFile> retrieved = GeneratedResourceUtils.getIndexFile("testb");
-        assertThat(retrieved).isNotNull().isPresent();
-        IndexFile indexFile = retrieved.get();
-        assertThat(indexFile.length()).isGreaterThan(0);
         restoreClassLoader(originalClassLoader);
     }
 

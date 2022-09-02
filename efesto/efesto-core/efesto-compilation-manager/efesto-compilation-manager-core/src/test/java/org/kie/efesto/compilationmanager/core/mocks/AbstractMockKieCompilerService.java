@@ -35,4 +35,8 @@ public abstract class AbstractMockKieCompilerService implements KieCompilerServi
         return Collections.singletonList(new MockEfestoCallableOutput());
     }
 
+    @Override
+    public String getModelType() {
+        return "mock";
+    }
 }

@@ -46,4 +46,10 @@ public interface KieRuntimeService<S, U, T extends EfestoInput<S>, E extends Efe
      */
     Optional<E> evaluateInput(T toEvaluate, K context);
 
+    /**
+     * Return the model type that the RuntimeService handles
+     *
+     * @return model type
+     */
+    String getModelType();
 }

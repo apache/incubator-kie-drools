@@ -15,19 +15,15 @@
  */
 package org.kie.efesto.runtimemanager.api.utils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.common.api.io.MemoryFile;
+import org.kie.efesto.common.api.model.EfestoContext;
 import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
@@ -36,8 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.utils.CollectionUtils.findAtMostOne;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
-import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 
 public class GeneratedResourceUtils {
 
@@ -46,89 +40,65 @@ public class GeneratedResourceUtils {
     private GeneratedResourceUtils() {
     }
 
-    public static boolean isPresentExecutableOrRedirect(FRI fri, String modelType) {
+    public static boolean isPresentExecutableOrRedirect(FRI fri, EfestoContext context) {
         return Stream
-                .of(getGeneratedExecutableResource(fri, modelType),
-                        getGeneratedRedirectResource(fri, modelType))
+                .of(getGeneratedExecutableResource(fri, context.getGeneratedResourcesMap()),
+                    getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap()))
                 .anyMatch(Optional::isPresent);
     }
 
-    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, String modelType) {
-        return getIndexFile(modelType).flatMap(indexFile -> getGeneratedExecutableResource(fri, indexFile));
+    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, Map<String, GeneratedResources> generatedResourcesMap) {
+        if (!generatedResourcesMap.containsKey(fri.getModel())) {
+            return Optional.empty();
+        } else {
+            return getGeneratedExecutableResource(fri, generatedResourcesMap.get(fri.getModel()));
+        }
     }
 
-    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, IndexFile indexFile) {
-        Collection<GeneratedExecutableResource> allExecutableResources = getAllGeneratedExecutableResources(indexFile);
+    /**
+     * find GeneratedExecutableResource from GeneratedResources without IndexFile
+     */
+    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, GeneratedResources generatedResources) {
+        Collection<GeneratedExecutableResource> allExecutableResources = new HashSet<>();
+        allExecutableResources.addAll(generatedResources.stream()
+                                    .filter(GeneratedExecutableResource.class::isInstance)
+                                    .map(GeneratedExecutableResource.class::cast)
+                                    .collect(Collectors.toSet()));
         return findAtMostOne(allExecutableResources,
                              generatedResource -> generatedResource.getFri().equals(fri),
                              (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + fri));
     }
 
-    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(FRI fri, String modelType) {
-        return getIndexFile(modelType).flatMap(indexFile -> {
-            try {
-                GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
-                return generatedResources.stream()
-                        .filter(generatedResource -> generatedResource instanceof GeneratedRedirectResource &&
-                                ((GeneratedRedirectResource) generatedResource).getFri().equals(fri))
-                        .findFirst()
-                        .map(GeneratedRedirectResource.class::cast);
-            } catch (Exception e) {
-                logger.error("Failed to read GeneratedResources from {}.", indexFile.getName(), e);
-                return Optional.empty();
-            }
-        });
+    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(FRI fri, Map<String, GeneratedResources> generatedResourcesMap) {
+        if (!generatedResourcesMap.containsKey(fri.getModel())) {
+            return Optional.empty();
+        } else {
+            return getGeneratedRedirectResource(fri, generatedResourcesMap.get(fri.getModel()));
+        }
     }
 
-    public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(String modelType) {
-        return getIndexFile(modelType).map(GeneratedResourceUtils::getAllGeneratedExecutableResources).orElse(Collections.emptySet());
+    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(FRI fri, GeneratedResources generatedResources) {
+        Collection<GeneratedRedirectResource> allExecutableResources = new HashSet<>();
+        allExecutableResources.addAll(generatedResources.stream()
+                                              .filter(GeneratedRedirectResource.class::isInstance)
+                                              .map(GeneratedRedirectResource.class::cast)
+                                              .collect(Collectors.toSet()));
+        return findAtMostOne(allExecutableResources,
+                             generatedResource -> generatedResource.getFri().equals(fri),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Redirect Resource (" + s1 + " and " + s2 + ") for " + fri));
     }
 
-    public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(IndexFile indexFile) {
-        logger.debug("getAllGeneratedExecutableResources {}", indexFile);
+    public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(GeneratedResources generatedResources) {
         Collection<GeneratedExecutableResource> toReturn = new HashSet<>();
         try {
-            GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
             logger.debug("generatedResources {}", generatedResources);
             toReturn.addAll(generatedResources.stream()
-                                    .filter(GeneratedExecutableResource.class::isInstance)
-                                    .map(GeneratedExecutableResource.class::cast)
-                                    .collect(Collectors.toSet()));
+                                              .filter(GeneratedExecutableResource.class::isInstance)
+                                              .map(GeneratedExecutableResource.class::cast)
+                                              .collect(Collectors.toSet()));
         } catch (Exception e) {
-            logger.error("Failed to read GeneratedClassResource from {}.", indexFile.getName(), e);
+            logger.error("Failed to read GeneratedClassResource from context.", e);
         }
         return toReturn;
     }
-
-    public static Collection<GeneratedClassResource> getAllGeneratedClassResources(String modelType) {
-        Collection<GeneratedClassResource> toReturn = new HashSet<>();
-        getIndexFile(modelType).ifPresent(indexFile -> {
-            try {
-                GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
-                toReturn.addAll(generatedResources.stream()
-                                        .filter(GeneratedClassResource.class::isInstance)
-                                        .map(GeneratedClassResource.class::cast)
-                                        .collect(Collectors.toSet()));
-            } catch (Exception e) {
-                logger.debug("Failed to read GeneratedClassResource from {}.", indexFile.getName(), e);
-            }
-        });
-        return toReturn;
-    }
-
-    public static Optional<IndexFile> getIndexFile(String modelType) {
-        logger.debug("getIndexFile {}", modelType);
-        IndexFile toSearch = new IndexFile(modelType);
-        Optional<File> retrieved = getFileFromFileName(toSearch.getName());
-        if (retrieved.isPresent()) {
-            File actualFile = retrieved.get();
-            IndexFile toReturn = actualFile instanceof MemoryFile ?
-                    new IndexFile((MemoryFile)actualFile) : new IndexFile(actualFile);
-            logger.debug("returning {}", toReturn);
-            return Optional.of(toReturn);
-        }
-        logger.debug("returning empty");
-        return Optional.empty();
-    }
-
 }
