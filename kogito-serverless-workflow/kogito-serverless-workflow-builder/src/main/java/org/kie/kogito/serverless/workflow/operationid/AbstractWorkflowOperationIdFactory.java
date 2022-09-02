@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
+import static java.lang.String.format;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.onlyChars;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.removeExt;
 
@@ -51,7 +52,13 @@ public abstract class AbstractWorkflowOperationIdFactory implements WorkflowOper
             uri = URI.create(actionResource.getUri());
             fileName = getFileName(workflow, function, context, uri, actionResource.getOperation(), actionResource.getService());
         }
-        return new WorkflowOperationId(uri, actionResource.getOperation(), actionResource.getService(), fileName, onlyChars(removeExt(fileName.toLowerCase())));
+        String packageName = onlyChars(removeExt(fileName.toLowerCase()));
+        if (packageName == null || packageName.isBlank()) {
+            throw new IllegalArgumentException(
+                    format("Unable to define a package name for function named '%s', please consider using a different strategy defined in the kogito.sw.operationIdStrategy property.",
+                            function.getName()));
+        }
+        return new WorkflowOperationId(uri, actionResource.getOperation(), actionResource.getService(), fileName, packageName);
     }
 
     private Optional<String> convertURI(Workflow workflow, Optional<ParserContext> context, String uri) {

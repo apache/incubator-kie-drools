@@ -68,7 +68,7 @@ class HttpContentLoader extends FallbackContentLoader {
             } else {
                 try (InputStream is = conn.getErrorStream()) {
                     throw new IllegalArgumentException(String.format(
-                            "Failed to fetch remote file: %s. Status code is %d and response: %n %s", u.toString(), code, new String(is.readAllBytes())));
+                            "Failed to fetch remote file: %s. Status code is %d and response: %n %s", u, code, is == null ? "" : new String(is.readAllBytes())));
                 }
             }
         } catch (IOException io) {
