@@ -111,6 +111,7 @@ import org.drools.model.View;
 import org.drools.model.WindowDefinition;
 import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
+import org.drools.model.consequences.ConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.AbstractSingleConstraint;
 import org.drools.model.constraints.SingleConstraint1;
@@ -378,8 +379,13 @@ public class KiePackagesBuilder {
     }
 
     private void processConsequences( RuleContext ctx, Map<String, Consequence> consequences ) {
-        for (Map.Entry<String, Consequence> entry : consequences.entrySet()) {
-            processConsequence( ctx, entry.getValue(), entry.getKey() );
+        if (consequences.isEmpty()) {
+            // if there's no consequence set an empty one
+            processConsequence( ctx, ConsequenceImpl.EMPTY, RuleImpl.DEFAULT_CONSEQUENCE_NAME );
+        } else {
+            for (Map.Entry<String, Consequence> entry : consequences.entrySet()) {
+                processConsequence( ctx, entry.getValue(), entry.getKey() );
+            }
         }
     }
 
