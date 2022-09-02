@@ -15,6 +15,7 @@
  */
 package org.kie.efesto.quarkus.deployment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,12 +34,15 @@ import org.kie.efesto.common.api.model.GeneratedResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.core.service.CompilationManagerImpl;
 import org.kie.efesto.runtimemanager.core.service.RuntimeManagerImpl;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
 
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 
 import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
+import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.dumpFilesToDisk;
 
 /**
  * Main class of the Kogito extension
@@ -63,21 +67,22 @@ public class EfestoProcessor {
     }
 
     @BuildStep
-    public List<ReflectiveClassBuildItem> reflectiveEfestoGeneratedClasses(List<EfestoGeneratedClassBuildItem> efestoGeneratedClassBuildItem) {
-        LOGGER.debugf("reflectiveEfestoGeneratedClasses %s", efestoGeneratedClassBuildItem);
+    public List<ReflectiveClassBuildItem> reflectiveEfestoGeneratedClasses(List<EfestoGeneratedClassBuildItem> efestoGeneratedClassBuildItem, KogitoBuildContextBuildItem contextBuildItem) {
+        LOGGER.debugf("reflectiveEfestoGeneratedClasses %s %s", efestoGeneratedClassBuildItem, contextBuildItem);
         final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
         efestoGeneratedClassBuildItem.forEach(generatedClassBuildItem -> {
             Map<GeneratedFileType, List<GeneratedFile>> mappedGeneratedFiles = generatedClassBuildItem.getGeneratedFiles().stream()
                     .collect(Collectors.groupingBy(GeneratedFile::type));
             List<GeneratedFile> generatedCompiledFiles = mappedGeneratedFiles.getOrDefault(COMPILED_CLASS,
                     Collections.emptyList());
-            LOGGER.debugf("generatedCompiledFiles {}", generatedCompiledFiles);
+            LOGGER.debugf("generatedCompiledFiles %s", generatedCompiledFiles);
+            dumpGeneratedClasses(generatedCompiledFiles, contextBuildItem);
             Collection<ReflectiveClassBuildItem> reflectiveClassBuildItems =
                     makeReflectiveClassBuildItems(generatedCompiledFiles);
-            LOGGER.infof("reflectiveClassBuildItems {}", reflectiveClassBuildItems);
+            LOGGER.infof("reflectiveClassBuildItems %s", reflectiveClassBuildItems);
             toReturn.addAll(reflectiveClassBuildItems);
         });
-        LOGGER.debugf("toReturn {}", toReturn);
+        LOGGER.debugf("toReturn %s", toReturn);
         return toReturn;
     }
 
@@ -103,6 +108,28 @@ public class EfestoProcessor {
     public NativeImageResourceBuildItem efestoSPIRuntimePlugin() {
         LOGGER.debug("efestoSPIRuntime()");
         return new NativeImageResourceBuildItem("META-INF/services/org.kie.efesto.runtimemanager.api.service.KieRuntimeService");
+    }
+
+    private static void dumpGeneratedClasses(List<GeneratedFile> generatedCompiledFiles, KogitoBuildContextBuildItem contextBuildItem) {
+        LOGGER.debugf("dumpGeneratedClasses %s %s", generatedCompiledFiles, contextBuildItem);
+        List<GeneratedFile> dumpableFiles = getDumpableFiles(generatedCompiledFiles);
+        final KogitoBuildContext context = contextBuildItem.getKogitoBuildContext();
+        dumpFilesToDisk(context.getAppPaths(), dumpableFiles);
+
+    }
+
+    private static List<GeneratedFile> getDumpableFiles(List<GeneratedFile> generatedCompiledFiles) {
+        LOGGER.debugf("getDumpableFiles %s", generatedCompiledFiles);
+        return generatedCompiledFiles.stream()
+                .map(generatedFile -> {
+                    File file = generatedFile.path().toFile();
+                    String stringPath = file.getPath();
+                    File correctedFile = new File(stringPath.replaceAll("\\.", "/") + ".class");
+                    return new GeneratedFile(generatedFile.type(),
+                            correctedFile.toPath(),
+                            generatedFile.contents());
+                })
+                .collect(Collectors.toList());
     }
 
     private static Collection<ReflectiveClassBuildItem> makeReflectiveClassBuildItems(List<GeneratedFile> generatedCompiledFiles) {
