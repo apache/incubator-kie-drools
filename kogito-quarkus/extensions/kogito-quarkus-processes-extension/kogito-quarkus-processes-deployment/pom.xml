@@ -33,6 +33,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-devservices-common</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
     <!-- codegen dependencies -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
