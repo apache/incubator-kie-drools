@@ -148,7 +148,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_)
                 .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         ScoreBounder scoreBounder = scoreBounderEnabled
-                ? new TrendBasedScoreBounder(configPolicy.getScoreDirectorFactory())
+                ? new TrendBasedScoreBounder(configPolicy.getScoreDefinition(), configPolicy.getInitializingScoreTrend())
                 : null;
         ExhaustiveSearchDecider<Solution_> decider = new ExhaustiveSearchDecider<>(configPolicy.getLogIndentation(),
                 bestSolutionRecaller, termination,

@@ -14,7 +14,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicReco
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
+import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 
@@ -25,7 +25,8 @@ public class HeuristicConfigPolicy<Solution_> {
     private final Integer moveThreadCount;
     private final Integer moveThreadBufferSize;
     private final Class<? extends ThreadFactory> threadFactoryClass;
-    private final InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory;
+    private final InitializingScoreTrend initializingScoreTrend;
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
 
     private final EntitySorterManner entitySorterManner;
     private final ValueSorterManner valueSorterManner;
@@ -42,7 +43,8 @@ public class HeuristicConfigPolicy<Solution_> {
         this.moveThreadCount = builder.moveThreadCount;
         this.moveThreadBufferSize = builder.moveThreadBufferSize;
         this.threadFactoryClass = builder.threadFactoryClass;
-        this.scoreDirectorFactory = builder.scoreDirectorFactory;
+        this.initializingScoreTrend = builder.initializingScoreTrend;
+        this.solutionDescriptor = builder.solutionDescriptor;
         this.entitySorterManner = builder.entitySorterManner;
         this.valueSorterManner = builder.valueSorterManner;
         this.reinitializeVariableFilterEnabled = builder.reinitializeVariableFilterEnabled;
@@ -65,16 +67,16 @@ public class HeuristicConfigPolicy<Solution_> {
         return moveThreadBufferSize;
     }
 
+    public InitializingScoreTrend getInitializingScoreTrend() {
+        return initializingScoreTrend;
+    }
+
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
-        return scoreDirectorFactory.getSolutionDescriptor();
+        return solutionDescriptor;
     }
 
     public ScoreDefinition getScoreDefinition() {
-        return scoreDirectorFactory.getScoreDefinition();
-    }
-
-    public InnerScoreDirectorFactory<Solution_, ?> getScoreDirectorFactory() {
-        return scoreDirectorFactory;
+        return solutionDescriptor.getScoreDefinition();
     }
 
     public EntitySorterManner getEntitySorterManner() {
@@ -98,8 +100,8 @@ public class HeuristicConfigPolicy<Solution_> {
     // ************************************************************************
 
     public Builder<Solution_> cloneBuilder() {
-        return new Builder<>(environmentMode, moveThreadCount, moveThreadBufferSize, threadFactoryClass, scoreDirectorFactory)
-                .withLogIndentation(logIndentation);
+        return new Builder<>(environmentMode, moveThreadCount, moveThreadBufferSize, threadFactoryClass, initializingScoreTrend,
+                solutionDescriptor).withLogIndentation(logIndentation);
     }
 
     public HeuristicConfigPolicy<Solution_> createPhaseConfigPolicy() {
@@ -170,7 +172,8 @@ public class HeuristicConfigPolicy<Solution_> {
         private final Integer moveThreadCount;
         private final Integer moveThreadBufferSize;
         private final Class<? extends ThreadFactory> threadFactoryClass;
-        private final InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory;
+        private final InitializingScoreTrend initializingScoreTrend;
+        private final SolutionDescriptor<Solution_> solutionDescriptor;
 
         private String logIndentation = "";
 
@@ -182,12 +185,13 @@ public class HeuristicConfigPolicy<Solution_> {
 
         public Builder(EnvironmentMode environmentMode, Integer moveThreadCount,
                 Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,
-                InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory) {
+                InitializingScoreTrend initializingScoreTrend, SolutionDescriptor<Solution_> solutionDescriptor) {
             this.environmentMode = environmentMode;
             this.moveThreadCount = moveThreadCount;
             this.moveThreadBufferSize = moveThreadBufferSize;
             this.threadFactoryClass = threadFactoryClass;
-            this.scoreDirectorFactory = scoreDirectorFactory;
+            this.initializingScoreTrend = initializingScoreTrend;
+            this.solutionDescriptor = solutionDescriptor;
         }
 
         public Builder<Solution_> withLogIndentation(String logIndentation) {

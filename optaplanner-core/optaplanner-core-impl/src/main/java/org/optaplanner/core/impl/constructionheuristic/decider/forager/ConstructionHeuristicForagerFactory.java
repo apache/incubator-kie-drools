@@ -20,7 +20,7 @@ public class ConstructionHeuristicForagerFactory<Solution_> {
     public ConstructionHeuristicForager<Solution_> buildForager(HeuristicConfigPolicy<Solution_> configPolicy) {
         ConstructionHeuristicPickEarlyType pickEarlyType_;
         if (foragerConfig.getPickEarlyType() == null) {
-            pickEarlyType_ = configPolicy.getScoreDirectorFactory().getInitializingScoreTrend().isOnlyDown()
+            pickEarlyType_ = configPolicy.getInitializingScoreTrend().isOnlyDown()
                     ? ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE
                     : ConstructionHeuristicPickEarlyType.NEVER;
         } else {

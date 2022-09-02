@@ -3,6 +3,8 @@ package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.constructionheuristic.placer.entity.PlacementAssertions.assertValuePlacement;
+import static org.optaplanner.core.impl.heuristic.HeuristicConfigPolicyTestUtils.buildHeuristicConfigPolicy;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -10,23 +12,18 @@ import java.util.Iterator;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacer;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacerFactory;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-class QueuedValuePlacerFactoryTest extends AbstractEntityPlacerTest {
+class QueuedValuePlacerFactoryTest {
 
     @Test
     void buildEntityPlacer_withoutConfiguredMoveSelector() {
@@ -54,15 +51,6 @@ class QueuedValuePlacerFactoryTest extends AbstractEntityPlacerTest {
         Placement<TestdataSolution> placement = placementIterator.next();
 
         assertValuePlacement(placement, "v1", "e1", "e2");
-    }
-
-    public HeuristicConfigPolicy<TestdataSolution> buildHeuristicConfigPolicy() {
-        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        InnerScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
-        when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
-        when(scoreDirectorFactory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
-        return new HeuristicConfigPolicy.Builder<>(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory)
-                .build();
     }
 
     private TestdataSolution generateSolution() {

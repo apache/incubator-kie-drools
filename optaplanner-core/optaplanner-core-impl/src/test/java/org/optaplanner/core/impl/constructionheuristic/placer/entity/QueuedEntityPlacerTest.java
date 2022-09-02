@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.constructionheuristic.placer.entity.PlacementAssertions.assertEntityPlacement;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
@@ -31,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
 
-class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
+class QueuedEntityPlacerTest {
 
     @Test
     void oneMoveSelector() {

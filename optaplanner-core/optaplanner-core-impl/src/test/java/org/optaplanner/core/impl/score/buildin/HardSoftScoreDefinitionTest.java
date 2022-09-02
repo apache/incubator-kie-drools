@@ -7,7 +7,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
+class HardSoftScoreDefinitionTest {
 
     @Test
     void getZeroScore() {

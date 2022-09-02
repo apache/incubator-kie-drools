@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.move;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.optaplanner.core.impl.heuristic.HeuristicConfigPolicyTestUtils.buildHeuristicConfigPolicy;
 
 import java.util.Comparator;
 import java.util.function.Consumer;
@@ -14,7 +15,6 @@ import org.optaplanner.core.config.heuristic.selector.common.decorator.Selection
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
-import org.optaplanner.core.impl.heuristic.selector.AbstractSelectorFactoryTest;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.CachingMoveSelector;
@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMove
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-class MoveSelectorFactoryTest extends AbstractSelectorFactoryTest {
+class MoveSelectorFactoryTest {
 
     @Test
     void phaseOriginal() {

@@ -110,9 +110,13 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         Integer moveThreadCount_ = new MoveThreadCountResolver().resolveMoveThreadCount(solverConfig.getMoveThreadCount());
         BestSolutionRecaller<Solution_> bestSolutionRecaller =
                 BestSolutionRecallerFactory.create().buildBestSolutionRecaller(environmentMode_);
-        HeuristicConfigPolicy<Solution_> configPolicy = new HeuristicConfigPolicy.Builder<>(environmentMode_,
-                moveThreadCount_, solverConfig.getMoveThreadBufferSize(), solverConfig.getThreadFactoryClass(),
-                scoreDirectorFactory).build();
+        HeuristicConfigPolicy<Solution_> configPolicy = new HeuristicConfigPolicy.Builder<>(
+                environmentMode_,
+                moveThreadCount_,
+                solverConfig.getMoveThreadBufferSize(),
+                solverConfig.getThreadFactoryClass(),
+                scoreDirectorFactory.getInitializingScoreTrend(),
+                solutionDescriptor).build();
         TerminationConfig terminationConfig_ =
                 Objects.requireNonNullElseGet(solverConfig.getTerminationConfig(), TerminationConfig::new);
         BasicPlumbingTermination<Solution_> basicPlumbingTermination = new BasicPlumbingTermination<>(daemon_);

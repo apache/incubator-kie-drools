@@ -9,9 +9,9 @@ import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 
-public abstract class AbstractEntityPlacerTest {
+final class PlacementAssertions {
 
-    public static <Solution_> void assertEntityPlacement(Placement<Solution_> placement, String entityCode,
+    static <Solution_> void assertEntityPlacement(Placement<Solution_> placement, String entityCode,
             String... valueCodes) {
         Iterator<Move<Solution_>> iterator = placement.iterator();
         assertThat(iterator).isNotNull();
@@ -24,7 +24,7 @@ public abstract class AbstractEntityPlacerTest {
         assertThat(iterator.hasNext()).isFalse();
     }
 
-    public static <Solution_> void assertValuePlacement(Placement<Solution_> placement, String valueCode,
+    static <Solution_> void assertValuePlacement(Placement<Solution_> placement, String valueCode,
             String... entityCodes) {
         Iterator<Move<Solution_>> iterator = placement.iterator();
         assertThat(iterator).isNotNull();
@@ -37,4 +37,6 @@ public abstract class AbstractEntityPlacerTest {
         assertThat(iterator.hasNext()).isFalse();
     }
 
+    private PlacementAssertions() {
+    }
 }
