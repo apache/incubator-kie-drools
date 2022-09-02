@@ -46,9 +46,4 @@ public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<St
     public String getModelType() {
         return "drl";
     }
-
-    @Override
-    public String getModelType() {
-        return "drl";
-    }
 }

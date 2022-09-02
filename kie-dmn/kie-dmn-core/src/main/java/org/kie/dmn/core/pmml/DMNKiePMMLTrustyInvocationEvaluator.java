@@ -33,10 +33,8 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
@@ -57,7 +55,7 @@ import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.Constants.PMML_STRING;
+import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrRedirect;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvocationEvaluator {
@@ -137,7 +135,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
                 .get(pmmlContext.getFileNameNoSuffix(), getSanitizedClassName(modelName));
         EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, pmmlContext);
         Collection<EfestoOutput> retrieved;
-        if (!(isPresentExecutableOrRedirect(fri, pmmlContext))) {
+        if (!(isPresentExecutableOrRedirect(modelLocalUriId, pmmlContext))) {
             LOG.warn("GeneratedResources for {}@{} are not present: trying to invoke compilation....",
                      pmmlContext.getFileName(),
                      pmmlContext.getRequestData().getModelName());
