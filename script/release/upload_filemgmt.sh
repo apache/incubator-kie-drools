@@ -6,6 +6,8 @@ if [[ ! -d "$this_script_directory" ]]; then
 fi
 
 kieVersion=$1
+drools_ssh_key=$2
+
 drools_project_root=$this_script_directory/../..
 filemgmtServer=drools@filemgmt-prod.jboss.org
 rsync_filemgmt=drools@filemgmt-prod-sync.jboss.org
@@ -40,13 +42,16 @@ chmod +x upload_binaries
 sftp -b upload_binaries $filemgmtServer
 
 # upload docs to filemgmt-prod.jboss.org
-rsync -Pavqr -e 'ssh -p 2222' --protocol=28 --delete-after drools-docs/target/drools-docs-${kieVersion}/* ${rsync_filemgmt}:${droolsDocs}/${kieVersion}/drools-docs
-rsync -Pavqr -e 'ssh -p 2222' --protocol=28 --delete-after kie-api/target/apidocs/* ${rsync_filemgmt}:${droolsDocs}/${kieVersion}/kie-api-javadoc
+readonly remote_shell="ssh -p 2222 -i $drools_ssh_key"
+rsync -Pavqr -e "$remote_shell" --protocol=28 --delete-after drools-docs/target/drools-docs-${kieVersion}/* ${rsync_filemgmt}:${droolsDocs}/${kieVersion}/drools-docs
+rsync -Pavqr -e "$remote_shell" --protocol=28 --delete-after kie-api/target/apidocs/* ${rsync_filemgmt}:${droolsDocs}/${kieVersion}/kie-api-javadoc
 
 
 # make filemgmt symbolic links for drools
 mkdir filemgmt_links
 cd filemgmt_links
+
+readonly remote_shell_non_strict="ssh -p 2222 -i $drools_ssh_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 ###############################################################################
 # latest drools links
@@ -57,8 +62,9 @@ ln -s ${kieVersion} latest
 # do not link latest to Beta
 if [[ "${kieVersion}" == *Final* ]]; then
     echo "Uploading normal links..."
-    rsync -e "ssh -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --protocol=28 -a latest $rsync_filemgmt:${droolsDocs}
-    rsync -e "ssh -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --protocol=28 -a latest $rsync_filemgmt:${droolsHtdocs}
+
+    rsync -e "$remote_shell_non_strict" --protocol=28 -a latest $rsync_filemgmt:${droolsDocs}
+    rsync -e "$remote_shell_non_strict" --protocol=28 -a latest $rsync_filemgmt:${droolsHtdocs}
 fi
 
 ###############################################################################
@@ -67,8 +73,8 @@ fi
 if [[ "${kieVersion}" == *Final* ]]; then
     ln -s ${kieVersion} latestFinal
     echo "Uploading Final links..."
-    rsync -e "ssh -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --protocol=28 -a latestFinal $rsync_filemgmt:${droolsDocs}
-    rsync -e "ssh -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --protocol=28 -a latestFinal $rsync_filemgmt:${droolsHtdocs}
+    rsync -e "$remote_shell_non_strict" --protocol=28 -a latestFinal $rsync_filemgmt:${droolsDocs}
+    rsync -e "$remote_shell_non_strict" --protocol=28 -a latestFinal $rsync_filemgmt:${droolsHtdocs}
 fi
 
 # remove files and directories for uploading drools
