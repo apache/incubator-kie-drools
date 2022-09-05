@@ -173,6 +173,25 @@
         <excludedGroups/>
       </properties>
     </profile>
+    <profile>
+      <id>java18-specific-config</id>
+      <activation>
+        <jdk>[18,)</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+	        <plugin>
+	          <groupId>org.apache.maven.plugins</groupId>
+	          <artifactId>maven-surefire-plugin</artifactId>
+	          <configuration> <!-- to use JDK18 while building Drools even for 11, ref https://openjdk.org/jeps/411#Issue-warnings -->
+	            <argLine>-Djava.security.manager=allow -Xmx1024m -Dfile.encoding=UTF-8</argLine>
+	          </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
   </profiles>
 
 </project>
