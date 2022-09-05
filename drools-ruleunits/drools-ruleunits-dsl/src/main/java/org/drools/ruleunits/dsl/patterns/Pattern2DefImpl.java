@@ -17,6 +17,7 @@ package org.drools.ruleunits.dsl.patterns;
 
 import java.util.UUID;
 
+import org.drools.model.Condition;
 import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.functions.Block2;
@@ -78,6 +79,18 @@ public class Pattern2DefImpl<A, B> extends SinglePatternDef<B> implements Patter
     }
 
     @Override
+    public Pattern2DefImpl<A, B> exists(Function1<Pattern2Def<A, B>, PatternDef> patternBuilder) {
+        rule.addPattern( new ExistentialPatternDef( Condition.Type.EXISTS, rule.internalCreatePattern(this, patternBuilder) ) );
+        return this;
+    }
+
+    @Override
+    public Pattern2DefImpl<A, B> not(Function1<Pattern2Def<A, B>, PatternDef> patternBuilder) {
+        rule.addPattern( new ExistentialPatternDef( Condition.Type.NOT, rule.internalCreatePattern(this, patternBuilder) ) );
+        return this;
+    }
+
+    @Override
     public void execute(Block2<A, B> block) {
         rule.setConsequence( DSL.on(patternA.variable, variable).execute(block) );
     }
@@ -97,9 +110,9 @@ public class Pattern2DefImpl<A, B> extends SinglePatternDef<B> implements Patter
 
     @Override
     public InternalPatternDef subPatternFrom(InternalPatternDef from) {
-        if (from != patternA) {
-            throw new IllegalArgumentException();
+        if (from == patternA) {
+            return patternB;
         }
-        return patternB;
+        throw new IllegalArgumentException();
     }
 }

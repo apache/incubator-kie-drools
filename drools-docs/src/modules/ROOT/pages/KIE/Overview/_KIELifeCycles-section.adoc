@@ -1,0 +1,35 @@
+
+[[_kielifecyclessection]]
+= Lifecycles
+
+
+The different aspects, or life cycles, of working with KIE system, whether it's Drools or jBPM, can typically be broken down into the following:
+
+* *Author*
++
+** Authoring of knowledge using a UI metaphor, such as: DRL, BPMN2, decision table, class models.
+* *Build*
++
+** Builds the authored knowledge into deployable units. 
+** For KIE this unit is a JAR.
+* *Test*
++
+** Test KIE knowledge before it's deployed to the application.
+* *Deploy*
++
+** Deploys the unit to a location where applications may utilize (consume) them.
+** KIE uses Maven style repository.
+* *Utilize*
++
+** The loading of a JAR to provide a KIE session (KieSession), for which the application can interact with.
+** KIE exposes the JAR at runtime via a KIE container (KieContainer).
+** KieSessions, for the runtime's to interact with, are created from the KieContainer.
+* *Run*
++
+** System interaction with the KieSession, via API.
+* *Work*
++
+** User interaction with the KieSession, via command line or UI.
+* *Manage*
++
+** Manage any KieSession or KieContainer.
