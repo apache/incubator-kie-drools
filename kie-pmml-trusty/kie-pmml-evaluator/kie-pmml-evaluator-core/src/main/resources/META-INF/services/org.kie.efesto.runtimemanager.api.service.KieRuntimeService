@@ -1,1 +1,2 @@
 org.kie.pmml.evaluator.core.service.KieRuntimeServicePMML
+org.kie.pmml.evaluator.core.service.KieRuntimeServicePMMLRequestData
