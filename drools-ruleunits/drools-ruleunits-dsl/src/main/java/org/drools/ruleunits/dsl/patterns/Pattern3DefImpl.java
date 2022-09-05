@@ -93,9 +93,9 @@ public class Pattern3DefImpl<A, B, C> extends SinglePatternDef<C> implements Pat
 
     @Override
     public InternalPatternDef subPatternFrom(InternalPatternDef from) {
-        if (from != patternA) {
-            throw new IllegalArgumentException();
+        if (from instanceof Pattern2DefImpl && patternA == ((Pattern2DefImpl<?, ?>) from).getPatternA() && patternB == ((Pattern2DefImpl<?, ?>) from).getPatternB()) {
+            return patternC;
         }
-        return patternB;
+        throw new IllegalArgumentException();
     }
 }

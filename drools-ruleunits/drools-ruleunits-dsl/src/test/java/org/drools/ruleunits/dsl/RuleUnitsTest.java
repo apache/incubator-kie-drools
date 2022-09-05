@@ -199,4 +199,13 @@ public class RuleUnitsTest {
         assertThat(unitTwo.fire()).isEqualTo(1);
         assertThat(unitTwo.getResults()).containsExactly("Found 11");
     }
+
+    @Test
+    public void testSelfJoinWithInferenceAndNot() {
+        SelfJoinWithInferenceAndNotUnit unit = new SelfJoinWithInferenceAndNotUnit();
+        unit.getStrings().add("abc");
+        unit.getStrings().add("axy");
+
+        assertThat(unit.fire()).isEqualTo(1);
+    }
 }
