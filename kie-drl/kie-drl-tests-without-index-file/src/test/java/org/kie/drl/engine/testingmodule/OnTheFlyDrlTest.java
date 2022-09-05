@@ -47,7 +47,6 @@ class OnTheFlyDrlTest {
 
     @BeforeAll
     static void setUp() {
-        DrlTestUtils.refreshDrlIndexFile();
         runtimeManager = new RuntimeManagerImpl();
         compilationManager = new CompilationManagerImpl();
     }
@@ -58,10 +57,10 @@ class OnTheFlyDrlTest {
         Set<File> files = DrlTestUtils.collectDrlFiles("src/test/resources/org/drools/model/project/codegen");
         EfestoResource<Set<File>> toProcess = new DrlFileSetResource(files, onTheFlyPath);
         DrlCompilationContext compilationContext = DrlCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
-        Collection<IndexFile> indexFiles = compilationManager.processResource(compilationContext, toProcess);
+        compilationManager.processResource(compilationContext, toProcess);
 
         // Suppose we cannot access the previous compilationContext
-        EfestoRuntimeContext runtimeContext = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        EfestoRuntimeContext runtimeContext = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader(), compilationContext.getGeneratedResourcesMap());
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(onTheFlyPath, "drl"), "");
         Collection<EfestoOutput> output = runtimeManager.evaluateInput(runtimeContext, toEvaluate);
         assertThat(output).isNotNull().hasSize(1);

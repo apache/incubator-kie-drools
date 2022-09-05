@@ -51,6 +51,20 @@ public interface EfestoContext<T extends EfestoListener> {
     }
 
     /**
+     * Get <code>getGeneratedResourcesMap</code>
+     */
+    default Map<String, GeneratedResources> getGeneratedResourcesMap() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Add <code>GeneratedResources</code> with the key {@code model}
+     */
+    default void addGeneratedResources(String model, GeneratedResources generatedResources) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Get previously generated classes with the key {@code fri}
      * @param fri
      * @return generatedClasses

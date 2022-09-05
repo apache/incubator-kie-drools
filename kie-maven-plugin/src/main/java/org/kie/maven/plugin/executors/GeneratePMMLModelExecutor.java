@@ -21,10 +21,9 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,7 +32,6 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
-import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
@@ -48,7 +46,6 @@ import org.kie.pmml.compiler.PMMLCompilationContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.createJavaCompilerSettings;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.getProjectClassLoader;
 import static org.kie.maven.plugin.helpers.GenerateCodeHelper.writeClasses;
@@ -76,7 +73,8 @@ public class GeneratePMMLModelExecutor {
         Thread.currentThread().setContextClassLoader(projectClassLoader);
 
         try {
-            Map<String, byte[]> compiledClassesMap = compileFiles(resourcesDirectories, projectClassLoader, log);
+            Map<String, byte[]> compiledClassesMap = compileFiles(resourcesDirectories, projectClassLoader,
+                                                                  outputDirectory, log);
             writeClasses(targetDirectory, compiledClassesMap);
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
@@ -94,6 +92,7 @@ public class GeneratePMMLModelExecutor {
 
     private static Map<String, byte[]> compileFiles(final List<org.apache.maven.model.Resource> resourcesDirectories,
                                                     final ClassLoader projectClassloader,
+                                                    final File outputDirectory,
                                                     final Log log) throws MojoExecutionException {
         CompilationManager compilationManager =
                 SPIUtils.getCompilationManager(true).orElseThrow(() -> new MojoExecutionException("Failed to load " +
@@ -106,55 +105,18 @@ public class GeneratePMMLModelExecutor {
 
         PMMLCompilationContext pmmlContext = new PMMLCompilationContextImpl("", memoryCompilerClassLoader);
 
-        Collection<IndexFile> indexFiles = compilationManager.processResource(pmmlContext, efestoResources.toArray(new EfestoResource[0]));
+        compilationManager.processResource(pmmlContext, efestoResources.toArray(new EfestoResource[0]));
 
-        List<IndexFile> allIndexFiles = getAllIndexFiles(indexFiles);
-        logger.debug("IndexFiles generated {}", allIndexFiles);
-
-        Map<String, byte[]> toReturn = new HashMap<>();
-        for (IndexFile indexFile : allIndexFiles) {
-            toReturn.putAll(getCodeFromIndexFile(indexFile, pmmlContext));
-        }
-        return toReturn;
+        Map<String, IndexFile> indexFilesCreated = pmmlContext.createIndexFiles(outputDirectory.toPath());
+        indexFilesCreated.forEach((key, value) -> logger.debug("IndexFile generated {} {}", key, value.toPath()));
+        return getCodeFromPMMLContext(pmmlContext);
     }
 
-    private static List<IndexFile> getAllIndexFiles(Collection<IndexFile> indexFiles) {
-        List<IndexFile> toReturn = new ArrayList<>();
-        indexFiles.forEach(indexFile -> {
-            if (!toReturn.contains(indexFile)) {
-                toReturn.add(indexFile);
-            }
-            List<IndexFile> partial = getRedirectFromIndexFile(indexFile);
-            partial.forEach(partialIndexFile -> {
-                if (!toReturn.contains(partialIndexFile)) {
-                    toReturn.add(partialIndexFile);
-                }
-            });
-        });
-        return toReturn;
-    }
-
-    private static List<IndexFile> getRedirectFromIndexFile(IndexFile indexFile) {
-        GeneratedResources generatedResources = getGeneratedResources(indexFile);
-        return generatedResources.stream()
-                .filter(GeneratedRedirectResource.class::isInstance)
-                .map(GeneratedRedirectResource.class::cast)
-                .map(GeneratedRedirectResource::getTarget)
-                .map(target -> getTargetIndexFile(indexFile, target))
+    private static Map<String, byte[]> getCodeFromPMMLContext(PMMLCompilationContext pmmlContext) {
+        List<String> generatedClasses = pmmlContext.getGeneratedResourcesMap().values().stream()
+                .flatMap((Function<GeneratedResources, Stream<String>>) generatedResources ->
+                        getGeneratedClassesFromGeneratedResources(generatedResources).stream())
                 .collect(Collectors.toList());
-    }
-
-    private static IndexFile getTargetIndexFile(IndexFile indexFile, String target) {
-        try {
-            return new IndexFile(indexFile.getParentFile().getCanonicalPath(), target);
-        } catch (IOException e) {
-            throw new KiePMMLException(String.format("Failed to create target file %s for %s", target, indexFile), e);
-        }
-    }
-
-    private static Map<String, byte[]> getCodeFromIndexFile(IndexFile indexFile,
-                                                            PMMLCompilationContext pmmlContext) {
-        List<String> generatedClasses = getGeneratedClassesFromIndexFile(indexFile);
         return generatedClasses.stream().collect(Collectors.toMap(fullClassName -> fullClassName,
                                                                   fullClassName -> getMappedCode(fullClassName,
                                                                                                  pmmlContext)));
@@ -168,21 +130,12 @@ public class GeneratePMMLModelExecutor {
         return toReturn;
     }
 
-    private static List<String> getGeneratedClassesFromIndexFile(IndexFile indexFile) {
-        GeneratedResources generatedResources = getGeneratedResources(indexFile);
+    private static List<String> getGeneratedClassesFromGeneratedResources(GeneratedResources generatedResources) {
         return generatedResources.stream()
                 .filter(GeneratedClassResource.class::isInstance)
                 .map(GeneratedClassResource.class::cast)
                 .map(GeneratedClassResource::getFullClassName)
                 .collect(Collectors.toList());
-    }
-
-    private static GeneratedResources getGeneratedResources(IndexFile indexFile) {
-        try {
-            return getGeneratedResourcesObject(indexFile);
-        } catch (Exception e) {
-            throw new KiePMMLException("Failed to get GeneratedResources from index file " + indexFile);
-        }
     }
 
     private static List<EfestoResource> getEfestoResources(final List<org.apache.maven.model.Resource> resourcesDirectories,

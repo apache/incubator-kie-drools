@@ -15,22 +15,18 @@
  */
 package org.kie.efesto.compilationmanager.api.service;
 
-import java.util.Collection;
-
-import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
 public interface CompilationManager {
 
     /**
-     * Produce <code>Collection<IndexFile></code> from the given <code>EfestoResource</code>.
+     * Process the given <code>EfestoResource</code>.
      * <code>EfestoCompilationContext</code> will be populated with generated classes
      *
      * @param context
      * @param toProcess
-     * @return
      */
-    Collection<IndexFile> processResource(EfestoCompilationContext context, EfestoResource... toProcess);
+    void processResource(EfestoCompilationContext context, EfestoResource... toProcess);
 
 }

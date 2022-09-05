@@ -43,4 +43,9 @@ public class KieCompilerServicePMMLFile implements KieCompilerService<EfestoComp
         }
         return getEfestoCompilationOutputPMML((EfestoFileResource) toProcess, context);
     }
+
+    @Override
+    public String getModelType() {
+        return "pmml";
+    }
 }

@@ -34,11 +34,16 @@ public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<St
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return DrlRuntimeHelper.canManage(toEvaluate);
+        return DrlRuntimeHelper.canManage(toEvaluate, context);
     }
 
     @Override
     public Optional<EfestoOutputDrlKieSessionLocal> evaluateInput(EfestoInputDrlKieSessionLocal toEvaluate, EfestoRuntimeContext context) {
         return canManageInput(toEvaluate, context) ? DrlRuntimeHelper.execute(toEvaluate, context) : Optional.empty();
+    }
+
+    @Override
+    public String getModelType() {
+        return "drl";
     }
 }

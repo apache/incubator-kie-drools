@@ -49,4 +49,8 @@ public class KieCompilerServiceDrl implements KieCompilerService<EfestoCompilati
         return Collections.singletonList(drlToPackageDescrs((DrlFileSetResource) toProcess, (DrlCompilationContext) context));
     }
 
+    @Override
+    public String getModelType() {
+        return "drl";
+    }
 }

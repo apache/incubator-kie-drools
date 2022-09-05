@@ -63,4 +63,8 @@ public class KieCompilerServicePackDesc implements KieCompilerService<EfestoComp
         return DrlCompilationContext.buildWithEfestoCompilationContext((EfestoCompilationContextImpl) context);
     }
 
+    @Override
+    public String getModelType() {
+        return "drl";
+    }
 }

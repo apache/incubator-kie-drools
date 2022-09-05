@@ -15,16 +15,19 @@
  */
 package org.kie.efesto.compilationmanager.core.utils;
 
-import org.junit.jupiter.api.Test;
-import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.common.api.model.*;
-import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
-
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.junit.jupiter.api.Test;
+import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.model.GeneratedClassResource;
+import org.kie.efesto.common.api.model.GeneratedExecutableResource;
+import org.kie.efesto.common.api.model.GeneratedResource;
+import org.kie.efesto.common.api.model.GeneratedResources;
+import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;

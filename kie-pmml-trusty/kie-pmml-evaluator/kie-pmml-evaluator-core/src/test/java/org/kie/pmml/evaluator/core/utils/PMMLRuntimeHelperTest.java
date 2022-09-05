@@ -73,14 +73,16 @@ class PMMLRuntimeHelperTest {
     @Test
     void canManage() {
         FRI fri = new FRI(basePath, PMML_STRING);
-        AbstractEfestoInput darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME));
-        assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isTrue();
+        PMMLRuntimeContext context = getPMMLContext(FILE_NAME, MODEL_NAME);
+        AbstractEfestoInput darInputPMML = new EfestoInputPMML(fri, context);
+        assertThat(PMMLRuntimeHelper.canManage(darInputPMML, context)).isTrue();
         darInputPMML = new AbstractEfestoInput<String>(fri, "") {
         };
-        assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isFalse();
+        assertThat(PMMLRuntimeHelper.canManage(darInputPMML, context)).isFalse();
         fri = new FRI("darfoo", PMML_STRING);
-        darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME));
-        assertThat(PMMLRuntimeHelper.canManage(darInputPMML)).isFalse();
+        context = getPMMLContext(FILE_NAME, MODEL_NAME);
+        darInputPMML = new EfestoInputPMML(fri, context);
+        assertThat(PMMLRuntimeHelper.canManage(darInputPMML, context)).isFalse();
     }
 
     @Test

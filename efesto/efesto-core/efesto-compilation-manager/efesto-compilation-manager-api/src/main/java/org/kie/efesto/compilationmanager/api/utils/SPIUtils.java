@@ -16,13 +16,14 @@
 package org.kie.efesto.compilationmanager.api.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContextImpl;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
@@ -86,5 +87,16 @@ public class SPIUtils {
             compilationManagerLoader.reload();
         }
         return compilationManagerLoader;
+    }
+
+    public static Set<String> collectModelTypes(EfestoCompilationContext context) {
+        Iterable<KieCompilerService> kieCompilerServices = getServices(false);
+        Set<String> modelTypes = new HashSet<>();
+        kieCompilerServices.forEach(kieCompilerService -> modelTypes.add(kieCompilerService.getModelType()));
+        ServiceLoader<KieCompilerService> serviceLoader = context.getKieCompilerServiceLoader();
+        for (KieCompilerService kieCompilerService : serviceLoader) {
+            modelTypes.add(kieCompilerService.getModelType());
+        }
+        return modelTypes;
     }
 }
