@@ -1,0 +1,163 @@
+[id='traditional-to-ruleunit_{context}']
+
+= Migrate to Drools 8
+
+This guide explains how to migrate Drools 7 projects to Drools 8 projects.
+
+Firstly, Drools 8 supports Drools 7 APIs and DRL syntax, so basically you don't need to change your Java codes and rule assets. However, there are some cautions in `pom.xml`.
+
+Typical {PRODUCT} 6 or early 7 projects have pom dependencies like this.
+
+.Traditional pom.xml
+[xml,subs=attributes+]
+----
+  </dependencied>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <version>${version.org.drools}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <version>${version.org.drools}</version>
+    </dependency>
+  </dependencied>
+----
+
+But since {PRODUCT} 7.45.0, `drools-engine` and `drools-engine-classic` have been introduced as aggregator dependencies. If there is no specific reason, use `drools-engine`.
+
+[xml]
+----
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine</artifactId>
+      <version>${version.org.drools}</version>
+    </dependency>
+----
+
+{PRODUCT} 8 made some module refactoring, so you may find some difficulty in collecting dependencies. This aggregator dependency would help.
+
+== Rule Unit
+
+As introduced in xref:getting-started/index.adoc#first-rule-project_getting-started[First Rule Project], Rule Unit is a recommended style in {PRODUCT} 8. It will require some modification to your codes, but if you are going to develop cloud-native applications, Rule Unit is strongly recommended because {KOGITO} also works with Rule Unit.
+
+.Rule Unit pom.xml
+[xml,subs=attributes+]
+----
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine</artifactId>
+      <version>${version.org.drools}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ruleunits-impl</artifactId>
+      <version>${version.org.drools}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
+      <version>${version.org.drools}</version>
+    </dependency>
+----
+
+`drools-ruleunits-impl` is required for Rule Unit APIs. `drools-model-compiler` is required to generate executable model that is also recommended in {PRODUCT} 8.
+
+Regarding Java codes, in {PRODUCT} 7, you create a `KieSession` from rule assets. Then insert facts and fire rules.
+
+.Traditional Java code
+[source,java]
+----
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kcontainer = ks.getKieClasspathContainer();
+        KieBase kbase = kcontainer.getKieBase();
+        KieSession ksession = kbase.newKieSession();
+        try {
+            ksession.insert(new Measurement("color", "red"));
+            ksession.insert(new Measurement("color", "green"));
+
+            ksession.fireAllRules();
+        } finally {
+            ksession.dispose();
+        }
+----
+
+Using Rule Unit APIs, the Java codes would be like this:
+
+.Rule Unit Java code
+[source,java]
+----
+        MeasurementUnit measurementUnit = new MeasurementUnit();
+        RuleUnitInstance<MeasurementUnit> instance = RuleUnitInstanceFactory.instance(measurementUnit);
+        try {
+            measurementUnit.getMeasurements().add(new Measurement("color", "red"));
+            measurementUnit.getMeasurements().add(new Measurement("color", "green"));
+
+            instance.fire();
+        } finally {
+            instance.dispose();
+        }
+----
+
+In Rule Unit, instantiate `RuleUnitInstance` instead of `KieSession`. Add facts to `DataSource` property instead of `insert`. Boilerplate codes (e.g. `KieServices`, `KieContainer`, `KieBase` ... ) are eliminated. Instead, one more class `Unit` has to be defined.
+
+.Rule Unit Class
+[source,java]
+----
+public class MeasurementUnit implements RuleUnitData {
+
+    private final DataStore<Measurement> measurements;
+    private final Set<String> controlSet = new HashSet<>();
+
+    public MeasurementUnit() {
+        this(DataSource.createStore());
+    }
+
+    public MeasurementUnit(DataStore<Measurement> measurements) {
+        this.measurements = measurements;
+    }
+
+    public DataStore<Measurement> getMeasurements() {
+        return measurements;
+    }
+
+    public Set<String> getControlSet() {
+        return controlSet;
+    }
+}
+----
+
+This Unit class associates rules (`DRL`) and inserted facts (`DataSource`), so it helps you to manage the relationship.
+
+DRL syntax style also changes.
+
+.Traditional DRL
+[source]
+----
+global java.util.Set controlSet;
+
+rule "will execute per each Measurement having ID color"
+when
+	Measurement( id == "color", $colorVal : val )
+then
+	controlSet.add($colorVal);
+end
+----
+
+.Rule Unit DRL
+[source]
+----
+unit MeasurementUnit;
+
+rule "will execute per each Measurement having ID color"
+when
+	/measurements[ id == "color", $colorVal : val ]
+then
+	controlSet.add($colorVal);
+end
+----
+
+Firstly, declare `unit`. Don't need to declare `global`, because `controlSet` is a field of `MeasurementUnit`. Traditional `global` usage would become Unit's field. In addition, a main difference is OOPath notation in LHS. It is described in details at xref:language-reference/index.adoc#con-drl-rules-conditions_drl-rules[Rule conditions in DRL]. You should change from the class name (`Measurement`) to `DataSource` property name in the Unit class (`measurements`).
+
+These changes are not negligible, but hopefully, not so difficult.

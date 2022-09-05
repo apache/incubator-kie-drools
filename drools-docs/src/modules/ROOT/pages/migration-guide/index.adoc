@@ -1,0 +1,9 @@
+:DROOLS:
+include::../_artifacts/document-attributes.adoc[]
+
+[[migrationGuide]]
+= Migration Guide
+:context: migration-guide
+
+include::_traditional-to-ruleunit.adoc[leveloffset=+1]
+
