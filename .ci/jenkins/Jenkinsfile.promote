@@ -224,7 +224,7 @@ String getSnapshotBranch() {
 
 void checkoutRepo() {
     deleteDir()
-    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false))
+    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getGitTag(), false))
     // need to manually checkout branch since on a detached branch after checkout command
     sh "git checkout ${getBuildBranch()}"
 }
