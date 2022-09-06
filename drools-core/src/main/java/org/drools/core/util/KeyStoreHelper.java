@@ -237,12 +237,11 @@ public class KeyStoreHelper {
         Signature sig = Signature.getInstance( SHA512WITH_RSA );
         sig.initVerify( cert.getPublicKey() );
         sig.update( data );
-        boolean result;
+        boolean result = false;
         try {
             result = sig.verify(signature); // IBM JDK 1.8 returns false without SignatureException
         } catch (SignatureException e) {
             logger.warn("Exception while verifying signature", e);
-            return verifyWithFallbackAlgorithmIfAllowed(cert, data, signature);
         }
         return result || verifyWithFallbackAlgorithmIfAllowed(cert, data, signature);
     }
