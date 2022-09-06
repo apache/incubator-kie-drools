@@ -25,6 +25,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ImmutableFPAWrappingPOJO;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.extended.ContextPutFunction;
 
 public class GetEntriesFunction extends BaseFEELFunction {
 
@@ -35,14 +36,8 @@ public class GetEntriesFunction extends BaseFEELFunction {
     public FEELFnResult<List<Object>> invoke(@ParameterName("m") Object m) {
         if (m == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "m", "cannot be null"));
-        } else if (m instanceof Map) {
-            List<Object> result = toEntries((Map<?, ?>) m);
-            return FEELFnResult.ofResult(result);
-        } else if (BuiltInType.determineTypeFromInstance(m) == BuiltInType.UNKNOWN) {
-            return FEELFnResult.ofResult(toEntries(new ImmutableFPAWrappingPOJO(m).allFEELProperties()));
-        } else {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "m", "is not a context"));
         }
+        return ContextPutFunction.toMap(m).map(GetEntriesFunction::toEntries);
     }
 
     private static List<Object> toEntries(Map<?, ?> m) {

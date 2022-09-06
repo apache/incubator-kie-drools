@@ -35,7 +35,7 @@ public class GetValueFunction extends BaseFEELFunction {
         } else if (m instanceof Map) {
             return FEELFnResult.ofResult(((Map<?, ?>) m).get(key));
         } else if (BuiltInType.determineTypeFromInstance(m) == BuiltInType.UNKNOWN) {
-            return FEELFnResult.ofResult(new ImmutableFPAWrappingPOJO(m).allFEELProperties().get(key));
+            return FEELFnResult.ofResult(new ImmutableFPAWrappingPOJO(m).getFEELProperty(key).toOptional().orElse(null));
         } else {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "m", "is not a context"));
         }
