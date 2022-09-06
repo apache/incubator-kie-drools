@@ -16,13 +16,16 @@
 package org.drools.ruleunits.dsl.patterns;
 
 import org.drools.model.Index;
+import org.drools.model.functions.Block1;
 import org.drools.model.functions.Block3;
 import org.drools.model.functions.Block4;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate3;
 import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.dsl.RuleFactory;
+import org.drools.ruleunits.impl.ConsequenceDataStore;
 
 public interface Pattern3Def<A, B, C> extends PatternDef {
 
@@ -38,4 +41,8 @@ public interface Pattern3Def<A, B, C> extends PatternDef {
     void execute(Block3<A, B, C> block);
 
     <G> void execute(G globalObject, Block4<G, A, B, C> block);
+
+    <T> void executeOnDataStore(DataStore<T> dataStore, Block1<ConsequenceDataStore<T>> block);
+
+    <T> void executeOnDataStore(DataStore<T> dataStore, Block4<ConsequenceDataStore<T>, A, B, C> block);
 }

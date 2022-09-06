@@ -19,11 +19,17 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.impl.facthandles.RuleUnitInternalFactHandle;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.RuleContext;
 
 public interface InternalStoreCallback {
+    DataHandle lookup(Object object);
+
     void update(RuleUnitInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation);
 
     void delete(RuleUnitInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState);
+
+    void addLogical(RuleContext ruleContext, Object object);
 }

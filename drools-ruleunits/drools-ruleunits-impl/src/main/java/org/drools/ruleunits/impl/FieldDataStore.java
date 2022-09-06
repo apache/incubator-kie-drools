@@ -28,6 +28,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
 import org.drools.ruleunits.api.SingletonStore;
+import org.kie.api.runtime.rule.RuleContext;
 
 public class FieldDataStore<T> implements SingletonStore<T>, InternalStoreCallback {
 
@@ -47,6 +48,16 @@ public class FieldDataStore<T> implements SingletonStore<T>, InternalStoreCallba
         }
 
         return handle;
+    }
+
+    @Override
+    public DataHandle lookup(Object object) {
+        return handle != null && handle.getObject() == object ? handle : null;
+    }
+
+    @Override
+    public void addLogical(RuleContext ruleContext, Object object) {
+        entryPointSubscribers.forEach(eps -> eps.insertLogical(ruleContext, object));
     }
 
     private void insert(T t) {
