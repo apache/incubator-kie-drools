@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
 
@@ -202,7 +203,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
                     .map(name -> {
                         ProtoEnum modelEnum = new ProtoEnum(name, clazz.name().prefix().toString());
                         clazz.fields().stream()
-                                .filter(f -> !f.name().startsWith("$"))
+                                .filter(FieldInfo::isEnumConstant)
                                 .sorted(Comparator.comparing(FieldInfo::name))
                                 .forEach(f -> addEnumField(f, modelEnum));
                         proto.addEnum(modelEnum);
@@ -226,10 +227,14 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
         }
         if (ordinal == null) {
             String clazzName = field.type().name().toString();
-            try {
-                ordinal = Enum.valueOf((Class<Enum>) Class.forName(clazzName), field.name()).ordinal();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException("Failed to find enum class " + clazzName + " " + e.getMessage(), e);
+            ClassInfo classByName = index.getClassByName(DotName.createSimple(clazzName));
+            if (!classByName.isEnum()) {
+                throw new IllegalArgumentException(format("Unsupported type, class %s, is not an enum.", clazzName));
+            }
+            List<FieldInfo> constants = classByName.unsortedFields().stream().filter(FieldInfo::isEnumConstant).collect(toList());
+            ordinal = constants.indexOf(field);
+            if (ordinal == -1) {
+                throw new IllegalArgumentException(format("Can not find enum field ordinal for %s.%s", clazzName, field.name()));
             }
         }
         pEnum.addField(field.name(), ordinal, sortedWithAnnotation);
