@@ -24,7 +24,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ResourceType implements Serializable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceType.class);
 
     private static final long serialVersionUID = 1613735834228581906L;
 
@@ -206,7 +211,10 @@ public class ResourceType implements Serializable {
                                                                           "Drools Rule Template",
                                                                           "src/main/resources",
                                                                           "drl.template");
-
+    /**
+     * @deprecated Since 8. Consider <code>drools-decisiontables</code> or third party templating features
+     */
+    @Deprecated
     public static final ResourceType DRT = addResourceTypeToRegistry("DRT",
                                                                      "Drools Rule Template",
                                                                      "src/main/resources",
@@ -251,6 +259,9 @@ public class ResourceType implements Serializable {
     public static ResourceType determineResourceType(final String resourceName) {
         for ( Map.Entry<String, ResourceType> entry : CACHE.entrySet() ) {
             if (resourceName.endsWith(entry.getKey())) {
+                if (entry.getValue().equals(ResourceType.DRT)) {
+                    LOG.warn("DRT (Drools Rule Template) is deprecated. Please consider drools-decisiontables or third party templating features.");
+                }
                 return entry.getValue();
             }
         }
