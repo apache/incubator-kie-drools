@@ -2480,6 +2480,23 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("using get value").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
         assertThat(dmnResult.getDecisionResultByName("using get value").getResult()).isEqualTo("value2");
     }
+    
+    @Test
+    public void testGetEntriesGetValueUsingDTO() {
+        // DROOLS-7139 FEEL context functions `get value` and `get entries` should support Java POJO as argument
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("getentriesgetvalue_Dto.dmn", this.getClass());
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a", "Drawing 1");
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        emptyContext.set("a context", new Person("John", "Doe"));
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("using get entries").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
+        assertThat(dmnResult.getDecisionResultByName("using get entries").getResult()).isEqualTo("John");
+        assertThat(dmnResult.getDecisionResultByName("using get value").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
+        assertThat(dmnResult.getDecisionResultByName("using get value").getResult()).isEqualTo("John");
+    }
 
     @Test
     public void testChronoPeriod() {
