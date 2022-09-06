@@ -51,6 +51,17 @@ public class ListDataStore<T> implements DataStore<T>, InternalStoreCallback {
         entryPointSubscribers.forEach(eps -> eps.insertLogical(ruleContext, object));
     }
 
+    // used by kogito-runtimes, check if it can be removed
+    public DataHandle findHandle(long id) {
+        for (DataHandle dh : store.values()) {
+            DataHandleImpl dhi = (DataHandleImpl) dh;
+            if (dhi.getId() == id) {
+                return dh;
+            }
+        }
+        throw new IllegalArgumentException("Cannot find id");
+    }
+
     protected DataHandle createDataHandle(T t) {
         return new DataHandleImpl(t);
     }
