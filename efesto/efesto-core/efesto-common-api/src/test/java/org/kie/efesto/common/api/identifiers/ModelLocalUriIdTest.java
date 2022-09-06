@@ -16,6 +16,8 @@
 package org.kie.efesto.common.api.identifiers;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,27 +40,20 @@ class ModelLocalUriIdTest {
         assertThat(retrieved.model()).isEqualTo("example");
     }
 
-    @Test
-    void testBasePath() {
-        String path = "/example/some-id/instances/some-instance-id";
+    @ParameterizedTest
+    @ValueSource(strings = {"/example/some-id/instances/some-instance-id", "/example"})
+    void testBasePath(String path) {
         LocalUri parsed = LocalUri.parse(path);
         ModelLocalUriId retrieved = new ModelLocalUriId(parsed);
-        assertThat(retrieved.basePath()).isEqualTo("/some-id/instances/some-instance-id");
-        path = "/example";
-        parsed = LocalUri.parse(path);
-        retrieved = new ModelLocalUriId(parsed);
-        assertThat(retrieved.basePath()).isEqualTo("");
+        String expected = path.replace("/example", "");
+        assertThat(retrieved.basePath()).isEqualTo(expected);
     }
 
-    @Test
-    void testFullPath() {
-        String path = "/example/some-id/instances/some-instance-id";
+    @ParameterizedTest
+    @ValueSource(strings = {"/example/some-id/instances/some-instance-id", "/example"})
+    void testFullPath(String path) {
         LocalUri parsed = LocalUri.parse(path);
         ModelLocalUriId retrieved = new ModelLocalUriId(parsed);
-        assertThat(retrieved.fullPath()).isEqualTo(path);
-        path = "/example";
-        parsed = LocalUri.parse(path);
-        retrieved = new ModelLocalUriId(parsed);
         assertThat(retrieved.fullPath()).isEqualTo(path);
     }
 }

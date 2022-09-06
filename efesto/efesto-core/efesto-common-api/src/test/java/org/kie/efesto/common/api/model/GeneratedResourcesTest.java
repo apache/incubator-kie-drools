@@ -17,6 +17,7 @@ package org.kie.efesto.common.api.model;
 
 import java.util.Collections;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
@@ -28,50 +29,63 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GeneratedResourcesTest {
 
-    @Test
-    void add() {
-        String fullClassName = "full.class.Path";
-        GeneratedResource generatedClassResource = new GeneratedClassResource(fullClassName);
-        String model = "foo";
-        LocalUri localUri = new ReflectiveAppRoot(model)
+    private static String fullClassName;
+    private static String model;
+
+    private static LocalUri firstLocalUri;
+    private static ModelLocalUriId firstModelLocalUriId;
+
+    private static LocalUri secondLocalUri;
+
+    private static ModelLocalUriId secondModelLocalUriId;
+
+    @BeforeAll
+    public static void setup() {
+        fullClassName = "full.class.Path";
+        model = "foo";
+        firstLocalUri = new ReflectiveAppRoot(model)
                 .get(ComponentRootB.class)
                 .get("this", "is", "localUri")
                 .asLocalUri();
-        ModelLocalUriId localUriId = new ModelLocalUriId(localUri);
-        GeneratedResource generatedFinalResource = new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName));
-        GeneratedResources generatedResources = new GeneratedResources();
-        generatedResources.add(generatedClassResource);
-        generatedResources.add(generatedFinalResource);
-        assertThat(generatedResources).hasSize(2);
-
-        generatedResources = new GeneratedResources();
-        generatedResources.add(new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName)));
-        generatedResources.add(new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName)));
-        assertThat(generatedResources).hasSize(1);
-
-        generatedResources = new GeneratedResources();
-        generatedResources.add(new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName)));
-        generatedResources.add(new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName)));
-        assertThat(generatedResources).hasSize(1);
-
-        generatedResources = new GeneratedResources();
-        generatedResources.add(new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName)));
-        LocalUri localUriDifferent = new ReflectiveAppRoot(model)
+        firstModelLocalUriId = new ModelLocalUriId(firstLocalUri);
+        secondLocalUri = new ReflectiveAppRoot(model)
                 .get(ComponentRootA.class)
                 .get("this", "different-localUri")
                 .asLocalUri();
-        ModelLocalUriId localUriIdDifferent = new ModelLocalUriId(localUriDifferent);
-        generatedResources.add(new GeneratedExecutableResource(localUriIdDifferent, Collections.singletonList(fullClassName)));
-        assertThat(generatedResources).hasSize(2);
+        secondModelLocalUriId = new ModelLocalUriId(secondLocalUri);
+    }
 
-        generatedClassResource = new GeneratedClassResource(fullClassName);
-        generatedFinalResource = new GeneratedExecutableResource(localUriId, Collections.singletonList(fullClassName));
-        generatedResources = new GeneratedResources();
+    @Test
+    void addDifferentGeneratedResourcesClasses() {
+        GeneratedResource generatedClassResource = new GeneratedClassResource(fullClassName);
+        GeneratedResource generatedFinalResource = new GeneratedExecutableResource(firstModelLocalUriId,
+                                                                                   Collections.singletonList(fullClassName));
+        GeneratedResources generatedResources = new GeneratedResources();
         generatedResources.add(generatedClassResource);
         generatedResources.add(generatedFinalResource);
         assertThat(generatedResources).hasSize(2);
         assertThat(generatedResources.contains(generatedClassResource)).isTrue();
         assertThat(generatedResources.contains(generatedFinalResource)).isTrue();
+    }
+
+    @Test
+    void addEqualsGeneratedResources() {
+        GeneratedResources generatedResources = new GeneratedResources();
+        generatedResources.add(new GeneratedExecutableResource(firstModelLocalUriId, Collections.singletonList(fullClassName)));
+        generatedResources.add(new GeneratedExecutableResource(firstModelLocalUriId, Collections.singletonList(fullClassName)));
+        assertThat(generatedResources).hasSize(1);
+    }
+
+    @Test
+    void addDifferentGeneratedResourcesIds() {
+        GeneratedResource firstExecutableResource = new GeneratedExecutableResource(firstModelLocalUriId, Collections.singletonList(fullClassName));
+        GeneratedResource secondExecutableResource = new GeneratedExecutableResource(secondModelLocalUriId, Collections.singletonList(fullClassName));
+        GeneratedResources generatedResources = new GeneratedResources();
+        generatedResources.add(firstExecutableResource);
+        generatedResources.add(secondExecutableResource);
+        assertThat(generatedResources).hasSize(2);
+        assertThat(generatedResources.contains(firstExecutableResource)).isTrue();
+        assertThat(generatedResources.contains(secondExecutableResource)).isTrue();
     }
 
 }

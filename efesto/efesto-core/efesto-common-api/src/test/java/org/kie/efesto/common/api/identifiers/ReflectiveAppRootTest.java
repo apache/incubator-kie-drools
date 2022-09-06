@@ -47,8 +47,5 @@ class ReflectiveAppRootTest {
         assertThat(retrieved).isNotNull();
         String expected = String.format("/%1$s/%2$s/%3$s", LocalComponentIdA.PREFIX, fileName, name);
         assertThat(retrieved.path()).isEqualTo(expected);
-        expected = String.format("/%1$s/%2$s", fileName, name);
-//        assertThat(retrieved.basePath()).isEqualTo(expected);
-//        assertThat(retrieved.model()).isEqualTo(LocalComponentIdA.PREFIX);
     }
 }
