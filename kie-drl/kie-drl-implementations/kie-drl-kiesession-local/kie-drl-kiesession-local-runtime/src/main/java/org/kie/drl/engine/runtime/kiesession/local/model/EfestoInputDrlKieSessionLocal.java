@@ -16,7 +16,6 @@
 package org.kie.drl.engine.runtime.kiesession.local.model;
 
 import org.kie.drl.engine.runtime.model.EfestoInputDrl;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**

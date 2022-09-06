@@ -20,11 +20,11 @@ import java.util.Objects;
 import org.kie.efesto.common.api.identifiers.Id;
 import org.kie.efesto.common.api.identifiers.LocalId;
 import org.kie.efesto.common.api.identifiers.LocalUri;
-import org.kie.efesto.common.api.identifiers.LocalUriId;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 public class LocalComponentIdPmml extends ModelLocalUriId implements Id {
     public static final String PREFIX = "pmml";
+    private static final long serialVersionUID = 8621199867598971641L;
 
     private final String fileName;
 

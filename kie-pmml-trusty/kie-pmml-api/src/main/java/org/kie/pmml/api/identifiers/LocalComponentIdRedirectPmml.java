@@ -24,6 +24,7 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 public class LocalComponentIdRedirectPmml extends ModelLocalUriId implements Id {
 
+    private static final long serialVersionUID = -4610916178245973385L;
     private final String fileName;
 
     private final String name;

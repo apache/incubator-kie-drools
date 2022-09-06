@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 import org.drools.io.FileSystemResource;
 import org.kie.drl.api.identifiers.LocalComponentIdDrl;
-import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileSetResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
@@ -32,11 +31,7 @@ import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
-import org.kie.pmml.compiler.executor.PMMLCompiler;
-import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
 import org.kie.pmml.compiler.model.EfestoCallableOutputPMMLClassesContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.utils.FileNameUtils.removeSuffix;
 
@@ -44,10 +39,6 @@ import static org.kie.efesto.common.api.utils.FileNameUtils.removeSuffix;
  * Class meant to <b>compile</b> resources
  */
 public class PMMLCompilerService {
-
-    private static final Logger logger = LoggerFactory.getLogger(PMMLCompilerService.class.getName());
-
-    private static final PMMLCompiler PMML_COMPILER = new PMMLCompilerImpl();
 
     private PMMLCompilerService() {
         // Avoid instantiation

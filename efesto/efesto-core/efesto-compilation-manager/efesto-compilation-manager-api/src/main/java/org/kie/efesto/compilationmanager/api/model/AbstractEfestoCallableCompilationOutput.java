@@ -18,7 +18,6 @@ package org.kie.efesto.compilationmanager.api.model;
 import java.util.Collections;
 import java.util.List;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 public abstract class AbstractEfestoCallableCompilationOutput implements EfestoCallableOutput {

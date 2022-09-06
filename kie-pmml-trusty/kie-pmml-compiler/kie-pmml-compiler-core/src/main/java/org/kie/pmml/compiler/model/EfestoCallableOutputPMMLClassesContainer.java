@@ -17,7 +17,6 @@ package org.kie.pmml.compiler.model;
 
 import java.util.Map;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
 

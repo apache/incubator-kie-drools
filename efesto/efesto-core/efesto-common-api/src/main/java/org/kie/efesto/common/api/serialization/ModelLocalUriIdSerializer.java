@@ -16,14 +16,13 @@
 package org.kie.efesto.common.api.serialization;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
@@ -59,11 +58,7 @@ public class ModelLocalUriIdSerializer extends StdSerializer<ModelLocalUriId> {
     }
 
     private String decodeString(String toDecode) {
-        try {
-            return URLDecoder.decode(toDecode, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return URLDecoder.decode(toDecode, StandardCharsets.UTF_8);
     }
 
 }

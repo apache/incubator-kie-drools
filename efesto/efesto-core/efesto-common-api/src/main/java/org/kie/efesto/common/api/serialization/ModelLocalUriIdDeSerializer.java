@@ -17,7 +17,6 @@ package org.kie.efesto.common.api.serialization;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,7 +35,7 @@ public class ModelLocalUriIdDeSerializer extends StdDeserializer<ModelLocalUriId
     }
 
     @Override
-    public ModelLocalUriId deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public ModelLocalUriId deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);
         String path = node.get("fullPath").asText();
         return new ModelLocalUriId(LocalUri.parse(path));

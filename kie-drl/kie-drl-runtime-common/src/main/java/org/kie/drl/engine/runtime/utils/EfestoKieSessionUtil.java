@@ -23,7 +23,6 @@ import org.drools.model.Model;
 import org.drools.modelcompiler.KieBaseBuilder;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
@@ -53,7 +52,6 @@ public class EfestoKieSessionUtil {
         try {
             KieSession toReturn = kieBase.newKieSession();
             logger.debug("toReturn {}", toReturn);
-            // TODO find a way to set a unique identifier for the created session -
             return toReturn;
         } catch (Exception e) {
             String errorMessage = String.format("Failed to create new session from %s due to %s", kieBase, e.getMessage());
@@ -64,8 +62,7 @@ public class EfestoKieSessionUtil {
 
     static Model loadModel(String fullModelResourcesSourceClassName, EfestoRuntimeContext context) {
         try {
-            final Class<? extends Model> aClass =
-                    (Class<? extends Model>) context.loadClass(fullModelResourcesSourceClassName);
+            final Class<? extends Model> aClass = context.loadClass(fullModelResourcesSourceClassName);
             return aClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new KieRuntimeServiceException(e);

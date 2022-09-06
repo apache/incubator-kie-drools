@@ -18,7 +18,6 @@ package org.kie.drl.engine.compilation.model;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
 

@@ -30,7 +30,6 @@ import org.kie.pmml.commons.HasRule;
 import org.kie.pmml.commons.model.IsDrools;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 
-import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 /**

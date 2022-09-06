@@ -15,15 +15,17 @@
  */
 package org.kie.efesto.common.api.identifiers;
 
-import java.io.UnsupportedEncodingException;
+import java.io.Serializable;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 
-public class ModelLocalUriId extends LocalUriId {
+public class ModelLocalUriId extends LocalUriId implements Serializable {
 
+    private static final long serialVersionUID = 2473381132658366922L;
     private final String model;
 
     private final String basePath;
@@ -74,7 +76,7 @@ public class ModelLocalUriId extends LocalUriId {
         return Objects.hash(model, basePath, fullPath);
     }
     static LocalUri.LocalUriPathComponent getFirstLocalUriPathComponent(LocalUri localUri) {
-        if (localUri.parent() != null && localUri.parent() instanceof LocalUri.LocalUriPathComponent) {
+        if (localUri.parent() instanceof LocalUri.LocalUriPathComponent) {
             return getFirstLocalUriPathComponent(localUri.parent());
         } else {
             return localUri instanceof LocalUri.LocalUriPathComponent ? (LocalUri.LocalUriPathComponent) localUri : null;
@@ -105,10 +107,6 @@ public class ModelLocalUriId extends LocalUriId {
     }
 
     private static String decodeString(String toDecode) {
-        try {
-            return URLDecoder.decode(toDecode, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return URLDecoder.decode(toDecode, StandardCharsets.UTF_8);
     }
 }

@@ -18,7 +18,6 @@ package org.kie.drl.engine.runtime.mapinput.model;
 import java.util.Map;
 
 import org.kie.drl.engine.runtime.model.EfestoOutputDrl;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**

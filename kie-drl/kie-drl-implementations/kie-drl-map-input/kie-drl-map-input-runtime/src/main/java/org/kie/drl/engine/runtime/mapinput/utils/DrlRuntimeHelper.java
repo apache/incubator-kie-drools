@@ -21,7 +21,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.drl.api.identifiers.DrlSessionIdFactory;
 import org.kie.drl.api.identifiers.LocalComponentIdDrlSession;
 import org.kie.drl.engine.runtime.mapinput.model.EfestoOutputDrlMap;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
@@ -32,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.drl.engine.runtime.utils.EfestoKieSessionUtil.loadKieSession;
-import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedExecutableResource;
 
 public class DrlRuntimeHelper {
@@ -68,7 +66,7 @@ public class DrlRuntimeHelper {
             LocalComponentIdDrlSession modelLocalUriId = new ReflectiveAppRoot("")
                     .get(DrlSessionIdFactory.class)
                     .get(toEvaluate.getModelLocalUriId().basePath(), identifier);
-            return Optional.of(new EfestoOutputDrlMap(modelLocalUriId, null)); // TODO @mfusco
+            return Optional.of(new EfestoOutputDrlMap(modelLocalUriId, null));
         } catch (Exception e) {
             throw new KieRuntimeServiceException(String.format("%s failed to execute %s",
                                                                DrlRuntimeHelper.class.getName(),
