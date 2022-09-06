@@ -40,7 +40,7 @@ But since {PRODUCT} 7.45.0, `drools-engine` and `drools-engine-classic` have bee
 
 == Rule Unit
 
-As introduced in xref:getting-started/index.adoc#first-rule-project_getting-started[First Rule Project], Rule Unit is a recommended style in {PRODUCT} 8. It will require some modification to your codes, but if you are going to develop cloud-native applications, Rule Unit is strongly recommended because {KOGITO} also works with Rule Unit.
+As introduced in xref:getting-started/index.adoc#first-rule-project_getting-started[First Rule Project], using Rule Units is a recommended style for implementing rules in {PRODUCT} 8. It will require some modifications to your codebase, but if you are going to develop cloud-native applications, Rule Units are strongly recommended, because {KOGITO} also works with Rule Units.
 
 .Rule Unit pom.xml
 [xml,subs=attributes+]
