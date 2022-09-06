@@ -228,3 +228,8 @@ image::language-reference/lists.png[align="center"]
 
 Some applications provide a limited ability to keep a history of changes, but it is recommended to use an alternative means of revision control.
 When changes are being made to rules over time, older versions are archived (many open source solutions exist for this, such as Subversion or Git).
+
+[WARNING]
+====
+DRT (Drools Rule Template) is deprecated. Please consider this decision table capability or third party templating features if needed.
+====
