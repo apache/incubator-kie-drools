@@ -14,6 +14,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>11</maven.compiler.release>
     <drools-version>${droolsVersion}</drools-version>
     <slf4j-version>${slf4jVersion}</slf4j-version>
     <junit-version>${junitVersion}</junit-version>
@@ -65,11 +66,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
+        <version>3.8.1</version>
       </plugin>
       <plugin>
         <groupId>org.kie</groupId>

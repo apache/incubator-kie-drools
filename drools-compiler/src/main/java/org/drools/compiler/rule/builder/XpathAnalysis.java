@@ -149,6 +149,7 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
 
         boolean iterate = true;
         boolean isQuoted = false;
+        boolean isDoubleQuoted = false;
         boolean isInlineCast = false;
 
         String field = null;
@@ -248,8 +249,24 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
                     }
                     break;
                 case '"':
+                    if (isQuoted) {
+                        if (isDoubleQuoted) {
+                            isQuoted = false;
+                            isDoubleQuoted = false;
+                        }
+                    } else {
+                        isQuoted = true;
+                        isDoubleQuoted = true;
+                    }
+                    break;
                 case '\'':
-                    isQuoted = !isQuoted;
+                    if (isQuoted) {
+                        if (!isDoubleQuoted) {
+                            isQuoted = false;
+                        }
+                    } else {
+                        isQuoted = true;
+                    }
                     break;
             }
         }

@@ -1,0 +1,9 @@
+:DROOLS:
+include::../_artifacts/document-attributes.adoc[]
+
+[[_ch.commands]]
+= Drools Commands
+:context: kie-apis
+
+include::_runtime-commands-con.adoc[leveloffset=+1]
+include::_runtime-commands-samples-ref.adoc[leveloffset=+1]
