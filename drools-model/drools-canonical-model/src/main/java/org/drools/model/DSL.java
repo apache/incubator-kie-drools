@@ -22,10 +22,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import org.drools.model.consequences.ConsequenceBuilder;
-import org.drools.model.datasources.DataStore;
-import org.drools.model.datasources.DataStream;
-import org.drools.model.datasources.impl.DataStreamImpl;
-import org.drools.model.datasources.impl.SetDataStore;
 import org.drools.model.functions.Block0;
 import org.drools.model.functions.Block1;
 import org.drools.model.functions.Function0;
@@ -108,20 +104,6 @@ import org.drools.model.view.ViewItemBuilder;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 
 public class DSL {
-
-    // -- DataSource --
-
-    public static <T> DataStore<T> storeOf( T... items ) {
-        return SetDataStore.storeOf( items );
-    }
-
-    public static DataStore newDataStore() {
-        return storeOf();
-    }
-
-    public static DataStream newDataStream() {
-        return new DataStreamImpl();
-    }
 
     // -- TypeMetaData --
 
