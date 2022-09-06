@@ -182,7 +182,7 @@
         <module>drools-templates</module>
         <module>drools-decisiontables</module>
         <module>drools-examples</module>
-<!--        <module>kie-ci</module>-->
+        <module>kie-ci</module>
         <module>drools-model</module>
         <module>drools-examples-api</module>
         <module>drools-test-coverage</module>
