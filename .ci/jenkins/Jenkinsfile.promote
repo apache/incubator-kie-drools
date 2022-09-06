@@ -61,8 +61,8 @@ pipeline {
                 script {
                     dir(getRepoName()) {
                         checkoutRepo()
-                        mergeAndPush(getDeployPrLink())
-                        tagLatest()
+                        //mergeAndPush(getDeployPrLink())
+                        //tagLatest()
                     }
                 }
             }
@@ -80,32 +80,32 @@ pipeline {
             }
         }
 
-        stage('Set next snapshot version') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    dir('pr') {
-                        prepareForPR()
+        //stage('Set next snapshot version') {
+        //    when {
+        //        expression { return isRelease() }
+        //    }
+        //    steps {
+        //        script {
+        //            dir('pr') {
+        //                prepareForPR()
 
-                        maven.mvnVersionsSet(getMavenCommand(), getSnapshotVersion(), true)
+        //                maven.mvnVersionsSet(getMavenCommand(), getSnapshotVersion(), true)
 
-                        commitAndCreatePR()
-                    }
-                    dir(getRepoName()) {
-                        sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush(getPipelinePrLink())
+        //                commitAndCreatePR()
+        //            }
+        //            dir(getRepoName()) {
+        //                sh "git checkout ${getBuildBranch()}"
+        //                mergeAndPush(getPipelinePrLink())
 
-                        if (shouldDeployToRepository()) {
-                            runMavenDeploy()
-                        } else {
-                            echo 'Testing environment and no specific deploy repository given => no deployment'
-                        }
-                    }
-                }
-            }
-        }
+        //                if (shouldDeployToRepository()) {
+        //                    runMavenDeploy()
+        //                } else {
+        //                    echo 'Testing environment and no specific deploy repository given => no deployment'
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }
     post {
         unsuccessful {
