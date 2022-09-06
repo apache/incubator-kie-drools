@@ -83,7 +83,7 @@ Regarding related Java API usage, in {PRODUCT} 7, you create a `KieSession` from
         }
 ----
 
-Using Rule Unit APIs, the Java codes would be like this:
+Using Rule Unit APIs, the resulting Java snippet would be like this:
 
 .Rule Unit Java code
 [source,java]
