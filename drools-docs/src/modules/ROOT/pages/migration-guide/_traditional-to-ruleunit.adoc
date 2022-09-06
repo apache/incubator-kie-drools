@@ -100,7 +100,7 @@ Using Rule Unit APIs, the resulting Java snippet would be like this:
         }
 ----
 
-In Rule Unit, instantiate `RuleUnitInstance` instead of `KieSession`. Add facts to `DataSource` property instead of `insert`. Boilerplate codes (e.g. `KieServices`, `KieContainer`, `KieBase` ... ) are eliminated. Instead, one more class `Unit` has to be defined.
+In Rule Unit, instantiate `RuleUnitInstance` instead of `KieSession`. Add facts to `DataSource` property instead of `insert`. Generic KIE API call (e.g. `KieServices`, `KieContainer`, `KieBase` ... ) are no longer needed. Instead, one more class `Unit` has to be defined.
 
 .Rule Unit Class
 [source,java]
