@@ -2468,21 +2468,6 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     }
 
     @Test
-    public void testGetEntriesFromDto() {
-        // DROOLS-3308 DMN implement missing functions only described in chapter "10.3.2.6 Context"
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("getentriesgetvalue_Dto.dmn", this.getClass());
-        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a", "Drawing 1");
-
-        final DMNContext emptyContext = DMNFactory.newContext();
-        emptyContext.set("a context", new JavaContextDto("value1", "value2"));
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
-        LOG.debug("{}", dmnResult);
-        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
-        assertThat(dmnResult.getDecisionResultByName("using get entries").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
-        assertThat(dmnResult.getDecisionResultByName("using get entries").getResult()).asList().containsExactly("value2");
-    }
-
-    @Test
     public void testGetValue() {
         // DROOLS-3308 DMN implement missing functions only described in chapter "10.3.2.6 Context"
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("getentriesgetvalue.dmn", this.getClass());
@@ -2495,19 +2480,22 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("using get value").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
         assertThat(dmnResult.getDecisionResultByName("using get value").getResult()).isEqualTo("value2");
     }
-
+    
     @Test
-    public void testGetValueFromDto() {
+    public void testGetEntriesGetValueUsingDTO() {
+        // DROOLS-7139 FEEL context functions `get value` and `get entries` should support Java POJO as argument
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("getentriesgetvalue_Dto.dmn", this.getClass());
         final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a", "Drawing 1");
 
         final DMNContext emptyContext = DMNFactory.newContext();
-        emptyContext.set("a context", new JavaContextDto("value1", "value2"));
+        emptyContext.set("a context", new Person("John", "Doe"));
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("using get entries").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
+        assertThat(dmnResult.getDecisionResultByName("using get entries").getResult()).isEqualTo("John");
         assertThat(dmnResult.getDecisionResultByName("using get value").getEvaluationStatus()).isEqualTo(DecisionEvaluationStatus.SUCCEEDED);
-        assertThat(dmnResult.getDecisionResultByName("using get value").getResult()).isEqualTo("value2");
+        assertThat(dmnResult.getDecisionResultByName("using get value").getResult()).isEqualTo("John");
     }
 
     @Test
@@ -3182,23 +3170,5 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
         assertThat(dmnResult.getDecisionResultByName("Evaluation").getResult()).isEqualTo("Unknown");
-    }
-
-    public static class JavaContextDto {
-        private final String key1;
-        private final String key2;
-
-        public JavaContextDto(String key1, String key2) {
-            this.key1 = key1;
-            this.key2 = key2;
-        }
-
-        public String getKey1() {
-            return key1;
-        }
-
-        public String getKey2() {
-            return key2;
-        }
     }
 }
