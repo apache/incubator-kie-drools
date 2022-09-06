@@ -18,7 +18,9 @@ package org.kie.pmml.evaluator.core.service;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
+import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
@@ -26,22 +28,25 @@ import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManage;
-import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.execute;
+import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManageEfestoInputPMML;
+import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.executeEfestoInputPMML;
 
 public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeContext, PMML4Result, EfestoInputPMML,
-        EfestoOutputPMML, PMMLRuntimeContext> {
+        EfestoOutputPMML, EfestoRuntimeContext> {
 
     private static final Logger logger = LoggerFactory.getLogger(KieRuntimeServicePMML.class.getName());
 
     @Override
-    public boolean canManageInput(EfestoInput toEvaluate, PMMLRuntimeContext context) {
-        return canManage(toEvaluate, context);
+    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
+        return canManageEfestoInputPMML(toEvaluate, context);
     }
 
     @Override
-    public Optional<EfestoOutputPMML> evaluateInput(EfestoInputPMML toEvaluate, PMMLRuntimeContext context) {
-        return execute(toEvaluate, context);
+    public Optional<EfestoOutputPMML> evaluateInput(EfestoInputPMML toEvaluate, EfestoRuntimeContext context) {
+        if (!(context instanceof PMMLRuntimeContext)) {
+            throw new KieRuntimeServiceException("Expecting PMMLRuntimeContext, received " + context.getClass());
+        }
+        return executeEfestoInputPMML(toEvaluate, (PMMLRuntimeContext)context);
     }
 
     @Override

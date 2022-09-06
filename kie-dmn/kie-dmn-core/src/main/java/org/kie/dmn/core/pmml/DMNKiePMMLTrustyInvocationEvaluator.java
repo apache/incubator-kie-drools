@@ -209,6 +209,6 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     }
 
     private String getFileNameNoSuffix(String fileName) {
-        return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.') - 1) : fileName;
+        return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
     }
 }

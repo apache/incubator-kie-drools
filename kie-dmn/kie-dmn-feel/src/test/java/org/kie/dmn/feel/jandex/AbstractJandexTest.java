@@ -63,14 +63,10 @@ public abstract class AbstractJandexTest {
         stream = getClass().getClassLoader()
                            .getResourceAsStream("org/kie/dmn/feel/runtime/functions/BaseFEELFunction.class");
         indexer.index(stream);
-        stream = getClass().getClassLoader()
-                .getResourceAsStream("org/kie/dmn/core/pmml/PMMLInput.class");
-        indexer.index(stream);
         scanFile(new File("./target/classes"), indexer);
         Index index = indexer.complete();
 
         Set<ClassInfo> founds = index.getAllKnownImplementors(DotName.createSimple(FEELFunction.class.getCanonicalName()));
-        founds.add(index.getClassByName(DotName.createSimple("org.kie.dmn.core.pmml.PMMLInput")));
         boolean removeIf = founds.removeIf(ci -> ci.name().toString().contains("ASTTemporalConstantVisitor")); // not needed at run-time.
         LOG.debug("founds: \n{}", founds);
         Jsonb jsonb = JsonbBuilder.create(new JsonbConfig().withFormatting(true));

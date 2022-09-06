@@ -71,11 +71,20 @@ public class PMMLRuntimeHelper {
     private PMMLRuntimeHelper() {
     }
 
-    public static boolean canManage(EfestoInput<PMMLRequestData> toEvaluate, EfestoRuntimeContext runtimeContext) {
-        return (isValidInput(toEvaluate) && isPresentExecutableOrRedirect(toEvaluate.getFRI(), runtimeContext));
+    public static boolean canManageEfestoInput(EfestoInput toEvaluate, EfestoRuntimeContext runtimeContext) {
+        return (!(toEvaluate instanceof EfestoInputPMML) && (toEvaluate.getInputData() instanceof PMMLRequestData)
+                && (!(runtimeContext instanceof PMMLRuntimeContext))
+                && isPresentExecutableOrRedirect(toEvaluate.getFRI(), runtimeContext));
     }
 
-    public static Optional<EfestoOutputPMML> execute(EfestoInputPMML toEvaluate, PMMLRuntimeContext pmmlContext) {
+    public static boolean canManageEfestoInputPMML(EfestoInput toEvaluate, EfestoRuntimeContext runtimeContext) {
+        return (toEvaluate instanceof EfestoInputPMML) &&
+                (runtimeContext instanceof PMMLRuntimeContext) &&
+                isPresentExecutableOrRedirect(toEvaluate.getFRI(), runtimeContext);
+    }
+
+    public static Optional<EfestoOutputPMML> executeEfestoInputPMML(EfestoInputPMML toEvaluate,
+                                                                    PMMLRuntimeContext pmmlContext) {
         KiePMMLModelFactory kiePMMLModelFactory;
         try {
             kiePMMLModelFactory = loadKiePMMLModelFactory(toEvaluate.getFRI(), pmmlContext);
@@ -96,10 +105,12 @@ public class PMMLRuntimeHelper {
         }
     }
 
-    public static Optional<EfestoOutputPMML> execute(EfestoInput<PMMLRequestData> toEvaluate, EfestoRuntimeContext runtimeContext) {
-        PMMLRuntimeContext pmmlContext = getPMMLRuntimeContext(toEvaluate.getInputData(), runtimeContext.getGeneratedResourcesMap());
+    public static Optional<EfestoOutputPMML> executeEfestoInput(EfestoInput<PMMLRequestData> toEvaluate,
+                                                                EfestoRuntimeContext runtimeContext) {
+        PMMLRuntimeContext pmmlContext = getPMMLRuntimeContext(toEvaluate.getInputData(),
+                                                               runtimeContext.getGeneratedResourcesMap());
         EfestoInputPMML efestoInputPMML = getEfestoInputPMML(toEvaluate, pmmlContext);
-        return execute(efestoInputPMML, pmmlContext);
+        return executeEfestoInputPMML(efestoInputPMML, pmmlContext);
     }
 
     public static List<PMMLModel> getPMMLModels(PMMLRuntimeContext pmmlContext) {
@@ -139,10 +150,6 @@ public class PMMLRuntimeHelper {
         return toReturn;
     }
 
-    static boolean isValidInput(EfestoInput toValidate) {
-        return (toValidate instanceof EfestoInputPMML) || (toValidate.getInputData() instanceof PMMLRequestData);
-    }
-
     static EfestoOutputPMML getEfestoOutput(KiePMMLModelFactory kiePMMLModelFactory, EfestoInputPMML darInputPMML) {
         List<KiePMMLModel> kiePMMLModels = kiePMMLModelFactory.getKiePMMLModels();
         PMML4Result result = evaluate(kiePMMLModels, darInputPMML.getInputData());
@@ -156,8 +163,11 @@ public class PMMLRuntimeHelper {
     static PMMLRuntimeContext getPMMLRuntimeContext(PMMLRequestData pmmlRequestData,
                                                     final Map<String, GeneratedResources> generatedResourcesMap) {
         String fileName = (String) pmmlRequestData.getMappedRequestParams().get("_pmml_file_name_").getValue();
-
-        PMMLRuntimeContext toReturn = new PMMLRuntimeContextImpl(pmmlRequestData, fileName, new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader()));
+        PMMLRequestData cleaned = new PMMLRequestData(pmmlRequestData.getCorrelationId(), pmmlRequestData.getModelName());
+        pmmlRequestData.getRequestParams().stream()
+                .filter(parameterInfo -> !parameterInfo.getName().equals("_pmml_file_name_"))
+                .forEach(cleaned::addRequestParam);
+        PMMLRuntimeContext toReturn = new PMMLRuntimeContextImpl(cleaned, fileName, new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader()));
         toReturn.getGeneratedResourcesMap().putAll(generatedResourcesMap);
         return toReturn;
     }

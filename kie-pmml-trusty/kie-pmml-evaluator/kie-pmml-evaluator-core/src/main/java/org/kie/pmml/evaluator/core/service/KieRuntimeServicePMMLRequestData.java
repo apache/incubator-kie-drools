@@ -26,8 +26,8 @@ import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManage;
-import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.execute;
+import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManageEfestoInput;
+import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.executeEfestoInput;
 
 public class KieRuntimeServicePMMLRequestData implements KieRuntimeService<PMMLRequestData, PMML4Result,
         EfestoInput<PMMLRequestData>, EfestoOutputPMML, EfestoRuntimeContext> {
@@ -36,13 +36,13 @@ public class KieRuntimeServicePMMLRequestData implements KieRuntimeService<PMMLR
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return canManage(toEvaluate, context);
+        return canManageEfestoInput(toEvaluate, context);
     }
 
     @Override
     public Optional<EfestoOutputPMML> evaluateInput(EfestoInput<PMMLRequestData> toEvaluate,
                                                     EfestoRuntimeContext context) {
-        return execute(toEvaluate, context);
+        return executeEfestoInput(toEvaluate, context);
     }
 
     @Override
