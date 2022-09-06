@@ -160,4 +160,4 @@ end
 
 Firstly, declare `unit`. Don't need to declare `global`, because `controlSet` is a field of `MeasurementUnit`. Traditional `global` usage would become Unit's field. In addition, a main difference is OOPath notation in LHS. It is described in details at xref:language-reference/index.adoc#con-drl-rules-conditions_drl-rules[Rule conditions in DRL]. You should change from the class name (`Measurement`) to `DataSource` property name in the Unit class (`measurements`).
 
-These changes are not negligible, but hopefully, not so difficult.
+These changes are not negligible, but hopefully as this migration guide demonstrated, they are not so difficult to implement either.
