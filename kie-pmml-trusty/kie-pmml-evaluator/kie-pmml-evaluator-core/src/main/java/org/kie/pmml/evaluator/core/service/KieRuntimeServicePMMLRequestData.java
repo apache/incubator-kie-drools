@@ -23,16 +23,12 @@ import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManageEfestoInput;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.executeEfestoInput;
 
 public class KieRuntimeServicePMMLRequestData implements KieRuntimeService<PMMLRequestData, PMML4Result,
         EfestoInput<PMMLRequestData>, EfestoOutputPMML, EfestoRuntimeContext> {
-
-    private static final Logger logger = LoggerFactory.getLogger(KieRuntimeServicePMMLRequestData.class.getName());
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {

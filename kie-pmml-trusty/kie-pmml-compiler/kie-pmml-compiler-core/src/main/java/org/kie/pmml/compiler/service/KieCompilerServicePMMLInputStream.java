@@ -23,7 +23,6 @@ import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
-import org.kie.pmml.api.compilation.PMMLCompilationContext;
 
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.compiler.service.PMMLCompilerServicePMMLInputStream.getEfestoCompilationOutputPMML;
