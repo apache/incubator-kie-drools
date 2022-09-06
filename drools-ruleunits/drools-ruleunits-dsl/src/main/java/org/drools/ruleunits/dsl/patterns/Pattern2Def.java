@@ -37,6 +37,10 @@ public interface Pattern2Def<A, B> extends PatternDef {
 
     <C> Pattern3Def<A, B, C> join(Function1<RuleFactory, Pattern1Def<C>> patternBuilder);
 
+    Pattern2DefImpl<A, B> exists(Function1<Pattern2Def<A, B>, PatternDef> patternBuilder);
+
+    Pattern2DefImpl<A, B> not(Function1<Pattern2Def<A, B>, PatternDef> patternBuilder);
+
     void execute(Block2<A, B> block);
 
     <G> void execute(G globalObject, Block3<G, A, B> block);

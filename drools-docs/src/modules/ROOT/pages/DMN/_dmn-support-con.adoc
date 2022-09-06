@@ -49,6 +49,6 @@ h|Save
 In addition to all DMN conformance level 3 requirements, {DMN_ENGINE} also includes enhancements and fixes to FEEL and DMN model components to optimize the experience of implementing DMN decision services with {PRODUCT}. From a platform perspective, DMN models are like any other business asset in {PRODUCT}, such as DRL files or spreadsheet decision tables, that you can include in your {PRODUCT} project and deploy in order to start your DMN decision services.
 
 For more information about including external DMN files with your {PRODUCT} project packaging and deployment method, see
-<<_builddeployutilizeandrunsection>>.
+the xref:KIE/index.adoc[Build, Deploy, Utilize and Run section].
 
 You can design a new DMN decision service using a {KOGITO} microservice as an alternative for the cloud-native capabilities of DMN decision services. You could also migrate your existing DMN service to a {KOGITO} microservice. For more information about {KOGITO} or migrating to {KOGITO} microservices, see the https://kogito.kie.org/guides/[Kogito website for documentation].

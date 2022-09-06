@@ -1,0 +1,14 @@
+[[_builddeployutilizeandrunsection]]
+= Build, Deploy, Utilize and Run
+:context: packaging-deploying
+
+include::BuildDeployUtilizeAndRun/KIEModuleIntroduction-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/KIEBuilding-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/KIEDeploying-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/KIERunning-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/KIEDeployCheatSheets-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/KIEExamples-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/executable-model-con.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/executable-model-modify-proc.adoc[leveloffset=+2]
+include::BuildDeployUtilizeAndRun/executable-model-upgrading-proc.adoc[leveloffset=+2]
+include::BuildDeployUtilizeAndRun/kie-scanner-proc.adoc[leveloffset=+1]

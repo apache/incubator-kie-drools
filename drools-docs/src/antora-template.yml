@@ -11,8 +11,8 @@ asciidoc:
     doctype: book
     drools-version: ${project.version}
     java-version: ${maven.compiler.release}
-    maven-version: ${maven.min.version}
+    maven-version: ${version.org.apache.maven}
     quarkus-version: ${version.io.quarkus}
-start_page: getting-started/index.adoc
+start_page: introduction/index.adoc
 nav:
   - modules/ROOT/nav.adoc

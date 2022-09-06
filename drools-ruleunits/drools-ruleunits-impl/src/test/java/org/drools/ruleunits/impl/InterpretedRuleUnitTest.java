@@ -52,4 +52,12 @@ public class InterpretedRuleUnitTest {
         assertEquals(1, unitInstance.fire());
         assertTrue(unit.getResults().contains("it worked!"));
     }
+
+    @Test
+    public void testNotWithAndWithoutSingleQuote() {
+        NotTestUnit unit = new NotTestUnit();
+
+        RuleUnitInstance<NotTestUnit> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit);
+        assertEquals(2, unitInstance.fire());
+    }
 }

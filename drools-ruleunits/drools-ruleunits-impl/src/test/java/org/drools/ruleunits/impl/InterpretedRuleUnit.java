@@ -112,7 +112,8 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
     }
 
     public static KieModuleKieProject createRuleUnitKieProject(Class<?> unitClass, String... drls) {
-        InternalKieModule kieModule = createRuleUnitKieModule(unitClass, true, drls);
-        return createRuleUnitKieProject(kieModule, true);
+        boolean useExecModel = true;
+        InternalKieModule kieModule = createRuleUnitKieModule(unitClass, useExecModel, drls);
+        return createRuleUnitKieProject(kieModule, useExecModel);
     }
 }

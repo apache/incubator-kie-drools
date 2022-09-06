@@ -8,4 +8,4 @@ After you implement your DMN files in your {PRODUCT} project, you can execute th
 Alternatively, you could package your DMN files as part of a {KOGITO} cloud-native microservice.
 
 For information about including external DMN assets with your project packaging and deployment method, see
-<<_builddeployutilizeandrunsection>>.
+the xref:KIE/index.adoc[Build, Deploy, Utilize and Run section].
