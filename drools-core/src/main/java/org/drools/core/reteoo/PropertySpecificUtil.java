@@ -46,7 +46,7 @@ public class PropertySpecificUtil {
     }
 
     public static BitMask getEmptyPropertyReactiveMask(int settablePropertiesSize) {
-        return BitMask.Factory.getEmpty(settablePropertiesSize + CUSTOM_BITS_OFFSET);
+        return BitMask.getEmpty(settablePropertiesSize + CUSTOM_BITS_OFFSET);
     }
 
     public static BitMask onlyTraitBitSetMask() {

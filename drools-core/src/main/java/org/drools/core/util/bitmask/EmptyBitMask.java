@@ -27,7 +27,7 @@ public class EmptyBitMask extends SingleLongBitMask implements BitMask, EmptyMas
 
     @Override
     public BitMask set(int index) {
-        return BitMask.Factory.getEmpty(index+1).set(index);
+        return BitMask.getEmpty(index+1).set(index);
     }
 
     @Override

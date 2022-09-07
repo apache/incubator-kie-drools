@@ -412,7 +412,11 @@ public class Consequence {
                         }
                     }
 
-                    updateExpr.addArgument( "mask_" + updatedVar );
+                    Expression bitMaskArgExpr = new NameExpr("mask_" + updatedVar);
+                    if (hasRuleUnit() && updateExpr.toString().contains("ConsequenceDataStoreImpl")) {
+                        bitMaskArgExpr = new MethodCallExpr("org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask", bitMaskArgExpr);
+                    }
+                    updateExpr.addArgument(bitMaskArgExpr);
                     initializedBitmaskFields.add( updatedVar );
                 }
             }
@@ -537,5 +541,9 @@ public class Consequence {
         return scope.isNameExpr() && context.getDeclarationById(scope.asNameExpr().getNameAsString())
                 .map(DeclarationSpec::getDeclarationClass)
                 .map(dataStoreClass::isAssignableFrom).orElse(false);
+    }
+
+    private static boolean hasRuleUnit() {
+        return dataStoreClass != null;
     }
 }

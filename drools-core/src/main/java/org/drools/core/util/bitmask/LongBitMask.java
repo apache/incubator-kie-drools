@@ -28,7 +28,7 @@ public class LongBitMask extends SingleLongBitMask implements BitMask {
     @Override
     public BitMask set(int index) {
         if (index >= 64) {
-            return BitMask.Factory.getEmpty(index+1).setAll(this).set(index);
+            return BitMask.getEmpty(index+1).setAll(this).set(index);
         }
         this.mask = this.mask | (1L << index);
         return this;

@@ -37,7 +37,7 @@ public class AllSetBitMask extends SingleLongBitMask implements BitMask, AllSetM
 
     @Override
     public BitMask reset(int index) {
-        return BitMask.Factory.getFull(index+1).reset(index);
+        return BitMask.getFull(index+1).reset(index);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class AllSetBitMask extends SingleLongBitMask implements BitMask, AllSetM
         } else if (mask instanceof AllSetButLastBitMask) {
             return EmptyButLastBitMask.get();
         }
-        return BitMask.Factory.getFull(mask instanceof LongBitMask ? 1 : 65).resetAll(mask);
+        return BitMask.getFull(mask instanceof LongBitMask ? 1 : 65).resetAll(mask);
     }
 
     @Override
