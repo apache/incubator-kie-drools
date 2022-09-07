@@ -47,6 +47,12 @@ pipeline {
 
                     if (isRelease()) {
                         // Verify version is set and if on right release branch
+                        projectVersionValue = getProjectVersion()
+                        buildBranchValue = getBuildBranch()
+                        releaseBranchValue = util.getReleaseBranchFromVersion(getProjectVersion())
+                        echo "projectVersionValue ${projectVersionValue}"
+                        echo "buildBranchValue ${buildBranchValue}"
+                        echo "releaseBranchValue ${releaseBranchValue}"
                         assert getProjectVersion()
                         assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
