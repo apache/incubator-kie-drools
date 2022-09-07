@@ -27,6 +27,7 @@ import org.drools.model.BitMask;
 import org.drools.model.Channel;
 import org.drools.model.Drools;
 import org.drools.model.DroolsEntryPoint;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -156,6 +157,11 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
     @Override
     public void setFocus( String focus ) {
         knowledgeHelper.setFocus( focus );
+    }
+
+    @Override
+    public KieBase getKieBase() {
+        return (KieBase) reteEvaluator.getKnowledgeBase();
     }
 
     @Override

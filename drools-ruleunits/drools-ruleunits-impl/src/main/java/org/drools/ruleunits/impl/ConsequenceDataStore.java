@@ -16,11 +16,11 @@
 package org.drools.ruleunits.impl;
 
 public interface ConsequenceDataStore<T> {
-    void add(T t);
+    void add(T object);
 
-    void addLogical(T t);
+    void addLogical(T object);
 
-    void update(T t);
+    void update(T object, String... modifiedProperties);
 
-    void remove(T t);
+    void remove(T object);
 }
