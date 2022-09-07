@@ -18,12 +18,9 @@ package org.kie.pmml.evaluator.core.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -31,6 +28,8 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -44,12 +43,16 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelFactory;
 import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.commons.utils.PMMLLoaderUtils;
-import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
 import org.kie.pmml.evaluator.core.implementations.PMMLRuntimeStep;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.pmml.TestingHelper.commonEvaluateEfestoOutputPMML;
+import static org.kie.pmml.TestingHelper.commonEvaluatePMML4Result;
+import static org.kie.pmml.TestingHelper.commonValuateStep;
+import static org.kie.pmml.TestingHelper.getPMMLContext;
+import static org.kie.pmml.TestingHelper.getPMMLRequestData;
 import static org.kie.pmml.api.enums.ResultCode.OK;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.mockito.Mockito.mock;
@@ -71,33 +74,50 @@ class PMMLRuntimeHelperTest {
     }
 
     @Test
-    void canManage() {
+    void canManageEfestoInputPMML() {
         FRI fri = new FRI(basePath, PMML_STRING);
-        PMMLRuntimeContext context = getPMMLContext(FILE_NAME, MODEL_NAME);
+        PMMLRuntimeContext context = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
         AbstractEfestoInput darInputPMML = new EfestoInputPMML(fri, context);
-        assertThat(PMMLRuntimeHelper.canManage(darInputPMML, context)).isTrue();
+        assertThat(PMMLRuntimeHelper.canManageEfestoInputPMML(darInputPMML, context)).isTrue();
+        assertThat(PMMLRuntimeHelper.canManageEfestoInput(darInputPMML, context)).isFalse();
         darInputPMML = new AbstractEfestoInput<String>(fri, "") {
         };
-        assertThat(PMMLRuntimeHelper.canManage(darInputPMML, context)).isFalse();
+        assertThat(PMMLRuntimeHelper.canManageEfestoInputPMML(darInputPMML, context)).isFalse();
         fri = new FRI("darfoo", PMML_STRING);
-        context = getPMMLContext(FILE_NAME, MODEL_NAME);
+        context = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
         darInputPMML = new EfestoInputPMML(fri, context);
-        assertThat(PMMLRuntimeHelper.canManage(darInputPMML, context)).isFalse();
+        assertThat(PMMLRuntimeHelper.canManageEfestoInputPMML(darInputPMML, context)).isFalse();
+    }
+
+    @Test
+    void canManageEfestoInput() {
+        FRI fri = new FRI(basePath, PMML_STRING);
+        EfestoRuntimeContext runtimeContext =
+                EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        PMMLRequestData pmmlRequestData = new PMMLRequestData();
+        EfestoInput<PMMLRequestData> inputPMML = new AbstractEfestoInput<>(fri, pmmlRequestData) {
+        };
+        assertThat(PMMLRuntimeHelper.canManageEfestoInput(inputPMML, runtimeContext)).isTrue();
+        assertThat(PMMLRuntimeHelper.canManageEfestoInputPMML(inputPMML, runtimeContext)).isFalse();
     }
 
     @Test
     void execute() {
         FRI fri = new FRI(basePath, PMML_STRING);
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME));
-        Optional<EfestoOutputPMML> retrieved = PMMLRuntimeHelper.execute(darInputPMML, getPMMLContext(FILE_NAME,
-                                                                                                      MODEL_NAME));
+        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, getPMMLContext(FILE_NAME, MODEL_NAME,
+                                                                               memoryCompilerClassLoader));
+        Optional<EfestoOutputPMML> retrieved = PMMLRuntimeHelper.executeEfestoInputPMML(darInputPMML,
+                                                                                        getPMMLContext(FILE_NAME,
+                                                                                                       MODEL_NAME,
+                                                                                                       memoryCompilerClassLoader));
         assertThat(retrieved).isNotNull().isPresent();
         commonEvaluateEfestoOutputPMML(retrieved.get(), darInputPMML);
     }
 
     @Test
     void getPMMLModels() {
-        List<PMMLModel> retrieved = PMMLRuntimeHelper.getPMMLModels(getPMMLContext(FILE_NAME, MODEL_NAME));
+        List<PMMLModel> retrieved = PMMLRuntimeHelper.getPMMLModels(getPMMLContext(FILE_NAME, MODEL_NAME,
+                                                                                   memoryCompilerClassLoader));
         assertThat(retrieved).isNotNull().hasSize(1); // defined in IndexFile.pmml_json
         assertThat(retrieved.get(0)).isInstanceOf(KiePMMLTestingModel.class);
     }
@@ -107,7 +127,8 @@ class PMMLRuntimeHelperTest {
         FRI fri = new FRI(basePath, PMML_STRING);
         KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri,
                                                                                           getPMMLContext(FILE_NAME,
-                                                                                                         MODEL_NAME));
+                                                                                                         MODEL_NAME,
+                                                                                                         memoryCompilerClassLoader));
         Optional<KiePMMLModel> retrieved = PMMLRuntimeHelper.getPMMLModel(kiePmmlModelFactory.getKiePMMLModels(),
                                                                           FILE_NAME,
                                                                           MODEL_NAME);
@@ -119,7 +140,7 @@ class PMMLRuntimeHelperTest {
     @Test
     void evaluate() {
         FRI fri = new FRI(basePath, PMML_STRING);
-        PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
+        PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
         KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri, pmmlContext);
         List<KiePMMLModel> kiePMMLModels = kiePmmlModelFactory.getKiePMMLModels();
         PMML4Result retrieved = PMMLRuntimeHelper.evaluate(kiePMMLModels, pmmlContext);
@@ -128,11 +149,11 @@ class PMMLRuntimeHelperTest {
 
     @Test
     public void evaluateWithPMMLContextListeners() {
-
         FRI fri = new FRI(basePath, PMML_STRING);
         final List<PMMLStep> pmmlSteps = new ArrayList<>();
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME,
-                                                        Collections.singleton(getPMMLListener(pmmlSteps)));
+                                                        Collections.singleton(getPMMLListener(pmmlSteps)),
+                                                        memoryCompilerClassLoader);
         KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri, pmmlContext);
         KiePMMLModel kiePMMLModel = kiePmmlModelFactory.getKiePMMLModels().get(0);
         PMMLRuntimeHelper.evaluate(kiePMMLModel, pmmlContext);
@@ -149,7 +170,7 @@ class PMMLRuntimeHelperTest {
     @Test
     void getEfestoOutput() {
         FRI fri = new FRI(basePath, PMML_STRING);
-        PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
+        PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
 
         KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(fri, pmmlContext);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, pmmlContext);
@@ -159,7 +180,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void getModelFromMemoryCLassloader() {
-        PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME);
+        PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
         Optional<PMMLModel> retrieved = PMMLRuntimeHelper.getPMMLModel(FILE_NAME,
                                                                        MODEL_NAME,
                                                                        pmmlContext);
@@ -170,7 +191,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     public void getStep() {
-        final PMMLRequestData requestData = getPMMLRequestData();
+        final PMMLRequestData requestData = getPMMLRequestData(MODEL_NAME, FILE_NAME);
         Arrays.stream(PMML_STEP.values()).forEach(pmml_step -> {
             PMMLStep retrieved = PMMLRuntimeHelper.getStep(pmml_step, modelMock, requestData);
             commonValuateStep(retrieved, pmml_step, modelMock, requestData);
@@ -190,68 +211,6 @@ class PMMLRuntimeHelperTest {
         return toReturn;
     }
 
-    private void commonEvaluateEfestoOutputPMML(EfestoOutputPMML toEvaluate, EfestoInputPMML darInputPMML) {
-        assertThat(toEvaluate).isNotNull();
-        assertThat(toEvaluate.getFRI()).isEqualTo(darInputPMML.getFRI());
-        commonEvaluatePMML4Result(toEvaluate.getOutputData(), darInputPMML.getInputData().getRequestData());
-    }
-
-    private void commonEvaluatePMML4Result(PMML4Result toEvaluate, PMMLRequestData pmmlRequestData) {
-        assertThat(toEvaluate).isNotNull();
-        assertThat(toEvaluate.getResultCode()).isEqualTo(OK.getName());
-        assertThat(toEvaluate.getCorrelationId()).isEqualTo(pmmlRequestData.getCorrelationId());
-    }
-
-    private void commonValuateStep(final PMMLStep toVerify, final PMML_STEP pmmlStep, final KiePMMLModel kiePMMLModel,
-                                   final PMMLRequestData requestData) {
-        assertThat(toVerify).isNotNull();
-        assertThat(toVerify).isInstanceOf(PMMLRuntimeStep.class);
-        assertThat(((PMMLRuntimeStep) toVerify).getPmmlStep()).isEqualTo(pmmlStep);
-        Map<String, Object> info = toVerify.getInfo();
-        assertThat(kiePMMLModel.getName()).isEqualTo(info.get("MODEL"));
-        assertThat(requestData.getCorrelationId()).isEqualTo(info.get("CORRELATION ID"));
-        assertThat(requestData.getModelName()).isEqualTo(info.get("REQUEST MODEL"));
-        requestData.getRequestParams()
-                .forEach(requestParam ->
-                                 assertThat(info.get(requestParam.getName())).isEqualTo(requestParam.getValue()));
-    }
-
-    private PMMLRuntimeContext getPMMLContext(String fileName, String modelName, Set<PMMLListener> listeners) {
-        return new PMMLRuntimeContextImpl(getPMMLRequestData(modelName), fileName, listeners, memoryCompilerClassLoader);
-    }
-
-    private PMMLRuntimeContext getPMMLContext(String fileName, String modelName) {
-        return getPMMLContext(fileName, modelName, Collections.emptySet());
-    }
-
-    private PMMLRequestData getPMMLRequestData(String modelName) {
-        Map<String, Object> inputData = getInputData();
-        String correlationId = "CORRELATION_ID";
-        PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
-        for (Map.Entry<String, Object> entry : inputData.entrySet()) {
-            Object pValue = entry.getValue();
-            Class class1 = pValue.getClass();
-            pmmlRequestDataBuilder.addParameter(entry.getKey(), pValue, class1);
-        }
-        return pmmlRequestDataBuilder.build();
-    }
-
-    private Map<String, Object> getInputData() {
-        final Map<String, Object> toReturn = new HashMap<>();
-        toReturn.put("fld1", 23.2);
-        toReturn.put("fld2", 11.34);
-        toReturn.put("fld3", "x");
-        toReturn.put("fld4", 34.1);
-        return toReturn;
-    }
-
-    private PMMLRequestData getPMMLRequestData() {
-        final PMMLRequestData toReturn = new PMMLRequestData();
-        toReturn.setModelName(MODEL_NAME);
-        toReturn.setCorrelationId("CORRELATION_ID");
-        IntStream.range(0, 3).forEach(i -> toReturn.addRequestParam("PARAM_" + i, i));
-        return toReturn;
-    }
 
     private PMMLListener getPMMLListener(final List<PMMLStep> pmmlSteps) {
         return pmmlSteps::add;

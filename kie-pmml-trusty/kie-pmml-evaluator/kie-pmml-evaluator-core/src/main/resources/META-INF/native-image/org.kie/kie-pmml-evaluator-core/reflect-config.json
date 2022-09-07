@@ -1,6 +1,6 @@
 [
   {
-    "name" : "org.kie.drl.engine.runtime.mapinput.service.KieRuntimeServiceDrlMapInput",
+    "name" : "org.kie.pmml.evaluator.core.model.EfestoInputPMML",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -9,7 +9,7 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.drl.engine.runtime.mapinput.model.EfestoInputDrlMap",
+    "name" : "org.kie.pmml.evaluator.core.model.EfestoOutputPMML",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
@@ -18,7 +18,16 @@
     "allPublicFields" : true
   },
   {
-    "name" : "org.kie.drl.engine.runtime.mapinput.model.EfestoOutputDrlMap",
+    "name" : "org.kie.pmml.evaluator.core.service.KieRuntimeServicePMML",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },
+  {
+    "name" : "org.kie.pmml.evaluator.core.service.KieRuntimeServicePMMLRequestData",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,

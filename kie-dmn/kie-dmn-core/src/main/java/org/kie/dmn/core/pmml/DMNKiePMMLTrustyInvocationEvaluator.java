@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import org.kie.api.io.Resource;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
@@ -37,26 +38,23 @@ import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.runtimemanager.api.exceptions.EfestoRuntimeManagerException;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
+import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
+import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
-import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.api.compilation.PMMLCompilationContext;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
-import org.kie.pmml.compiler.PMMLCompilationContextImpl;
-import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
-import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
-import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.model.FRI.SLASH;
+import static org.kie.efesto.common.utils.PackageClassNameUtils.getSanitizedClassName;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrRedirect;
-import static org.kie.pmml.commons.Constants.PMML_STRING;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+
 
 public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvocationEvaluator {
 
@@ -77,9 +75,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         String pmmlFilePath = documentResource.getSourcePath();
         String pmmlFileName = pmmlFilePath.contains("/") ? pmmlFilePath.substring(pmmlFilePath.lastIndexOf('/') + 1)
                 : pmmlFilePath;
-        final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
-                new KieMemoryCompiler.MemoryCompilerClassLoader(eventManager.getRuntime().getRootClassLoader());
-        return evaluate(model, pmmlFileName, dmnr, memoryCompilerClassLoader);
+        return evaluate(model, pmmlFileName, dmnr, eventManager.getRuntime().getRootClassLoader());
     }
 
     @Override
@@ -127,44 +123,46 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         }
     }
 
-    protected PMML4Result evaluate(String modelName, String pmmlFileName, DMNResult dmnr, KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        PMMLRuntimeContext pmmlContext = getPMMLPMMLContext(UUID.randomUUID().toString(), pmmlFileName, modelName, dmnr,
-                                                            memoryCompilerClassLoader);
-        String basePath = pmmlContext.getFileNameNoSuffix() + SLASH + getSanitizedClassName(modelName);
+    protected PMML4Result evaluate(String modelName, String pmmlFileName, DMNResult dmnr,
+                                   ClassLoader parentClassloader) {
+        EfestoRuntimeContext runtimeContext = getEfestoRuntimeContext(parentClassloader);
+        FRI fri = getFRI(pmmlFileName, modelName);
 
-        FRI fri = new FRI(basePath, PMML_STRING);
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(fri, pmmlContext);
         Collection<EfestoOutput> retrieved;
-        if (!(isPresentExecutableOrRedirect(fri, pmmlContext))) {
+        if (!(isPresentExecutableOrRedirect(fri, runtimeContext))) {
             LOG.warn("GeneratedResources for {}@{} are not present: trying to invoke compilation....",
-                     pmmlContext.getFileName(),
-                     pmmlContext.getRequestData().getModelName());
+                     pmmlFileName,
+                     modelName);
             Map<String, GeneratedResources> generatedResourcesMap = compileFile(pmmlFileName,
-                                                                                memoryCompilerClassLoader);
-            pmmlContext.getGeneratedResourcesMap().putAll(generatedResourcesMap);
+                                                                                parentClassloader);
+            runtimeContext.getGeneratedResourcesMap().putAll(generatedResourcesMap);
         }
-        retrieved = evaluateInput(darInputPMML);
+        PMMLRequestData pmmlRequestData = getPMMLRequestData(UUID.randomUUID().toString(), modelName, pmmlFileName,
+                                                             dmnr);
+        EfestoInput<PMMLRequestData> inputPMML = new AbstractEfestoInput<>(fri, pmmlRequestData) {
+        };
+        retrieved = evaluateInput(inputPMML, runtimeContext);
         if (retrieved.isEmpty()) {
             String errorMessage = String.format("Failed to get result for %s@%s: please" +
                                                         " check classpath and dependencies!",
-                                                pmmlContext.getFileName(),
-                                                pmmlContext.getRequestData().getModelName());
+                                                inputPMML.getFRI(),
+                                                inputPMML.getInputData().getModelName());
             LOG.error(errorMessage);
             throw new KieRuntimeServiceException(errorMessage);
         }
         return (PMML4Result) retrieved.iterator().next().getOutputData();
     }
 
-    protected Collection<EfestoOutput> evaluateInput(EfestoInputPMML darInputPMML) {
-        PMMLRuntimeContext context = darInputPMML.getInputData();
+    protected Collection<EfestoOutput> evaluateInput(EfestoInput<PMMLRequestData> inputPMML,
+                                                     EfestoRuntimeContext runtimeContext) {
         try {
-            return runtimeManager.evaluateInput(context, darInputPMML);
+            return runtimeManager.evaluateInput(runtimeContext, inputPMML);
         } catch (Throwable t) {
             String errorMessage = String.format("Evaluation error for %s@%s using %s due to %s: please" +
                                                         " check classpath and dependencies!",
-                                                context.getFileName(),
-                                                context.getRequestData().getModelName(),
-                                                darInputPMML,
+                                                inputPMML.getFRI(),
+                                                inputPMML.getInputData().getModelName(),
+                                                inputPMML,
                                                 t.getMessage());
             LOG.error(errorMessage);
             throw new KieRuntimeServiceException(errorMessage, t);
@@ -172,10 +170,10 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     }
 
     protected Map<String, GeneratedResources> compileFile(String fileName,
-                                                          KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+                                                          ClassLoader parentClassLoader) {
         try {
-            PMMLCompilationContext compilationContext = new PMMLCompilationContextImpl(fileName,
-                                                                                       memoryCompilerClassLoader);
+            EfestoCompilationContext compilationContext =
+                    EfestoCompilationContext.buildWithParentClassLoader(parentClassLoader);
             EfestoInputStreamResource toProcess = new EfestoInputStreamResource(documentResource.getInputStream(),
                                                                                 fileName);
             compilationManager.processResource(compilationContext, toProcess);
@@ -190,15 +188,27 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         }
     }
 
-    private PMMLRuntimeContext getPMMLPMMLContext(String correlationId, String fileName, String modelName, DMNResult dmnr,
-                                                  final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
+    private PMMLRequestData getPMMLRequestData(String correlationId, String modelName, String fileName,
+                                               DMNResult dmnr) {
+        PMMLRequestData toReturn = new PMMLRequestData(correlationId, modelName);
         for (DMNFunctionDefinitionEvaluator.FormalParameter p : parameters) {
             Object pValue = getValueForPMMLInput(dmnr, p.name);
-            Class class1 = pValue.getClass();
-            pmmlRequestDataBuilder.addParameter(p.name, pValue, class1);
+            toReturn.addRequestParam(p.name, pValue);
         }
-        return new PMMLRuntimeContextImpl(pmmlRequestDataBuilder.build(), fileName, memoryCompilerClassLoader);
+        toReturn.addRequestParam("_pmml_file_name_", fileName);
+        return toReturn;
     }
 
+    private EfestoRuntimeContext getEfestoRuntimeContext(final ClassLoader parentClassloader) {
+        return EfestoRuntimeContext.buildWithParentClassLoader(parentClassloader);
+    }
+
+    private FRI getFRI(String fileName, String modelName) {
+        String basePath = getFileNameNoSuffix(fileName) + SLASH + getSanitizedClassName(modelName);
+        return new FRI(basePath, "pmml");
+    }
+
+    private String getFileNameNoSuffix(String fileName) {
+        return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
+    }
 }
