@@ -17,36 +17,15 @@ package org.kie.pmml.api.identifiers;
 
 import java.util.Objects;
 
-import org.kie.efesto.common.api.identifiers.Id;
-import org.kie.efesto.common.api.identifiers.LocalId;
 import org.kie.efesto.common.api.identifiers.LocalUri;
-import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class LocalComponentIdPmml extends ModelLocalUriId implements Id {
+public class LocalComponentIdPmml extends AbstractModelLocalUriIdPmml {
     public static final String PREFIX = "pmml";
     private static final long serialVersionUID = 8621199867598971641L;
 
-    private final String fileName;
-
-    private final String name;
 
     public LocalComponentIdPmml(String fileName, String name) {
-        super(LocalUri.Root.append(PREFIX).append(fileName).append(name));
-        this.fileName = fileName;
-        this.name = name;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    @Override
-    public LocalId toLocalId() {
-        return this;
+        super(LocalUri.Root.append(PREFIX).append(fileName).append(name), fileName, name);
     }
 
     @Override
@@ -59,11 +38,6 @@ public class LocalComponentIdPmml extends ModelLocalUriId implements Id {
         }
         LocalComponentIdPmml that = (LocalComponentIdPmml) o;
         return Objects.equals(fileName, that.fileName) && Objects.equals(name, that.name) ;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), fileName, name);
     }
 
 }

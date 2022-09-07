@@ -63,11 +63,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntime {
 
     @Override
     public PMML4Result evaluate(String modelName, PMMLRuntimeContext context) {
-        LocalComponentIdPmml modelLocalUriId = new ReflectiveAppRoot("")
-                .get(PmmlIdFactory.class)
-                .get(context.getFileNameNoSuffix(), getSanitizedClassName(modelName));
-
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, context);
+        EfestoInputPMML darInputPMML = getEfestoInputPMML(modelName, context);
         Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(context, darInputPMML);
         if (retrieved.isEmpty()) {
             throw new KiePMMLException("Failed to retrieve EfestoOutput");
@@ -88,6 +84,14 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntime {
     @Override
     public Optional<PMMLModel> getPMMLModel(String fileName, String modelName, PMMLRuntimeContext context) {
         return PMMLRuntimeHelper.getPMMLModel(fileName, modelName, context);
+    }
+
+    static EfestoInputPMML getEfestoInputPMML(String modelName, PMMLRuntimeContext context) {
+        LocalComponentIdPmml modelLocalUriId = new ReflectiveAppRoot("")
+                .get(PmmlIdFactory.class)
+                .get(context.getFileNameNoSuffix(), getSanitizedClassName(modelName));
+
+        return new EfestoInputPMML(modelLocalUriId, context);
     }
 
 }

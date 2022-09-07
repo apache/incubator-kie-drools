@@ -17,26 +17,38 @@ package org.kie.pmml.api.identifiers;
 
 import java.util.Objects;
 
+import org.kie.efesto.common.api.identifiers.Id;
+import org.kie.efesto.common.api.identifiers.LocalId;
 import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class LocalComponentIdRedirectPmml extends AbstractModelLocalUriIdPmml {
+public class AbstractModelLocalUriIdPmml extends ModelLocalUriId implements Id {
 
     private static final long serialVersionUID = -4610916178245973385L;
+    protected final String fileName;
+    protected final String name;
 
-    public LocalComponentIdRedirectPmml(String redirectModel, String fileName, String name) {
-        super(LocalUri.Root.append(redirectModel).append(fileName).append(name), fileName, name);
+    public AbstractModelLocalUriIdPmml(LocalUri path, String fileName, String name) {
+        super(path);
+        this.fileName = fileName;
+        this.name = name;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String name() {
+        return name;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        LocalComponentIdRedirectPmml that = (LocalComponentIdRedirectPmml) o;
-        return Objects.equals(fileName, that.fileName) && Objects.equals(name, that.name);
+    public LocalId toLocalId() {
+        return this;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), fileName, name);
+    }
 }

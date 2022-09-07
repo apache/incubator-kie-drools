@@ -29,6 +29,8 @@ import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 
 public class ModelLocalUriIdSerializer extends StdSerializer<ModelLocalUriId> {
 
+    private static final long serialVersionUID = 5014755163979962781L;
+
     public ModelLocalUriIdSerializer() {
         this(null);
     }
@@ -47,7 +49,7 @@ public class ModelLocalUriIdSerializer extends StdSerializer<ModelLocalUriId> {
     }
 
 
-    private String decodedPath(String toDecode) {
+    static String decodedPath(String toDecode) {
         StringTokenizer tok = new StringTokenizer(toDecode, SLASH);
         StringBuilder builder = new StringBuilder();
         while (tok.hasMoreTokens()) {
@@ -57,7 +59,7 @@ public class ModelLocalUriIdSerializer extends StdSerializer<ModelLocalUriId> {
         return builder.toString();
     }
 
-    private String decodeString(String toDecode) {
+    static String decodeString(String toDecode) {
         return URLDecoder.decode(toDecode, StandardCharsets.UTF_8);
     }
 

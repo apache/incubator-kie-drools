@@ -26,6 +26,8 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 public class ModelLocalUriIdDeSerializer extends StdDeserializer<ModelLocalUriId> {
 
+    private static final long serialVersionUID = -3468047979532504909L;
+
     public ModelLocalUriIdDeSerializer() {
         this(null);
     }

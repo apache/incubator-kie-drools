@@ -46,16 +46,21 @@ public class RuntimeManagerImpl implements RuntimeManager {
                 .collect(Collectors.toList());
     }
 
-    private Optional<EfestoOutput> getOptionalOutput(EfestoRuntimeContext context, EfestoInput input) {
+    static Optional<EfestoOutput> getOptionalOutput(EfestoRuntimeContext context, EfestoInput input) {
+        Optional<KieRuntimeService> retrieved = getKieRuntimeServiceLocal(context, input);
+        return retrieved.isPresent() ? retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input, context)) : Optional.empty();
+    }
+
+    static Optional<KieRuntimeService> getKieRuntimeServiceLocal(EfestoRuntimeContext context, EfestoInput input) {
         Optional<KieRuntimeService> retrieved = getKieRuntimeService(input, false, context);
-        if (!retrieved.isPresent()) {
-            logger.warn("Cannot find KieRuntimeService for {}, looking inside context classloader", input.getModelLocalUriId());
+        if (retrieved.isEmpty()) {
+            logger.warn("Cannot find KieRuntimeService for {}, looking inside context classloader",
+                        input.getModelLocalUriId());
             retrieved = getKieRuntimeServiceFromEfestoRuntimeContext(input, context);
         }
-        if (!retrieved.isPresent()) {
+        if (retrieved.isEmpty()) {
             logger.warn("Cannot find KieRuntimeService for {}", input.getModelLocalUriId());
-            return Optional.empty();
         }
-        return retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input, context));
+        return retrieved;
     }
 }

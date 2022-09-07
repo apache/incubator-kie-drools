@@ -17,6 +17,7 @@ package org.kie.efesto.compilationmanager.api.model;
 
 import java.util.List;
 
+import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
@@ -36,6 +37,9 @@ public abstract class EfestoRedirectOutput<T> extends AbstractEfestoCallableComp
 
     protected EfestoRedirectOutput(ModelLocalUriId modelLocalUriId, String targetEngine, T content) {
         super(modelLocalUriId, (List<String>) null);
+        if (targetEngine == null || targetEngine.isEmpty()) {
+            throw new KieEfestoCommonException("Missing required target");
+        }
         this.targetEngine = targetEngine;
         this.content = content;
     }
