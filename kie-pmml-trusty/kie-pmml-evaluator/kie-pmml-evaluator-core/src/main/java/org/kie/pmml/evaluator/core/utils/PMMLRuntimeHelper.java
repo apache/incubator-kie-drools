@@ -74,7 +74,7 @@ public class PMMLRuntimeHelper {
     public static boolean canManageEfestoInput(EfestoInput toEvaluate, EfestoRuntimeContext runtimeContext) {
         return (!(toEvaluate instanceof EfestoInputPMML) && (toEvaluate.getInputData() instanceof PMMLRequestData)
                 && (!(runtimeContext instanceof PMMLRuntimeContext))
-                && isPresentExecutableOrRedirect(toEvaluate.getFRI(), runtimeContext));
+                && isPresentExecutableOrRedirect(toEvaluate.getModelLocalUriId(), runtimeContext));
     }
 
     public static boolean canManageEfestoInputPMML(EfestoInput toEvaluate, EfestoRuntimeContext runtimeContext) {
@@ -157,7 +157,7 @@ public class PMMLRuntimeHelper {
     }
 
     static EfestoInputPMML getEfestoInputPMML(EfestoInput<PMMLRequestData> toEvaluate, PMMLRuntimeContext pmmlRuntimeContext) {
-        return new EfestoInputPMML(toEvaluate.getFRI(), pmmlRuntimeContext);
+        return new EfestoInputPMML(toEvaluate.getModelLocalUriId(), pmmlRuntimeContext);
     }
 
     static PMMLRuntimeContext getPMMLRuntimeContext(PMMLRequestData pmmlRequestData,
