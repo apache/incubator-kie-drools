@@ -15,6 +15,7 @@ import org.optaplanner.core.config.solver.termination.TerminationCompositionStyl
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 class TerminationFactoryTest {
@@ -176,5 +177,17 @@ class TerminationFactoryTest {
         assertThatIllegalStateException()
                 .isThrownBy(() -> terminationFactory.buildTimeBasedTermination(heuristicConfigPolicy))
                 .withMessageContaining("can only be used if an unimproved*SpentLimit");
+    }
+
+    @Test
+    void bestScoreFeasible_requiresAtLeastOneFeasibleLevel() {
+        HeuristicConfigPolicy<TestdataSolution> heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
+        when(heuristicConfigPolicy.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
+        TerminationConfig terminationConfig = new TerminationConfig().withBestScoreFeasible(true);
+
+        TerminationFactory<TestdataSolution> terminationFactory = TerminationFactory.create(terminationConfig);
+        assertThatIllegalStateException()
+                .isThrownBy(() -> terminationFactory.buildTermination(heuristicConfigPolicy))
+                .withMessageContaining("can only be used with a score type that has at least 1 feasible level");
     }
 }

@@ -63,7 +63,14 @@ public class TerminationFactory<Solution_> {
                 throw new IllegalArgumentException("The termination bestScoreFeasible ("
                         + terminationConfig.getBestScoreFeasible() + ") cannot be false.");
             }
-            double[] timeGradientWeightFeasibleNumbers = new double[scoreDefinition.getFeasibleLevelsSize() - 1];
+            int feasibleLevelsSize = scoreDefinition.getFeasibleLevelsSize();
+            if (feasibleLevelsSize < 1) {
+                throw new IllegalStateException("The termination with bestScoreFeasible ("
+                        + terminationConfig.getBestScoreFeasible()
+                        + ") can only be used with a score type that has at least 1 feasible level but the scoreDefinition ("
+                        + scoreDefinition + ") has feasibleLevelsSize (" + feasibleLevelsSize + "), which is less than 1.");
+            }
+            double[] timeGradientWeightFeasibleNumbers = new double[feasibleLevelsSize - 1];
             Arrays.fill(timeGradientWeightFeasibleNumbers, 0.50); // Number pulled out of thin air
             terminationList.add(new BestScoreFeasibleTermination<>(scoreDefinition, timeGradientWeightFeasibleNumbers));
         }
