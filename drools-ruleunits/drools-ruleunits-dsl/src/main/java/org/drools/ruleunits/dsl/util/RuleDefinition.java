@@ -30,6 +30,7 @@ import org.drools.model.functions.Block1;
 import org.drools.model.functions.Function1;
 import org.drools.model.impl.RuleBuilder;
 import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.RuleUnitDefinition;
 import org.drools.ruleunits.dsl.RulesFactory;
@@ -43,6 +44,9 @@ import org.drools.ruleunits.dsl.patterns.Pattern1DefImpl;
 import org.drools.ruleunits.dsl.patterns.Pattern2Def;
 import org.drools.ruleunits.dsl.patterns.Pattern2DefImpl;
 import org.drools.ruleunits.dsl.patterns.PatternDef;
+import org.drools.ruleunits.impl.ConsequenceDataStore;
+import org.drools.ruleunits.impl.ConsequenceDataStoreImpl;
+import org.kie.api.runtime.rule.RuleContext;
 
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
@@ -138,6 +142,11 @@ public class RuleDefinition implements RuleFactory {
     @Override
     public <T> void execute(T globalObject, Block1<T> block) {
         this.consequence = DSL.on(asGlobal(globalObject)).execute(block);
+    }
+
+    @Override
+    public <T> void executeOnDataStore(DataStore<T> dataStore, Block1<ConsequenceDataStore<T>> block) {
+        this.consequence = DSL.on(asGlobal(dataStore)).execute( (drools, ds) -> block.execute(new ConsequenceDataStoreImpl<>((RuleContext) drools, (DataStore<T>) ds)) );
     }
 
     public <T> Global asGlobal(T globalObject) {

@@ -40,12 +40,13 @@ public interface RuleContext extends KieContext {
     FactHandle insertLogical(Object object);
 
     /**
-     * Logically inserts a fact into the KieSession, justified by the current
+     * Logically inserts a fact into the given EntryPoint, justified by the current
      * rule context.
      *
+     * @param entryPoint the EntryPoint where to logical inserting the given fact
      * @param object the fact to insert into the kie session
      */
-    FactHandle insertLogical(Object object, Object value);
+    FactHandle insertLogical(EntryPoint entryPoint, Object object);
 
     /**
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.

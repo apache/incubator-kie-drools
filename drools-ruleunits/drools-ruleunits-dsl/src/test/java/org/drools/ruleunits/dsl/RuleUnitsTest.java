@@ -71,8 +71,8 @@ public class RuleUnitsTest {
             }
         });
 
-        unit.getStrings().add("this is just a test");
-        assertThat(unit.fire()).isEqualTo(2);
+        unit.getStrings().add("Mario");
+        assertThat(unit.fire()).isEqualTo(3);
         assertThat(success.get()).isTrue();
     }
 
@@ -207,5 +207,20 @@ public class RuleUnitsTest {
         unit.getStrings().add("axy");
 
         assertThat(unit.fire()).isEqualTo(1);
+    }
+
+    @Test
+    public void testLogicalAdd() {
+        LogicalAddUnit unit = new LogicalAddUnit();
+        DataHandle dh = unit.getStrings().add("abc");
+
+        assertThat(unit.fire()).isEqualTo(2);
+        assertThat(unit.getResults()).containsExactly("exists");
+
+        unit.getResults().clear();
+
+        unit.getStrings().remove(dh);
+        assertThat(unit.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).containsExactly("not exists");
     }
 }

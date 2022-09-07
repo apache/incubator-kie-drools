@@ -19,13 +19,18 @@ import java.util.UUID;
 
 import org.drools.model.DSL;
 import org.drools.model.Index;
+import org.drools.model.functions.Block1;
 import org.drools.model.functions.Block4;
 import org.drools.model.functions.Block5;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function3;
 import org.drools.model.functions.Predicate4;
+import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.dsl.constraints.Beta3Constraint;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
+import org.drools.ruleunits.impl.ConsequenceDataStore;
+import org.drools.ruleunits.impl.ConsequenceDataStoreImpl;
+import org.kie.api.runtime.rule.RuleContext;
 
 public class Pattern4DefImpl<A, B, C, D> extends SinglePatternDef<D> implements Pattern4Def<A, B, C, D> {
 
@@ -67,6 +72,17 @@ public class Pattern4DefImpl<A, B, C, D> extends SinglePatternDef<D> implements 
     @Override
     public <G> void execute(G globalObject, Block5<G, A, B, C, D> block) {
         rule.setConsequence( DSL.on(rule.asGlobal(globalObject), patternA.variable, patternB.variable, patternC.variable, variable).execute(block) );
+    }
+
+
+    @Override
+    public <T> void executeOnDataStore(DataStore<T> dataStore, Block1<ConsequenceDataStore<T>> block) {
+        rule.setConsequence( DSL.on(rule.asGlobal(dataStore)).execute( (drools, ds) -> block.execute(new ConsequenceDataStoreImpl<>((RuleContext) drools, (DataStore<T>) ds))) );
+    }
+
+    @Override
+    public <T> void executeOnDataStore(DataStore<T> dataStore, Block5<ConsequenceDataStore<T>, A, B, C, D> block) {
+        rule.setConsequence( DSL.on(rule.asGlobal(dataStore), patternA.variable, patternB.variable, patternC.variable, variable).execute( (drools, ds, a, b, c, d) -> block.execute(new ConsequenceDataStoreImpl<>((RuleContext) drools, (DataStore<T>) ds), (A) a, (B) b, (C) c, (D) d)) );
     }
 
     @Override

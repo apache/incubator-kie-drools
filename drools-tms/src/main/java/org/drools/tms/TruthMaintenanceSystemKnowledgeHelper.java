@@ -18,7 +18,7 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
-import org.drools.kiesession.entrypoints.NamedEntryPoint;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -29,6 +29,7 @@ import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
 import org.drools.tms.agenda.TruthMaintenanceSystemAgendaItem;
 import org.drools.tms.beliefsystem.BeliefSet;
@@ -36,6 +37,7 @@ import org.drools.tms.beliefsystem.BeliefSystem;
 import org.drools.tms.beliefsystem.BeliefSystemMode;
 import org.drools.tms.beliefsystem.ModedAssertion;
 import org.drools.tms.beliefsystem.simple.SimpleLogicalDependency;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.Match;
 
 public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> extends DefaultKnowledgeHelper {
@@ -68,8 +70,16 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
         this.previousBlocked = null;
     }
 
-    @Override
     public InternalFactHandle insertLogical(Object object, Object value) {
+        return insertLogical(toStatefulKnowledgeSession().getDefaultEntryPoint(), object, value);
+    }
+
+    @Override
+    public InternalFactHandle insertLogical(EntryPoint entryPoint, Object object) {
+        return insertLogical(entryPoint, object, null);
+    }
+
+    public InternalFactHandle insertLogical(EntryPoint entryPoint, Object object, Object value) {
         if ( object == null ) {
             // prevent nulls from being inserted logically
             return null;
@@ -96,7 +106,7 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
             return ( (BeliefSet) dep.getJustified() ).getFactHandle();
         } else {
             // no previous matching logical dependency, so create a new one
-            return TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(toStatefulKnowledgeSession()).insert( object, value, this.activation );
+            return TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((InternalWorkingMemoryEntryPoint) entryPoint).insert( object, value, this.activation );
         }
     }
 
