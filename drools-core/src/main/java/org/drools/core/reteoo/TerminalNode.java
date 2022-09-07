@@ -23,12 +23,17 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.util.bitmask.BitMask;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 /**
  * A markup interface for terminal nodes
  */
 public interface TerminalNode
     extends
-    NetworkNode, PathEndNode, MemoryFactory<PathMemory> {
+    NetworkNode, Sink, PathEndNode, MemoryFactory<PathMemory> {
+
+    void resetPathMemSpec(TerminalNode removingTN);
     
     LeftTupleSource getLeftTupleSource();
     
@@ -57,4 +62,8 @@ public interface TerminalNode
     Declaration[] getSalienceDeclarations();
 
     boolean isTerminalNodeOf(LeftTupleNode node);
+
+    void visitLeftTupleNodes(Consumer<LeftTupleNode> func);
+
+    int getSubruleIndex();
 }

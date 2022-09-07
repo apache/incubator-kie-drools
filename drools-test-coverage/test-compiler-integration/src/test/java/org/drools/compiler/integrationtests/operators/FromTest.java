@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.event.DebugAgendaEventListener;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.FromNode;
@@ -256,10 +257,10 @@ public class FromTest {
 
         EntryPointNode epn = (( InternalKnowledgeBase ) kbase).getRete().getEntryPointNode( EntryPointId.DEFAULT );
         ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( Cheesery.class) );
-        Sink[] otnSinks = otn.getSinks();
+        NetworkNode[] otnSinks = otn.getSinks();
         assertThat(otnSinks.length).isEqualTo(1);
         LeftInputAdapterNode lia = (LeftInputAdapterNode) otnSinks[0];
-        Sink[] liaSinks = lia.getSinks();
+        NetworkNode[] liaSinks = lia.getSinks();
         // there must be only 1 shared from node
         assertThat(Stream.of(liaSinks).filter(sink -> sink instanceof FromNode).count()).isEqualTo(1);
 

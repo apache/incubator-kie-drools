@@ -17,14 +17,21 @@
 package org.drools.core.util;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class Bag<T> implements Collection<T>, Serializable {
 
     private Map<T, Counter> map = new HashMap<>();
 
     private int size = 0;
+
+    public Set<T> keySet() {
+        return map.keySet();
+    }
 
     @Override
     public int size() {

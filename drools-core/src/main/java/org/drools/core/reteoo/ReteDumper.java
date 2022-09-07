@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.RuleBase;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
@@ -195,9 +196,9 @@ public class ReteDumper {
         if (!visitedNodes.add( node )) {
             return;
         }
-        Sink[] sinks = node.getSinks();
+        NetworkNode[] sinks = node.getSinks();
         if (sinks != null) {
-            for (Sink sink : sinks) {
+            for (NetworkNode sink : sinks) {
                 if (sink instanceof BaseNode) {
                     BaseNode sinkNode = ( BaseNode ) sink;
                     if ( nodesFilter.test( sinkNode ) ) {

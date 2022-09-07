@@ -17,9 +17,12 @@
 package org.drools.core.reteoo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.PropagationContext;
@@ -35,6 +38,11 @@ public class MockObjectSink
 
     private ObjectSinkNode previousObjectSinkNode;
     private ObjectSinkNode nextObjectSinkNode;
+
+    @Override
+    public int getPosInSegment() {
+        throw new UnsupportedOperationException("This method should not be called");
+    }
 
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
@@ -142,24 +150,17 @@ public class MockObjectSink
                                        ReteEvaluator reteEvaluator) {
     }
 
-    public int getAssociationsSize() {
-        return 0;
-    }
-
-    public int getAssociatedRuleSize() {
-        return 0;
-    }
-
-    public int getAssociationsSize(Rule rule) {
-        return 0;
-    }
-
     public boolean isAssociatedWith( Rule rule ) {
         return false;
     }
 
     @Override public Rule[] getAssociatedRules() {
         return new Rule[0];
+    }
+
+    @Override
+    public Map<Integer, TerminalNode> getAssociatedTerminals() {
+        return null;
     }
 
     public ObjectTypeNode.Id getRightInputOtnId() {
@@ -173,4 +174,9 @@ public class MockObjectSink
     public int nodeHashCode() {return this.hashCode();}
 
     public void setPartitionIdWithSinks( RuleBasePartitionId partitionId ) { }
+
+    @Override
+    public NetworkNode[] getSinks() {
+        return new NetworkNode[0];
+    }
 }

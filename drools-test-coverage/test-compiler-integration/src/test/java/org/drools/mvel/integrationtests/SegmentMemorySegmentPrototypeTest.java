@@ -46,11 +46,11 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
-public class SegmentMemoryPrototypeTest {
+public class SegmentMemorySegmentPrototypeTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public SegmentMemoryPrototypeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public SegmentMemorySegmentPrototypeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 

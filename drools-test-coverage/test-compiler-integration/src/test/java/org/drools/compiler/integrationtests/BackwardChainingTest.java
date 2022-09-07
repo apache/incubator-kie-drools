@@ -315,6 +315,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.insert("yoda");
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
             ksession.fireAllRules();
+            System.out.println(list);
             assertThat(list.size()).isEqualTo(1);
             assertThat(list.get(0)).isEqualTo(p2);
         } finally {
@@ -2165,7 +2166,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test //(timeout = 10000)
     public void testSubNetworksAndQueries() {
         final String drl = "" +
                 "package org.drools.compiler.test  \n" +

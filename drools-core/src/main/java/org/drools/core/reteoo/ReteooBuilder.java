@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -92,7 +93,7 @@ public class ReteooBuilder
         this.ruleBuilder = new ReteooRuleBuilder();
     }
 
-    // ------------------------------------------------------------
+// ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
 
@@ -103,8 +104,8 @@ public class ReteooBuilder
      *            The rule to add.
      * @throws InvalidPatternException
      */
-    public synchronized void addRule(final RuleImpl rule, Collection<InternalWorkingMemory> workingMemories) {
-        final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule, this.kBase, workingMemories );
+    public synchronized void addRule(final RuleImpl rule, List<PathEndNode> endNodes, Collection<InternalWorkingMemory> workingMemories) {
+        final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule, this.kBase, endNodes, workingMemories );
 
         TerminalNode[] nodes = terminals.toArray( new TerminalNode[terminals.size()] );
         this.rules.put( rule.getFullyQualifiedName(), nodes );
@@ -156,6 +157,7 @@ public class ReteooBuilder
     }
 
     public synchronized void removeRules(Collection<? extends Rule> rulesToBeRemoved, Collection<InternalWorkingMemory> workingMemories) {
+        List<PathEndNode> endNodes = new ArrayList<>();
         for (Rule r : rulesToBeRemoved) {
             RuleImpl rule = (RuleImpl) r;
             if (rule.hasChildren() && !rulesToBeRemoved.containsAll( rule.getChildren() )) {
@@ -172,7 +174,7 @@ public class ReteooBuilder
             }
 
             for ( TerminalNode node : rulesTerminalNodes ) {
-                removeTerminalNode( context, (TerminalNode) node, workingMemories );
+                removeTerminalNode( context, node, endNodes, workingMemories );
             }
 
             if ( rule.isQuery() ) {
@@ -185,11 +187,14 @@ public class ReteooBuilder
         }
     }
 
-    public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, Collection<InternalWorkingMemory> workingMemories)  {
-        AddRemoveRule.removeRule( tn, workingMemories, kBase );
+    public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, List<PathEndNode> endNodes, Collection<InternalWorkingMemory> workingMemories)  {
+        context.setSubRuleIndex(tn.getSubruleIndex());
+        endNodes.addAll(AddRemoveRule.removeRule( tn, workingMemories, kBase ));
+
+        tn.visitLeftTupleNodes(n -> n.getAssociatedTerminals().remove(tn.getId()));
 
         BaseNode node = (BaseNode) tn;
-        removeNodeAssociation(node, context.getRule(), new HashSet<>());
+        removeNodeAssociation(node, context.getRule(), new HashSet<>(), context);
 
         resetMasks(removeNodes((AbstractTerminalNode)tn, workingMemories, context));
     }
@@ -285,19 +290,19 @@ public class ReteooBuilder
         }
     }
 
-    private void removeNodeAssociation(BaseNode node, Rule rule, Set<Integer> removedNodes) {
-        if (node == null || !removedNodes.add( node.getId() ) || !node.removeAssociation( rule )) {
+    private void removeNodeAssociation(BaseNode node, Rule rule, Set<Integer> removedNodes, RuleRemovalContext context) {
+        if (node == null || !removedNodes.add( node.getId() ) || !node.removeAssociation( rule, context )) {
             return;
         }
         if (node instanceof LeftTupleNode) {
-            removeNodeAssociation( ((LeftTupleNode)node).getLeftTupleSource(), rule, removedNodes );
+            removeNodeAssociation( ((LeftTupleNode)node).getLeftTupleSource(), rule, removedNodes, context );
         }
         if ( NodeTypeEnums.isBetaNode( node ) ) {
-            removeNodeAssociation( ((BetaNode) node).getRightInput(), rule, removedNodes );
+            removeNodeAssociation( ((BetaNode) node).getRightInput(), rule, removedNodes, context );
         } else if ( node.getType() == NodeTypeEnums.LeftInputAdapterNode ) {
-            removeNodeAssociation( ((LeftInputAdapterNode) node).getObjectSource(), rule, removedNodes );
+            removeNodeAssociation( ((LeftInputAdapterNode) node).getObjectSource(), rule, removedNodes, context );
         } else if ( node.getType() == NodeTypeEnums.AlphaNode ) {
-            removeNodeAssociation( ((AlphaNode) node).getParentObjectSource(), rule, removedNodes );
+            removeNodeAssociation( ((AlphaNode) node).getParentObjectSource(), rule, removedNodes, context );
         }
     }
 
@@ -364,7 +369,15 @@ public class ReteooBuilder
         }
     }
 
-     public static class IdGenerator implements Externalizable {
+    public void addTerminalNodes(RuleImpl rule, List<TerminalNode> nodes) {
+        TerminalNode[] terminals = nodes.toArray( new TerminalNode[nodes.size()] );
+        rules.put( rule.getFullyQualifiedName(), terminals );
+        if (rule.isQuery()) {
+            this.queries.put( rule.getName(), nodes.toArray( new QueryTerminalNode[nodes.size()]));
+        }
+    }
+
+    public static class IdGenerator implements Externalizable {
 
         private static final long serialVersionUID = 510l;
 

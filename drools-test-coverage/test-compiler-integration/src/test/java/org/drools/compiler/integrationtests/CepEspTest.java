@@ -5542,7 +5542,7 @@ public class CepEspTest extends AbstractCepEspTest {
                 KieSession ksession2 = null;
 
                 final Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(kieBase);
-
+                System.out.println("1) " + current);
                 try {
                     assertThat(serializedSession).isNotNull();
                     final ByteArrayInputStream bais = new ByteArrayInputStream(serializedSession);
@@ -5555,6 +5555,7 @@ public class CepEspTest extends AbstractCepEspTest {
                     fail(e.getMessage());
                 }
 
+                System.out.println("2) " + current);
                 long currTime = clock.getCurrentTime();
                 final long nextTime = current.getTimestamp().getTime();
 
@@ -5569,8 +5570,11 @@ public class CepEspTest extends AbstractCepEspTest {
                     clock.advanceTime(diff, TimeUnit.MILLISECONDS);
                 }
 
+                System.out.println("3) " + current);
                 ksession2.insert(current);
                 ksession2.fireAllRules();
+
+                System.out.println("4) " + current);
 
                 // serialize knowledge session
                 try {
@@ -5582,6 +5586,7 @@ public class CepEspTest extends AbstractCepEspTest {
                     fail(e2.getMessage());
                 }
                 ksession2.dispose();
+                System.out.println("5) " + current);
             }
 
             assertThat(list.size()).isEqualTo(1);

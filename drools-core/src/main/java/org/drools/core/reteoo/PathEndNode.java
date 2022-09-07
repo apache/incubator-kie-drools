@@ -18,19 +18,34 @@ package org.drools.core.reteoo;
 
 import java.io.Serializable;
 
-import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.phreak.BuildtimeSegmentUtilities;
+import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 
-import static org.drools.core.phreak.SegmentUtilities.nextNodePosMask;
+import static org.drools.core.phreak.RuntimeSegmentUtilities.nextNodePosMask;
 
 public interface PathEndNode extends LeftTupleSinkNode {
     LeftTupleNode[] getPathNodes();
+
+    public LeftTupleSource getStartTupleSource();
+
+    public void nullPathMemSpec();
+
     boolean hasPathNode(LeftTupleNode node);
 
     void setPathEndNodes(PathEndNode[] pathEndNodes);
     PathEndNode[] getPathEndNodes();
 
+    void setSegmentPrototypes(SegmentPrototype[] smems);
+
+    SegmentPrototype[] getSegmentPrototypes();
+
+    SegmentPrototype[] getEagerSegmentPrototypes();
+
+    void setEagerSegmentPrototypes(SegmentPrototype[] eagerSegmentPrototypes);
+
     PathMemSpec getPathMemSpec();
-    void resetPathMemSpec(TerminalNode removingTN);
+
+    PathMemSpec getPathMemSpec(TerminalNode removingTN);
 
     class PathMemSpec implements Serializable {
         final long allLinkedTestMask;
@@ -39,6 +54,14 @@ public interface PathEndNode extends LeftTupleSinkNode {
         public PathMemSpec( long allLinkedTestMask, int smemCount ) {
             this.allLinkedTestMask = allLinkedTestMask;
             this.smemCount = smemCount;
+        }
+
+        public long allLinkedTestMask() {
+            return allLinkedTestMask;
+        }
+
+        public int smemCount() {
+            return smemCount;
         }
     }
 
@@ -51,7 +74,8 @@ public interface PathEndNode extends LeftTupleSinkNode {
         long allLinkedTestMask = 0;
 
         LeftTupleSource tupleSource = getLeftTupleSource();
-        if ( SegmentUtilities.isNonTerminalTipNode(tupleSource, removingTN)) {
+
+        if ( BuildtimeSegmentUtilities.isNonTerminalTipNode(tupleSource, removingTN)) {
             counter++;
         }
 
@@ -73,7 +97,7 @@ public interface PathEndNode extends LeftTupleSinkNode {
                     RightInputAdapterNode rian = (RightInputAdapterNode) bn.getRightInput();
                     // only ria's without reactive subnetworks can be disabled and thus need checking
                     // The getNodeMemory will call this method recursive for sub networks it reaches
-                    if ( rian.getPathMemSpec().allLinkedTestMask != 0 ) {
+                    if ( rian.getPathMemSpec(removingTN).allLinkedTestMask != 0 ) {
                         allLinkedTestMask = allLinkedTestMask | 1;
                     }
                 } else if ( NodeTypeEnums.NotNode != bn.getType() || ((NotNode)bn).isEmptyBetaConstraints()) {
@@ -84,7 +108,7 @@ public interface PathEndNode extends LeftTupleSinkNode {
             }
 
             tupleSource = tupleSource.getLeftTupleSource();
-            if ( SegmentUtilities.isNonTerminalTipNode( tupleSource, removingTN ) ) {
+            if ( BuildtimeSegmentUtilities.isNonTerminalTipNode(tupleSource, removingTN) ) {
                 updateBitInNewSegment = true; // allow bit to be set for segment
                 allLinkedTestMask = nextNodePosMask(allLinkedTestMask);
                 counter++;

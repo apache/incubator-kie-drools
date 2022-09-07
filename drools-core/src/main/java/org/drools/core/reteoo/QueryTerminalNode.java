@@ -41,16 +41,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     private static final long serialVersionUID = 510l;
 
     public static final short type             = 8;
-
-    /** The rule to invoke upon match. */
-    protected QueryImpl query;
-    private GroupElement      subrule;
-    private int               subruleIndex;
-    private Declaration[]     allDeclarations;
-    private Declaration[]     requiredDeclarations;
-
-    private LeftTupleSinkNode previousTupleSinkNode;
-    private LeftTupleSinkNode nextTupleSinkNode;
     
     private transient ObjectTypeNode.Id leftInputOtnId;
 
@@ -79,119 +69,30 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                source,
-               context);
-        this.query = (QueryImpl) rule;
-        this.subrule = subrule;
-        this.subruleIndex = subruleIndex;
-        
-        initDeclaredMask(context);        
-        initInferredMask();
-        initDeclarations();
-
-        hashcode = calculateHashCode();
+               context,
+               rule, subrule, subruleIndex);
+        this.hashcode = calculateHashCode();
     }
-
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
 
     public QueryImpl getQuery() {
-        return query;
-    }
-
-    public RuleImpl getRule() {
-        return this.query;
-    }
-
-    private int calculateHashCode() {
-        return this.query.hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        if (this == object) {
-            return true;
-        }
-
-        if ( object == null || !(object instanceof QueryTerminalNode) || this.hashCode() != object.hashCode() ) {
-            return false;
-        }
-        return query.equals(((QueryTerminalNode) object).query);
+        return (QueryImpl) getRule();
     }
 
     public String toString() {
-        return "[QueryTerminalNode(" + this.getId() + "): query=" + this.query.getName() + "]";
+        return "[QueryTerminalNode(" + this.getId() + "): query=" + this.getQuery().getName() + "]";
     }
 
-    /**
-     * @return the subrule
-     */
-    public GroupElement getSubRule() {
-        return this.subrule;
-    }
-    
     @Override
     public boolean isFireDirect() {
         return false;
     }
 
-    public Declaration[] getAllDeclarations() {
-        return this.allDeclarations;
-    }
-
-    public Declaration[] getRequiredDeclarations() {
-        return this.requiredDeclarations;
-    }
-
-    private void initDeclarations() {
-        Map<String, Declaration> declMap = subrule.getOuterDeclarations();
-        this.allDeclarations = declMap.values().toArray( new Declaration[declMap.size()] );
-
-        this.requiredDeclarations = new Declaration[ query.getParameters().length ];
+    void initDeclarations(Map<String, Declaration> decls, final BuildContext context) {
+        this.requiredDeclarations = new Declaration[ getQuery().getParameters().length ];
         int i = 0;
-        for ( Declaration declr : query.getParameters() ) {
-            this.requiredDeclarations[i++] =  declMap.get( declr.getIdentifier() );
+        for ( Declaration declr : getQuery().getParameters() ) {
+            this.requiredDeclarations[i++] =  decls.get( declr.getIdentifier() );
         }
-    }
-    
-    public int getSubruleIndex() {
-        return this.subruleIndex;
-    }
-
-    /**
-     * Returns the previous node
-     * @return
-     *      The previous TupleSinkNode
-     */
-    public LeftTupleSinkNode getPreviousLeftTupleSinkNode() {
-        return this.previousTupleSinkNode;
-    }
-
-    /**
-     * Sets the previous node
-     * @param previous
-     *      The previous TupleSinkNode
-     */
-    public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
-        this.previousTupleSinkNode = previous;
-    }
-
-    /**
-     * Returns the next node
-     * @return
-     *      The next TupleSinkNode
-     */
-    public LeftTupleSinkNode getNextLeftTupleSinkNode() {
-        return this.nextTupleSinkNode;
-    }
-
-    /**
-     * Sets the next node
-     * @param next
-     *      The next TupleSinkNode
-     */
-    public void setNextLeftTupleSinkNode(final LeftTupleSinkNode next) {
-        this.nextTupleSinkNode = next;
     }
 
     public short getType() {
@@ -230,8 +131,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
                                      boolean leftTupleMemoryEnabled) {
         return AgendaComponentFactory.get().createTerminalTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }    
-    
-    
+
     public ObjectTypeNode.Id getLeftInputOtnId() {
         return leftInputOtnId;
     }

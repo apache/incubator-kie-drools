@@ -19,8 +19,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.NodeTypeEnums;
@@ -28,6 +31,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.TerminalNode;
 import org.kie.api.definition.rule.Rule;
 
 public class MockRightTupleSink
@@ -42,7 +46,12 @@ public class MockRightTupleSink
         this.retracted.add( new Object[]{rightTuple, context, reteEvaluator} );
 
     }
-    
+
+    @Override
+    public int getPosInSegment() {
+        return 0;
+    }
+
     public List getRetracted() {
         return this.retracted;
     }
@@ -70,24 +79,17 @@ public class MockRightTupleSink
                                  ReteEvaluator reteEvaluator) {
     }
 
-    public int getAssociationsSize() {
-        return 0;
-    }
-
-    public int getAssociatedRuleSize() {
-        return 0;
-    }
-
-    public int getAssociationsSize(Rule rule) {
-        return 0;
-    }
-
     public boolean isAssociatedWith( Rule rule ) {
         return false;
     }
 
     @Override public Rule[] getAssociatedRules() {
         return new Rule[0];
+    }
+
+    @Override
+    public Map<Integer, TerminalNode> getAssociatedTerminals() {
+        return null;
     }
 
     public ObjectTypeNode.Id getRightInputOtnId() {
@@ -99,4 +101,9 @@ public class MockRightTupleSink
     }
 
     public int nodeHashCode() {return this.hashCode();}
+
+    @Override
+    public NetworkNode[] getSinks() {
+        return new NetworkNode[0];
+    }
 }

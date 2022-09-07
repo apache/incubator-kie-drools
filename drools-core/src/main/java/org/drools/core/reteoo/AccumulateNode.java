@@ -53,7 +53,7 @@ import org.drools.core.util.index.TupleList;
  */
 public class AccumulateNode extends BetaNode {
 
-    private static final long          serialVersionUID = 510l;
+    private static final long          serialVersionUID = 510L;
 
     protected Accumulate                 accumulate;
     protected AlphaNodeFieldConstraint[] resultConstraints;
@@ -163,7 +163,7 @@ public class AccumulateNode extends BetaNode {
             return true;
         }
 
-        if ( object == null || !(object instanceof AccumulateNode ) || this.hashCode() != object.hashCode() ) {
+        if (!(object instanceof AccumulateNode) || this.hashCode() != object.hashCode()) {
             return false;
         }
 

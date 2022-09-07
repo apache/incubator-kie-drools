@@ -17,6 +17,10 @@
 package org.drools.core.common;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -25,8 +29,8 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.Sink;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.Bag;
 import org.kie.api.definition.rule.Rule;
 
 /**
@@ -36,14 +40,20 @@ public abstract class BaseNode
     implements
     NetworkNode {
 
-    protected int                 id;
-    protected int                 memoryId = -1;
-    protected RuleBasePartitionId partitionId;
-    protected boolean             partitionsEnabled;
-    protected Bag<Rule>           associations;
-    private   boolean             streamMode;
+    protected int                        id;
 
-    protected int                 hashcode;
+    protected int                        posInSegment;
+    protected int                        memoryId = -1;
+
+    protected RuleBasePartitionId        partitionId;
+    protected boolean                    partitionsEnabled;
+    protected Set<Rule>                  associations;
+
+    protected Map<Integer, TerminalNode> associatedTerminals;
+
+    private   boolean                    streamMode;
+
+    protected int                        hashcode;
 
     public BaseNode() {
 
@@ -62,7 +72,8 @@ public abstract class BaseNode
         this.id = id;
         this.partitionId = partitionId;
         this.partitionsEnabled = partitionsEnabled;
-        this.associations = new Bag<>();
+        this.associations = new HashSet<>();
+        this.associatedTerminals = new HashMap<>();
     }
 
     /* (non-Javadoc)
@@ -74,6 +85,15 @@ public abstract class BaseNode
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public int getPosInSegment() {
+        return posInSegment;
+    }
+
+    public void setPosInSegment(int posInSegment) {
+        this.posInSegment = posInSegment;
     }
 
     public int getMemoryId() {
@@ -177,7 +197,7 @@ public abstract class BaseNode
      * Removes the association to the given rule from the
      * associations map.
      */
-    public boolean removeAssociation( Rule rule ) {
+    public boolean removeAssociation( Rule rule, RuleRemovalContext context) {
         return this.associations.remove(rule);
     }
 
@@ -186,19 +206,15 @@ public abstract class BaseNode
     }
 
     public Rule[] getAssociatedRules() {
-        return this.associations.toArray( new Rule[this.associations.getKeySize()] );
-    }
-
-    public int getAssociatedRuleSize() {
-        return this.associations.getKeySize();
-    }
-
-    public int getAssociationsSize(Rule rule) {
-        return this.associations.sizeFor(rule);
+        return this.associations.toArray( new Rule[this.associations.size()] );
     }
 
     public boolean isAssociatedWith( Rule rule ) {
         return this.associations.contains( rule );
+    }
+
+    public Map<Integer, TerminalNode> getAssociatedTerminals() {
+        return this.associatedTerminals;
     }
 
     @Override
@@ -206,7 +222,7 @@ public abstract class BaseNode
         return hashcode;
     }
 
-    public Sink[] getSinks() {
+    public NetworkNode[] getSinks() {
         Sink[] sinks = null;
         if (this instanceof EntryPointNode ) {
             EntryPointNode source = (EntryPointNode) this;

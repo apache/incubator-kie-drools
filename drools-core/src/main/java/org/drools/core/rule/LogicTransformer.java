@@ -340,7 +340,7 @@ public class LogicTransformer {
     protected boolean processTree(final GroupElement ce) throws InvalidPatternException {
         boolean[] hasNamedConsequenceAndIsStream = new boolean[2];
         processTree(ce, hasNamedConsequenceAndIsStream);
-        return hasNamedConsequenceAndIsStream[0] && hasNamedConsequenceAndIsStream[1];
+        return hasNamedConsequenceAndIsStream[0]; // && hasNamedConsequenceAndIsStream[1];
     }
 
     /**

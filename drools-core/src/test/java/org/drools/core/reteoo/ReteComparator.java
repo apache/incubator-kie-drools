@@ -68,8 +68,8 @@ public class ReteComparator {
             throw new RuntimeException( node1 + " and " + node2 + " are not equal as expected" );
         }
 
-        Sink[] sinks1 = node1.getSinks();
-        Sink[] sinks2 = node2.getSinks();
+        NetworkNode[] sinks1 = node1.getSinks();
+        NetworkNode[] sinks2 = node2.getSinks();
 
         if (sinks1 == null) {
             if (sinks2 == null) {

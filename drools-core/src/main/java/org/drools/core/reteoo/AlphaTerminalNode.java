@@ -16,6 +16,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -37,9 +38,9 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     @Override
     public void assertObject( InternalFactHandle factHandle, PropagationContext propagationContext, ReteEvaluator reteEvaluator ) {
         ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
-        Sink[] sinks = getSinks();
+        NetworkNode[] sinks = getSinks();
         for (int i = 0; i < sinks.length; i++) {
-            TerminalNode rtn = ( TerminalNode ) getSinks()[i];
+            TerminalNode rtn = ( TerminalNode ) sinks[i];
             RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, activationsManager, rtn, true );
             LeftTuple leftTuple = rtn.createLeftTuple( factHandle, true );
             leftTuple.setPropagationContext( propagationContext );
@@ -55,10 +56,10 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     @Override
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator) {
         ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
-        Sink[] sinks = getSinks();
+        NetworkNode[] sinks = getSinks();
 
         for (int i = 0; i < sinks.length; i++) {
-            TerminalNode rtn = ( TerminalNode ) getSinks()[i];
+            TerminalNode rtn = ( TerminalNode ) sinks[i];
             ObjectTypeNode.Id otnId = rtn.getLeftInputOtnId();
             LeftTuple leftTuple = processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
 

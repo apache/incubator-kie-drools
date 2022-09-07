@@ -16,6 +16,9 @@
 package org.drools.core.reteoo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.ActivationsManager;
@@ -31,6 +34,7 @@ import org.slf4j.LoggerFactory;
 public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         implements
         Serializable, Memory {
+    //public static SegmentMemory[] NOT_INITIALZED = new SegmentMemory[0];
 
     protected static final Logger log = LoggerFactory.getLogger(PathMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
@@ -196,7 +200,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public boolean isInitialized() {
-        return agendaItem != null && segmentMemories[0] != null;
+        return agendaItem != null && segmentMemories != null;
     }
 
     public SegmentMemory[] getSegmentMemories() {
@@ -205,6 +209,18 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void setSegmentMemory(int index, SegmentMemory sm) {
         this.segmentMemories[index] = sm;
+    }
+
+    public void addSegmentMemory(int index, SegmentMemory sm) {
+        List<SegmentMemory> list = Arrays.asList(segmentMemories);
+        list.add(index, sm);
+        this.segmentMemories = list.toArray( new SegmentMemory[list.size()]);
+    }
+
+    public void removeSegmentMemory(int index) {
+        List<SegmentMemory> list = Arrays.asList(segmentMemories);
+        list.remove(index);
+        this.segmentMemories = list.toArray( new SegmentMemory[list.size()]);
     }
 
     public void setSegmentMemories(SegmentMemory[] segmentMemories) {
@@ -220,7 +236,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public String toString() {
-        return "[RuleMem " + getRule().getName() + "]";
+        return "PathEnd(" + getPathEndNode().getId() + ") [" + getRule().getName() + "]";
     }
 
     public void reset() {

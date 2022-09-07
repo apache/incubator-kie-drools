@@ -15,11 +15,6 @@
 
 package org.drools.core.reteoo.builder;
 
-import org.drools.core.ActivationListenerFactory;
-import org.drools.core.common.UpdateContext;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.NamedConsequence;
 import org.drools.core.rule.RuleConditionElement;
@@ -31,46 +26,13 @@ public class NamedConsequenceBuilder implements ReteooComponentBuilder {
         NamedConsequence namedConsequence = (NamedConsequence) rce;
 
         Timer timer = context.getRule().getTimer();
-        if  ( timer != null ) {
-            ReteooComponentBuilder builder = utils.getBuilderFor( Timer.class );
-            builder.build( context, utils, context.getRule().getTimer() );
-        }
 
-        RuleTerminalNode terminalNode = buildTerminalNodeForNamedConsequence(context, namedConsequence);
-
-        terminalNode.attach(context);
-
-        terminalNode.networkUpdated(new UpdateContext());
-
-        // adds the terminal node to the list of nodes created/added by this sub-rule
-        context.getNodes().add( terminalNode );
-
-        if  ( timer != null ) {
-            context.setTupleSource( context.getTupleSource().getLeftTupleSource() );
-        }
-
-        context.setTerminated(namedConsequence.isTerminal());
+        ReteooRuleBuilder.buildTerminalNodeForConsequence(context, (GroupElement) context.peek(), context.getSubRuleIndex(),
+                                                          namedConsequence, timer, utils);
+        context.setTerminated(true); // assumes named consequences, not in a conditional branch are always terminal.
     }
 
     public boolean requiresLeftActivation(BuildUtils utils, RuleConditionElement rce) {
         return false;
-    }
-
-    static RuleTerminalNode buildTerminalNodeForNamedConsequence(BuildContext context, NamedConsequence namedConsequence) {
-        RuleImpl rule = context.getRule();
-        GroupElement subrule = (GroupElement) context.peek();
-
-        ActivationListenerFactory factory = context.getRuleBase().getConfiguration().getActivationListenerFactory( rule.getActivationListener() );
-
-        context.setConsequenceName( namedConsequence.getConsequenceName() );
-        TerminalNode terminal = factory.createActivationListener( context.getNextNodeId(),
-                                                                  context.getTupleSource(),
-                                                                  rule,
-                                                                  subrule,
-                                                                  0, // subruleIndex,
-                                                                  context );
-        context.setConsequenceName( null );
-
-        return (RuleTerminalNode) terminal;
     }
 }

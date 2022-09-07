@@ -4879,6 +4879,7 @@ public class IncrementalCompilationTest {
                 "  Boolean()\n" +
                 "  String()\n" +
                 "then\n" +
+                "  System.out.println(\"R1\");\n" +
                 "end\n";
 
         final String drl2a =
@@ -4908,6 +4909,18 @@ public class IncrementalCompilationTest {
         ksession.insert("A string");
         ksession.insert(12);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+//        // just prove it's 2 if you boolean
+//        FactHandle fh = ksession.insert(true);
+//        assertThat(ksession.fireAllRules()).isEqualTo(2);
+//
+//        // double check you can safely delete and add
+//        ksession.delete(fh);
+//        fh = ksession.insert(true);
+//        assertThat(ksession.fireAllRules()).isEqualTo(2);
+//        ksession.delete(fh);
+//
+//        assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1, drl2b);
