@@ -65,6 +65,11 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
+        <artifactId>drools-tms</artifactId>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
         <artifactId>drools-wiring-dynamic</artifactId>
         <scope>test</scope>
       </dependency>
