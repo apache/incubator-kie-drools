@@ -38,7 +38,7 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         uses: kiegroup/kogito-pipelines/.ci/actions/long-paths@main
       - name: Java and Maven Setup
-        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
+        uses: radtriste/kogito-pipelines/.ci/actions/maven@kogito-7076 # TODO to set back
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
