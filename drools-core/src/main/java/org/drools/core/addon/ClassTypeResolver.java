@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -268,7 +268,7 @@ public class ClassTypeResolver
             throw new ClassNotFoundException("Unable to find class '" + className + "'");
         }
 
-        this.cachedImports.put(clazz.getSimpleName(),
+        this.cachedImports.put(className,
                                clazz);
 
         return clazz;
@@ -347,7 +347,7 @@ public class ClassTypeResolver
                 this.cachedImports = new HashMap<>();
             }
 
-            this.cachedImports.put(clazz.getSimpleName(),
+            this.cachedImports.put(className,
                                    clazz);
         }
 

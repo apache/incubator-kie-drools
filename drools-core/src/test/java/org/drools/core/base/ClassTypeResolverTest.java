@@ -32,7 +32,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolvePrimtiveTypes() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         assertThat(resolver.resolveType("boolean")).isEqualTo(boolean.class);
         assertThat(resolver.resolveType("double")).isEqualTo(double.class);
         assertThat(resolver.resolveType("float")).isEqualTo(float.class);
@@ -45,7 +45,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolveArrayOfPrimitiveTypes() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         assertThat(resolver.resolveType("boolean[]")).isEqualTo(boolean[].class);
         assertThat(resolver.resolveType("double[]")).isEqualTo(double[].class);
         assertThat(resolver.resolveType("float[]")).isEqualTo(float[].class);
@@ -58,7 +58,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolveMultidimensionnalArrayOfPrimitiveTypes() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         assertThat(resolver.resolveType("int[][]")).isEqualTo(int[][].class);
         assertThat(resolver.resolveType("int[][][]")).isEqualTo(int[][][].class);
         assertThat(resolver.resolveType("int[][][][]")).isEqualTo(int[][][][].class);
@@ -66,7 +66,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolveObjectNotFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         assertThat(resolver.resolveType("String")).isEqualTo(String.class);
         assertThat(resolver.resolveType("java.lang.String")).isEqualTo(String.class);
         try {
@@ -80,7 +80,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolveObjectFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         resolver.addImport("org.drools.core.test.model.Cheese");
         resolver.addImport("org.drools.core.test.model.FirstClass");
         resolver.addImport("org.drools.core.test.model.FirstClass.AlternativeKey");
@@ -100,7 +100,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolveObjectFromImportNested() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         resolver.addImport("org.drools.core.test.model.FirstClass");
 
         assertThat(resolver.resolveType("FirstClass.AlternativeKey")).isEqualTo(FirstClass.AlternativeKey.class);
@@ -109,7 +109,7 @@ public class ClassTypeResolverTest {
     @Test
     public void testResolveFullTypeName() throws Exception {
 
-        final TypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final TypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         resolver.addImport("org.drools.core.test.model.Cheese");
         resolver.addImport("org.drools.core.test.model.FirstClass");
 
@@ -119,7 +119,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolveObjectFromImportMultipleClassesDifferentPackages() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         resolver.addImport("org.drools.core.test.model.Cheese");
         assertThat(resolver.resolveType("String")).isEqualTo(String.class);
         assertThat(resolver.resolveType("java.lang.String")).isEqualTo(String.class);
@@ -129,7 +129,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolveArrayOfObjectsNotFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         assertThat(resolver.resolveType("String[]")).isEqualTo(String[].class);
         assertThat(resolver.resolveType("java.lang.String[]")).isEqualTo(String[].class);
         try {
@@ -143,7 +143,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolveArrayOfObjectsFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         resolver.addImport("org.drools.core.test.model.Cheese");
         assertThat(resolver.resolveType("String[]")).isEqualTo(String[].class);
         assertThat(resolver.resolveType("java.lang.String[]")).isEqualTo(String[].class);
@@ -153,7 +153,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolveMultidimensionnalArrayOfObjectsNotFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         assertThat(resolver.resolveType("String[][]")).isEqualTo(String[][].class);
         assertThat(resolver.resolveType("java.lang.String[][]")).isEqualTo(String[][].class);
         try {
@@ -167,7 +167,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testResolveMultidimensionnalArrayOfObjectsFromImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         resolver.addImport("org.drools.core.test.model.Cheese");
         assertThat(resolver.resolveType("String[][]")).isEqualTo(String[][].class);
         assertThat(resolver.resolveType("java.lang.String[][]")).isEqualTo(String[][].class);
@@ -176,8 +176,8 @@ public class ClassTypeResolverTest {
     }
 
     @Test
-    public void testDefaultPackageImport() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+    public void testDefaultPackageImport() {
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
         resolver.addImport("Goo");
         try {
             resolver.resolveType("Goo");
@@ -189,7 +189,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testNestedClassResolving() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), Thread.currentThread().getContextClassLoader());
 
         // single nesting
         resolver.addImport("org.drools.core.test.model.Person.Nested1");
@@ -206,10 +206,10 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMacOSXClassLoaderBehavior() throws Exception {
-        SimulateMacOSXClassLoader simulatedMacOSXClassLoader = new SimulateMacOSXClassLoader(Thread.currentThread().getContextClassLoader(), new HashSet());
+        SimulateMacOSXClassLoader simulatedMacOSXClassLoader = new SimulateMacOSXClassLoader(Thread.currentThread().getContextClassLoader(), new HashSet<>());
         simulatedMacOSXClassLoader.addClassInScope(org.drools.core.test.model.Cheese.class);
 
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), simulatedMacOSXClassLoader);
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), simulatedMacOSXClassLoader);
         resolver.addImport("org.drools.core.test.model.*");
 
         assertThat(resolver.resolveType("Cheese")).isEqualTo(org.drools.core.test.model.Cheese.class);
@@ -224,10 +224,10 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMacOSXClassLoaderBehaviorNested() throws Exception {
-        SimulateMacOSXClassLoader simulatedMacOSXClassLoader = new SimulateMacOSXClassLoader(Thread.currentThread().getContextClassLoader(), new HashSet());
+        SimulateMacOSXClassLoader simulatedMacOSXClassLoader = new SimulateMacOSXClassLoader(Thread.currentThread().getContextClassLoader(), new HashSet<>());
         simulatedMacOSXClassLoader.addClassInScope(org.drools.core.test.model.Person.Nested1.Nested2.class);
 
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), simulatedMacOSXClassLoader);
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet<>(), simulatedMacOSXClassLoader);
         resolver.addImport("org.drools.core.test.model.*");
 
         assertThat(resolver.resolveType("Person.Nested1.Nested2")).isEqualTo(org.drools.core.test.model.Person.Nested1.Nested2.class);
