@@ -29,9 +29,9 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
         return factory.forEach(Customer.class)
                 .groupBy(Customer::getVehicle, sum(Customer::getDemand))
                 .filter((vehicle, demand) -> demand > vehicle.getCapacity())
-                .penalizeLong("vehicleCapacity",
-                        HardSoftLongScore.ONE_HARD,
-                        (vehicle, demand) -> demand - vehicle.getCapacity());
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (vehicle, demand) -> demand - vehicle.getCapacity())
+                .asConstraint("vehicleCapacity");
     }
 
     // ************************************************************************
@@ -40,17 +40,17 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     protected Constraint distanceToPreviousStandstill(ConstraintFactory factory) {
         return factory.forEach(Customer.class)
-                .penalizeLong("distanceToPreviousStandstill",
-                        HardSoftLongScore.ONE_SOFT,
-                        Customer::getDistanceFromPreviousStandstill);
+                .penalizeLong(HardSoftLongScore.ONE_SOFT,
+                        Customer::getDistanceFromPreviousStandstill)
+                .asConstraint("distanceToPreviousStandstill");
     }
 
     protected Constraint distanceFromLastCustomerToDepot(ConstraintFactory factory) {
         return factory.forEach(Customer.class)
                 .filter(customer -> customer.getNextCustomer() == null)
-                .penalizeLong("distanceFromLastCustomerToDepot",
-                        HardSoftLongScore.ONE_SOFT,
-                        customer -> customer.getDistanceTo(customer.getVehicle()));
+                .penalizeLong(HardSoftLongScore.ONE_SOFT,
+                        customer -> customer.getDistanceTo(customer.getVehicle()))
+                .asConstraint("distanceFromLastCustomerToDepot");
     }
 
     // ************************************************************************
@@ -60,9 +60,9 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
     protected Constraint arrivalAfterDueTime(ConstraintFactory factory) {
         return factory.forEach(TimeWindowedCustomer.class)
                 .filter(customer -> customer.getArrivalTime() > customer.getDueTime())
-                .penalizeLong("arrivalAfterDueTime",
-                        HardSoftLongScore.ONE_HARD,
-                        customer -> customer.getArrivalTime() - customer.getDueTime());
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        customer -> customer.getArrivalTime() - customer.getDueTime())
+                .asConstraint("arrivalAfterDueTime");
     }
 
 }

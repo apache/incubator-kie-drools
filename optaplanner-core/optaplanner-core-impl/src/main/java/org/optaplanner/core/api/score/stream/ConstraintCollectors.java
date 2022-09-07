@@ -951,7 +951,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * @deprecated in favor of {@link #toList()}, {@link #toSet()} or {@link #toSortedSet()}
+     * @deprecated Prefer {@link #toList()}, {@link #toSet()} or {@link #toSortedSet()}
      */
     @Deprecated(/* forRemoval = true */)
     public static <A, Result extends Collection<A>> UniConstraintCollector<A, ?, Result> toCollection(
@@ -1309,7 +1309,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * @deprecated in favor of {@link #toList(Function)}, {@link #toSet(Function)} or {@link #toSortedSet(Function)}
+     * @deprecated Prefer {@link #toList(Function)}, {@link #toSet(Function)} or {@link #toSortedSet(Function)}
      */
     @Deprecated(/* forRemoval = true */)
     public static <A, Mapped, Result extends Collection<Mapped>> UniConstraintCollector<A, ?, Result> toCollection(
@@ -1410,7 +1410,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * @deprecated in favor of {@link #toList(BiFunction)}, {@link #toSet(BiFunction)}
+     * @deprecated Prefer {@link #toList(BiFunction)}, {@link #toSet(BiFunction)}
      *             or {@link #toSortedSet(BiFunction)}
      */
     @Deprecated(/* forRemoval = true */)
@@ -1478,7 +1478,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * @deprecated in favor of {@link #toList(TriFunction)}, {@link #toSet(TriFunction)}
+     * @deprecated Prefer {@link #toList(TriFunction)}, {@link #toSet(TriFunction)}
      *             or {@link #toSortedSet(TriFunction)}
      */
     @Deprecated(/* forRemoval = true */)
@@ -1546,7 +1546,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * @deprecated in favor of {@link #toList(QuadFunction)}, {@link #toSet(QuadFunction)}
+     * @deprecated Prefer {@link #toList(QuadFunction)}, {@link #toSet(QuadFunction)}
      *             or {@link #toSortedSet(QuadFunction)}
      */
     @Deprecated(/* forRemoval = true */)

@@ -13,7 +13,8 @@ public class TestdataInvalidQuarkusConstraintProvider implements ConstraintProvi
         return new Constraint[] {
                 factory.forEach(TestdataInvalidInverseRelationValue.class)
                         .filter(room -> room.getEntityList().size() > 1)
-                        .penalize("Don't assign 2 entities the same room.", SimpleScore.ONE)
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint("Don't assign 2 entities the same room.")
         };
     }
 

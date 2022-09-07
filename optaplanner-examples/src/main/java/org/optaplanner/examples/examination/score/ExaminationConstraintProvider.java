@@ -55,14 +55,15 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .ifExists(Exam.class,
                         equal((topicConflict, leftExam) -> topicConflict.getRightTopic(), Exam::getTopic),
                         equal((topicConflict, leftExam) -> leftExam.getPeriod(), Exam::getPeriod))
-                .penalizeConfigurable("conflictingExamsInSamePeriod",
-                        (topicConflict, leftExam) -> topicConflict.getStudentSize());
+                .penalizeConfigurable((topicConflict, leftExam) -> topicConflict.getStudentSize())
+                .asConstraint("conflictingExamsInSamePeriod");
     }
 
     protected Constraint periodDurationTooShort(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Exam.class)
                 .filter(exam -> exam.getTopicDuration() > exam.getPeriodDuration())
-                .penalizeConfigurable("periodDurationTooShort", Exam::getTopicStudentSize);
+                .penalizeConfigurable(Exam::getTopicStudentSize)
+                .asConstraint("periodDurationTooShort");
     }
 
     protected Constraint roomCapacityTooSmall(ConstraintFactory constraintFactory) {
@@ -71,8 +72,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .filter(exam -> exam.getPeriod() != null)
                 .groupBy(Exam::getRoom, Exam::getPeriod, sum(Exam::getTopicStudentSize))
                 .filter((room, period, totalStudentSize) -> totalStudentSize > room.getCapacity())
-                .penalizeConfigurable("roomCapacityTooSmall",
-                        (room, period, totalStudentSize) -> totalStudentSize - room.getCapacity());
+                .penalizeConfigurable((room, period, totalStudentSize) -> totalStudentSize - room.getCapacity())
+                .asConstraint("roomCapacityTooSmall");
     }
 
     protected Constraint periodPenaltyExamCoincidence(ConstraintFactory constraintFactory) {
@@ -85,9 +86,9 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         equal((periodPenalty, leftExam) -> periodPenalty.getRightTopic(), Exam::getTopic),
                         filtering((periodPenalty, leftExam, rightExam) -> rightExam.getPeriod() != null),
                         filtering((periodPenalty, leftExam, rightExam) -> leftExam.getPeriod() != rightExam.getPeriod()))
-                .penalizeConfigurable("periodPenaltyExamCoincidence",
-                        (periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
-                                + rightExam.getTopic().getStudentSize());
+                .penalizeConfigurable((periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
+                        + rightExam.getTopic().getStudentSize())
+                .asConstraint("periodPenaltyExamCoincidence");
     }
 
     protected Constraint periodPenaltyExclusion(ConstraintFactory constraintFactory) {
@@ -99,9 +100,9 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .join(Exam.class,
                         equal((periodPenalty, leftExam) -> periodPenalty.getRightTopic(), Exam::getTopic),
                         equal((periodPenalty, leftExam) -> leftExam.getPeriod(), Exam::getPeriod))
-                .penalizeConfigurable("periodPenaltyExclusion",
-                        (periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
-                                + rightExam.getTopic().getStudentSize());
+                .penalizeConfigurable((periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
+                        + rightExam.getTopic().getStudentSize())
+                .asConstraint("periodPenaltyExclusion");
     }
 
     protected Constraint periodPenaltyAfter(ConstraintFactory constraintFactory) {
@@ -113,9 +114,9 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .join(Exam.class,
                         equal((periodPenalty, leftExam) -> periodPenalty.getRightTopic(), Exam::getTopic),
                         lessThanOrEqual((periodPenalty, leftExam) -> leftExam.getPeriodIndex(), Exam::getPeriodIndex))
-                .penalizeConfigurable("periodPenaltyAfter",
-                        (periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
-                                + rightExam.getTopic().getStudentSize());
+                .penalizeConfigurable((periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
+                        + rightExam.getTopic().getStudentSize())
+                .asConstraint("periodPenaltyAfter");
     }
 
     protected Constraint roomPenaltyExclusive(ConstraintFactory constraintFactory) {
@@ -128,9 +129,9 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         equal((roomPenalty, leftExam) -> leftExam.getRoom(), Exam::getRoom),
                         equal((roomPenalty, leftExam) -> leftExam.getPeriod(), Exam::getPeriod),
                         filtering((roomPenalty, leftExam, rightExam) -> leftExam.getTopic() != rightExam.getTopic()))
-                .penalizeConfigurable("roomPenaltyExclusive",
-                        (periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
-                                + rightExam.getTopic().getStudentSize());
+                .penalizeConfigurable((periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
+                        + rightExam.getTopic().getStudentSize())
+                .asConstraint("roomPenaltyExclusive");
     }
 
     protected Constraint twoExamsInARow(ConstraintFactory constraintFactory) {
@@ -143,7 +144,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         equal((topicConflict, leftExam) -> leftExam.getDayIndex(), Exam::getDayIndex),
                         filtering((topicConflict, leftExam,
                                 rightExam) -> getPeriodIndexDifferenceBetweenExams(leftExam, rightExam) == 1))
-                .penalizeConfigurable("twoExamsInARow", (topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize());
+                .penalizeConfigurable((topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize())
+                .asConstraint("twoExamsInARow");
     }
 
     protected Constraint twoExamsInADay(ConstraintFactory constraintFactory) {
@@ -157,7 +159,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         // Find exams in a day, but not being held right after each other. That case is handled in the twoExamsInARow constraint.
                         filtering((topicConflict, leftExam,
                                 rightExam) -> getPeriodIndexDifferenceBetweenExams(leftExam, rightExam) > 1))
-                .penalizeConfigurable("twoExamsInADay", (topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize());
+                .penalizeConfigurable((topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize())
+                .asConstraint("twoExamsInADay");
     }
 
     protected Constraint periodSpread(ConstraintFactory constraintFactory) {
@@ -172,8 +175,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         filtering((config, topicConflict, leftExam,
                                 rightExam) -> getPeriodIndexDifferenceBetweenExams(leftExam,
                                         rightExam) < (config.getPeriodSpreadLength() + 1)))
-                .penalizeConfigurable("periodSpread",
-                        (config, topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize());
+                .penalizeConfigurable((config, topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize())
+                .asConstraint("periodSpread");
     }
 
     protected Constraint mixedDurations(ConstraintFactory constraintFactory) {
@@ -195,13 +198,15 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         equal((leftExam, rightExam) -> leftExam.getRoom(), Exam::getRoom),
                         equal((leftExam, rightExam) -> rightExam.getTopicDuration(), Exam::getTopicDuration),
                         greaterThan((leftExam, rightExam) -> rightExam.getId(), Exam::getId))
-                .penalizeConfigurable("mixedDurations");
+                .penalizeConfigurable()
+                .asConstraint("mixedDurations");
     }
 
     protected Constraint frontLoad(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Exam.class)
                 .filter(exam -> exam.isTopicFrontLoadLarge() && exam.isPeriodFrontLoadLast())
-                .penalizeConfigurable("frontLoad");
+                .penalizeConfigurable()
+                .asConstraint("frontLoad");
     }
 
     protected Constraint periodPenalty(ConstraintFactory constraintFactory) {
@@ -209,7 +214,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .filter(period -> period.getPenalty() != 0)
                 .join(Exam.class,
                         equal(Function.identity(), Exam::getPeriod))
-                .penalizeConfigurable("periodPenalty", (period, exam) -> period.getPenalty());
+                .penalizeConfigurable((period, exam) -> period.getPenalty())
+                .asConstraint("periodPenalty");
     }
 
     protected Constraint roomPenalty(ConstraintFactory constraintFactory) {
@@ -217,7 +223,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .filter(room -> room.getPenalty() != 0)
                 .join(Exam.class,
                         equal(Function.identity(), Exam::getRoom))
-                .penalizeConfigurable("roomPenalty", (room, exam) -> room.getPenalty());
+                .penalizeConfigurable((room, exam) -> room.getPenalty())
+                .asConstraint("roomPenalty");
     }
 
     private int getPeriodIndexDifferenceBetweenExams(Exam leftExam, Exam rightExam) {

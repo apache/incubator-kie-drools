@@ -16,7 +16,8 @@ public class TestdataChainedQuarkusConstraintProvider implements ConstraintProvi
                 factory.forEach(TestdataChainedQuarkusAnchor.class)
                         .ifNotExists(TestdataChainedQuarkusEntity.class,
                                 Joiners.equal((anchor) -> anchor, TestdataChainedQuarkusEntity::getPrevious))
-                        .penalize("Assign at least one entity to each anchor.", SimpleScore.ONE)
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint("Assign at least one entity to each anchor.")
         };
     }
 

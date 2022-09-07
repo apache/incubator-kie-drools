@@ -96,7 +96,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                 // Counter state does not change because the index properties didn't change
                 break;
             case OK:
-                // Still needed to propagate the update for downstream filters, matchWeighters, ...
+                // Still needed to propagate the update for downstream filters, matchWeighers, ...
                 counter.state = BavetTupleState.UPDATING;
                 dirtyCounterQueue.add(counter);
                 break;

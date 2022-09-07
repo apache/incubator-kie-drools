@@ -74,7 +74,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
 
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
-            // Still needed to propagate the update for downstream filters, matchWeighters, ...
+            // Still needed to propagate the update for downstream filters, matchWeighers, ...
             Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = indexerLeft.get(oldIndexProperties, leftTuple);
             for (MutableOutTuple_ outTuple : outTupleMapLeft.values()) {
                 updateOutTupleLeft(outTuple, leftTuple);
@@ -136,7 +136,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
 
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
-            // Still needed to propagate the update for downstream filters, matchWeighters, ...
+            // Still needed to propagate the update for downstream filters, matchWeighers, ...
             indexerLeft.visit(oldIndexProperties, (leftTuple, outTupleMapLeft) -> {
                 MutableOutTuple_ outTuple = outTupleMapLeft.get(rightTuple);
                 updateOutTupleRight(outTuple, rightTuple);

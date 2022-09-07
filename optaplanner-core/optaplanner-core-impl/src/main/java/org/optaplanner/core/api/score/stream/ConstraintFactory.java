@@ -216,7 +216,7 @@ public interface ConstraintFactory {
      * As defined by {@link #from(Class)},
      * but without any filtering of uninitialized {@link PlanningEntity planning entities}.
      *
-     * @deprecated in favor of {@link #forEachIncludingNullVars(Class)}.
+     * @deprecated Prefer {@link #forEachIncludingNullVars(Class)}.
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return never null
@@ -241,7 +241,7 @@ public interface ConstraintFactory {
      * This method is syntactic sugar for {@link UniConstraintStream#join(Class)}.
      * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
      *
-     * @deprecated in favor of {@link #forEachUniquePair(Class)},
+     * @deprecated Prefer {@link #forEachUniquePair(Class)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
@@ -272,7 +272,7 @@ public interface ConstraintFactory {
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      *
-     * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner)},
+     * @deprecated Prefer {@link #forEachUniquePair(Class, BiJoiner)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param joiner never null
@@ -293,7 +293,7 @@ public interface ConstraintFactory {
      * <p>
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
-     * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner, BiJoiner)},
+     * @deprecated Prefer {@link #forEachUniquePair(Class, BiJoiner, BiJoiner)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param joiner1 never null
@@ -316,7 +316,7 @@ public interface ConstraintFactory {
      * <p>
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
-     * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner)},
+     * @deprecated Prefer {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param joiner1 never null
@@ -341,7 +341,7 @@ public interface ConstraintFactory {
      * <p>
      * As defined by {@link #fromUniquePair(Class, BiJoiner)}.
      *
-     * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner, BiJoiner)},
+     * @deprecated Prefer {@link #forEachUniquePair(Class, BiJoiner, BiJoiner, BiJoiner, BiJoiner)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param joiner1 never null
@@ -371,7 +371,7 @@ public interface ConstraintFactory {
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
      *
-     * @deprecated in favor of {@link #forEachUniquePair(Class, BiJoiner...)},
+     * @deprecated Prefer {@link #forEachUniquePair(Class, BiJoiner...)},
      *             which exhibits the same behavior for both nullable and non-nullable planning variables.
      * @param fromClass never null
      * @param joiners never null

@@ -9,6 +9,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.BavetScoringConstraintStream;
 import org.optaplanner.constraint.streams.bavet.tri.BavetGroupTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
@@ -20,14 +21,15 @@ import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.common.penta.PentaJoinerComber;
 import org.optaplanner.constraint.streams.common.quad.InnerQuadConstraintStream;
+import org.optaplanner.constraint.streams.common.quad.QuadConstraintBuilderImpl;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintBuilder;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
@@ -361,75 +363,32 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ScoreImpactType impactType) {
-        BavetScoringQuadConstraintStream<Solution_, A, B, C, D> stream = shareAndAddChild(
-                new BavetScoringQuadConstraintStream<>(constraintFactory, this));
-        return buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType, stream);
+    public QuadConstraintBuilder<A, B, C, D> innerImpact(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher,
+            ScoreImpactType scoreImpactType) {
+        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, constraintWeight, scoreImpactType);
     }
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringQuadConstraintStream<Solution_, A, B, C, D> stream = shareAndAddChild(
-                new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType, stream);
+    public QuadConstraintBuilder<A, B, C, D> innerImpact(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher,
+            ScoreImpactType scoreImpactType) {
+        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, constraintWeight, scoreImpactType);
+    }
+
+    private QuadConstraintBuilderImpl<A, B, C, D> newTerminator(BavetScoringConstraintStream<Solution_> stream,
+            Score<?> constraintWeight, ScoreImpactType impactType) {
+        return new QuadConstraintBuilderImpl<>(
+                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
+                        constraintName, constraintWeight_, impactType_, stream),
+                impactType, constraintWeight);
     }
 
     @Override
-    public final Constraint impactScoreLong(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringQuadConstraintStream<Solution_, A, B, C, D> stream = shareAndAddChild(
-                new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType, stream);
-    }
-
-    @Override
-    public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringQuadConstraintStream<Solution_, A, B, C, D> stream = shareAndAddChild(
-                new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType, stream);
-    }
-
-    @Override
-    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ScoreImpactType impactType) {
-        BavetScoringQuadConstraintStream<Solution_, A, B, C, D> stream = shareAndAddChild(
-                new BavetScoringQuadConstraintStream<>(constraintFactory, this));
-        return buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType, stream);
-    }
-
-    @Override
-    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringQuadConstraintStream<Solution_, A, B, C, D> stream = shareAndAddChild(
-                new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType, stream);
-    }
-
-    @Override
-    public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringQuadConstraintStream<Solution_, A, B, C, D> stream = shareAndAddChild(
-                new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType, stream);
-    }
-
-    @Override
-    public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        BavetScoringQuadConstraintStream<Solution_, A, B, C, D> stream = shareAndAddChild(
-                new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType, stream);
+    public QuadConstraintBuilder<A, B, C, D> innerImpact(Score<?> constraintWeight,
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
+        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, constraintWeight, scoreImpactType);
     }
 
 }

@@ -49,7 +49,8 @@ This is an example of the same code, using the Constraint Streams API:
     private Constraint doNotAssignAnn(ConstraintFactory factory) {
         return factory.forEach(Shift.class)
                 .filter(Shift::isEmployeeAnn)
-                .penalize("Don't assign Ann", HardSoftScore.ONE_SOFT);
+                .penalize(HardSoftScore.ONE_SOFT)
+                .asConstraint("Don't assign Ann");
     }
 ----
 
@@ -92,7 +93,8 @@ to the following example.
 
         private Constraint penalizeEveryShift(ConstraintFactory factory) {
             return factory.forEach(Shift.class)
-                .penalize("Penalize a shift", HardSoftScore.ONE_SOFT);
+                .penalize(HardSoftScore.ONE_SOFT)
+                .asConstraint("Penalize a shift");
         }
 
     }
@@ -207,7 +209,8 @@ The following example shows the simplest possible constraint stream:
 ----
     private Constraint penalizeInitializedShifts(ConstraintFactory factory) {
         return factory.forEach(Shift.class)
-                .penalize("Initialized shift", HardSoftScore.ONE_SOFT);
+                .penalize(HardSoftScore.ONE_SOFT)
+                .asConstraint("Initialized shift");
     }
 ----
 
@@ -229,7 +232,8 @@ replace the `forEach()` building block by `forEachIncludingNullVars()`:
 ----
     private Constraint penalizeAllShifts(ConstraintFactory factory) {
         return factory.forEachIncludingNullVars(Shift.class)
-                .penalize("A shift", HardSoftScore.ONE_SOFT);
+                .penalize(HardSoftScore.ONE_SOFT)
+                .asConstraint("A shift");
     }
 ----
 
@@ -248,10 +252,11 @@ and therefore this legacy method could still return entities with `null` variabl
 === Penalties and rewards
 
 The purpose of constraint streams is to build up a xref:score-calculation/score-calculation.adoc#whatIsAScore[score] for a <<planningProblemAndPlanningSolution,solution>>.
-To do this, every constraint stream must be terminated by a call to either a `penalize()` or a `reward()`
+To do this, every constraint stream must contain a call to either a `penalize()` or a `reward()`
 building block.
 The `penalize()` building block makes the score worse and the `reward()` building block improves the score.
-Penalties and rewards have several components:
+
+Each constraint stream is then terminated by calling `asConstraint()` method, which finally builds the constraint. Constraints have several components:
 
 - Constraint package is the Java package that contains the constraint.
 The default value is the package that contains the `ConstraintProvider` implementation or the value from
@@ -274,15 +279,15 @@ The ConstraintStreams API supports many different types of penalties.
 Browse the API in your IDE for the full list of method overloads.
 Here are some examples:
 
-- Simple penalty (`penalize("Constraint name", SimpleScore.ONE)`) makes the score worse by `1` per every match in the
+- Simple penalty (`penalize(SimpleScore.ONE)`) makes the score worse by `1` per every match in the
 constraint stream.
 The score type must be the same type as used on the `@PlanningScore` annotated member on the planning solution.
-- Dynamic penalty (`penalize("Constraint name", SimpleScore.ONE, Shift::getHours)`) makes the score worse by the number
+- Dynamic penalty (`penalize(SimpleScore.ONE, Shift::getHours)`) makes the score worse by the number
 of hours in every matching `Shift` in the constraint stream.
 This is an example of using a constraint match weigher.
-- Configurable penalty (`penalizeConfigurable("Constraint name")`) makes the score worse using constraint weights
+- Configurable penalty (`penalizeConfigurable()`) makes the score worse using constraint weights
 defined in xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration].
-- Configurable dynamic penalty(`penalizeConfigurable("Constraint name", Shift::getHours)`) makes the score worse using
+- Configurable dynamic penalty(`penalizeConfigurable(Shift::getHours)`) makes the score worse using
 constraint weights defined in xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration], multiplied by the number of hours in
 every matching `Shift` in the constraint stream.
 
@@ -302,7 +307,8 @@ The following constraint stream removes all of Beth's shifts from all `Shift` ma
     private Constraint penalizeAnnShifts(ConstraintFactory factory) {
         return factory.forEach(Shift.class)
                 .filter(shift -> shift.getEmployeeName().equals("Ann"))
-                .penalize("Ann's shift", SimpleScore.ONE);
+                .penalize(SimpleScore.ONE)
+                .asConstraint("Ann's shift");
     }
 ----
 
@@ -315,7 +321,8 @@ of `Shift` and `DayOff`:
         return factory.forEach(Shift.class)
                 .join(DayOff.class)
                 .filter((shift, dayOff) -> shift.date == dayOff.date && shift.employee == dayOff.employee)
-                .penalize("Shift on an off-day", SimpleScore.ONE);
+                .penalize(SimpleScore.ONE)
+                .asConstraint("Shift on an off-day");
     }
 ----
 
@@ -372,8 +379,8 @@ For example:
                 .join(DayOff.class,
                     equal(Shift::getDate, DayOff::getDate),
                     equal(Shift::getEmployee, DayOff::getEmployee))
-                .penalize("Shift on an off-day",
-                        HardSoftScore.ONE_HARD);
+                .penalize(HardSoftScore.ONE_HARD)
+                .asConstraint("Shift on an off-day");
     }
 ----
 
@@ -420,9 +427,9 @@ every computer whose processes consume more power than is available.
         return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
                 .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
-                .penalize("requiredCpuPowerTotal",
-                        HardSoftScore.ONE_HARD,
-                        (computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
+                .penalize(HardSoftScore.ONE_HARD,
+                        (computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower())
+                .asConstraint("requiredCpuPowerTotal");
     }
 ----
 
@@ -461,9 +468,9 @@ don't.
     private Constraint speakerAvailability(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .groupBy(Talk::hasAnyUnavailableSpeaker, count())
-                .penalize("speakerAvailability",
-                        HardSoftScore.ONE_HARD,
-                        (hasUnavailableSpeaker, count) -> ...);
+                .penalize(HardSoftScore.ONE_HARD,
+                        (hasUnavailableSpeaker, count) -> ...)
+                .asConstraint("speakerAvailability");
     }
 ----
 
@@ -485,9 +492,9 @@ occurs. For example, the following use of the collector gives a number of talks 
     private Constraint roomCount(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .groupBy(Talk::getRoom, countDistinct())
-                .penalize("roomCount",
-                        HardSoftScore.ONE_SOFT,
-                        (room, count) -> ...);
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (room, count) -> ...)
+                .asConstraint("roomCount");
     }
 ----
 
@@ -508,9 +515,9 @@ required by the processes on that computer using the `ConstraintCollectors.sum(.
     private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
-                .penalize("requiredCpuPowerTotal",
-                        HardSoftScore.ONE_SOFT,
-                        (computer, requiredCpuPower) -> requiredCpuPower);
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (computer, requiredCpuPower) -> requiredCpuPower)
+                .asConstraint("requiredCpuPowerTotal");
     }
 ----
 
@@ -537,9 +544,9 @@ required by the processes on that computer using the `ConstraintCollectors.avera
     private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, average(CloudProcess::getRequiredCpuPower))
-                .penalize("averageCpuPower",
-                        HardSoftScore.ONE_SOFT,
-                        (computer, averageCpuPower) -> averageCpuPower);
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (computer, averageCpuPower) -> averageCpuPower)
+                .asConstraint("averageCpuPower");
     }
 ----
 
@@ -568,9 +575,9 @@ The following example finds a computer which runs the most power-demanding proce
     private Constraint computerWithBiggestProcess(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, max(CloudProcess::getRequiredCpuPower))
-                .penalize("computerWithBiggestProcess",
-                        HardSoftScore.ONE_HARD,
-                        (computer, biggestProcess) -> ...);
+                .penalize(HardSoftScore.ONE_HARD,
+                        (computer, biggestProcess) -> ...)
+                .asConstraint("computerWithBiggestProcess");
     }
 ----
 
@@ -594,9 +601,9 @@ The following example retrieves all processes running on a computer in a `List`:
     private Constraint computerWithBiggestProcess(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, toList())
-                .penalize("computerAndItsProcesses",
-                        HardSoftScore.ONE_HARD,
-                        (computer, processList) -> ...);
+                .penalize(HardSoftScore.ONE_HARD,
+                        (computer, processList) -> ...)
+                .asConstraint("computerAndItsProcesses");
     }
 ----
 
@@ -633,9 +640,9 @@ excluding processes which are not long-running:
                         CloudProcess::isLongRunning,
                         count()
                 ))
-                .penalize("longRunningProcesses",
-                        HardSoftScore.ONE_HARD,
-                        (computer, longRunningProcessCount) -> ...);
+                .penalize(HardSoftScore.ONE_HARD,
+                        (computer, longRunningProcessCount) -> ...)
+                .asConstraint("longRunningProcesses");
     }
 ----
 
@@ -706,9 +713,9 @@ The following example penalizes computers which have at least one process runnin
     private Constraint runningComputer(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(CloudComputer.class)
                 .ifExists(CloudProcess.class, Joiners.equal(Function.identity(), CloudProcess::getComputer))
-                .penalize("runningComputer",
-                        HardSoftScore.ONE_SOFT,
-                        computer -> ...);
+                .penalize(HardSoftScore.ONE_SOFT,
+                        computer -> ...)
+                .asConstraint("runningComputer");
     }
 ----
 
@@ -724,9 +731,9 @@ Conversely, if the `ifNotExists()` building block is used (as well as the `ifNot
     private Constraint unusedComputer(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(CloudComputer.class)
                 .ifNotExists(CloudProcess.class, Joiners.equal(Function.identity(), CloudProcess::getComputer))
-                .penalize("unusedComputer",
-                        HardSoftScore.ONE_HARD,
-                        computer -> ...);
+                .penalize(HardSoftScore.ONE_HARD,
+                        computer -> ...)
+                .asConstraint("unusedComputer");
     }
 ----
 
@@ -861,7 +868,8 @@ Consider the following constraint stream:
     protected Constraint horizontalConflict(ConstraintFactory factory) {
         return factory
                 .forEachUniquePair(Queen.class, equal(Queen::getRowIndex))
-                .penalize("Horizontal conflict", SimpleScore.ONE);
+                .penalize(SimpleScore.ONE)
+                .asConstraint("Horizontal conflict");
     }
 ----
 

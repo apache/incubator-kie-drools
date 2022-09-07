@@ -423,16 +423,16 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         return ruleContext.newRuleBuilder();
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntFunction<A> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntFunction<A> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(ToLongFunction<A> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(ToLongFunction<A> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(Function<A, BigDecimal> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(Function<A, BigDecimal> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
     private ViewItem<?> buildAccumulate(AccumulateFunction... accFunctions) {

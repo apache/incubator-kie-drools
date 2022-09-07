@@ -457,16 +457,16 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         return ruleContext.newRuleBuilder();
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntQuadFunction<A, B, C, D> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(ToLongQuadFunction<A, B, C, D> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(ToLongQuadFunction<A, B, C, D> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
     private ViewItem<?> buildAccumulate(AccumulateFunction... accFunctions) {

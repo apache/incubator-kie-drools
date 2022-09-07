@@ -63,7 +63,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     }
 
     /**
-     * @deprecated in favor of {@link #getMoveSelectorList()}.
+     * @deprecated Prefer {@link #getMoveSelectorList()}.
      * @return sometimes null
      */
     @Deprecated
@@ -72,7 +72,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     }
 
     /**
-     * @deprecated in favor of {@link #setMoveSelectorList(List)}.
+     * @deprecated Prefer {@link #setMoveSelectorList(List)}.
      * @param moveSelectorConfigList sometimes null
      */
     @Deprecated

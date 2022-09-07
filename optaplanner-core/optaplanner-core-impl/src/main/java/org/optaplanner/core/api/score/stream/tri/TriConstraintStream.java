@@ -989,88 +989,344 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     // ************************************************************************
 
     /**
+     * As defined by {@link #penalize(Score, ToIntTriFunction)}, where the match weight is one (1).
+     *
+     * @return never null
+     */
+    default TriConstraintBuilder<A, B, C> penalize(Score<?> constraintWeight) {
+        return penalize(constraintWeight, (a, b, c) -> 1);
+    }
+
+    /**
+     * Applies a negative {@link Score} impact,
+     * subtracting the constraintWeight multiplied by the match weight,
+     * and returns a builder to apply optional constraint properties.
+     * <p>
+     * For non-int {@link Score} types use {@link #penalizeLong(Score, ToLongTriFunction)} or
+     * {@link #penalizeBigDecimal(Score, TriFunction)} instead.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    TriConstraintBuilder<A, B, C> penalize(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #penalize(Score, ToIntTriFunction)}, with a penalty of type long.
+     */
+    TriConstraintBuilder<A, B, C> penalizeLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #penalize(Score, ToIntTriFunction)}, with a penalty of type {@link BigDecimal}.
+     */
+    TriConstraintBuilder<A, B, C> penalizeBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher);
+
+    /**
+     * Negatively impacts the {@link Score},
+     * subtracting the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint properties.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalize(Score)} instead.
+     *
+     * @return never null
+     */
+    default TriConstraintBuilder<A, B, C> penalizeConfigurable() {
+        return penalizeConfigurable((a, b, c) -> 1);
+    }
+
+    /**
+     * Negatively impacts the {@link Score},
+     * subtracting the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint properties.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalize(Score, ToIntTriFunction)} instead.
+     *
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    TriConstraintBuilder<A, B, C> penalizeConfigurable(ToIntTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #penalizeConfigurable(ToIntTriFunction)}, with a penalty of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalizeLong(Score, ToLongTriFunction)} instead.
+     */
+    TriConstraintBuilder<A, B, C> penalizeConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #penalizeConfigurable(ToIntTriFunction)}, with a penalty of type {@link BigDecimal}.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalizeBigDecimal(Score, TriFunction)} instead.
+     */
+    TriConstraintBuilder<A, B, C> penalizeConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher);
+
+    /**
+     * As defined by {@link #reward(Score, ToIntTriFunction)}, where the match weight is one (1).
+     *
+     * @return never null
+     */
+    default TriConstraintBuilder<A, B, C> reward(Score<?> constraintWeight) {
+        return reward(constraintWeight, (a, b, c) -> 1);
+    }
+
+    /**
+     * Applies a positive {@link Score} impact,
+     * adding the constraintWeight multiplied by the match weight,
+     * and returns a builder to apply optional constraint properties.
+     * <p>
+     * For non-int {@link Score} types use {@link #rewardLong(Score, ToLongTriFunction)} or
+     * {@link #rewardBigDecimal(Score, TriFunction)} instead.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    TriConstraintBuilder<A, B, C> reward(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #reward(Score, ToIntTriFunction)}, with a penalty of type long.
+     */
+    TriConstraintBuilder<A, B, C> rewardLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #reward(Score, ToIntTriFunction)}, with a penalty of type {@link BigDecimal}.
+     */
+    TriConstraintBuilder<A, B, C> rewardBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher);
+
+    /**
+     * Positively impacts the {@link Score},
+     * adding the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint properties.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #reward(Score)} instead.
+     *
+     * @return never null
+     */
+    default TriConstraintBuilder<A, B, C> rewardConfigurable() {
+        return rewardConfigurable((a, b, c) -> 1);
+    }
+
+    /**
+     * Positively impacts the {@link Score},
+     * adding the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint properties.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #reward(Score, ToIntTriFunction)} instead.
+     *
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    TriConstraintBuilder<A, B, C> rewardConfigurable(ToIntTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #rewardConfigurable(ToIntTriFunction)}, with a penalty of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #rewardLong(Score, ToLongTriFunction)} instead.
+     */
+    TriConstraintBuilder<A, B, C> rewardConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #rewardConfigurable(ToIntTriFunction)}, with a penalty of type {@link BigDecimal}.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #rewardBigDecimal(Score, TriFunction)} instead.
+     */
+    TriConstraintBuilder<A, B, C> rewardConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher);
+
+    /**
+     * Positively or negatively impacts the {@link Score} by the constraintWeight for each match
+     * and returns a builder to apply optional constraint properties.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     *
+     * @param constraintWeight never null
+     * @return never null
+     */
+    default TriConstraintBuilder<A, B, C> impact(Score<?> constraintWeight) {
+        return impact(constraintWeight, (a, b, c) -> 1);
+    }
+
+    /**
+     * Positively or negatively impacts the {@link Score} by constraintWeight multiplied by matchWeight for each match
+     * and returns a builder to apply optional constraint properties.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    TriConstraintBuilder<A, B, C> impact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #impact(Score, ToIntTriFunction)}, with an impact of type long.
+     */
+    TriConstraintBuilder<A, B, C> impactLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #impact(Score, ToIntTriFunction)}, with an impact of type {@link BigDecimal}.
+     */
+    TriConstraintBuilder<A, B, C> impactBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher);
+
+    /**
+     * Positively impacts the {@link Score} by the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint properties.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(Score)} instead.
+     *
+     * @return never null
+     */
+    default TriConstraintBuilder<A, B, C> impactConfigurable() {
+        return impactConfigurable((a, b, c) -> 1);
+    }
+
+    /**
+     * Positively impacts the {@link Score} by the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint properties.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(Score, ToIntTriFunction)} instead.
+     *
+     * @return never null
+     */
+    TriConstraintBuilder<A, B, C> impactConfigurable(ToIntTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #impactConfigurable(ToIntTriFunction)}, with an impact of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #impactLong(Score, ToLongTriFunction)} instead.
+     */
+    TriConstraintBuilder<A, B, C> impactConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * As defined by {@link #impactConfigurable(ToIntTriFunction)}, with an impact of type BigDecimal.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #impactBigDecimal(Score, TriFunction)} instead.
+     */
+    TriConstraintBuilder<A, B, C> impactConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher);
+
+    /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      * <p>
      * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongTriFunction)} or
      * {@link #penalizeBigDecimal(String, Score, TriFunction)} instead.
      *
+     * @deprecated Prefer {@link #penalize(Score, ToIntTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalize(String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
-        return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return penalize(constraintWeight, matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #penalize(String, Score, ToIntTriFunction)}.
      *
+     * @deprecated Prefer {@link #penalize(Score, ToIntTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToIntTriFunction<A, B, C> matchWeigher) {
+        return penalize(constraintWeight, matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      *
+     * @deprecated Prefer {@link #penalizeLong(Score, ToLongTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeLong(String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
-        return penalizeLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return penalizeLong(constraintWeight, matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #penalizeLong(String, Score, ToLongTriFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeLong(Score, ToLongTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToLongTriFunction<A, B, C> matchWeigher) {
+        return penalizeLong(constraintWeight, matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      *
+     * @deprecated Prefer {@link #penalizeBigDecimal(Score, TriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return penalizeBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
-                constraintWeight, matchWeigher);
+        return penalizeBigDecimal(constraintWeight, matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #penalizeBigDecimal(String, Score, TriFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeBigDecimal(Score, TriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return penalizeBigDecimal(constraintWeight, matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
@@ -1079,73 +1335,96 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongTriFunction)} or
      * {@link #penalizeConfigurableBigDecimal(String, TriFunction)} instead.
      *
+     * @deprecated Prefer {@link #penalizeConfigurable(ToIntTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurable(String constraintName, ToIntTriFunction<A, B, C> matchWeigher) {
-        return penalizeConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return penalizeConfigurable(matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #penalizeConfigurable(String, ToIntTriFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurable(ToIntTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeConfigurable(String constraintPackage, String constraintName,
-            ToIntTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint penalizeConfigurable(String constraintPackage, String constraintName,
+            ToIntTriFunction<A, B, C> matchWeigher) {
+        return penalizeConfigurable(matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableLong(ToLongTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurableLong(String constraintName, ToLongTriFunction<A, B, C> matchWeigher) {
-        return penalizeConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
-                matchWeigher);
+        return penalizeConfigurableLong(matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #penalizeConfigurableLong(String, ToLongTriFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableLong(ToLongTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
-            ToLongTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
+            ToLongTriFunction<A, B, C> matchWeigher) {
+        return penalizeConfigurableLong(matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableBigDecimal(TriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurableBigDecimal(String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return penalizeConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
-                matchWeigher);
+        return penalizeConfigurableBigDecimal(matchWeigher)
+                .asConstraint(constraintName);
+
     }
 
     /**
      * As defined by {@link #penalizeConfigurableBigDecimal(String, TriFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableBigDecimal(TriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
-            TriFunction<A, B, C, BigDecimal> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return penalizeConfigurableBigDecimal(matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
@@ -1154,82 +1433,104 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongTriFunction)} or
      * {@link #rewardBigDecimal(String, Score, TriFunction)} instead.
      *
+     * @deprecated Prefer {@link #reward(Score, ToIntTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint reward(String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
-        return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return reward(constraintWeight, matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #reward(String, Score, ToIntTriFunction)}.
      *
+     * @deprecated Prefer {@link #reward(Score, ToIntTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToIntTriFunction<A, B, C> matchWeigher) {
+        return reward(constraintWeight, matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      *
+     * @deprecated Prefer {@link #rewardLong(Score, ToLongTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+
+    @Deprecated(forRemoval = true)
     default Constraint rewardLong(String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
-        return rewardLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return rewardLong(constraintWeight, matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #rewardLong(String, Score, ToLongTriFunction)}.
      *
+     * @deprecated Prefer {@link #rewardLong(Score, ToLongTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToLongTriFunction<A, B, C> matchWeigher) {
+        return rewardLong(constraintWeight, matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      *
+     * @deprecated Prefer {@link #rewardBigDecimal(Score, TriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return rewardBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return rewardBigDecimal(constraintWeight, matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #rewardBigDecimal(String, Score, TriFunction)}.
      *
+     * @deprecated Prefer {@link #rewardBigDecimal(Score, TriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return rewardBigDecimal(constraintWeight, matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
@@ -1238,73 +1539,96 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongTriFunction)} or
      * {@link #rewardConfigurableBigDecimal(String, TriFunction)} instead.
      *
+     * @deprecated Prefer {@link #rewardConfigurable(ToIntTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardConfigurable(String constraintName, ToIntTriFunction<A, B, C> matchWeigher) {
-        return rewardConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return rewardConfigurable(matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #rewardConfigurable(String, ToIntTriFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurable(ToIntTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardConfigurable(String constraintPackage, String constraintName,
-            ToIntTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint rewardConfigurable(String constraintPackage, String constraintName,
+            ToIntTriFunction<A, B, C> matchWeigher) {
+        return rewardConfigurable(matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableLong(ToLongTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardConfigurableLong(String constraintName, ToLongTriFunction<A, B, C> matchWeigher) {
-        return rewardConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
-                matchWeigher);
+        return rewardConfigurableLong(matchWeigher)
+                .asConstraint(constraintName);
+
     }
 
     /**
      * As defined by {@link #rewardConfigurableLong(String, ToLongTriFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableLong(ToLongTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardConfigurableLong(String constraintPackage, String constraintName,
-            ToLongTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint rewardConfigurableLong(String constraintPackage, String constraintName,
+            ToLongTriFunction<A, B, C> matchWeigher) {
+        return rewardConfigurableLong(matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableBigDecimal(TriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardConfigurableBigDecimal(String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return rewardConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
-                matchWeigher);
+        return rewardConfigurableBigDecimal(matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #rewardConfigurableBigDecimal(String, TriFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableBigDecimal(TriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
-            TriFunction<A, B, C, BigDecimal> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return rewardConfigurableBigDecimal(matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.
@@ -1316,28 +1640,35 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #impactLong(String, Score, ToLongTriFunction)} or
      * {@link #impactBigDecimal(String, Score, TriFunction)} instead.
      *
+     * @deprecated Prefer {@link #impact(Score, ToIntTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impact(String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
-        return impact(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return impact(constraintWeight, matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #impact(String, Score, ToIntTriFunction)}.
      *
+     * @deprecated Prefer {@link #impact(Score, ToIntTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToIntTriFunction<A, B, C> matchWeigher) {
+        return impact(constraintWeight, matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.
@@ -1346,28 +1677,35 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * Use {@code penalizeLong(...)} or {@code rewardLong(...)} instead, unless this constraint can both have positive
      * and negative weights.
      *
+     * @deprecated Prefer {@link #impactLong(Score, ToLongTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactLong(String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
-        return impactLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return impactLong(constraintWeight, matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #impactLong(String, Score, ToLongTriFunction)}.
      *
+     * @deprecated Prefer {@link #impactLong(Score, ToLongTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToLongTriFunction<A, B, C> matchWeigher) {
+        return impactLong(constraintWeight, matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.
@@ -1376,28 +1714,35 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * Use {@code penalizeBigDecimal(...)} or {@code rewardBigDecimal(...)} unless you intend to mix positive and
      * negative weights.
      *
+     * @deprecated Prefer {@link #impactBigDecimal(Score, TriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactBigDecimal(String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return impactBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
-                constraintWeight, matchWeigher);
+        return impactBigDecimal(constraintWeight, matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #impactBigDecimal(String, Score, TriFunction)}.
      *
+     * @deprecated Prefer {@link #impactBigDecimal(Score, TriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return impactBigDecimal(constraintWeight, matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
@@ -1415,24 +1760,32 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurable(ToIntTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactConfigurable(String constraintName, ToIntTriFunction<A, B, C> matchWeigher) {
-        return impactConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return impactConfigurable(matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #impactConfigurable(String, ToIntTriFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurable(ToIntTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impactConfigurable(String constraintPackage, String constraintName,
-            ToIntTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint impactConfigurable(String constraintPackage, String constraintName,
+            ToIntTriFunction<A, B, C> matchWeigher) {
+        return impactConfigurable(matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
@@ -1447,25 +1800,32 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurableLong(ToLongTriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactConfigurableLong(String constraintName, ToLongTriFunction<A, B, C> matchWeigher) {
-        return impactConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
-                matchWeigher);
+        return impactConfigurableLong(matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #impactConfigurableLong(String, ToLongTriFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurableLong(ToLongTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impactConfigurableLong(String constraintPackage, String constraintName,
-            ToLongTriFunction<A, B, C> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint impactConfigurableLong(String constraintPackage, String constraintName,
+            ToLongTriFunction<A, B, C> matchWeigher) {
+        return impactConfigurableLong(matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
     /**
      * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
@@ -1480,24 +1840,31 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurableBigDecimal(TriFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactConfigurableBigDecimal(String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return impactConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
-                matchWeigher);
+        return impactConfigurableBigDecimal(matchWeigher)
+                .asConstraint(constraintName);
     }
 
     /**
      * As defined by {@link #impactConfigurableBigDecimal(String, TriFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurableBigDecimal(TriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint impactConfigurableBigDecimal(String constraintPackage, String constraintName,
-            TriFunction<A, B, C, BigDecimal> matchWeigher);
+    @Deprecated(forRemoval = true)
+    default Constraint impactConfigurableBigDecimal(String constraintPackage, String constraintName,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return impactConfigurableBigDecimal(matchWeigher)
+                .asConstraint(constraintPackage, constraintName);
+    }
 }

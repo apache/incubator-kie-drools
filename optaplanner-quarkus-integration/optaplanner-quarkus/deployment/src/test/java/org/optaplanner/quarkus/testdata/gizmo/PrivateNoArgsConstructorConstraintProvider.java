@@ -16,7 +16,8 @@ public class PrivateNoArgsConstructorConstraintProvider implements ConstraintPro
         return new Constraint[] {
                 constraintFactory.forEachUniquePair(PrivateNoArgsConstructorEntity.class,
                         Joiners.equal(p -> p.value))
-                        .penalize("Same value", SimpleScore.ONE)
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint("Same value")
         };
     }
 }

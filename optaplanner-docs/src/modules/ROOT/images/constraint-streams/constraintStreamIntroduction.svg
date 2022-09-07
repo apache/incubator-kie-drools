@@ -4,9 +4,9 @@
    height="600"
    id="svg2"
    version="1.1"
-   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    sodipodi:docname="constraintStreamIntroduction.svg"
-   inkscape:export-filename="constraintStreamIntroduction_3.png"
+   inkscape:export-filename="constraintStreamIntroduction.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -186,6 +186,7 @@
      d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
      id="path5767" />
 </marker>
+
 
 
 
@@ -515,16 +516,16 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.29"
-     inkscape:cx="224.4186"
-     inkscape:cy="299.6124"
+     inkscape:cx="225.1938"
+     inkscape:cy="299.22481"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer5"
      showgrid="true"
      width="800px"
      borderlayer="true"
      gridtolerance="10"
-     inkscape:window-width="2560"
-     inkscape:window-height="1363"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -545,7 +546,9 @@
      inkscape:snap-object-midpoints="true"
      inkscape:snap-global="true"
      inkscape:document-rotation="0"
-     inkscape:pagecheckerboard="0">
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        empspacing="10"
        visible="true"
@@ -1150,8 +1153,8 @@
     <path
        inkscape:connector-curvature="0"
        id="path352"
-       d="m 469.90318,143.70116 h 74.38413"
-       style="display:inline;fill:none;stroke:#4e9a06;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       d="m 469.73759,143.70116 h 50.78725"
+       style="display:inline;fill:none;stroke:#4e9a06;stroke-width:0.826299px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
        sodipodi:nodetypes="cc" />
   </g>
   <g
@@ -1160,7 +1163,7 @@
      inkscape:label="penalize"
      style="display:inline">
     <flowRoot
-       transform="translate(217.64128,-35.427049)"
+       transform="translate(193.64128,-39.427049)"
        xml:space="preserve"
        id="flowRoot324"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
@@ -1169,17 +1172,19 @@
            id="rect318"
            width="303.89584"
            height="149.99944"
-           x="330.20508"
+           x="330.20505"
            y="152.09956"
-           style="font-size:21.33333397px;text-align:start;text-anchor:start" /></flowRegion><flowPara
-         style="font-size:16px;line-height:1.25;text-align:start;text-anchor:start"
-         id="flowPara328"><flowSpan
-   id="flowSpan384"
-   style="font-size:21.3333px;line-height:1.25;text-align:start;text-anchor:start">.penalize(</flowSpan>&quot;Don't assign Ann&quot;,</flowPara><flowPara
+           style="font-size:21.3333px;text-align:start;text-anchor:start;stroke-width:1" /></flowRegion><flowPara
          style="font-size:21.3333px;line-height:1.25;text-align:start;text-anchor:start"
-         id="flowPara330"><flowSpan
+         id="flowPara330">.penalize(<flowSpan
    style="font-size:16px"
-   id="flowSpan332">    ONE_SOFT</flowSpan>)</flowPara></flowRoot>
+   id="flowSpan1745">ONE_SOFT</flowSpan>)</flowPara><flowPara
+         style="font-size:21.3333px;line-height:1.25;text-align:start;text-anchor:start"
+         id="flowPara1753">.asConstraint(<flowSpan
+   style="font-size:16px"
+   id="flowSpan1749">&quot;Don't assign Ann&quot;</flowSpan>)</flowPara><flowPara
+         style="font-size:21.3333px;line-height:1.25;text-align:start;text-anchor:start"
+         id="flowPara1743" /></flowRoot>
     <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,141.52725,81.798924)"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.8755px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"

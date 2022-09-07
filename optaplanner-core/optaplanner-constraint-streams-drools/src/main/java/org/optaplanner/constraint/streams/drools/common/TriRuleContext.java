@@ -26,29 +26,29 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
         this.variableC = Objects.requireNonNull(variableC);
     }
 
-    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntTriFunction<A, B, C> matchWeighter) {
+    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntTriFunction<A, B, C> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                         .execute((drools, scoreImpacter, a, b, c) -> runConsequence(constraint, drools, scoreImpacter,
-                                matchWeighter.applyAsInt(a, b, c),
+                                matchWeigher.applyAsInt(a, b, c),
                                 () -> asList(a, b, c)));
         return assemble(consequenceBuilder);
     }
 
-    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongTriFunction<A, B, C> matchWeighter) {
+    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongTriFunction<A, B, C> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                         .execute((drools, scoreImpacter, a, b, c) -> runConsequence(constraint, drools, scoreImpacter,
-                                matchWeighter.applyAsLong(a, b, c),
+                                matchWeigher.applyAsLong(a, b, c),
                                 () -> asList(a, b, c)));
         return assemble(consequenceBuilder);
     }
 
-    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(TriFunction<A, B, C, BigDecimal> matchWeighter) {
+    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(TriFunction<A, B, C, BigDecimal> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                         .execute((drools, scoreImpacter, a, b, c) -> runConsequence(constraint, drools, scoreImpacter,
-                                matchWeighter.apply(a, b, c),
+                                matchWeigher.apply(a, b, c),
                                 () -> asList(a, b, c)));
         return assemble(consequenceBuilder);
     }

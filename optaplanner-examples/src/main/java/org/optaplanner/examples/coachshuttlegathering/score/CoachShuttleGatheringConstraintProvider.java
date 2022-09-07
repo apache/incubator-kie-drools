@@ -39,15 +39,17 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
                 .join(BusStop.class, equal(coach -> coach, BusStop::getBus))
                 .groupBy((coach, busStop) -> coach, countBi())
                 .filter((coach, stopCount) -> stopCount > coach.getStopLimit())
-                .penalizeLong("coachStopLimit", HardSoftLongScore.ONE_HARD,
-                        (coach, stopCount) -> (stopCount - coach.getStopLimit()) * 1000000L);
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (coach, stopCount) -> (stopCount - coach.getStopLimit()) * 1000000L)
+                .asConstraint("coachStopLimit");
     }
 
     Constraint shuttleCapacity(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Shuttle.class)
                 .filter(bus -> bus.getPassengerQuantityTotal() > bus.getCapacity())
-                .penalizeLong("shuttleCapacity", HardSoftLongScore.ONE_HARD,
-                        bus -> (bus.getPassengerQuantityTotal() - bus.getCapacity()) * 1000L);
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        bus -> (bus.getPassengerQuantityTotal() - bus.getCapacity()) * 1000L)
+                .asConstraint("shuttleCapacity");
     }
 
     Constraint coachCapacity(ConstraintFactory constraintFactory) {
@@ -61,7 +63,7 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
                 .filter((coach,
                         shuttlePassengerQuantityTotal) -> coach.getPassengerQuantityTotal()
                                 + shuttlePassengerQuantityTotal > coach.getCapacity())
-                .penalizeLong("coachCapacity", HardSoftLongScore.ONE_HARD,
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
                         (coach, shuttlePassengerQuantityTotal) -> {
                             int totalPassengerCount = coach.getPassengerQuantityTotal();
                             int coachCapacity = coach.getCapacity();
@@ -70,21 +72,24 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
                             // Correct double-counting.
                             penalty -= Math.max(0L, (totalPassengerCount - coachCapacity) * 1000L);
                             return penalty;
-                        });
+                        })
+                .asConstraint("coachCapacity");
     }
 
     Constraint coachCapacityShuttleButNoShuttle(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Coach.class)
                 .filter(coach -> coach.getPassengerQuantityTotal() > coach.getCapacity())
-                .penalizeLong("coachCapacityShuttleButNoShuttle", HardSoftLongScore.ONE_HARD,
-                        coach -> (coach.getPassengerQuantityTotal() - coach.getCapacity()) * 1000L);
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        coach -> (coach.getPassengerQuantityTotal() - coach.getCapacity()) * 1000L)
+                .asConstraint("coachCapacityShuttleButNoShuttle");
     }
 
     Constraint transportTime(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(BusStop.class)
                 .filter(busStop -> busStop.getTransportTimeToHub() != null && busStop.getTransportTimeRemainder() < 0)
-                .penalizeLong("transportTime", HardSoftLongScore.ONE_HARD,
-                        busStop -> -busStop.getTransportTimeRemainder());
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        busStop -> -busStop.getTransportTimeRemainder())
+                .asConstraint("transportTime");
     }
 
     Constraint shuttleDestinationIsCoachOrHub(ConstraintFactory constraintFactory) {
@@ -92,21 +97,23 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
                 .filter(shuttle -> shuttle.getDestination() != null)
                 .join(StopOrHub.class, equal(Shuttle::getDestination, Function.identity()))
                 .filter((shuttle, stop) -> !stop.isVisitedByCoach())
-                .penalizeLong("shuttleDestinationIsCoachOrHub", HardSoftLongScore.ONE_HARD,
-                        (bus, stop) -> 1000000000L);
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (bus, stop) -> 1000000000L)
+                .asConstraint("shuttleDestinationIsCoachOrHub");
     }
 
     Constraint shuttleSetupCost(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Bus.class)
                 .filter(bus -> bus.getNextStop() != null)
-                .penalizeLong("shuttleSetupCost", HardSoftLongScore.ONE_SOFT, Bus::getSetupCost);
+                .penalizeLong(HardSoftLongScore.ONE_SOFT, Bus::getSetupCost)
+                .asConstraint("shuttleSetupCost");
     }
 
     Constraint distanceFromPrevious(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(BusStop.class)
                 .filter(bus -> bus.getPreviousBusOrStop() != null)
-                .penalizeLong("distanceFromPrevious", HardSoftLongScore.ONE_SOFT,
-                        BusStop::getDistanceFromPreviousCost);
+                .penalizeLong(HardSoftLongScore.ONE_SOFT, BusStop::getDistanceFromPreviousCost)
+                .asConstraint("distanceFromPrevious");
     }
 
     Constraint distanceBusStopToBusDestination(ConstraintFactory constraintFactory) {
@@ -114,15 +121,16 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
                 .filter(busStop -> busStop.getNextStop() == null)
                 .join(Bus.class, equal(BusStop::getBus, Function.identity()))
                 .filter((busStop, bus) -> bus.getDestination() != null && bus.getNextStop() != null)
-                .penalizeLong("distanceBusStopToBusDestination", HardSoftLongScore.ONE_SOFT,
-                        (busStop, bus) -> busStop.getDistanceToDestinationCost(bus.getDestination()));
+                .penalizeLong(HardSoftLongScore.ONE_SOFT,
+                        (busStop, bus) -> busStop.getDistanceToDestinationCost(bus.getDestination()))
+                .asConstraint("distanceBusStopToBusDestination");
     }
 
     Constraint distanceCoachDirectlyToDestination(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Coach.class)
                 .filter(coach -> coach.getDestination() != null && coach.getNextStop() == null)
-                .penalizeLong("distanceCoachDirectlyToDestination", HardSoftLongScore.ONE_SOFT,
-                        Coach::getDistanceToDestinationCost);
+                .penalizeLong(HardSoftLongScore.ONE_SOFT, Coach::getDistanceToDestinationCost)
+                .asConstraint("distanceCoachDirectlyToDestination");
     }
 
 }

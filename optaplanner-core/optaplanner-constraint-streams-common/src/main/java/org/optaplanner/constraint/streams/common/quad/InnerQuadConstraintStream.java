@@ -1,9 +1,5 @@
 package org.optaplanner.constraint.streams.common.quad;
 
-import static org.optaplanner.constraint.streams.common.ScoreImpactType.MIXED;
-import static org.optaplanner.constraint.streams.common.ScoreImpactType.PENALTY;
-import static org.optaplanner.constraint.streams.common.ScoreImpactType.REWARD;
-
 import java.math.BigDecimal;
 
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
@@ -12,6 +8,7 @@ import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintBuilder;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 
 public interface InnerQuadConstraintStream<A, B, C, D> extends QuadConstraintStream<A, B, C, D> {
@@ -34,129 +31,169 @@ public interface InnerQuadConstraintStream<A, B, C, D> extends QuadConstraintStr
     }
 
     @Override
-    default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, PENALTY);
+    default QuadConstraintBuilder<A, B, C, D> penalize(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default QuadConstraintBuilder<A, B, C, D> penalizeLong(Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, PENALTY);
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default QuadConstraintBuilder<A, B, C, D> penalizeBigDecimal(Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, PENALTY);
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeConfigurable(String constraintPackage, String constraintName,
-            ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, PENALTY);
+    default QuadConstraintBuilder<A, B, C, D> penalizeConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
+    default QuadConstraintBuilder<A, B, C, D> penalizeConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    default QuadConstraintBuilder<A, B, C, D>
+            penalizeConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    default QuadConstraintBuilder<A, B, C, D> reward(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    default QuadConstraintBuilder<A, B, C, D> rewardLong(Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, PENALTY);
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
+    default QuadConstraintBuilder<A, B, C, D> rewardBigDecimal(Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, PENALTY);
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, REWARD);
+    default QuadConstraintBuilder<A, B, C, D> rewardConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default QuadConstraintBuilder<A, B, C, D> rewardConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    default QuadConstraintBuilder<A, B, C, D> rewardConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    default QuadConstraintBuilder<A, B, C, D> impact(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.MIXED);
+    }
+
+    @Override
+    default QuadConstraintBuilder<A, B, C, D> impactLong(Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, REWARD);
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    default QuadConstraintBuilder<A, B, C, D> impactBigDecimal(Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, REWARD);
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint rewardConfigurable(String constraintPackage, String constraintName,
-            ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, REWARD);
+    default QuadConstraintBuilder<A, B, C, D> impactConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint rewardConfigurableLong(String constraintPackage, String constraintName,
-            ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, REWARD);
+    default QuadConstraintBuilder<A, B, C, D> impactConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, REWARD);
+    default QuadConstraintBuilder<A, B, C, D> impactConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.MIXED);
+    }
+
+    QuadConstraintBuilder<A, B, C, D> innerImpact(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher,
+            ScoreImpactType scoreImpactType);
+
+    QuadConstraintBuilder<A, B, C, D> innerImpact(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher,
+            ScoreImpactType scoreImpactType);
+
+    QuadConstraintBuilder<A, B, C, D> innerImpact(Score<?> constraintWeight, QuadFunction<A, B, C, D, BigDecimal> matchWeigher,
+            ScoreImpactType scoreImpactType);
+
+    @Override
+    default Constraint penalize(String constraintName, Score<?> constraintWeight) {
+        return penalize(constraintWeight)
+                .asConstraint(constraintName);
     }
 
     @Override
-    default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, MIXED);
+    default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return penalize(constraintWeight)
+                .asConstraint(constraintPackage, constraintName);
     }
 
     @Override
-    default Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, MIXED);
+    default Constraint penalizeConfigurable(String constraintName) {
+        return penalizeConfigurable()
+                .asConstraint(constraintName);
     }
 
     @Override
-    default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, MIXED);
+    default Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
+        return penalizeConfigurable()
+                .asConstraint(constraintPackage, constraintName);
     }
 
     @Override
-    default Constraint impactConfigurable(String constraintPackage, String constraintName,
-            ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, MIXED);
+    default Constraint reward(String constraintName, Score<?> constraintWeight) {
+        return reward(constraintWeight)
+                .asConstraint(constraintName);
     }
 
     @Override
-    default Constraint impactConfigurableLong(String constraintPackage, String constraintName,
-            ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, MIXED);
+    default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return reward(constraintWeight)
+                .asConstraint(constraintPackage, constraintName);
     }
 
     @Override
-    default Constraint impactConfigurableBigDecimal(String constraintPackage, String constraintName,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, MIXED);
+    default Constraint rewardConfigurable(String constraintName) {
+        return rewardConfigurable()
+                .asConstraint(constraintName);
     }
 
-    Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType);
+    @Override
+    default Constraint rewardConfigurable(String constraintPackage, String constraintName) {
+        return penalizeConfigurable()
+                .asConstraint(constraintPackage, constraintName);
+    }
 
-    Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType);
+    @Override
+    default Constraint impact(String constraintName, Score<?> constraintWeight) {
+        return impact(constraintWeight)
+                .asConstraint(constraintName);
+    }
 
-    Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType);
-
-    Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType);
-
-    Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType);
-
-    Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType);
+    @Override
+    default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return impact(constraintWeight)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
 }

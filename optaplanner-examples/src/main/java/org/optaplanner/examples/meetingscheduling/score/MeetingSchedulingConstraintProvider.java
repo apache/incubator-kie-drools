@@ -46,8 +46,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 overlapping(assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                         assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                 assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Room conflict",
-                        (leftAssignment, rightAssignment) -> rightAssignment.calculateOverlap(leftAssignment));
+                .penalizeConfigurable((leftAssignment, rightAssignment) -> rightAssignment.calculateOverlap(leftAssignment))
+                .asConstraint("Room conflict");
     }
 
     protected Constraint avoidOvertime(ConstraintFactory constraintFactory) {
@@ -55,7 +55,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
                 .ifNotExists(TimeGrain.class,
                         equal(MeetingAssignment::getLastTimeGrainIndex, TimeGrain::getGrainIndex))
-                .penalizeConfigurable("Don't go in overtime", MeetingAssignment::getLastTimeGrainIndex);
+                .penalizeConfigurable(MeetingAssignment::getLastTimeGrainIndex)
+                .asConstraint("Don't go in overtime");
     }
 
     protected Constraint requiredAttendanceConflict(ConstraintFactory constraintFactory) {
@@ -74,16 +75,18 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                         assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Required attendance conflict",
+                .penalizeConfigurable(
                         (leftRequiredAttendance, rightRequiredAttendance, leftAssignment, rightAssignment) -> rightAssignment
-                                .calculateOverlap(leftAssignment));
+                                .calculateOverlap(leftAssignment))
+                .asConstraint("Required attendance conflict");
     }
 
     protected Constraint requiredRoomCapacity(ConstraintFactory constraintFactory) {
         return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getRequiredCapacity() > meetingAssignment.getRoomCapacity())
-                .penalizeConfigurable("Required room capacity",
-                        meetingAssignment -> meetingAssignment.getRequiredCapacity() - meetingAssignment.getRoomCapacity());
+                .penalizeConfigurable(
+                        meetingAssignment -> meetingAssignment.getRequiredCapacity() - meetingAssignment.getRoomCapacity())
+                .asConstraint("Required room capacity");
     }
 
     protected Constraint startAndEndOnSameDay(ConstraintFactory constraintFactory) {
@@ -93,7 +96,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                         equal(MeetingAssignment::getLastTimeGrainIndex, TimeGrain::getGrainIndex),
                         filtering((meetingAssignment,
                                 timeGrain) -> meetingAssignment.getStartingTimeGrain().getDay() != timeGrain.getDay()))
-                .penalizeConfigurable("Start and end on same day");
+                .penalizeConfigurable()
+                .asConstraint("Start and end on same day");
     }
 
     // ************************************************************************
@@ -118,9 +122,10 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                         assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Required and preferred attendance conflict",
+                .penalizeConfigurable(
                         (requiredAttendance, preferredAttendance, leftAssignment, rightAssignment) -> rightAssignment
-                                .calculateOverlap(leftAssignment));
+                                .calculateOverlap(leftAssignment))
+                .asConstraint("Required and preferred attendance conflict");
     }
 
     protected Constraint preferredAttendanceConflict(ConstraintFactory constraintFactory) {
@@ -140,9 +145,10 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                         assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Preferred attendance conflict",
+                .penalizeConfigurable(
                         (leftPreferredAttendance, rightPreferredAttendance, leftAssignment, rightAssignment) -> rightAssignment
-                                .calculateOverlap(leftAssignment));
+                                .calculateOverlap(leftAssignment))
+                .asConstraint("Preferred attendance conflict");
     }
 
     // ************************************************************************
@@ -152,8 +158,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     protected Constraint doMeetingsAsSoonAsPossible(ConstraintFactory constraintFactory) {
         return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
-                .penalizeConfigurable("Do all meetings as soon as possible",
-                        MeetingAssignment::getLastTimeGrainIndex);
+                .penalizeConfigurable(MeetingAssignment::getLastTimeGrainIndex)
+                .asConstraint("Do all meetings as soon as possible");
     }
 
     protected Constraint oneBreakBetweenConsecutiveMeetings(ConstraintFactory constraintFactory) {
@@ -163,7 +169,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                         .filter(assignment -> assignment.getStartingTimeGrain() != null),
                         equal(MeetingAssignment::getLastTimeGrainIndex,
                                 (rightAssignment) -> rightAssignment.getStartingTimeGrain().getGrainIndex() - 1))
-                .penalizeConfigurable("One TimeGrain break between two consecutive meetings");
+                .penalizeConfigurable()
+                .asConstraint("One TimeGrain break between two consecutive meetings");
     }
 
     protected Constraint overlappingMeetings(ConstraintFactory constraintFactory) {
@@ -176,7 +183,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                         overlapping(assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                         assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Overlapping meetings", MeetingAssignment::calculateOverlap);
+                .penalizeConfigurable(MeetingAssignment::calculateOverlap)
+                .asConstraint("Overlapping meetings");
     }
 
     // TODO: Unspecified bug marked in DRL
@@ -185,8 +193,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 .filter(meetingAssignment -> meetingAssignment.getRoom() != null)
                 .join(Room.class,
                         lessThan(MeetingAssignment::getRoomCapacity, Room::getCapacity))
-                .penalizeConfigurable("Assign larger rooms first",
-                        (meetingAssignment, room) -> room.getCapacity() - meetingAssignment.getRoomCapacity());
+                .penalizeConfigurable((meetingAssignment, room) -> room.getCapacity() - meetingAssignment.getRoomCapacity())
+                .asConstraint("Assign larger rooms first");
     }
 
     protected Constraint roomStability(ConstraintFactory constraintFactory) {
@@ -209,6 +217,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 rightAssignment) -> rightAssignment.getStartingTimeGrain().getGrainIndex() -
                                         leftAttendance.getMeeting().getDurationInGrains() -
                                         leftAssignment.getStartingTimeGrain().getGrainIndex() <= 2))
-                .penalizeConfigurable("Room stability");
+                .penalizeConfigurable()
+                .asConstraint("Room stability");
     }
 }

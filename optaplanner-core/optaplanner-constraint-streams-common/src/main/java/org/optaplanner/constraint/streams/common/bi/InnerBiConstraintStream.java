@@ -1,9 +1,6 @@
 package org.optaplanner.constraint.streams.common.bi;
 
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
-import static org.optaplanner.constraint.streams.common.ScoreImpactType.MIXED;
-import static org.optaplanner.constraint.streams.common.ScoreImpactType.PENALTY;
-import static org.optaplanner.constraint.streams.common.ScoreImpactType.REWARD;
 
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
@@ -14,6 +11,7 @@ import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintBuilder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
@@ -49,129 +47,162 @@ public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> 
     }
 
     @Override
-    default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntBiFunction<A, B> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, PENALTY);
+    default BiConstraintBuilder<A, B> penalize(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongBiFunction<A, B> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, PENALTY);
+    default BiConstraintBuilder<A, B> penalizeLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            BiFunction<A, B, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, PENALTY);
+    default BiConstraintBuilder<A, B> penalizeBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeConfigurable(String constraintPackage, String constraintName,
-            ToIntBiFunction<A, B> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, PENALTY);
+    default BiConstraintBuilder<A, B> penalizeConfigurable(ToIntBiFunction<A, B> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
-            ToLongBiFunction<A, B> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, PENALTY);
+    default BiConstraintBuilder<A, B> penalizeConfigurableLong(ToLongBiFunction<A, B> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
-            BiFunction<A, B, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, PENALTY);
+    default BiConstraintBuilder<A, B> penalizeConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.PENALTY);
     }
 
     @Override
-    default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntBiFunction<A, B> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, REWARD);
+    default BiConstraintBuilder<A, B> reward(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongBiFunction<A, B> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, REWARD);
+    default BiConstraintBuilder<A, B> rewardLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            BiFunction<A, B, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, REWARD);
+    default BiConstraintBuilder<A, B> rewardBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint rewardConfigurable(String constraintPackage, String constraintName,
-            ToIntBiFunction<A, B> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, REWARD);
+    default BiConstraintBuilder<A, B> rewardConfigurable(ToIntBiFunction<A, B> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint rewardConfigurableLong(String constraintPackage, String constraintName,
-            ToLongBiFunction<A, B> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, REWARD);
+    default BiConstraintBuilder<A, B> rewardConfigurableLong(ToLongBiFunction<A, B> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
-            BiFunction<A, B, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, REWARD);
+    default BiConstraintBuilder<A, B> rewardConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.REWARD);
     }
 
     @Override
-    default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntBiFunction<A, B> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, MIXED);
+    default BiConstraintBuilder<A, B> impact(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongBiFunction<A, B> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, MIXED);
+    default BiConstraintBuilder<A, B> impactLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            BiFunction<A, B, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, MIXED);
+    default BiConstraintBuilder<A, B> impactBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint impactConfigurable(String constraintPackage, String constraintName,
-            ToIntBiFunction<A, B> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, MIXED);
+    default BiConstraintBuilder<A, B> impactConfigurable(ToIntBiFunction<A, B> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint impactConfigurableLong(String constraintPackage, String constraintName,
-            ToLongBiFunction<A, B> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, MIXED);
+    default BiConstraintBuilder<A, B> impactConfigurableLong(ToLongBiFunction<A, B> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.MIXED);
     }
 
     @Override
-    default Constraint impactConfigurableBigDecimal(String constraintPackage, String constraintName,
-            BiFunction<A, B, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, MIXED);
+    default BiConstraintBuilder<A, B> impactConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.MIXED);
     }
 
-    Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType);
+    BiConstraintBuilder<A, B> innerImpact(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher,
+            ScoreImpactType scoreImpactType);
 
-    Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType);
+    BiConstraintBuilder<A, B> innerImpact(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher,
+            ScoreImpactType scoreImpactType);
 
-    Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType);
+    BiConstraintBuilder<A, B> innerImpact(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher,
+            ScoreImpactType scoreImpactType);
 
-    Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType);
+    @Override
+    default Constraint penalize(String constraintName, Score<?> constraintWeight) {
+        return penalize(constraintWeight)
+                .asConstraint(constraintName);
+    }
 
-    Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType);
+    @Override
+    default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return penalize(constraintWeight)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
-    Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType);
+    @Override
+    default Constraint penalizeConfigurable(String constraintName) {
+        return penalizeConfigurable()
+                .asConstraint(constraintName);
+    }
+
+    @Override
+    default Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
+        return penalizeConfigurable()
+                .asConstraint(constraintPackage, constraintName);
+    }
+
+    @Override
+    default Constraint reward(String constraintName, Score<?> constraintWeight) {
+        return reward(constraintWeight)
+                .asConstraint(constraintName);
+    }
+
+    @Override
+    default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return reward(constraintWeight)
+                .asConstraint(constraintPackage, constraintName);
+    }
+
+    @Override
+    default Constraint rewardConfigurable(String constraintName) {
+        return rewardConfigurable()
+                .asConstraint(constraintName);
+    }
+
+    @Override
+    default Constraint rewardConfigurable(String constraintPackage, String constraintName) {
+        return penalizeConfigurable()
+                .asConstraint(constraintPackage, constraintName);
+    }
+
+    @Override
+    default Constraint impact(String constraintName, Score<?> constraintWeight) {
+        return impact(constraintWeight)
+                .asConstraint(constraintName);
+    }
+
+    @Override
+    default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return impact(constraintWeight)
+                .asConstraint(constraintPackage, constraintName);
+    }
 
 }

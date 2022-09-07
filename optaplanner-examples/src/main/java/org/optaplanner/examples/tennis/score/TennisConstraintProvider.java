@@ -86,7 +86,8 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         equal(TeamAssignment::getTeam),
                         equal(TeamAssignment::getDay),
                         lessThan(TeamAssignment::getId))
-                .penalize("oneAssignmentPerDatePerTeam", HardMediumSoftScore.ONE_HARD);
+                .penalize(HardMediumSoftScore.ONE_HARD)
+                .asConstraint("oneAssignmentPerDatePerTeam");
     }
 
     Constraint unavailabilityPenalty(ConstraintFactory constraintFactory) {
@@ -94,14 +95,16 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                 .ifExists(TeamAssignment.class,
                         equal(UnavailabilityPenalty::getTeam, TeamAssignment::getTeam),
                         equal(UnavailabilityPenalty::getDay, TeamAssignment::getDay))
-                .penalize("unavailabilityPenalty", HardMediumSoftScore.ONE_HARD);
+                .penalize(HardMediumSoftScore.ONE_HARD)
+                .asConstraint("unavailabilityPenalty");
     }
 
     Constraint fairAssignmentCountPerTeam(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(TeamAssignment.class)
                 .groupBy(loadBalance(TeamAssignment::getTeam))
-                .penalize("fairAssignmentCountPerTeam", HardMediumSoftScore.ONE_MEDIUM,
-                        result -> (int) result.getZeroDeviationSquaredSumRootMillis());
+                .penalize(HardMediumSoftScore.ONE_MEDIUM,
+                        result -> (int) result.getZeroDeviationSquaredSumRootMillis())
+                .asConstraint("fairAssignmentCountPerTeam");
     }
 
     Constraint evenlyConfrontationCount(ConstraintFactory constraintFactory) {
@@ -111,8 +114,9 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         lessThan(assignment -> assignment.getTeam().getId()))
                 .groupBy(loadBalance(
                         (assignment, otherAssignment) -> Pair.of(assignment.getTeam(), otherAssignment.getTeam())))
-                .penalize("evenlyConfrontationCount", HardMediumSoftScore.ONE_SOFT,
-                        result -> (int) result.getZeroDeviationSquaredSumRootMillis());
+                .penalize(HardMediumSoftScore.ONE_SOFT,
+                        result -> (int) result.getZeroDeviationSquaredSumRootMillis())
+                .asConstraint("evenlyConfrontationCount");
     }
 
     private static final class LoadBalanceData {

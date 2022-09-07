@@ -33,20 +33,23 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
                     Skill requiredSkill = flightAssignment.getRequiredSkill();
                     return !flightAssignment.getEmployee().hasSkill(requiredSkill);
                 })
-                .penalize("Required skill", HardSoftLongScore.ofHard(100));
+                .penalize(HardSoftLongScore.ofHard(100))
+                .asConstraint("Required skill");
     }
 
     private Constraint flightConflict(ConstraintFactory constraintFactory) {
         return constraintFactory.forEachUniquePair(FlightAssignment.class, equal(FlightAssignment::getEmployee),
                 overlapping(flightAssignment -> flightAssignment.getFlight().getDepartureUTCDateTime(),
                         flightAssignment -> flightAssignment.getFlight().getArrivalUTCDateTime()))
-                .penalize("Flight conflict", HardSoftLongScore.ofHard(10));
+                .penalize(HardSoftLongScore.ofHard(10))
+                .asConstraint("Flight conflict");
     }
 
     private Constraint transferBetweenTwoFlights(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Employee.class)
                 .filter(employee -> employee.countInvalidConnections() > 0)
-                .penalizeLong("Transfer between two flights", HardSoftLongScore.ofHard(1), Employee::countInvalidConnections);
+                .penalizeLong(HardSoftLongScore.ofHard(1), Employee::countInvalidConnections)
+                .asConstraint("Transfer between two flights");
     }
 
     private Constraint employeeUnavailability(ConstraintFactory constraintFactory) {
@@ -55,19 +58,22 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
                     LocalDate departureUTCDate = flightAssignment.getFlight().getDepartureUTCDate();
                     return !flightAssignment.getEmployee().isAvailable(departureUTCDate);
                 })
-                .penalize("Employee unavailable", HardSoftLongScore.ofHard(10));
+                .penalize(HardSoftLongScore.ofHard(10))
+                .asConstraint("Employee unavailable");
     }
 
     private Constraint firstAssignmentNotDepartingFromHome(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Employee.class)
                 .filter(employee -> !employee.isFirstAssignmentDepartingFromHome())
-                .penalize("First assignment not departing from home", HardSoftLongScore.ofSoft(1_000_000));
+                .penalize(HardSoftLongScore.ofSoft(1_000_000))
+                .asConstraint("First assignment not departing from home");
     }
 
     private Constraint lastAssignmentNotArrivingAtHome(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Employee.class)
                 .filter(employee -> !employee.isLastAssignmentArrivingAtHome())
-                .penalize("Last assignment not arriving at home", HardSoftLongScore.ofSoft(1_000_000));
+                .penalize(HardSoftLongScore.ofSoft(1_000_000))
+                .asConstraint("Last assignment not arriving at home");
     }
 
 }

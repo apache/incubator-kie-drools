@@ -462,16 +462,16 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         return ruleContext.newRuleBuilder();
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntTriFunction<A, B, C> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntTriFunction<A, B, C> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(ToLongTriFunction<A, B, C> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(ToLongTriFunction<A, B, C> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(TriFunction<A, B, C, BigDecimal> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
     private <GroupKey_> ViewItem<?> buildGroupBy(Variable<GroupKey_> groupKey,

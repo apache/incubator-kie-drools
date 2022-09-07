@@ -100,7 +100,8 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                         // ... and the pair is unique (different id, no reverse pairs) ...
                         Joiners.lessThan(Lesson::getId))
                 // ... then penalize each pair with a hard weight.
-                .penalize("Room conflict", HardSoftScore.ONE_HARD);
+                .penalize(HardSoftScore.ONE_HARD)
+                .asConstraint("Room conflict");
     }
 
     private Constraint teacherConflict(ConstraintFactory constraintFactory) {
@@ -110,7 +111,8 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                         Joiners.equal(Lesson::getTimeslot),
                         Joiners.equal(Lesson::getTeacher),
                         Joiners.lessThan(Lesson::getId))
-                .penalize("Teacher conflict", HardSoftScore.ONE_HARD);
+                .penalize(HardSoftScore.ONE_HARD)
+                .asConstraint("Teacher conflict");
     }
 
     private Constraint studentGroupConflict(ConstraintFactory constraintFactory) {
@@ -120,7 +122,8 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                         Joiners.equal(Lesson::getTimeslot),
                         Joiners.equal(Lesson::getStudentGroup),
                         Joiners.lessThan(Lesson::getId))
-                .penalize("Student group conflict", HardSoftScore.ONE_HARD);
+                .penalize(HardSoftScore.ONE_HARD)
+                .asConstraint("Student group conflict");
     }
 
 }

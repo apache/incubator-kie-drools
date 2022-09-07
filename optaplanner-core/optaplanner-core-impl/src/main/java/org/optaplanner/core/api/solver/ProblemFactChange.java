@@ -16,7 +16,7 @@ import org.optaplanner.core.api.solver.change.ProblemChange;
  * So any change must be done on the problem facts and planning entities referenced by the {@link PlanningSolution}
  * of the {@link ScoreDirector}. On each change it should also notify the {@link ScoreDirector} accordingly.
  *
- * @deprecated in favor of {@link ProblemChange}.
+ * @deprecated Prefer {@link ProblemChange}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @Deprecated(forRemoval = true)

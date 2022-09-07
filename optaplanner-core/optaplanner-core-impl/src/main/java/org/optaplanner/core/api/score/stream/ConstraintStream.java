@@ -87,22 +87,24 @@ public interface ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
      *
+     * @deprecated Prefer {@link UniConstraintStream#penalize(Score)} and equivalent bi/tri/... overloads.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
      */
-    default Constraint penalize(String constraintName, Score<?> constraintWeight) {
-        return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight);
-    }
+    @Deprecated(forRemoval = true)
+    Constraint penalize(String constraintName, Score<?> constraintWeight);
 
     /**
      * As defined by {@link #penalize(String, Score)}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#penalize(Score)} and equivalent bi/tri/... overloads.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight);
 
     /**
@@ -115,20 +117,22 @@ public interface ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#penalizeConfigurable()} and equivalent bi/tri/... overloads.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @return never null
      */
-    default Constraint penalizeConfigurable(String constraintName) {
-        return penalizeConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName);
-    }
+    @Deprecated(forRemoval = true)
+    Constraint penalizeConfigurable(String constraintName);
 
     /**
      * As defined by {@link #penalizeConfigurable(String)}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#penalizeConfigurable()} and equivalent bi/tri/... overloads.
      * @param constraintPackage never null
      * @param constraintName never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     Constraint penalizeConfigurable(String constraintPackage, String constraintName);
 
     /**
@@ -139,22 +143,24 @@ public interface ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
      *
+     * @deprecated Prefer {@link UniConstraintStream#reward(Score)} and equivalent bi/tri/... overloads.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
      */
-    default Constraint reward(String constraintName, Score<?> constraintWeight) {
-        return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight);
-    }
+    @Deprecated(forRemoval = true)
+    Constraint reward(String constraintName, Score<?> constraintWeight);
 
     /**
      * As defined by {@link #reward(String, Score)}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#reward(Score)} and equivalent bi/tri/... overloads.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight);
 
     /**
@@ -167,20 +173,22 @@ public interface ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#rewardConfigurable()} and equivalent bi/tri/... overloads.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @return never null
      */
-    default Constraint rewardConfigurable(String constraintName) {
-        return rewardConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName);
-    }
+    @Deprecated(forRemoval = true)
+    Constraint rewardConfigurable(String constraintName);
 
     /**
      * As defined by {@link #rewardConfigurable(String)}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#rewardConfigurable()} and equivalent bi/tri/... overloads.
      * @param constraintPackage never null
      * @param constraintName never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     Constraint rewardConfigurable(String constraintPackage, String constraintName);
 
     /**
@@ -191,22 +199,24 @@ public interface ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
      *
+     * @deprecated Prefer {@link UniConstraintStream#impact(Score)} and equivalent bi/tri/... overloads.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
      */
-    default Constraint impact(String constraintName, Score<?> constraintWeight) {
-        return impact(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight);
-    }
+    @Deprecated(forRemoval = true)
+    Constraint impact(String constraintName, Score<?> constraintWeight);
 
     /**
      * As defined by {@link #impact(String, Score)}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#impact(Score)} and equivalent bi/tri/... overloads.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight);
 
 }

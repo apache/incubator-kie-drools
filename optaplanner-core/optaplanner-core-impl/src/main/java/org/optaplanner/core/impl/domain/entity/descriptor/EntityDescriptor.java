@@ -113,7 +113,7 @@ public class EntityDescriptor<Solution_> {
      * Using entityDescriptor::isInitialized directly breaks node sharing
      * because it creates multiple instances of this {@link Predicate}.
      *
-     * @deprecated in favor of {@link #getHasNoNullVariables()}.
+     * @deprecated Prefer {@link #getHasNoNullVariables()}.
      * @return never null, always the same {@link Predicate} instance to {@link #isInitialized(Object)}
      */
     @Deprecated(forRemoval = true)

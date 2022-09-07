@@ -25,17 +25,20 @@ public class NQueensConstraintProvider implements ConstraintProvider {
 
     protected Constraint horizontalConflict(ConstraintFactory factory) {
         return factory.forEachUniquePair(Queen.class, equal(Queen::getRowIndex))
-                .penalize("Horizontal conflict", SimpleScore.ONE);
+                .penalize(SimpleScore.ONE)
+                .asConstraint("Horizontal conflict");
     }
 
     protected Constraint ascendingDiagonalConflict(ConstraintFactory factory) {
         return factory.forEachUniquePair(Queen.class, equal(Queen::getAscendingDiagonalIndex))
-                .penalize("Ascending diagonal conflict", SimpleScore.ONE);
+                .penalize(SimpleScore.ONE)
+                .asConstraint("Ascending diagonal conflict");
     }
 
     protected Constraint descendingDiagonalConflict(ConstraintFactory factory) {
         return factory.forEachUniquePair(Queen.class, equal(Queen::getDescendingDiagonalIndex))
-                .penalize("Descending diagonal conflict", SimpleScore.ONE);
+                .penalize(SimpleScore.ONE)
+                .asConstraint("Descending diagonal conflict");
     }
 
 }

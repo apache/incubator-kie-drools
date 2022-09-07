@@ -65,12 +65,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(), value1);
         solution.getEntityList().add(entity3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
-                    .filter((entity, value) -> value.getCode().equals("MyValue 1"))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
+                        .filter((entity, value) -> value.getCode().equals("MyValue 1"))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -104,13 +104,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishEntity entity4 = solution.getEntityList().get(3);
         TestdataLavishEntity entity5 = solution.getEntityList().get(4);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class,
-                    filtering((entityA, entityB) -> !Objects.equals(entityA, entity1)))
-                    .filter((entityA, entityB) -> !Objects.equals(entityA, entity2))
-                    .filter((entityA, entityB) -> !Objects.equals(entityA, entity3))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> factory
+                .forEachUniquePair(TestdataLavishEntity.class,
+                        filtering((entityA, entityB) -> !Objects.equals(entityA, entity1)))
+                .filter((entityA, entityB) -> !Objects.equals(entityA, entity2))
+                .filter((entityA, entityB) -> !Objects.equals(entityA, entity3))
+                .penalize(SimpleScore.ONE)
+                .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -146,12 +146,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishExtra extra3 = new TestdataLavishExtra("MyExtra 3");
         solution.getExtraList().add(extra3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
-                    .join(TestdataLavishExtra.class)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
+                        .join(TestdataLavishExtra.class)
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -203,13 +203,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         extra3.setStringProperty("MyString");
         solution.getExtraList().add(extra3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
-                    .join(TestdataLavishExtra.class,
-                            equal((entity, value) -> entity.getStringProperty(), TestdataLavishExtra::getStringProperty))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
+                        .join(TestdataLavishExtra.class,
+                                equal((entity, value) -> entity.getStringProperty(), TestdataLavishExtra::getStringProperty))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -256,13 +256,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         extra3.setStringProperty("MyString");
         solution.getExtraList().add(extra3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class, filtering((entity, value) -> Objects.equals(entity.getValue(), value)))
-                    .join(TestdataLavishExtra.class,
-                            equal((entity, value) -> entity.getStringProperty(), TestdataLavishExtra::getStringProperty))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishValue.class, filtering((entity, value) -> Objects.equals(entity.getValue(), value)))
+                        .join(TestdataLavishExtra.class,
+                                equal((entity, value) -> entity.getStringProperty(), TestdataLavishExtra::getStringProperty))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -315,14 +315,14 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         extra3.setIntegerProperty(7);
         solution.getExtraList().add(extra3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
-                    .join(TestdataLavishExtra.class,
-                            equal((entity, value) -> entity.getStringProperty(), TestdataLavishExtra::getStringProperty),
-                            equal((entity, value) -> entity.getIntegerProperty(), TestdataLavishExtra::getIntegerProperty))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
+                        .join(TestdataLavishExtra.class,
+                                equal((entity, value) -> entity.getStringProperty(), TestdataLavishExtra::getStringProperty),
+                                equal((entity, value) -> entity.getIntegerProperty(), TestdataLavishExtra::getIntegerProperty))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -345,13 +345,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
 
     @TestTemplate
     public void join_filtering_comesLast() {
-        assertThatThrownBy(() -> buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class, filtering((a, b) -> false),
-                            equal(TestdataLavishEntity::getValue, Function.identity()))
-                    .join(TestdataLavishExtra.class)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                .join(TestdataLavishValue.class, filtering((a, b) -> false),
+                        equal(TestdataLavishEntity::getValue, Function.identity()))
+                .join(TestdataLavishExtra.class)
+                .penalize(SimpleScore.ONE)
+                .asConstraint(TEST_CONSTRAINT_NAME)))
+                        .isInstanceOf(IllegalStateException.class);
     }
 
     @TestTemplate
@@ -368,13 +368,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         entity2.setStringProperty(null);
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class,
-                            equal(TestdataLavishEntity::getValue, Function.identity()),
-                            filtering((entity, value) -> value.getCode().contains("1")))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishValue.class,
+                                equal(TestdataLavishEntity::getValue, Function.identity()),
+                                filtering((entity, value) -> value.getCode().contains("1")))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -412,13 +412,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishExtra extra2 = new TestdataLavishExtra("MyExtra 2");
         solution.getExtraList().add(extra2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .groupBy(countDistinct(TestdataLavishEntity::getValue),
-                            countDistinct(TestdataLavishEntity::getValue))
-                    .join(TestdataLavishExtra.class)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .groupBy(countDistinct(TestdataLavishEntity::getValue),
+                                countDistinct(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishExtra.class)
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -450,13 +450,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @Override
     @TestTemplate
     public void ifExists_unknownClass() {
-        assertThatThrownBy(() -> buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .ifExists(Integer.class)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(Integer.class.getCanonicalName())
-                .hasMessageContaining("assignable from");
+        assertThatThrownBy(() -> buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                .ifExists(Integer.class)
+                .penalize(SimpleScore.ONE)
+                .asConstraint(TEST_CONSTRAINT_NAME)))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessageContaining(Integer.class.getCanonicalName())
+                        .hasMessageContaining("assignable from");
     }
 
     @Override
@@ -466,11 +466,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishValueGroup valueGroup = new TestdataLavishValueGroup("MyValueGroup");
         solution.getValueGroupList().add(valueGroup);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishValueGroup.class)
-                    .ifExists(TestdataLavishEntityGroup.class)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishValueGroup.class)
+                        .ifExists(TestdataLavishEntityGroup.class)
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -497,13 +497,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 solution.getFirstValue());
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .ifExists(TestdataLavishEntityGroup.class,
-                            filtering((entityA, entityB, group) -> Objects.equals(group, entityA.getEntityGroup()) &&
-                                    Objects.equals(group, entityB.getEntityGroup())))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .ifExists(TestdataLavishEntityGroup.class,
+                                filtering((entityA, entityB, group) -> Objects.equals(group, entityA.getEntityGroup()) &&
+                                        Objects.equals(group, entityB.getEntityGroup())))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -530,12 +530,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 solution.getFirstValue());
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .ifExists(TestdataLavishEntityGroup.class,
-                            equal((entityA, entityB) -> entityA.getEntityGroup(), Function.identity()))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .ifExists(TestdataLavishEntityGroup.class,
+                                equal((entityA, entityB) -> entityA.getEntityGroup(), Function.identity()))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -565,14 +565,14 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 solution.getFirstValue());
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .ifExists(TestdataLavishEntityGroup.class,
-                            equal((entityA, entityB) -> entityA.getEntityGroup(), Function.identity()),
-                            filtering((entityA, entityB, group) -> entityA.getCode().contains("MyEntity") ||
-                                    group.getCode().contains("MyEntity")))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .ifExists(TestdataLavishEntityGroup.class,
+                                equal((entityA, entityB) -> entityA.getEntityGroup(), Function.identity()),
+                                filtering((entityA, entityB, group) -> entityA.getCode().contains("MyEntity") ||
+                                        group.getCode().contains("MyEntity")))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -598,12 +598,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 null);
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .ifExists(TestdataLavishEntity.class,
-                            filtering((a, b, c) -> a != c && b != c))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .ifExists(TestdataLavishEntity.class,
+                                filtering((a, b, c) -> a != c && b != c))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector);
@@ -622,12 +622,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 null);
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.fromUniquePair(TestdataLavishEntity.class)
-                    .ifExists(TestdataLavishEntity.class,
-                            filtering((a, b, c) -> a != c && b != c))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.fromUniquePair(TestdataLavishEntity.class)
+                        .ifExists(TestdataLavishEntity.class,
+                                filtering((a, b, c) -> a != c && b != c))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -644,13 +644,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @Override
     @TestTemplate
     public void ifNotExists_unknownClass() {
-        assertThatThrownBy(() -> buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .ifNotExists(Integer.class)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(Integer.class.getCanonicalName())
-                .hasMessageContaining("assignable from");
+        assertThatThrownBy(() -> buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                .ifNotExists(Integer.class)
+                .penalize(SimpleScore.ONE)
+                .asConstraint(TEST_CONSTRAINT_NAME)))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessageContaining(Integer.class.getCanonicalName())
+                        .hasMessageContaining("assignable from");
     }
 
     @Override
@@ -660,11 +660,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishValueGroup valueGroup = new TestdataLavishValueGroup("MyValueGroup");
         solution.getValueGroupList().add(valueGroup);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishValueGroup.class)
-                    .ifNotExists(TestdataLavishEntityGroup.class)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishValueGroup.class)
+                        .ifNotExists(TestdataLavishEntityGroup.class)
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -691,13 +691,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 solution.getFirstValue());
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .ifNotExists(TestdataLavishEntityGroup.class,
-                            filtering((entityA, entityB, group) -> Objects.equals(group, entityA.getEntityGroup()) &&
-                                    Objects.equals(group, entityB.getEntityGroup())))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .ifNotExists(TestdataLavishEntityGroup.class,
+                                filtering((entityA, entityB, group) -> Objects.equals(group, entityA.getEntityGroup()) &&
+                                        Objects.equals(group, entityB.getEntityGroup())))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -728,12 +728,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 solution.getFirstValue());
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .ifNotExists(TestdataLavishEntityGroup.class,
-                            equal((entityA, entityB) -> entityA.getEntityGroup(), Function.identity()))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .ifNotExists(TestdataLavishEntityGroup.class,
+                                equal((entityA, entityB) -> entityA.getEntityGroup(), Function.identity()))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -759,14 +759,14 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 solution.getFirstValue());
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .ifNotExists(TestdataLavishEntityGroup.class,
-                            equal((entityA, entityB) -> entityA.getEntityGroup(), Function.identity()),
-                            filtering((entityA, entityB, group) -> entityA.getCode().contains("MyEntity") ||
-                                    group.getCode().contains("MyEntity")))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .ifNotExists(TestdataLavishEntityGroup.class,
+                                equal((entityA, entityB) -> entityA.getEntityGroup(), Function.identity()),
+                                filtering((entityA, entityB, group) -> entityA.getCode().contains("MyEntity") ||
+                                        group.getCode().contains("MyEntity")))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -796,12 +796,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 null);
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .ifNotExists(TestdataLavishEntity.class,
-                            filtering((a, b, c) -> a != c && b != c))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .ifNotExists(TestdataLavishEntity.class,
+                                filtering((a, b, c) -> a != c && b != c))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -829,12 +829,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 null);
         solution.getEntityList().add(entity2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.fromUniquePair(TestdataLavishEntity.class)
-                    .ifNotExists(TestdataLavishEntity.class,
-                            filtering((a, b, c) -> a != c && b != c))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.fromUniquePair(TestdataLavishEntity.class)
+                        .ifNotExists(TestdataLavishEntity.class,
+                                filtering((a, b, c) -> a != c && b != c))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -865,13 +865,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishExtra extra2 = new TestdataLavishExtra("MyExtra 2");
         solution.getExtraList().add(extra2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .groupBy(countDistinct(TestdataLavishEntity::getValue),
-                            countDistinct(TestdataLavishEntity::getValue))
-                    .ifExists(TestdataLavishExtra.class)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .groupBy(countDistinct(TestdataLavishEntity::getValue),
+                                countDistinct(TestdataLavishEntity::getValue))
+                        .ifExists(TestdataLavishExtra.class)
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -911,11 +911,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 solution.getFirstValue());
         solution.getEntityList().add(entity3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
-                    .groupBy((entityA, entityB) -> entityA.getEntityGroup())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
+                        .groupBy((entityA, entityB) -> entityA.getEntityGroup())
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -937,12 +937,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     public void groupBy_1Mapping1Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 7);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy((entityA, entityB) -> entityA.toString(), countBi())
-                    .filter((entity, count) -> count > 4)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy((entityA, entityB) -> entityA.toString(), countBi())
+                        .filter((entity, count) -> count > 4)
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -964,13 +964,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     public void groupBy_1Mapping2Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy((entityA, entityB) -> entityA.toString(),
-                            countBi(),
-                            toSet((entityA, entityB) -> entityA))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy((entityA, entityB) -> entityA.toString(),
+                                countBi(),
+                                toSet((entityA, entityB) -> entityA))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -995,14 +995,14 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     public void groupBy_1Mapping3Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy((entityA, entityB) -> entityA.toString(),
-                            min((TestdataLavishEntity entityA, TestdataLavishEntity entityB) -> entityA.getLongProperty()),
-                            max((TestdataLavishEntity entityA, TestdataLavishEntity entityB) -> entityA.getLongProperty()),
-                            toSet((entityA, entityB) -> entityA))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy((entityA, entityB) -> entityA.toString(),
+                                min((TestdataLavishEntity entityA, TestdataLavishEntity entityB) -> entityA.getLongProperty()),
+                                max((TestdataLavishEntity entityA, TestdataLavishEntity entityB) -> entityA.getLongProperty()),
+                                toSet((entityA, entityB) -> entityA))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         entity1.setLongProperty(Long.MAX_VALUE);
@@ -1032,11 +1032,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     public void groupBy_0Mapping1Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy(countBi())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (count) -> count);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy(countBi())
+                        .penalize(SimpleScore.ONE, (count) -> count)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1054,12 +1054,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void groupBy_0Mapping2Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy(countBi(),
-                            countDistinct((e, e2) -> e))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy(countBi(),
+                                countDistinct((e, e2) -> e))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
 
@@ -1078,13 +1078,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void groupBy_0Mapping3Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy(countBi(),
-                            min((TestdataLavishEntity e, TestdataLavishEntity e2) -> e.getLongProperty()),
-                            max((TestdataLavishEntity e, TestdataLavishEntity e2) -> e.getLongProperty()))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy(countBi(),
+                                min((TestdataLavishEntity e, TestdataLavishEntity e2) -> e.getLongProperty()),
+                                max((TestdataLavishEntity e, TestdataLavishEntity e2) -> e.getLongProperty()))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         entity1.setLongProperty(0L);
@@ -1110,14 +1110,14 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void groupBy_0Mapping4Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy(countBi(),
-                            min((TestdataLavishEntity e, TestdataLavishEntity e2) -> e.getLongProperty()),
-                            max((TestdataLavishEntity e, TestdataLavishEntity e2) -> e.getLongProperty()),
-                            toSet((e, e2) -> e))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy(countBi(),
+                                min((TestdataLavishEntity e, TestdataLavishEntity e2) -> e.getLongProperty()),
+                                max((TestdataLavishEntity e, TestdataLavishEntity e2) -> e.getLongProperty()),
+                                toSet((e, e2) -> e))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         entity1.setLongProperty(0L);
@@ -1143,11 +1143,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void groupBy_2Mapping0Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup())
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getEntityGroupList().get(0);
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1174,11 +1174,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     public void groupBy_2Mapping1Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 4);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), countBi())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entityGroup1, entityGroup2, count) -> count);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), countBi())
+                        .penalize(SimpleScore.ONE, (entityGroup1, entityGroup2, count) -> count)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1207,12 +1207,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     public void groupBy_2Mapping2Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 4);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), countBi(), countBi())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE,
-                            (entityGroup1, entityGroup2, count, sameCount) -> count + sameCount);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), countBi(), countBi())
+                        .penalize(SimpleScore.ONE,
+                                (entityGroup1, entityGroup2, count, sameCount) -> count + sameCount)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1240,11 +1240,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void groupBy_3Mapping0Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 3, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), (a, b) -> a.getValue())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), (a, b) -> a.getValue())
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getEntityGroupList().get(0);
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1272,12 +1272,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void groupBy_3Mapping1Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 3, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), (a, b) -> a.getValue(),
-                            ConstraintCollectors.countBi())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), (a, b) -> a.getValue(),
+                                ConstraintCollectors.countBi())
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getEntityGroupList().get(0);
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1305,12 +1305,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void groupBy_4Mapping0Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 3, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), (a, b) -> a.getValue(),
-                            (a, b) -> b.getValue())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), (a, b) -> a.getValue(),
+                                (a, b) -> b.getValue())
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getEntityGroupList().get(0);
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1342,11 +1342,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void distinct() { // On a distinct stream, this is a no-op.
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .distinct()
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .distinct()
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -1364,11 +1364,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void mapWithDuplicates() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .map((a, b) -> asSet(a.getEntityGroup(), b.getEntityGroup())) // 3 entities, 2 groups => duplicates.
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .map((a, b) -> asSet(a.getEntityGroup(), b.getEntityGroup())) // 3 entities, 2 groups => duplicates.
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1394,11 +1394,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void mapWithoutDuplicates() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 3, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .map((a, b) -> asSet(a.getEntityGroup(), b.getEntityGroup())) // 3 entities, 3 groups => no duplicates.
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .map((a, b) -> asSet(a.getEntityGroup(), b.getEntityGroup())) // 3 entities, 3 groups => no duplicates.
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1425,12 +1425,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void mapAndDistinctWithDuplicates() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .map((a, b) -> asSet(a.getEntityGroup(), b.getEntityGroup())) // 3 entities, 2 groups => duplicates.
-                    .distinct() // Duplicate copies removed here.
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .map((a, b) -> asSet(a.getEntityGroup(), b.getEntityGroup())) // 3 entities, 2 groups => duplicates.
+                        .distinct() // Duplicate copies removed here.
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1455,12 +1455,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     @TestTemplate
     public void mapAndDistinctWithoutDuplicates() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 3, 3);
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .map((a, b) -> asSet(a.getEntityGroup(), b.getEntityGroup())) // 3 entities, 3 groups => no duplicates.
-                    .distinct()
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .map((a, b) -> asSet(a.getEntityGroup(), b.getEntityGroup())) // 3 entities, 3 groups => no duplicates.
+                        .distinct()
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1492,11 +1492,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .flattenLast(b -> asList(b.getEntityGroup(), group1, group2))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .flattenLast(b -> asList(b.getEntityGroup(), group1, group2))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1530,11 +1530,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .flattenLast(b -> singleton(b.getEntityGroup()))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .flattenLast(b -> singleton(b.getEntityGroup()))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1560,12 +1560,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .flattenLast(b -> asList(b.getEntityGroup(), group1, group2))
-                    .distinct()
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .flattenLast(b -> asList(b.getEntityGroup(), group1, group2))
+                        .distinct()
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1593,12 +1593,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .flattenLast(b -> singleton(b.getEntityGroup()))
-                    .distinct()
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .flattenLast(b -> singleton(b.getEntityGroup()))
+                        .distinct()
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1634,10 +1634,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                .penalize("myConstraint1", SimpleScore.ONE),
+                                .penalize(SimpleScore.ONE)
+                                .asConstraint("myConstraint1"),
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                .penalize("myConstraint2", SimpleScore.ONE, (entity, value) -> 20)
+                                .penalize(SimpleScore.ONE, (entity, value) -> 20)
+                                .asConstraint("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1660,10 +1662,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                         factory -> new Constraint[] {
                                 factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                        .penalize("myConstraint1", SimpleLongScore.ONE),
+                                        .penalize(SimpleLongScore.ONE)
+                                        .asConstraint("myConstraint1"),
                                 factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                        .penalizeLong("myConstraint2", SimpleLongScore.ONE, (entity, value) -> 20L)
+                                        .penalizeLong(SimpleLongScore.ONE, (entity, value) -> 20L)
+                                        .asConstraint("myConstraint2")
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1686,11 +1690,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                         factory -> new Constraint[] {
                                 factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                        .penalize("myConstraint1", SimpleBigDecimalScore.ONE),
+                                        .penalize(SimpleBigDecimalScore.ONE)
+                                        .asConstraint("myConstraint1"),
                                 factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                        .penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                                        .penalizeBigDecimal(SimpleBigDecimalScore.ONE,
                                                 (entity, value) -> new BigDecimal("0.2"))
+                                        .asConstraint("myConstraint2")
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1707,7 +1713,8 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .join(TestdataLavishValue.class)
-                        .penalize(constraintName, SimpleScore.ONE, (entity, value) -> -1));
+                        .penalize(SimpleScore.ONE, (entity, value) -> -1)
+                        .asConstraint(constraintName));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
@@ -1728,10 +1735,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                .reward("myConstraint1", SimpleScore.ONE),
+                                .reward(SimpleScore.ONE)
+                                .asConstraint("myConstraint1"),
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                .reward("myConstraint2", SimpleScore.ONE, (entity, value) -> 20)
+                                .reward(SimpleScore.ONE, (entity, value) -> 20)
+                                .asConstraint("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1752,10 +1761,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                .reward("myConstraint1", SimpleLongScore.ONE),
+                                .reward(SimpleLongScore.ONE)
+                                .asConstraint("myConstraint1"),
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                .rewardLong("myConstraint2", SimpleLongScore.ONE, (entity, value) -> 20L)
+                                .rewardLong(SimpleLongScore.ONE, (entity, value) -> 20L)
+                                .asConstraint("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1778,11 +1789,13 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                         factory -> new Constraint[] {
                                 factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                        .reward("myConstraint1", SimpleBigDecimalScore.ONE),
+                                        .reward(SimpleBigDecimalScore.ONE)
+                                        .asConstraint("myConstraint1"),
                                 factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                        .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                                        .rewardBigDecimal(SimpleBigDecimalScore.ONE,
                                                 (entity, value) -> new BigDecimal("0.2"))
+                                        .asConstraint("myConstraint2")
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1799,7 +1812,8 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .join(TestdataLavishValue.class)
-                        .reward(constraintName, SimpleScore.ONE, (entity, value) -> -1));
+                        .reward(SimpleScore.ONE, (entity, value) -> -1)
+                        .asConstraint(constraintName));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
@@ -1826,11 +1840,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         entity3.setBigDecimalProperty(bigDecimal1);
         solution.getEntityList().add(entity3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntity.class, equal(TestdataLavishEntity::getBigDecimalProperty))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishEntity.class, equal(TestdataLavishEntity::getBigDecimalProperty))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,

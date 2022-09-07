@@ -23,29 +23,29 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
         this.variableB = Objects.requireNonNull(variableB);
     }
 
-    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntBiFunction<A, B> matchWeighter) {
+    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntBiFunction<A, B> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> DSL.on(scoreImpacterGlobal, variableA, variableB)
                         .execute((drools, scoreImpacter, a, b) -> runConsequence(constraint, drools, scoreImpacter,
-                                matchWeighter.applyAsInt(a, b),
+                                matchWeigher.applyAsInt(a, b),
                                 () -> asList(a, b)));
         return assemble(consequenceBuilder);
     }
 
-    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongBiFunction<A, B> matchWeighter) {
+    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongBiFunction<A, B> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> DSL.on(scoreImpacterGlobal, variableA, variableB)
                         .execute((drools, scoreImpacter, a, b) -> runConsequence(constraint, drools, scoreImpacter,
-                                matchWeighter.applyAsLong(a, b),
+                                matchWeigher.applyAsLong(a, b),
                                 () -> asList(a, b)));
         return assemble(consequenceBuilder);
     }
 
-    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(BiFunction<A, B, BigDecimal> matchWeighter) {
+    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(BiFunction<A, B, BigDecimal> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> DSL.on(scoreImpacterGlobal, variableA, variableB)
                         .execute((drools, scoreImpacter, a, b) -> runConsequence(constraint, drools, scoreImpacter,
-                                matchWeighter.apply(a, b),
+                                matchWeigher.apply(a, b),
                                 () -> asList(a, b)));
         return assemble(consequenceBuilder);
     }

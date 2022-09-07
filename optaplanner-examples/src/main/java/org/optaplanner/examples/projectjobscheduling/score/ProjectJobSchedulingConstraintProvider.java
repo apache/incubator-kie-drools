@@ -33,9 +33,9 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
                 .groupBy((requirement, allocation) -> requirement.getResource(),
                         ConstraintCollectors.sum((requirement, allocation) -> requirement.getRequirement()))
                 .filter((resource, requirements) -> requirements > resource.getCapacity())
-                .penalize("Non-renewable resource capacity",
-                        HardMediumSoftScore.ofHard(1),
-                        (resource, requirements) -> requirements - resource.getCapacity());
+                .penalize(HardMediumSoftScore.ONE_HARD,
+                        (resource, requirements) -> requirements - resource.getCapacity())
+                .asConstraint("Non-renewable resource capacity");
     }
 
     protected Constraint renewableResourceCapacity(ConstraintFactory constraintFactory) {
@@ -50,18 +50,18 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
                         (resourceReq, date) -> date,
                         ConstraintCollectors.sum((resourceReq, date) -> resourceReq.getRequirement()))
                 .filter((resourceReq, date, totalRequirement) -> totalRequirement > resourceReq.getCapacity())
-                .penalize("Renewable resource capacity",
-                        HardMediumSoftScore.ofHard(1),
-                        (resourceReq, date, totalRequirement) -> totalRequirement - resourceReq.getCapacity());
+                .penalize(HardMediumSoftScore.ONE_HARD,
+                        (resourceReq, date, totalRequirement) -> totalRequirement - resourceReq.getCapacity())
+                .asConstraint("Renewable resource capacity");
     }
 
     protected Constraint totalProjectDelay(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Allocation.class)
                 .filter(allocation -> allocation.getEndDate() != null)
                 .filter(allocation -> allocation.getJobType() == JobType.SINK)
-                .impact("Total project delay",
-                        HardMediumSoftScore.ofMedium(1),
-                        allocation -> allocation.getProjectCriticalPathEndDate() - allocation.getEndDate());
+                .impact(HardMediumSoftScore.ONE_MEDIUM,
+                        allocation -> allocation.getProjectCriticalPathEndDate() - allocation.getEndDate())
+                .asConstraint("Total project delay");
     }
 
     protected Constraint totalMakespan(ConstraintFactory constraintFactory) {
@@ -69,9 +69,8 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
                 .filter(allocation -> allocation.getEndDate() != null)
                 .filter(allocation -> allocation.getJobType() == JobType.SINK)
                 .groupBy(ConstraintCollectors.max(Allocation::getEndDate))
-                .penalize("Total makespan",
-                        HardMediumSoftScore.ofSoft(1),
-                        maxEndDate -> maxEndDate);
+                .penalize(HardMediumSoftScore.ONE_SOFT, maxEndDate -> maxEndDate)
+                .asConstraint("Total makespan");
     }
 
 }

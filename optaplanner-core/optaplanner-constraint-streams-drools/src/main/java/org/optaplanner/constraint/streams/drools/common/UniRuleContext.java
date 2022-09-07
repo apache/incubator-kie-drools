@@ -21,29 +21,29 @@ final class UniRuleContext<A> extends AbstractRuleContext {
         this.variable = Objects.requireNonNull(variable);
     }
 
-    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntFunction<A> matchWeighter) {
+    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntFunction<A> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> DSL.on(scoreImpacterGlobal, variable)
                         .execute((drools, scoreImpacter, a) -> runConsequence(constraint, drools, scoreImpacter,
-                                matchWeighter.applyAsInt(a),
+                                matchWeigher.applyAsInt(a),
                                 () -> singletonList(a)));
         return assemble(consequenceBuilder);
     }
 
-    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongFunction<A> matchWeighter) {
+    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongFunction<A> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> DSL.on(scoreImpacterGlobal, variable)
                         .execute((drools, scoreImpacter, a) -> runConsequence(constraint, drools, scoreImpacter,
-                                matchWeighter.applyAsLong(a),
+                                matchWeigher.applyAsLong(a),
                                 () -> singletonList(a)));
         return assemble(consequenceBuilder);
     }
 
-    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(Function<A, BigDecimal> matchWeighter) {
+    public <Solution_> RuleBuilder<Solution_> newRuleBuilder(Function<A, BigDecimal> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> DSL.on(scoreImpacterGlobal, variable)
                         .execute((drools, scoreImpacter, a) -> runConsequence(constraint, drools, scoreImpacter,
-                                matchWeighter.apply(a),
+                                matchWeigher.apply(a),
                                 () -> singletonList(a)));
         return assemble(consequenceBuilder);
     }

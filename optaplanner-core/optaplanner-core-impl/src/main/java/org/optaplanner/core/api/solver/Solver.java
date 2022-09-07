@@ -127,7 +127,7 @@ public interface Solver<Solution_> {
      * Follows specifications of {@link BlockingQueue#add(Object)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
      *
-     * @deprecated in favor of {@link #addProblemChange(ProblemChange)}.
+     * @deprecated Prefer {@link #addProblemChange(ProblemChange)}.
      * @param problemFactChange never null
      * @return true (as specified by {@link Collection#add})
      * @see #addProblemFactChanges(List)
@@ -146,7 +146,7 @@ public interface Solver<Solution_> {
      * Follows specifications of {@link BlockingQueue#addAll(Collection)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
      *
-     * @deprecated in favor of {@link #addProblemChanges(List)}.
+     * @deprecated Prefer {@link #addProblemChanges(List)}.
      * @param problemFactChangeList never null
      * @return true (as specified by {@link Collection#add})
      * @see #addProblemFactChange(ProblemFactChange)
@@ -160,7 +160,7 @@ public interface Solver<Solution_> {
      * <p>
      * This method is thread-safe.
      *
-     * @deprecated in favor of {@link #isEveryProblemChangeProcessed()}.
+     * @deprecated Prefer {@link #isEveryProblemChangeProcessed()}.
      * @return true if there are no {@link ProblemFactChange}s left to do
      */
     @Deprecated(forRemoval = true)

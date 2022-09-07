@@ -75,7 +75,8 @@ public abstract class AbstractFactChangePropagationTest {
                      * the AnchorVariableListener has updated the anchor.
                      */
                     .filter(testdataShadowingChainedEntity -> "v1".equals(testdataShadowingChainedEntity.getAnchor().getCode()))
-                    .penalize("anchorCannotBeNull", SimpleScore.ONE);
+                    .penalize(SimpleScore.ONE)
+                    .asConstraint("anchorCannotBeNull");
         }
     }
 }

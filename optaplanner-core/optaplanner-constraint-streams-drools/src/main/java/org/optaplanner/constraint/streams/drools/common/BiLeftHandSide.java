@@ -476,16 +476,16 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return ruleContext.newRuleBuilder();
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntBiFunction<A, B> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntBiFunction<A, B> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(ToLongBiFunction<A, B> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(ToLongBiFunction<A, B> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate(BiFunction<A, B, BigDecimal> matchWeighter) {
-        return ruleContext.newRuleBuilder(matchWeighter);
+    public <Solution_> RuleBuilder<Solution_> andTerminate(BiFunction<A, B, BigDecimal> matchWeigher) {
+        return ruleContext.newRuleBuilder(matchWeigher);
     }
 
     private <GroupKey_> ViewItem<?> buildGroupBy(Variable<GroupKey_> groupKey,

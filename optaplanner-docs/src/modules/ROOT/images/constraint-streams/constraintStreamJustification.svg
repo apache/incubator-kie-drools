@@ -4,9 +4,9 @@
    height="600"
    id="svg2"
    version="1.1"
-   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    sodipodi:docname="constraintStreamJustification.svg"
-   inkscape:export-filename="constraintStreamJustification_1.png"
+   inkscape:export-filename="constraintStreamJustification.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -216,6 +216,7 @@
      d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
      id="path5767" />
 </marker>
+
 
 
 
@@ -576,16 +577,16 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.245"
-     inkscape:cx="400.40161"
-     inkscape:cy="300"
+     inkscape:cx="178.71486"
+     inkscape:cy="300.40161"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer1"
      showgrid="true"
      width="800px"
      borderlayer="true"
      gridtolerance="10"
-     inkscape:window-width="2560"
-     inkscape:window-height="1363"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -606,7 +607,9 @@
      inkscape:snap-object-midpoints="true"
      inkscape:snap-global="true"
      inkscape:document-rotation="0"
-     inkscape:pagecheckerboard="0">
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        empspacing="10"
        visible="true"
@@ -1121,7 +1124,7 @@
        style="display:inline;fill:none;stroke:#4e9a06;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        sodipodi:nodetypes="cc" />
     <flowRoot
-       transform="translate(217.64128,416.93513)"
+       transform="translate(187.64128,416.93513)"
        xml:space="preserve"
        id="flowRoot324"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
@@ -1130,24 +1133,22 @@
            id="rect318"
            width="303.89584"
            height="149.99944"
-           x="330.20508"
+           x="330.20505"
            y="152.09956"
-           style="font-size:21.33333397px;text-align:start;text-anchor:start" /></flowRegion><flowPara
-         style="font-size:16px;line-height:1.25;text-align:start;text-anchor:start"
-         id="flowPara328"><flowSpan
-   id="flowSpan384"
-   style="font-size:21.3333px;line-height:1.25;text-align:start;text-anchor:start">.penalize(</flowSpan><flowSpan
-   style="fill:#ce5c00"
-   id="flowSpan11183">&quot;Don't assign Ann&quot;</flowSpan>,</flowPara><flowPara
+           style="font-size:21.3333px;text-align:start;text-anchor:start;stroke-width:1" /></flowRegion><flowPara
          style="font-size:21.3333px;line-height:1.25;text-align:start;text-anchor:start"
-         id="flowPara330"><flowSpan
+         id="flowPara328">.penalize(<flowSpan
    style="font-size:16px"
-   id="flowSpan332">    ONE_SOFT</flowSpan>)</flowPara></flowRoot>
+   id="flowSpan2817">ONE_SOFT</flowSpan>)</flowPara><flowPara
+         style="font-size:21.3333px;line-height:1.25;text-align:start;text-anchor:start"
+         id="flowPara330">.asConstraint(<flowSpan
+   id="flowSpan2813"
+   style="font-size:16px;line-height:1.25;text-align:start;text-anchor:start;fill:#ce5c00">&quot;Don't assign Ann&quot;</flowSpan>)</flowPara></flowRoot>
     <path
        inkscape:connector-curvature="0"
        id="path352"
-       d="m 469.90318,596.06334 h 74.38413"
-       style="display:inline;fill:none;stroke:#4e9a06;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       d="m 469.88228,596.08424 44.66313,-0.23005"
+       style="display:inline;fill:none;stroke:#4e9a06;stroke-width:0.958192px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
        sodipodi:nodetypes="cc" />
     <flowRoot
        transform="matrix(1.6568991,0,0,1.6568991,141.52725,534.1611)"
@@ -1288,7 +1289,7 @@
        sodipodi:nodetypes="cc" />
     <path
        style="display:inline;fill:none;stroke:#204a87;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker-start:url(#marker9261-7)"
-       d="M 720,150 C 860,450 675.03876,576.12403 565.03876,576.12403"
+       d="m 734.55196,170.44428 c 140,300 -59.5132,405.67975 -169.5132,405.67975"
        id="path9257"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />

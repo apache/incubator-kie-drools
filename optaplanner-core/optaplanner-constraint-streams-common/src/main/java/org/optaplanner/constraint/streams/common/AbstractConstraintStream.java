@@ -7,7 +7,6 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightDescriptor;
@@ -84,36 +83,5 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
 
     @Override
     public abstract InnerConstraintFactory<Solution_, ?> getConstraintFactory();
-
-    @Override
-    public final Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, ScoreImpactType.PENALTY);
-    }
-
-    @Override
-    public final Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
-        return impactScoreConfigurable(constraintPackage, constraintName, ScoreImpactType.PENALTY);
-    }
-
-    @Override
-    public final Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, ScoreImpactType.REWARD);
-    }
-
-    @Override
-    public final Constraint rewardConfigurable(String constraintPackage, String constraintName) {
-        return impactScoreConfigurable(constraintPackage, constraintName, ScoreImpactType.REWARD);
-    }
-
-    @Override
-    public final Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, ScoreImpactType.MIXED);
-    }
-
-    abstract protected Constraint impactScore(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ScoreImpactType impactType);
-
-    abstract protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ScoreImpactType impactType);
 
 }

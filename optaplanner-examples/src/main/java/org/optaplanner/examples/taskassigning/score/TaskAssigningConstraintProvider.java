@@ -37,36 +37,36 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
     private Constraint noMissingSkills(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Task.class)
                 .filter(task -> task.getMissingSkillCount() > 0)
-                .penalize("No missing skills",
-                        BendableScore.ofHard(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 0, 1),
-                        Task::getMissingSkillCount);
+                .penalize(BendableScore.ofHard(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 0, 1),
+                        Task::getMissingSkillCount)
+                .asConstraint("No missing skills");
     }
 
     private Constraint criticalPriorityBasedTaskEndTime(ConstraintFactory constraintFactory) {
         return getTaskWithPriority(constraintFactory, Priority.CRITICAL)
-                .penalize("Critical priority task end time",
-                        BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 0, 1),
-                        Task::getEndTime);
+                .penalize(BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 0, 1),
+                        Task::getEndTime)
+                .asConstraint("Critical priority task end time");
     }
 
     private Constraint minimizeMakespan(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Employee.class)
-                .penalize("Minimize makespan, latest ending employee first",
-                        BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 1, 1),
-                        employee -> employee.getEndTime() * employee.getEndTime());
+                .penalize(BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 1, 1),
+                        employee -> employee.getEndTime() * employee.getEndTime())
+                .asConstraint("Minimize makespan, latest ending employee first");
     }
 
     private Constraint majorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
         return getTaskWithPriority(constraintFactory, Priority.MAJOR)
-                .penalize("Major priority task end time",
-                        BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 2, 1),
-                        Task::getEndTime);
+                .penalize(BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 2, 1),
+                        Task::getEndTime)
+                .asConstraint("Major priority task end time");
     }
 
     private Constraint minorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
         return getTaskWithPriority(constraintFactory, Priority.MINOR)
-                .penalize("Minor priority task end time",
-                        BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 3, 1),
-                        Task::getEndTime);
+                .penalize(BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 3, 1),
+                        Task::getEndTime)
+                .asConstraint("Minor priority task end time");
     }
 }

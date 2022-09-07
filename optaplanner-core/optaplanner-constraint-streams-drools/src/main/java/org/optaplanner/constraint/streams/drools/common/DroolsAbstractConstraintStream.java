@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
@@ -13,6 +12,7 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.drools.DroolsConstraint;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.Constraint;
 
 public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
@@ -26,20 +26,16 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
         this.constraintFactory = Objects.requireNonNull(constraintFactory);
     }
 
-    protected DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
-        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
-                constraintName, constraintWeight);
-        return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, false, ruleBuilder);
-    }
-
-    protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
+    protected Constraint buildConstraint(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
-        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
-                constraintName);
-        return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, true, ruleBuilder);
+        var resolvedConstraintPackage =
+                Objects.requireNonNullElseGet(constraintPackage, this.constraintFactory::getDefaultConstraintPackage);
+        var isConstraintWeightConfigurable = constraintWeight == null;
+        var constraintWeightExtractor = isConstraintWeightConfigurable
+                ? buildConstraintWeightExtractor(resolvedConstraintPackage, constraintName)
+                : buildConstraintWeightExtractor(resolvedConstraintPackage, constraintName, constraintWeight);
+        return new DroolsConstraint<>(constraintFactory, resolvedConstraintPackage, constraintName, constraintWeightExtractor,
+                impactType, isConstraintWeightConfigurable, ruleBuilder);
     }
 
     public void addChildStream(DroolsAbstractConstraintStream<Solution_> childStream) {
