@@ -21,12 +21,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kie.efesto.common.utils.PackageClassNameUtils;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.compiler.PMMLCompilationContextImpl;
 import org.kie.pmml.compiler.executor.PMMLCompiler;
 import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
 import org.slf4j.Logger;
@@ -49,11 +52,24 @@ public class PMMLCompilerServicePMMLInputStream {
     }
 
     public static List<EfestoCompilationOutput> getEfestoCompilationOutputPMML(EfestoInputStreamResource resource,
+                                                                               EfestoCompilationContext efestoCompilationContext) {
+        PMMLCompilationContext pmmlContext = getPMMLCompilationContext(resource.getFileName(), efestoCompilationContext);
+        return getEfestoCompilationOutputPMML(resource, pmmlContext);
+    }
+
+    public static List<EfestoCompilationOutput> getEfestoCompilationOutputPMML(EfestoInputStreamResource resource,
                                                                                PMMLCompilationContext pmmlContext) {
         List<KiePMMLModel> kiePmmlModels =
                 getKiePMMLModelsFromInputStreamResourcesWithConfigurationsWithSources(pmmlContext,
-                                                                                                                 Collections.singletonList(resource));
+                                                                                      Collections.singletonList(resource));
         return getEfestoFinalOutputPMML(kiePmmlModels, resource.getFileName(), pmmlContext);
+    }
+
+    static PMMLCompilationContext getPMMLCompilationContext(String fileName, EfestoCompilationContext compilationContext) {
+        PMMLCompilationContext toReturn = new PMMLCompilationContextImpl(fileName,
+                                                                                   new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader()));
+        toReturn.getGeneratedResourcesMap().putAll(compilationContext.getGeneratedResourcesMap());
+        return toReturn;
     }
 
     /**

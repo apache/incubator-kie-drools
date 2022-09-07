@@ -1,0 +1,11 @@
+[
+  {
+    "name" : "org.kie.pmml.models.drools.commons.model.EfestoRedirectOutputPMMLDrl",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  }
+]
