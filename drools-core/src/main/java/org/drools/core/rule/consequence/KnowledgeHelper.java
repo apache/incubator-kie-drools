@@ -76,6 +76,8 @@ public interface KnowledgeHelper
     InternalFactHandle insert(Object object, boolean dynamic);
     
     InternalFactHandle insertLogical(Object object) ;
+
+    InternalFactHandle insertLogical(Object object, Object value);
     
     InternalFactHandle insertLogical(Object object, Mode belief) ;
 

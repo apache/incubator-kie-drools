@@ -180,13 +180,13 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
 
     private InternalFactHandle addLogicalDependency(final InternalFactHandle handle,
                                                     final Object object,
-                                                    final Object value,
+                                                    final Object tmsValue,
                                                     final TruthMaintenanceSystemActivation activation,
                                                     final ObjectTypeConf typeConf,
                                                     final boolean read) {
         BeliefSystem beliefSystem = defaultBeliefSystem;
-        if (value instanceof Mode & !(value instanceof SimpleMode)) {
-            BeliefSystemMode mode = (BeliefSystemMode) value;
+        if (tmsValue instanceof Mode & !(tmsValue instanceof SimpleMode)) {
+            BeliefSystemMode mode = (BeliefSystemMode) tmsValue;
             beliefSystem = mode.getBeliefSystem();
         }
 
@@ -196,7 +196,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
             ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).setBeliefSet( beliefSet );
         }
 
-        final LogicalDependency node = beliefSystem.newLogicalDependency( activation, beliefSet, object, value );
+        final LogicalDependency node = beliefSystem.newLogicalDependency( activation, beliefSet, object, tmsValue );
         activation.getRule().setHasLogicalDependency( true );
 
         activation.addLogicalDependency( node );

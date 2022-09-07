@@ -24,11 +24,12 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataProcessor;
 import org.drools.ruleunits.impl.facthandles.RuleUnitInternalFactHandle;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.drools.ruleunits.api.DataHandle;
-import org.drools.ruleunits.api.DataProcessor;
+import org.kie.api.runtime.rule.RuleContext;
 
 public class EntryPointDataProcessor implements DataProcessor {
     private final EntryPoint entryPoint;
@@ -46,6 +47,10 @@ public class EntryPointDataProcessor implements DataProcessor {
             handles.put(handle, fh);
         }
         return fh;
+    }
+
+    public void insertLogical(RuleContext ruleContext, Object object) {
+        ruleContext.insertLogical(entryPoint, object);
     }
 
     public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {

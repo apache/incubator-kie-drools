@@ -131,11 +131,19 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         return insertLogical( object, beliefs );
     }
 
+    @Override
     public InternalFactHandle insertLogical(final Object object) {
         return insertLogical( object, (Object) null );
     }
 
+    @Override
     public InternalFactHandle insertLogical(Object object, Object value) {
+        TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
+        return null;
+    }
+
+    @Override
+    public InternalFactHandle insertLogical(EntryPoint ep, Object object) {
         TruthMaintenanceSystemFactory.throwExceptionForMissingTms();
         return null;
     }

@@ -38,6 +38,12 @@
 
       <dependency>
         <groupId>org.drools</groupId>
+        <artifactId>drools-tms</artifactId>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.drools</groupId>
         <artifactId>drools-mvel</artifactId>
         <scope>test</scope>
       </dependency>

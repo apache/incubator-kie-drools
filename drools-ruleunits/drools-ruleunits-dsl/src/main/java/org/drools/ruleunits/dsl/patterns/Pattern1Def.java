@@ -21,8 +21,10 @@ import org.drools.model.functions.Block2;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
+import org.drools.ruleunits.impl.ConsequenceDataStore;
 
 public interface Pattern1Def<A> extends PatternDef {
 
@@ -57,4 +59,8 @@ public interface Pattern1Def<A> extends PatternDef {
     <G> void execute(G globalObject, Block1<G> block);
 
     <G> void execute(G globalObject, Block2<G, A> block);
+
+    <T> void executeOnDataStore(DataStore<T> dataStore, Block1<ConsequenceDataStore<T>> block);
+
+    <T> void executeOnDataStore(DataStore<T> dataStore, Block2<ConsequenceDataStore<T>, A> block);
 }

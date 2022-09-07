@@ -30,6 +30,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
 import org.drools.ruleunits.api.DataStore;
+import org.kie.api.runtime.rule.RuleContext;
 
 public class ListDataStore<T> implements DataStore<T>, InternalStoreCallback {
     private final Map<Object, DataHandle> store = new IdentityHashMap<>();
@@ -45,10 +46,12 @@ public class ListDataStore<T> implements DataStore<T>, InternalStoreCallback {
         return dh;
     }
 
-    protected DataHandle createDataHandle(T t) {
-        return new DataHandleImpl(t);
+    @Override
+    public void addLogical(RuleContext ruleContext, Object object) {
+        entryPointSubscribers.forEach(eps -> eps.insertLogical(ruleContext, object));
     }
 
+    // used by kogito-runtimes, check if it can be removed
     public DataHandle findHandle(long id) {
         for (DataHandle dh : store.values()) {
             DataHandleImpl dhi = (DataHandleImpl) dh;
@@ -59,6 +62,10 @@ public class ListDataStore<T> implements DataStore<T>, InternalStoreCallback {
         throw new IllegalArgumentException("Cannot find id");
     }
 
+    protected DataHandle createDataHandle(T t) {
+        return new DataHandleImpl(t);
+    }
+
     @Override
     public void update(DataHandle handle, T object) {
         entryPointSubscribers.forEach(s -> s.update(handle, handle.getObject()));
@@ -66,8 +73,13 @@ public class ListDataStore<T> implements DataStore<T>, InternalStoreCallback {
     }
 
     @Override
-    public void remove(Object object) {
-        remove(store.get(object));
+    public DataHandle lookup(Object object) {
+        return store.get(object);
+    }
+
+    @Override
+    public void remove(T object) {
+        remove(lookup(object));
     }
 
     @Override
@@ -90,14 +102,14 @@ public class ListDataStore<T> implements DataStore<T>, InternalStoreCallback {
 
     @Override
     public void update(RuleUnitInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        DataHandle dh = ((RuleUnitInternalFactHandle) fh).getDataHandle();
+        DataHandle dh = fh.getDataHandle();
         entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, activation));
         subscribers.forEach(s -> s.update(dh, (T) obj));
     }
 
     @Override
     public void delete(RuleUnitInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
-        DataHandle dh = ((RuleUnitInternalFactHandle) fh).getDataHandle();
+        DataHandle dh = fh.getDataHandle();
         entryPointSubscribers.forEach(s -> s.delete(dh, rule, terminalNode, fhState));
         subscribers.forEach(s -> s.delete(dh));
         store.remove(fh.getObject());

@@ -28,6 +28,7 @@ import org.drools.model.Channel;
 import org.drools.model.Drools;
 import org.drools.model.DroolsEntryPoint;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
@@ -82,9 +83,13 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
         return knowledgeHelper.insertLogical(object);
     }
 
-    @Override
     public FactHandle insertLogical( Object object, Object value ) {
         return knowledgeHelper.insertLogical(object, value);
+    }
+
+    @Override
+    public FactHandle insertLogical( EntryPoint ep, Object object ) {
+        return knowledgeHelper.insertLogical(ep, object);
     }
 
     @Override

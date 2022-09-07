@@ -27,6 +27,7 @@ import org.drools.model.functions.Block2;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.accumulate.AccumulatePattern2;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
@@ -34,6 +35,9 @@ import org.drools.ruleunits.dsl.accumulate.GroupByPattern2;
 import org.drools.ruleunits.dsl.constraints.AlphaConstraintWithRightExtractor;
 import org.drools.ruleunits.dsl.constraints.AlphaConstraintWithRightValue;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
+import org.drools.ruleunits.impl.ConsequenceDataStore;
+import org.drools.ruleunits.impl.ConsequenceDataStoreImpl;
+import org.kie.api.runtime.rule.RuleContext;
 
 import static org.drools.model.functions.Function1.identity;
 
@@ -54,9 +58,20 @@ public class Pattern1DefImpl<A> extends SinglePatternDef<A> implements Pattern1D
     }
 
     @Override
+    public <T> void executeOnDataStore(DataStore<T> dataStore, Block1<ConsequenceDataStore<T>> block) {
+        rule.setConsequence( DSL.on(rule.asGlobal(dataStore)).execute( (drools, ds) -> block.execute(new ConsequenceDataStoreImpl<>((RuleContext) drools, (DataStore<T>) ds))) );
+    }
+
+    @Override
+    public <T> void executeOnDataStore(DataStore<T> dataStore, Block2<ConsequenceDataStore<T>, A> block) {
+        rule.setConsequence( DSL.on(rule.asGlobal(dataStore), variable).execute( (drools, ds, a) -> block.execute(new ConsequenceDataStoreImpl<>((RuleContext) drools, (DataStore<T>) ds), (A) a)) );
+    }
+
+    @Override
     public <B> Pattern2DefImpl<A, B> on(DataSource<B> dataSource) {
         return join(rule.on(dataSource));
     }
+
 
     @Override
     public <B> Pattern2DefImpl<A, B> join(Function1<RuleFactory, Pattern1Def<B>> patternBuilder) {

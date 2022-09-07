@@ -36,5 +36,5 @@ public interface DataStore<T> extends DataSource<T> {
      */
     void remove(DataHandle handle);
 
-    void remove(Object object);
+    void remove(T object);
 }
