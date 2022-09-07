@@ -161,6 +161,18 @@ rules:
       - patch
       - update
   - apiGroups:
+      - "broker.amq.io"
+    resources:
+      - activemqartemisaddresses
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - patch
+      - update
+  - apiGroups:
       - "keda.sh"
     resources:
       - scaledobjects
