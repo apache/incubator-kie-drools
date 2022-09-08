@@ -15,8 +15,6 @@
  */
 package org.kie.pmml.api.identifiers;
 
-import java.util.Objects;
-
 import org.kie.efesto.common.api.identifiers.LocalUri;
 
 public class LocalComponentIdPmml extends AbstractModelLocalUriIdPmml {
@@ -26,18 +24,6 @@ public class LocalComponentIdPmml extends AbstractModelLocalUriIdPmml {
 
     public LocalComponentIdPmml(String fileName, String name) {
         super(LocalUri.Root.append(PREFIX).append(fileName).append(name), fileName, name);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        LocalComponentIdPmml that = (LocalComponentIdPmml) o;
-        return Objects.equals(fileName, that.fileName) && Objects.equals(name, that.name) ;
     }
 
 }

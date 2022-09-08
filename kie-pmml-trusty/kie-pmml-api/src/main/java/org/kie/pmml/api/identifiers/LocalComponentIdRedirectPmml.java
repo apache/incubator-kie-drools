@@ -23,8 +23,11 @@ public class LocalComponentIdRedirectPmml extends AbstractModelLocalUriIdPmml {
 
     private static final long serialVersionUID = -4610916178245973385L;
 
+    private final String redirectModel;
+
     public LocalComponentIdRedirectPmml(String redirectModel, String fileName, String name) {
         super(LocalUri.Root.append(redirectModel).append(fileName).append(name), fileName, name);
+        this.redirectModel = redirectModel;
     }
 
     @Override
@@ -36,7 +39,12 @@ public class LocalComponentIdRedirectPmml extends AbstractModelLocalUriIdPmml {
             return false;
         }
         LocalComponentIdRedirectPmml that = (LocalComponentIdRedirectPmml) o;
-        return Objects.equals(fileName, that.fileName) && Objects.equals(name, that.name);
+        return Objects.equals(redirectModel, that.redirectModel) && Objects.equals(fileName, that.fileName) && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), redirectModel, fileName, name);
     }
 
 }
