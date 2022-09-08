@@ -15,8 +15,14 @@
  */
 package org.drools.ruleunits.impl;
 
+import org.drools.core.impl.RuleBase;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.util.bitmask.AllSetBitMask;
+import org.drools.core.util.bitmask.BitMask;
 import org.drools.ruleunits.api.DataStore;
 import org.kie.api.runtime.rule.RuleContext;
+
+import static org.drools.kiesession.entrypoints.NamedEntryPoint.calculateUpdateBitMask;
 
 public class ConsequenceDataStoreImpl<T> implements ConsequenceDataStore<T> {
 
@@ -30,22 +36,27 @@ public class ConsequenceDataStoreImpl<T> implements ConsequenceDataStore<T> {
     }
 
     @Override
-    public void add(T t) {
-        dataStore.add(t);
+    public void add(T object) {
+        dataStore.add(object);
     }
 
     @Override
-    public void addLogical(T t) {
-        ((InternalStoreCallback)dataStore).addLogical(ruleContext, t);
+    public void addLogical(T object) {
+        ((InternalStoreCallback)dataStore).addLogical(ruleContext, object);
     }
 
     @Override
-    public void update(T t) {
-        dataStore.update(((InternalStoreCallback)dataStore).lookup(t), t);
+    public void update(T object, String... modifiedProperties) {
+        BitMask bitMask = modifiedProperties.length == 0 ? AllSetBitMask.get() : calculateUpdateBitMask((RuleBase) ruleContext.getKieBase(), object, modifiedProperties);
+        update(object, bitMask);
+    }
+
+    public void update(T object, BitMask bitMask) {
+        ((InternalStoreCallback)dataStore).update(((InternalStoreCallback)dataStore).lookup(object), object, bitMask, object.getClass(), (Activation) ruleContext.getMatch());
     }
 
     @Override
-    public void remove(T t) {
-        dataStore.remove(t);
+    public void remove(T object) {
+        dataStore.remove(object);
     }
 }

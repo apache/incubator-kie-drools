@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,16 +43,16 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.MissingDependencyError;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.util.StringUtils;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.model.codegen.execmodel.PackageModel;
@@ -65,15 +64,11 @@ import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.ModifyCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
+import org.drools.util.StringUtils;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toSet;
-import static org.drools.util.ClassUtils.getter2property;
-import static org.drools.util.ClassUtils.isGetter;
-import static org.drools.util.ClassUtils.isReadableProperty;
-import static org.drools.util.ClassUtils.isSetter;
-import static org.drools.util.ClassUtils.setter2property;
 import static org.drools.model.codegen.execmodel.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.drools.model.codegen.execmodel.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.addCurlyBracesToBlock;
@@ -89,11 +84,20 @@ import static org.drools.model.codegen.execmodel.generator.DslMethodNames.ON_CAL
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
+import static org.drools.util.ClassUtils.getter2property;
+import static org.drools.util.ClassUtils.isGetter;
+import static org.drools.util.ClassUtils.isReadableProperty;
+import static org.drools.util.ClassUtils.isSetter;
+import static org.drools.util.ClassUtils.setter2property;
 
 public class Consequence {
 
     public static final Set<String> knowledgeHelperMethods = new HashSet<>();
     public static final Set<String> implicitDroolsMethods = new HashSet<>();
+
+    public static final Set<String> dataStoreMethods = new HashSet<>();
+
+    public static Class<?> dataStoreClass;
 
     private Expression createAsKnowledgeHelperExpression() {
         return parseExpression(String.format("((%s) drools).asKnowledgeHelper()", DroolsImpl.class.getCanonicalName()));
@@ -116,6 +120,14 @@ public class Consequence {
         knowledgeHelperMethods.add("insertLogical");
         knowledgeHelperMethods.add("run");
         knowledgeHelperMethods.add("guard");
+
+        try {
+            dataStoreClass = Class.forName("org.drools.ruleunits.api.DataStore");
+            dataStoreMethods.add("addLogical");
+            dataStoreMethods.add("update");
+        } catch (ClassNotFoundException e) {
+            // not using rule units, ignore
+        }
     }
 
     private final RuleContext context;
@@ -319,7 +331,6 @@ public class Consequence {
     }
 
     private boolean rewriteRHS(BlockStmt ruleBlock, BlockStmt rhs) {
-        AtomicBoolean requireDrools = new AtomicBoolean(false);
         List<MethodCallExpr> methodCallExprs = rhs.findAll(MethodCallExpr.class);
         List<AssignExpr> assignExprs = rhs.findAll(AssignExpr.class);
         List<MethodCallExpr> updateExprs = new ArrayList<>();
@@ -329,28 +340,54 @@ public class Consequence {
             rhsBodyDeclarations.put(variableDeclarator.getNameAsString(), variableDeclarator.getType());
         }
 
+        boolean requireDrools = false;
         for (MethodCallExpr methodCallExpr : methodCallExprs) {
-            if (!methodCallExpr.getScope().isPresent() && isImplicitDroolsMethod( methodCallExpr )) {
-                if ( methodCallExpr.getNameAsString().equals("insertLogical") && !TruthMaintenanceSystemFactory.present() ) {
-                    context.addCompilationError(new MissingDependencyError(TruthMaintenanceSystemFactory.NO_TMS));
-                }
-                methodCallExpr.setScope(new NameExpr("drools"));
-            }
-            if (hasDroolsScope( methodCallExpr ) || hasDroolsAsParameter( methodCallExpr )) {
-                if (knowledgeHelperMethods.contains(methodCallExpr.getNameAsString())) {
-                    methodCallExpr.setScope(createAsKnowledgeHelperExpression());
-                } else if (methodCallExpr.getNameAsString().equals("update")) {
-                    if (methodCallExpr.toString().contains( "FactHandle" )) {
-                        methodCallExpr.setScope( new NameExpr( "((org.drools.modelcompiler.consequence.DroolsImpl) drools)" ) );
-                    }
-                    updateExprs.add(methodCallExpr);
-                } else if (methodCallExpr.getNameAsString().equals("retract")) {
-                    methodCallExpr.setName(new SimpleName("delete"));
-                }
-                requireDrools.set(true);
-            }
+            requireDrools |= rewriteMethodCall(updateExprs, methodCallExpr);
         }
 
+        addUpdateBitMask(ruleBlock, methodCallExprs, assignExprs, updateExprs, rhsBodyDeclarations);
+
+        return requireDrools;
+    }
+
+    private boolean rewriteMethodCall(List<MethodCallExpr> updateExprs, MethodCallExpr methodCallExpr) {
+        if ( methodCallExpr.getScope().isPresent() ) {
+            if ( dataStoreMethods.contains(methodCallExpr.getNameAsString()) ) {
+                Expression scope = methodCallExpr.getScope().get();
+                if (isDataStoreScope(scope)) {
+                    if ( methodCallExpr.getNameAsString().equals("addLogical") && !TruthMaintenanceSystemFactory.present() ) {
+                        context.addCompilationError(new MissingDependencyError(TruthMaintenanceSystemFactory.NO_TMS));
+                    }
+                    NodeList<Expression> args = NodeList.nodeList(
+                            new CastExpr(toClassOrInterfaceType( org.kie.api.runtime.rule.RuleContext.class ), new NameExpr( "drools" ) ),
+                            methodCallExpr.getScope().get());
+                    methodCallExpr.setScope( new ObjectCreationExpr(null, toClassOrInterfaceType("org.drools.ruleunits.impl.ConsequenceDataStoreImpl"), args) );
+                }
+            }
+        } else if ( implicitDroolsMethods.contains(methodCallExpr.getNameAsString()) ) {
+            if ( methodCallExpr.getNameAsString().equals("insertLogical") && !TruthMaintenanceSystemFactory.present() ) {
+                context.addCompilationError(new MissingDependencyError(TruthMaintenanceSystemFactory.NO_TMS));
+            }
+            methodCallExpr.setScope(new NameExpr("drools"));
+        }
+
+        if (hasDroolsScope(methodCallExpr) || hasDroolsAsParameter(methodCallExpr)) {
+            if (knowledgeHelperMethods.contains(methodCallExpr.getNameAsString())) {
+                methodCallExpr.setScope(createAsKnowledgeHelperExpression());
+            } else if (methodCallExpr.getNameAsString().equals("update")) {
+                if (methodCallExpr.toString().contains( "FactHandle" )) {
+                    methodCallExpr.setScope( new EnclosedExpr( new CastExpr(toClassOrInterfaceType( DroolsImpl.class ), new NameExpr( "drools" ) ) ) );
+                }
+                updateExprs.add(methodCallExpr);
+            } else if (methodCallExpr.getNameAsString().equals("retract")) {
+                methodCallExpr.setName(new SimpleName("delete"));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void addUpdateBitMask(BlockStmt ruleBlock, List<MethodCallExpr> methodCallExprs, List<AssignExpr> assignExprs, List<MethodCallExpr> updateExprs, Map<String, Type> rhsBodyDeclarations) {
         Set<String> initializedBitmaskFields = new HashSet<>();
         for (MethodCallExpr updateExpr : updateExprs) {
             Expression argExpr = updateExpr.getArgument( 0 );
@@ -366,8 +403,8 @@ public class Consequence {
                 if (context.isPropertyReactive(updatedClass)) {
 
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
-                        Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar, updatedClass );
-                        modifiedProps.addAll(findModifiedPropertiesFromAssignment( assignExprs, updateExpr, updatedVar, updatedClass ));
+                        Set<String> modifiedProps = findModifiedProperties(methodCallExprs, updateExpr, updatedVar, updatedClass );
+                        modifiedProps.addAll(findModifiedPropertiesFromAssignment(assignExprs, updateExpr, updatedVar, updatedClass ));
                         MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
                         AssignExpr bitMaskAssign = createBitMaskField(updatedVar, bitMaskCreation);
                         if (!DrlxParseUtil.hasDuplicateExpr(ruleBlock, bitMaskAssign)) {
@@ -375,13 +412,15 @@ public class Consequence {
                         }
                     }
 
-                    updateExpr.addArgument( "mask_" + updatedVar );
+                    Expression bitMaskArgExpr = new NameExpr("mask_" + updatedVar);
+                    if (hasRuleUnit() && updateExpr.toString().contains("ConsequenceDataStoreImpl")) {
+                        bitMaskArgExpr = new MethodCallExpr("org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask", bitMaskArgExpr);
+                    }
+                    updateExpr.addArgument(bitMaskArgExpr);
                     initializedBitmaskFields.add( updatedVar );
                 }
             }
         }
-
-        return requireDrools.get();
     }
 
     private Class<?> classFromRHSDeclarations(Map<String, Type> rhsDeclarations, String updatedVar) {
@@ -498,7 +537,13 @@ public class Consequence {
                 .isPresent();
     }
 
-    private static boolean isImplicitDroolsMethod( MethodCallExpr mce ) {
-        return !mce.getScope().isPresent() && implicitDroolsMethods.contains(mce.getNameAsString());
+    private boolean isDataStoreScope(Expression scope) {
+        return scope.isNameExpr() && context.getDeclarationById(scope.asNameExpr().getNameAsString())
+                .map(DeclarationSpec::getDeclarationClass)
+                .map(dataStoreClass::isAssignableFrom).orElse(false);
+    }
+
+    private static boolean hasRuleUnit() {
+        return dataStoreClass != null;
     }
 }

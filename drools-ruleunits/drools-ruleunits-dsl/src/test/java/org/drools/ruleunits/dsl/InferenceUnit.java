@@ -22,7 +22,6 @@ import org.drools.ruleunits.dsl.domain.Person;
 import static org.drools.model.Index.ConstraintType.EQUAL;
 import static org.drools.model.Index.ConstraintType.GREATER_OR_EQUAL;
 import static org.drools.model.Index.ConstraintType.GREATER_THAN;
-import static org.drools.model.Index.ConstraintType.LESS_THAN;
 
 public class InferenceUnit implements RuleUnitDefinition {
 
@@ -56,11 +55,10 @@ public class InferenceUnit implements RuleUnitDefinition {
         rulesFactory.rule()
                 .on(persons)
                 .filter("name", p -> p.getName() , EQUAL, "Mario")
-                .filter("age", p -> p.getAge() , LESS_THAN, 18)
                 // executeOnDataStore is required when using methods specific of a DataStore like update or addLogical
                 .executeOnDataStore(persons, (ps, p) -> {
                     p.setAge(p.getAge()+1);
-                    ps.update(p);
+                    ps.update(p, "age"); // property reactivity update
                 });
 
         rulesFactory.rule()

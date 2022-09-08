@@ -105,7 +105,11 @@ public class FieldDataStore<T> implements SingletonStore<T>, InternalStoreCallba
 
     @Override
     public void update(RuleUnitInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        DataHandle dh = fh.getDataHandle();
+        update(fh.getDataHandle(), obj, mask, modifiedClass, activation);
+    }
+
+    @Override
+    public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
         entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, activation));
         subscribers.forEach(s -> s.update(dh, (T) obj));
     }
