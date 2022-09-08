@@ -28,6 +28,7 @@ public interface InternalStoreCallback {
     DataHandle lookup(Object object);
 
     void update(RuleUnitInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation);
+    void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation);
 
     void delete(RuleUnitInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState);
 

@@ -15,9 +15,11 @@
  */
 package org.drools.ruleunits.impl;
 
+import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,5 +61,36 @@ public class InterpretedRuleUnitTest {
 
         RuleUnitInstance<NotTestUnit> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit);
         assertEquals(2, unitInstance.fire());
+    }
+
+    @Test
+    public void testLogicalAdd() {
+        // KOGITO-6466
+        LogicalAddTestUnit unit = new LogicalAddTestUnit();
+
+        RuleUnitInstance<LogicalAddTestUnit> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit);
+
+        DataHandle dh = unit.getStrings().add("abc");
+
+        assertThat(unitInstance.fire()).isEqualTo(2);
+        assertThat(unit.getResults()).containsExactly("exists");
+
+        unit.getResults().clear();
+
+        unit.getStrings().remove(dh);
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).containsExactly("not exists");
+    }
+
+    @Test
+    public void testUpdate() {
+        UpdateTestUnit unit = new UpdateTestUnit();
+
+        RuleUnitInstance<UpdateTestUnit> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit);
+
+        unit.getPersons().add(new Person("Mario", 17));
+
+        assertThat(unitInstance.fire()).isEqualTo(2);
+        assertThat(unit.getResults()).containsExactly("ok");
     }
 }

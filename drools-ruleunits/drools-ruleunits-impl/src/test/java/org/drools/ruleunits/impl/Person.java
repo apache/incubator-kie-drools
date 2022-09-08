@@ -15,12 +15,30 @@
  */
 package org.drools.ruleunits.impl;
 
-public interface ConsequenceDataStore<T> {
-    void add(T object);
+public class Person {
 
-    void addLogical(T object);
+    private String name;
 
-    void update(T object, String... modifiedProperties);
+    private int age;
 
-    void remove(T object);
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 }

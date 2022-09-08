@@ -15,12 +15,30 @@
  */
 package org.drools.ruleunits.impl;
 
-public interface ConsequenceDataStore<T> {
-    void add(T object);
+import java.util.ArrayList;
+import java.util.List;
 
-    void addLogical(T object);
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.RuleUnitData;
 
-    void update(T object, String... modifiedProperties);
+public class UpdateTestUnit implements RuleUnitData {
+    private final List<String> results = new ArrayList<>();
+    private final DataStore<Person> persons;
 
-    void remove(T object);
+    public UpdateTestUnit() {
+        this(DataSource.createStore());
+    }
+
+    public UpdateTestUnit(DataStore<Person> persons) {
+        this.persons = persons;
+    }
+
+    public DataStore<Person> getPersons() {
+        return persons;
+    }
+
+    public List<String> getResults() {
+        return results;
+    }
 }

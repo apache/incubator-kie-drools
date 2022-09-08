@@ -40,7 +40,7 @@ public class AllSetButLastBitMask extends SingleLongBitMask implements BitMask, 
         if (index == 0) {
             return this;
         }
-        return BitMask.Factory.getFull(index+1).reset(0).reset(index);
+        return BitMask.getFull(index+1).reset(0).reset(index);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class AllSetButLastBitMask extends SingleLongBitMask implements BitMask, 
         if (mask instanceof AllSetMask) {
             return EmptyBitMask.get();
         }
-        return BitMask.Factory.getFull(mask instanceof LongBitMask ? 1 : 65).reset(0).resetAll(mask);
+        return BitMask.getFull(mask instanceof LongBitMask ? 1 : 65).reset(0).resetAll(mask);
     }
 
     @Override
