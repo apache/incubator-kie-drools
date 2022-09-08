@@ -17,6 +17,9 @@ package org.kie.pmml.api.identifiers;
 
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalId;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.LocalUriId;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
@@ -25,6 +28,17 @@ class LocalComponentIdPmmlTest {
 
     private static final String fileName = "fileName";
     private static final String name = "name";
+
+    @Test
+    void equals() {
+        LocalComponentIdPmml original = new LocalComponentIdPmml(fileName, name);
+        LocalUriId compare = new LocalComponentIdPmml(fileName, name);
+        assertThat(original.equals(compare)).isTrue();
+        String path = original.fullPath();
+        LocalUri parsed = LocalUri.parse(path);
+        compare = new ModelLocalUriId(parsed);
+        assertThat(original.equals(compare)).isTrue();
+    }
 
     @Test
     void prefix() {

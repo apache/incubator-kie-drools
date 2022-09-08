@@ -62,7 +62,6 @@ import static org.mockito.Mockito.when;
 
 class PMMLRuntimeHelperTest {
 
-    private static final String basePath = "testmod";
     private static final String MODEL_NAME = "TestMod";
     private static final String FILE_NAME = "FileName";
     private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
@@ -89,7 +88,7 @@ class PMMLRuntimeHelperTest {
         darInputPMML = new AbstractEfestoInput<>(modelLocalUriId, "") {
         };
         assertThat(PMMLRuntimeHelper.canManageEfestoInputPMML(darInputPMML, context)).isFalse();
-        modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/" + PMML_STRING + "/darfoo"));
+        ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/" + PMML_STRING + "/darfoo"));
         context = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
         darInputPMML = new EfestoInputPMML(modelLocalUriId, context);
         assertThat(PMMLRuntimeHelper.canManageEfestoInputPMML(darInputPMML, context)).isFalse();
@@ -174,10 +173,10 @@ class PMMLRuntimeHelperTest {
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
 
         KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(modelLocalUriId, pmmlContext);
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, pmmlContext);
-        EfestoOutputPMML retrieved = PMMLRuntimeHelper.getEfestoOutput(kiePmmlModelFactory, darInputPMML);
+        EfestoInputPMML efestoInputPMML = new EfestoInputPMML(modelLocalUriId, pmmlContext);
+        EfestoOutputPMML retrieved = PMMLRuntimeHelper.getEfestoOutput(kiePmmlModelFactory, efestoInputPMML);
         assertThat(retrieved).isNotNull();
-        commonEvaluateEfestoOutputPMML(retrieved, darInputPMML);
+        commonEvaluateEfestoOutputPMML(retrieved, efestoInputPMML);
     }
 
     @Test

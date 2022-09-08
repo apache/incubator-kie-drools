@@ -49,19 +49,16 @@ public class AbstractModelLocalUriIdPmml extends ModelLocalUriId implements Id {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
         if (!super.equals(o)) {
             return false;
         }
-        LocalComponentIdPmml that = (LocalComponentIdPmml) o;
-        return Objects.equals(fileName, that.fileName) && Objects.equals(name, that.name) ;
+        ModelLocalUriId that = (ModelLocalUriId) o;
+        return Objects.equals(this.fullPath(), that.fullPath());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), fileName, name);
+        return super.hashCode();
     }
 
 }

@@ -15,8 +15,6 @@
  */
 package org.kie.pmml.api.identifiers;
 
-import java.util.Objects;
-
 import org.kie.efesto.common.api.identifiers.LocalUri;
 
 public class LocalComponentIdRedirectPmml extends AbstractModelLocalUriIdPmml {
@@ -30,21 +28,17 @@ public class LocalComponentIdRedirectPmml extends AbstractModelLocalUriIdPmml {
         this.redirectModel = redirectModel;
     }
 
+    public String getRedirectModel() {
+        return redirectModel;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        LocalComponentIdRedirectPmml that = (LocalComponentIdRedirectPmml) o;
-        return Objects.equals(redirectModel, that.redirectModel) && Objects.equals(fileName, that.fileName) && Objects.equals(name, that.name);
+        return super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), redirectModel, fileName, name);
+        return super.hashCode();
     }
-
 }
