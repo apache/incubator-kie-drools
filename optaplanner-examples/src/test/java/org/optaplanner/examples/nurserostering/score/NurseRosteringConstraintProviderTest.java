@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.optaplanner.examples.common.score.AbstractConstraintProviderTest;
 import org.optaplanner.examples.common.score.ConstraintProviderTest;
@@ -37,23 +37,21 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
+import org.optaplanner.test.api.score.stream.SingleConstraintVerification;
 
 class NurseRosteringConstraintProviderTest
         extends AbstractConstraintProviderTest<NurseRosteringConstraintProvider, NurseRoster> {
 
-    private final AtomicLong idSupplier = new AtomicLong(0);
-    private final Map<Pair<Integer, ShiftType>, Shift> indexShiftTypePairToShiftMap = new ConcurrentHashMap<>();
-    private final Map<Integer, ShiftDate> indexToShiftDateMap = new ConcurrentHashMap<>();
+    private final ThreadLocal<AtomicLong> idSupplier = ThreadLocal.withInitial(() -> new AtomicLong(0));
+    private final ThreadLocal<Map<Pair<Integer, ShiftType>, Shift>> indexShiftTypePairToShiftMap =
+            ThreadLocal.withInitial(HashMap::new);
+    private final ThreadLocal<Map<Integer, ShiftDate>> indexToShiftDateMap = ThreadLocal.withInitial(HashMap::new);
     private final ShiftType dayShiftType = new ShiftType();
     private final ShiftType nightShiftType = new ShiftType();
 
     @BeforeEach
     void setup() {
-        idSupplier.set(0);
-        indexShiftTypePairToShiftMap.clear();
-        indexToShiftDateMap.clear();
-
-        dayShiftType.setId(idSupplier.incrementAndGet());
+        dayShiftType.setId(idSupplier.get().incrementAndGet());
         dayShiftType.setNight(false);
         dayShiftType.setStartTimeString("09:00");
         dayShiftType.setEndTimeString("17:00");
@@ -61,7 +59,7 @@ class NurseRosteringConstraintProviderTest
         dayShiftType.setIndex(0);
         dayShiftType.setDescription("Day Shift");
 
-        nightShiftType.setId(idSupplier.incrementAndGet());
+        nightShiftType.setId(idSupplier.get().incrementAndGet());
         nightShiftType.setNight(true);
         nightShiftType.setStartTimeString("07:00");
         nightShiftType.setEndTimeString("04:00");
@@ -70,9 +68,20 @@ class NurseRosteringConstraintProviderTest
         nightShiftType.setDescription("Night Shift");
     }
 
+    @AfterEach
+    void tearDown() {
+        idSupplier.remove();
+        indexShiftTypePairToShiftMap.remove();
+        indexToShiftDateMap.remove();
+    }
+
     @Override
     protected ConstraintVerifier<NurseRosteringConstraintProvider, NurseRoster> createConstraintVerifier() {
         return ConstraintVerifier.build(new NurseRosteringConstraintProvider(), NurseRoster.class, ShiftAssignment.class);
+    }
+
+    private long getNextId() {
+        return idSupplier.get().getAndIncrement();
     }
 
     // ******************************************************
@@ -113,14 +122,9 @@ class NurseRosteringConstraintProviderTest
             return this;
         }
 
-        public MinMaxContractBuilder withWeekendDefinition(WeekendDefinition weekendDefinition) {
-            this.weekendDefinition = weekendDefinition;
-            return this;
-        }
-
         public Contract build() {
             MinMaxContractLine contractLine = new MinMaxContractLine();
-            contractLine.setId(idSupplier.incrementAndGet());
+            contractLine.setId(getNextId());
             contractLine.setContractLineType(contractLineType);
             if (minimumValue != null) {
                 contractLine.setMinimumValue(minimumValue);
@@ -134,7 +138,7 @@ class NurseRosteringConstraintProviderTest
             }
 
             Contract out = new Contract();
-            out.setId(idSupplier.incrementAndGet());
+            out.setId(getNextId());
             out.setContractLineList(Collections.singletonList(contractLine));
             contractLine.setContract(out);
 
@@ -163,20 +167,15 @@ class NurseRosteringConstraintProviderTest
             return this;
         }
 
-        public BooleanContractBuilder withEnabled(boolean enabled) {
-            this.enabled = enabled;
-            return this;
-        }
-
         public Contract build() {
             BooleanContractLine contractLine = new BooleanContractLine();
-            contractLine.setId(idSupplier.incrementAndGet());
+            contractLine.setId(getNextId());
             contractLine.setContractLineType(contractLineType);
             contractLine.setWeight(weight);
             contractLine.setEnabled(enabled);
 
             Contract out = new Contract();
-            out.setId(idSupplier.incrementAndGet());
+            out.setId(getNextId());
             out.setContractLineList(Collections.singletonList(contractLine));
             contractLine.setContract(out);
 
@@ -197,14 +196,14 @@ class NurseRosteringConstraintProviderTest
         public PatternContractBuilder freeBefore2DaysWithAWorkDay(DayOfWeek workDay) {
             freeBefore2DaysWithAWorkDayPattern = new FreeBefore2DaysWithAWorkDayPattern();
             freeBefore2DaysWithAWorkDayPattern.setFreeDayOfWeek(workDay);
-            freeBefore2DaysWithAWorkDayPattern.setId(idSupplier.incrementAndGet());
+            freeBefore2DaysWithAWorkDayPattern.setId(getNextId());
             freeBefore2DaysWithAWorkDayPattern.setCode("Free Before 2 Days - " + workDay);
             return this;
         }
 
         public PatternContractBuilder shiftType2DaysPattern(ShiftType day0ShiftType, ShiftType day1ShiftType) {
             shiftType2DaysPattern = new ShiftType2DaysPattern();
-            shiftType2DaysPattern.setId(idSupplier.incrementAndGet());
+            shiftType2DaysPattern.setId(getNextId());
             shiftType2DaysPattern.setCode("Shift Type 2 Day Pattern - " + day0ShiftType + ", " + day1ShiftType);
             shiftType2DaysPattern.setDayIndex0ShiftType(day0ShiftType);
             shiftType2DaysPattern.setDayIndex1ShiftType(day1ShiftType);
@@ -214,7 +213,7 @@ class NurseRosteringConstraintProviderTest
         public PatternContractBuilder shiftType3DaysPattern(ShiftType day0ShiftType, ShiftType day1ShiftType,
                 ShiftType day2ShiftType) {
             shiftType3DaysPattern = new ShiftType3DaysPattern();
-            shiftType3DaysPattern.setId(idSupplier.incrementAndGet());
+            shiftType3DaysPattern.setId(getNextId());
             shiftType3DaysPattern
                     .setCode("Shift Type 3 Day Pattern - " + day0ShiftType + ", " + day1ShiftType + ", " + day2ShiftType);
             shiftType3DaysPattern.setDayIndex0ShiftType(day0ShiftType);
@@ -243,10 +242,10 @@ class NurseRosteringConstraintProviderTest
             if (patternContractLine.getPattern() == null) {
                 throw new IllegalStateException("No patterns are set on the builder");
             }
-            patternContractLine.setId(idSupplier.incrementAndGet());
+            patternContractLine.setId(getNextId());
             patternContractLine.getPattern().setWeight(weight);
             Contract out = new Contract();
-            out.setId(idSupplier.incrementAndGet());
+            out.setId(getNextId());
             // PatternContractLine does not extend ContractLine
             out.setContractLineList(Collections.emptyList());
             patternContractLine.setContract(out);
@@ -265,7 +264,7 @@ class NurseRosteringConstraintProviderTest
     private Employee getEmployee(Contract contract) {
         Employee employee = new Employee();
         employee.setContract(contract);
-        employee.setId(idSupplier.incrementAndGet());
+        employee.setId(getNextId());
         employee.setName("Employee " + employee.getId());
         employee.setCode(employee.getName());
         employee.setDayOffRequestMap(new HashMap<>());
@@ -276,10 +275,10 @@ class NurseRosteringConstraintProviderTest
     }
 
     private ShiftDate getShiftDate(int dayIndex) {
-        return indexToShiftDateMap.computeIfAbsent(dayIndex, key -> {
+        return indexToShiftDateMap.get().computeIfAbsent(dayIndex, key -> {
             ShiftDate shiftDate = new ShiftDate();
             shiftDate.setDayIndex(dayIndex);
-            shiftDate.setId(idSupplier.incrementAndGet());
+            shiftDate.setId(getNextId());
             shiftDate.setDate(LocalDate.of(2000, 1, 1).plusDays(dayIndex));
             shiftDate.setShiftList(new ArrayList<>());
             return shiftDate;
@@ -291,12 +290,12 @@ class NurseRosteringConstraintProviderTest
     }
 
     private ShiftAssignment getShiftAssignment(int dayIndex, Employee employee, ShiftType shiftType) {
-        Shift shift = indexShiftTypePairToShiftMap.computeIfAbsent(Pair.of(dayIndex, shiftType), key -> {
+        Shift shift = indexShiftTypePairToShiftMap.get().computeIfAbsent(Pair.of(dayIndex, shiftType), key -> {
             ShiftDate shiftDate = getShiftDate(dayIndex);
 
             Shift newShift = new Shift();
             newShift.setShiftType(shiftType);
-            newShift.setId(idSupplier.incrementAndGet());
+            newShift.setId(getNextId());
             newShift.setRequiredEmployeeSize(0);
             newShift.setIndex(0);
             newShift.setShiftDate(shiftDate);
@@ -305,7 +304,7 @@ class NurseRosteringConstraintProviderTest
         });
         shift.setRequiredEmployeeSize(shift.getRequiredEmployeeSize() + 1);
         ShiftAssignment shiftAssignment = new ShiftAssignment();
-        shiftAssignment.setId(idSupplier.incrementAndGet());
+        shiftAssignment.setId(getNextId());
         shiftAssignment.setEmployee(employee);
         shiftAssignment.setIndexInShift(0);
         shiftAssignment.setShift(shift);
@@ -314,7 +313,7 @@ class NurseRosteringConstraintProviderTest
 
     private DayOffRequest getDayOffRequest(Employee employee, ShiftDate shiftDate, int weight) {
         DayOffRequest dayOffRequest = new DayOffRequest();
-        dayOffRequest.setId(idSupplier.incrementAndGet());
+        dayOffRequest.setId(getNextId());
         dayOffRequest.setEmployee(employee);
         dayOffRequest.setShiftDate(shiftDate);
         dayOffRequest.setWeight(weight);
@@ -323,7 +322,7 @@ class NurseRosteringConstraintProviderTest
 
     private DayOnRequest getDayOnRequest(Employee employee, ShiftDate shiftDate, int weight) {
         DayOnRequest dayOnRequest = new DayOnRequest();
-        dayOnRequest.setId(idSupplier.incrementAndGet());
+        dayOnRequest.setId(getNextId());
         dayOnRequest.setEmployee(employee);
         dayOnRequest.setShiftDate(shiftDate);
         dayOnRequest.setWeight(weight);
@@ -332,7 +331,7 @@ class NurseRosteringConstraintProviderTest
 
     private ShiftOffRequest getShiftOffRequest(Employee employee, Shift shift, int weight) {
         ShiftOffRequest shiftOffRequest = new ShiftOffRequest();
-        shiftOffRequest.setId(idSupplier.incrementAndGet());
+        shiftOffRequest.setId(getNextId());
         shiftOffRequest.setEmployee(employee);
         shiftOffRequest.setShift(shift);
         shiftOffRequest.setWeight(weight);
@@ -341,7 +340,7 @@ class NurseRosteringConstraintProviderTest
 
     private ShiftOnRequest getShiftOnRequest(Employee employee, Shift shift, int weight) {
         ShiftOnRequest shiftOnRequest = new ShiftOnRequest();
-        shiftOnRequest.setId(idSupplier.incrementAndGet());
+        shiftOnRequest.setId(getNextId());
         shiftOnRequest.setEmployee(employee);
         shiftOnRequest.setShift(shift);
         shiftOnRequest.setWeight(weight);
@@ -350,14 +349,14 @@ class NurseRosteringConstraintProviderTest
 
     private Skill getSkill(String name) {
         Skill skill = new Skill();
-        skill.setId(idSupplier.incrementAndGet());
+        skill.setId(getNextId());
         skill.setCode("Skill - " + name);
         return skill;
     }
 
     private SkillProficiency getSkillProficiency(Employee employee, Skill skill) {
         SkillProficiency skillProficiency = new SkillProficiency();
-        skillProficiency.setId(idSupplier.incrementAndGet());
+        skillProficiency.setId(getNextId());
         skillProficiency.setSkill(skill);
         skillProficiency.setEmployee(employee);
         return skillProficiency;
@@ -365,7 +364,7 @@ class NurseRosteringConstraintProviderTest
 
     private ShiftTypeSkillRequirement getSkillRequirement(ShiftType shiftType, Skill skill) {
         ShiftTypeSkillRequirement skillRequirement = new ShiftTypeSkillRequirement();
-        skillRequirement.setId(idSupplier.incrementAndGet());
+        skillRequirement.setId(getNextId());
         skillRequirement.setShiftType(shiftType);
         skillRequirement.setSkill(skill);
         return skillRequirement;
@@ -403,27 +402,21 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift4 = getShiftAssignment(2, employee);
         ShiftAssignment shift5 = getShiftAssignment(2, employee);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::minimumAndMaximumNumberOfAssignments)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift3, shift4, shift5)
+        SingleConstraintVerification<NurseRoster> minimumAndMaximumNumberOfAssignmentsConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::minimumAndMaximumNumberOfAssignments);
+
+        minimumAndMaximumNumberOfAssignmentsConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1, shift2, shift3, shift4, shift5)
                 .penalizesBy(8);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::minimumAndMaximumNumberOfAssignments)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1)
+        minimumAndMaximumNumberOfAssignmentsConstraint.given(contract.getFirstConstractLine(), employee, shift1)
                 .penalizesBy(2);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::minimumAndMaximumNumberOfAssignments)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift3)
+        minimumAndMaximumNumberOfAssignmentsConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1, shift2, shift3)
                 .penalizesBy(0);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::minimumAndMaximumNumberOfAssignments)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2)
+
+        minimumAndMaximumNumberOfAssignmentsConstraint.given(contract.getFirstConstractLine(), employee, shift1, shift2)
                 .penalizesBy(0);
     }
 
@@ -441,7 +434,7 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift = getShiftAssignment(0, employeeWithShifts);
 
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::minimumNumberOfAssignmentsNoAssignments)
-                .given(contract.getContractLineList().get(0),
+                .given(contract.getFirstConstractLine(),
                         employeeNoShifts, employeeWithShifts,
                         shift)
                 .penalizesBy(10);
@@ -462,32 +455,23 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift4 = getShiftAssignment(3, employee);
         ShiftAssignment shift5 = getShiftAssignment(4, employee);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift3, shift4, shift5)
+        SingleConstraintVerification<NurseRoster> consecutiveWorkingDaysConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingDays);
+
+        consecutiveWorkingDaysConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1, shift2, shift3, shift4, shift5)
                 .penalizesBy(8);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1)
+        consecutiveWorkingDaysConstraint.given(contract.getFirstConstractLine(), employee, shift1)
                 .penalizesBy(2);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift3)
+        consecutiveWorkingDaysConstraint.given(contract.getFirstConstractLine(), employee, shift1, shift2, shift3)
                 .penalizesBy(0);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2)
+
+        consecutiveWorkingDaysConstraint.given(contract.getFirstConstractLine(), employee, shift1, shift2)
                 .penalizesBy(0);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift4, shift5)
+
+        consecutiveWorkingDaysConstraint.given(contract.getFirstConstractLine(), employee, shift1, shift2, shift4, shift5)
                 .penalizesBy(0);
     }
 
@@ -501,58 +485,42 @@ class NurseRosteringConstraintProviderTest
                 .build();
         Employee employee = getEmployee(contract);
         ShiftAssignment shift1 = getShiftAssignment(0, employee);
-        // ShiftAssignment shift2 = getShiftAssignment(1, employee);
         ShiftAssignment shift3 = getShiftAssignment(2, employee);
         ShiftAssignment shift4 = getShiftAssignment(3, employee);
         ShiftAssignment shift5 = getShiftAssignment(4, employee);
-        // ShiftAssignment shift6 = getShiftAssignment(5, employee);
         ShiftAssignment shift7 = getShiftAssignment(6, employee);
 
         NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization();
 
-        nurseRosterParametrization.setId(idSupplier.incrementAndGet());
+        nurseRosterParametrization.setId(getNextId());
         nurseRosterParametrization.setPlanningWindowStart(getShiftDate(0));
         nurseRosterParametrization.setFirstShiftDate(getShiftDate(0));
         nurseRosterParametrization.setLastShiftDate(getShiftDate(6));
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        nurseRosterParametrization,
-                        shift1, shift7)
+        SingleConstraintVerification<NurseRoster> consecutiveFreeDaysConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays);
+
+        consecutiveFreeDaysConstraint
+                .given(contract.getFirstConstractLine(), employee, nurseRosterParametrization, shift1, shift7)
                 .penalizesBy(8);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        nurseRosterParametrization,
-                        shift1, shift3)
+        consecutiveFreeDaysConstraint
+                .given(contract.getFirstConstractLine(), employee, nurseRosterParametrization, shift1, shift3)
                 .penalizesBy(6);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        nurseRosterParametrization,
-                        shift1, shift5)
-                .penalizesBy(0);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        nurseRosterParametrization,
-                        shift1, shift4)
-                .penalizesBy(0);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        nurseRosterParametrization,
-                        shift1, shift4, shift7)
+        consecutiveFreeDaysConstraint
+                .given(contract.getFirstConstractLine(), employee, nurseRosterParametrization, shift1, shift5)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        nurseRosterParametrization,
-                        shift7)
+        consecutiveFreeDaysConstraint
+                .given(contract.getFirstConstractLine(), employee, nurseRosterParametrization, shift1, shift4)
+                .penalizesBy(0);
+
+        consecutiveFreeDaysConstraint
+                .given(contract.getFirstConstractLine(), employee, nurseRosterParametrization, shift1, shift4, shift7)
+                .penalizesBy(0);
+
+        consecutiveFreeDaysConstraint.given(contract.getFirstConstractLine(), employee, nurseRosterParametrization, shift7)
                 .penalizesBy(12);
     }
 
@@ -570,13 +538,13 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift = getShiftAssignment(0, employeeWithShifts);
         NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization();
 
-        nurseRosterParametrization.setId(idSupplier.incrementAndGet());
+        nurseRosterParametrization.setId(getNextId());
         nurseRosterParametrization.setPlanningWindowStart(getShiftDate(0));
         nurseRosterParametrization.setFirstShiftDate(getShiftDate(0));
         nurseRosterParametrization.setLastShiftDate(getShiftDate(5));
 
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::maximumConsecutiveFreeDaysNoAssignments)
-                .given(contract.getContractLineList().get(0),
+                .given(contract.getFirstConstractLine(),
                         employeeNoShifts, employeeWithShifts,
                         shift, nurseRosterParametrization)
                 .penalizesBy(5);
@@ -600,34 +568,25 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift5 = getShiftAssignment(15, employee);
         ShiftAssignment shift6 = getShiftAssignment(21, employee);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingWeekends)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift3, shift4, shift5, shift6)
+        SingleConstraintVerification<NurseRoster> consecutiveWorkingWeekendsConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingWeekends);
+
+        consecutiveWorkingWeekendsConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1, shift2, shift3, shift4, shift5, shift6)
                 .penalizesBy(4);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingWeekends)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1)
+        consecutiveWorkingWeekendsConstraint.given(contract.getFirstConstractLine(), employee, shift1)
                 .penalizesBy(2);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingWeekends)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift3)
+        consecutiveWorkingWeekendsConstraint.given(contract.getFirstConstractLine(), employee, shift1, shift2, shift3)
                 .penalizesBy(0);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingWeekends)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2)
-                .penalizesBy(2);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingWeekends)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift4, shift5)
-                .penalizesBy(4);
 
+        consecutiveWorkingWeekendsConstraint.given(contract.getFirstConstractLine(), employee, shift1, shift2)
+                .penalizesBy(2);
+
+        consecutiveWorkingWeekendsConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1, shift2, shift4, shift5)
+                .penalizesBy(4);
     }
 
     @ConstraintProviderTest
@@ -645,34 +604,25 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift5 = getShiftAssignment(14, employee);
         ShiftAssignment shift6 = getShiftAssignment(15, employee);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::startOnNotFirstDayOfWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift2, shift3, shift4, shift5)
+        SingleConstraintVerification<NurseRoster> startOnNotFirstDayOfWeekendConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::startOnNotFirstDayOfWeekend);
+
+        startOnNotFirstDayOfWeekendConstraint
+                .given(contract.getFirstConstractLine(), employee, shift2, shift3, shift4, shift5)
                 .penalizesBy(3);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::startOnNotFirstDayOfWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1)
+        startOnNotFirstDayOfWeekendConstraint.given(contract.getFirstConstractLine(), employee, shift1)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::startOnNotFirstDayOfWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift3)
+        startOnNotFirstDayOfWeekendConstraint.given(contract.getFirstConstractLine(), employee, shift1, shift2, shift3)
                 .penalizesBy(0);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::startOnNotFirstDayOfWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift2, shift6)
+
+        startOnNotFirstDayOfWeekendConstraint.given(contract.getFirstConstractLine(), employee, shift2, shift6)
                 .penalizesBy(6);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::startOnNotFirstDayOfWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift3, shift4)
-                .penalizesBy(0);
 
+        startOnNotFirstDayOfWeekendConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1, shift2, shift3, shift4)
+                .penalizesBy(0);
     }
 
     @ConstraintProviderTest
@@ -688,36 +638,25 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift3 = getShiftAssignment(7, employee);
         ShiftAssignment shift4 = getShiftAssignment(8, employee);
         ShiftAssignment shift5 = getShiftAssignment(14, employee);
-        // ShiftAssignment shift6 = getShiftAssignment(15, employee);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::endOnNotLastDayOfWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1)
+        SingleConstraintVerification<NurseRoster> endOnNotLastDayOfWeekendConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::endOnNotLastDayOfWeekend);
+
+        endOnNotLastDayOfWeekendConstraint.given(contract.getFirstConstractLine(), employee, shift1)
                 .penalizesBy(3);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::endOnNotLastDayOfWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1)
+        endOnNotLastDayOfWeekendConstraint.given(contract.getFirstConstractLine(), employee, shift1)
                 .penalizesBy(3);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::endOnNotLastDayOfWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift3)
+        endOnNotLastDayOfWeekendConstraint.given(contract.getFirstConstractLine(), employee, shift1, shift2, shift3)
                 .penalizesBy(3);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::endOnNotLastDayOfWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift5)
+
+        endOnNotLastDayOfWeekendConstraint.given(contract.getFirstConstractLine(), employee, shift1, shift5)
                 .penalizesBy(6);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::endOnNotLastDayOfWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift2, shift3, shift4)
-                .penalizesBy(0);
 
+        endOnNotLastDayOfWeekendConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1, shift2, shift3, shift4)
+                .penalizesBy(0);
     }
 
     @ConstraintProviderTest
@@ -731,41 +670,33 @@ class NurseRosteringConstraintProviderTest
         // Nice thing about January 2000, January 1st is a Saturday!
         ShiftAssignment shift1Day = getShiftAssignment(0, employee, dayShiftType);
         ShiftAssignment shift2Day = getShiftAssignment(1, employee, dayShiftType);
-        // ShiftAssignment shift3Day = getShiftAssignment(7, employee, dayShiftType);
         ShiftAssignment shift4Day = getShiftAssignment(8, employee, dayShiftType);
 
-        // ShiftAssignment shift1Night = getShiftAssignment(0, employee, nightShiftType);
         ShiftAssignment shift2Night = getShiftAssignment(1, employee, nightShiftType);
         ShiftAssignment shift3Night = getShiftAssignment(7, employee, nightShiftType);
-        // ShiftAssignment shift4Night = getShiftAssignment(8, employee, nightShiftType);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::identicalShiftTypesDuringWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1Day, shift2Night,
-                        shift1Day.getShiftDate(), shift2Night.getShiftDate())
+        SingleConstraintVerification<NurseRoster> identicalShiftTypesDuringWeekendConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::identicalShiftTypesDuringWeekend);
+
+        identicalShiftTypesDuringWeekendConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1Day, shift2Night, shift1Day.getShiftDate(),
+                        shift2Night.getShiftDate())
                 .penalizesBy(6);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::identicalShiftTypesDuringWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1Day, shift1Day.getShiftDate())
+        identicalShiftTypesDuringWeekendConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1Day, shift1Day.getShiftDate())
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::identicalShiftTypesDuringWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1Day, shift2Day, shift3Night,
+        identicalShiftTypesDuringWeekendConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1Day, shift2Day, shift3Night,
                         shift1Day.getShiftDate(), shift2Day.getShiftDate(), shift3Night.getShiftDate())
                 .penalizesBy(0);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::identicalShiftTypesDuringWeekend)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1Day, shift2Night, shift3Night, shift4Day,
+
+        identicalShiftTypesDuringWeekendConstraint
+                .given(contract.getFirstConstractLine(), employee, shift1Day, shift2Night, shift3Night, shift4Day,
                         shift1Day.getShiftDate(), shift2Night.getShiftDate(), shift3Night.getShiftDate(),
                         shift4Day.getShiftDate())
                 .penalizesBy(12);
-
     }
 
     @ConstraintProviderTest
@@ -779,24 +710,19 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift2 = getShiftAssignment(2, employee);
         ShiftAssignment shift3 = getShiftAssignment(3, employee);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::dayOffRequest)
-                .given(dayOffRequest1, dayOffRequest2,
-                        shift1Day, shift2)
+        SingleConstraintVerification<NurseRoster> dayOffRequestConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::dayOffRequest);
+
+        dayOffRequestConstraint.given(dayOffRequest1, dayOffRequest2, shift1Day, shift2)
                 .penalizesBy(3);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::dayOffRequest)
-                .given(dayOffRequest1, dayOffRequest2,
-                        shift1Day, shift1Night)
+        dayOffRequestConstraint.given(dayOffRequest1, dayOffRequest2, shift1Day, shift1Night)
                 .penalizesBy(6);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::dayOffRequest)
-                .given(dayOffRequest1, dayOffRequest2,
-                        shift1Day, shift3)
+        dayOffRequestConstraint.given(dayOffRequest1, dayOffRequest2, shift1Day, shift3)
                 .penalizesBy(8);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::dayOffRequest)
-                .given(dayOffRequest1, dayOffRequest2,
-                        shift2)
+        dayOffRequestConstraint.given(dayOffRequest1, dayOffRequest2, shift2)
                 .penalizesBy(0);
     }
 
@@ -811,24 +737,18 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift2 = getShiftAssignment(2, employee);
         ShiftAssignment shift3 = getShiftAssignment(3, employee);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::dayOnRequest)
-                .given(dayOnRequest1, dayOnRequest2,
-                        shift1Day, shift2)
+        SingleConstraintVerification<NurseRoster> dayOnRequestConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::dayOnRequest);
+        dayOnRequestConstraint.given(dayOnRequest1, dayOnRequest2, shift1Day, shift2)
                 .penalizesBy(5);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::dayOnRequest)
-                .given(dayOnRequest1, dayOnRequest2,
-                        shift1Day, shift1Night)
+        dayOnRequestConstraint.given(dayOnRequest1, dayOnRequest2, shift1Day, shift1Night)
                 .penalizesBy(5);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::dayOnRequest)
-                .given(dayOnRequest1, dayOnRequest2,
-                        shift1Day, shift3)
+        dayOnRequestConstraint.given(dayOnRequest1, dayOnRequest2, shift1Day, shift3)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::dayOnRequest)
-                .given(dayOnRequest1, dayOnRequest2,
-                        shift2)
+        dayOnRequestConstraint.given(dayOnRequest1, dayOnRequest2, shift2)
                 .penalizesBy(8);
     }
 
@@ -843,29 +763,22 @@ class NurseRosteringConstraintProviderTest
         ShiftOffRequest shiftOffRequest1 = getShiftOffRequest(employee, shift1Day.getShift(), 3);
         ShiftOffRequest shiftOffRequest2 = getShiftOffRequest(employee, shift3.getShift(), 5);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOffRequest)
-                .given(shiftOffRequest1, shiftOffRequest2,
-                        shift1Day, shift2)
+        SingleConstraintVerification<NurseRoster> shiftOffRequestConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOffRequest);
+
+        shiftOffRequestConstraint.given(shiftOffRequest1, shiftOffRequest2, shift1Day, shift2)
                 .penalizesBy(3);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOffRequest)
-                .given(shiftOffRequest1, shiftOffRequest2,
-                        shift1Day, shift1Night)
+        shiftOffRequestConstraint.given(shiftOffRequest1, shiftOffRequest2, shift1Day, shift1Night)
                 .penalizesBy(3);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOffRequest)
-                .given(shiftOffRequest1, shiftOffRequest2,
-                        shift1Night)
+        shiftOffRequestConstraint.given(shiftOffRequest1, shiftOffRequest2, shift1Night)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOffRequest)
-                .given(shiftOffRequest1, shiftOffRequest2,
-                        shift1Day, shift3)
+        shiftOffRequestConstraint.given(shiftOffRequest1, shiftOffRequest2, shift1Day, shift3)
                 .penalizesBy(8);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOffRequest)
-                .given(shiftOffRequest1, shiftOffRequest2,
-                        shift2)
+        shiftOffRequestConstraint.given(shiftOffRequest1, shiftOffRequest2, shift2)
                 .penalizesBy(0);
     }
 
@@ -880,29 +793,22 @@ class NurseRosteringConstraintProviderTest
         ShiftOnRequest shiftOffRequest1 = getShiftOnRequest(employee, shift1Day.getShift(), 3);
         ShiftOnRequest shiftOffRequest2 = getShiftOnRequest(employee, shift3.getShift(), 5);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOnRequest)
-                .given(shiftOffRequest1, shiftOffRequest2,
-                        shift1Day, shift2)
+        SingleConstraintVerification<NurseRoster> shiftOnRequestConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOnRequest);
+
+        shiftOnRequestConstraint.given(shiftOffRequest1, shiftOffRequest2, shift1Day, shift2)
                 .penalizesBy(5);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOnRequest)
-                .given(shiftOffRequest1, shiftOffRequest2,
-                        shift1Day, shift1Night)
+        shiftOnRequestConstraint.given(shiftOffRequest1, shiftOffRequest2, shift1Day, shift1Night)
                 .penalizesBy(5);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOnRequest)
-                .given(shiftOffRequest1, shiftOffRequest2,
-                        shift1Night)
+        shiftOnRequestConstraint.given(shiftOffRequest1, shiftOffRequest2, shift1Night)
                 .penalizesBy(8);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOnRequest)
-                .given(shiftOffRequest1, shiftOffRequest2,
-                        shift1Day, shift3)
+        shiftOnRequestConstraint.given(shiftOffRequest1, shiftOffRequest2, shift1Day, shift3)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::shiftOnRequest)
-                .given(shiftOffRequest1, shiftOffRequest2,
-                        shift2)
+        shiftOnRequestConstraint.given(shiftOffRequest1, shiftOffRequest2, shift2)
                 .penalizesBy(8);
     }
 
@@ -920,28 +826,21 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment dayShift2 = getShiftAssignment(2, employee, dayShiftType);
         ShiftAssignment nightShift = getShiftAssignment(3, employee, nightShiftType);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::alternativeSkill)
-                .given(contract.getContractLineList().get(0),
-                        shiftTypeSkillRequirement, skillProficiency,
-                        dayShift1)
+        SingleConstraintVerification<NurseRoster> alternativeSkillConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::alternativeSkill);
+
+        alternativeSkillConstraint
+                .given(contract.getFirstConstractLine(), shiftTypeSkillRequirement, skillProficiency, dayShift1)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::alternativeSkill)
-                .given(contract.getContractLineList().get(0),
-                        shiftTypeSkillRequirement,
-                        dayShift1)
+        alternativeSkillConstraint.given(contract.getFirstConstractLine(), shiftTypeSkillRequirement, dayShift1)
                 .penalizesBy(3);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::alternativeSkill)
-                .given(contract.getContractLineList().get(0),
-                        shiftTypeSkillRequirement,
-                        dayShift1, nightShift)
+        alternativeSkillConstraint
+                .given(contract.getFirstConstractLine(), shiftTypeSkillRequirement, dayShift1, nightShift)
                 .penalizesBy(3);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::alternativeSkill)
-                .given(contract.getContractLineList().get(0),
-                        shiftTypeSkillRequirement,
-                        dayShift1, dayShift2)
+        alternativeSkillConstraint.given(contract.getFirstConstractLine(), shiftTypeSkillRequirement, dayShift1, dayShift2)
                 .penalizesBy(6);
     }
 
@@ -961,45 +860,32 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment afterFreeShift3 = getShiftAssignment(7, employee);
         ShiftAssignment beforeFreeShift1 = getShiftAssignment(3, employee);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternFreeBefore2DaysWithAWorkDayPattern)
-                .given(patternContractLine,
-                        employee,
-                        freeShift.getShiftDate(),
-                        afterFreeShift2)
-                .penalizesBy(1);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternFreeBefore2DaysWithAWorkDayPattern)
-                .given(patternContractLine,
-                        employee,
-                        freeShift.getShiftDate(),
-                        afterFreeShift1, afterFreeShift2)
+        SingleConstraintVerification<NurseRoster> unwantedPatternFreeBefore2DaysWithAWorkDayPatternConstraint =
+                constraintVerifier
+                        .verifyThat(NurseRosteringConstraintProvider::unwantedPatternFreeBefore2DaysWithAWorkDayPattern);
+
+        unwantedPatternFreeBefore2DaysWithAWorkDayPatternConstraint
+                .given(patternContractLine, employee, freeShift.getShiftDate(), afterFreeShift2)
                 .penalizesBy(1);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternFreeBefore2DaysWithAWorkDayPattern)
-                .given(patternContractLine,
-                        employee,
-                        freeShift.getShiftDate(),
-                        afterFreeShift1)
+        unwantedPatternFreeBefore2DaysWithAWorkDayPatternConstraint
+                .given(patternContractLine, employee, freeShift.getShiftDate(), afterFreeShift1, afterFreeShift2)
                 .penalizesBy(1);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternFreeBefore2DaysWithAWorkDayPattern)
-                .given(patternContractLine,
-                        employee,
-                        freeShift.getShiftDate(),
-                        afterFreeShift3)
+        unwantedPatternFreeBefore2DaysWithAWorkDayPatternConstraint
+                .given(patternContractLine, employee, freeShift.getShiftDate(), afterFreeShift1)
+                .penalizesBy(1);
+
+        unwantedPatternFreeBefore2DaysWithAWorkDayPatternConstraint
+                .given(patternContractLine, employee, freeShift.getShiftDate(), afterFreeShift3)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternFreeBefore2DaysWithAWorkDayPattern)
-                .given(patternContractLine,
-                        employee,
-                        freeShift.getShiftDate(),
-                        beforeFreeShift1)
+        unwantedPatternFreeBefore2DaysWithAWorkDayPatternConstraint
+                .given(patternContractLine, employee, freeShift.getShiftDate(), beforeFreeShift1)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternFreeBefore2DaysWithAWorkDayPattern)
-                .given(patternContractLine,
-                        employee,
-                        freeShift.getShiftDate(),
-                        afterFreeShift1, afterFreeShift2, freeShift)
+        unwantedPatternFreeBefore2DaysWithAWorkDayPatternConstraint
+                .given(patternContractLine, employee, freeShift.getShiftDate(), afterFreeShift1, afterFreeShift2, freeShift)
                 .penalizesBy(0);
     }
 
@@ -1018,43 +904,30 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift1Day = getShiftAssignment(0, employee, dayShiftType);
         ShiftAssignment shift2Day = getShiftAssignment(1, employee, dayShiftType);
         ShiftAssignment shift3Day = getShiftAssignment(2, employee, dayShiftType);
-        // ShiftAssignment shift4Day = getShiftAssignment(3, employee, dayShiftType);
 
         ShiftAssignment shift1Night = getShiftAssignment(0, employee, nightShiftType);
         ShiftAssignment shift2Night = getShiftAssignment(1, employee, nightShiftType);
         ShiftAssignment shift3Night = getShiftAssignment(2, employee, nightShiftType);
         ShiftAssignment shift4Night = getShiftAssignment(3, employee, nightShiftType);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift2Night)
+        SingleConstraintVerification<NurseRoster> unwantedPatternShiftType2DaysPatternConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern);
+
+        unwantedPatternShiftType2DaysPatternConstraint.given(patternContractLine, employee, shift1Day, shift2Night)
                 .penalizesBy(1);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift2Day)
+        unwantedPatternShiftType2DaysPatternConstraint.given(patternContractLine, employee, shift1Day, shift2Day)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Night, shift2Day)
+        unwantedPatternShiftType2DaysPatternConstraint.given(patternContractLine, employee, shift1Night, shift2Day)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift2Night, shift3Day, shift4Night)
+        unwantedPatternShiftType2DaysPatternConstraint
+                .given(patternContractLine, employee, shift1Day, shift2Night, shift3Day, shift4Night)
                 .penalizesBy(2);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift3Night)
+        unwantedPatternShiftType2DaysPatternConstraint.given(patternContractLine, employee, shift1Day, shift3Night)
                 .penalizesBy(0);
-
     }
 
     @ConstraintProviderTest
@@ -1077,38 +950,25 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift1Night = getShiftAssignment(0, employee, nightShiftType);
         ShiftAssignment shift2Night = getShiftAssignment(1, employee, nightShiftType);
         ShiftAssignment shift3Night = getShiftAssignment(2, employee, nightShiftType);
-        // ShiftAssignment shift4Night = getShiftAssignment(3, employee, nightShiftType);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift2Night)
+        SingleConstraintVerification<NurseRoster> unwantedPatternShiftType2DaysPatternConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern);
+
+        unwantedPatternShiftType2DaysPatternConstraint.given(patternContractLine, employee, shift1Day, shift2Night)
                 .penalizesBy(1);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift2Day)
+        unwantedPatternShiftType2DaysPatternConstraint.given(patternContractLine, employee, shift1Day, shift2Day)
                 .penalizesBy(1);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Night, shift2Day)
+        unwantedPatternShiftType2DaysPatternConstraint.given(patternContractLine, employee, shift1Night, shift2Day)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift2Night, shift3Day, shift4Day)
+        unwantedPatternShiftType2DaysPatternConstraint
+                .given(patternContractLine, employee, shift1Day, shift2Night, shift3Day, shift4Day)
                 .penalizesBy(2);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType2DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift3Night)
+        unwantedPatternShiftType2DaysPatternConstraint.given(patternContractLine, employee, shift1Day, shift3Night)
                 .penalizesBy(0);
-
     }
 
     @ConstraintProviderTest
@@ -1124,11 +984,8 @@ class NurseRosteringConstraintProviderTest
         Employee employee = getEmployee(contract);
 
         ShiftAssignment shift1Day = getShiftAssignment(0, employee, dayShiftType);
-        // ShiftAssignment shift2Day = getShiftAssignment(1, employee, dayShiftType);
         ShiftAssignment shift3Day = getShiftAssignment(2, employee, dayShiftType);
         ShiftAssignment shift4Day = getShiftAssignment(3, employee, dayShiftType);
-        // ShiftAssignment shift5Day = getShiftAssignment(4, employee, dayShiftType);
-        // ShiftAssignment shift6Day = getShiftAssignment(5, employee, dayShiftType);
 
         ShiftAssignment shift1Night = getShiftAssignment(0, employee, nightShiftType);
         ShiftAssignment shift2Night = getShiftAssignment(1, employee, nightShiftType);
@@ -1137,35 +994,24 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift5Night = getShiftAssignment(4, employee, nightShiftType);
         ShiftAssignment shift6Night = getShiftAssignment(5, employee, nightShiftType);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType3DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift2Night, shift3Night)
+        SingleConstraintVerification<NurseRoster> unwantedPatternShiftType3DaysPatternConstraint =
+                constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType3DaysPattern);
+
+        unwantedPatternShiftType3DaysPatternConstraint.given(patternContractLine, employee, shift1Day, shift2Night, shift3Night)
                 .penalizesBy(1);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType3DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift2Night, shift3Day)
+        unwantedPatternShiftType3DaysPatternConstraint.given(patternContractLine, employee, shift1Day, shift2Night, shift3Day)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType3DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Night, shift2Night, shift3Day)
+        unwantedPatternShiftType3DaysPatternConstraint.given(patternContractLine, employee, shift1Night, shift2Night, shift3Day)
                 .penalizesBy(0);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType3DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift2Night, shift3Night, shift4Day, shift5Night, shift6Night)
+        unwantedPatternShiftType3DaysPatternConstraint
+                .given(patternContractLine, employee, shift1Day, shift2Night, shift3Night, shift4Day, shift5Night, shift6Night)
                 .penalizesBy(2);
 
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::unwantedPatternShiftType3DaysPattern)
-                .given(patternContractLine,
-                        employee,
-                        shift1Day, shift2Night, shift4Night)
+        unwantedPatternShiftType3DaysPatternConstraint.given(patternContractLine, employee, shift1Day, shift2Night, shift4Night)
                 .penalizesBy(0);
-
     }
+
 }

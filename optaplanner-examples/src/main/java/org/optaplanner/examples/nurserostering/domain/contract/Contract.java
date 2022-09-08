@@ -57,4 +57,8 @@ public class Contract extends AbstractPersistable {
         return weekendDefinition.getWeekendLength();
     }
 
+    public ContractLine getFirstConstractLine() {
+        return contractLineList.get(0);
+    }
+
 }

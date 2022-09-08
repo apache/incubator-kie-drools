@@ -3,6 +3,7 @@ package org.optaplanner.test.impl.score.stream;
 import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +24,8 @@ import org.optaplanner.test.api.score.stream.SingleConstraintAssertion;
 public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Score<Score_>>
         implements SingleConstraintAssertion {
 
-    private final AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
+    private final AbstractConstraint<Solution_, ?, ?> constraint;
+    private final ScoreDefinition<Score_> scoreDefinition;
     private final Score_ score;
     private final Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection;
     private final Collection<Indictment<Score_>> indictmentCollection;
@@ -31,10 +33,11 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
     DefaultSingleConstraintAssertion(AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             Score_ score, Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap,
             Map<Object, Indictment<Score_>> indictmentMap) {
-        this.scoreDirectorFactory = requireNonNull(scoreDirectorFactory);
+        this.constraint = (AbstractConstraint<Solution_, ?, ?>) scoreDirectorFactory.getConstraints()[0];
+        this.scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         this.score = requireNonNull(score);
-        this.constraintMatchTotalCollection = requireNonNull(constraintMatchTotalMap).values();
-        this.indictmentCollection = requireNonNull(indictmentMap).values();
+        this.constraintMatchTotalCollection = new ArrayList<>(requireNonNull(constraintMatchTotalMap).values());
+        this.indictmentCollection = new ArrayList<>(requireNonNull(indictmentMap).values());
     }
 
     @Override
@@ -102,8 +105,6 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
     private void assertImpact(ScoreImpactType scoreImpactType, Number matchWeightTotal, String message) {
         Number impact = deduceImpact();
         long longImpact = impact.longValue(); // Impact is always int or long, so this is safe.
-        AbstractConstraint<Solution_, ?, ?> constraint =
-                (AbstractConstraint<Solution_, ?, ?>) scoreDirectorFactory.getConstraints()[0];
         ScoreImpactType actualScoreImpactType = constraint.getScoreImpactType();
         if (actualScoreImpactType == ScoreImpactType.MIXED) {
             // Impact means we need to check for expected impact type and actual impact match.
@@ -130,7 +131,6 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
     }
 
     private Number deduceImpact() {
-        ScoreDefinition<Score_> scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         Score_ zeroScore = scoreDefinition.getZeroScore();
         Number zero = zeroScore.toLevelNumbers()[0]; // Zero in the exact numeric type expected by the caller.
         if (constraintMatchTotalCollection.isEmpty()) {
@@ -163,8 +163,6 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         if (actualMatchCount == expectedMatchCount) {
             return;
         }
-        AbstractConstraint<Solution_, ?, ?> constraint =
-                (AbstractConstraint<Solution_, ?, ?>) scoreDirectorFactory.getConstraints()[0];
         String constraintId = constraint.getConstraintId();
         String assertionMessage =
                 buildAssertionErrorMessage(scoreImpactType, expectedMatchCount, actualMatchCount, constraintId, message);
@@ -175,8 +173,6 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         if (determineMatchCount(scoreImpactType) > 0) {
             return;
         }
-        AbstractConstraint<Solution_, ?, ?> constraint =
-                (AbstractConstraint<Solution_, ?, ?>) scoreDirectorFactory.getConstraints()[0];
         String constraintId = constraint.getConstraintId();
         String assertionMessage = buildAssertionErrorMessage(scoreImpactType, constraintId, message);
         throw new AssertionError(assertionMessage);
@@ -186,14 +182,12 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         if (constraintMatchTotalCollection.isEmpty()) {
             return 0;
         }
-        AbstractConstraint<Solution_, ?, ?> constraint =
-                (AbstractConstraint<Solution_, ?, ?>) scoreDirectorFactory.getConstraints()[0];
         ScoreImpactType actualImpactType = constraint.getScoreImpactType();
 
         if (actualImpactType != scoreImpactType && actualImpactType != ScoreImpactType.MIXED) {
             return 0;
         }
-        Score_ zeroScore = scoreDirectorFactory.getScoreDefinition().getZeroScore();
+        Score_ zeroScore = scoreDefinition.getZeroScore();
         return constraintMatchTotalCollection.stream()
                 .mapToLong(constraintMatchTotal -> {
                     if (actualImpactType == ScoreImpactType.MIXED) {
