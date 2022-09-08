@@ -87,6 +87,10 @@ MavenCommand getNativeMavenCommand(String directory, String builderImage = getNa
     if (builderImage) {
         mvnCmd.withProperty('quarkus.native.builder-image', builderImage)
     }
+    
+    if (env.BUILD_MVN_OPTS) {
+        mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])
+    }
 
     return mvnCmd
 }
