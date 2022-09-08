@@ -26,6 +26,10 @@ JDK 11 is now the minimum Java version required to compile Drools and make use o
 
 Maven `3.8.4` is now the minimum Maven version required to build Drools from source, or using `kie-ci` APIs.
 
+=== Mvel is deprecated
+
+`drools-mvel` is now deprecated in favor of executable model. It also means `drools-engine` is recommended instead of deprecated `drools-engine-classic` that contains `drools-mvel`. It doesn't affect how to write rules.
+
 === Security Manager deprecation
 
 The {PRODUCT} features related to the JDK Security Manager will not be further developed, as starting with JDK17, the Java Platform has deprecated the Security Manager for removal.
