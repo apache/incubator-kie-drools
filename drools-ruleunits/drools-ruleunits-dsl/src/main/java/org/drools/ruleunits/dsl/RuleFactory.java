@@ -23,7 +23,7 @@ import org.drools.ruleunits.dsl.accumulate.Accumulator1;
 import org.drools.ruleunits.dsl.patterns.Pattern1Def;
 import org.drools.ruleunits.dsl.patterns.Pattern2Def;
 import org.drools.ruleunits.dsl.patterns.PatternDef;
-import org.drools.ruleunits.impl.ConsequenceDataStore;
+import org.drools.ruleunits.impl.datasources.ConsequenceDataStore;
 
 public interface RuleFactory {
 

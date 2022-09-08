@@ -24,7 +24,7 @@ import org.drools.model.functions.Predicate2;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.dsl.RuleFactory;
-import org.drools.ruleunits.impl.ConsequenceDataStore;
+import org.drools.ruleunits.impl.datasources.ConsequenceDataStore;
 
 public interface Pattern2Def<A, B> extends PatternDef {
 

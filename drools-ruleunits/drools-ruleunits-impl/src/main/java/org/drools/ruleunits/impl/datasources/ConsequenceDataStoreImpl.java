@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.impl;
+package org.drools.ruleunits.impl.datasources;
 
 import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.impl.InternalStoreCallback;
 import org.kie.api.runtime.rule.RuleContext;
 
 import static org.drools.kiesession.entrypoints.NamedEntryPoint.calculateUpdateBitMask;

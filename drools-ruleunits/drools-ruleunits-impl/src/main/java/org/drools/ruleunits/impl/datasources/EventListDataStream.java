@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.impl;
+package org.drools.ruleunits.impl.datasources;
 
 import java.util.ArrayList;
 import java.util.List;
