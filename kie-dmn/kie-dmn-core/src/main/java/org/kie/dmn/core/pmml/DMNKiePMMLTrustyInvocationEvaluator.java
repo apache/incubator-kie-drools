@@ -156,7 +156,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         return (PMML4Result) retrieved.iterator().next().getOutputData();
     }
 
-    protected Collection<EfestoOutput> evaluateInput(EfestoInput<PMMLRequestData> inputPMML,
+    private Collection<EfestoOutput> evaluateInput(EfestoInput<PMMLRequestData> inputPMML,
                                                      EfestoRuntimeContext runtimeContext) {
         try {
             return runtimeManager.evaluateInput(runtimeContext, inputPMML);
@@ -191,7 +191,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         }
     }
 
-    private PMMLRequestData getPMMLRequestData(String correlationId, String modelName, String fileName,
+    protected PMMLRequestData getPMMLRequestData(String correlationId, String modelName, String fileName,
                                                DMNResult dmnr) {
         PMMLRequestData toReturn = new PMMLRequestData(correlationId, modelName);
         for (DMNFunctionDefinitionEvaluator.FormalParameter p : parameters) {
