@@ -62,6 +62,10 @@ public class ClassTypeResolverTest {
         assertThat(resolver.resolveType("int[][]")).isEqualTo(int[][].class);
         assertThat(resolver.resolveType("int[][][]")).isEqualTo(int[][][].class);
         assertThat(resolver.resolveType("int[][][][]")).isEqualTo(int[][][][].class);
+
+        assertThat(resolver.resolveType("int[][]")).isEqualTo(int[][].class);
+        assertThat(resolver.resolveType("int[][][]")).isEqualTo(int[][][].class);
+        assertThat(resolver.resolveType("int[][][][]")).isEqualTo(int[][][][].class);
     }
 
     @Test

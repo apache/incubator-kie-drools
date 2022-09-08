@@ -166,111 +166,113 @@ public class ClassTypeResolver
     @Override
     public Class<?> resolveType(String className,
                                 ClassFilter classFilter) throws ClassNotFoundException {
-        Class<?> clazz = lookupFromCache(className);
+        final String cacheKey = className;
+        Class<?> clazz = lookupFromCache(cacheKey);
 
         if (clazz != null && !classFilter.accept(clazz)) {
             clazz = null;
         }
 
-        boolean isArray = false;
-        StringBuilder arrayClassName = null;
+        if (clazz == null) {
+            boolean isArray = false;
+            StringBuilder arrayClassName = null;
 
-        if (clazz == null && className.indexOf('[') > 0) {
-            arrayClassName = new StringBuilder();
-            // is an array?
-            isArray = true;
             int bracketIndex = className.indexOf('[');
-            final String componentName = className.substring(0,
-                                                             bracketIndex);
-            arrayClassName.append('[');
-            while ((bracketIndex = className.indexOf('[',
-                                                     bracketIndex + 1)) > 0) {
+            if (bracketIndex > 0) {
+                arrayClassName = new StringBuilder();
+                // is an array?
+                isArray = true;
+                final String componentName = className.substring(0,
+                                                                 bracketIndex);
                 arrayClassName.append('[');
+                while ((bracketIndex = className.indexOf('[',
+                                                         bracketIndex + 1)) > 0) {
+                    arrayClassName.append('[');
+                }
+                className = componentName;
             }
-            className = componentName;
-        }
 
-        boolean isPrimitive = false;
+            boolean isPrimitive = false;
 
-        //is the class a primitive type ?
-        if (clazz == null && internalNamesMap.containsKey(className)) {
-            clazz = Class.forName("[" + internalNamesMap.get(className),
-                                  true,
-                                  this.classLoader).getComponentType();
-            isPrimitive = true;
-        }
-
-        // try loading className
-        if (clazz == null) {
-            clazz = safeLoadClass(this.classLoader,
-                                  className);
-            if (clazz != null && !classFilter.accept(clazz)) {
-                clazz = null;
+            //is the class a primitive type ?
+            if (internalNamesMap.containsKey(className)) {
+                clazz = Class.forName('[' + internalNamesMap.get(className),
+                                      true,
+                                      this.classLoader).getComponentType();
+                isPrimitive = true;
             }
-        }
 
-        // try as a nested class
-        if (clazz == null) {
-            clazz = importClass(className,
-                                className);
-            if (clazz != null && !classFilter.accept(clazz)) {
-                clazz = null;
-            }
-        }
-
-        // Now try the className with each of the given explicit imports
-        if (clazz == null) {
-            clazz = getClassFromImports(className,
-                                        classFilter,
-                                        imports);
-        }
-
-        // Now try the className with each of the given implicit imports
-        if (clazz == null) {
-            clazz = getClassFromImports(className,
-                                        classFilter,
-                                        implicitImports);
-        }
-
-        // Now try the java.lang package
-        if (clazz == null) {
-            clazz = defaultClass(className);
-            if (clazz != null && !classFilter.accept(clazz)) {
-                clazz = null;
-            }
-        }
-
-        // If array component class was found, try to resolve the array class of it
-        if (isArray) {
-            if (isPrimitive) {
-                arrayClassName.append(internalNamesMap.get(className));
-            } else {
-                if (clazz != null) {
-                    arrayClassName.append("L").append(clazz.getName()).append(";");
-                } else {
-                    // we know we will probably not be able to resolve this name, but nothing else we can do.
-                    arrayClassName.append("L").append(className).append(";");
+            // try loading className
+            if (clazz == null) {
+                clazz = safeLoadClass(this.classLoader,
+                                      className);
+                if (clazz != null && !classFilter.accept(clazz)) {
+                    clazz = null;
                 }
             }
-            try {
-                clazz = Class.forName(arrayClassName.toString(),
-                                      true,
-                                      this.classLoader);
-            } catch (final ClassNotFoundException e) {
-                clazz = null;
+
+            // try as a nested class
+            if (clazz == null) {
+                clazz = importClass(className,
+                                   className);
+                if (clazz != null && !classFilter.accept(clazz)) {
+                    clazz = null;
+                }
             }
+
+            // Now try the className with each of the given explicit imports
+            if (clazz == null) {
+                clazz = getClassFromImports(className,
+                                            classFilter,
+                                            imports);
+            }
+
+            // Now try the className with each of the given implicit imports
+            if (clazz == null) {
+                clazz = getClassFromImports(className,
+                                            classFilter,
+                                            implicitImports);
+            }
+
+            // Now try the java.lang package
+            if (clazz == null) {
+                clazz = defaultClass(className);
+                if (clazz != null && !classFilter.accept(clazz)) {
+                    clazz = null;
+                }
+            }
+
+            // If array component class was found, try to resolve the array class of it
+            if (isArray) {
+                if (isPrimitive) {
+                    arrayClassName.append(internalNamesMap.get(className));
+                } else {
+                    if (clazz != null) {
+                        arrayClassName.append('L').append(clazz.getName()).append(';');
+                    } else {
+                        // we know we will probably not be able to resolve this name, but nothing else we can do.
+                        arrayClassName.append('L').append(className).append(';');
+                    }
+                }
+                try {
+                    clazz = Class.forName(arrayClassName.toString(),
+                                          true,
+                                          this.classLoader);
+                } catch (final ClassNotFoundException e) {
+                    clazz = null;
+                }
+            }
+
+            // We still can't find the class so throw an exception
+            if (clazz == null) {
+                this.cachedImports.put(cacheKey,
+                                       Void.class);
+                throw new ClassNotFoundException("Unable to find class '" + className + "'");
+            }
+
+            this.cachedImports.put(cacheKey,
+                                   clazz);
         }
-
-        // We still can't find the class so throw an exception
-        if (clazz == null) {
-            this.cachedImports.put(className,
-                                   Void.class);
-            throw new ClassNotFoundException("Unable to find class '" + className + "'");
-        }
-
-        this.cachedImports.put(className,
-                               clazz);
-
         return clazz;
     }
 
