@@ -277,9 +277,8 @@ void uploadFileMgmt(String directory) {
     if (isNotTestingBuild()) {
         echo "upload binaries and docs for ${directory}"
         dir(directory) {
-            withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'drools-filemgmt',
-                            keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
-                sh "script/release/upload_filemgmt.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
+            sshagent(['drools-filemgmt']) {
+                sh "script/release/upload_filemgmt.sh ${getProjectVersion()}"
             }
         }
     } else {

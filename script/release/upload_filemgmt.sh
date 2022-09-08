@@ -6,7 +6,6 @@ if [[ ! -d "$this_script_directory" ]]; then
 fi
 
 kieVersion=$1
-drools_ssh_key=$2
 
 drools_project_root=$this_script_directory/../..
 filemgmtServer=drools@filemgmt-prod.jboss.org
@@ -42,7 +41,7 @@ chmod +x upload_binaries
 sftp -b upload_binaries $filemgmtServer
 
 # upload docs to filemgmt-prod.jboss.org
-readonly remote_shell="ssh -p 2222 -i $drools_ssh_key"
+readonly remote_shell="ssh -p 2222"
 rsync -Pavqr -e "$remote_shell" --protocol=28 --delete-after drools-docs/target/drools-docs-${kieVersion}/* ${rsync_filemgmt}:${droolsDocs}/${kieVersion}/drools-docs
 rsync -Pavqr -e "$remote_shell" --protocol=28 --delete-after kie-api/target/apidocs/* ${rsync_filemgmt}:${droolsDocs}/${kieVersion}/kie-api-javadoc
 
@@ -51,7 +50,7 @@ rsync -Pavqr -e "$remote_shell" --protocol=28 --delete-after kie-api/target/apid
 mkdir filemgmt_links
 cd filemgmt_links
 
-readonly remote_shell_non_strict="ssh -p 2222 -i $drools_ssh_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+readonly remote_shell_non_strict="ssh -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 ###############################################################################
 # latest drools links
