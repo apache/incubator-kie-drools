@@ -330,6 +330,19 @@ In general this is not recommended, and the Maven plugin should always be used.
 [NOTE]
 ====
 `drools-engine` doesn't contain `drools-xml-support`, because a Rule Unit use case doesn't require `kmodule.xml`, so no need to process xml. In other words, you have to explicitly add `drools-xml-support` dependency when you use `kmodule.xml` in your project with `drools-engine`.
+
+For example:
+[source,xml]
+----
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine</artifactId>
+    </dependency>
+    <dependency> <!-- when not using Rule Unit and using `kmodule.xml` for defining a rule base -->
+      <groupId>org.drools</groupId>
+      <artifactId>drools-xml-support</artifactId>
+    </dependency>
+----
 ====
 
 [[_definingakiemoduleprogrammatically]]
