@@ -24,7 +24,7 @@ public class BufferedDataStream<T> extends AbstractDataSource<T> implements Data
 
     private final LimitedBufferedList<T> list;
 
-    BufferedDataStream(int size) {
+    protected BufferedDataStream(int size) {
         this.list = new LimitedBufferedList<>(size);
     }
 
