@@ -161,13 +161,13 @@ public class ServerlessWorkflowUtils {
 
     public static Optional<byte[]> processResourceFile(Workflow workflow, ParserContext parserContext, String uriStr, String authRef) {
         final URI uri = URI.create(uriStr);
-        final Optional<byte[]> bytes = loadResourceFile(workflow, parserContext, uriStr, authRef);
+        final Optional<byte[]> bytes = loadResourceFile(workflow, Optional.of(parserContext), uriStr, authRef);
         bytes.ifPresent(value -> parserContext.addGeneratedFile(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE, uri.getPath(), value)));
         return bytes;
     }
 
-    public static Optional<byte[]> loadResourceFile(Workflow workflow, ParserContext parserContext, String uriStr, String authRef) {
-        return loadResourceFile(uriStr, Optional.of(workflow), Optional.of(parserContext), authRef);
+    public static Optional<byte[]> loadResourceFile(Workflow workflow, Optional<ParserContext> parserContext, String uriStr, String authRef) {
+        return loadResourceFile(uriStr, Optional.of(workflow), parserContext, authRef);
     }
 
     public static Optional<byte[]> loadResourceFile(String uriStr, Optional<Workflow> workflow, Optional<ParserContext> parserContext, String authRef) {

@@ -15,12 +15,18 @@
  */
 package org.kie.kogito.quarkus.serverless.workflow.deployment;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
+import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 import org.kie.kogito.process.expr.ExpressionHandler;
 import org.kie.kogito.quarkus.common.deployment.KogitoAddonsPreGeneratedSourcesBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
@@ -28,8 +34,10 @@ import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.openapi.WorkflowOpenApiHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.rpc.WorkflowRPCHandlerGenerator;
+import org.kie.kogito.serverless.workflow.openapi.ServerlessWorkflowOASFilter;
 import org.kie.kogito.serverless.workflow.parser.FunctionNamespace;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandler;
+import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaGenerator;
 import org.kie.kogito.serverless.workflow.rpc.FileDescriptorHolder;
 
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -39,6 +47,8 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
+import io.quarkus.smallrye.openapi.deployment.spi.AddToOpenAPIDefinitionBuildItem;
+import io.serverlessworkflow.api.Workflow;
 
 /**
  * Main class of the Kogito Serverless Workflow extension
@@ -73,5 +83,25 @@ public class ServerlessWorkflowAssetsProcessor {
             }
         }
         sources.produce(new KogitoAddonsPreGeneratedSourcesBuildItem(generatedFiles));
+    }
+
+    @BuildStep
+    void addOpenAPIModelSchema(KogitoBuildContextBuildItem contextBuildItem, BuildProducer<AddToOpenAPIDefinitionBuildItem> openAPIProducer) {
+        Collection<OpenAPI> inputModelSchemas = getWorkflows(contextBuildItem.getKogitoBuildContext())
+                .map(OpenApiModelSchemaGenerator::new)
+                .map(OpenApiModelSchemaGenerator::generateOpenAPIModelSchema)
+                .collect(Collectors.toList());
+
+        openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(inputModelSchemas)));
+    }
+
+    private static Stream<Workflow> getWorkflows(KogitoBuildContext kogitoBuildContext) {
+        Path[] paths = kogitoBuildContext.getAppPaths().getPaths();
+
+        Stream<Path> workflowFiles = CollectedResourceProducer.fromPaths(paths).stream()
+                .map(collectedResource -> collectedResource.resource().getSourcePath())
+                .map(Paths::get);
+
+        return WorkflowCodeGenUtils.getWorkflows(workflowFiles);
     }
 }
