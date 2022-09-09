@@ -30,8 +30,8 @@ import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.constraints.Beta1Constraint;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
-import org.drools.ruleunits.impl.ConsequenceDataStore;
-import org.drools.ruleunits.impl.ConsequenceDataStoreImpl;
+import org.drools.ruleunits.impl.datasources.ConsequenceDataStore;
+import org.drools.ruleunits.impl.datasources.ConsequenceDataStoreImpl;
 import org.kie.api.runtime.rule.RuleContext;
 
 import static org.drools.model.functions.Function1.identity;

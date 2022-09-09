@@ -20,8 +20,6 @@ import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InterpretedRuleUnitTest {
 
@@ -31,8 +29,8 @@ public class InterpretedRuleUnitTest {
         unit.getStrings().add("Hello World");
 
         RuleUnitInstance<HelloWorld> unitInstance = InterpretedRuleUnit.instance(unit, false);
-        assertEquals(1, unitInstance.fire());
-        assertTrue(unit.getResults().contains("it worked!"));
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).containsExactly("it worked!");
     }
 
     @Test
@@ -41,8 +39,8 @@ public class InterpretedRuleUnitTest {
         unit.getStrings().add("Hello World");
 
         RuleUnitInstance<HelloWorld> unitInstance = InterpretedRuleUnit.instance(unit, true);
-        assertEquals(1, unitInstance.fire());
-        assertTrue(unit.getResults().contains("it worked!"));
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).containsExactly("it worked!");
     }
 
     @Test
@@ -51,8 +49,8 @@ public class InterpretedRuleUnitTest {
         unit.getStrings().add("Hello World");
 
         RuleUnitInstance<HelloWorld> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit);
-        assertEquals(1, unitInstance.fire());
-        assertTrue(unit.getResults().contains("it worked!"));
+        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unit.getResults()).containsExactly("it worked!");
     }
 
     @Test
@@ -60,7 +58,7 @@ public class InterpretedRuleUnitTest {
         NotTestUnit unit = new NotTestUnit();
 
         RuleUnitInstance<NotTestUnit> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit);
-        assertEquals(2, unitInstance.fire());
+        assertThat(unitInstance.fire()).isEqualTo(2);
     }
 
     @Test

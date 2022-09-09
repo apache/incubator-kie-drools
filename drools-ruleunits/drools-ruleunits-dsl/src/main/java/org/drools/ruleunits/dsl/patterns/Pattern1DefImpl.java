@@ -35,8 +35,8 @@ import org.drools.ruleunits.dsl.accumulate.GroupByPattern2;
 import org.drools.ruleunits.dsl.constraints.AlphaConstraintWithRightExtractor;
 import org.drools.ruleunits.dsl.constraints.AlphaConstraintWithRightValue;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
-import org.drools.ruleunits.impl.ConsequenceDataStore;
-import org.drools.ruleunits.impl.ConsequenceDataStoreImpl;
+import org.drools.ruleunits.impl.datasources.ConsequenceDataStore;
+import org.drools.ruleunits.impl.datasources.ConsequenceDataStoreImpl;
 import org.kie.api.runtime.rule.RuleContext;
 
 import static org.drools.model.functions.Function1.identity;

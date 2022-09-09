@@ -23,7 +23,7 @@ import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function3;
 import org.drools.model.functions.Predicate4;
 import org.drools.ruleunits.api.DataStore;
-import org.drools.ruleunits.impl.ConsequenceDataStore;
+import org.drools.ruleunits.impl.datasources.ConsequenceDataStore;
 
 public interface Pattern4Def<A, B, C, D> extends PatternDef {
 

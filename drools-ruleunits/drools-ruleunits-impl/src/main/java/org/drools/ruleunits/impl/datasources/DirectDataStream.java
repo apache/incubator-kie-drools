@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.impl;
+package org.drools.ruleunits.impl.datasources;
 
-public interface ConsequenceDataStore<T> {
-    void add(T object);
+import org.drools.ruleunits.api.DataStream;
 
-    void addLogical(T object);
+public class DirectDataStream<T> extends AbstractDataSource<T> implements DataStream<T> {
 
-    void update(T object, String... modifiedProperties);
+    protected DirectDataStream() {
 
-    void remove(T object);
+    }
+
+    @Override
+    public void append(T value) {
+        forEachSubscriber(s -> s.insert(value));
+    }
 }
