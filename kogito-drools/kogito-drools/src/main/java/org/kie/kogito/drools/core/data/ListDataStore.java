@@ -18,7 +18,7 @@ package org.kie.kogito.drools.core.data;
 import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.DataStore;
 
-public class ListDataStore<T> extends org.drools.ruleunits.impl.ListDataStore<T> implements DataStore<T> {
+public class ListDataStore<T> extends org.drools.ruleunits.impl.datasources.ListDataStore<T> implements DataStore<T> {
 
     @Override
     public DataHandle add(T t) {

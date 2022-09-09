@@ -137,13 +137,13 @@ public class RuleUnitHandler {
             } else if (/* !procVarIsCollection && */ unitVarIsDataSource) {
                 // set data source to variable
                 Expression expression = variableScope.getVariable(procVar);
-                actionBody.addStatement(
-                        unit.injectScalar(unitVar, expression));
                 // subscribe to updates to that data source
                 actionBody.addStatement(
                         variableScope.assignVariable(procVar));
                 actionBody.addStatement(
                         unit.extractIntoScalar(unitVar, procVar));
+                actionBody.addStatement(
+                        unit.injectScalar(unitVar, expression));
             } else {
                 Expression expression = variableScope.getVariable(procVar);
                 actionBody.addStatement(unit.set(unitVar, expression));

@@ -17,7 +17,7 @@ package org.kie.kogito.drools.core.data;
 
 import org.kie.kogito.rules.DataStream;
 
-public class EventListDataStream<T> extends org.drools.ruleunits.impl.EventListDataStream<T> implements DataStream<T> {
+public class EventListDataStream<T> extends org.drools.ruleunits.impl.datasources.EventListDataStream<T> implements DataStream<T> {
 
     @SafeVarargs
     public static <T> EventListDataStream<T> create(T... ts) {

@@ -18,7 +18,7 @@ package org.kie.kogito.drools.core.data;
 import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.SingletonStore;
 
-public class FieldDataStore<T> extends org.drools.ruleunits.impl.FieldDataStore<T> implements SingletonStore<T> {
+public class FieldDataStore<T> extends org.drools.ruleunits.impl.datasources.FieldDataStore<T> implements SingletonStore<T> {
 
     @Override
     public DataHandle set(T value) {

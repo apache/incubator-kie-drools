@@ -15,21 +15,23 @@
  */
 package org.kie.kogito.drools.core.data;
 
-import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.DataStream;
 import org.drools.ruleunits.api.SingletonStore;
 
-public class DataSourceFactoryImpl implements DataSource.Factory {
+public class DataSourceFactoryImpl extends org.drools.ruleunits.impl.datasources.DataSourceFactoryImpl {
 
+    @Override
     public <T> DataStream<T> createStream() {
         return new ListDataStream<>();
     }
 
+    @Override
     public <T> DataStore<T> createStore() {
         return new ListDataStore<>();
     }
 
+    @Override
     public <T> SingletonStore<T> createSingleton() {
         return new FieldDataStore<>();
     }
