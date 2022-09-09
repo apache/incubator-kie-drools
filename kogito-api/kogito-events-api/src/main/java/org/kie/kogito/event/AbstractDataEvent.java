@@ -65,6 +65,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
      */
     public static final String SOURCE_FORMAT = "/process/%s";
     public static final String SPEC_VERSION = "1.0";
+    public static final String DATA_CONTENT_TYPE = "application/json";
 
     @JsonDeserialize(using = SpecVersionDeserializer.class)
     @JsonSerialize(using = SpecVersionSerializer.class)
@@ -83,6 +84,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     private String subject;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonProperty("datacontenttype")
     private String dataContentType;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -121,20 +123,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
             String kogitoProcessId,
             String kogitoRootProcessId,
             String kogitoAddons) {
-        this.specVersion = SpecVersion.parse(SPEC_VERSION);
-        this.id = UUID.randomUUID().toString();
-        this.source = Optional.ofNullable(source).map(URI::create).orElse(null);
-        this.type = type;
-        this.time = ZonedDateTime.now().toOffsetDateTime();
-        this.data = body;
-
-        this.kogitoProcessInstanceId = kogitoProcessInstanceId;
-        this.kogitoRootProcessInstanceId = kogitoRootProcessInstanceId;
-        this.kogitoProcessId = kogitoProcessId;
-        this.kogitoRootProcessId = kogitoRootProcessId;
-        this.kogitoAddons = kogitoAddons;
-
-        this.ensureRequiredFields();
+        this(type, source, body, kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons, null, DATA_CONTENT_TYPE, null);
     }
 
     public AbstractDataEvent(String type,
@@ -148,10 +137,21 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
             String subject,
             String dataContentType,
             String dataSchema) {
-        this(type, source, body, kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons);
+        this.specVersion = SpecVersion.parse(SPEC_VERSION);
+        this.id = UUID.randomUUID().toString();
+        this.source = Optional.ofNullable(source).map(URI::create).orElse(null);
+        this.type = type;
+        this.time = ZonedDateTime.now().toOffsetDateTime();
+        this.data = body;
+        this.kogitoProcessInstanceId = kogitoProcessInstanceId;
+        this.kogitoRootProcessInstanceId = kogitoRootProcessInstanceId;
+        this.kogitoProcessId = kogitoProcessId;
+        this.kogitoRootProcessId = kogitoRootProcessId;
+        this.kogitoAddons = kogitoAddons;
         this.subject = subject;
         this.dataContentType = dataContentType;
-        this.dataSchema = URI.create(dataSchema);
+        this.dataSchema = dataSchema != null ? URI.create(dataSchema) : null;
+        ensureRequiredFields();
     }
 
     protected void ensureRequiredFields() {
@@ -194,11 +194,6 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     }
 
     @Override
-    public String getDataContentType() {
-        return dataContentType;
-    }
-
-    @Override
     public URI getDataSchema() {
         return dataSchema;
     }
@@ -206,6 +201,11 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     @Override
     public String getSubject() {
         return subject;
+    }
+
+    @Override
+    public String getDataContentType() {
+        return dataContentType;
     }
 
     public String getKogitoProcessInstanceId() {
