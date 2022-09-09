@@ -67,6 +67,19 @@ pipeline {
                 }
             }
         }
+
+        stage('Upload drools binaries and documentation') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    getMavenCommand().inDirectory(getRepoName()).skipTests(true).withProperty('full').run('clean install')
+                    uploadFileMgmt(getRepoName())
+                }
+            }
+        }
+
         stage('Set next snapshot version') {
             when {
                 expression { return isRelease() }
@@ -258,4 +271,21 @@ void runMavenDeploy() {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
     mvnCmd.skipTests(true).run('clean deploy')
+}
+
+void uploadFileMgmt(String directory) {
+    if (isNotTestingBuild()) {
+        echo "upload binaries and docs for ${directory}"
+        dir(directory) {
+            sshagent(['drools-filemgmt']) {
+                sh "script/release/upload_filemgmt.sh ${getProjectVersion()}"
+            }
+        }
+    } else {
+        echo 'No uploadFileMgmt due to testing build'
+    }
+}
+
+boolean isNotTestingBuild() {
+    return getGitAuthor() == 'kiegroup'
 }

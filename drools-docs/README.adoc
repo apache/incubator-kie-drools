@@ -31,7 +31,7 @@ Finally install the Lunr extension with:
 
 == Building the website locally
 
-This folder contains an antora playbook, `antora-playbook.yml` to generate documentation from the source of your locally installed drools project. To run the latter and generate the documentation manually under the `drools-docs` folder use:
+This folder contains an antora playbook, `antora-playbook.yml` to generate documentation from the source of your locally installed drools project. You can build the website with `mvn clean install`. To generate the website manually, use:
 
 `npx antora antora-playbook.yml`
 
