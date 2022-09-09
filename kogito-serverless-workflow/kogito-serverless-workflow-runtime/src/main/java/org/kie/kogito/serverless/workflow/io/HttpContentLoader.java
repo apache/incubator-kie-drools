@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.kie.kogito.serverless.workflow.utils.BuildEvaluator;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.kogito.workitem.rest.auth.ClientOAuth2AuthDecorator;
 import org.kogito.workitem.rest.auth.OAuth2AuthDecorator;
@@ -127,7 +128,7 @@ class HttpContentLoader extends FallbackContentLoader {
     }
 
     private String eval(String expr) {
-        return ExpressionHandlerUtils.replaceExpr(workflow.get(), expr);
+        return BuildEvaluator.eval(ExpressionHandlerUtils.trimExpr(expr));
     }
 
     private void basicAuth(HttpURLConnection conn, BasicAuthDefinition basicAuth) {
