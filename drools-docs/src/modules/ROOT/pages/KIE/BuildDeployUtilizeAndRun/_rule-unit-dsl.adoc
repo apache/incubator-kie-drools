@@ -52,7 +52,7 @@ public class HelloWorldUnit implements RuleUnitDefinition {
 }
 ----
 
-As you define rules using `defineRules` method, you can execute the rules, of course, without DRL.
+As you define rules using `defineRules` method, you can execute the rules, of course, without having to define them using DRL.
 
 [source,java]
 ----
