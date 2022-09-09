@@ -22,7 +22,7 @@ import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class EfestoRedirectOutputTest {
 
@@ -36,10 +36,28 @@ class EfestoRedirectOutputTest {
     }
 
     @Test
-    void missingRequiredTarget() {
+    void constructor() {
+        String targetEngine = "targetEngine";
+        EfestoRedirectOutput retrieved = new EfestoRedirectOutput(modelLocalUriId, targetEngine, null) {};
+        assertThat(retrieved.getModelLocalUriId()).isEqualTo(modelLocalUriId);
+        assertThat(retrieved.getFullClassNames()).isNull();
+    }
+    @Test
+    void constructorMissingRequiredTarget() {
         KieEfestoCommonException thrown = assertThrows(
                 KieEfestoCommonException.class,
                 () -> new EfestoRedirectOutput(modelLocalUriId, null, "content") {},
+                "Expected constructor to throw, but it didn't"
+        );
+        String expectedMessage = "Missing required target";
+        assertThat(thrown.getMessage()).isEqualTo(expectedMessage);
+    }
+
+    @Test
+    void constructorEmptyTarget() {
+        KieEfestoCommonException thrown = assertThrows(
+                KieEfestoCommonException.class,
+                () -> new EfestoRedirectOutput(modelLocalUriId, "", "content") {},
                 "Expected constructor to throw, but it didn't"
         );
         String expectedMessage = "Missing required target";
@@ -60,4 +78,5 @@ class EfestoRedirectOutputTest {
         EfestoRedirectOutput retrieved = new EfestoRedirectOutput(modelLocalUriId, targetEngine, content) {};
         assertThat(retrieved.getContent()).isEqualTo(content);
     }
+
 }

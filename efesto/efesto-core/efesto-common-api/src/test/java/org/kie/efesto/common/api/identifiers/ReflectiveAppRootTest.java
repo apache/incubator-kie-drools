@@ -17,7 +17,6 @@ package org.kie.efesto.common.api.identifiers;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.identifiers.componentroots.ComponentRootA;
 import org.kie.efesto.common.api.identifiers.componentroots.LocalComponentIdA;
 
@@ -86,15 +85,17 @@ class ReflectiveAppRootTest {
         assertThat(thrown.getMessage()).startsWith(expectedMessage);
     }
 
-    private class ComponentRootPrivateConstructor implements ComponentRoot {
+    private static class ComponentRootPrivateConstructor implements ComponentRoot {
 
         private ComponentRootPrivateConstructor() {
         }
     }
 
-    private class ComponentRootNoDefaultConstructor implements ComponentRoot {
+    private static class ComponentRootNoDefaultConstructor implements ComponentRoot {
 
+        private final String arg;
         public ComponentRootNoDefaultConstructor(String arg) {
+            this.arg = arg;
         }
     }
 }

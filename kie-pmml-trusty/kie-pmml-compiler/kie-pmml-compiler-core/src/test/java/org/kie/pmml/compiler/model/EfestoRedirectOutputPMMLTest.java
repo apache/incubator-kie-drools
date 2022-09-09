@@ -19,10 +19,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.compilationmanager.api.model.EfestoRedirectOutput;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class EfestoRedirectOutputPMMLTest {
 
@@ -33,6 +31,14 @@ class EfestoRedirectOutputPMMLTest {
         String path = "/example/some-id/instances/some-instance-id";
         LocalUri parsed = LocalUri.parse(path);
         modelLocalUriId = new ModelLocalUriId(parsed);
+    }
+
+    @Test
+    void constructor() {
+        String modelFile = "modelFile";
+        EfestoRedirectOutputPMML retrieved = new EfestoRedirectOutputPMML(modelLocalUriId, modelFile);
+        assertThat(retrieved.getModelLocalUriId()).isEqualTo(modelLocalUriId);
+        assertThat(retrieved.getFullClassNames()).isNull();
     }
 
     @Test

@@ -54,20 +54,30 @@ public class CompilationManagerUtils {
 
     /**
      * Process resources and populate generatedResources into context without writing to IndexFile
-     * @param toProcess
-     * @param context
+     * @param toProcess the resource to process
+     * @param context the compilation context
      */
     public static void processResourceWithContext(EfestoResource toProcess, EfestoCompilationContext context) {
         Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
-        if (!retrieved.isPresent()) {
+        if (retrieved.isEmpty()) {
             logger.warn("Cannot find KieCompilerService for {}, trying in context classloader", toProcess.getClass());
             retrieved = getKieCompilerServiceFromEfestoCompilationContext(toProcess, context);
         }
-        if (!retrieved.isPresent()) {
+        if (retrieved.isEmpty()) {
             logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
             return;
         }
-        List<EfestoCompilationOutput> efestoCompilationOutputList = retrieved.get().processResource(toProcess, context);
+        processResources(retrieved.get(), toProcess, context);
+    }
+
+    public static Optional<IndexFile> getExistingIndexFile(String model) {
+        String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY);
+        IndexFile toReturn = new IndexFile(parentPath, model);
+        return getFileFromFileNameOrFilePath(toReturn.getName(), toReturn.getAbsolutePath()).map(IndexFile::new);
+    }
+
+    static void processResources(KieCompilerService kieCompilerService, EfestoResource toProcess, EfestoCompilationContext context) {
+        List<EfestoCompilationOutput> efestoCompilationOutputList = kieCompilerService.processResource(toProcess, context);
         for (EfestoCompilationOutput compilationOutput : efestoCompilationOutputList) {
             if (compilationOutput instanceof EfestoCallableOutput) {
                 populateContext(context, (EfestoCallableOutput) compilationOutput);
@@ -82,12 +92,6 @@ public class CompilationManagerUtils {
                 processResourceWithContext((EfestoResource) compilationOutput, context);
             }
         }
-    }
-
-    public static Optional<IndexFile> getExistingIndexFile(String model) {
-        String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY);
-        IndexFile toReturn = new IndexFile(parentPath, model);
-        return getFileFromFileNameOrFilePath(toReturn.getName(), toReturn.getAbsolutePath()).map(IndexFile::new);
     }
 
     static IndexFile getIndexFile(EfestoCallableOutput compilationOutput) {

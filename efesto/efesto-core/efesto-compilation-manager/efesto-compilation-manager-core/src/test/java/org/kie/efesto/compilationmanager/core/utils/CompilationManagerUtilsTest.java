@@ -29,11 +29,21 @@ import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
+import org.kie.efesto.compilationmanager.core.mocks.MockEfestoInputF;
+import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputE;
+import org.kie.efesto.compilationmanager.core.mocks.MockKieCompilerServiceE;
+import org.kie.efesto.compilationmanager.core.mocks.MockKieCompilerServiceF;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.efesto.common.api.utils.JSONUtils.writeGeneratedResourcesObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class CompilationManagerUtilsTest {
 
@@ -44,11 +54,23 @@ class CompilationManagerUtilsTest {
     private final static EfestoCallableOutputClassesContainer finalOutput = getEfestoFinalOutputClassesContainer(MODEL_LOCAL_URI_ID);
 
     @Test
-    void populateIndexFilesWithProcessedResource() {
+    void processResourcesWithoutRedirect() {
+        KieCompilerService kieCompilerServiceMock = mock(MockKieCompilerServiceE.class);
+        EfestoResource toProcess = new MockEfestoRedirectOutputE();
+        EfestoCompilationContext context =
+                EfestoCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        CompilationManagerUtils.processResources(kieCompilerServiceMock, toProcess, context);
+        verify(kieCompilerServiceMock, times(1)).processResource(toProcess, context);
     }
 
     @Test
-    void getIndexFileFromFinalOutput() {
+    void processResourcesWithRedirect() {
+        KieCompilerService kieCompilerServiceMock = mock(MockKieCompilerServiceF.class);
+        EfestoResource toProcess = new MockEfestoInputF();
+        EfestoCompilationContext context =
+                EfestoCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        CompilationManagerUtils.processResources(kieCompilerServiceMock, toProcess, context);
+        verify(kieCompilerServiceMock, times(1)).processResource(toProcess, context);
     }
 
     @Test
@@ -137,10 +159,7 @@ class CompilationManagerUtilsTest {
 
     private void commonEvaluateGeneratedIntermediateResources(List<GeneratedResource> retrieved) {
         assertThat(retrieved).isNotNull();
-//        assertThat(retrieved).hasSize(compiledClassMap.size());
-        compiledClassMap.keySet().forEach(fullClassName -> {
-            assertTrue(retrieved.stream().filter(GeneratedClassResource.class::isInstance).map(GeneratedClassResource.class::cast).anyMatch(generatedResource -> generatedResource.getFullClassName().equals(fullClassName)));
-        });
+        compiledClassMap.keySet().forEach(fullClassName -> assertTrue(retrieved.stream().filter(GeneratedClassResource.class::isInstance).map(GeneratedClassResource.class::cast).anyMatch(generatedResource -> generatedResource.getFullClassName().equals(fullClassName))));
     }
 
     private static EfestoCallableOutputClassesContainer getEfestoFinalOutputClassesContainer(ModelLocalUriId modelLocalUriId) {
