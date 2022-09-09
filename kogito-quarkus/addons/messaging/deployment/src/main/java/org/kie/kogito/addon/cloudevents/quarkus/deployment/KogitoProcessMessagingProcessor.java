@@ -26,19 +26,13 @@ import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.Type;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
-import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
-import org.kie.kogito.quarkus.addons.common.deployment.RequireCapabilityKogitoAddOnProcessor;
 
 import io.quarkus.arc.deployment.AnnotationsTransformerBuildItem;
 import io.quarkus.arc.processor.AnnotationsTransformer;
 import io.quarkus.arc.processor.DotNames;
 import io.quarkus.deployment.annotations.BuildStep;
 
-public class KogitoProcessMessagingProcessor extends RequireCapabilityKogitoAddOnProcessor {
-
-    public KogitoProcessMessagingProcessor() {
-        super(KogitoCapability.PROCESSES);
-    }
+public class KogitoProcessMessagingProcessor {
 
     private static class MessagingAnnotationTransfomer implements AnnotationsTransformer {
         private Map<DotName, DotName> fieldMapping;

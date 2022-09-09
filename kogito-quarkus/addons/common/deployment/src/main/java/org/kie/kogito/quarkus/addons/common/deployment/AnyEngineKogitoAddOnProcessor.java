@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.quarkus.addons.common.deployment;
 
-import io.quarkus.builder.item.EmptyBuildItem;
 import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.Produce;
+import io.quarkus.deployment.pkg.builditem.ArtifactResultBuildItem;
 
 /**
  * You don't need to point to a particular engine if your add-on fits any set of it.
@@ -36,7 +36,7 @@ public abstract class AnyEngineKogitoAddOnProcessor {
      * @param capabilities
      */
     @BuildStep
-    @Produce(EmptyBuildItem.class)
+    @Produce(ArtifactResultBuildItem.class)
     void verifyCapabilities(final Capabilities capabilities) {
         if (KogitoCapability.ENGINES.stream().noneMatch(kc -> capabilities.isPresent(kc.getCapability()))) {
             throw this.exceptionForEngineNotPresent();

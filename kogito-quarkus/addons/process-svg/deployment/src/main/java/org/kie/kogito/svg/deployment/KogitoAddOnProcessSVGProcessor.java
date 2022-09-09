@@ -15,9 +15,6 @@
  */
 package org.kie.kogito.svg.deployment;
 
-import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
-import org.kie.kogito.quarkus.addons.common.deployment.RequireCapabilityKogitoAddOnProcessor;
-
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
@@ -27,13 +24,9 @@ import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 
 import static org.kie.kogito.svg.AbstractProcessSvgService.SVG_RELATIVE_PATH;
 
-class KogitoAddOnProcessSVGProcessor extends RequireCapabilityKogitoAddOnProcessor {
+class KogitoAddOnProcessSVGProcessor {
 
     private static final String FEATURE = "kogito-addon-process-svg-extension";
-
-    KogitoAddOnProcessSVGProcessor() {
-        super(KogitoCapability.PROCESSES);
-    }
 
     @BuildStep
     FeatureBuildItem feature() {
