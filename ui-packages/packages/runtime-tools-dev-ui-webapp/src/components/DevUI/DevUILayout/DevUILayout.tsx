@@ -34,6 +34,8 @@ import ProcessFormContextProvider from '../../../channel/ProcessForm/ProcessForm
 import { CustomLabels } from '../../../api/CustomLabels';
 import { DiagramPreviewSize } from '@kogito-apps/process-details/dist/api';
 import WorkflowFormContextProvider from '../../../channel/WorkflowForm/WorkflowFormContextProvider';
+import CustomDashboardListContextProvider from '../../../channel/CustomDashboardList/CustomDashboardListContextProvider';
+import { CustomDashboardViewContextProvider } from '../../../channel/CustomDashboardView';
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -94,17 +96,21 @@ const DevUILayout: React.FC<IOwnProps> = ({
                 <JobsManagementContextProvider apolloClient={apolloClient}>
                   <ProcessDefinitionListContextProvider>
                     <FormsListContextProvider>
-                      <FormDetailsContextProvider>
-                        <ProcessFormContextProvider>
-                          <WorkflowFormContextProvider>
-                            <MemoryRouter>
-                              <Switch>
-                                <Route path="/" render={renderPage} />
-                              </Switch>
-                            </MemoryRouter>
-                          </WorkflowFormContextProvider>
-                        </ProcessFormContextProvider>
-                      </FormDetailsContextProvider>
+                      <CustomDashboardListContextProvider>
+                        <CustomDashboardViewContextProvider>
+                          <FormDetailsContextProvider>
+                            <ProcessFormContextProvider>
+                              <WorkflowFormContextProvider>
+                                <MemoryRouter>
+                                  <Switch>
+                                    <Route path="/" render={renderPage} />
+                                  </Switch>
+                                </MemoryRouter>
+                              </WorkflowFormContextProvider>
+                            </ProcessFormContextProvider>
+                          </FormDetailsContextProvider>
+                        </CustomDashboardViewContextProvider>
+                      </CustomDashboardListContextProvider>
                     </FormsListContextProvider>
                   </ProcessDefinitionListContextProvider>
                 </JobsManagementContextProvider>

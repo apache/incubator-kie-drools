@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedCustomDashboardView tests Snapshot 1`] = `
+<ForwardRef
+  dashboardName="name"
+  driver={
+    Object {
+      "getCustomDashboardContent": [MockFunction],
+    }
+  }
+  targetOrigin="origin"
+>
+  <ForwardRef>
+    <div />
+  </ForwardRef>
+</ForwardRef>
+`;

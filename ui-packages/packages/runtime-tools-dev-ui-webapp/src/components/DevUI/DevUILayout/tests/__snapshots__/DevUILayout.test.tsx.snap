@@ -91,7 +91,7 @@ exports[`DevUILayout tests Snapshot test with Processing disabled 1`] = `
                       >
                         <li
                           className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-7"
+                          data-ouia-component-id="OUIA-Generated-NavItem-8"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
                           onMouseOver={[Function]}
@@ -283,7 +283,7 @@ exports[`DevUILayout tests Snapshot test with Tracing disabled 1`] = `
                       >
                         <li
                           className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-8"
+                          data-ouia-component-id="OUIA-Generated-NavItem-9"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
                           onMouseOver={[Function]}
@@ -325,7 +325,7 @@ exports[`DevUILayout tests Snapshot test with Tracing disabled 1`] = `
                       >
                         <li
                           className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-9"
+                          data-ouia-component-id="OUIA-Generated-NavItem-10"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
                           onMouseOver={[Function]}
@@ -367,7 +367,7 @@ exports[`DevUILayout tests Snapshot test with Tracing disabled 1`] = `
                       >
                         <li
                           className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-10"
+                          data-ouia-component-id="OUIA-Generated-NavItem-11"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
                           onMouseOver={[Function]}
@@ -409,7 +409,7 @@ exports[`DevUILayout tests Snapshot test with Tracing disabled 1`] = `
                       >
                         <li
                           className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-11"
+                          data-ouia-component-id="OUIA-Generated-NavItem-12"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
                           onMouseOver={[Function]}
@@ -451,7 +451,7 @@ exports[`DevUILayout tests Snapshot test with Tracing disabled 1`] = `
                       >
                         <li
                           className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-12"
+                          data-ouia-component-id="OUIA-Generated-NavItem-13"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
                           onMouseOver={[Function]}
@@ -482,6 +482,48 @@ exports[`DevUILayout tests Snapshot test with Tracing disabled 1`] = `
                                 tabIndex={null}
                               >
                                 Monitoring
+                              </a>
+                            </LinkAnchor>
+                          </Link>
+                        </li>
+                      </NavItem>
+                      <NavItem
+                        isActive={false}
+                        key="customDashboard-nav"
+                      >
+                        <li
+                          className="pf-c-nav__item"
+                          data-ouia-component-id="OUIA-Generated-NavItem-14"
+                          data-ouia-component-type="PF4/NavItem"
+                          data-ouia-safe={true}
+                          onMouseOver={[Function]}
+                        >
+                          <Link
+                            aria-current={null}
+                            className="pf-c-nav__link"
+                            data-ouia-navigation-name="customDashboard-nav"
+                            onClick={[Function]}
+                            tabIndex={null}
+                            to="/CustomDashboard"
+                          >
+                            <LinkAnchor
+                              aria-current={null}
+                              className="pf-c-nav__link"
+                              data-ouia-navigation-name="customDashboard-nav"
+                              href="/CustomDashboard"
+                              navigate={[Function]}
+                              onClick={[Function]}
+                              tabIndex={null}
+                            >
+                              <a
+                                aria-current={null}
+                                className="pf-c-nav__link"
+                                data-ouia-navigation-name="customDashboard-nav"
+                                href="/CustomDashboard"
+                                onClick={[Function]}
+                                tabIndex={null}
+                              >
+                                Dashboards
                               </a>
                             </LinkAnchor>
                           </Link>
@@ -849,11 +891,53 @@ exports[`DevUILayout tests Snapshot test with default props 1`] = `
                       </NavItem>
                       <NavItem
                         isActive={false}
-                        key="audit-nav"
+                        key="customDashboard-nav"
                       >
                         <li
                           className="pf-c-nav__item"
                           data-ouia-component-id="OUIA-Generated-NavItem-6"
+                          data-ouia-component-type="PF4/NavItem"
+                          data-ouia-safe={true}
+                          onMouseOver={[Function]}
+                        >
+                          <Link
+                            aria-current={null}
+                            className="pf-c-nav__link"
+                            data-ouia-navigation-name="customDashboard-nav"
+                            onClick={[Function]}
+                            tabIndex={null}
+                            to="/CustomDashboard"
+                          >
+                            <LinkAnchor
+                              aria-current={null}
+                              className="pf-c-nav__link"
+                              data-ouia-navigation-name="customDashboard-nav"
+                              href="/CustomDashboard"
+                              navigate={[Function]}
+                              onClick={[Function]}
+                              tabIndex={null}
+                            >
+                              <a
+                                aria-current={null}
+                                className="pf-c-nav__link"
+                                data-ouia-navigation-name="customDashboard-nav"
+                                href="/CustomDashboard"
+                                onClick={[Function]}
+                                tabIndex={null}
+                              >
+                                Dashboards
+                              </a>
+                            </LinkAnchor>
+                          </Link>
+                        </li>
+                      </NavItem>
+                      <NavItem
+                        isActive={false}
+                        key="audit-nav"
+                      >
+                        <li
+                          className="pf-c-nav__item"
+                          data-ouia-component-id="OUIA-Generated-NavItem-7"
                           data-ouia-component-type="PF4/NavItem"
                           data-ouia-safe={true}
                           onMouseOver={[Function]}

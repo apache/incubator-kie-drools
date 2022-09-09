@@ -31,7 +31,7 @@ module.exports = merge(common, {
     },
     proxy: [
       {
-        context: ['/svg', '/forms'],
+        context: ['/svg', '/forms', '/customDashboard'],
         target: 'http://localhost:4000',
         secure: false,
         changeOrigin: true

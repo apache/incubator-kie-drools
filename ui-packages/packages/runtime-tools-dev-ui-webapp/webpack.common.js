@@ -27,7 +27,8 @@ module.exports = {
         { from: "./resources", to: "./resources" },
         { from: "./src/static", to: "./static" },
         { from: "./src/components/styles.css", to: "./components/styles.css" },
-        { from: "../monitoring-webapp/dist/", to: "./monitoring-webapp" }
+        { from: "../monitoring-webapp/dist/", to: "./monitoring-webapp" },
+        { from: "../custom-dashboard-view/dist/", to: "./custom-dashboard-view" }
     ]}),
     new FileManagerPlugin({
       events: {
@@ -36,7 +37,8 @@ module.exports = {
             { source: './dist/*.js', destination: './dist/resources/webapp' },
             { source: './dist/*.map', destination: './dist/resources/webapp' },
             { source: './dist/fonts', destination: './dist/resources/webapp' },
-            { source: './dist/monitoring-webapp', destination: './dist/resources/webapp/monitoring-webapp' }
+            { source: './dist/monitoring-webapp', destination: './dist/resources/webapp/monitoring-webapp' },
+            { source: './dist/custom-dashboard-view', destination: './dist/resources/webapp/custom-dashboard-view' }
           ]
         },
       },
@@ -89,6 +91,9 @@ module.exports = {
             '../../node_modules/@kogito-apps/process-details/dist/static'
           ),
           path.resolve(
+                  '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
+          ),
+          path.resolve(
             '../../node_modules/@kogito-apps/management-console-shared/dist/static'
           ),
           path.resolve(
@@ -108,6 +113,9 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/process-definition-list/dist/static'
+          ),
+          path.resolve(
+                  '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/process-monitoring/dist/static'
@@ -203,6 +211,9 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/process-definition-list/dist/static'
+          ),
+          path.resolve(
+                  '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
           )
         ],
         use: [

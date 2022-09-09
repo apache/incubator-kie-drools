@@ -9,6 +9,7 @@ const hrInterviewForm = require('./forms/HRInterview');
 const itInterviewForm = require('./forms/ITInterview');
 const emptyForm = require('./forms/EmptyForm');
 const formData = require('../MockData/forms/formData');
+const customDashboardData = require('../MockData/customDashboard/data');
 const hiringSchema = require('./process-forms-schema/hiring');
 const uuidv4 = require('uuid');
 const tasksUnableToTransition = [
@@ -288,6 +289,35 @@ module.exports = controller = {
     );
 
     res.send(JSON.stringify(getTaskSchema(req.params.taskName, true)));
+  },
+
+  getCustomDashboards: (req, res) => {
+    const filterNames = req.query.names.split(';');
+    if (filterNames[0].length === 0) {
+      res.send(customDashboardData)
+    } else {
+      const filteredCustomDashboards = [];
+      filterNames.forEach((name) => {
+        customDashboardData.forEach((customDashboard) => {
+          if (customDashboard.name === name) {
+            filteredCustomDashboards.push(customDashboard);
+          }
+        });
+      });
+      res.send(filteredCustomDashboards)
+    }
+  },
+
+  getCustomDashboardContent: (req, res) => {
+    const dashboardName = req.params.name;
+    let content = '';
+    if(dashboardName === 'age.dash.yaml') {
+      content = fs.readFileSync(__dirname + '/customDashboard/age.dash.yaml', 'utf-8');
+    }
+    if(dashboardName === 'products.dash.yaml') {
+      content = fs.readFileSync(__dirname + '/customDashboard/products.dash.yaml', 'utf-8');
+    }
+    res.send(content)
   },
 
   getForms: (req, res) => {

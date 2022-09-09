@@ -1,0 +1,25 @@
+datasets:
+  - uuid: age
+    content: >-
+      [
+        ["John", 5],
+        ["Mary", 7],
+        ["Mark",  3]
+      ]
+    columns:
+      - id: Name
+        type: LABEL
+      - id: Age
+        type: Number
+pages:
+  - components:
+      - settings:
+          type: BARCHART
+          dataSetLookup:
+            uuid: age
+            group:
+              - columnGroup:
+                  source: Name
+                groupFunctions:
+                  - source: Name
+                  - source: Age

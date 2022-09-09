@@ -114,6 +114,23 @@ const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
                 </Link>
               </NavItem>
             )}
+            {(!availablePages ||
+              availablePages.includes('CustomDashboard')) && (
+              <NavItem
+                key={'customDashboard-nav'}
+                isActive={pathname.startsWith('/CustomDashboard')}
+              >
+                <Link
+                  to="/CustomDashboard"
+                  {...ouiaAttribute(
+                    'data-ouia-navigation-name',
+                    'customDashboard-nav'
+                  )}
+                >
+                  Dashboards
+                </Link>
+              </NavItem>
+            )}
           </>
         )}
         {isTracingEnabled && (

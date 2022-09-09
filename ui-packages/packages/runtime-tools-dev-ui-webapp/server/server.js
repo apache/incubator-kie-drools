@@ -95,7 +95,8 @@ app.get(
 app.get('/:processId/:taskName/schema', controller.getTaskDefinitionForm);
 
 app.get('/forms/list', controller.getForms);
-
+app.get('/customDashboard/list', controller.getCustomDashboards);
+app.get('/customDashboard/:name', controller.getCustomDashboardContent);
 app.get('/forms/:formName', controller.getFormContent);
 app.post('/forms/:formName', controller.saveFormContent);
 

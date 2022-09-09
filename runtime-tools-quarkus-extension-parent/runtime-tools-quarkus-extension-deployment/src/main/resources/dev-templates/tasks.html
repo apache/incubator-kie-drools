@@ -40,7 +40,8 @@
         trustyServiceUrl: "{config:property('kogito.trusty.http.url') ?: 'http://localhost:1336'}",
         page: "TaskInbox",
         devUIUrl: "http://localhost:{config:property('quarkus.http.port') or '8080'}",
-        openApiPath: "{config:property('quarkus.smallrye-openapi.path') or '/q/openapi.json'}"
+        openApiPath: "{config:property('quarkus.smallrye-openapi.path') or '/q/openapi.json'}",
+        availablePages: ["Processes", "Jobs", "Tasks", "Forms"]
     })
 </script>
 {/body}

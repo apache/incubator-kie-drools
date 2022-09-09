@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomDashboardViewContainer tests Snapshot 1`] = `
+<CustomDashboardViewContainer>
+  <ForwardRef
+    data-ouia-component-type="process-details-container"
+    data-ouia-safe={true}
+    driver={CustomDashboardViewGatewayApiImpl {}}
+    targetOrigin="*"
+  >
+    <ForwardRef>
+      <div />
+    </ForwardRef>
+  </ForwardRef>
+</CustomDashboardViewContainer>
+`;

@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomDashboardListContainer tests Snapshot 1`] = `
+<CustomDashboardListContainer>
+  <ForwardRef
+    driver={
+      CustomDashboardListGatewayApiImpl {
+        "_CustomDashboardFilter": Object {
+          "customDashboardNames": Array [],
+        },
+        "applyFilter": [Function],
+        "getCustomDashboardFilter": [Function],
+        "listeners": Array [
+          Object {
+            "onOpen": [Function],
+          },
+        ],
+        "openDashboard": [Function],
+      }
+    }
+    targetOrigin="*"
+  >
+    <ForwardRef>
+      <div />
+    </ForwardRef>
+  </ForwardRef>
+</CustomDashboardListContainer>
+`;

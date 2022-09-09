@@ -18,6 +18,8 @@ import axios from 'axios';
 import { GraphQL } from '@kogito-apps/consoles-common';
 import wait from 'waait';
 import {
+  getCustomDashboard,
+  getCustomDashboardContent,
   getFormContent,
   getForms,
   getProcessDefinitionList,
@@ -975,5 +977,57 @@ describe('process definitions section', () => {
     };
     const result = await getProcessSchema(processDefinitioData);
     expect(result).toStrictEqual(schema);
+  });
+});
+
+describe('custom dashboard section', () => {
+  it('get custom dashboard  query test - success', async () => {
+    mockedAxios.get.mockResolvedValue({
+      data: [
+        {
+          name: 'dashboard.dash.yaml',
+          path: '/user/home',
+          lastModified: new Date(2020, 6, 12)
+        }
+      ]
+    });
+    const result = await getCustomDashboard(['dashboard.dash.yaml']);
+    expect(result).toEqual([
+      {
+        name: 'dashboard.dash.yaml',
+        path: '/user/home',
+        lastModified: new Date(2020, 6, 12)
+      }
+    ]);
+  });
+
+  it('get custom dashboard query test - failure', async () => {
+    mockedAxios.get.mockRejectedValue({ errorMessage: 'failed to load data' });
+    try {
+      await getCustomDashboard(['dashboard.dash.yaml']);
+    } catch (error) {
+      expect(error).toEqual({
+        errorMessage: 'failed to load data'
+      });
+    }
+  });
+
+  it('get custom dashboard content - success', async () => {
+    const value = 'it is a yaml file';
+    mockedAxios.get.mockResolvedValue({ data: value });
+    const result = await getCustomDashboardContent('dashboard.dash.yaml');
+
+    expect(result).toEqual(value);
+  });
+
+  it('get custom dashboard content - failure', async () => {
+    mockedAxios.get.mockRejectedValue({ errorMessage: 'failed to load data' });
+    try {
+      await getCustomDashboardContent('dashboard.dash.yaml');
+    } catch (error) {
+      expect(error).toEqual({
+        errorMessage: 'failed to load data'
+      });
+    }
   });
 });

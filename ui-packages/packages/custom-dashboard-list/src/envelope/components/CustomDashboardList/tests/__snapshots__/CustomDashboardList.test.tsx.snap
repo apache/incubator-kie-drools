@@ -1,0 +1,1970 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`customDashboard list tests render CustomDashboard list - gallery 1`] = `
+<CustomDashboardList
+  driver={MockedCustomDashboardListDriver {}}
+  isEnvelopeConnectedToChannel={true}
+>
+  <div
+    data-ouia-component-type="custom-dashboard-list"
+    data-ouia-safe={true}
+  >
+    <Split
+      hasGutter={true}
+    >
+      <div
+        className="pf-l-split pf-m-gutter"
+      >
+        <SplitItem>
+          <div
+            className="pf-l-split__item"
+          >
+            <CustomDashboardListToolbar
+              applyFilter={[Function]}
+              filterDashboardNames={Array []}
+              setFilterDashboardNames={[Function]}
+            >
+              <Toolbar
+                className="pf-m-toggle-group-container"
+                clearAllFilters={[Function]}
+                clearFiltersButtonText="Reset to default"
+                collapseListedFiltersBreakpoint="xl"
+                data-ouia-component-type="custom-dashboard-list-toolbar"
+                data-ouia-safe={true}
+                id="custom-dashboard-list-with-filter"
+              >
+                <div
+                  className="pf-c-toolbar pf-m-toggle-group-container"
+                  data-ouia-component-id="OUIA-Generated-Toolbar-3"
+                  data-ouia-component-type="custom-dashboard-list-toolbar"
+                  data-ouia-safe={true}
+                  id="custom-dashboard-list-with-filter"
+                >
+                  <ToolbarContent
+                    isExpanded={false}
+                    showClearFiltersButton={false}
+                  >
+                    <div
+                      className="pf-c-toolbar__content"
+                    >
+                      <div
+                        className="pf-c-toolbar__content-section"
+                      >
+                        <ToolbarToggleGroup
+                          breakpoint="xl"
+                          toggleIcon={
+                            <FilterIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
+                            />
+                          }
+                        >
+                          <div
+                            className="pf-c-toolbar__group pf-m-toggle-group pf-m-show-on-xl"
+                          >
+                            <div
+                              className="pf-c-toolbar__toggle"
+                            >
+                              <Button
+                                aria-controls="custom-dashboard-list-with-filter-expandable-content-12"
+                                aria-haspopup={false}
+                                aria-label="Show Filters"
+                                onClick={[Function]}
+                                variant="plain"
+                              >
+                                <ButtonBase
+                                  aria-controls="custom-dashboard-list-with-filter-expandable-content-12"
+                                  aria-haspopup={false}
+                                  aria-label="Show Filters"
+                                  innerRef={null}
+                                  onClick={[Function]}
+                                  variant="plain"
+                                >
+                                  <button
+                                    aria-controls="custom-dashboard-list-with-filter-expandable-content-12"
+                                    aria-disabled={false}
+                                    aria-haspopup={false}
+                                    aria-label="Show Filters"
+                                    className="pf-c-button pf-m-plain"
+                                    data-ouia-component-id="OUIA-Generated-Button-plain-5"
+                                    data-ouia-component-type="PF4/Button"
+                                    data-ouia-safe={true}
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    role={null}
+                                    type="button"
+                                  >
+                                    <FilterIcon
+                                      color="currentColor"
+                                      noVerticalAlign={false}
+                                      size="sm"
+                                    >
+                                      <svg
+                                        aria-hidden={true}
+                                        aria-labelledby={null}
+                                        fill="currentColor"
+                                        height="1em"
+                                        role="img"
+                                        style={
+                                          Object {
+                                            "verticalAlign": "-0.125em",
+                                          }
+                                        }
+                                        viewBox="0 0 512 512"
+                                        width="1em"
+                                      >
+                                        <path
+                                          d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                                        />
+                                      </svg>
+                                    </FilterIcon>
+                                  </button>
+                                </ButtonBase>
+                              </Button>
+                            </div>
+                            <ForwardRef
+                              variant="filter-group"
+                            >
+                              <ToolbarGroupWithRef
+                                innerRef={null}
+                                variant="filter-group"
+                              >
+                                <div
+                                  className="pf-c-toolbar__group pf-m-filter-group"
+                                >
+                                  <ToolbarFilter
+                                    categoryName="Custom Dashboard name"
+                                    chips={Array []}
+                                    deleteChip={[Function]}
+                                    key="input-customDashboard-name"
+                                    showToolbarItem={true}
+                                  >
+                                    <ToolbarItem>
+                                      <div
+                                        className="pf-c-toolbar__item"
+                                      >
+                                        <InputGroup>
+                                          <div
+                                            className="pf-c-input-group"
+                                          >
+                                            <TextInput
+                                              aria-label="Dashboard name"
+                                              id="customDashboardName"
+                                              name="customDashboardName"
+                                              onChange={[Function]}
+                                              onKeyPress={[Function]}
+                                              placeholder="Filter by dashboard name"
+                                              type="search"
+                                              value=""
+                                            >
+                                              <TextInputBase
+                                                aria-label="Dashboard name"
+                                                className=""
+                                                id="customDashboardName"
+                                                innerRef={null}
+                                                isDisabled={false}
+                                                isLeftTruncated={false}
+                                                isReadOnly={false}
+                                                isRequired={false}
+                                                name="customDashboardName"
+                                                onChange={[Function]}
+                                                onKeyPress={[Function]}
+                                                ouiaSafe={true}
+                                                placeholder="Filter by dashboard name"
+                                                type="search"
+                                                validated="default"
+                                                value=""
+                                              >
+                                                <input
+                                                  aria-invalid={false}
+                                                  aria-label="Dashboard name"
+                                                  className="pf-c-form-control"
+                                                  data-ouia-component-id="OUIA-Generated-TextInputBase-6"
+                                                  data-ouia-component-type="PF4/TextInput"
+                                                  data-ouia-safe={true}
+                                                  disabled={false}
+                                                  id="customDashboardName"
+                                                  name="customDashboardName"
+                                                  onBlur={[Function]}
+                                                  onChange={[Function]}
+                                                  onFocus={[Function]}
+                                                  onKeyPress={[Function]}
+                                                  placeholder="Filter by dashboard name"
+                                                  readOnly={false}
+                                                  required={false}
+                                                  type="search"
+                                                  value=""
+                                                />
+                                              </TextInputBase>
+                                            </TextInput>
+                                          </div>
+                                        </InputGroup>
+                                      </div>
+                                    </ToolbarItem>
+                                    <Portal
+                                      containerInfo={
+                                        <div
+                                          aria-hidden="true"
+                                          class="pf-c-toolbar__group pf-m-hidden"
+                                          hidden=""
+                                        />
+                                      }
+                                    />
+                                  </ToolbarFilter>
+                                  <ToolbarItem>
+                                    <div
+                                      className="pf-c-toolbar__item"
+                                    >
+                                      <Button
+                                        id="apply-filter"
+                                        onClick={[Function]}
+                                        variant="primary"
+                                      >
+                                        <ButtonBase
+                                          id="apply-filter"
+                                          innerRef={null}
+                                          onClick={[Function]}
+                                          variant="primary"
+                                        >
+                                          <button
+                                            aria-disabled={false}
+                                            aria-label={null}
+                                            className="pf-c-button pf-m-primary"
+                                            data-ouia-component-id="OUIA-Generated-Button-primary-3"
+                                            data-ouia-component-type="PF4/Button"
+                                            data-ouia-safe={true}
+                                            disabled={false}
+                                            id="apply-filter"
+                                            onClick={[Function]}
+                                            role={null}
+                                            type="button"
+                                          >
+                                            Apply Filter
+                                          </button>
+                                        </ButtonBase>
+                                      </Button>
+                                    </div>
+                                  </ToolbarItem>
+                                </div>
+                              </ToolbarGroupWithRef>
+                            </ForwardRef>
+                          </div>
+                        </ToolbarToggleGroup>
+                        <ForwardRef
+                          variant="icon-button-group"
+                        >
+                          <ToolbarGroupWithRef
+                            innerRef={null}
+                            variant="icon-button-group"
+                          >
+                            <div
+                              className="pf-c-toolbar__group pf-m-icon-button-group"
+                            >
+                              <ToolbarItem>
+                                <div
+                                  className="pf-c-toolbar__item"
+                                >
+                                  <Tooltip
+                                    content="Refresh"
+                                  >
+                                    <Popper
+                                      appendTo={[Function]}
+                                      distance={15}
+                                      enableFlip={true}
+                                      flipBehavior={
+                                        Array [
+                                          "top",
+                                          "right",
+                                          "bottom",
+                                          "left",
+                                          "top",
+                                          "right",
+                                          "bottom",
+                                        ]
+                                      }
+                                      isVisible={false}
+                                      onBlur={[Function]}
+                                      onDocumentClick={false}
+                                      onDocumentKeyDown={[Function]}
+                                      onFocus={[Function]}
+                                      onMouseEnter={[Function]}
+                                      onMouseLeave={[Function]}
+                                      onTriggerEnter={[Function]}
+                                      placement="top"
+                                      popper={
+                                        <div
+                                          className="pf-c-tooltip"
+                                          id="pf-tooltip-11"
+                                          role="tooltip"
+                                          style={
+                                            Object {
+                                              "maxWidth": null,
+                                              "opacity": 0,
+                                              "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
+                                            }
+                                          }
+                                        >
+                                          <TooltipArrow />
+                                          <TooltipContent
+                                            isLeftAligned={false}
+                                          >
+                                            Refresh
+                                          </TooltipContent>
+                                        </div>
+                                      }
+                                      popperMatchesTriggerWidth={false}
+                                      positionModifiers={
+                                        Object {
+                                          "bottom": "pf-m-bottom",
+                                          "left": "pf-m-left",
+                                          "right": "pf-m-right",
+                                          "top": "pf-m-top",
+                                        }
+                                      }
+                                      trigger={
+                                        <Button
+                                          id="refresh"
+                                          onClick={[Function]}
+                                          variant="plain"
+                                        >
+                                          <SyncIcon
+                                            color="currentColor"
+                                            noVerticalAlign={false}
+                                            size="sm"
+                                          />
+                                        </Button>
+                                      }
+                                      zIndex={9999}
+                                    >
+                                      <FindRefWrapper
+                                        onFoundRef={[Function]}
+                                      >
+                                        <Button
+                                          id="refresh"
+                                          onClick={[Function]}
+                                          variant="plain"
+                                        >
+                                          <ButtonBase
+                                            id="refresh"
+                                            innerRef={null}
+                                            onClick={[Function]}
+                                            variant="plain"
+                                          >
+                                            <button
+                                              aria-disabled={false}
+                                              aria-label={null}
+                                              className="pf-c-button pf-m-plain"
+                                              data-ouia-component-id="OUIA-Generated-Button-plain-6"
+                                              data-ouia-component-type="PF4/Button"
+                                              data-ouia-safe={true}
+                                              disabled={false}
+                                              id="refresh"
+                                              onClick={[Function]}
+                                              role={null}
+                                              type="button"
+                                            >
+                                              <SyncIcon
+                                                color="currentColor"
+                                                noVerticalAlign={false}
+                                                size="sm"
+                                              >
+                                                <svg
+                                                  aria-hidden={true}
+                                                  aria-labelledby={null}
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style={
+                                                    Object {
+                                                      "verticalAlign": "-0.125em",
+                                                    }
+                                                  }
+                                                  viewBox="0 0 512 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
+                                                  />
+                                                </svg>
+                                              </SyncIcon>
+                                            </button>
+                                          </ButtonBase>
+                                        </Button>
+                                      </FindRefWrapper>
+                                    </Popper>
+                                  </Tooltip>
+                                </div>
+                              </ToolbarItem>
+                            </div>
+                          </ToolbarGroupWithRef>
+                        </ForwardRef>
+                      </div>
+                      <ToolbarExpandableContent
+                        chipContainerRef={
+                          Object {
+                            "current": null,
+                          }
+                        }
+                        clearAllFilters={[Function]}
+                        clearFiltersButtonText="Reset to default"
+                        expandableContentRef={
+                          Object {
+                            "current": <div
+                              class="pf-c-toolbar__expandable-content"
+                              id="custom-dashboard-list-with-filter-expandable-content-12"
+                            >
+                              <div
+                                class="pf-c-toolbar__group"
+                              />
+                            </div>,
+                          }
+                        }
+                        id="custom-dashboard-list-with-filter-expandable-content-12"
+                        isExpanded={false}
+                        showClearFiltersButton={false}
+                      >
+                        <div
+                          className="pf-c-toolbar__expandable-content"
+                          id="custom-dashboard-list-with-filter-expandable-content-12"
+                        >
+                          <ForwardRef>
+                            <ToolbarGroupWithRef
+                              innerRef={null}
+                            >
+                              <div
+                                className="pf-c-toolbar__group"
+                              />
+                            </ToolbarGroupWithRef>
+                          </ForwardRef>
+                        </div>
+                      </ToolbarExpandableContent>
+                    </div>
+                  </ToolbarContent>
+                  <ToolbarChipGroupContent
+                    chipGroupContentRef={
+                      Object {
+                        "current": <div
+                          class="pf-c-toolbar__content pf-m-hidden"
+                          hidden=""
+                        >
+                          <div
+                            aria-hidden="true"
+                            class="pf-c-toolbar__group pf-m-hidden"
+                            hidden=""
+                          />
+                        </div>,
+                      }
+                    }
+                    clearAllFilters={[Function]}
+                    clearFiltersButtonText="Reset to default"
+                    collapseListedFiltersBreakpoint="xl"
+                    isExpanded={false}
+                    numberOfFilters={0}
+                    showClearFiltersButton={false}
+                  >
+                    <div
+                      className="pf-c-toolbar__content pf-m-hidden"
+                      hidden={true}
+                    >
+                      <ForwardRef
+                        aria-hidden={true}
+                        className="pf-m-hidden"
+                        hidden={true}
+                      >
+                        <ToolbarGroupWithRef
+                          aria-hidden={true}
+                          className="pf-m-hidden"
+                          hidden={true}
+                          innerRef={null}
+                        >
+                          <div
+                            aria-hidden={true}
+                            className="pf-c-toolbar__group pf-m-hidden"
+                            hidden={true}
+                          />
+                        </ToolbarGroupWithRef>
+                      </ForwardRef>
+                    </div>
+                  </ToolbarChipGroupContent>
+                </div>
+              </Toolbar>
+            </CustomDashboardListToolbar>
+          </div>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <div
+            className="pf-l-split__item pf-m-fill"
+          />
+        </SplitItem>
+        <SplitItem
+          style={
+            Object {
+              "padding": "20px",
+            }
+          }
+        >
+          <div
+            className="pf-l-split__item"
+            style={
+              Object {
+                "padding": "20px",
+              }
+            }
+          >
+            <ToggleGroup
+              aria-label="switch view toggle group"
+            >
+              <div
+                aria-label="switch view toggle group"
+                className="pf-c-toggle-group"
+                role="group"
+              >
+                <ToggleGroupItem
+                  aria-label="table view icon button"
+                  buttonId="tableView"
+                  icon={
+                    <BarsIcon
+                      color="currentColor"
+                      noVerticalAlign={false}
+                      size="sm"
+                    />
+                  }
+                  isSelected={false}
+                  onChange={[Function]}
+                >
+                  <div
+                    className="pf-c-toggle-group__item"
+                  >
+                    <button
+                      aria-label="table view icon button"
+                      aria-pressed={false}
+                      className="pf-c-toggle-group__button"
+                      id="tableView"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <ToggleGroupItemElement
+                        variant="icon"
+                      >
+                        <span
+                          className="pf-c-toggle-group__icon"
+                        >
+                          <BarsIcon
+                            color="currentColor"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden={true}
+                              aria-labelledby={null}
+                              fill="currentColor"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
+                              }
+                              viewBox="0 0 448 512"
+                              width="1em"
+                            >
+                              <path
+                                d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
+                              />
+                            </svg>
+                          </BarsIcon>
+                        </span>
+                      </ToggleGroupItemElement>
+                    </button>
+                  </div>
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  aria-label="card view icon button"
+                  buttonId="cardsView"
+                  icon={
+                    <ThIcon
+                      color="currentColor"
+                      noVerticalAlign={false}
+                      size="sm"
+                    />
+                  }
+                  isSelected={true}
+                  onChange={[Function]}
+                >
+                  <div
+                    className="pf-c-toggle-group__item"
+                  >
+                    <button
+                      aria-label="card view icon button"
+                      aria-pressed={true}
+                      className="pf-c-toggle-group__button pf-m-selected"
+                      id="cardsView"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <ToggleGroupItemElement
+                        variant="icon"
+                      >
+                        <span
+                          className="pf-c-toggle-group__icon"
+                        >
+                          <ThIcon
+                            color="currentColor"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden={true}
+                              aria-labelledby={null}
+                              fill="currentColor"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
+                              }
+                              viewBox="0 0 512 512"
+                              width="1em"
+                            >
+                              <path
+                                d="M149.333 56v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zm181.334 240v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm32-240v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24zm-32 80V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm-205.334 56H24c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm386.667-56H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm0 160H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zM181.333 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24z"
+                              />
+                            </svg>
+                          </ThIcon>
+                        </span>
+                      </ToggleGroupItemElement>
+                    </button>
+                  </div>
+                </ToggleGroupItem>
+              </div>
+            </ToggleGroup>
+          </div>
+        </SplitItem>
+      </div>
+    </Split>
+    <Divider>
+      <hr
+        className="pf-c-divider"
+      />
+    </Divider>
+    <CustomDashboardsGallery
+      customDashboardsDatas={
+        Array [
+          Object {
+            "lastModified": 2022-07-11T18:30:00.000Z,
+            "name": "dashboard1",
+            "path": "/user/home",
+          },
+          Object {
+            "lastModified": 2022-07-11T18:30:00.000Z,
+            "name": "dashboard2",
+            "path": "/user/home",
+          },
+        ]
+      }
+      driver={MockedCustomDashboardListDriver {}}
+      isLoading={false}
+    >
+      <Gallery
+        data-ouia-component-type="customDashboard-gallery"
+        data-ouia-safe={true}
+        hasGutter={true}
+        style={
+          Object {
+            "margin": "25px",
+          }
+        }
+      >
+        <div
+          className="pf-l-gallery pf-m-gutter"
+          data-ouia-component-type="customDashboard-gallery"
+          data-ouia-safe={true}
+          style={
+            Object {
+              "margin": "25px",
+            }
+          }
+        >
+          <GalleryItem
+            key="0"
+          >
+            <div>
+              <CustomDashboardCard
+                customDashboardData={
+                  Object {
+                    "lastModified": 2022-07-11T18:30:00.000Z,
+                    "name": "dashboard1",
+                    "path": "/user/home",
+                  }
+                }
+                driver={MockedCustomDashboardListDriver {}}
+                key="0"
+              >
+                <Card
+                  data-ouia-component-type="customDashboard-card"
+                  data-ouia-safe={true}
+                  isSelectable={true}
+                  onClick={[Function]}
+                >
+                  <article
+                    className="pf-c-card pf-m-selectable"
+                    data-ouia-component-id="OUIA-Generated-Card-1"
+                    data-ouia-component-type="PF4/Card"
+                    data-ouia-safe={true}
+                    id=""
+                    onClick={[Function]}
+                    tabIndex="0"
+                  >
+                    <CardHeader>
+                      <div
+                        className="pf-c-card__header"
+                      >
+                        <CardHeaderMain>
+                          <div
+                            className=""
+                          >
+                            Empty
+                          </div>
+                        </CardHeaderMain>
+                      </div>
+                    </CardHeader>
+                    <CardHeader>
+                      <div
+                        className="pf-c-card__header"
+                      >
+                        <Text
+                          className="pf-u-font-weight-bold"
+                          component="h1"
+                        >
+                          <h1
+                            className="pf-u-font-weight-bold"
+                            data-ouia-component-id="OUIA-Generated-Text-1"
+                            data-ouia-component-type="PF4/Text"
+                            data-ouia-safe={true}
+                            data-pf-content={true}
+                          >
+                            dashboard1
+                          </h1>
+                        </Text>
+                      </div>
+                    </CardHeader>
+                    <CardBody>
+                      <div
+                        className="pf-c-card__body"
+                      >
+                        <div
+                          className="pf-u-mt-md"
+                        >
+                          <Form>
+                            <form
+                              className="pf-c-form"
+                              noValidate={true}
+                            >
+                              <FormGroup
+                                fieldId="path"
+                                label="Path"
+                              >
+                                <div
+                                  className="pf-c-form__group"
+                                >
+                                  <div
+                                    className="pf-c-form__group-label"
+                                  >
+                                    <label
+                                      className="pf-c-form__label"
+                                      htmlFor="path"
+                                    >
+                                      <span
+                                        className="pf-c-form__label-text"
+                                      >
+                                        Path
+                                      </span>
+                                    </label>
+                                     
+                                  </div>
+                                  <div
+                                    className="pf-c-form__group-control"
+                                  >
+                                    <Text
+                                      component="p"
+                                    >
+                                      <p
+                                        className=""
+                                        data-ouia-component-id="OUIA-Generated-Text-2"
+                                        data-ouia-component-type="PF4/Text"
+                                        data-ouia-safe={true}
+                                        data-pf-content={true}
+                                      >
+                                        /user/home
+                                      </p>
+                                    </Text>
+                                  </div>
+                                </div>
+                              </FormGroup>
+                              <FormGroup
+                                fieldId="lastModified"
+                                label="LastModified"
+                              >
+                                <div
+                                  className="pf-c-form__group"
+                                >
+                                  <div
+                                    className="pf-c-form__group-label"
+                                  >
+                                    <label
+                                      className="pf-c-form__label"
+                                      htmlFor="lastModified"
+                                    >
+                                      <span
+                                        className="pf-c-form__label-text"
+                                      >
+                                        LastModified
+                                      </span>
+                                    </label>
+                                     
+                                  </div>
+                                  <div
+                                    className="pf-c-form__group-control"
+                                  >
+                                    <Text
+                                      component="p"
+                                    >
+                                      <p
+                                        className=""
+                                        data-ouia-component-id="OUIA-Generated-Text-3"
+                                        data-ouia-component-type="PF4/Text"
+                                        data-ouia-safe={true}
+                                        data-pf-content={true}
+                                      >
+                                        <t
+                                          ago={false}
+                                          calendar={false}
+                                          decimal={false}
+                                          element={null}
+                                          filter={[Function]}
+                                          fromNow={true}
+                                          interval={60000}
+                                          local={false}
+                                          onChange={[Function]}
+                                          titleFormat=""
+                                          toNow={false}
+                                          unit={null}
+                                          unix={false}
+                                          utc={false}
+                                          withTitle={false}
+                                        >
+                                          <time
+                                            dateTime={"2022-07-11T18:30:00.000Z"}
+                                          >
+                                            in 5 years
+                                          </time>
+                                        </t>
+                                      </p>
+                                    </Text>
+                                  </div>
+                                </div>
+                              </FormGroup>
+                            </form>
+                          </Form>
+                        </div>
+                      </div>
+                    </CardBody>
+                  </article>
+                </Card>
+              </CustomDashboardCard>
+            </div>
+          </GalleryItem>
+          <GalleryItem
+            key="1"
+          >
+            <div>
+              <CustomDashboardCard
+                customDashboardData={
+                  Object {
+                    "lastModified": 2022-07-11T18:30:00.000Z,
+                    "name": "dashboard2",
+                    "path": "/user/home",
+                  }
+                }
+                driver={MockedCustomDashboardListDriver {}}
+                key="1"
+              >
+                <Card
+                  data-ouia-component-type="customDashboard-card"
+                  data-ouia-safe={true}
+                  isSelectable={true}
+                  onClick={[Function]}
+                >
+                  <article
+                    className="pf-c-card pf-m-selectable"
+                    data-ouia-component-id="OUIA-Generated-Card-2"
+                    data-ouia-component-type="PF4/Card"
+                    data-ouia-safe={true}
+                    id=""
+                    onClick={[Function]}
+                    tabIndex="0"
+                  >
+                    <CardHeader>
+                      <div
+                        className="pf-c-card__header"
+                      >
+                        <CardHeaderMain>
+                          <div
+                            className=""
+                          >
+                            Empty
+                          </div>
+                        </CardHeaderMain>
+                      </div>
+                    </CardHeader>
+                    <CardHeader>
+                      <div
+                        className="pf-c-card__header"
+                      >
+                        <Text
+                          className="pf-u-font-weight-bold"
+                          component="h1"
+                        >
+                          <h1
+                            className="pf-u-font-weight-bold"
+                            data-ouia-component-id="OUIA-Generated-Text-4"
+                            data-ouia-component-type="PF4/Text"
+                            data-ouia-safe={true}
+                            data-pf-content={true}
+                          >
+                            dashboard2
+                          </h1>
+                        </Text>
+                      </div>
+                    </CardHeader>
+                    <CardBody>
+                      <div
+                        className="pf-c-card__body"
+                      >
+                        <div
+                          className="pf-u-mt-md"
+                        >
+                          <Form>
+                            <form
+                              className="pf-c-form"
+                              noValidate={true}
+                            >
+                              <FormGroup
+                                fieldId="path"
+                                label="Path"
+                              >
+                                <div
+                                  className="pf-c-form__group"
+                                >
+                                  <div
+                                    className="pf-c-form__group-label"
+                                  >
+                                    <label
+                                      className="pf-c-form__label"
+                                      htmlFor="path"
+                                    >
+                                      <span
+                                        className="pf-c-form__label-text"
+                                      >
+                                        Path
+                                      </span>
+                                    </label>
+                                     
+                                  </div>
+                                  <div
+                                    className="pf-c-form__group-control"
+                                  >
+                                    <Text
+                                      component="p"
+                                    >
+                                      <p
+                                        className=""
+                                        data-ouia-component-id="OUIA-Generated-Text-5"
+                                        data-ouia-component-type="PF4/Text"
+                                        data-ouia-safe={true}
+                                        data-pf-content={true}
+                                      >
+                                        /user/home
+                                      </p>
+                                    </Text>
+                                  </div>
+                                </div>
+                              </FormGroup>
+                              <FormGroup
+                                fieldId="lastModified"
+                                label="LastModified"
+                              >
+                                <div
+                                  className="pf-c-form__group"
+                                >
+                                  <div
+                                    className="pf-c-form__group-label"
+                                  >
+                                    <label
+                                      className="pf-c-form__label"
+                                      htmlFor="lastModified"
+                                    >
+                                      <span
+                                        className="pf-c-form__label-text"
+                                      >
+                                        LastModified
+                                      </span>
+                                    </label>
+                                     
+                                  </div>
+                                  <div
+                                    className="pf-c-form__group-control"
+                                  >
+                                    <Text
+                                      component="p"
+                                    >
+                                      <p
+                                        className=""
+                                        data-ouia-component-id="OUIA-Generated-Text-6"
+                                        data-ouia-component-type="PF4/Text"
+                                        data-ouia-safe={true}
+                                        data-pf-content={true}
+                                      >
+                                        <t
+                                          ago={false}
+                                          calendar={false}
+                                          decimal={false}
+                                          element={null}
+                                          filter={[Function]}
+                                          fromNow={true}
+                                          interval={60000}
+                                          local={false}
+                                          onChange={[Function]}
+                                          titleFormat=""
+                                          toNow={false}
+                                          unit={null}
+                                          unix={false}
+                                          utc={false}
+                                          withTitle={false}
+                                        >
+                                          <time
+                                            dateTime={"2022-07-11T18:30:00.000Z"}
+                                          >
+                                            in 5 years
+                                          </time>
+                                        </t>
+                                      </p>
+                                    </Text>
+                                  </div>
+                                </div>
+                              </FormGroup>
+                            </form>
+                          </Form>
+                        </div>
+                      </div>
+                    </CardBody>
+                  </article>
+                </Card>
+              </CustomDashboardCard>
+            </div>
+          </GalleryItem>
+        </div>
+      </Gallery>
+    </CustomDashboardsGallery>
+  </div>
+</CustomDashboardList>
+`;
+
+exports[`customDashboard list tests render customDashboard list - table 1`] = `
+<CustomDashboardList
+  driver={MockedCustomDashboardListDriver {}}
+  isEnvelopeConnectedToChannel={true}
+>
+  <div
+    data-ouia-component-type="custom-dashboard-list"
+    data-ouia-safe={true}
+  >
+    <Split
+      hasGutter={true}
+    >
+      <div
+        className="pf-l-split pf-m-gutter"
+      >
+        <SplitItem>
+          <div
+            className="pf-l-split__item"
+          >
+            <CustomDashboardListToolbar
+              applyFilter={[Function]}
+              filterDashboardNames={Array []}
+              setFilterDashboardNames={[Function]}
+            >
+              <Toolbar
+                className="pf-m-toggle-group-container"
+                clearAllFilters={[Function]}
+                clearFiltersButtonText="Reset to default"
+                collapseListedFiltersBreakpoint="xl"
+                data-ouia-component-type="custom-dashboard-list-toolbar"
+                data-ouia-safe={true}
+                id="custom-dashboard-list-with-filter"
+              >
+                <div
+                  className="pf-c-toolbar pf-m-toggle-group-container"
+                  data-ouia-component-id="OUIA-Generated-Toolbar-2"
+                  data-ouia-component-type="custom-dashboard-list-toolbar"
+                  data-ouia-safe={true}
+                  id="custom-dashboard-list-with-filter"
+                >
+                  <ToolbarContent
+                    isExpanded={false}
+                    showClearFiltersButton={false}
+                  >
+                    <div
+                      className="pf-c-toolbar__content"
+                    >
+                      <div
+                        className="pf-c-toolbar__content-section"
+                      >
+                        <ToolbarToggleGroup
+                          breakpoint="xl"
+                          toggleIcon={
+                            <FilterIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
+                            />
+                          }
+                        >
+                          <div
+                            className="pf-c-toolbar__group pf-m-toggle-group pf-m-show-on-xl"
+                          >
+                            <div
+                              className="pf-c-toolbar__toggle"
+                            >
+                              <Button
+                                aria-controls="custom-dashboard-list-with-filter-expandable-content-2"
+                                aria-haspopup={false}
+                                aria-label="Show Filters"
+                                onClick={[Function]}
+                                variant="plain"
+                              >
+                                <ButtonBase
+                                  aria-controls="custom-dashboard-list-with-filter-expandable-content-2"
+                                  aria-haspopup={false}
+                                  aria-label="Show Filters"
+                                  innerRef={null}
+                                  onClick={[Function]}
+                                  variant="plain"
+                                >
+                                  <button
+                                    aria-controls="custom-dashboard-list-with-filter-expandable-content-2"
+                                    aria-disabled={false}
+                                    aria-haspopup={false}
+                                    aria-label="Show Filters"
+                                    className="pf-c-button pf-m-plain"
+                                    data-ouia-component-id="OUIA-Generated-Button-plain-3"
+                                    data-ouia-component-type="PF4/Button"
+                                    data-ouia-safe={true}
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    role={null}
+                                    type="button"
+                                  >
+                                    <FilterIcon
+                                      color="currentColor"
+                                      noVerticalAlign={false}
+                                      size="sm"
+                                    >
+                                      <svg
+                                        aria-hidden={true}
+                                        aria-labelledby={null}
+                                        fill="currentColor"
+                                        height="1em"
+                                        role="img"
+                                        style={
+                                          Object {
+                                            "verticalAlign": "-0.125em",
+                                          }
+                                        }
+                                        viewBox="0 0 512 512"
+                                        width="1em"
+                                      >
+                                        <path
+                                          d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                                        />
+                                      </svg>
+                                    </FilterIcon>
+                                  </button>
+                                </ButtonBase>
+                              </Button>
+                            </div>
+                            <ForwardRef
+                              variant="filter-group"
+                            >
+                              <ToolbarGroupWithRef
+                                innerRef={null}
+                                variant="filter-group"
+                              >
+                                <div
+                                  className="pf-c-toolbar__group pf-m-filter-group"
+                                >
+                                  <ToolbarFilter
+                                    categoryName="Custom Dashboard name"
+                                    chips={Array []}
+                                    deleteChip={[Function]}
+                                    key="input-customDashboard-name"
+                                    showToolbarItem={true}
+                                  >
+                                    <ToolbarItem>
+                                      <div
+                                        className="pf-c-toolbar__item"
+                                      >
+                                        <InputGroup>
+                                          <div
+                                            className="pf-c-input-group"
+                                          >
+                                            <TextInput
+                                              aria-label="Dashboard name"
+                                              id="customDashboardName"
+                                              name="customDashboardName"
+                                              onChange={[Function]}
+                                              onKeyPress={[Function]}
+                                              placeholder="Filter by dashboard name"
+                                              type="search"
+                                              value=""
+                                            >
+                                              <TextInputBase
+                                                aria-label="Dashboard name"
+                                                className=""
+                                                id="customDashboardName"
+                                                innerRef={null}
+                                                isDisabled={false}
+                                                isLeftTruncated={false}
+                                                isReadOnly={false}
+                                                isRequired={false}
+                                                name="customDashboardName"
+                                                onChange={[Function]}
+                                                onKeyPress={[Function]}
+                                                ouiaSafe={true}
+                                                placeholder="Filter by dashboard name"
+                                                type="search"
+                                                validated="default"
+                                                value=""
+                                              >
+                                                <input
+                                                  aria-invalid={false}
+                                                  aria-label="Dashboard name"
+                                                  className="pf-c-form-control"
+                                                  data-ouia-component-id="OUIA-Generated-TextInputBase-3"
+                                                  data-ouia-component-type="PF4/TextInput"
+                                                  data-ouia-safe={true}
+                                                  disabled={false}
+                                                  id="customDashboardName"
+                                                  name="customDashboardName"
+                                                  onBlur={[Function]}
+                                                  onChange={[Function]}
+                                                  onFocus={[Function]}
+                                                  onKeyPress={[Function]}
+                                                  placeholder="Filter by dashboard name"
+                                                  readOnly={false}
+                                                  required={false}
+                                                  type="search"
+                                                  value=""
+                                                />
+                                              </TextInputBase>
+                                            </TextInput>
+                                          </div>
+                                        </InputGroup>
+                                      </div>
+                                    </ToolbarItem>
+                                  </ToolbarFilter>
+                                  <ToolbarItem>
+                                    <div
+                                      className="pf-c-toolbar__item"
+                                    >
+                                      <Button
+                                        id="apply-filter"
+                                        onClick={[Function]}
+                                        variant="primary"
+                                      >
+                                        <ButtonBase
+                                          id="apply-filter"
+                                          innerRef={null}
+                                          onClick={[Function]}
+                                          variant="primary"
+                                        >
+                                          <button
+                                            aria-disabled={false}
+                                            aria-label={null}
+                                            className="pf-c-button pf-m-primary"
+                                            data-ouia-component-id="OUIA-Generated-Button-primary-2"
+                                            data-ouia-component-type="PF4/Button"
+                                            data-ouia-safe={true}
+                                            disabled={false}
+                                            id="apply-filter"
+                                            onClick={[Function]}
+                                            role={null}
+                                            type="button"
+                                          >
+                                            Apply Filter
+                                          </button>
+                                        </ButtonBase>
+                                      </Button>
+                                    </div>
+                                  </ToolbarItem>
+                                </div>
+                              </ToolbarGroupWithRef>
+                            </ForwardRef>
+                          </div>
+                        </ToolbarToggleGroup>
+                        <ForwardRef
+                          variant="icon-button-group"
+                        >
+                          <ToolbarGroupWithRef
+                            innerRef={null}
+                            variant="icon-button-group"
+                          >
+                            <div
+                              className="pf-c-toolbar__group pf-m-icon-button-group"
+                            >
+                              <ToolbarItem>
+                                <div
+                                  className="pf-c-toolbar__item"
+                                >
+                                  <Tooltip
+                                    content="Refresh"
+                                  >
+                                    <Popper
+                                      appendTo={[Function]}
+                                      distance={15}
+                                      enableFlip={true}
+                                      flipBehavior={
+                                        Array [
+                                          "top",
+                                          "right",
+                                          "bottom",
+                                          "left",
+                                          "top",
+                                          "right",
+                                          "bottom",
+                                        ]
+                                      }
+                                      isVisible={false}
+                                      onBlur={[Function]}
+                                      onDocumentClick={false}
+                                      onDocumentKeyDown={[Function]}
+                                      onFocus={[Function]}
+                                      onMouseEnter={[Function]}
+                                      onMouseLeave={[Function]}
+                                      onTriggerEnter={[Function]}
+                                      placement="top"
+                                      popper={
+                                        <div
+                                          className="pf-c-tooltip"
+                                          id="pf-tooltip-2"
+                                          role="tooltip"
+                                          style={
+                                            Object {
+                                              "maxWidth": null,
+                                              "opacity": 0,
+                                              "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
+                                            }
+                                          }
+                                        >
+                                          <TooltipArrow />
+                                          <TooltipContent
+                                            isLeftAligned={false}
+                                          >
+                                            Refresh
+                                          </TooltipContent>
+                                        </div>
+                                      }
+                                      popperMatchesTriggerWidth={false}
+                                      positionModifiers={
+                                        Object {
+                                          "bottom": "pf-m-bottom",
+                                          "left": "pf-m-left",
+                                          "right": "pf-m-right",
+                                          "top": "pf-m-top",
+                                        }
+                                      }
+                                      trigger={
+                                        <Button
+                                          id="refresh"
+                                          onClick={[Function]}
+                                          variant="plain"
+                                        >
+                                          <SyncIcon
+                                            color="currentColor"
+                                            noVerticalAlign={false}
+                                            size="sm"
+                                          />
+                                        </Button>
+                                      }
+                                      zIndex={9999}
+                                    >
+                                      <FindRefWrapper
+                                        onFoundRef={[Function]}
+                                      >
+                                        <Button
+                                          id="refresh"
+                                          onClick={[Function]}
+                                          variant="plain"
+                                        >
+                                          <ButtonBase
+                                            id="refresh"
+                                            innerRef={null}
+                                            onClick={[Function]}
+                                            variant="plain"
+                                          >
+                                            <button
+                                              aria-disabled={false}
+                                              aria-label={null}
+                                              className="pf-c-button pf-m-plain"
+                                              data-ouia-component-id="OUIA-Generated-Button-plain-4"
+                                              data-ouia-component-type="PF4/Button"
+                                              data-ouia-safe={true}
+                                              disabled={false}
+                                              id="refresh"
+                                              onClick={[Function]}
+                                              role={null}
+                                              type="button"
+                                            >
+                                              <SyncIcon
+                                                color="currentColor"
+                                                noVerticalAlign={false}
+                                                size="sm"
+                                              >
+                                                <svg
+                                                  aria-hidden={true}
+                                                  aria-labelledby={null}
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style={
+                                                    Object {
+                                                      "verticalAlign": "-0.125em",
+                                                    }
+                                                  }
+                                                  viewBox="0 0 512 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
+                                                  />
+                                                </svg>
+                                              </SyncIcon>
+                                            </button>
+                                          </ButtonBase>
+                                        </Button>
+                                      </FindRefWrapper>
+                                    </Popper>
+                                  </Tooltip>
+                                </div>
+                              </ToolbarItem>
+                            </div>
+                          </ToolbarGroupWithRef>
+                        </ForwardRef>
+                      </div>
+                      <ToolbarExpandableContent
+                        chipContainerRef={
+                          Object {
+                            "current": null,
+                          }
+                        }
+                        clearAllFilters={[Function]}
+                        clearFiltersButtonText="Reset to default"
+                        expandableContentRef={
+                          Object {
+                            "current": <div
+                              class="pf-c-toolbar__expandable-content"
+                              id="custom-dashboard-list-with-filter-expandable-content-7"
+                            >
+                              <div
+                                class="pf-c-toolbar__group"
+                              />
+                            </div>,
+                          }
+                        }
+                        id="custom-dashboard-list-with-filter-expandable-content-2"
+                        isExpanded={false}
+                        showClearFiltersButton={false}
+                      >
+                        <div
+                          className="pf-c-toolbar__expandable-content"
+                          id="custom-dashboard-list-with-filter-expandable-content-2"
+                        >
+                          <ForwardRef>
+                            <ToolbarGroupWithRef
+                              innerRef={null}
+                            >
+                              <div
+                                className="pf-c-toolbar__group"
+                              />
+                            </ToolbarGroupWithRef>
+                          </ForwardRef>
+                        </div>
+                      </ToolbarExpandableContent>
+                    </div>
+                  </ToolbarContent>
+                  <ToolbarChipGroupContent
+                    chipGroupContentRef={
+                      Object {
+                        "current": <div
+                          class="pf-c-toolbar__content pf-m-hidden"
+                          hidden=""
+                        >
+                          <div
+                            aria-hidden="true"
+                            class="pf-c-toolbar__group pf-m-hidden"
+                            hidden=""
+                          />
+                        </div>,
+                      }
+                    }
+                    clearAllFilters={[Function]}
+                    clearFiltersButtonText="Reset to default"
+                    collapseListedFiltersBreakpoint="xl"
+                    isExpanded={false}
+                    numberOfFilters={0}
+                    showClearFiltersButton={false}
+                  >
+                    <div
+                      className="pf-c-toolbar__content pf-m-hidden"
+                      hidden={true}
+                    >
+                      <ForwardRef
+                        aria-hidden={true}
+                        className="pf-m-hidden"
+                        hidden={true}
+                      >
+                        <ToolbarGroupWithRef
+                          aria-hidden={true}
+                          className="pf-m-hidden"
+                          hidden={true}
+                          innerRef={null}
+                        >
+                          <div
+                            aria-hidden={true}
+                            className="pf-c-toolbar__group pf-m-hidden"
+                            hidden={true}
+                          />
+                        </ToolbarGroupWithRef>
+                      </ForwardRef>
+                    </div>
+                  </ToolbarChipGroupContent>
+                </div>
+              </Toolbar>
+            </CustomDashboardListToolbar>
+          </div>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <div
+            className="pf-l-split__item pf-m-fill"
+          />
+        </SplitItem>
+        <SplitItem
+          style={
+            Object {
+              "padding": "20px",
+            }
+          }
+        >
+          <div
+            className="pf-l-split__item"
+            style={
+              Object {
+                "padding": "20px",
+              }
+            }
+          >
+            <ToggleGroup
+              aria-label="switch view toggle group"
+            >
+              <div
+                aria-label="switch view toggle group"
+                className="pf-c-toggle-group"
+                role="group"
+              >
+                <ToggleGroupItem
+                  aria-label="table view icon button"
+                  buttonId="tableView"
+                  icon={
+                    <BarsIcon
+                      color="currentColor"
+                      noVerticalAlign={false}
+                      size="sm"
+                    />
+                  }
+                  isSelected={true}
+                  onChange={[Function]}
+                >
+                  <div
+                    className="pf-c-toggle-group__item"
+                  >
+                    <button
+                      aria-label="table view icon button"
+                      aria-pressed={true}
+                      className="pf-c-toggle-group__button pf-m-selected"
+                      id="tableView"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <ToggleGroupItemElement
+                        variant="icon"
+                      >
+                        <span
+                          className="pf-c-toggle-group__icon"
+                        >
+                          <BarsIcon
+                            color="currentColor"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden={true}
+                              aria-labelledby={null}
+                              fill="currentColor"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
+                              }
+                              viewBox="0 0 448 512"
+                              width="1em"
+                            >
+                              <path
+                                d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
+                              />
+                            </svg>
+                          </BarsIcon>
+                        </span>
+                      </ToggleGroupItemElement>
+                    </button>
+                  </div>
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  aria-label="card view icon button"
+                  buttonId="cardsView"
+                  icon={
+                    <ThIcon
+                      color="currentColor"
+                      noVerticalAlign={false}
+                      size="sm"
+                    />
+                  }
+                  isSelected={false}
+                  onChange={[Function]}
+                >
+                  <div
+                    className="pf-c-toggle-group__item"
+                  >
+                    <button
+                      aria-label="card view icon button"
+                      aria-pressed={false}
+                      className="pf-c-toggle-group__button"
+                      id="cardsView"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <ToggleGroupItemElement
+                        variant="icon"
+                      >
+                        <span
+                          className="pf-c-toggle-group__icon"
+                        >
+                          <ThIcon
+                            color="currentColor"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden={true}
+                              aria-labelledby={null}
+                              fill="currentColor"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
+                              }
+                              viewBox="0 0 512 512"
+                              width="1em"
+                            >
+                              <path
+                                d="M149.333 56v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zm181.334 240v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm32-240v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24zm-32 80V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm-205.334 56H24c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm386.667-56H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm0 160H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zM181.333 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24z"
+                              />
+                            </svg>
+                          </ThIcon>
+                        </span>
+                      </ToggleGroupItemElement>
+                    </button>
+                  </div>
+                </ToggleGroupItem>
+              </div>
+            </ToggleGroup>
+          </div>
+        </SplitItem>
+      </div>
+    </Split>
+    <Divider>
+      <hr
+        className="pf-c-divider"
+      />
+    </Divider>
+    <CustomDashboardsTable
+      customDashboardData={Array []}
+      driver={MockedCustomDashboardListDriver {}}
+      isLoading={true}
+      setDashboardsData={[Function]}
+    >
+      <div
+        data-ouia-component-type="customDashboard-table"
+        data-ouia-safe={true}
+      >
+        <DataTable
+          LoadingComponent={
+            <Bullseye>
+              <KogitoSpinner
+                ouiaId="custom-dashboard-list-custom-dashboard-list"
+                spinnerText="Loading Dashboard..."
+              />
+            </Bullseye>
+          }
+          columns={
+            Array [
+              Object {
+                "bodyCellTransformer": [Function],
+                "isSortable": true,
+                "label": "Name",
+                "path": "name",
+              },
+              Object {
+                "bodyCellTransformer": [Function],
+                "isSortable": true,
+                "label": "Last Modified",
+                "path": "lastModified",
+              },
+            ]
+          }
+          data={Array []}
+          error={false}
+          isLoading={true}
+          onSorting={[Function]}
+          sortBy={
+            Object {
+              "direction": "desc",
+              "index": 1,
+            }
+          }
+        >
+          <Table
+            aria-label="Data Table"
+            borders={true}
+            canSelectAll={true}
+            canSortFavorites={true}
+            cells={Array []}
+            className=""
+            contentId="expanded-content"
+            data-ouia-component-type="data-table"
+            data-ouia-safe={false}
+            dropdownDirection="down"
+            dropdownPosition="right"
+            expandId="expandable-toggle"
+            gridBreakPoint="grid-md"
+            isStickyHeader={false}
+            isTreeTable={false}
+            onSort={[Function]}
+            ouiaSafe={true}
+            role="grid"
+            rowLabeledBy="simple-node"
+            rows={Array []}
+            selectVariant="checkbox"
+            sortBy={
+              Object {
+                "direction": "desc",
+                "index": 1,
+              }
+            }
+            variant={null}
+          >
+            <Provider
+              aria-label="Data Table"
+              borders={true}
+              className=""
+              columns={Array []}
+              data-ouia-component-type="data-table"
+              data-ouia-safe={false}
+              gridBreakPoint="grid-md"
+              isStickyHeader={false}
+              isTreeTable={false}
+              ouiaSafe={true}
+              renderers={
+                Object {
+                  "body": Object {
+                    "cell": [Function],
+                    "row": [Function],
+                    "wrapper": [Function],
+                  },
+                  "header": Object {
+                    "cell": [Function],
+                  },
+                }
+              }
+              role="grid"
+              variant={null}
+            >
+              <TableComposable
+                aria-label="Data Table"
+                borders={true}
+                className=""
+                data-ouia-component-type="data-table"
+                data-ouia-safe={false}
+                gridBreakPoint="grid-md"
+                isStickyHeader={false}
+                isTreeTable={false}
+                ouiaSafe={true}
+                role="grid"
+                variant={null}
+              >
+                <TableComposableBase
+                  aria-label="Data Table"
+                  borders={true}
+                  className=""
+                  data-ouia-component-type="data-table"
+                  data-ouia-safe={false}
+                  gridBreakPoint="grid-md"
+                  innerRef={null}
+                  isStickyHeader={false}
+                  isTreeTable={false}
+                  ouiaSafe={true}
+                  role="grid"
+                  variant={null}
+                >
+                  <table
+                    aria-label="Data Table"
+                    className="pf-c-table pf-m-grid-md"
+                    data-ouia-component-id="OUIA-Generated-Table-4"
+                    data-ouia-component-type="data-table"
+                    data-ouia-safe={false}
+                    role="grid"
+                  >
+                    <TableHeader>
+                      <ContextHeader
+                        headerRows={null}
+                      >
+                        <Component
+                          className=""
+                          headerRows={null}
+                        >
+                          <BaseHeader
+                            className=""
+                            columns={Array []}
+                            headerRows={null}
+                            renderers={
+                              Object {
+                                "body": Object {
+                                  "cell": [Function],
+                                  "row": [Function],
+                                  "wrapper": [Function],
+                                },
+                                "header": Object {
+                                  "cell": [Function],
+                                  "row": Object {
+                                    "$$typeof": Symbol(react.forward_ref),
+                                    "displayName": "Tr",
+                                    "render": [Function],
+                                  },
+                                  "wrapper": Object {
+                                    "$$typeof": Symbol(react.forward_ref),
+                                    "displayName": "Thead",
+                                    "render": [Function],
+                                  },
+                                },
+                                "table": Object {
+                                  "$$typeof": Symbol(react.forward_ref),
+                                  "displayName": "TableComposable",
+                                  "render": [Function],
+                                },
+                              }
+                            }
+                          >
+                            <Thead
+                              className=""
+                            >
+                              <TheadBase
+                                className=""
+                                innerRef={null}
+                              >
+                                <thead
+                                  className=""
+                                >
+                                  <HeaderRow
+                                    key="0-header-row"
+                                    renderers={
+                                      Object {
+                                        "cell": [Function],
+                                        "row": Object {
+                                          "$$typeof": Symbol(react.forward_ref),
+                                          "displayName": "Tr",
+                                          "render": [Function],
+                                        },
+                                        "wrapper": Object {
+                                          "$$typeof": Symbol(react.forward_ref),
+                                          "displayName": "Thead",
+                                          "render": [Function],
+                                        },
+                                      }
+                                    }
+                                    rowData={Array []}
+                                    rowIndex={0}
+                                  >
+                                    <Tr>
+                                      <TrBase
+                                        innerRef={null}
+                                      >
+                                        <tr
+                                          className=""
+                                          data-ouia-component-id="OUIA-Generated-TableRow-3"
+                                          data-ouia-component-type="PF4/TableRow"
+                                          data-ouia-safe={true}
+                                          hidden={false}
+                                        />
+                                      </TrBase>
+                                    </Tr>
+                                  </HeaderRow>
+                                </thead>
+                              </TheadBase>
+                            </Thead>
+                          </BaseHeader>
+                        </Component>
+                      </ContextHeader>
+                    </TableHeader>
+                    <Component
+                      rowKey="rowKey"
+                    >
+                      <ContextBody
+                        className=""
+                        headerData={Array []}
+                        headerRows={null}
+                        onRow={[Function]}
+                        onRowClick={[Function]}
+                        rowKey="rowKey"
+                        rows={Array []}
+                      />
+                    </Component>
+                  </table>
+                </TableComposableBase>
+              </TableComposable>
+            </Provider>
+          </Table>
+        </DataTable>
+      </div>
+    </CustomDashboardsTable>
+  </div>
+</CustomDashboardList>
+`;

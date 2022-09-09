@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
- .Dev-ui__card-size {
+.Dev-ui__card-size,
+.Dev-ui__custom-dashboard-viewer > div {
     height: 100%
 }
 

@@ -1,0 +1,763 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Custom Dashboard View tests Snapshot tests with data 1`] = `
+<CustomDashboardView
+  customDashboardName="name"
+  driver={
+    Object {
+      "getCustomDashboardContent": [MockFunction] {
+        "calls": Array [
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    }
+  }
+  isEnvelopeConnectedToChannel={true}
+>
+  <iframe
+    data-ouia-component-type="customDashboard-view"
+    data-ouia-safe={true}
+    id="db"
+    src="resources/webapp/custom-dashboard-view/dashbuilder/index.html"
+    style={
+      Object {
+        "height": "100%",
+        "padding": "10px",
+        "width": "100%",
+      }
+    }
+  />
+</CustomDashboardView>
+`;
+
+exports[`Custom Dashboard View tests Snapshot tests with data 2`] = `
+<CustomDashboardView
+  customDashboardName="name"
+  driver={
+    Object {
+      "getCustomDashboardContent": [MockFunction] {
+        "calls": Array [
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    }
+  }
+  isEnvelopeConnectedToChannel={true}
+>
+  <iframe
+    data-ouia-component-type="customDashboard-view"
+    data-ouia-safe={true}
+    id="db"
+    src="resources/webapp/custom-dashboard-view/dashbuilder/index.html"
+    style={
+      Object {
+        "height": "100%",
+        "padding": "10px",
+        "width": "100%",
+      }
+    }
+  />
+</CustomDashboardView>
+`;
+
+exports[`Custom Dashboard View tests Snapshot tests with error 1`] = `
+<CustomDashboardView
+  customDashboardName="name"
+  driver={
+    Object {
+      "getCustomDashboardContent": [MockFunction] {
+        "calls": Array [
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    }
+  }
+  isEnvelopeConnectedToChannel={true}
+>
+  <iframe
+    data-ouia-component-type="customDashboard-view"
+    data-ouia-safe={true}
+    id="db"
+    src="resources/webapp/custom-dashboard-view/dashbuilder/index.html"
+    style={
+      Object {
+        "height": "100%",
+        "padding": "10px",
+        "width": "100%",
+      }
+    }
+  />
+</CustomDashboardView>
+`;
+
+exports[`Custom Dashboard View tests Snapshot tests with error 2`] = `
+<CustomDashboardView
+  customDashboardName="name"
+  driver={
+    Object {
+      "getCustomDashboardContent": [MockFunction] {
+        "calls": Array [
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+          Array [
+            "name",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+    }
+  }
+  isEnvelopeConnectedToChannel={true}
+>
+  <iframe
+    data-ouia-component-type="customDashboard-view"
+    data-ouia-safe={true}
+    id="db"
+    src="resources/webapp/custom-dashboard-view/dashbuilder/index.html"
+    style={
+      Object {
+        "height": "100%",
+        "padding": "10px",
+        "width": "100%",
+      }
+    }
+  />
+</CustomDashboardView>
+`;
+
+exports[`Custom Dashboard View tests Snapshot tests with error 3`] = `
+<Card
+  className="kogito-custom-dashboard-view-__card-size"
+>
+  <article
+    className="pf-c-card kogito-custom-dashboard-view-__card-size"
+    data-ouia-component-id="OUIA-Generated-Card-1"
+    data-ouia-component-type="PF4/Card"
+    data-ouia-safe={true}
+    id=""
+  >
+    <Bullseye>
+      <div
+        className="pf-l-bullseye"
+      >
+        <ServerErrors
+          error="network issue"
+          variant="large"
+        >
+          <PageSection
+            variant="light"
+          >
+            <section
+              className="pf-c-page__main-section pf-m-light"
+            >
+              <Bullseye
+                data-ouia-component-type="server-errors"
+                data-ouia-safe={true}
+              >
+                <div
+                  className="pf-l-bullseye"
+                  data-ouia-component-type="server-errors"
+                  data-ouia-safe={true}
+                >
+                  <EmptyState
+                    variant="full"
+                  >
+                    <div
+                      className="pf-c-empty-state"
+                    >
+                      <div
+                        className="pf-c-empty-state__content"
+                      >
+                        <EmptyStateIcon
+                          color="var(--pf-global--danger-color--100)"
+                          icon={[Function]}
+                        >
+                          <ExclamationCircleIcon
+                            aria-hidden="true"
+                            className="pf-c-empty-state__icon"
+                            color="var(--pf-global--danger-color--100)"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              aria-labelledby={null}
+                              className="pf-c-empty-state__icon"
+                              fill="var(--pf-global--danger-color--100)"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
+                              }
+                              viewBox="0 0 512 512"
+                              width="1em"
+                            >
+                              <path
+                                d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+                              />
+                            </svg>
+                          </ExclamationCircleIcon>
+                        </EmptyStateIcon>
+                        <Title
+                          headingLevel="h1"
+                          size="4xl"
+                        >
+                          <h1
+                            className="pf-c-title pf-m-4xl"
+                            data-ouia-component-id="OUIA-Generated-Title-1"
+                            data-ouia-component-type="PF4/Title"
+                            data-ouia-safe={true}
+                          >
+                            Error fetching data
+                          </h1>
+                        </Title>
+                        <EmptyStateBody>
+                          <div
+                            className="pf-c-empty-state__body"
+                          >
+                            An error occurred while accessing data.
+                             
+                            <Button
+                              id="display-error"
+                              isInline={true}
+                              onClick={[Function]}
+                              variant="link"
+                            >
+                              <ButtonBase
+                                id="display-error"
+                                innerRef={null}
+                                isInline={true}
+                                onClick={[Function]}
+                                variant="link"
+                              >
+                                <button
+                                  aria-disabled={false}
+                                  aria-label={null}
+                                  className="pf-c-button pf-m-link pf-m-inline"
+                                  data-ouia-component-id="OUIA-Generated-Button-link-1"
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={false}
+                                  id="display-error"
+                                  onClick={[Function]}
+                                  role={null}
+                                  type="button"
+                                >
+                                  See more details
+                                </button>
+                              </ButtonBase>
+                            </Button>
+                          </div>
+                        </EmptyStateBody>
+                      </div>
+                    </div>
+                  </EmptyState>
+                </div>
+              </Bullseye>
+            </section>
+          </PageSection>
+        </ServerErrors>
+      </div>
+    </Bullseye>
+  </article>
+</Card>
+`;
+
+exports[`Custom Dashboard View tests Snapshot tests with error 4`] = `
+Array [
+  <Bullseye>
+    <div
+      className="pf-l-bullseye"
+    >
+      <ServerErrors
+        error="network issue"
+        variant="large"
+      >
+        <PageSection
+          variant="light"
+        >
+          <section
+            className="pf-c-page__main-section pf-m-light"
+          >
+            <Bullseye
+              data-ouia-component-type="server-errors"
+              data-ouia-safe={true}
+            >
+              <div
+                className="pf-l-bullseye"
+                data-ouia-component-type="server-errors"
+                data-ouia-safe={true}
+              >
+                <EmptyState
+                  variant="full"
+                >
+                  <div
+                    className="pf-c-empty-state"
+                  >
+                    <div
+                      className="pf-c-empty-state__content"
+                    >
+                      <EmptyStateIcon
+                        color="var(--pf-global--danger-color--100)"
+                        icon={[Function]}
+                      >
+                        <ExclamationCircleIcon
+                          aria-hidden="true"
+                          className="pf-c-empty-state__icon"
+                          color="var(--pf-global--danger-color--100)"
+                          noVerticalAlign={false}
+                          size="sm"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            aria-labelledby={null}
+                            className="pf-c-empty-state__icon"
+                            fill="var(--pf-global--danger-color--100)"
+                            height="1em"
+                            role="img"
+                            style={
+                              Object {
+                                "verticalAlign": "-0.125em",
+                              }
+                            }
+                            viewBox="0 0 512 512"
+                            width="1em"
+                          >
+                            <path
+                              d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+                            />
+                          </svg>
+                        </ExclamationCircleIcon>
+                      </EmptyStateIcon>
+                      <Title
+                        headingLevel="h1"
+                        size="4xl"
+                      >
+                        <h1
+                          className="pf-c-title pf-m-4xl"
+                          data-ouia-component-id="OUIA-Generated-Title-1"
+                          data-ouia-component-type="PF4/Title"
+                          data-ouia-safe={true}
+                        >
+                          Error fetching data
+                        </h1>
+                      </Title>
+                      <EmptyStateBody>
+                        <div
+                          className="pf-c-empty-state__body"
+                        >
+                          An error occurred while accessing data.
+                           
+                          <Button
+                            id="display-error"
+                            isInline={true}
+                            onClick={[Function]}
+                            variant="link"
+                          >
+                            <ButtonBase
+                              id="display-error"
+                              innerRef={null}
+                              isInline={true}
+                              onClick={[Function]}
+                              variant="link"
+                            >
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-link pf-m-inline"
+                                data-ouia-component-id="OUIA-Generated-Button-link-1"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                id="display-error"
+                                onClick={[Function]}
+                                role={null}
+                                type="button"
+                              >
+                                See more details
+                              </button>
+                            </ButtonBase>
+                          </Button>
+                        </div>
+                      </EmptyStateBody>
+                    </div>
+                  </div>
+                </EmptyState>
+              </div>
+            </Bullseye>
+          </section>
+        </PageSection>
+      </ServerErrors>
+    </div>
+  </Bullseye>,
+  <Bullseye
+    data-ouia-component-type="server-errors"
+    data-ouia-safe={true}
+  >
+    <div
+      className="pf-l-bullseye"
+      data-ouia-component-type="server-errors"
+      data-ouia-safe={true}
+    >
+      <EmptyState
+        variant="full"
+      >
+        <div
+          className="pf-c-empty-state"
+        >
+          <div
+            className="pf-c-empty-state__content"
+          >
+            <EmptyStateIcon
+              color="var(--pf-global--danger-color--100)"
+              icon={[Function]}
+            >
+              <ExclamationCircleIcon
+                aria-hidden="true"
+                className="pf-c-empty-state__icon"
+                color="var(--pf-global--danger-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              >
+                <svg
+                  aria-hidden="true"
+                  aria-labelledby={null}
+                  className="pf-c-empty-state__icon"
+                  fill="var(--pf-global--danger-color--100)"
+                  height="1em"
+                  role="img"
+                  style={
+                    Object {
+                      "verticalAlign": "-0.125em",
+                    }
+                  }
+                  viewBox="0 0 512 512"
+                  width="1em"
+                >
+                  <path
+                    d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+                  />
+                </svg>
+              </ExclamationCircleIcon>
+            </EmptyStateIcon>
+            <Title
+              headingLevel="h1"
+              size="4xl"
+            >
+              <h1
+                className="pf-c-title pf-m-4xl"
+                data-ouia-component-id="OUIA-Generated-Title-1"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe={true}
+              >
+                Error fetching data
+              </h1>
+            </Title>
+            <EmptyStateBody>
+              <div
+                className="pf-c-empty-state__body"
+              >
+                An error occurred while accessing data.
+                 
+                <Button
+                  id="display-error"
+                  isInline={true}
+                  onClick={[Function]}
+                  variant="link"
+                >
+                  <ButtonBase
+                    id="display-error"
+                    innerRef={null}
+                    isInline={true}
+                    onClick={[Function]}
+                    variant="link"
+                  >
+                    <button
+                      aria-disabled={false}
+                      aria-label={null}
+                      className="pf-c-button pf-m-link pf-m-inline"
+                      data-ouia-component-id="OUIA-Generated-Button-link-1"
+                      data-ouia-component-type="PF4/Button"
+                      data-ouia-safe={true}
+                      disabled={false}
+                      id="display-error"
+                      onClick={[Function]}
+                      role={null}
+                      type="button"
+                    >
+                      See more details
+                    </button>
+                  </ButtonBase>
+                </Button>
+              </div>
+            </EmptyStateBody>
+          </div>
+        </div>
+      </EmptyState>
+    </div>
+  </Bullseye>,
+]
+`;
+
+exports[`Custom Dashboard View tests Snapshot tests with error 5`] = `
+<ServerErrors
+  error="network issue"
+  variant="large"
+>
+  <PageSection
+    variant="light"
+  >
+    <section
+      className="pf-c-page__main-section pf-m-light"
+    >
+      <Bullseye
+        data-ouia-component-type="server-errors"
+        data-ouia-safe={true}
+      >
+        <div
+          className="pf-l-bullseye"
+          data-ouia-component-type="server-errors"
+          data-ouia-safe={true}
+        >
+          <EmptyState
+            variant="full"
+          >
+            <div
+              className="pf-c-empty-state"
+            >
+              <div
+                className="pf-c-empty-state__content"
+              >
+                <EmptyStateIcon
+                  color="var(--pf-global--danger-color--100)"
+                  icon={[Function]}
+                >
+                  <ExclamationCircleIcon
+                    aria-hidden="true"
+                    className="pf-c-empty-state__icon"
+                    color="var(--pf-global--danger-color--100)"
+                    noVerticalAlign={false}
+                    size="sm"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      aria-labelledby={null}
+                      className="pf-c-empty-state__icon"
+                      fill="var(--pf-global--danger-color--100)"
+                      height="1em"
+                      role="img"
+                      style={
+                        Object {
+                          "verticalAlign": "-0.125em",
+                        }
+                      }
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+                      />
+                    </svg>
+                  </ExclamationCircleIcon>
+                </EmptyStateIcon>
+                <Title
+                  headingLevel="h1"
+                  size="4xl"
+                >
+                  <h1
+                    className="pf-c-title pf-m-4xl"
+                    data-ouia-component-id="OUIA-Generated-Title-1"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe={true}
+                  >
+                    Error fetching data
+                  </h1>
+                </Title>
+                <EmptyStateBody>
+                  <div
+                    className="pf-c-empty-state__body"
+                  >
+                    An error occurred while accessing data.
+                     
+                    <Button
+                      id="display-error"
+                      isInline={true}
+                      onClick={[Function]}
+                      variant="link"
+                    >
+                      <ButtonBase
+                        id="display-error"
+                        innerRef={null}
+                        isInline={true}
+                        onClick={[Function]}
+                        variant="link"
+                      >
+                        <button
+                          aria-disabled={false}
+                          aria-label={null}
+                          className="pf-c-button pf-m-link pf-m-inline"
+                          data-ouia-component-id="OUIA-Generated-Button-link-1"
+                          data-ouia-component-type="PF4/Button"
+                          data-ouia-safe={true}
+                          disabled={false}
+                          id="display-error"
+                          onClick={[Function]}
+                          role={null}
+                          type="button"
+                        >
+                          See more details
+                        </button>
+                      </ButtonBase>
+                    </Button>
+                  </div>
+                </EmptyStateBody>
+              </div>
+            </div>
+          </EmptyState>
+        </div>
+      </Bullseye>
+    </section>
+  </PageSection>
+</ServerErrors>
+`;

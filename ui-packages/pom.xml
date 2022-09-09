@@ -43,6 +43,8 @@
       packages/process-form/coverage/lcov.info,
       packages/process-definition-list/coverage/lcov.info
       packages/monitoring/coverage/lcov.info
+      packages/custom-dashboard-list/coverage/lcov.info
+      packages/custom-dashboard-view/coverage/lcov.info
     </sonar.javascript.lcov.reportPaths>
   </properties>
 
@@ -140,6 +142,12 @@
             </fileset>
             <fileset>
               <directory>packages/monitoring/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/custom-dashboard-list/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/custom-dashboard-view/node_modules</directory>
             </fileset>
           </filesets>
         </configuration>

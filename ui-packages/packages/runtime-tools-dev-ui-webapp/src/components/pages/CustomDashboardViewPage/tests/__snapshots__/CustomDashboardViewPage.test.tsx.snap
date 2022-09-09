@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomDashboardViewPage tests Snapshot 1`] = `
+<BrowserRouter>
+  <Router
+    history={
+      Object {
+        "action": "POP",
+        "block": [Function],
+        "createHref": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <CustomDashboardViewPage>
+      <PageSection
+        variant="light"
+      >
+        <section
+          className="pf-c-page__main-section pf-m-light"
+        >
+          <PageTitle>
+            <Flex
+              data-ouia-component-type="page-title"
+              data-ouia-safe={true}
+            >
+              <div
+                className="pf-l-flex"
+                data-ouia-component-type="page-title"
+                data-ouia-safe={true}
+              >
+                <FlexItem
+                  spacer={
+                    Object {
+                      "default": "spacerSm",
+                    }
+                  }
+                >
+                  <div
+                    className="pf-m-spacer-sm"
+                  >
+                    <Title
+                      headingLevel="h1"
+                      size="4xl"
+                    >
+                      <h1
+                        className="pf-c-title pf-m-4xl"
+                        data-ouia-component-id="OUIA-Generated-Title-1"
+                        data-ouia-component-type="PF4/Title"
+                        data-ouia-safe={true}
+                      />
+                    </Title>
+                  </div>
+                </FlexItem>
+              </div>
+            </Flex>
+          </PageTitle>
+        </section>
+      </PageSection>
+      <PageSection>
+        <section
+          className="pf-c-page__main-section"
+        >
+          <Card
+            className="Dev-ui__card-size Dev-ui__custom-dashboard-viewer"
+          >
+            <article
+              className="pf-c-card Dev-ui__card-size Dev-ui__custom-dashboard-viewer"
+              data-ouia-component-id="OUIA-Generated-Card-1"
+              data-ouia-component-type="PF4/Card"
+              data-ouia-safe={true}
+              id=""
+            >
+              <CustomDashboardViewContainer />
+            </article>
+          </Card>
+        </section>
+      </PageSection>
+    </CustomDashboardViewPage>
+  </Router>
+</BrowserRouter>
+`;

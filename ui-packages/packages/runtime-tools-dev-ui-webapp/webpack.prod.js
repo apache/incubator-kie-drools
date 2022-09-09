@@ -98,6 +98,9 @@ module.exports = merge(common, {
             '../../node_modules/@kogito-apps/form-details/dist/styles/styles.css'
           ),
           path.resolve(
+                  '../../node_modules/@kogito-apps/custom-dashboard-view/dist/envelope/components/styles.css'
+          ),
+          path.resolve(
             '../../node_modules/monaco-editor'
           )
         ],

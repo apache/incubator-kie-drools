@@ -28,6 +28,7 @@ import { Form, FormContent } from '@kogito-apps/form-details';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { createProcessDefinitionList } from '../../utils/Utils';
 import { ProcessDefinition } from '@kogito-apps/process-definition-list';
+import { CustomDashboardInfo } from '@kogito-apps/custom-dashboard-list';
 
 //Rest Api to Cancel multiple Jobs
 export const performMultipleCancel = async (
@@ -433,5 +434,33 @@ export const startWorkflowInstance = (
       .catch(error => {
         reject(error);
       });
+  });
+};
+
+export const getCustomDashboard = (
+  customDashboardFilter: string[]
+): Promise<CustomDashboardInfo[]> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get('/customDashboard/list', {
+        params: {
+          names: customDashboardFilter.join(';')
+        }
+      })
+      .then(result => {
+        resolve(result.data);
+      })
+      .catch(error => reject(error));
+  });
+};
+
+export const getCustomDashboardContent = (name: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`/customDashboard/${name}`)
+      .then(result => {
+        resolve(result.data);
+      })
+      .catch(error => reject(error));
   });
 };
