@@ -18,7 +18,7 @@ Drools 8-series is a natural evolution of the 7.x-stream, incorporating many fea
 === Rule Unit
 
 Rule Unit is a central paradigm in the Drools 8-series.
-You can make reference to the xref:migration-guide/index.adoc[Migration guide chapter] for more information about Rule Unit.
+You can refer the xref:migration-guide/index.adoc[Migration guide chapter] for more information about Rule Unit.
 
 === Minimum requirements update
 
