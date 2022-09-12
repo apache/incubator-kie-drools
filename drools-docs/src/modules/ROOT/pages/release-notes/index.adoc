@@ -13,7 +13,7 @@ For the release notes of the _previous releases_, you can make reference to the 
 
 == Drools 8-series release notes
 
-Drools 8-series is a natural evolution of the 7.x-stream, incorporating many features and lesson learned integrating with Kogito and many cloud-native use cases.
+Drools 8-series is a natural evolution of the 7.x-stream, incorporating many features and lessons learned integrating with Kogito and many cloud-native use cases.
 
 === Rule Unit
 
