@@ -142,7 +142,7 @@ pipeline {
     }
     post {
         unsuccessful {
-            sendNotification()
+            sendErrorNotification()
         }
         cleanup {
             script {
@@ -153,7 +153,7 @@ pipeline {
     }
 }
 
-void sendNotification() {
+void sendErrorNotification() {
     mailer.sendMarkdownTestSummaryNotification('Post-release', "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO])
 }
 

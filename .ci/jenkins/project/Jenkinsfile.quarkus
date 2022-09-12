@@ -92,7 +92,7 @@ pipeline {
     }
     post {
         unsuccessful {
-            sendNotification()
+            sendErrorNotification()
         }
         cleanup {
             script {
@@ -102,8 +102,9 @@ pipeline {
     }
 }
 
-void sendNotification() {
-    mailer.sendMarkdownTestSummaryNotification("Quarkus ${getQuarkusBranch()}", "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO])
+void sendErrorNotification() {
+    String additionalInfo = "**[${getBuildBranch()}] Optaplanner - Quarkus ${getQuarkusBranch()}**"
+    mailer.sendMarkdownTestSummaryNotification("CI failures", [env.OPTAPLANNER_CI_EMAIL_TO], additionalInfo)
 }
 
 void checkoutOptaplannerRepo() {

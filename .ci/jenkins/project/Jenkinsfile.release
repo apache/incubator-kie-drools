@@ -130,7 +130,9 @@ pipeline {
             }
         }
         unsuccessful {
-            sendErrorNotification()
+            if (currentBuild.currentResult != 'UNSTABLE') {
+                sendPipelineErrorNotification()
+            }
         }
     }
 }
@@ -239,15 +241,12 @@ void saveReleaseProperties() {
 }
 
 void sendSuccessfulReleaseNotification() {
-    String bodyMsg = 'Release is successful with those jobs:\n'
-    getAllJobNames().findAll { isJobConsideredOk(it) }.each {
-        bodyMsg += "- ${it}\n"
-    }
+    String bodyMsg = 'Release has successfully completed !:\n'
     bodyMsg += "\nPlease look here: ${BUILD_URL} for more information"
     sendNotification(bodyMsg)
 }
 
-void sendErrorNotification() {
+void sendPipelineErrorNotification() {
     sendNotification("Release job #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}")
 }
 

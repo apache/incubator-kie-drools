@@ -54,8 +54,13 @@ pipeline {
             script {
                 junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
                 util.archiveConsoleLog()
-                sendEmail()
             }
+        }
+        success {
+            sendSuccessNotification()
+        }
+        unsuccessful {
+            sendErrorNotification()
         }
         cleanup {
             cleanWs()
@@ -81,8 +86,17 @@ String getConstraintStreamImplType() {
     return env.CONSTRAINT_STREAM_IMPL_TYPE
 }
 
-void sendEmail() {
-    echo 'Sending a summary email.'
-    String body = "${getConstraintStreamImplType()}\n"
-    mailer.sendMarkdownTestSummaryNotification('OptaPlanner turtle tests', 'OptaPlanner turtle tests', [env.OPTAPLANNER_CI_EMAIL], body)
+void sendErrorNotification() {
+    mailer.sendMarkdownTestSummaryNotification("CI failures", [env.OPTAPLANNER_CI_EMAIL_TO], getNotificationAdditionalInfo())
+}
+
+void sendSuccessNotification() {
+    mailer.sendMarkdownTestSummaryNotification("CI success", [env.OPTAPLANNER_CI_EMAIL_TO], getNotificationAdditionalInfo())
+}
+
+String getNotificationAdditionalInfo() {
+    return """
+    **[${getBuildBranch()}] Optaplanner - Turtle tests**
+    **${getConstraintStreamImplType()}**
+    """
 }

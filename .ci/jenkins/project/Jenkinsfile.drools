@@ -109,7 +109,7 @@ pipeline {
     }
     post {
         unsuccessful {
-            sendNotification()
+            sendErrorNotification()
         }
         cleanup {
             script {
@@ -119,8 +119,12 @@ pipeline {
     }
 }
 
-void sendNotification() {
-    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO], "cc @*drools-team*")
+void sendErrorNotification() {
+    String additionalInfo = """
+    **[${getBuildBranch()}] Optaplanner${NOTIFICATION_JOB_NAME ? " - ${NOTIFICATION_JOB_NAME}" : ''}**
+    cc @*drools-team*
+    """
+    mailer.sendMarkdownTestSummaryNotification("CI failures", [env.OPTAPLANNER_CI_EMAIL_TO], additionalInfo)
 }
 
 void checkoutOptaplannerRepo() {

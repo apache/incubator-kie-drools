@@ -70,7 +70,9 @@ pipeline {
     }
     post {
         unsuccessful {
-            sendPipelineErrorNotification()
+            if (currentBuild.currentResult != 'UNSTABLE') {
+                sendPipelineErrorNotification()   
+            }
         }
     }
 }
