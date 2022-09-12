@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.codegen.common.GeneratedFile;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
@@ -33,13 +32,13 @@ import static com.github.javaparser.StaticJavaParser.parseType;
 public abstract class ClassAnnotatedWorkflowHandlerGenerator implements WorkflowHandlerGenerator {
 
     @Override
-    public Collection<GeneratedFile> generateHandlerClasses(KogitoBuildContext context, IndexView index) {
+    public Collection<WorkflowHandlerGeneratedFile> generateHandlerClasses(KogitoBuildContext context, IndexView index) {
         return index.getAnnotations(DotName.createSimple(getAnnotation().getCanonicalName())).stream().flatMap(a -> generateHandler(context, a)).collect(Collectors.toList());
     }
 
     protected abstract Class<? extends Annotation> getAnnotation();
 
-    protected abstract Stream<GeneratedFile> generateHandler(KogitoBuildContext context, AnnotationInstance a);
+    protected abstract Stream<WorkflowHandlerGeneratedFile> generateHandler(KogitoBuildContext context, AnnotationInstance a);
 
     protected final com.github.javaparser.ast.type.Type fromClass(Type param) {
         switch (param.kind()) {

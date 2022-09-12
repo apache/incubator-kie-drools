@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
@@ -47,6 +48,7 @@ class FullURIWorkflowOperationIdTest {
         WorkflowOperationId id = WorkflowOperationIdFactoryType.FULL_URI.factory().from(workflow, definition, Optional.empty());
         assertEquals("doSomething", id.getOperation());
         assertEquals("/spec/PePE1.yaml", id.getFileName());
+        assertEquals("/spec/PePE1_doSomething", ServerlessWorkflowUtils.getOpenApiWorkItemName(id.getFileName(), id.getOperation()));
         assertEquals("specpepe", id.getPackageName());
         assertEquals("http://myserver.com/spec/PePE1.yaml", id.getUri().toString());
         assertNull(id.getService());

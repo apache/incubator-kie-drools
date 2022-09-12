@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.codegen.common.GeneratedFile;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
+import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGeneratedFile;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGenerator;
 import org.kie.kogito.serverless.workflow.rpc.FileDescriptorHolder;
 import org.kie.kogito.serverless.workflow.rpc.RPCWorkItemHandler;
@@ -55,7 +55,7 @@ public class WorkflowRPCHandlerGenerator implements WorkflowHandlerGenerator {
     private WorkflowRPCHandlerGenerator() {
     }
 
-    private GeneratedFile generateHandler(KogitoBuildContext context, String serviceName) {
+    private WorkflowHandlerGeneratedFile generateHandler(KogitoBuildContext context, String serviceName) {
         final String packageName = context.getPackageName();
         final String className = ServerlessWorkflowUtils.getRPCClassName(serviceName);
         CompilationUnit unit = new CompilationUnit(packageName);
@@ -73,11 +73,11 @@ public class WorkflowRPCHandlerGenerator implements WorkflowHandlerGenerator {
         constructor.setBody(new BlockStmt().addStatement(new MethodCallExpr(null, "super").addArgument("enumDefault").addArgument("streamTimeout")));
         clazz.addMethod("getName", Keyword.PUBLIC).setType(parseClassOrInterfaceType(String.class.getCanonicalName()))
                 .setBody(new BlockStmt().addStatement(new ReturnStmt(new StringLiteralExpr(className))));
-        return WorkflowCodeGenUtils.fromCompilationUnit(context, unit, className);
+        return WorkflowCodeGenUtils.fromCompilationUnit(className, context, unit, className);
     }
 
     @Override
-    public Collection<GeneratedFile> generateHandlerClasses(KogitoBuildContext context, IndexView index) {
+    public Collection<WorkflowHandlerGeneratedFile> generateHandlerClasses(KogitoBuildContext context, IndexView index) {
         return FileDescriptorHolder.get().descriptor().map(fd -> fd.getFileList().stream().map(f -> f.getServiceList().stream()).flatMap(x -> x).map(s -> generateHandler(context, s.getName()))
                 .collect(Collectors.toList())).orElse(Collections.emptyList());
 

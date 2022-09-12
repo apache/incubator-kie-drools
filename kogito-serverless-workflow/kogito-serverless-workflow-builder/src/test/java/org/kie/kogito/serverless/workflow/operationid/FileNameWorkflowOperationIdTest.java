@@ -49,6 +49,7 @@ class FileNameWorkflowOperationIdTest {
         assertEquals("doSomething", id.getOperation());
         assertEquals("PePE1.yaml", id.getFileName());
         assertEquals("Pepe1_doSomething", ServerlessWorkflowUtils.getOpenApiClassName(id.getFileName(), id.getOperation()));
+        assertEquals("PePE1_doSomething", ServerlessWorkflowUtils.getOpenApiWorkItemName(id.getFileName(), id.getOperation()));
         assertEquals("pepe", id.getPackageName());
         assertEquals("http://myserver.com/spec/PePE1.yaml", id.getUri().toString());
         assertNull(id.getService());
@@ -61,6 +62,7 @@ class FileNameWorkflowOperationIdTest {
         WorkflowOperationId id = WorkflowOperationIdFactoryType.FILE_NAME.factory().from(workflow, definition, Optional.empty());
         assertEquals("doSomething", id.getOperation());
         assertEquals("PePE1.yaml", id.getFileName());
+        assertEquals("PePE1_doSomething", ServerlessWorkflowUtils.getOpenApiWorkItemName(id.getFileName(), id.getOperation()));
         assertEquals("pepe", id.getPackageName());
         assertEquals("http://myserver.com/spec/PePE1.yaml", id.getUri().toString());
         assertEquals("service", id.getService());

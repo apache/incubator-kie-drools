@@ -191,6 +191,10 @@ public class ServerlessWorkflowUtils {
         return StringUtils.ucFirst(getValidIdentifier(removeExt(fileName.toLowerCase())) + '_' + methodName);
     }
 
+    public static String getOpenApiWorkItemName(String fileName, String methodName) {
+        return removeExt(fileName) + '_' + methodName;
+    }
+
     public static String removeExt(String fileName) {
         return fileName.replaceFirst(REGEX_NO_EXT, "");
     }

@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
@@ -47,6 +48,7 @@ class SpecTitleOperationIdTest {
         assertEquals("sendRequest", id.getOperation());
         assertEquals("external-service", id.getFileName());
         assertEquals("externalservice", id.getPackageName());
+        assertEquals("external-service_sendRequest", ServerlessWorkflowUtils.getOpenApiWorkItemName(id.getFileName(), id.getOperation()));
         assertEquals("specs/external-service.yaml", id.getUri().toString());
         assertNull(id.getService());
     }

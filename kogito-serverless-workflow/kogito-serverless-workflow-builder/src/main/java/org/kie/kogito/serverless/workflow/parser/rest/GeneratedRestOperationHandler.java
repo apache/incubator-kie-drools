@@ -23,17 +23,17 @@ import io.serverlessworkflow.api.functions.FunctionDefinition;
 
 public class GeneratedRestOperationHandler implements RestOperationHandler {
 
-    private final String className;
+    private final String workItemHandler;
 
-    public GeneratedRestOperationHandler(String className) {
-        this.className = className;
+    public GeneratedRestOperationHandler(String workItemHandler) {
+        this.workItemHandler = workItemHandler;
     }
 
     @Override
     public <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> fillWorkItemHandler(WorkItemNodeFactory<T> node,
             Workflow workflow,
             FunctionDefinition actionFunction) {
-        return node.workName(className);
+        return node.workName(workItemHandler);
     }
 
 }

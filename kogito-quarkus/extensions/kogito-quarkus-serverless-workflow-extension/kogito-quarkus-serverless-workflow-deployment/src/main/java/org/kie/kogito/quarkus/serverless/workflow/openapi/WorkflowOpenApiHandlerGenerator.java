@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.codegen.common.GeneratedFile;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
@@ -31,6 +30,7 @@ import org.jboss.jandex.Type.Kind;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.quarkus.serverless.workflow.ClassAnnotatedWorkflowHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
+import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGeneratedFile;
 import org.kie.kogito.serverless.workflow.openapi.OpenApiWorkItemHandler;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
@@ -69,16 +69,15 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
     }
 
     @Override
-    protected Stream<GeneratedFile> generateHandler(KogitoBuildContext context, AnnotationInstance a) {
+    protected Stream<WorkflowHandlerGeneratedFile> generateHandler(KogitoBuildContext context, AnnotationInstance a) {
         final String fileName = a.value().asString();
         final ClassInfo classInfo = a.target().asClass();
         return classInfo.methods().stream().filter(m -> m.hasAnnotation(generatedMethod)).map(m -> generateHandler(context, classInfo, fileName, m));
     }
 
-    private GeneratedFile generateHandler(KogitoBuildContext context, ClassInfo classInfo, String fileName, MethodInfo m) {
+    private WorkflowHandlerGeneratedFile generateHandler(KogitoBuildContext context, ClassInfo classInfo, String fileName, MethodInfo m) {
         final String packageName = context.getPackageName();
-        final String methodName = m.annotation(generatedMethod).value().asString();
-        final String className = ServerlessWorkflowUtils.getOpenApiClassName(fileName, methodName);
+        final String className = ServerlessWorkflowUtils.getOpenApiClassName(fileName, m.name());
         final ClassOrInterfaceType classNameType = parseClassOrInterfaceType(classInfo.name().toString());
         CompilationUnit unit = new CompilationUnit(packageName);
         ClassOrInterfaceDeclaration clazz = unit.addClass(className);
@@ -112,9 +111,14 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
         }
         clazz.addMethod("getRestClass", Keyword.PROTECTED).setType(parseClassOrInterfaceType(Class.class.getCanonicalName()).setTypeArguments(classNameType))
                 .setBody(new BlockStmt().addStatement(new ReturnStmt(new ClassExpr(classNameType))));
+
+        String operationId = m.annotation(generatedMethod).value().asString();
+        String workItemHandlerName = ServerlessWorkflowUtils.getOpenApiWorkItemName(fileName, operationId);
+
         clazz.addMethod("getName", Keyword.PUBLIC).setType(parseClassOrInterfaceType(String.class.getCanonicalName()))
-                .setBody(new BlockStmt().addStatement(new ReturnStmt(new StringLiteralExpr(className))));
-        return WorkflowCodeGenUtils.fromCompilationUnit(context, unit, className);
+                .setBody(new BlockStmt().addStatement(new ReturnStmt(new StringLiteralExpr(workItemHandlerName))));
+
+        return WorkflowCodeGenUtils.fromCompilationUnit(workItemHandlerName, context, unit, className);
     }
 
     @Override

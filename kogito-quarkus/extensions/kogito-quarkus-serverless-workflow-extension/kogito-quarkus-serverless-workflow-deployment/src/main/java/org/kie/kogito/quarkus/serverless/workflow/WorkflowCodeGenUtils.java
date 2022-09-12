@@ -60,13 +60,13 @@ public class WorkflowCodeGenUtils {
                 .map(Optional::get);
     }
 
-    public static String getRefHandler(GeneratedFile generatedFile) {
-        String fileName = generatedFile.path().getFileName().toString();
-        return fileName.substring(0, fileName.lastIndexOf('.'));
-    }
-
     public static GeneratedFile fromCompilationUnit(KogitoBuildContext context, CompilationUnit unit, String className) {
         return new GeneratedFile(GeneratedFileType.SOURCE, Path.of("", context.getPackageName().split("\\.")).resolve(className + ".java"),
+                unit.toString());
+    }
+
+    public static WorkflowHandlerGeneratedFile fromCompilationUnit(String workItemHandlerName, KogitoBuildContext context, CompilationUnit unit, String className) {
+        return new WorkflowHandlerGeneratedFile(workItemHandlerName, GeneratedFileType.SOURCE, Path.of("", context.getPackageName().split("\\.")).resolve(className + ".java"),
                 unit.toString());
     }
 

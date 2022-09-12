@@ -27,8 +27,8 @@ public class RestOperationHandlerFactory {
 
     public static RestOperationHandler get(ParserContext parserContext, WorkflowOperationId id) {
         KogitoBuildContext context = parserContext.getContext();
-        String className = ServerlessWorkflowUtils.getOpenApiClassName(id.getFileName(), id.getOperation());
-        return context.getGeneratedHandlers().contains(className) ? new GeneratedRestOperationHandler(className) : new DescriptorRestOperationHandler(parserContext, id);
+        String workItemHandlerName = ServerlessWorkflowUtils.getOpenApiWorkItemName(id.getFileName(), id.getOperation());
+        return context.getGeneratedHandlers().contains(workItemHandlerName) ? new GeneratedRestOperationHandler(workItemHandlerName) : new DescriptorRestOperationHandler(parserContext, id);
     }
 
 }

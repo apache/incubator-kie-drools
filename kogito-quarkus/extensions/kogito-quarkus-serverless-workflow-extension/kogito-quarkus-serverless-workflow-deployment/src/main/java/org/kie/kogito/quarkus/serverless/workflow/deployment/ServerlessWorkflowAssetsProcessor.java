@@ -31,6 +31,7 @@ import org.kie.kogito.process.expr.ExpressionHandler;
 import org.kie.kogito.quarkus.common.deployment.KogitoAddonsPreGeneratedSourcesBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
+import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGeneratedFile;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.openapi.WorkflowOpenApiHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.rpc.WorkflowRPCHandlerGenerator;
@@ -77,9 +78,9 @@ public class ServerlessWorkflowAssetsProcessor {
         IndexView index = indexBuildItem.getIndex();
         Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         for (WorkflowHandlerGenerator generator : generators) {
-            for (GeneratedFile generated : generator.generateHandlerClasses(context, index)) {
+            for (WorkflowHandlerGeneratedFile generated : generator.generateHandlerClasses(context, index)) {
                 generatedFiles.add(generated);
-                context.addGeneratedHandler(WorkflowCodeGenUtils.getRefHandler(generated));
+                context.addGeneratedHandler(generated.getWorkItemHandlerName());
             }
         }
         sources.produce(new KogitoAddonsPreGeneratedSourcesBuildItem(generatedFiles));

@@ -17,11 +17,10 @@ package org.kie.kogito.quarkus.serverless.workflow;
 
 import java.util.Collection;
 
-import org.drools.codegen.common.GeneratedFile;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 public interface WorkflowHandlerGenerator {
 
-    Collection<GeneratedFile> generateHandlerClasses(KogitoBuildContext context, IndexView index);
+    Collection<WorkflowHandlerGeneratedFile> generateHandlerClasses(KogitoBuildContext context, IndexView index);
 }
