@@ -33,7 +33,7 @@ Maven `3.8.4` is now the minimum Maven version required to build Drools from sou
 === Security Manager deprecation
 
 The {PRODUCT} features related to the JDK Security Manager will not be further developed, as starting with JDK17, the Java Platform has deprecated the Security Manager for removal.
-You can make reference to the xref:KIE/index.adoc#_securitymanager[Security Manager chapter] for more information.
+You can refer the xref:KIE/index.adoc#_securitymanager[Security Manager chapter] for more information.
 
 === KIE Marshallers notice
 
