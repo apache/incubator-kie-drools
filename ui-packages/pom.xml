@@ -19,33 +19,7 @@
     <sonar.inclusions>packages/*/src/**</sonar.inclusions>
     <sonar.exclusions>**/__mocks__/**,**/mocks/**,**/tests/utils/**,**/*.stories.tsx,**/graphql/types.tsx,**/graphql/graphql.schema.json,**/index.tsx,*.js</sonar.exclusions>
     <sonar.test.inclusions>**/*test.ts,**/*test.tsx</sonar.test.inclusions>
-    <sonar.javascript.lcov.reportPaths>
-      packages/common/coverage/lcov.info,
-      packages/components-common/coverage/lcov.info,
-      packages/consoles-common/coverage/lcov.info,
-      packages/jobs-management/coverage/lcov.info,
-      packages/management-console-shared/coverage/lcov.info,
-      packages/management-console-webapp/coverage/lcov.info,
-      packages/management-console/coverage/lcov.info,
-      packages/ouia-tools/coverage/lcov.info,
-      packages/process-details/coverage/lcov.info,
-      packages/process-list/coverage/lcov.info,
-      packages/runtime-tools-dev-ui-webapp/coverage/lcov.info,
-      packages/task-console-shared/coverage/lcov.info,
-      packages/task-console-webapp/coverage/lcov.info,
-      packages/task-details/coverage/lcov.info,
-      packages/task-form/coverage/lcov.info,
-      packages/task-inbox/coverage/lcov.info,
-      packages/trusty/coverage/lcov.info,
-      packages/forms-list/coverage/lcov.info,
-      packages/form-displayer/coverage/lcov.info,
-      packages/form-details/coverage/lcov.info,
-      packages/process-form/coverage/lcov.info,
-      packages/process-definition-list/coverage/lcov.info
-      packages/monitoring/coverage/lcov.info
-      packages/custom-dashboard-list/coverage/lcov.info
-      packages/custom-dashboard-view/coverage/lcov.info
-    </sonar.javascript.lcov.reportPaths>
+    <sonar.javascript.lcov.reportPaths>packages/*/coverage/lcov.info</sonar.javascript.lcov.reportPaths>
   </properties>
 
   <profiles>
