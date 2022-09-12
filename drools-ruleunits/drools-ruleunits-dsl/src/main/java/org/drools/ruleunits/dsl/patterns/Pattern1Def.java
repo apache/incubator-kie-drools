@@ -24,7 +24,7 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
-import org.drools.ruleunits.impl.ConsequenceDataStore;
+import org.drools.ruleunits.impl.datasources.ConsequenceDataStore;
 
 public interface Pattern1Def<A> extends PatternDef {
 

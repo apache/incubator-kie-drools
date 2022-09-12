@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
+import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.SingletonStore;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
@@ -35,7 +36,7 @@ public class SingletonDataStoreTest {
     @Test
     public void testCreate() {
         Probe<Integer> probe = new Probe<>();
-        SingletonStore<Integer> integers = new FieldDataStore<>();
+        SingletonStore<Integer> integers = DataSource.createSingleton();
         integers.subscribe(probe);
         assertNull(probe.handle);
         assertNull(probe.value);
@@ -44,7 +45,7 @@ public class SingletonDataStoreTest {
     @Test
     public void testAdd() {
         Probe<Integer> probe = new Probe<>();
-        SingletonStore<Integer> integers = new FieldDataStore<>();
+        SingletonStore<Integer> integers = DataSource.createSingleton();
         integers.subscribe(probe);
         integers.set(1);
         integers.set(2);
@@ -57,7 +58,7 @@ public class SingletonDataStoreTest {
     @Test
     public void testRemove() {
         Probe<Integer> probe = new Probe<>();
-        SingletonStore<Integer> integers = new FieldDataStore<>();
+        SingletonStore<Integer> integers = DataSource.createSingleton();
         integers.subscribe(probe);
         integers.set(1);
         integers.set(2);

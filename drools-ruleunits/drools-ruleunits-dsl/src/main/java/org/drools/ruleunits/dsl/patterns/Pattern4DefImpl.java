@@ -28,8 +28,8 @@ import org.drools.model.functions.Predicate4;
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.dsl.constraints.Beta3Constraint;
 import org.drools.ruleunits.dsl.util.RuleDefinition;
-import org.drools.ruleunits.impl.ConsequenceDataStore;
-import org.drools.ruleunits.impl.ConsequenceDataStoreImpl;
+import org.drools.ruleunits.impl.datasources.ConsequenceDataStore;
+import org.drools.ruleunits.impl.datasources.ConsequenceDataStoreImpl;
 import org.kie.api.runtime.rule.RuleContext;
 
 public class Pattern4DefImpl<A, B, C, D> extends SinglePatternDef<D> implements Pattern4Def<A, B, C, D> {

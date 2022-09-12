@@ -361,7 +361,7 @@ public class Consequence {
                     NodeList<Expression> args = NodeList.nodeList(
                             new CastExpr(toClassOrInterfaceType( org.kie.api.runtime.rule.RuleContext.class ), new NameExpr( "drools" ) ),
                             methodCallExpr.getScope().get());
-                    methodCallExpr.setScope( new ObjectCreationExpr(null, toClassOrInterfaceType("org.drools.ruleunits.impl.ConsequenceDataStoreImpl"), args) );
+                    methodCallExpr.setScope( new ObjectCreationExpr(null, toClassOrInterfaceType("org.drools.ruleunits.impl.datasources.ConsequenceDataStoreImpl"), args) );
                 }
             }
         } else if ( implicitDroolsMethods.contains(methodCallExpr.getNameAsString()) ) {

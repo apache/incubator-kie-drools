@@ -30,6 +30,8 @@ public interface DataSource<T> extends Iterable<T> {
     interface Factory extends KieService {
         <T> DataStream<T> createStream();
 
+        <T> DataStream<T> createBufferedStream(int bufferSize);
+
         <T> DataStore<T> createStore();
 
         <T> SingletonStore<T> createSingleton();
@@ -37,6 +39,10 @@ public interface DataSource<T> extends Iterable<T> {
 
     static <T> DataStream<T> createStream() {
         return FactoryHolder.get().createStream();
+    }
+
+    static <T> DataStream<T> createBufferedStream(int bufferSize) {
+        return FactoryHolder.get().createBufferedStream(bufferSize);
     }
 
     static <T> DataStore<T> createStore() {
