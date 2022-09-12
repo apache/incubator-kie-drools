@@ -308,7 +308,42 @@ Building a KIE module without the Maven plugin will copy all the resources, as i
 When that JAR is loaded by the runtime, it will attempt to build all the resources then.
 If there are compilation issues it will return a null KieContainer.
 It also pushes the compilation overhead to the runtime.
-In general this is not recommended, and the Maven plugin should always be used. 
+In general this is not recommended, and the Maven plugin should always be used.
+
+[[_enginedependency]]
+== Engine dependency
+
+{PRODUCT} has 2 types of engine dependency that aggregates a required collection of dependencies.
+
+*`drools-engine`* is the standard engine that enables executable model.
+
+*`drools-engine-classic`* is the old engine that utilizes an MVEL interpreter.  The `drools-engine-classic` and `drools-mvel` are now *deprecated*, so use `drools-engine` as possible.
+
+[source,xml]
+----
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine</artifactId>
+    </dependency>
+----
+
+[NOTE]
+====
+`drools-engine` doesn't contain `drools-xml-support`, because a Rule Unit use case doesn't require `kmodule.xml`, so no need to process XML. In other words, you have to explicitly add the `drools-xml-support` dependency when you use `kmodule.xml` in your project with `drools-engine`.
+
+For example:
+[source,xml]
+----
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine</artifactId>
+    </dependency>
+    <dependency> <!-- when not using Rule Unit and using `kmodule.xml` for defining a rule base -->
+      <groupId>org.drools</groupId>
+      <artifactId>drools-xml-support</artifactId>
+    </dependency>
+----
+====
 
 [[_definingakiemoduleprogrammatically]]
 == Defining a KieModule programmatically
