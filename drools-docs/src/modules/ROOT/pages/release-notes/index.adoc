@@ -37,7 +37,7 @@ You can make reference to the xref:KIE/index.adoc#_securitymanager[Security Mana
 
 === KIE Marshallers notice
 
-The `KieMarshallers` are still present and working as expected on the release of the Drools 8-series; we are currently exploring however alternative solutions more idiomatic to cloud-native use cases.
+The `KieMarshallers` are still present and working as expected on the release of the Drools 8-series, however we are currently exploring alternative solutions more idiomatic to cloud-native use cases.
 
 == Previous release notes
 
