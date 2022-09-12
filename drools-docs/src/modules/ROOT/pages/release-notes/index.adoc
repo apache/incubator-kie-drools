@@ -28,7 +28,7 @@ Maven `3.8.4` is now the minimum Maven version required to build Drools from sou
 
 === Mvel is deprecated
 
-`drools-mvel` is now deprecated in favor of executable model. It also means `drools-engine` is recommended instead of deprecated `drools-engine-classic` that contains `drools-mvel`. It doesn't affect how to write rules.
+`drools-mvel` is now deprecated in favor of the executable model. It also means `drools-engine` is recommended instead of deprecated `drools-engine-classic` that contains `drools-mvel`. It doesn't affect how to write rules.
 
 === Security Manager deprecation
 
