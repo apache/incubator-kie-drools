@@ -51,6 +51,12 @@
           </exclusion>
         </exclusions>
       </dependency>
+
+      <dependency>
+        <groupId>jakarta.ejb</groupId>
+        <artifactId>jakarta.ejb-api</artifactId>
+        <version>3.2.6</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

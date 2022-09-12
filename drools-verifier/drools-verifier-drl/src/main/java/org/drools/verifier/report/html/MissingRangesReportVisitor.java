@@ -28,13 +28,12 @@ import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierData;
+import org.drools.verifier.misc.Multimap;
 import org.drools.verifier.report.components.MissingRange;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
 import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
 
 class MissingRangesReportVisitor extends ReportVisitor {
 
@@ -44,7 +43,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
                                                                  Collection<Restriction> restrictions,
                                                                  Collection<MissingRange> causes) {
 
-        Multimap<String, DataRow> dt =  TreeMultimap.create();
+        Multimap<String, DataRow> dt =  new Multimap<>();
         Collection<String> stringRows = new ArrayList<>();
 
         for ( MissingRange cause : causes ) {

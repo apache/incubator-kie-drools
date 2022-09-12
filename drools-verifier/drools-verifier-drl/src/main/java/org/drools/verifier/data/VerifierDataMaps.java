@@ -16,11 +16,27 @@
 
 package org.drools.verifier.data;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
-import org.drools.verifier.components.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
-import java.util.*;
+import org.drools.verifier.components.EntryPoint;
+import org.drools.verifier.components.Field;
+import org.drools.verifier.components.Import;
+import org.drools.verifier.components.ObjectType;
+import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.Restriction;
+import org.drools.verifier.components.RulePackage;
+import org.drools.verifier.components.Variable;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.misc.Multimap;
 
 class VerifierDataMaps
         implements
@@ -31,15 +47,15 @@ class VerifierDataMaps
     private Map<String, RulePackage> packagesByName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
     private Map<String, ObjectType> objectTypesByFullName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
     private Map<String, Field> fieldsByObjectTypeAndFieldName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
-    private Multimap<String, Field> fieldsByObjectTypeId = TreeMultimap.create();
-    private Multimap<String, Pattern> patternsByObjectTypeId = TreeMultimap.create();
-    private Multimap<String, Pattern> patternsByRuleName = TreeMultimap.create();
-    private Multimap<String, Restriction> restrictionsByFieldId = TreeMultimap.create();
+    private Multimap<String, Field> fieldsByObjectTypeId = new Multimap<>();
+    private Multimap<String, Pattern> patternsByObjectTypeId = new Multimap<>();
+    private Multimap<String, Pattern> patternsByRuleName = new Multimap<>();
+    private Multimap<String, Restriction> restrictionsByFieldId = new Multimap<>();
     private Map<String, Variable> variablesByRuleAndVariableName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
     private Map<String, EntryPoint> entryPointsByEntryId = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
     private Map<String, VerifierRule> rulesByName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
     private Map<String, Import> importsByName = new TreeMap<>(STRING_NULL_SAFE_COMPARATOR);
-    private Multimap<String, VerifierRule> rulesByCategory = TreeMultimap.create();
+    private Multimap<String, VerifierRule> rulesByCategory = new Multimap<>();
 
     public Collection<ObjectType> getObjectTypesByRuleName(String ruleName) {
         Set<ObjectType> set = new HashSet<>();

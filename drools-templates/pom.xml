@@ -24,7 +24,7 @@
       <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
-        <version>${version.org.hsqldb}</version>
+        <version>2.3.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

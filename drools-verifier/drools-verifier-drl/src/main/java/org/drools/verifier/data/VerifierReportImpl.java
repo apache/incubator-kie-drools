@@ -23,14 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.drools.verifier.misc.Multimap;
 import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
 import org.drools.verifier.report.components.MissingRange;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
-
-import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
 
 public class VerifierReportImpl
     implements
@@ -38,12 +36,12 @@ public class VerifierReportImpl
     private static final long                       serialVersionUID               = 510l;
 
     private Map<String, Gap>                        gapsById                       = new TreeMap<>();
-    private Multimap<String, Gap>                   gapsByFieldId                  = TreeMultimap.create();
+    private Multimap<String, Gap>                   gapsByFieldId                  = new Multimap<>();
     private Map<String, MissingNumberPattern>       missingNumberPatternsById      = new TreeMap<>();
-    private Multimap<String, MissingNumberPattern>  missingNumberPatternsByFieldId = TreeMultimap.create();
+    private Multimap<String, MissingNumberPattern>  missingNumberPatternsByFieldId = new Multimap<>();
 
     private List<VerifierMessageBase>               messages                       = new ArrayList<>();
-    private Multimap<Severity, VerifierMessageBase> messagesBySeverity             = TreeMultimap.create();
+    private Multimap<Severity, VerifierMessageBase> messagesBySeverity             = new Multimap<>();
 
     private VerifierData                            data;
 
