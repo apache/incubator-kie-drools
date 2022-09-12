@@ -317,7 +317,7 @@ In general this is not recommended, and the Maven plugin should always be used.
 
 *`drools-engine`* is the standard engine that enables executable model.
 
-*`drools-engine-classic`* is the old engine that utilizes MVEL interpreter. This engine and `drools-mvel` are now *deprecated*, so use `drools-engine` as possible.
+*`drools-engine-classic`* is the old engine that utilizes an MVEL interpreter.  The `drools-engine-classic` and `drools-mvel` are now *deprecated*, so use `drools-engine` as possible.
 
 [source,xml]
 ----
