@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
@@ -154,11 +154,11 @@ class TestCompilationManagerImpl {
             GeneratedResources finalContent = getGeneratedResourcesObject(indexFile);
             assertThat(finalContent).hasSize(2);
 
-            List<FRI> friList = Arrays.asList(new MockEfestoCallableOutput().getFri(), new MockEfestoCallableOutputE().getFri());
+            List<ModelLocalUriId> friList = Arrays.asList(new MockEfestoCallableOutput().getModelLocalUriId(), new MockEfestoCallableOutputE().getModelLocalUriId());
 
             List<GeneratedExecutableResource> resourceList = finalContent.stream().filter(GeneratedExecutableResource.class::isInstance)
                     .map(GeneratedExecutableResource.class::cast)
-                    .filter(resource -> friList.contains(resource.getFri()))
+                    .filter(resource -> friList.contains(resource.getModelLocalUriId()))
                     .collect(Collectors.toList());
 
             // contains "/mock/mock/efesto/output/module" and "/mock/mock/efesto/output/moduleE"

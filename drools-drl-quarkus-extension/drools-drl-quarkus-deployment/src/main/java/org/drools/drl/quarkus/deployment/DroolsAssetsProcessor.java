@@ -106,10 +106,10 @@ public class DroolsAssetsProcessor {
 
     @BuildStep
     public List<ReflectiveClassBuildItem> reflectiveEfestoRules() {
-        LOGGER.info("reflectiveEfestoRules()");
+        LOGGER.debug("reflectiveEfestoRules()");
         final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
         toReturn.add(new ReflectiveClassBuildItem(true, true, KieRuntimeServiceDrlMapInput.class));
-        LOGGER.info("toReturn {}", toReturn.size());
+        LOGGER.debug("toReturn {}", toReturn.size());
         return toReturn;
     }
 }

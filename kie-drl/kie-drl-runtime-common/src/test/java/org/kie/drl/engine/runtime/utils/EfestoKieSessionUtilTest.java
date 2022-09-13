@@ -19,7 +19,8 @@ import org.drools.model.Model;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,8 +35,8 @@ class EfestoKieSessionUtilTest {
     @Test
     void loadKieSession() {
         EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
-        FRI fri = new FRI(basePath, "drl");
-        KieSession retrieved = EfestoKieSessionUtil.loadKieSession(fri, context);
+        ModelLocalUriId localUri = new ModelLocalUriId(LocalUri.parse("/drl" + basePath));
+        KieSession retrieved = EfestoKieSessionUtil.loadKieSession(localUri, context);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getIdentifier()).isZero();
     }

@@ -15,7 +15,7 @@
  */
 package org.kie.efesto.runtimemanager.api.model;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
  * A generic <i>input</i> to be consumed
@@ -24,10 +24,9 @@ public interface EfestoInput<T> {
 
     /**
      * The unique, full identifier of a given model' resource
-     *
      * @return
      */
-    FRI getFRI();
+    ModelLocalUriId getModelLocalUriId();
 
     T getInputData();
 }

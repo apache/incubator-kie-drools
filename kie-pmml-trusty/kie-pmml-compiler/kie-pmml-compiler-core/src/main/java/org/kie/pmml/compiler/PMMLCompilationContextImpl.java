@@ -22,13 +22,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContextImpl;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.runtime.PMMLListener;
 
-import static org.kie.efesto.common.api.model.FRI.SLASH;
+import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
 public class PMMLCompilationContextImpl extends EfestoCompilationContextImpl<PMMLListener> implements PMMLCompilationContext {
@@ -65,10 +65,10 @@ public class PMMLCompilationContextImpl extends EfestoCompilationContextImpl<PMM
     }
 
     @Override
-    public Set<FRI> getFRIForFile() {
-        Set<FRI> allFri = friKeySet();
+    public Set<ModelLocalUriId> getModelLocalUriIdsForFile() {
+        Set<ModelLocalUriId> localUriIds = localUriIdKeySet();
         String matchingBase = SLASH + fileNameNoSuffix;
-        return allFri.stream().filter(fri -> fri.getBasePath().startsWith(matchingBase)).collect(Collectors.toSet());
+        return localUriIds.stream().filter(modelLocalUriId -> modelLocalUriId.basePath().startsWith(matchingBase)).collect(Collectors.toSet());
     }
 
     @Override

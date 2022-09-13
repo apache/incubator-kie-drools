@@ -22,8 +22,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoContext;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
@@ -40,52 +40,52 @@ public class GeneratedResourceUtils {
     private GeneratedResourceUtils() {
     }
 
-    public static boolean isPresentExecutableOrRedirect(FRI fri, EfestoContext context) {
+    public static boolean isPresentExecutableOrRedirect(ModelLocalUriId modelLocalUriId, EfestoContext context) {
         return Stream
-                .of(getGeneratedExecutableResource(fri, context.getGeneratedResourcesMap()),
-                    getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap()))
+                .of(getGeneratedExecutableResource(modelLocalUriId, context.getGeneratedResourcesMap()),
+                    getGeneratedRedirectResource(modelLocalUriId, context.getGeneratedResourcesMap()))
                 .anyMatch(Optional::isPresent);
     }
 
-    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, Map<String, GeneratedResources> generatedResourcesMap) {
-        if (!generatedResourcesMap.containsKey(fri.getModel())) {
+    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(ModelLocalUriId modelLocalUriId, Map<String, GeneratedResources> generatedResourcesMap) {
+        if (!generatedResourcesMap.containsKey(modelLocalUriId.model())) {
             return Optional.empty();
         } else {
-            return getGeneratedExecutableResource(fri, generatedResourcesMap.get(fri.getModel()));
+            return getGeneratedExecutableResource(modelLocalUriId, generatedResourcesMap.get(modelLocalUriId.model()));
         }
     }
 
     /**
      * find GeneratedExecutableResource from GeneratedResources without IndexFile
      */
-    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(FRI fri, GeneratedResources generatedResources) {
+    public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(ModelLocalUriId modelLocalUriId, GeneratedResources generatedResources) {
         Collection<GeneratedExecutableResource> allExecutableResources = new HashSet<>();
         allExecutableResources.addAll(generatedResources.stream()
                                     .filter(GeneratedExecutableResource.class::isInstance)
                                     .map(GeneratedExecutableResource.class::cast)
                                     .collect(Collectors.toSet()));
         return findAtMostOne(allExecutableResources,
-                             generatedResource -> generatedResource.getFri().equals(fri),
-                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + fri));
+                             generatedResource -> generatedResource.getModelLocalUriId().equals(modelLocalUriId),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + modelLocalUriId));
     }
 
-    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(FRI fri, Map<String, GeneratedResources> generatedResourcesMap) {
-        if (!generatedResourcesMap.containsKey(fri.getModel())) {
+    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(ModelLocalUriId modelLocalUriId, Map<String, GeneratedResources> generatedResourcesMap) {
+        if (!generatedResourcesMap.containsKey(modelLocalUriId.model())) {
             return Optional.empty();
         } else {
-            return getGeneratedRedirectResource(fri, generatedResourcesMap.get(fri.getModel()));
+            return getGeneratedRedirectResource(modelLocalUriId, generatedResourcesMap.get(modelLocalUriId.model()));
         }
     }
 
-    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(FRI fri, GeneratedResources generatedResources) {
+    public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(ModelLocalUriId modelLocalUriId, GeneratedResources generatedResources) {
         Collection<GeneratedRedirectResource> allExecutableResources = new HashSet<>();
         allExecutableResources.addAll(generatedResources.stream()
                                               .filter(GeneratedRedirectResource.class::isInstance)
                                               .map(GeneratedRedirectResource.class::cast)
                                               .collect(Collectors.toSet()));
         return findAtMostOne(allExecutableResources,
-                             generatedResource -> generatedResource.getFri().equals(fri),
-                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Redirect Resource (" + s1 + " and " + s2 + ") for " + fri));
+                             generatedResource -> generatedResource.getModelLocalUriId().equals(modelLocalUriId),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Redirect Resource (" + s1 + " and " + s2 + ") for " + modelLocalUriId));
     }
 
     public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(GeneratedResources generatedResources) {

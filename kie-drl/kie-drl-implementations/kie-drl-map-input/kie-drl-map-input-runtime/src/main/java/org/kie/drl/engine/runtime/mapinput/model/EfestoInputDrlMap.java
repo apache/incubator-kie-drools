@@ -15,9 +15,9 @@
  */
 package org.kie.drl.engine.runtime.mapinput.model;
 
-import org.kie.efesto.common.api.model.FRI;
-import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.drl.engine.runtime.model.EfestoInputDrl;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 
 /**
  * <code>EfestoInputDrl</code> specific for map input usage.
@@ -26,7 +26,7 @@ import org.kie.drl.engine.runtime.model.EfestoInputDrl;
  */
 public class EfestoInputDrlMap extends EfestoInputDrl<EfestoMapInputDTO> {
 
-    public EfestoInputDrlMap(FRI fri, EfestoMapInputDTO inputData) {
-        super(fri, inputData);
+    public EfestoInputDrlMap(ModelLocalUriId modelLocalUriId, EfestoMapInputDTO inputData) {
+        super(modelLocalUriId, inputData);
     }
 }

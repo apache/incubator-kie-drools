@@ -18,18 +18,21 @@ package org.kie.efesto.runtimemanager.api.mocks;
 import java.util.Arrays;
 import java.util.List;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
+import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
+
 public class MockKieRuntimeServiceAB extends AbstractMockKieRuntimeService {
 
-    private static List<FRI> managedResources = Arrays.asList(new FRI(MockEfestoInputA.class.getPackage().getName(), MockEfestoInputA.class.getSimpleName()),
-            new FRI(MockEfestoInputB.class.getPackage().getName(), MockEfestoInputB.class.getSimpleName()));
+    private static List<ModelLocalUriId> managedResources =
+            Arrays.asList(new ModelLocalUriId(LocalUri.parse(SLASH + MockEfestoInputA.class.getSimpleName() + SLASH + MockEfestoInputA.class.getPackage().getName())),
+                          new ModelLocalUriId(LocalUri.parse(SLASH + MockEfestoInputB.class.getSimpleName() + SLASH + MockEfestoInputB.class.getPackage().getName())));
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return managedResources.contains(toEvaluate.getFRI());
+        return managedResources.contains(toEvaluate.getModelLocalUriId());
     }
-
 }

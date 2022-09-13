@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.common.api.utils.JSONUtils;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
@@ -49,8 +49,8 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
     }
 
     private void prepareClassLoader() {
-        Set<FRI> friKeySet = friKeySet();
-        friKeySet.stream()
+        Set<ModelLocalUriId> localUriKeySet = localUriIdKeySet();
+        localUriKeySet.stream()
                  .map(this::getGeneratedClasses)
                  .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
     }

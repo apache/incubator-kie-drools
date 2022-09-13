@@ -34,7 +34,8 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
@@ -51,7 +52,7 @@ import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.common.api.model.FRI.SLASH;
+import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 import static org.kie.efesto.common.utils.PackageClassNameUtils.getSanitizedClassName;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrRedirect;
 
@@ -64,6 +65,8 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     private static final CompilationManager compilationManager =
             org.kie.efesto.compilationmanager.api.utils.SPIUtils.getCompilationManager(false).orElseThrow(() -> new EfestoCompilationManagerException("Failed to find an instance of CompilationManager: please check classpath and dependencies"));
     private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLTrustyInvocationEvaluator.class);
+
+    private static final String CHECK_CLASSPATH = "check classpath and dependencies!";
 
     public DMNKiePMMLTrustyInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model,
                                                PMMLInfo<?> pmmlInfo) {
@@ -108,7 +111,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
             String name = outputFieldNameFromInfo.get();
             try {
                 toPopulate.put(name, EvalHelper.coerceNumber(r));
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.WARN,
                                       node,
@@ -126,10 +129,10 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     protected PMML4Result evaluate(String modelName, String pmmlFileName, DMNResult dmnr,
                                    ClassLoader parentClassloader) {
         EfestoRuntimeContext runtimeContext = getEfestoRuntimeContext(parentClassloader);
-        FRI fri = getFRI(pmmlFileName, modelName);
+        ModelLocalUriId modelLocalUriId = getModelLocalUriId(pmmlFileName, modelName);
 
         Collection<EfestoOutput> retrieved;
-        if (!(isPresentExecutableOrRedirect(fri, runtimeContext))) {
+        if (!(isPresentExecutableOrRedirect(modelLocalUriId, runtimeContext))) {
             LOG.warn("GeneratedResources for {}@{} are not present: trying to invoke compilation....",
                      pmmlFileName,
                      modelName);
@@ -139,31 +142,31 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         }
         PMMLRequestData pmmlRequestData = getPMMLRequestData(UUID.randomUUID().toString(), modelName, pmmlFileName,
                                                              dmnr);
-        EfestoInput<PMMLRequestData> inputPMML = new AbstractEfestoInput<>(fri, pmmlRequestData) {
+        EfestoInput<PMMLRequestData> inputPMML = new AbstractEfestoInput<>(modelLocalUriId, pmmlRequestData) {
         };
         retrieved = evaluateInput(inputPMML, runtimeContext);
         if (retrieved.isEmpty()) {
-            String errorMessage = String.format("Failed to get result for %s@%s: please" +
-                                                        " check classpath and dependencies!",
-                                                inputPMML.getFRI(),
-                                                inputPMML.getInputData().getModelName());
+            String errorMessage = String.format("Failed to get result for %s@%s: please %s",
+                                                inputPMML.getModelLocalUriId(),
+                                                inputPMML.getInputData().getModelName(),
+                                                CHECK_CLASSPATH);
             LOG.error(errorMessage);
             throw new KieRuntimeServiceException(errorMessage);
         }
         return (PMML4Result) retrieved.iterator().next().getOutputData();
     }
 
-    protected Collection<EfestoOutput> evaluateInput(EfestoInput<PMMLRequestData> inputPMML,
+    private Collection<EfestoOutput> evaluateInput(EfestoInput<PMMLRequestData> inputPMML,
                                                      EfestoRuntimeContext runtimeContext) {
         try {
             return runtimeManager.evaluateInput(runtimeContext, inputPMML);
-        } catch (Throwable t) {
-            String errorMessage = String.format("Evaluation error for %s@%s using %s due to %s: please" +
-                                                        " check classpath and dependencies!",
-                                                inputPMML.getFRI(),
+        } catch (Exception t) {
+            String errorMessage = String.format("Evaluation error for %s@%s using %s due to %s: please %s",
+                                                inputPMML.getModelLocalUriId(),
                                                 inputPMML.getInputData().getModelName(),
                                                 inputPMML,
-                                                t.getMessage());
+                                                t.getMessage(),
+                                                CHECK_CLASSPATH);
             LOG.error(errorMessage);
             throw new KieRuntimeServiceException(errorMessage, t);
         }
@@ -178,17 +181,17 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
                                                                                 fileName);
             compilationManager.processResource(compilationContext, toProcess);
             return compilationContext.getGeneratedResourcesMap();
-        } catch (Throwable t) {
-            String errorMessage = String.format("Compilation error for %s due to %s: please" +
-                                                        " check classpath and dependencies!",
+        } catch (Exception t) {
+            String errorMessage = String.format("Compilation error for %s due to %s: please %s",
                                                 fileName,
-                                                t.getMessage());
+                                                t.getMessage(),
+                                                CHECK_CLASSPATH);
             LOG.error(errorMessage);
             throw new KieCompilerServiceException(errorMessage, t);
         }
     }
 
-    private PMMLRequestData getPMMLRequestData(String correlationId, String modelName, String fileName,
+    protected PMMLRequestData getPMMLRequestData(String correlationId, String modelName, String fileName,
                                                DMNResult dmnr) {
         PMMLRequestData toReturn = new PMMLRequestData(correlationId, modelName);
         for (DMNFunctionDefinitionEvaluator.FormalParameter p : parameters) {
@@ -203,9 +206,10 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         return EfestoRuntimeContext.buildWithParentClassLoader(parentClassloader);
     }
 
-    private FRI getFRI(String fileName, String modelName) {
-        String basePath = getFileNameNoSuffix(fileName) + SLASH + getSanitizedClassName(modelName);
-        return new FRI(basePath, "pmml");
+    private ModelLocalUriId getModelLocalUriId(String fileName, String modelName) {
+        String path = "/pmml/" + getFileNameNoSuffix(fileName) + SLASH + getSanitizedClassName(modelName);
+        LocalUri parsed = LocalUri.parse(path);
+        return new ModelLocalUriId(parsed);
     }
 
     private String getFileNameNoSuffix(String fileName) {

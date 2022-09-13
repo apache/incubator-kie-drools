@@ -25,7 +25,7 @@ public class ReflectiveAppRoot extends AppRoot {
     }
 
     public ReflectiveAppRoot() {
-        super("kogito-app");
+        super("efesto-app");
     }
 
     @Override

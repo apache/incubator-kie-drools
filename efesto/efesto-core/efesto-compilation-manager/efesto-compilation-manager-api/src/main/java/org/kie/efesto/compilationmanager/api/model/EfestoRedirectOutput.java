@@ -15,9 +15,10 @@
  */
 package org.kie.efesto.compilationmanager.api.model;
 
-import org.kie.efesto.common.api.model.FRI;
-
 import java.util.List;
+
+import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
  * A  <code>CompilationOutput</code> from one engine that will
@@ -34,8 +35,11 @@ public abstract class EfestoRedirectOutput<T> extends AbstractEfestoCallableComp
      */
     private final T content;
 
-    protected EfestoRedirectOutput(FRI fri, String targetEngine, T content) {
-        super(fri, (List<String>) null);
+    protected EfestoRedirectOutput(ModelLocalUriId modelLocalUriId, String targetEngine, T content) {
+        super(modelLocalUriId, (List<String>) null);
+        if (targetEngine == null || targetEngine.isEmpty()) {
+            throw new KieEfestoCommonException("Missing required target");
+        }
         this.targetEngine = targetEngine;
         this.content = content;
     }

@@ -15,8 +15,8 @@
  */
 package org.kie.drl.engine.runtime.kiesession.local.model;
 
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.drl.engine.runtime.model.EfestoInputDrl;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
  * <code>EfestoInputDrl</code> specific for local kiesession usage.
@@ -24,7 +24,7 @@ import org.kie.drl.engine.runtime.model.EfestoInputDrl;
  */
 public class EfestoInputDrlKieSessionLocal extends EfestoInputDrl<String> {
 
-    public EfestoInputDrlKieSessionLocal(FRI fri, String inputData) {
-        super(fri, inputData);
+    public EfestoInputDrlKieSessionLocal(ModelLocalUriId modelLocalUriId, String inputData) {
+        super(modelLocalUriId, inputData);
     }
 }

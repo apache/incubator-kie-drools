@@ -20,10 +20,13 @@ import java.util.Collection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.drl.api.identifiers.DrlIdFactory;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
@@ -47,7 +50,10 @@ class RuntimeDrlTest {
 
     @Test
     void evaluateWithKieSessionLocalStaticCompilation() {
-        EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(new FRI(basePath, "drl"), "");
+        ModelLocalUriId modelLocalUriId = new ReflectiveAppRoot("")
+                .get(DrlIdFactory.class)
+                .get(basePath);
+        EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(modelLocalUriId, "");
         Collection<EfestoOutput> output = runtimeManager.evaluateInput(context, toEvaluate);
         assertThat(output).isNotNull().hasSize(1);
         EfestoOutput<?> retrievedRaw = output.iterator().next();

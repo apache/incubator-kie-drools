@@ -17,13 +17,13 @@ package org.kie.pmml.compiler.model;
 
 import java.util.Map;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
 
 public class EfestoCallableOutputPMMLClassesContainer extends EfestoCallableOutputClassesContainer {
 
-    public EfestoCallableOutputPMMLClassesContainer(FRI fri, String fullClassName,
+    public EfestoCallableOutputPMMLClassesContainer(ModelLocalUriId modelLocalUriId, String fullClassName,
                                                     Map<String, byte[]> compiledClassMap) {
-        super(fri, fullClassName, compiledClassMap);
+        super(modelLocalUriId, fullClassName, compiledClassMap);
     }
 }

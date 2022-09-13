@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.drl.ast.descr.PackageDescr;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
+import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
+import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.TargetField;
@@ -28,8 +30,7 @@ import org.kie.pmml.commons.HasRule;
 import org.kie.pmml.commons.model.IsDrools;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 
-import static org.kie.efesto.common.api.model.FRI.SLASH;
-import static org.kie.pmml.commons.Constants.PMML_STRING;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 /**
  * KIE representation of PMML model that use <b>Drools</b> for implementation
@@ -57,8 +58,10 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLModelWithSources imple
         super(fileName, modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap, false);
         this.pkgUUID = pkgUUID;
         this.packageDescr = packageDescr;
-        String basePath = fileName + SLASH + modelName;
-        redirectOutput = new EfestoRedirectOutputPMMLDrl(new FRI(basePath, PMML_STRING), packageDescr, "drl");
+        LocalComponentIdPmml modelLocalUriId = new ReflectiveAppRoot("")
+                .get(PmmlIdFactory.class)
+                .get(fileName, getSanitizedClassName(modelName));
+        redirectOutput = new EfestoRedirectOutputPMMLDrl(modelLocalUriId, packageDescr);
     }
 
     @Override

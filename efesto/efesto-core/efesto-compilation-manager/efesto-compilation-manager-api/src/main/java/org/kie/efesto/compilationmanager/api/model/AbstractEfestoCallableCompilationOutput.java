@@ -15,22 +15,22 @@
  */
 package org.kie.efesto.compilationmanager.api.model;
 
-import org.kie.efesto.common.api.model.FRI;
-
 import java.util.Collections;
 import java.util.List;
 
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+
 public abstract class AbstractEfestoCallableCompilationOutput implements EfestoCallableOutput {
 
-    private final FRI fri;
+    private final ModelLocalUriId modelLocalUriId;
     private final List<String> fullClassNames;
 
-    protected AbstractEfestoCallableCompilationOutput(FRI fri, String fullClassName) {
-        this(fri, Collections.singletonList(fullClassName));
+    protected AbstractEfestoCallableCompilationOutput(ModelLocalUriId modelLocalUriId, String fullClassName) {
+        this(modelLocalUriId, Collections.singletonList(fullClassName));
     }
 
-    protected AbstractEfestoCallableCompilationOutput(FRI fri, List<String> fullClassNames) {
-        this.fri = fri;
+    protected AbstractEfestoCallableCompilationOutput(ModelLocalUriId modelLocalUriId, List<String> fullClassNames) {
+        this.modelLocalUriId = modelLocalUriId;
         this.fullClassNames = fullClassNames;
     }
 
@@ -41,8 +41,8 @@ public abstract class AbstractEfestoCallableCompilationOutput implements EfestoC
      * @return
      */
     @Override
-    public FRI getFri() {
-        return fri;
+    public ModelLocalUriId getModelLocalUriId() {
+        return modelLocalUriId;
     }
 
     @Override

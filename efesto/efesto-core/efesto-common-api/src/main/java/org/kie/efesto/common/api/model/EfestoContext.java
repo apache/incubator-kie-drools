@@ -19,6 +19,7 @@ package org.kie.efesto.common.api.model;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.listener.EfestoListener;
 
 /**
@@ -66,35 +67,35 @@ public interface EfestoContext<T extends EfestoListener> {
 
     /**
      * Get previously generated classes with the key {@code fri}
-     * @param fri
+     * @param modelLocalUriId
      * @return generatedClasses
      */
-    default Map<String, byte[]> getGeneratedClasses(FRI fri) {
-        return GeneratedClassesRepository.INSTANCE.getGeneratedClasses(fri);
+    default Map<String, byte[]> getGeneratedClasses(ModelLocalUriId modelLocalUriId) {
+        return GeneratedClassesRepository.INSTANCE.getGeneratedClasses(modelLocalUriId);
     }
 
     /**
      * Add generated classes with the key {@code fri}
-     * @param fri
+     * @param modelLocalUriId
      * @param generatedClasses
      */
-    default void addGeneratedClasses(FRI fri, Map<String, byte[]> generatedClasses) {
-        GeneratedClassesRepository.INSTANCE.addGeneratedClasses(fri, generatedClasses);
+    default void addGeneratedClasses(ModelLocalUriId modelLocalUriId, Map<String, byte[]> generatedClasses) {
+        GeneratedClassesRepository.INSTANCE.addGeneratedClasses(modelLocalUriId, generatedClasses);
     }
 
     /**
      * Returns {@code true} if this map contains a mapping for the {@code fri}
-     * @param fri
+     * @param localUri
      * @return {@code true} if this map contains a mapping for the {@code fri}
      */
-    default boolean containsKey(FRI fri) {
-        return GeneratedClassesRepository.INSTANCE.containsKey(fri);
+    default boolean containsKey(ModelLocalUriId localUri) {
+        return GeneratedClassesRepository.INSTANCE.containsKey(localUri);
     }
 
     /**
-     * @return {@code Set} of {@code FRI} key in this map
+     * @return {@code Set} of {@code LocalUri} key in this map
      */
-    default Set<FRI> friKeySet() {
-        return GeneratedClassesRepository.INSTANCE.friKeySet();
+    default Set<ModelLocalUriId> localUriIdKeySet() {
+        return GeneratedClassesRepository.INSTANCE.localUriIdKeySet();
     }
 }

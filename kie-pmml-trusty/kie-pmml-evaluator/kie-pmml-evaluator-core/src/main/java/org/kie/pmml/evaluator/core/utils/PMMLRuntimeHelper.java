@@ -74,24 +74,24 @@ public class PMMLRuntimeHelper {
     public static boolean canManageEfestoInput(EfestoInput toEvaluate, EfestoRuntimeContext runtimeContext) {
         return (!(toEvaluate instanceof EfestoInputPMML) && (toEvaluate.getInputData() instanceof PMMLRequestData)
                 && (!(runtimeContext instanceof PMMLRuntimeContext))
-                && isPresentExecutableOrRedirect(toEvaluate.getFRI(), runtimeContext));
+                && isPresentExecutableOrRedirect(toEvaluate.getModelLocalUriId(), runtimeContext));
     }
 
     public static boolean canManageEfestoInputPMML(EfestoInput toEvaluate, EfestoRuntimeContext runtimeContext) {
         return (toEvaluate instanceof EfestoInputPMML) &&
                 (runtimeContext instanceof PMMLRuntimeContext) &&
-                isPresentExecutableOrRedirect(toEvaluate.getFRI(), runtimeContext);
+                isPresentExecutableOrRedirect(toEvaluate.getModelLocalUriId(), runtimeContext);
     }
 
     public static Optional<EfestoOutputPMML> executeEfestoInputPMML(EfestoInputPMML toEvaluate,
                                                                     PMMLRuntimeContext pmmlContext) {
         KiePMMLModelFactory kiePMMLModelFactory;
         try {
-            kiePMMLModelFactory = loadKiePMMLModelFactory(toEvaluate.getFRI(), pmmlContext);
+            kiePMMLModelFactory = loadKiePMMLModelFactory(toEvaluate.getModelLocalUriId(), pmmlContext);
         } catch (Exception e) {
             logger.warn("{} can not execute {}",
                         PMMLRuntimeHelper.class.getName(),
-                        toEvaluate.getFRI());
+                        toEvaluate.getModelLocalUriId());
             return Optional.empty();
         }
         try {
@@ -101,7 +101,7 @@ public class PMMLRuntimeHelper {
         } catch (Exception e) {
             throw new KieRuntimeServiceException(String.format("%s failed to execute %s",
                     PMMLRuntimeHelper.class.getName(),
-                    toEvaluate.getFRI()), e);
+                    toEvaluate.getModelLocalUriId()), e);
         }
     }
 
@@ -153,11 +153,11 @@ public class PMMLRuntimeHelper {
     static EfestoOutputPMML getEfestoOutput(KiePMMLModelFactory kiePMMLModelFactory, EfestoInputPMML darInputPMML) {
         List<KiePMMLModel> kiePMMLModels = kiePMMLModelFactory.getKiePMMLModels();
         PMML4Result result = evaluate(kiePMMLModels, darInputPMML.getInputData());
-        return new EfestoOutputPMML(darInputPMML.getFRI(), result);
+        return new EfestoOutputPMML(darInputPMML.getModelLocalUriId(), result);
     }
 
     static EfestoInputPMML getEfestoInputPMML(EfestoInput<PMMLRequestData> toEvaluate, PMMLRuntimeContext pmmlRuntimeContext) {
-        return new EfestoInputPMML(toEvaluate.getFRI(), pmmlRuntimeContext);
+        return new EfestoInputPMML(toEvaluate.getModelLocalUriId(), pmmlRuntimeContext);
     }
 
     static PMMLRuntimeContext getPMMLRuntimeContext(PMMLRequestData pmmlRequestData,

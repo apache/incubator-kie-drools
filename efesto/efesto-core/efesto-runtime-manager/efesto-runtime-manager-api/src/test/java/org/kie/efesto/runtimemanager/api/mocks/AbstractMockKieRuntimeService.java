@@ -26,7 +26,7 @@ public abstract class AbstractMockKieRuntimeService<T extends AbstractMockEfesto
     @Override
     public Optional<MockEfestoOutput> evaluateInput(T toEvaluate, EfestoRuntimeContext context) {
         if (!canManageInput(toEvaluate, context)) {
-            throw new KieRuntimeServiceException(String.format("Unmanaged input %s", toEvaluate.getFRI()));
+            throw new KieRuntimeServiceException(String.format("Unmanaged input %s", toEvaluate.getModelLocalUriId()));
         }
         return Optional.of(new MockEfestoOutput());
     }

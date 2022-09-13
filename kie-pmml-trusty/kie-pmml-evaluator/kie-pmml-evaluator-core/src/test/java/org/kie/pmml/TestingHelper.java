@@ -67,7 +67,7 @@ public class TestingHelper {
 
     public static void commonEvaluateEfestoOutputPMML(EfestoOutputPMML toEvaluate, EfestoInputPMML darInputPMML) {
         assertThat(toEvaluate).isNotNull();
-        assertThat(toEvaluate.getFRI()).isEqualTo(darInputPMML.getFRI());
+        assertThat(toEvaluate.getModelLocalUriId()).isEqualTo(darInputPMML.getModelLocalUriId());
         commonEvaluatePMML4Result(toEvaluate.getOutputData(), darInputPMML.getInputData().getRequestData());
     }
 

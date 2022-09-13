@@ -17,17 +17,16 @@ package org.kie.efesto.compilationmanager.api.model;
 
 import java.util.Set;
 
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+
 public abstract class EfestoSetResource<T> implements EfestoResource<Set<T>> {
 
     private final Set<T> resources;
-    private String model;
+    private final ModelLocalUriId modelLocalUriId;
 
-    private String basePath;
-
-    protected EfestoSetResource(Set<T> resources, String model, String basePath) {
+    protected EfestoSetResource(Set<T> resources, ModelLocalUriId modelLocalUriId) {
         this.resources = resources;
-        this.model = model;
-        this.basePath = basePath;
+        this.modelLocalUriId = modelLocalUriId;
     }
 
     @Override
@@ -35,16 +34,7 @@ public abstract class EfestoSetResource<T> implements EfestoResource<Set<T>> {
         return resources;
     }
 
-    public String getModelType() {
-        return model;
+    public ModelLocalUriId getModelLocalUriId() {
+        return modelLocalUriId;
     }
-
-    /**
-     * This should return the string used as <b>base path</b> in the generated <code>FRI</code>
-     * @return
-     */
-    public String getBasePath() {
-        return basePath;
-    }
-
 }

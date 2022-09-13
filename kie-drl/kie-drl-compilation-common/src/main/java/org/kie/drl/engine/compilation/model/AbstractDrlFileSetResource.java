@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.io.FileSystemResource;
+import org.kie.drl.api.identifiers.LocalComponentIdDrl;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileSetResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
@@ -28,7 +29,7 @@ public abstract class AbstractDrlFileSetResource extends EfestoFileSetResource i
     private final Set<FileSystemResource> fileSystemResources;
 
     protected AbstractDrlFileSetResource(Set<File> modelFiles, String basePath) {
-        super(modelFiles, "drl", basePath);
+        super(modelFiles, new LocalComponentIdDrl(basePath));
         this.fileSystemResources =
                 modelFiles.stream()
                         .map(FileSystemResource::new)

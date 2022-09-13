@@ -19,9 +19,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputA;
 import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputB;
 import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputC;
@@ -29,20 +32,21 @@ import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputD;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-class TestRuntimeManagerImpl {
+class RuntimeManagerImplTest {
 
     private static RuntimeManager runtimeManager;
     private static EfestoRuntimeContext context;
 
-    private static final List<Class<? extends EfestoInput>> MANAGED_Efesto_INPUTS = Arrays.asList(MockEfestoInputA.class,
-            MockEfestoInputB.class,
-            MockEfestoInputC.class);
-
+    private static final List<Class<? extends EfestoInput>> MANAGED_Efesto_INPUTS =
+            Arrays.asList(MockEfestoInputA.class,
+                          MockEfestoInputB.class,
+                          MockEfestoInputC.class);
 
     @BeforeAll
     static void setUp() {
@@ -81,5 +85,36 @@ class TestRuntimeManagerImpl {
         Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(context,
                                                                           toProcess.toArray(new EfestoInput[0]));
         assertThat(retrieved).isNotNull().hasSize(MANAGED_Efesto_INPUTS.size());
+    }
+
+    @Test
+    void getKieRuntimeServiceLocalPresent() {
+        MANAGED_Efesto_INPUTS.forEach(managedInput -> {
+            try {
+                EfestoInput efestoInput = managedInput.getDeclaredConstructor().newInstance();
+                Optional<KieRuntimeService> retrieved = RuntimeManagerImpl.getKieRuntimeServiceLocal(context,
+                                                                                                     efestoInput);
+                assertThat(retrieved).isNotNull().isPresent();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void getKieRuntimeServiceLocalNotPresent() {
+        EfestoInput efestoInput = new EfestoInput() {
+            @Override
+            public ModelLocalUriId getModelLocalUriId() {
+                return new ModelLocalUriId(LocalUri.parse("/not-existing/notexisting"));
+            }
+
+            @Override
+            public Object getInputData() {
+                return null;
+            }
+        };
+        Optional<KieRuntimeService> retrieved = RuntimeManagerImpl.getKieRuntimeServiceLocal(context, efestoInput);
+        assertThat(retrieved).isNotNull().isNotPresent();
     }
 }

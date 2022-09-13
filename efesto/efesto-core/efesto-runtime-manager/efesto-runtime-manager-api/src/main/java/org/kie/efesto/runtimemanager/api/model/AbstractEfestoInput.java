@@ -15,21 +15,21 @@
  */
 package org.kie.efesto.runtimemanager.api.model;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 public abstract class AbstractEfestoInput<T> implements EfestoInput<T> {
 
-    private final FRI fri;
+    private final ModelLocalUriId modelLocalUriId;
     private final T inputData;
 
-    protected AbstractEfestoInput(FRI fri, T inputData) {
-        this.fri = fri;
+    protected AbstractEfestoInput(ModelLocalUriId modelLocalUriId, T inputData) {
+        this.modelLocalUriId = modelLocalUriId;
         this.inputData = inputData;
     }
 
     @Override
-    public FRI getFRI() {
-        return fri;
+    public ModelLocalUriId getModelLocalUriId() {
+        return modelLocalUriId;
     }
 
     @Override

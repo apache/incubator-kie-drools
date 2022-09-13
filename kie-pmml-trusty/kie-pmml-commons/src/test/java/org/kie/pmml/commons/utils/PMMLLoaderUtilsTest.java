@@ -23,7 +23,8 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.common.api.utils.JSONUtils;
 import org.kie.efesto.runtimemanager.api.exceptions.EfestoRuntimeManagerException;
@@ -31,13 +32,11 @@ import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLListener;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 
 class PMMLLoaderUtilsTest {
@@ -70,8 +69,9 @@ class PMMLLoaderUtilsTest {
 
     @Test
     void loadKiePMMLModelFactory() {
-        KiePMMLModelFactory retrieved = PMMLLoaderUtils.loadKiePMMLModelFactory(new FRI(basePath, PMML_STRING),
-                                                                                  getPMMLContext(FILE_NAME, MODEL_NAME));
+        KiePMMLModelFactory retrieved = PMMLLoaderUtils.loadKiePMMLModelFactory(new ModelLocalUriId(LocalUri.parse("/" + PMML_STRING +
+                                                                                                       "/" + basePath)),
+                                                                                getPMMLContext(FILE_NAME, MODEL_NAME));
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getKiePMMLModels()).hasSize(1);
         KiePMMLModel kiePmmlModel = retrieved.getKiePMMLModels().get(0);
@@ -81,8 +81,8 @@ class PMMLLoaderUtilsTest {
     @Test
     void loadNotExistingKiePMMLModelFactory() {
         try {
-            PMMLLoaderUtils.loadKiePMMLModelFactory(new FRI(basePath, "notpmml"), getPMMLContext(FILE_NAME,
-                                                                                                   MODEL_NAME));
+            PMMLLoaderUtils.loadKiePMMLModelFactory(new ModelLocalUriId(LocalUri.parse("/notpmml/" + basePath)), getPMMLContext(FILE_NAME,
+                                                                                                           MODEL_NAME));
             fail("Expecting KieRuntimeServiceException");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(KieRuntimeServiceException.class);

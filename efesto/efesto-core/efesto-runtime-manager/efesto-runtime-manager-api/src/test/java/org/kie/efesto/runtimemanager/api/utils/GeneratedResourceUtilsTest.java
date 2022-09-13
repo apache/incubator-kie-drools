@@ -20,7 +20,8 @@ import java.net.URLClassLoader;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
@@ -31,35 +32,37 @@ class GeneratedResourceUtilsTest {
 
     @Test
     void getGeneratedExecutableResource() {
-        FRI fri = new FRI("testmod", "test");
+        ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/test/testmod"));
         EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
-        Optional<GeneratedExecutableResource> retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(fri, context.getGeneratedResourcesMap());
+        Optional<GeneratedExecutableResource> retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(modelLocalUriId, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isPresent();
-        fri = new FRI("notestmod", "test");
-        retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(fri, context.getGeneratedResourcesMap());
+        modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/test/notestmod"));
+        retrieved = GeneratedResourceUtils.getGeneratedExecutableResource(modelLocalUriId, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isNotPresent();
     }
 
     @Test
     void getGeneratedRedirectResourceFromFile() {
-        FRI fri = new FRI("redirecttestmod", "test");
+        ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/test/redirecttestmod"));
         EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
-        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap());
+        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(modelLocalUriId, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isPresent();
-        fri = new FRI("redirectnotestmod", "test");
-        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap());
+        modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/test/redirectnotestmod"));
+        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(modelLocalUriId, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isNotPresent();
     }
 
     @Test
     void getGeneratedRedirectResourceFromJar() {
         ClassLoader originalClassLoader = addJarToClassLoader();
-        FRI fri = new FRI("redirecttestmod", "testb");
+        ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/testb/redirecttestmod"));
+
+
         EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
-        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap());
+        Optional<GeneratedRedirectResource> retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(modelLocalUriId, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isPresent();
-        fri = new FRI("redirectnotestmod", "testb");
-        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(fri, context.getGeneratedResourcesMap());
+        modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/testb/redirectnotestmod"));
+        retrieved = GeneratedResourceUtils.getGeneratedRedirectResource(modelLocalUriId, context.getGeneratedResourcesMap());
         assertThat(retrieved).isNotNull().isNotPresent();
         restoreClassLoader(originalClassLoader);
     }

@@ -1,19 +1,19 @@
 [
   {
     "step-type": "executable",
-    "fri": {
-      "basePath": "/testmod",
+    "modelLocalUriId": {
       "model": "test",
-      "fri": "/test/testmod"
+      "basePath": "/testmod",
+      "fullPath": "/test/testmod"
     },
     "fullClassNames": [""]
   },
   {
     "step-type": "redirect",
-    "fri": {
-      "basePath": "/redirecttestmod",
+    "modelLocalUriId": {
       "model": "test",
-      "fri": "/test/redirecttestmod"
+      "basePath": "/redirecttestmod",
+      "fullPath": "/test/redirecttestmod"
     },
     "target": "other"
   }

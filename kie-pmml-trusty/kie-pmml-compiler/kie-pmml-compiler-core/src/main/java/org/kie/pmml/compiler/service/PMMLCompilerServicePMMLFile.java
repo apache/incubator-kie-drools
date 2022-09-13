@@ -16,43 +16,24 @@
 package org.kie.pmml.compiler.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.utils.PackageClassNameUtils;
-import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
-import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
-import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
-import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.HasRedirectOutput;
-import org.kie.pmml.commons.model.HasNestedModels;
-import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.executor.PMMLCompiler;
 import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
-import org.kie.pmml.compiler.model.EfestoCallableOutputPMMLClassesContainer;
-import org.kie.pmml.compiler.model.EfestoRedirectOutputPMML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.efesto.common.api.model.FRI.SLASH;
 import static org.kie.efesto.common.api.utils.FileNameUtils.getFileName;
-import static org.kie.efesto.common.api.utils.FileNameUtils.removeSuffix;
-import static org.kie.efesto.compilationmanager.api.utils.SPIUtils.getCompilationManager;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.compiler.service.PMMLCompilerService.getEfestoFinalOutputPMML;
 

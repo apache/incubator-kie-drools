@@ -25,7 +25,10 @@ import java.util.Objects;
  * LocalId.
  */
 public abstract class LocalUriId implements LocalId {
-    private final LocalUri path;
+    private LocalUri path;
+
+    public LocalUriId() {
+    }
 
     public LocalUriId(LocalUri path) {
         this.path = path;

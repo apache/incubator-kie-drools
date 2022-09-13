@@ -15,13 +15,13 @@
  */
 package org.kie.pmml.evaluator.core.model;
 
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
 public class EfestoInputPMML extends AbstractEfestoInput<PMMLRuntimeContext> {
-    public EfestoInputPMML(FRI fri, PMMLRuntimeContext inputData) {
-        super(fri, inputData);
-    }
 
+    public EfestoInputPMML(ModelLocalUriId modelLocalUriId, PMMLRuntimeContext inputData) {
+        super(modelLocalUriId, inputData);
+    }
 }

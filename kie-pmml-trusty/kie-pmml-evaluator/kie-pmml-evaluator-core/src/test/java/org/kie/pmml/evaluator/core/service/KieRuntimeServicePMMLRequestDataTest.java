@@ -20,12 +20,14 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
@@ -36,46 +38,46 @@ import static org.kie.pmml.TestingHelper.getEfestoContext;
 import static org.kie.pmml.TestingHelper.getPMMLContext;
 import static org.kie.pmml.TestingHelper.getPMMLRequestData;
 import static org.kie.pmml.TestingHelper.getPMMLRequestDataWithInputData;
-import static org.kie.pmml.commons.Constants.PMML_STRING;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 class KieRuntimeServicePMMLRequestDataTest {
-
-    private static final String basePath = "testmod";
     private static final String MODEL_NAME = "TestMod";
     private static final String FILE_NAME = "FileName";
     private static KieRuntimeServicePMMLRequestData kieRuntimeServicePMMLRequestData;
     private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
+
+    private static  ModelLocalUriId modelLocalUriId;
 
     @BeforeAll
     public static void setup() {
         kieRuntimeServicePMMLRequestData = new KieRuntimeServicePMMLRequestData();
         memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
+        modelLocalUriId = new ReflectiveAppRoot("")
+                .get(PmmlIdFactory.class)
+                .get(FILE_NAME, getSanitizedClassName(MODEL_NAME));
     }
 
     @Test
     void canManageEfestoInputPMML() {
-        FRI fri = new FRI(basePath, PMML_STRING);
         PMMLRuntimeContext context = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
-        AbstractEfestoInput darInputPMML = new EfestoInputPMML(fri, context);
+        AbstractEfestoInput darInputPMML = new EfestoInputPMML(modelLocalUriId, context);
         assertThat(kieRuntimeServicePMMLRequestData.canManageInput(darInputPMML, context)).isFalse();
     }
 
     @Test
     void canManageEfestoInput() {
-        FRI fri = new FRI(basePath, PMML_STRING);
         EfestoRuntimeContext runtimeContext = getEfestoContext(memoryCompilerClassLoader);
         PMMLRequestData pmmlRequestData = new PMMLRequestData();
-        EfestoInput<PMMLRequestData> inputPMML = new AbstractEfestoInput<>(fri, pmmlRequestData) {
+        EfestoInput<PMMLRequestData> inputPMML = new AbstractEfestoInput<>(modelLocalUriId, pmmlRequestData) {
         };
         assertThat(kieRuntimeServicePMMLRequestData.canManageInput(inputPMML, runtimeContext)).isTrue();
     }
 
     @Test
     void evaluateCorrectInput() {
-        FRI fri = new FRI(basePath, PMML_STRING);
         PMMLRequestData pmmlRequestData = getPMMLRequestDataWithInputData(MODEL_NAME, FILE_NAME);
-        EfestoInput<PMMLRequestData> efestoInput = new AbstractEfestoInput<>(fri, pmmlRequestData) {
+        EfestoInput<PMMLRequestData> efestoInput = new AbstractEfestoInput<>(modelLocalUriId, pmmlRequestData) {
         };
         Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLRequestData.evaluateInput(efestoInput,
                                                                                               getEfestoContext(memoryCompilerClassLoader));
@@ -83,10 +85,12 @@ class KieRuntimeServicePMMLRequestDataTest {
     }
 
     @Test
-    void evaluateWrongFRI() {
-        FRI fri = new FRI("wrongbasepath", PMML_STRING);
-        PMMLRequestData pmmlRequestData = getPMMLRequestData(basePath, FILE_NAME);
-        EfestoInput<PMMLRequestData> efestoInput = new AbstractEfestoInput<>(fri, pmmlRequestData) {
+    void evaluateWrongIdentifier() {
+        ModelLocalUriId modelLocalUriId = new ReflectiveAppRoot("")
+                .get(PmmlIdFactory.class)
+                .get(FILE_NAME, getSanitizedClassName("wrongmodel"));
+        PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, FILE_NAME);
+        EfestoInput<PMMLRequestData> efestoInput = new AbstractEfestoInput<>(modelLocalUriId, pmmlRequestData) {
         };
         Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLRequestData.evaluateInput(efestoInput,
                                                                                               getEfestoContext(memoryCompilerClassLoader));
@@ -95,11 +99,10 @@ class KieRuntimeServicePMMLRequestDataTest {
 
     @Test
     void evaluateWrongEfestoRuntimeContext() {
-        FRI fri = new FRI(basePath, PMML_STRING);
         EfestoRuntimeContext runtimeContext =
                 getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
-        PMMLRequestData pmmlRequestData = getPMMLRequestData(basePath, FILE_NAME);
-        EfestoInput<PMMLRequestData> efestoInput = new AbstractEfestoInput<>(fri, pmmlRequestData) {
+        PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, FILE_NAME);
+        EfestoInput<PMMLRequestData> efestoInput = new AbstractEfestoInput<>(modelLocalUriId, pmmlRequestData) {
         };
         KieRuntimeServiceException thrown = assertThrows(
                 KieRuntimeServiceException.class,

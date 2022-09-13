@@ -54,33 +54,20 @@ public class CompilationManagerUtils {
 
     /**
      * Process resources and populate generatedResources into context without writing to IndexFile
-     * @param toProcess
-     * @param context
+     * @param toProcess the resource to process
+     * @param context the compilation context
      */
     public static void processResourceWithContext(EfestoResource toProcess, EfestoCompilationContext context) {
         Optional<KieCompilerService> retrieved = getKieCompilerService(toProcess, false);
-        if (!retrieved.isPresent()) {
+        if (retrieved.isEmpty()) {
             logger.warn("Cannot find KieCompilerService for {}, trying in context classloader", toProcess.getClass());
             retrieved = getKieCompilerServiceFromEfestoCompilationContext(toProcess, context);
         }
-        if (!retrieved.isPresent()) {
+        if (retrieved.isEmpty()) {
             logger.warn("Cannot find KieCompilerService for {}", toProcess.getClass());
             return;
         }
-        List<EfestoCompilationOutput> efestoCompilationOutputList = retrieved.get().processResource(toProcess, context);
-        for (EfestoCompilationOutput compilationOutput : efestoCompilationOutputList) {
-            if (compilationOutput instanceof EfestoCallableOutput) {
-                populateContext(context, (EfestoCallableOutput) compilationOutput);
-                if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
-                    EfestoCallableOutputClassesContainer classesContainer =
-                            (EfestoCallableOutputClassesContainer) compilationOutput;
-                    context.loadClasses(classesContainer.getCompiledClassesMap());
-                    context.addGeneratedClasses(classesContainer.getFri(), classesContainer.getCompiledClassesMap());
-                }
-            } else if (compilationOutput instanceof EfestoResource) {
-                processResourceWithContext((EfestoResource) compilationOutput, context);
-            }
-        }
+        processResources(retrieved.get(), toProcess, context);
     }
 
     public static Optional<IndexFile> getExistingIndexFile(String model) {
@@ -89,10 +76,28 @@ public class CompilationManagerUtils {
         return getFileFromFileNameOrFilePath(toReturn.getName(), toReturn.getAbsolutePath()).map(IndexFile::new);
     }
 
+    static void processResources(KieCompilerService kieCompilerService, EfestoResource toProcess, EfestoCompilationContext context) {
+        List<EfestoCompilationOutput> efestoCompilationOutputList = kieCompilerService.processResource(toProcess, context);
+        for (EfestoCompilationOutput compilationOutput : efestoCompilationOutputList) {
+            if (compilationOutput instanceof EfestoCallableOutput) {
+                populateContext(context, (EfestoCallableOutput) compilationOutput);
+                if (compilationOutput instanceof EfestoCallableOutputClassesContainer) {
+                    EfestoCallableOutputClassesContainer classesContainer =
+                            (EfestoCallableOutputClassesContainer) compilationOutput;
+                    context.loadClasses(classesContainer.getCompiledClassesMap());
+                    context.addGeneratedClasses(classesContainer.getModelLocalUriId().asModelLocalUriId(),
+                                                classesContainer.getCompiledClassesMap());
+                }
+            } else if (compilationOutput instanceof EfestoResource) {
+                processResourceWithContext((EfestoResource) compilationOutput, context);
+            }
+        }
+    }
+
     static IndexFile getIndexFile(EfestoCallableOutput compilationOutput) {
         String parentPath = System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY);
-        IndexFile toReturn = new IndexFile(parentPath, compilationOutput.getFri().getModel());
-        return getExistingIndexFile(compilationOutput.getFri().getModel()).orElseGet(() -> createIndexFile(toReturn));
+        IndexFile toReturn = new IndexFile(parentPath, compilationOutput.getModelLocalUriId().model());
+        return getExistingIndexFile(compilationOutput.getModelLocalUriId().model()).orElseGet(() -> createIndexFile(toReturn));
     }
 
     private static IndexFile createIndexFile(IndexFile toCreate) {
@@ -121,7 +126,7 @@ public class CompilationManagerUtils {
 
     static void populateContext(EfestoCompilationContext context, EfestoCallableOutput compilationOutput) {
         try {
-            String model = compilationOutput.getFri().getModel();
+            String model = compilationOutput.getModelLocalUriId().model();
             GeneratedResources generatedResources = (GeneratedResources) context.getGeneratedResourcesMap().computeIfAbsent(model, key -> new GeneratedResources());
             populateGeneratedResources(generatedResources, compilationOutput);
         } catch (Exception e) {
@@ -138,9 +143,10 @@ public class CompilationManagerUtils {
 
     static GeneratedResource getGeneratedResource(EfestoCompilationOutput compilationOutput) {
         if (compilationOutput instanceof EfestoRedirectOutput) {
-            return new GeneratedRedirectResource(((EfestoRedirectOutput) compilationOutput).getFri(), ((EfestoRedirectOutput) compilationOutput).getTargetEngine());
+            return new GeneratedRedirectResource(((EfestoRedirectOutput) compilationOutput).getModelLocalUriId(),
+                                                 ((EfestoRedirectOutput) compilationOutput).getTargetEngine());
         } else if (compilationOutput instanceof EfestoCallableOutput) {
-            return new GeneratedExecutableResource(((EfestoCallableOutput) compilationOutput).getFri(), ((EfestoCallableOutput) compilationOutput).getFullClassNames());
+            return new GeneratedExecutableResource(((EfestoCallableOutput) compilationOutput).getModelLocalUriId(), ((EfestoCallableOutput) compilationOutput).getFullClassNames());
         } else {
             throw new KieCompilerServiceException("Unmanaged type " + compilationOutput.getClass().getName());
         }

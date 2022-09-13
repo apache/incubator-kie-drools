@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.common.api.utils.JSONUtils;
 import org.kie.efesto.runtimemanager.api.exceptions.EfestoRuntimeManagerException;
@@ -49,15 +49,16 @@ public class EfestoRuntimeContextImpl<T extends EfestoListener> implements Efest
     }
 
     private void prepareClassLoader() {
-        Set<FRI> friKeySet = friKeySet();
-        friKeySet.stream()
-                 .map(this::getGeneratedClasses)
-                 .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
+        Set<ModelLocalUriId> modelLocalUriIds = localUriIdKeySet();
+        modelLocalUriIds.stream()
+                .map(this::getGeneratedClasses)
+                .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
     }
 
     private void populateGeneratedResourcesMap() {
         Set<String> modelTypes = SPIUtils.collectModelTypes(this);
-        Map<String, IndexFile> indexFileMap = IndexFile.findIndexFilesFromClassLoader(memoryCompilerClassLoader, modelTypes);
+        Map<String, IndexFile> indexFileMap = IndexFile.findIndexFilesFromClassLoader(memoryCompilerClassLoader,
+                                                                                      modelTypes);
         indexFileMap.forEach((model, indexFile) -> {
             try {
                 GeneratedResources generatedResources = JSONUtils.getGeneratedResourcesObject(indexFile);

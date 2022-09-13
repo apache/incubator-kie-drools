@@ -21,33 +21,56 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
+import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
+import org.kie.efesto.compilationmanager.core.mocks.MockEfestoInputF;
+import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputE;
+import org.kie.efesto.compilationmanager.core.mocks.MockKieCompilerServiceE;
+import org.kie.efesto.compilationmanager.core.mocks.MockKieCompilerServiceF;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.efesto.common.api.utils.JSONUtils.writeGeneratedResourcesObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class CompilationManagerUtilsTest {
 
     private final static String modelType = "test";
-    private final static FRI fri = new FRI("this/is/fri", modelType);
-    private final static FRI notExistingfri = new FRI("this/is/fri", "notexisting");
+    private final static ModelLocalUriId MODEL_LOCAL_URI_ID = new ModelLocalUriId(LocalUri.parse("/" + modelType + "/this/is/fri"));
+    private final static ModelLocalUriId NOT_EXISTING_MODEL_LOCAL_URI_ID =  new ModelLocalUriId(LocalUri.parse("/notexisting/this/is/fri"));
     private final static Map<String, byte[]> compiledClassMap = IntStream.range(0, 3).boxed().collect(Collectors.toMap(integer -> "class_" + integer, integer -> new byte[0]));
-    private final static EfestoCallableOutputClassesContainer finalOutput = getEfestoFinalOutputClassesContainer(fri);
+    private final static EfestoCallableOutputClassesContainer finalOutput = getEfestoFinalOutputClassesContainer(MODEL_LOCAL_URI_ID);
 
     @Test
-    void populateIndexFilesWithProcessedResource() {
+    void processResourcesWithoutRedirect() {
+        KieCompilerService kieCompilerServiceMock = mock(MockKieCompilerServiceE.class);
+        EfestoResource toProcess = new MockEfestoRedirectOutputE();
+        EfestoCompilationContext context =
+                EfestoCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        CompilationManagerUtils.processResources(kieCompilerServiceMock, toProcess, context);
+        verify(kieCompilerServiceMock, times(1)).processResource(toProcess, context);
     }
 
     @Test
-    void getIndexFileFromFinalOutput() {
+    void processResourcesWithRedirect() {
+        KieCompilerService kieCompilerServiceMock = mock(MockKieCompilerServiceF.class);
+        EfestoResource toProcess = new MockEfestoInputF();
+        EfestoCompilationContext context =
+                EfestoCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        CompilationManagerUtils.processResources(kieCompilerServiceMock, toProcess, context);
+        verify(kieCompilerServiceMock, times(1)).processResource(toProcess, context);
     }
 
     @Test
@@ -60,7 +83,7 @@ class CompilationManagerUtilsTest {
 
     @Test
     void getIndexFileNotExisting() {
-        EfestoCallableOutputClassesContainer notExistingOutput = getEfestoFinalOutputClassesContainer(notExistingfri);
+        EfestoCallableOutputClassesContainer notExistingOutput = getEfestoFinalOutputClassesContainer(NOT_EXISTING_MODEL_LOCAL_URI_ID);
         IndexFile retrieved = CompilationManagerUtils.getIndexFile(notExistingOutput);
         assertThat(retrieved).isNotNull();
         String expectedName = "IndexFile.notexisting_json";
@@ -81,7 +104,7 @@ class CompilationManagerUtilsTest {
         expectedResources = 2; // 2 final resource
         assertThat(executableResources).hasSize(expectedResources);
 
-        GeneratedExecutableResource finalResource = executableResources.stream().filter(generatedExecutableResource -> finalOutput.getFri().equals(generatedExecutableResource.getFri())).findFirst().orElse(null);
+        GeneratedExecutableResource finalResource = executableResources.stream().filter(generatedExecutableResource -> finalOutput.getModelLocalUriId().equals(generatedExecutableResource.getModelLocalUriId())).findFirst().orElse(null);
 
         commonEvaluateGeneratedExecutableResource(finalResource);
         List<GeneratedClassResource> classResources = generatedResources.stream().filter(generatedResource -> generatedResource instanceof GeneratedClassResource).map(GeneratedClassResource.class::cast).collect(Collectors.toList());
@@ -131,19 +154,16 @@ class CompilationManagerUtilsTest {
     private void commonEvaluateGeneratedExecutableResource(GeneratedResource generatedResource) {
         assertThat(generatedResource).isNotNull();
         assertThat(generatedResource instanceof GeneratedExecutableResource).isTrue();
-        assertThat(((GeneratedExecutableResource) generatedResource).getFri()).isEqualTo(finalOutput.getFri());
+        assertThat(((GeneratedExecutableResource) generatedResource).getModelLocalUriId()).isEqualTo(finalOutput.getModelLocalUriId());
     }
 
     private void commonEvaluateGeneratedIntermediateResources(List<GeneratedResource> retrieved) {
         assertThat(retrieved).isNotNull();
-//        assertThat(retrieved).hasSize(compiledClassMap.size());
-        compiledClassMap.keySet().forEach(fullClassName -> {
-            assertTrue(retrieved.stream().filter(GeneratedClassResource.class::isInstance).map(GeneratedClassResource.class::cast).anyMatch(generatedResource -> generatedResource.getFullClassName().equals(fullClassName)));
-        });
+        compiledClassMap.keySet().forEach(fullClassName -> assertTrue(retrieved.stream().filter(GeneratedClassResource.class::isInstance).map(GeneratedClassResource.class::cast).anyMatch(generatedResource -> generatedResource.getFullClassName().equals(fullClassName))));
     }
 
-    private static EfestoCallableOutputClassesContainer getEfestoFinalOutputClassesContainer(FRI usedFri) {
-        return new EfestoCallableOutputClassesContainer(usedFri, usedFri.getModel() + "Resources", compiledClassMap) {
+    private static EfestoCallableOutputClassesContainer getEfestoFinalOutputClassesContainer(ModelLocalUriId modelLocalUriId) {
+        return new EfestoCallableOutputClassesContainer(modelLocalUriId, modelLocalUriId.model() + "Resources", compiledClassMap) {
         };
     }
 }

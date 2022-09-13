@@ -37,12 +37,14 @@ import org.drools.model.codegen.project.KogitoPackageSources;
 import org.drools.model.codegen.project.RuleCodegenError;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
 import org.kie.api.io.Resource;
+import org.kie.drl.api.identifiers.DrlIdFactory;
+import org.kie.drl.api.identifiers.LocalComponentIdDrl;
 import org.kie.drl.engine.compilation.model.DecisionTableFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -64,17 +66,17 @@ public class DrlCompilerHelper {
     public static DrlPackageDescrSetResource drlToPackageDescrs(DrlFileSetResource resources, DrlCompilationContext context) {
         KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
         Set<PackageDescr> packageDescrSet = buildCompositePackageDescrs(resources, conf).stream().collect(Collectors.toSet());
-        return new DrlPackageDescrSetResource(packageDescrSet, resources.getBasePath());
+        return new DrlPackageDescrSetResource(packageDescrSet, resources.getModelLocalUriId().basePath());
     }
 
     public static ExecutableModelClassesContainer pkgDescrToExecModel(EfestoSetResource<PackageDescr> resources, DrlCompilationContext context) {
-        return pkgDescrToExecModel(toCompositePackageDescrs(resources.getContent()), resources.getBasePath(), new KnowledgeBuilderConfigurationImpl(), context);
+        return pkgDescrToExecModel(toCompositePackageDescrs(resources.getContent()), resources.getModelLocalUriId().basePath(), new KnowledgeBuilderConfigurationImpl(), context);
     }
 
     public static ExecutableModelClassesContainer drlToExecutableModel(DrlFileSetResource resources, DrlCompilationContext context) {
         KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
 
-        return pkgDescrToExecModel(buildCompositePackageDescrs(resources, conf), resources.getBasePath(), conf, context);
+        return pkgDescrToExecModel(buildCompositePackageDescrs(resources, conf), resources.getModelLocalUriId().basePath(), conf, context);
     }
 
     public static ExecutableModelClassesContainer pkgDescrToExecModel(Collection<CompositePackageDescr> packages, String basePath, KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, DrlCompilationContext context) {
@@ -103,12 +105,16 @@ public class DrlCompilerHelper {
 
         Map<String, String> sourceCode = modelFiles.stream()
                 .collect(Collectors.toMap(generatedFile -> generatedFile.getPath()
-                                .replace(".java", "")
-                                .replace(File.separatorChar, '.'),
-                        generatedFile -> new String(generatedFile.getData(), StandardCharsets.UTF_8)));
+                                                  .replace(".java", "")
+                                                  .replace(File.separatorChar, '.'),
+                                          generatedFile -> new String(generatedFile.getData(),
+                                                                      StandardCharsets.UTF_8)));
 
         Map<String, byte[]> compiledClasses = context.compileClasses(sourceCode);
-        return new ExecutableModelClassesContainer(new FRI(basePath, "drl"), generatedRulesModels, compiledClasses);
+        LocalComponentIdDrl modelLocalUriId = new ReflectiveAppRoot("")
+                .get(DrlIdFactory.class)
+                .get(basePath);
+        return new ExecutableModelClassesContainer(modelLocalUriId, generatedRulesModels, compiledClasses);
     }
 
     private static Collection<CompositePackageDescr> buildCompositePackageDescrs(DrlFileSetResource resources, KnowledgeBuilderConfigurationImpl conf) {

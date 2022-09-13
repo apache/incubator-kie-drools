@@ -18,19 +18,16 @@ package org.kie.pmml.models.drools.commons.model;
 import java.util.Collections;
 
 import org.drools.drl.ast.descr.PackageDescr;
-import org.kie.efesto.common.api.model.FRI;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 
 public class EfestoRedirectOutputPMMLDrl extends EfestoSetResource<PackageDescr> implements EfestoCompilationOutput {
 
-    private final FRI fri;
     private final PackageDescr packageDescr;
 
-    public EfestoRedirectOutputPMMLDrl(FRI fri, PackageDescr packageDescr, String type) {
-        super(Collections.singleton(packageDescr), type, fri.getBasePath());
-        this.fri = fri;
+    public EfestoRedirectOutputPMMLDrl(ModelLocalUriId modelLocalUriId, PackageDescr packageDescr) {
+        super(Collections.singleton(packageDescr), modelLocalUriId);
         this.packageDescr = packageDescr;
     }
-
 }

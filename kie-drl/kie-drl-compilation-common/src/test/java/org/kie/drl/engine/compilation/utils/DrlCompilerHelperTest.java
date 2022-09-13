@@ -39,7 +39,7 @@ import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.efesto.common.api.model.FRI.SLASH;
+import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 
 class DrlCompilerHelperTest {
 
@@ -85,8 +85,8 @@ class DrlCompilerHelperTest {
     private void commonVerifyEfestoCompilationOutput(EfestoCompilationOutput toVerify, String baseBath) {
         assertThat(toVerify).isNotNull().isInstanceOf(ExecutableModelClassesContainer.class);
         ExecutableModelClassesContainer retrieved = (ExecutableModelClassesContainer) toVerify;
-        assertThat(retrieved.getFri().getModel()).isEqualTo("drl");
-        assertThat(retrieved.getFri().getBasePath()).isEqualTo(SLASH + baseBath);
+        assertThat(retrieved.getModelLocalUriId().model()).isEqualTo("drl");
+        assertThat(retrieved.getModelLocalUriId().basePath()).isEqualTo(SLASH + baseBath);
         assertThat(retrieved.getFullClassNames()).hasSize(2); // magic number due to compiled resources
         assertThat(retrieved.getCompiledClassesMap()).hasSize(12); // magic number due to compiled resources
     }

@@ -15,10 +15,10 @@
  */
 package org.kie.drl.engine.runtime.mapinput.model;
 
-import org.kie.efesto.common.api.model.FRI;
-import org.kie.drl.engine.runtime.model.EfestoOutputDrl;
-
 import java.util.Map;
+
+import org.kie.drl.engine.runtime.model.EfestoOutputDrl;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
  * <code>EfestoOutputDrl</code> specific for map input usage.
@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class EfestoOutputDrlMap extends EfestoOutputDrl<Map<String, Object>> {
 
-    public EfestoOutputDrlMap(FRI fri, Map<String, Object> inputData) {
-        super(fri, inputData);
+    public EfestoOutputDrlMap(ModelLocalUriId modelLocalUriId, Map<String, Object> inputData) {
+        super(modelLocalUriId, inputData);
     }
 }

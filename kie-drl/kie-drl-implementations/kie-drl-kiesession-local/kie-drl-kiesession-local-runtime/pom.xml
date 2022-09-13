@@ -25,6 +25,10 @@
             <artifactId>drools-canonical-model</artifactId>
             <scope>compile</scope>
         </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-api</artifactId>
+      </dependency>
     </dependencies>
 
     <properties>

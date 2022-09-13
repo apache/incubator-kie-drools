@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.StringTokenizer;
 
 /**
- * A uri of the form: kogito-local:///a/b/c...
+ * A uri of the form: efesto-local:///a/b/c...
  * <p>
  * For instance: for "/a/b/c" the {@link LocalUri} is represented as:
  *
@@ -45,17 +45,20 @@ import java.util.StringTokenizer;
  * </pre>
  */
 public abstract class LocalUri {
-    public static final String SCHEME = "kogito-local";
+
+    public static final String SCHEME = "efesto-local";
     public static final LocalUri Root = new LocalUriRoot();
+    public static final String SLASH = "/";
 
     public static LocalUri parse(String path) {
         if (path.startsWith(SCHEME)) {
             URI parsed = URI.create(path);
             path = parsed.getPath();
         }
-        if (!path.startsWith("/"))
+        if (!path.startsWith(SLASH)) {
             throw new IllegalArgumentException("Path must start at root /");
-        StringTokenizer tok = new StringTokenizer(path, "/");
+        }
+        StringTokenizer tok = new StringTokenizer(path, SLASH);
         LocalUri hpath = Root;
         while (tok.hasMoreTokens()) {
             hpath = hpath.append(tok.nextToken());
@@ -108,7 +111,7 @@ public abstract class LocalUri {
 
         @Override
         public String path() {
-            return "/";
+            return SLASH;
         }
 
         // it is a singleton: we don't need to override equals, hashCode
@@ -120,7 +123,7 @@ public abstract class LocalUri {
     public static class LocalUriPathComponent extends LocalUri {
 
         private final LocalUri parent;
-        private final String component;
+        final String component;
 
         private LocalUriPathComponent(LocalUri parent, String component) {
             this.parent = parent;
@@ -148,7 +151,7 @@ public abstract class LocalUri {
 
         @Override
         public String path() {
-            return parent == Root ? ("/" + component) : (parent.path() + "/" + component);
+            return parent == Root ? (SLASH + component) : (parent.path() + SLASH + component);
         }
 
         @Override
