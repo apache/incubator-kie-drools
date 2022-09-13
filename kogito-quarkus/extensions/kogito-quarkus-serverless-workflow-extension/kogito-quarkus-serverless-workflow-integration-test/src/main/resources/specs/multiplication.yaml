@@ -6,7 +6,7 @@ info:
 paths:
   /:
     post:
-      operationId: doOperation
+      operationId: Do Operation
       parameters:
         - in: header
           name: pepe

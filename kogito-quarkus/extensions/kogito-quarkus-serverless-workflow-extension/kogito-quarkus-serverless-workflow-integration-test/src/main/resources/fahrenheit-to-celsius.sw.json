@@ -14,11 +14,11 @@
   "functions": [
     {
       "name": "multiplication",
-      "operation": "multiplication#doOperation"
+      "operation": "multiplication#Do Operation"
     },
     {
       "name": "subtraction",
-      "operation": "subtraction#doOperation"
+      "operation": "subtraction#Do Operation"
     }
   ],
   "states": [

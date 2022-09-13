@@ -99,7 +99,6 @@
         <configuration>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
           </systemPropertyVariables>
         </configuration>
       </plugin>

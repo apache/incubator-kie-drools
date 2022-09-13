@@ -6,7 +6,7 @@
   "functions": [
     {
       "name": "create",
-      "operation": "specs/swagger2.0-security.yaml#myappCreate"
+      "operation": "specs/swagger2.0-security.yaml#myapp.create"
     }
   ],
   "states": [
