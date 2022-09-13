@@ -23,7 +23,7 @@ You can configure the internal caches by their names: `endpoint-by-name` and `en
 This extension exposes the bean [`CachedServiceAndThenRouteEndpointDiscovery`](runtime/src/main/java/org/kie/kogito/addons/quarkus/k8s/CachedServiceAndThenRouteEndpointDiscovery.java).
 You can inject it into your custom Kogito service and start using it:
 
-````java
+```java
 import java.util.Optional;
 
 import org.kie.kogito.addons.k8s.Endpoint;
@@ -44,4 +44,11 @@ public class EndpointFetcher {
         }
     }
 }
-````
+```
+
+
+## Kubernetes Service Discovery
+
+The Service discovery documentation can be found at this [link](https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/cloud/kubernetes-service-discovery.html).
+
+

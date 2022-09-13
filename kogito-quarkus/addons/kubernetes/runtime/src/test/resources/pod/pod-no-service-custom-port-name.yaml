@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-no-service-custom-port
+  labels:
+    appname: pod-no-service-custom-port
+spec:
+  containers:
+  - name: pod-no-service-custom-port
+    image: quay.io/kiegroup/process-quarkus-example:latest
+    imagePullPolicy: Never
+    ports:
+    - name: http
+      containerPort: 8080
+      protocol: TCP
+    - name: my-custom-port
+      containerPort: 52485
+      protocol: TCP
+status:
+  phase: Running
+  conditions:
+  - type: Initialized
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-17T18:41:32Z'
+  - type: Ready
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-17T18:41:35Z'
+  - type: ContainersReady
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-17T18:41:35Z'
+  - type: PodScheduled
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-17T18:41:32Z'
+  hostIP: 192.168.49.2
+  podIP: 172.17.0.22
+  podIPs:
+  - ip: 172.17.0.22
+  startTime: '2022-08-17T18:41:32Z'
+  containerStatuses:
+  - name: pod-no-service-custom-port
+    state:
+      running:
+        startedAt: '2022-08-17T18:41:34Z'
+    lastState: {}
+    ready: true
+    restartCount: 0
+    started: true

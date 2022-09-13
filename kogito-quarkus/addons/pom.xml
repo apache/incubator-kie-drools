@@ -24,6 +24,7 @@
     <module>process-management</module>
     <module>source-files</module>
     <module>knative</module>
+    <module>kubernetes</module>
   </modules>
 
   <profiles>
@@ -38,7 +39,6 @@
         <module>events</module>
         <module>explainability</module>
         <module>jobs</module>
-        <module>kubernetes</module>
         <module>mail</module>
         <module>monitoring</module>
         <module>task-notification</module>

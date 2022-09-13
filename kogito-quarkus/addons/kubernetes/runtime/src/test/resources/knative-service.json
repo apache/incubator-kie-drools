@@ -1,0 +1,91 @@
+[{
+  "apiVersion" : "v1",
+  "kind" : "ServiceAccount",
+  "metadata" : {
+    "annotations" : {
+      "app.quarkus.io/commit-id" : "43f916fc94d3c9ea5b5f2e4495f17bbe10989ab3",
+      "app.quarkus.io/build-timestamp" : "2022-08-17 - 11:51:13 +0000"
+    },
+    "labels" : {
+      "app.kubernetes.io/name" : "serverless-workflow-greeting-quarkus",
+      "app.kubernetes.io/version" : "2.0.0-SNAPSHOT"
+    },
+    "name" : "serverless-workflow-greeting-quarkus"
+  }
+},{
+  "apiVersion" : "serving.knative.dev/v1",
+  "kind" : "Service",
+  "metadata" : {
+    "annotations" : {
+      "app.quarkus.io/commit-id" : "43f916fc94d3c9ea5b5f2e4495f17bbe10989ab3",
+      "app.quarkus.io/build-timestamp" : "2022-08-17 - 11:51:13 +0000"
+    },
+    "labels" : {
+      "app.kubernetes.io/name" : "serverless-workflow-greeting-quarkus",
+      "app.kubernetes.io/version" : "2.0.0-SNAPSHOT"
+    },
+    "name" : "serverless-workflow-greeting-quarkus"
+  },
+  "spec" : {
+    "template" : {
+      "metadata" : {
+        "labels" : {
+          "app.kubernetes.io/name" : "serverless-workflow-greeting-quarkus",
+          "app.kubernetes.io/version" : "2.0.0-SNAPSHOT"
+        }
+      },
+      "spec" : {
+        "containers" : [ {
+          "image" : "spolti/serverless-workflow-greeting-quarkus:2.0.0-SNAPSHOT",
+          "imagePullPolicy" : "IfNotPresent",
+          "livenessProbe" : {
+            "failureThreshold" : 3,
+            "httpGet" : {
+              "path" : "/q/health/live",
+              "port" : null,
+              "scheme" : "HTTP"
+            },
+            "initialDelaySeconds" : 0,
+            "periodSeconds" : 30,
+            "successThreshold" : 1,
+            "timeoutSeconds" : 10
+          },
+          "name" : "serverless-workflow-greeting-quarkus",
+          "ports" : [ {
+            "containerPort" : 8080,
+            "name" : "http1",
+            "protocol" : "TCP"
+          } ],
+          "readinessProbe" : {
+            "failureThreshold" : 3,
+            "httpGet" : {
+              "path" : "/q/health/ready",
+              "port" : null,
+              "scheme" : "HTTP"
+            },
+            "initialDelaySeconds" : 0,
+            "periodSeconds" : 30,
+            "successThreshold" : 1,
+            "timeoutSeconds" : 10
+          }
+        } ],
+        "serviceAccountName" : "serverless-workflow-greeting-quarkus"
+      }
+    }
+  }
+},{
+  "apiVersion" : "rbac.authorization.k8s.io/v1",
+  "kind" : "RoleBinding",
+  "metadata" : {
+    "name" : "serverless-workflow-greeting-quarkus-view"
+  },
+  "roleRef" : {
+    "kind" : "ClusterRole",
+    "apiGroup" : "rbac.authorization.k8s.io",
+    "name" : "view"
+  },
+  "subjects" : [ {
+    "kind" : "ServiceAccount",
+    "name" : "serverless-workflow-greeting-quarkus"
+  } ]
+}]

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: process-quarkus-example-pod-clusterip-svc
+  labels:
+    app: process-quarkus-example-pod-clusterip
+    appname: process-quarkus-example-pod-no-service
+spec:
+  ports:
+  - port: 80
+    name: http
+    targetPort: http
+  type: ClusterIP
+  clusterIP: 10.10.10.10
+  selector:
+    appname: process-quarkus-example-pod-no-service

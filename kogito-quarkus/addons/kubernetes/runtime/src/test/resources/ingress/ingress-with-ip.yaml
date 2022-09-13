@@ -1,0 +1,16 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: process-quarkus-ingress
+  namespace: serverless-workflow-greeting-quarkus
+spec:
+  ingressClassName: nginx
+  defaultBackend:
+    service:
+      name: process-quarkus-example-ingress-service
+      port:
+        number: 80
+status:
+  loadBalancer:
+    ingress:
+    - ip: 80.80.25.9

@@ -1,0 +1,33 @@
+apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
+kind: StatefulSet
+metadata:
+  name: process-quarkus-example-statefulset-no-service
+  labels:
+    app: process-quarkus-example-statefulset-no-service
+spec:
+  serviceName: "process-quarkus-example-statefulset"
+  selector:
+    matchLabels:
+      app: process-quarkus-example-statefulset-no-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: process-quarkus-example-statefulset-no-service
+    spec:
+      containers:
+      - name: process-quarkus-example-statefulset-no-service
+        image: quay.io/kiegroup/process-quarkus-example:latest
+        ports:
+        - containerPort: 8080
+          name: http
+status:
+  observedGeneration: 1
+  replicas: 1
+  readyReplicas: 1
+  currentReplicas: 1
+  updatedReplicas: 1
+  currentRevision: example-statefulset-without-service-574794d487
+  updateRevision: example-statefulset-without-service-574794d487
+  collisionCount: 0
+  availableReplicas: 1

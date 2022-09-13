@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-addons-quarkus-kubernetes-parent</artifactId>
-  <name>Kogito Add-On Knative Eventing - Parent</name>
+  <name>Kogito Add-On Kubernetes - Parent</name>
   <packaging>pom</packaging>
 
   <modules>

@@ -1,0 +1,24 @@
+apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
+kind: StatefulSet
+metadata:
+  name: example-statefulset-with-service
+  labels:
+    app: example-statefulset-with-service
+spec:
+  serviceName: "example-statefulset-with-service"
+  selector:
+    matchLabels:
+      app: example-statefulset-with-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: example-statefulset-with-service
+    spec:
+      containers:
+      - name: example-statefulset-with-service
+        image: quay.io/kiegroup/process-quarkus-example:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http

@@ -1,0 +1,134 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  generateName: example-dc-no-service-1-
+  annotations:
+    openshift.io/scc: restricted
+    openshift.io/deployment.name: example-dc-no-service-1
+    openshift.io/deployment-config.name: example-dc-no-service
+    cni.projectcalico.org/podIP: 172.17.25.190/32
+    openshift.io/deployment-config.latest-version: '1'
+    cni.projectcalico.org/podIPs: 172.17.25.190/32
+  name: example-dc-no-service-1-phlx4
+  uid: 2cdbb22b-9d0d-4c88-b784-3c6ae214c2a0
+  ownerReferences:
+  - apiVersion: v1
+    kind: ReplicationController
+    name: example-dc-no-service-1
+    uid: 964d809e-2d23-4ee7-81b3-6faad6b0a53e
+    controller: true
+    blockOwnerDeletion: true
+  labels:
+    app: example-dc-no-service
+    deployment: example-dc-no-service-1
+    deploymentconfig: example-dc-no-service
+spec:
+  restartPolicy: Always
+  serviceAccountName: default
+  imagePullSecrets:
+  - name: default-dockercfg-76zwl
+  priority: 0
+  schedulerName: default-scheduler
+  enableServiceLinks: true
+  terminationGracePeriodSeconds: 30
+  preemptionPolicy: PreemptLowerPriority
+  nodeName: 10.240.0.25
+  securityContext:
+    seLinuxOptions:
+      level: 's0:c26,c10'
+    fsGroup: 1000670000
+  containers:
+  - resources: {}
+    terminationMessagePath: /dev/termination-log
+    name: example-dc-no-service
+    securityContext:
+      capabilities:
+        drop:
+        - KILL
+        - MKNOD
+        - SETGID
+        - SETUID
+      runAsUser: 1000670000
+    ports:
+    - name: http
+      containerPort: 8080
+      protocol: TCP
+    - name: another-http
+      containerPort: 8009
+      protocol: TCP
+    imagePullPolicy: Always
+    volumeMounts:
+    - name: kube-api-access-mg9n9
+      readOnly: true
+      mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+    terminationMessagePolicy: File
+    image: 'quay.io/kiegroup/process-quarkus-example:latest'
+  serviceAccount: default
+  volumes:
+  - name: kube-api-access-mg9n9
+    projected:
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          name: kube-root-ca.crt
+          items:
+          - key: ca.crt
+            path: ca.crt
+      - downwardAPI:
+          items:
+          - path: namespace
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+      - configMap:
+          name: openshift-service-ca.crt
+          items:
+          - key: service-ca.crt
+            path: service-ca.crt
+      defaultMode: 420
+  dnsPolicy: ClusterFirst
+  tolerations:
+  - key: node.kubernetes.io/not-ready
+    operator: Exists
+    effect: NoExecute
+    tolerationSeconds: 300
+  - key: node.kubernetes.io/unreachable
+    operator: Exists
+    effect: NoExecute
+    tolerationSeconds: 300
+status:
+  phase: Running
+  conditions:
+  - type: Initialized
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-22T17:30:11Z'
+  - type: Ready
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-22T17:30:30Z'
+  - type: ContainersReady
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-22T17:30:30Z'
+  - type: PodScheduled
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-22T17:30:11Z'
+  hostIP: 10.240.0.25
+  podIP: 172.17.25.190
+  podIPs:
+  - ip: 172.17.25.190
+  startTime: '2022-08-22T17:30:11Z'
+  containerStatuses:
+  - restartCount: 0
+    started: true
+    ready: true
+    name: example-dc-no-service
+    state:
+      running:
+        startedAt: '2022-08-22T17:30:29Z'
+    image: 'quay.io/kiegroup/process-quarkus-example:latest'
+  qosClass: BestEffort

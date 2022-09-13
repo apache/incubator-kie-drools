@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: process-quarkus-example-pod-no-service
+  labels:
+    appname: process-quarkus-example-pod-no-service
+spec:
+  containers:
+  - name: process-quarkus-example-pod-no-service
+    image: quay.io/kiegroup/process-quarkus-example:latest
+    imagePullPolicy: Never
+    ports:
+    - name: http
+      containerPort: 8080
+      protocol: TCP
+status:
+  phase: Running
+  conditions:
+  - type: Initialized
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-17T17:37:56Z'
+  - type: Ready
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-17T17:37:58Z'
+  - type: ContainersReady
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-17T17:37:58Z'
+  - type: PodScheduled
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-17T17:37:56Z'
+  hostIP: 192.168.49.2
+  podIP: 172.17.0.21
+  podIPs:
+  - ip: 172.17.0.21
+  startTime: '2022-08-17T17:37:56Z'
+  containerStatuses:
+  - name: process-quarkus-example-pod-clusterip
+    state:
+      running:
+        startedAt: '2022-08-17T17:37:58Z'
+    lastState: {}
+    ready: true
+    restartCount: 0
+    image: quay.io/kiegroup/process-quarkus-example:latest
+    started: true

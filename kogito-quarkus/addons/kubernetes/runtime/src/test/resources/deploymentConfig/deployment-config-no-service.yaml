@@ -1,0 +1,49 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: example-dc-no-service
+  labels:
+    app: example-dc-no-service
+spec:
+  replicas: 1
+  selector:
+    app: example-dc-no-service
+  template:
+    metadata:
+      labels:
+        app: example-dc-no-service
+    spec:
+      containers:
+      - name: example-dc-no-service
+        image: quay.io/kiegroup/process-quarkus-example:latest
+        ports:
+        - containerPort: 8080
+          name: web
+        - containerPort: 8009
+          name: another-http
+status:
+  observedGeneration: 1
+  details:
+    message: config change
+    causes:
+    - type: ConfigChange
+  availableReplicas: 1
+  unavailableReplicas: 0
+  latestVersion: 1
+  updatedReplicas: 1
+  conditions:
+  - type: Available
+    status: 'True'
+    lastUpdateTime: '2022-08-22T17:30:30Z'
+    lastTransitionTime: '2022-08-22T17:30:30Z'
+    message: Deployment config has minimum availability.
+  - type: Progressing
+    status: 'True'
+    lastUpdateTime: '2022-08-22T17:30:34Z'
+    lastTransitionTime: '2022-08-22T17:30:34Z'
+    reason: NewReplicationControllerAvailable
+    message: >-
+      replication controller "example-dc-with-service-1" successfully rolled
+      out
+  replicas: 1
+  readyReplicas: 1

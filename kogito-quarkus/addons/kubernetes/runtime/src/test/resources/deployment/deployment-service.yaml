@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-deployment-with-service
+  labels:
+    app: example-deployment-with-service
+spec:
+  ports:
+  - port: 80
+    name: web
+    targetPort: http
+  - port: 8009
+    name: another
+    targetPort: another-http
+  type: ClusterIP
+  clusterIP: 10.10.10.11
+  selector:
+    app: example-deployment-with-service

@@ -1,0 +1,48 @@
+kind: ReplicaSet
+apiVersion: apps/v1
+metadata:
+  name: example-deployment-no-service-585b54b56f
+  labels:
+    app: example-deployment-no-service
+    pod-template-hash: 585b54b56f
+  ownerReferences:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: example-deployment-no-service
+    uid: d10495f2-c54f-444d-ba1c-cb93f4ceba8a
+    controller: true
+    blockOwnerDeletion: true
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-deployment-no-service
+      pod-template-hash: 585b54b56f
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: example-deployment-no-service
+        pod-template-hash: 585b54b56f
+    spec:
+      containers:
+      - name: example-deployment-no-service
+        image: quay.io/kiegroup/process-quarkus-example:latest
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+status:
+  replicas: 1
+  fullyLabeledReplicas: 1
+  readyReplicas: 1
+  availableReplicas: 1
+  observedGeneration: 1

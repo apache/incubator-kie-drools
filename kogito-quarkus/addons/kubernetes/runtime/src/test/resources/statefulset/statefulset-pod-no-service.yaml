@@ -1,0 +1,112 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: example-statefulset-without-service-0
+  generateName: example-statefulset-without-service-
+  namespace: serverless-workflow-greeting-quarkus
+  uid: 86c36d5c-4e40-4a96-bc01-af88a214bc34
+  resourceVersion: '544908'
+  creationTimestamp: '2022-08-18T17:15:15Z'
+  labels:
+    app: example-statefulset-without-service
+    controller-revision-hash: example-statefulset-without-service-574794d487
+    statefulset.kubernetes.io/pod-name: example-statefulset-without-service-0
+  ownerReferences:
+  - apiVersion: apps/v1
+    kind: StatefulSet
+    name: example-statefulset-without-service
+    uid: 9e0e1f70-09ff-4475-9d1e-d7cfac90c19a
+    controller: true
+    blockOwnerDeletion: true
+spec:
+  volumes:
+  - name: kube-api-access-2thqr
+    projected:
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          name: kube-root-ca.crt
+          items:
+          - key: ca.crt
+            path: ca.crt
+      - downwardAPI:
+          items:
+          - path: namespace
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+      defaultMode: 420
+  containers:
+  - name: example-statefulset-without-service
+    image: quay.io/kiegroup/process-quarkus-example:latest
+    ports:
+    - name: http
+      containerPort: 8080
+      protocol: TCP
+    resources: {}
+    volumeMounts:
+    - name: kube-api-access-2thqr
+      readOnly: true
+      mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    imagePullPolicy: IfNotPresent
+  restartPolicy: Always
+  terminationGracePeriodSeconds: 30
+  dnsPolicy: ClusterFirst
+  serviceAccountName: default
+  serviceAccount: default
+  nodeName: knative
+  securityContext: {}
+  hostname: example-statefulset-without-service-0
+  subdomain: example-statefulset-without-service
+  schedulerName: default-scheduler
+  tolerations:
+  - key: node.kubernetes.io/not-ready
+    operator: Exists
+    effect: NoExecute
+    tolerationSeconds: 300
+  - key: node.kubernetes.io/unreachable
+    operator: Exists
+    effect: NoExecute
+    tolerationSeconds: 300
+  priority: 0
+  enableServiceLinks: true
+  preemptionPolicy: PreemptLowerPriority
+status:
+  phase: Running
+  conditions:
+  - type: Initialized
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-18T17:15:15Z'
+  - type: Ready
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-18T17:15:18Z'
+  - type: ContainersReady
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-18T17:15:18Z'
+  - type: PodScheduled
+    status: 'True'
+    lastProbeTime: null
+    lastTransitionTime: '2022-08-18T17:15:15Z'
+  hostIP: 192.168.49.2
+  podIP: 172.17.0.11
+  podIPs:
+  - ip: 172.17.0.11
+  startTime: '2022-08-18T17:15:15Z'
+  containerStatuses:
+  - name: example-statefulset-without-service
+    state:
+      running:
+        startedAt: '2022-08-18T17:15:17Z'
+    lastState: {}
+    ready: true
+    restartCount: 0
+    image: quay.io/kiegroup/process-quarkus-example:latest
+    started: true
+  qosClass: BestEffort

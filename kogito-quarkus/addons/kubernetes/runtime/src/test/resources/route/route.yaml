@@ -1,0 +1,28 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: test-route
+  labels:
+    app: example-dc-with-service
+spec:
+  host: >-
+    test-route.org
+  to:
+    kind: Service
+    name: example-dc-with-service
+    weight: 100
+  port:
+    targetPort: web
+  wildcardPolicy: None
+status:
+  ingress:
+  - host: >-
+      test-route.org
+    routerName: default
+    conditions:
+    - type: Admitted
+      status: 'True'
+      lastTransitionTime: '2022-08-22T18:14:25Z'
+    wildcardPolicy: None
+    routerCanonicalHostname: >-
+      test-route.org

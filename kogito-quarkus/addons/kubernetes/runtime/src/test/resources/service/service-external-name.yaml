@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: process-quarkus-example-pod
+  labels:
+    app: process-quarkus-example-pod
+spec:
+  ports:
+  - port: 80
+    name: web
+    targetPort: http
+  type: ExternalName
+  externalName: my-public.domain.org
+  selector:
+    app: process-quarkus-example-pod

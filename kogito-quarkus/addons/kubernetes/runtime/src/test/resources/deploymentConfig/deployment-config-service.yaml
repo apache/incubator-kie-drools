@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-dc-with-service-svc
+  labels:
+    app: example-dc-with-service
+spec:
+  ports:
+  - port: 80
+    name: web
+    targetPort: http
+  - port: 8009
+    name: another
+    targetPort: another-http
+  type: ClusterIP
+  clusterIP: 10.10.10.12
+  selector:
+    app: example-dc-with-service

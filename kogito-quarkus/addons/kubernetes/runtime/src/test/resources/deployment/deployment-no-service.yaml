@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-deployment-no-service
+  uid: d10495f2-c54f-444d-ba1c-cb93f4ceba8a
+  labels:
+    app: example-deployment-no-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-deployment-no-service
+  template:
+    metadata:
+      labels:
+        app: example-deployment-no-service
+    spec:
+      containers:
+      - name: example-deployment-no-service
+        image: quay.io/kiegroup/process-quarkus-example:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+status:
+  observedGeneration: 1
+  replicas: 1
+  updatedReplicas: 1
+  readyReplicas: 1
+  availableReplicas: 1
+  conditions:
+  - type: Available
+    status: 'True'
+    lastUpdateTime: '2022-08-18T13:15:57Z'
+    lastTransitionTime: '2022-08-18T13:15:57Z'
+    reason: MinimumReplicasAvailable
+    message: Deployment has minimum availability.
+  - type: Progressing
+    status: 'True'
+    lastUpdateTime: '2022-08-18T13:15:57Z'
+    lastTransitionTime: '2022-08-18T13:15:53Z'
+    reason: NewReplicaSetAvailable
+    message: >-
+      ReplicaSet "example-deployment-no-service-585b54b56f" has successfully
+      progressed.

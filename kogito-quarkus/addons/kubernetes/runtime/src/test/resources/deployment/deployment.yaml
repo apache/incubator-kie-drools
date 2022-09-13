@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-deployment-with-service
+  labels:
+    app: example-deployment-with-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-deployment-with-service
+  template:
+    metadata:
+      labels:
+        app: example-deployment-with-service
+    spec:
+      containers:
+      - name: example-deployment-with-service
+        image: quay.io/kiegroup/process-quarkus-example:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 8009
+          name: another-http

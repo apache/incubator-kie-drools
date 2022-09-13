@@ -23,6 +23,7 @@
     <module>process-management</module>
     <module>source-files</module>
     <module>knative</module>
+    <module>kubernetes</module>
   </modules>
 
   <profiles>
@@ -41,7 +42,6 @@
         <module>jobs</module>
         <module>mail</module>
         <module>tracing</module>
-        <module>kubernetes</module>
         <module>task-management</module>
       </modules>
     </profile>

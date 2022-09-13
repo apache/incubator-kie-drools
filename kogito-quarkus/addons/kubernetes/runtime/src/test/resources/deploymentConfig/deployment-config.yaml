@@ -1,0 +1,23 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: example-dc-with-service
+  labels:
+    app: example-dc-with-service
+spec:
+  replicas: 1
+  selector:
+    app: example-dc-with-service
+  template:
+    metadata:
+      labels:
+        app: example-dc-with-service
+    spec:
+      containers:
+      - name: example-dc-with-service
+        image: quay.io/kiegroup/process-quarkus-example:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 8009
+          name: another-http

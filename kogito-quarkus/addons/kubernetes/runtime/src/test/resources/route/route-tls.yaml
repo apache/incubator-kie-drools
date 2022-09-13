@@ -1,0 +1,47 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  annotations:
+    description: Route for KIE server's https service.
+    haproxy.router.openshift.io/balance: source
+    haproxy.router.openshift.io/timeout: 60s
+    openshift.io/host.generated: 'true'
+  resourceVersion: '1127604768'
+  name: test-route-tls
+  uid: d7a1beae-13ec-44fe-93d6-ea357d87bc0a
+  ownerReferences:
+  - apiVersion: app.kiegroup.org/v2
+    kind: KieApp
+    name: test-tls
+    uid: 5f86c7fb-e521-48ad-9286-9209e992645d
+    controller: true
+    blockOwnerDeletion: true
+  labels:
+    app: test-tls
+    application: test-tls
+    service: test-route-tls
+spec:
+  host: >-
+    secure-test-route-tls
+  to:
+    kind: Service
+    name: test-service-tls
+    weight: 100
+  port:
+    targetPort: https
+  tls:
+    termination: passthrough
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+status:
+  ingress:
+  - host: >-
+      secure-test-route-tls
+    routerName: default
+    conditions:
+    - type: Admitted
+      status: 'True'
+      lastTransitionTime: '2022-08-22T18:26:43Z'
+    wildcardPolicy: None
+    routerCanonicalHostname: >-
+      secure-test-route-tls
