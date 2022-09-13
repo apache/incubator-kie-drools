@@ -77,7 +77,7 @@
     <!-- DROOLS-6678: only used by kie-util-maven-support and kie-util-maven-integration -->
     <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.4.15</version.org.apache.httpcomponents.httpcore>
-    <version.org.apache.maven>3.8.4</version.org.apache.maven>
+    <version.org.apache.maven>3.8.6</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
     <version.org.apache.maven.wagon>3.5.1</version.org.apache.maven.wagon>
     <version.org.apache.poi>5.1.0</version.org.apache.poi>
