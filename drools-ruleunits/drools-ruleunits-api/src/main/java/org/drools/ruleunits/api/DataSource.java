@@ -15,15 +15,9 @@
  */
 package org.drools.ruleunits.api;
 
-import java.util.Iterator;
-
 import org.kie.api.internal.utils.KieService;
 
-public interface DataSource<T> extends Iterable<T> {
-
-    default Iterator<T> iterator() {
-        throw new UnsupportedOperationException();
-    }
+public interface DataSource<T> {
 
     void subscribe(DataProcessor<T> subscriber);
 
