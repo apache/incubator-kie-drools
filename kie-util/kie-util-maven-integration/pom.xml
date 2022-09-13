@@ -17,6 +17,16 @@
     <java.module.name>org.kie.util.maven.integration</java.module.name>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${version.org.apache.httpcomponents.httpcore}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

@@ -51,6 +51,18 @@
           </exclusion>
         </exclusions>
       </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-gwt</artifactId>
+        <version>${version.com.google.guava}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>jakarta.ejb</groupId>
+        <artifactId>jakarta.ejb-api</artifactId>
+        <version>${version.jakarta.ejb-api}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

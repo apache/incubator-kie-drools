@@ -59,6 +59,16 @@
     </plugins>
   </build>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.weld.se</groupId>
+        <artifactId>weld-se-core</artifactId>
+        <version>${version.org.jboss.weld.weld}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
@@ -197,11 +207,39 @@
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.el</groupId>
+          <artifactId>jboss-el-api_3.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.ws.rs</groupId>
+          <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.el</groupId>
+          <artifactId>jboss-el-api_3.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+          <artifactId>jboss-annotations-api_1.3_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.interceptor</groupId>
+          <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>jsr250-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>

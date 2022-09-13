@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarInputStream;
 
-import com.google.common.collect.TreeMultimap;
-import org.drools.util.ClassTypeResolver;
 import org.drools.mvel.asm.ClassFieldInspectorImpl;
+import org.drools.util.ClassTypeResolver;
+import org.drools.verifier.misc.Multimap;
 
 public class PackageHeaderLoader {
 
@@ -37,7 +37,7 @@ public class PackageHeaderLoader {
 
     private Map<String, String> fieldTypesByClassAndFieldNames = new HashMap<>();
 
-    private TreeMultimap<String, String> fieldsByClassNames = TreeMultimap.create();
+    private Multimap<String, String> fieldsByClassNames = new Multimap<>();
     private List<String> missingClasses = new ArrayList<>();
 
     public PackageHeaderLoader(Collection<String> imports, List<JarInputStream> jarInputStreams) throws IOException {

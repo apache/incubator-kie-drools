@@ -18,6 +18,23 @@
     <java.module.name>org.kie.testutil</java.module.name>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-dbcp</artifactId>
+        <version>${version.org.apache.tomcat.tomcat-dbcp}</version>
+      </dependency>
+
+      <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
+      <dependency>
+        <groupId>simple-jndi</groupId>
+        <artifactId>simple-jndi</artifactId>
+        <version>${version.simple-jndi}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- IMPORTANT! Do not add any drools/jbpm/kie dependencies here. -->
     <!-- This is meant to be a lightweight test utility artifact. -->

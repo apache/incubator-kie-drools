@@ -25,7 +25,6 @@ import java.util.Map;
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 
-import com.google.common.collect.Lists;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;

@@ -20,11 +20,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
-
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
+import org.drools.verifier.misc.Multimap;
 
 public class ObjectType extends VerifierComponent<BaseDescr>
     implements
@@ -40,7 +38,7 @@ public class ObjectType extends VerifierComponent<BaseDescr>
     private Set<Field>          fields           = new HashSet<>();
 
 
-    private Multimap<String, String> metadata         = TreeMultimap.create();
+    private Multimap<String, String> metadata         = new Multimap<>();
 
     
     public ObjectType(BaseDescr descr) {

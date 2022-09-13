@@ -18,6 +18,16 @@
     <java.module.name>org.drools.verifier</java.module.name>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.lowagie</groupId>
+        <artifactId>itext</artifactId>
+        <version>${version.com.lowagie.itext}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -45,20 +55,33 @@
       <artifactId>drools-mvel</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.lowagie</groupId>
-      <artifactId>itext</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.mvel</groupId>
       <artifactId>mvel2</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>com.lowagie</groupId>
+      <artifactId>itext</artifactId>
+      <exclusions>
+        <!-- The bouncycastle dependencies should be optional=true in itext's pom -->
+        <exclusion>
+          <groupId>bouncycastle</groupId>
+          <artifactId>bcmail-jdk14</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>bouncycastle</groupId>
+          <artifactId>bcprov-jdk14</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>bouncycastle</groupId>
+          <artifactId>bctsp-jdk14</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

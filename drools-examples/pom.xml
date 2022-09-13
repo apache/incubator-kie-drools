@@ -60,6 +60,16 @@
     </plugins>
   </build>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.miglayout</groupId>
+        <artifactId>miglayout</artifactId>
+        <version>${version.com.miglayout}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -114,9 +124,10 @@
       drools-distribution/src/main/assembly/assembly-drools.xml
     -->
     <dependency>
-       <groupId>com.miglayout</groupId>
-       <artifactId>miglayout</artifactId>
+      <groupId>com.miglayout</groupId>
+      <artifactId>miglayout</artifactId>
     </dependency>
+
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -126,16 +137,12 @@
       <artifactId>logback-classic</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-xml-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
   </dependencies>
 
