@@ -23,7 +23,7 @@
       <dependency>
         <groupId>com.lowagie</groupId>
         <artifactId>itext</artifactId>
-        <version>2.1.7</version>
+        <version>${version.com.lowagie.itext}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

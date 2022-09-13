@@ -61,7 +61,7 @@
       <dependency>
         <groupId>jakarta.ejb</groupId>
         <artifactId>jakarta.ejb-api</artifactId>
-        <version>3.2.6</version>
+        <version>${version.jakarta.ejb-api}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

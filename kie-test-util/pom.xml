@@ -23,14 +23,14 @@
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-dbcp</artifactId>
-        <version>9.0.21</version>
+        <version>${version.org.apache.tomcat.tomcat-dbcp}</version>
       </dependency>
 
       <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
       <dependency>
         <groupId>simple-jndi</groupId>
         <artifactId>simple-jndi</artifactId>
-        <version>0.11.4.1</version>
+        <version>${version.simple-jndi}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
