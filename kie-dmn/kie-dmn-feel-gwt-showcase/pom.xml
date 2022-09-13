@@ -55,7 +55,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava-gwt</artifactId>
-        <version>30.1.1-jre</version>
+        <version>${version.com.google.guava}</version>
       </dependency>
 
       <dependency>
