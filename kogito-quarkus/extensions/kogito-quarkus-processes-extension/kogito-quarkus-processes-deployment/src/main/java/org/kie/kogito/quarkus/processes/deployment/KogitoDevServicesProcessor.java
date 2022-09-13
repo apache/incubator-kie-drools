@@ -219,7 +219,7 @@ public class KogitoDevServicesProcessor {
             try {
 
                 DataIndexInMemoryContainer container = new DataIndexInMemoryContainer(
-                        DockerImageName.parse(config.imageName),
+                        config.imageName,
                         config.fixedExposedPort,
                         launchMode.getLaunchMode() == LaunchMode.DEVELOPMENT ? config.serviceName : null,
                         useSharedNetwork);
@@ -264,8 +264,9 @@ public class KogitoDevServicesProcessor {
 
     private static final class DataIndexDevServiceConfig {
 
+        private static final String PLACEHOLDER = "{placeholder}";
         private final boolean devServicesEnabled;
-        private final String imageName;
+        private final DockerImageName imageName;
         private final Integer fixedExposedPort;
         private final boolean shared;
         private final String serviceName;
@@ -273,7 +274,15 @@ public class KogitoDevServicesProcessor {
         public DataIndexDevServiceConfig(KogitoDevServicesBuildTimeConfig config) {
             this.devServicesEnabled = config.enabled.orElse(true);
             //TODO Revert to ConfigureUtil.getDefaultImageNameFor
-            this.imageName = config.imageName.orElseGet(() -> getDefaultImageNameFor("data-index") + ":" + getDataIndexImageVersion());
+            this.imageName = config.imageName.map(DockerImageName::parse).orElseGet(() -> {
+                String defaultImageName = getDefaultImageNameFor("data-index");
+                DockerImageName dockerImageName = DockerImageName.parse(defaultImageName);
+                if (PLACEHOLDER.equals(dockerImageName.getVersionPart())) {
+                    dockerImageName = DockerImageName.parse(dockerImageName.getUnversionedPart() + ":" + getDataIndexImageVersion());
+                }
+                return dockerImageName;
+            });
+            this.imageName.assertValid();
             this.fixedExposedPort = config.port.orElse(0);
             this.shared = config.shared;
             this.serviceName = config.serviceName;

@@ -13,7 +13,7 @@
   <name>Kogito :: Quarkus Processes Extension :: Deployment</name>
 
   <properties>
-    <data-index-ephemeral.image>quay.io/kiegroup/kogito-data-index-ephemeral</data-index-ephemeral.image>
+    <data-index-ephemeral.image>quay.io/kiegroup/kogito-data-index-ephemeral:{placeholder}</data-index-ephemeral.image>
   </properties>
 
   <dependencies>
@@ -102,7 +102,7 @@
         </property>
       </activation>
       <properties>
-        <data-index-ephemeral.image>registry.redhat.io/openshift-serverless-1-tech-preview/logic-data-index-ephemeral-rhel8</data-index-ephemeral.image>
+        <data-index-ephemeral.image>registry.redhat.io/openshift-serverless-1-tech-preview/logic-data-index-ephemeral-rhel8:1.25</data-index-ephemeral.image>
       </properties>
     </profile>
   </profiles>
