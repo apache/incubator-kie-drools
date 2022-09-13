@@ -92,6 +92,7 @@ public class PMMLKogito {
     }
 
     private static PMMLRuntime getPMMLRuntimeAlreadyCompiled() {
+
         return new PMMLRuntimeInternalImpl();
     }
 

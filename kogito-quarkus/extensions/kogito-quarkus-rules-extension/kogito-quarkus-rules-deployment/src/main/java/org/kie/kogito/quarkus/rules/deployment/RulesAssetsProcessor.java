@@ -39,10 +39,10 @@ public class RulesAssetsProcessor {
 
     @BuildStep
     public List<ReflectiveClassBuildItem> reflectiveEfestoRules() {
-        LOGGER.info("reflectiveEfestoRules()");
+        LOGGER.debug("reflectiveEfestoRules()");
         final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
         toReturn.add(new ReflectiveClassBuildItem(true, true, KieRuntimeServiceDrlMapInput.class));
-        LOGGER.infof("toReturn {}", toReturn.size());
+        LOGGER.debugf("toReturn {}", toReturn.size());
         return toReturn;
     }
 

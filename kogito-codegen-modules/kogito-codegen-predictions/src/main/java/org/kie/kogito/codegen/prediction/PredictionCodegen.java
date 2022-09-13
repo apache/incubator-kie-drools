@@ -35,8 +35,8 @@ import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
-import org.kie.efesto.common.api.model.FRI;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
@@ -81,7 +81,6 @@ public class PredictionCodegen extends AbstractGenerator {
     public static final String DMN_JPMML_CLASS = "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator";
     public static final String GENERATOR_NAME = "predictions";
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictionCodegen.class);
-    private static final GeneratedFileType PMML_TYPE = GeneratedFileType.of("PMML", GeneratedFileType.Category.SOURCE);
     private static final GeneratedFileType INDEX_FILE = GeneratedFileType.of("IndexFile",
             GeneratedFileType.Category.INTERNAL_RESOURCE);
     private static final CompilationManager compilationManager =
@@ -147,7 +146,7 @@ public class PredictionCodegen extends AbstractGenerator {
             List<KiePMMLModel> kiePMMLModels = getKiePMMLModels(compilationContext, indexFile);
             String modelPath = resource.getSourcePath();
             PMMLResource toAdd = new PMMLResource(kiePMMLModels, path, modelPath,
-                    getAllGeneratedClasses(compilationContext));
+                    getExecutableClassesForModel(compilationContext));
             toReturn.add(toAdd);
             indexFiles.addAll(createdIndexFiles);
         });
@@ -169,15 +168,15 @@ public class PredictionCodegen extends AbstractGenerator {
         }));
     }
 
-    private static Map<String, byte[]> getAllGeneratedClasses(PMMLCompilationContext compilationContext) {
+    private static Map<String, byte[]> getExecutableClassesForModel(PMMLCompilationContext compilationContext) {
         Map<String, byte[]> toReturn = new HashMap<>();
         Collection<GeneratedExecutableResource> executableResources =
-                compilationContext.getFRIForFile().stream().map(modelLocalUriId -> getGeneratedExecutableResource(modelLocalUriId, compilationContext.getGeneratedResourcesMap()))
+                compilationContext.getModelLocalUriIdsForFile().stream().map(modelLocalUriId -> getGeneratedExecutableResource(modelLocalUriId, compilationContext.getGeneratedResourcesMap()))
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .collect(toList());
         executableResources.forEach(executableResource -> {
-            toReturn.putAll(compilationContext.getGeneratedClasses(executableResource.getFri()));
+            toReturn.putAll(compilationContext.getGeneratedClasses(executableResource.getModelLocalUriId()));
         });
         return toReturn;
     }
@@ -201,9 +200,9 @@ public class PredictionCodegen extends AbstractGenerator {
     }
 
     private static List<KiePMMLModel> getKiePMMLModels(PMMLCompilationContext compilationContext, IndexFile indexFile) {
-        Set<FRI> friKeySet = getFRIInIndexFile(compilationContext.friKeySet(), indexFile);
-        Collection<GeneratedExecutableResource> executableResources = friKeySet.stream()
-                .map(fri -> getGeneratedExecutableResource(fri, compilationContext.getGeneratedResourcesMap()))
+        Set<ModelLocalUriId> modelLocalUriIds = getModelLocalUriIdInIndexFile(compilationContext.localUriIdKeySet(), indexFile);
+        Collection<GeneratedExecutableResource> executableResources = modelLocalUriIds.stream()
+                .map(modelLocalUriId -> getGeneratedExecutableResource(modelLocalUriId, compilationContext.getGeneratedResourcesMap()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(toSet());
@@ -214,19 +213,18 @@ public class PredictionCodegen extends AbstractGenerator {
                 .collect(toList());
     }
 
-    private static Set<FRI> getFRIInIndexFile(Set<FRI> friKeySet, IndexFile indexFile) {
+    private static Set<ModelLocalUriId> getModelLocalUriIdInIndexFile(Set<ModelLocalUriId> modelLocalUriIds, IndexFile indexFile) {
         try {
             GeneratedResources generatedResources = getGeneratedResourcesObject(indexFile);
-            Set<FRI> toReturn = new HashSet<>();
-            friKeySet.forEach(fri -> {
-                getGeneratedExecutableResource(fri, generatedResources).ifPresent(opt -> toReturn.add(fri));
-                getGeneratedRedirectResource(fri, generatedResources).ifPresent(opt -> toReturn.add(fri));
+            Set<ModelLocalUriId> toReturn = new HashSet<>();
+            modelLocalUriIds.forEach(modelLocalUriId -> {
+                getGeneratedExecutableResource(modelLocalUriId, generatedResources).ifPresent(opt -> toReturn.add(modelLocalUriId));
+                getGeneratedRedirectResource(modelLocalUriId, generatedResources).ifPresent(opt -> toReturn.add(modelLocalUriId));
             });
             return toReturn;
         } catch (Exception e) {
             throw new KiePMMLException("Failed to retrieve GeneratedResources from " + indexFile);
         }
-
     }
 
     @Override
