@@ -24,7 +24,7 @@ You can refer the xref:migration-guide/index.adoc[Migration guide chapter] for m
 
 JDK 11 is now the minimum Java version required to compile Drools and make use of Drools.
 
-Maven `3.8.4` is now the minimum Maven version required to build Drools from source, or using `kie-ci` APIs.
+Maven `3.8.6` is now the minimum Maven version required to build Drools from source, or using `kie-ci` APIs.
 
 === Mvel is deprecated
 
