@@ -1,4 +1,4 @@
-package org.optaplanner.examples.cheaptime.optional.score;
+package org.optaplanner.examples.cheaptime.optional.score.drools;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;

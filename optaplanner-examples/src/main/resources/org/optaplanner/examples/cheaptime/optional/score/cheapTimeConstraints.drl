@@ -13,7 +13,7 @@ import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.score.CheapTimeCostCalculator;
 import org.optaplanner.examples.cheaptime.optional.score.MachinePeriodPart;
-import org.optaplanner.examples.cheaptime.optional.score.IdleCost;
+import org.optaplanner.examples.cheaptime.optional.score.drools.IdleCost;
 
 global HardMediumSoftLongScoreHolder scoreHolder;
 
