@@ -111,7 +111,6 @@
         </property>
       </activation>
       <modules>
-        <module>kie-drl-api</module>
         <module>kie-drl-tests</module>
         <module>kie-drl-tests-without-index-file</module>
       </modules>
