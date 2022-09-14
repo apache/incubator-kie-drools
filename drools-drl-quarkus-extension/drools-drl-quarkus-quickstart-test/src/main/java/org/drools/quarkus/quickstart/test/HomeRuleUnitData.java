@@ -15,6 +15,7 @@
  */
 package org.drools.quarkus.quickstart.test;
 
+import org.drools.quarkus.quickstart.test.model.Alert;
 import org.drools.quarkus.quickstart.test.model.CCTV;
 import org.drools.quarkus.quickstart.test.model.Light;
 import org.drools.quarkus.quickstart.test.model.Smartphone;
@@ -22,19 +23,19 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.RuleUnitData;
 
-public class HomeUnitData implements RuleUnitData {
+public class HomeRuleUnitData implements RuleUnitData {
     
     private final DataStore<Light> lights;
     private final DataStore<CCTV> cctvs;
     private final DataStore<Smartphone> smartphones;
 
-    private final DataStore<String> alerts = DataSource.createStore();
+    private final DataStore<Alert> alerts = DataSource.createStore();
 
-    public HomeUnitData(){
+    public HomeRuleUnitData() {
         this(DataSource.createStore(), DataSource.createStore(), DataSource.createStore());
     }
 
-    public HomeUnitData(DataStore<Light> lights, DataStore<CCTV> cctvs, DataStore<Smartphone> smartphones) {
+    public HomeRuleUnitData(DataStore<Light> lights, DataStore<CCTV> cctvs, DataStore<Smartphone> smartphones) {
 		this.lights = lights;
 		this.cctvs = cctvs;
 		this.smartphones = smartphones;
@@ -52,7 +53,7 @@ public class HomeUnitData implements RuleUnitData {
 		return smartphones;
 	}
 
-	public DataStore<String> getAlerts() {
+	public DataStore<Alert> getAlerts() {
 		return alerts;
 	}
 }
