@@ -2,59 +2,18 @@
 
 https://www.drools.org/docs[www.drools.org/docs]
 
-NOTE: The instructions below are to generate Antora site manually. This drools-docs is already configured to generate Antora site with maven plugins.
-
-== Prerequisite
-
-Running Antora with Lunr extension (required to generate self-hosted search) requires Node.js v16.0.0 or above.
-
-== Installing Antora and Lunr
-
-Install Antora CLI 3.0.0 within the playbook project so you can run the antora command using npx:
-
-`npm i -D -E @antora/cli@3.0.0`
-
-Next, install the site generator package within the playbook project:
-
-`npm i -D -E @antora/site-generator@3.0.0`
-
-Now when you run `npx antora -v`, you should see the version of both the Antora CLI and the site generator printed in the terminal.
-
-```
-@antora/cli: 3.0.0
-@antora/site-generator: 3.0.0
-```
-
-Finally install the Lunr extension with:
-
-`npm i @antora/lunr-extension`
-
-== Building the website locally
-
-This folder contains an antora playbook, `antora-playbook.yml` to generate documentation from the source of your locally installed drools project. You can build the website with `mvn clean install`. To generate the website manually, use:
-
-`npx antora antora-playbook.yml`
-
 == How it works
 
-This module builds a documentation website using contents under `drools-docs`.
+pom.xml is configured to generate Antora documentation website using adoc contents under `src/modules`.
+
+`mvn clean package` does the steps:
+
+1. Create `antora.yml` file based on `antora-template.yml`
+2. install `node`, `npm` and `antora`
+3. Execute antora to generate a documentation website
+
+A start page of the generated site would be `target/website/docs/index.html`.
 
 To simplify the maintenance, the documentation website is based on a pre-built default Antora UI bundle
 located in `ui-bundle/ui-bundle.zip`. Customizations are located in `supplemental-ui` that Antora uses to replace
 parts of the default `ui-bundle.zip`.
-
-== How to upgrade
-
-=== Upgrade UI bundle
-
-Download the latest `ui-bundle.zip` from https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable[Antora GitLab job]
-and replace the existing one in the `ui-bundle` directory.
-
-Be aware that the bundle is not versioned and in the future might not be compatible with the customizations this website uses.
-
-=== Upgrade Lunr search engine
-
-Download the new version of the https://lunrjs.com/[Lunr engine] from the https://www.npmjs.com/package/lunr[NPM registry]
-and replace the existing `supplemental-ui/js/vendor/lunr-*.min.js` file.
-
-Make sure the search box in the top-right corner of the documentation website can still provide hints.
