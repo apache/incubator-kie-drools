@@ -12,10 +12,6 @@ then
     alerts.add(new Alert("You might have forgot one light powered on: " + $l.getName()));
 end
 
-// use of ;
-// use of missing ) in RHS
-// use of space in query name
-
 query "AllAlerts"
 	$a: /alerts;
 end
