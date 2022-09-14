@@ -33,6 +33,7 @@ import org.drools.model.codegen.execmodel.generator.DRLIdGenerator;
 import org.drools.model.codegen.execmodel.generator.declaredtype.POJOGenerator;
 import org.drools.model.codegen.execmodel.processors.DeclaredTypeDeregistrationPhase;
 import org.drools.model.codegen.execmodel.processors.DeclaredTypeRegistrationPhase;
+import org.drools.model.codegen.execmodel.processors.ExecutorModelEntryClassGenerationPhase;
 import org.drools.model.codegen.execmodel.processors.GeneratedPojoCompilationPhase;
 import org.drools.model.codegen.execmodel.processors.ModelGeneratorPhase;
 import org.drools.model.codegen.execmodel.processors.PojoStoragePhase;
@@ -131,6 +132,8 @@ public class ExplicitCanonicalModelCompiler<T extends PackageSources> {
         phases.add(iteratingPhase((reg, acc) -> new ModelGeneratorPhase(reg, acc, packageModelManager.getPackageModel(acc, reg, acc.getName()), typeDeclarationContext))); // validateUniqueRuleNames
         phases.add(iteratingPhase((reg, acc) -> new SourceCodeGenerationPhase<>(
                 packageModelManager.getPackageModel(acc, reg, acc.getName()).setContext(context), packageSourceManager, sourceDumpFunction, oneClassPerRule))); // validateUniqueRuleNames
+        phases.add(iteratingPhase((reg, acc) -> new ExecutorModelEntryClassGenerationPhase<>(
+                packageModelManager.getPackageModel(acc, reg, acc.getName())))); // retrieve the executable model implementing class
 
 
         for (CompilationPhase phase : phases) {

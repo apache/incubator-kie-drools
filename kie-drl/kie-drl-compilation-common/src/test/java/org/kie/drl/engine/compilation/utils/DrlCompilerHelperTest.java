@@ -87,8 +87,8 @@ class DrlCompilerHelperTest {
         ExecutableModelClassesContainer retrieved = (ExecutableModelClassesContainer) toVerify;
         assertThat(retrieved.getModelLocalUriId().model()).isEqualTo("drl");
         assertThat(retrieved.getModelLocalUriId().basePath()).isEqualTo(SLASH + baseBath);
-        assertThat(retrieved.getFullClassNames()).hasSize(2); // magic number due to compiled resources
-        assertThat(retrieved.getCompiledClassesMap()).hasSize(12); // magic number due to compiled resources
+        assertThat(retrieved.getFullClassNames()).hasSize(3); // magic number due to compiled resources
+        assertThat(retrieved.getCompiledClassesMap()).hasSize(45); // magic number due to compiled resources
     }
 
 }

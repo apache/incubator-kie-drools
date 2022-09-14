@@ -33,6 +33,7 @@ import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.model.codegen.execmodel.GeneratedFile;
+import org.drools.model.codegen.execmodel.processors.ExecutorModelEntryClassGenerationPhase;
 import org.drools.model.codegen.project.KogitoPackageSources;
 import org.drools.model.codegen.project.RuleCodegenError;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
@@ -96,11 +97,13 @@ public class DrlCompilerHelper {
         Collection<KogitoPackageSources> packageSources = compiler.getPackageSources();
 
         List<GeneratedFile> modelFiles = new ArrayList<>();
-        List<String> generatedRulesModels = new ArrayList<>();
+        List<String> generatedRulesModels = buildResults.getAllResults().stream()
+                .filter(result -> result instanceof ExecutorModelEntryClassGenerationPhase.ExecutorModelEntryClassResult)
+                .map(KnowledgeBuilderResult::getMessage)
+                .collect(Collectors.toList());
 
         for (KogitoPackageSources pkgSources : packageSources) {
             pkgSources.collectGeneratedFiles(modelFiles);
-            generatedRulesModels.add(pkgSources.getPackageName() + "." + pkgSources.getRulesFileName());
         }
 
         Map<String, String> sourceCode = modelFiles.stream()
