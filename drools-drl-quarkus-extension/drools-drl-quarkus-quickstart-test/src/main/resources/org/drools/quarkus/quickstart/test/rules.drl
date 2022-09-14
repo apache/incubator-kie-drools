@@ -1,0 +1,22 @@
+package org.drools.quarkus.quickstart.test;
+
+unit HomeUnitData;
+
+import org.drools.quarkus.quickstart.test.model.*;
+
+rule "No lights on while outside"
+when
+    $l: /lights[ powered == true ];
+    not( /smartphones )
+then
+	System.out.println($l);
+    alerts.add(new Alert("You might forgot a light powered on: " + $l.getName()));
+end
+
+// use of ;
+// use of missing ) in RHS
+// use of space in query name
+
+query "AllAlerts"
+	$a: /alerts
+end
