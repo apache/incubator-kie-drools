@@ -1,0 +1,44 @@
+:DROOLS:
+include::../_artifacts/document-attributes.adoc[]
+
+[[release.notes]]
+:context: release-notes
+
+[id='{context}']
+= Release Notes
+
+This chapter contains the release notes for the {PRODUCT} 8-series.
+
+For the release notes of the _previous releases_, you can refer to the {PRODUCT} documentation of link:https://docs.drools.org/7.73.0.Final/drools-docs/html_single/index.html#droolsreleasenoteschapter[version 7]. 
+
+== Drools 8-series release notes
+
+Drools 8-series is a natural evolution of the 7.x-stream, incorporating many features and lessons learned integrating with Kogito and many cloud-native use cases.
+
+=== Rule Unit
+
+Rule Unit is a central paradigm in the Drools 8-series.
+You can refer the xref:migration-guide/index.adoc[Migration guide chapter] for more information about Rule Unit.
+
+=== Minimum requirements update
+
+JDK 11 is now the minimum Java version required to compile Drools and make use of Drools.
+
+Maven `3.8.6` is now the minimum Maven version required to build Drools from source, or using `kie-ci` APIs.
+
+=== `drools-mvel` and `drools-engine-classic` are deprecated
+
+`drools-mvel` is now deprecated in favor of the executable model. It also means `drools-engine` is recommended instead of deprecated `drools-engine-classic` that contains `drools-mvel`. You can still use MVEL syntax in your rules, so it doesn't affect how to write rules.
+
+=== Security Manager deprecation
+
+The {PRODUCT} features related to the JDK Security Manager will not be further developed, as starting with JDK17, the Java Platform has deprecated the Security Manager for removal.
+You can refer the xref:KIE/index.adoc#_securitymanager[Security Manager chapter] for more information.
+
+=== KIE Marshallers notice
+
+The `KieMarshallers` are still present and working as expected on the release of the Drools 8-series, however we are currently exploring alternative solutions more idiomatic to cloud-native use cases.
+
+== Previous release notes
+
+For the release notes of the previous releases, you can refer the {PRODUCT} documentation of link:https://docs.drools.org/7.73.0.Final/drools-docs/html_single/index.html#droolsreleasenoteschapter[version 7]. 
