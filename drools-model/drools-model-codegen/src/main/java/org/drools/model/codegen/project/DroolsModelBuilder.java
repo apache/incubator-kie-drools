@@ -50,7 +50,7 @@ import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourc
 public class DroolsModelBuilder {
     public static final ReleaseIdImpl DUMMY_RELEASE_ID = new ReleaseIdImpl("dummy:dummy:0.0.0");
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsModelBuilder.class);
-    private Collection<KogitoPackageSources> kogitoPackageSources;
+    private Collection<CodegenPackageSources> codegenPackageSources;
 
     private final Collection<Resource> resources;
     private final boolean decisionTableSupported;
@@ -65,7 +65,7 @@ public class DroolsModelBuilder {
         checkDependencyTableSupport();
     }
 
-    void build() {
+    public void build() {
 
         DrlResourceHandler drlResourceHandler =
                 new DrlResourceHandler(knowledgeBuilderConfiguration);
@@ -86,11 +86,11 @@ public class DroolsModelBuilder {
             }
         }
 
-        ExplicitCanonicalModelCompiler<KogitoPackageSources> compiler =
+        ExplicitCanonicalModelCompiler<CodegenPackageSources> compiler =
                 ExplicitCanonicalModelCompiler.of(
                 packages.values(),
                 knowledgeBuilderConfiguration,
-                KogitoPackageSources::dumpSources).setContext(context);
+                CodegenPackageSources::dumpSources).setContext(context);
 
         compiler.process();
         BuildResultCollector buildResults = compiler.getBuildResults();
@@ -102,11 +102,11 @@ public class DroolsModelBuilder {
             throw new RuleCodegenError(buildResults.getAllResults());
         }
 
-        this.kogitoPackageSources = compiler.getPackageSources();
+        this.codegenPackageSources = compiler.getPackageSources();
     }
 
     public boolean hasRuleUnits() {
-        return kogitoPackageSources.stream().anyMatch(pkg -> !pkg.getRuleUnits().isEmpty());
+        return codegenPackageSources.stream().anyMatch(pkg -> !pkg.getRuleUnits().isEmpty());
     }
 
     private void handleDtable(DecisionTableResourceHandler decisionTableHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException {
@@ -127,7 +127,7 @@ public class DroolsModelBuilder {
         List<GeneratedFile> modelFiles = new ArrayList<>();
         List<org.drools.model.codegen.execmodel.GeneratedFile> legacyModelFiles = new ArrayList<>();
 
-        for (KogitoPackageSources pkgSources : this.kogitoPackageSources) {
+        for (CodegenPackageSources pkgSources : this.codegenPackageSources) {
             pkgSources.collectGeneratedFiles(legacyModelFiles);
             modelFiles.addAll(generateInternalResource(pkgSources));
         }
@@ -136,8 +136,8 @@ public class DroolsModelBuilder {
         return modelFiles;
     }
 
-    Collection<KogitoPackageSources> packageSources() {
-        return this.kogitoPackageSources;
+    public Collection<CodegenPackageSources> packageSources() {
+        return this.codegenPackageSources;
     }
 
     private void checkDependencyTableSupport() {
@@ -147,7 +147,7 @@ public class DroolsModelBuilder {
         }
     }
 
-    private List<GeneratedFile> generateInternalResource(KogitoPackageSources pkgSources) {
+    private List<GeneratedFile> generateInternalResource(CodegenPackageSources pkgSources) {
         List<GeneratedFile> modelFiles = new ArrayList<>();
         org.drools.model.codegen.execmodel.GeneratedFile reflectConfigSource = pkgSources.getReflectConfigSource();
         if (reflectConfigSource != null) {

@@ -51,8 +51,6 @@ public class RuleUnitWriter {
     private final PackageModel.RuleSourceResult ruleSourceResult;
     private final PackageModel pkgModel;
 
-    private final String uuid = "" + Math.abs( UUID.randomUUID().getLeastSignificantBits() );
-
     public RuleUnitWriter(PackageModel pkgModel, PackageModel.RuleSourceResult ruleSourceResult, RuleUnitDescription ruleUnitDescr) {
         this.pkgModel = pkgModel;
         this.ruleSourceResult = ruleSourceResult;
@@ -76,11 +74,11 @@ public class RuleUnitWriter {
     }
 
     private String getRuleUnitSimpleClassName() {
-        return ruleUnitDescr.getSimpleName() + "RuleUnit" + uuid;
+        return ruleUnitDescr.getSimpleName() + "RuleUnit";
     }
 
     private String getRuleUnitInstanceSimpleClassName() {
-        return ruleUnitDescr.getSimpleName() + "RuleUnitInstance" + uuid;
+        return ruleUnitDescr.getSimpleName() + "RuleUnitInstance";
     }
 
     public String getUnitSource() {

@@ -39,7 +39,7 @@ public class KieSessionModelBuilder {
     private final Map<String, List<String>> modelByKBase;
     private DroolsModelBuildContext context;
 
-    public KieSessionModelBuilder(DroolsModelBuildContext context, Collection<KogitoPackageSources> packageSources) {
+    public KieSessionModelBuilder(DroolsModelBuildContext context, Collection<CodegenPackageSources> packageSources) {
         this.context = context;
         this.kieBaseModels = KieModuleModelWrapper.fromResourcePaths(context.getAppPaths().getResourcePaths()).kieBaseModels();
         this.modelByKBase = getModelByKBase(packageSources, this.kieBaseModels);
@@ -60,7 +60,7 @@ public class KieSessionModelBuilder {
 
     }
 
-    private Map<String, List<String>> getModelByKBase(Collection<KogitoPackageSources> packageSources, Map<String, KieBaseModel> kieBaseModels) {
+    private Map<String, List<String>> getModelByKBase(Collection<CodegenPackageSources> packageSources, Map<String, KieBaseModel> kieBaseModels) {
         Map<String, String> modelsByPackage = getModelsByPackage(packageSources);
         Map<String, List<String>> modelsByKBase = new HashMap<>();
         for (Map.Entry<String, KieBaseModel> entry : kieBaseModels.entrySet()) {
@@ -72,9 +72,9 @@ public class KieSessionModelBuilder {
         return modelsByKBase;
     }
 
-    private Map<String, String> getModelsByPackage(Collection<KogitoPackageSources> packageSources) {
+    private Map<String, String> getModelsByPackage(Collection<CodegenPackageSources> packageSources) {
         Map<String, String> modelsByPackage = new HashMap<>();
-        for (KogitoPackageSources pkgSources : packageSources) {
+        for (CodegenPackageSources pkgSources : packageSources) {
             modelsByPackage.put(pkgSources.getPackageName(), pkgSources.getPackageName() + "." + pkgSources.getRulesFileName());
         }
         return modelsByPackage;

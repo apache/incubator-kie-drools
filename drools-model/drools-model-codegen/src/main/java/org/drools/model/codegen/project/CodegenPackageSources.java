@@ -21,20 +21,22 @@ import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.PackageModelWriter;
 import org.drools.model.codegen.execmodel.PackageSources;
 import org.drools.model.codegen.execmodel.QueryModel;
+import org.drools.model.codegen.execmodel.RuleUnitWriter;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class KogitoPackageSources extends PackageSources {
+public class CodegenPackageSources extends PackageSources {
 
-    private static final Logger logger = LoggerFactory.getLogger(KogitoPackageSources.class);
+    private static final Logger logger = LoggerFactory.getLogger(CodegenPackageSources.class);
     private static final String REFLECTION_PERMISSIONS =
             "        \"allDeclaredConstructors\": true,\n" +
                     "        \"allPublicConstructors\": true,\n" +
@@ -62,10 +64,15 @@ public class KogitoPackageSources extends PackageSources {
 
     private String pkgName;
 
-    public static KogitoPackageSources dumpSources(PackageModel pkgModel) {
-        KogitoPackageSources sources = dumpPojos(pkgModel);
+    public static CodegenPackageSources dumpSources(PackageModel pkgModel) {
+        CodegenPackageSources sources = dumpPojos(pkgModel);
 
-        PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
+        PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel) {
+            @Override
+            public List<RuleUnitWriter> getRuleUnitWriters() {
+                return Collections.emptyList();
+            }
+        };
 
         PackageSources.writeRules(pkgModel, sources, packageModelWriter);
         sources.rulesFileName = pkgModel.getRulesFileName();
@@ -82,8 +89,8 @@ public class KogitoPackageSources extends PackageSources {
         return sources;
     }
 
-    private static KogitoPackageSources dumpPojos(PackageModel pkgModel) {
-        KogitoPackageSources sources = new KogitoPackageSources();
+    private static CodegenPackageSources dumpPojos(PackageModel pkgModel) {
+        CodegenPackageSources sources = new CodegenPackageSources();
         sources.pkgName = pkgModel.getName();
 
         List<String> pojoClasses = new ArrayList<>();
