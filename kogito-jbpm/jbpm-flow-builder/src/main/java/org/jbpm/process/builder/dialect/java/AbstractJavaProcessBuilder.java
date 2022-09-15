@@ -36,6 +36,8 @@ import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 
+import static org.drools.util.ClassUtils.rawType;
+
 public class AbstractJavaProcessBuilder {
 
     protected static final TemplateRegistry RULE_REGISTRY = new SimpleTemplateRegistry();
@@ -88,7 +90,7 @@ public class AbstractJavaProcessBuilder {
 
         final List globalTypes = new ArrayList(globals.length);
         for (int i = 0, length = globals.length; i < length; i++) {
-            globalTypes.add(context.getPkg().getGlobals().get(globals[i]).getCanonicalName());
+            globalTypes.add(rawType(context.getPkg().getGlobals().get(globals[i])).getCanonicalName());
         }
 
         map.put("globals",

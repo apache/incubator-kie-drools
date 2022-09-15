@@ -145,7 +145,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
 
         try {
             Class<?> unitClass = loadUnitClass(unitName, metadata.getPackageName());
-            description = new ReflectiveRuleUnitDescription(null, (Class<? extends RuleUnitData>) unitClass);
+            description = new ReflectiveRuleUnitDescription((Class<? extends RuleUnitData>) unitClass);
         } catch (ClassNotFoundException e) {
             logger.warn("Rule task \"{}\": cannot load class {}. " +
                     "The unit data object will be generated.", nodeName, unitName);

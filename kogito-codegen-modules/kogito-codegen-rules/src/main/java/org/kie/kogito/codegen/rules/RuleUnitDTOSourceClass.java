@@ -31,6 +31,8 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
+import static org.drools.util.ClassUtils.rawType;
+
 public class RuleUnitDTOSourceClass implements RuleFileGenerator {
 
     private static final GeneratedFileType DTO_TYPE = GeneratedFileType.of("DTO", GeneratedFileType.Category.SOURCE, true, true);
@@ -98,7 +100,7 @@ public class RuleUnitDTOSourceClass implements RuleFileGenerator {
             this.ruleUnitVariable = ruleUnitVariable;
             this.isDataSource = ruleUnitVariable.isDataSource();
             this.ruleUnitHelper = ruleUnitHelper;
-            this.isSingletonStore = ruleUnitHelper.isAssignableFrom(SingletonStore.class, ruleUnitVariable.getType());
+            this.isSingletonStore = ruleUnitHelper.isAssignableFrom(SingletonStore.class, rawType(ruleUnitVariable.getType()));
         }
 
         private FieldDeclaration createField() {
@@ -126,7 +128,7 @@ public class RuleUnitDTOSourceClass implements RuleFileGenerator {
                 return new ClassOrInterfaceType(null, "java.util.List")
                         .setTypeArguments(new ClassOrInterfaceType(null, genericType));
             } else {
-                return new ClassOrInterfaceType(null, ruleUnitVariable.getType().getCanonicalName());
+                return new ClassOrInterfaceType(null, rawType(ruleUnitVariable.getType()).getCanonicalName());
             }
         }
 

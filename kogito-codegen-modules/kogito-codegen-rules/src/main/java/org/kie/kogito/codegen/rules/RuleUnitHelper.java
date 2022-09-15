@@ -25,6 +25,8 @@ import org.kie.kogito.rules.SingletonStore;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 
+import static org.drools.util.ClassUtils.rawType;
+
 public class RuleUnitHelper {
     private AssignableChecker defaultChecker;
     private AssignableChecker assignableChecker;
@@ -60,24 +62,25 @@ public class RuleUnitHelper {
 
     BlockStmt fieldInitializer(RuleUnitVariable ruleUnitVariable, String genericType, boolean isDataSource) {
         BlockStmt supplierBlock = new BlockStmt();
+        Class<?> ruleUnitVariableClass = rawType(ruleUnitVariable.getType());
 
         if (!isDataSource) {
             if (ruleUnitVariable.setter() != null) {
                 supplierBlock.addStatement(String.format("unit.%s(%s);", ruleUnitVariable.setter(), ruleUnitVariable.getName()));
             }
-        } else if (isAssignableFrom(DataStream.class, ruleUnitVariable.getType())) {
+        } else if (isAssignableFrom(DataStream.class, ruleUnitVariableClass)) {
             if (ruleUnitVariable.setter() != null) {
                 supplierBlock.addStatement(String.format("org.kie.kogito.rules.DataStream<%s> %s = org.kie.kogito.rules.DataSource.createStream();", genericType, ruleUnitVariable.getName()));
                 supplierBlock.addStatement(String.format("unit.%s(%s);", ruleUnitVariable.setter(), ruleUnitVariable.getName()));
             }
             supplierBlock.addStatement(String.format("this.%s.forEach( unit.%s()::append);", ruleUnitVariable.getName(), ruleUnitVariable.getter()));
-        } else if (isAssignableFrom(DataStore.class, ruleUnitVariable.getType())) {
+        } else if (isAssignableFrom(DataStore.class, ruleUnitVariableClass)) {
             if (ruleUnitVariable.setter() != null) {
                 supplierBlock.addStatement(String.format("org.kie.kogito.rules.DataStore<%s> %s = org.kie.kogito.rules.DataSource.createStore();", genericType, ruleUnitVariable.getName()));
                 supplierBlock.addStatement(String.format("unit.%s(%s);", ruleUnitVariable.setter(), ruleUnitVariable.getName()));
             }
             supplierBlock.addStatement(String.format("this.%s.forEach( unit.%s()::add);", ruleUnitVariable.getName(), ruleUnitVariable.getter()));
-        } else if (isAssignableFrom(SingletonStore.class, ruleUnitVariable.getType())) {
+        } else if (isAssignableFrom(SingletonStore.class, ruleUnitVariableClass)) {
             supplierBlock.addStatement(String.format("unit.%s().set(this.%s );", ruleUnitVariable.getter(), ruleUnitVariable.getName()));
         } else {
             throw new IllegalArgumentException("Unknown data source type " + ruleUnitVariable.getType());

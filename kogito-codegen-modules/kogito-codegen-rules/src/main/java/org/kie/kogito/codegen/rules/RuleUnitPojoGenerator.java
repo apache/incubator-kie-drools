@@ -30,6 +30,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
+import static org.drools.util.ClassUtils.rawType;
 import static org.kie.kogito.codegen.rules.RuleCodegen.RULE_TYPE;
 
 public class RuleUnitPojoGenerator implements RuleFileGenerator {
@@ -63,13 +64,13 @@ public class RuleUnitPojoGenerator implements RuleFileGenerator {
 
         for (RuleUnitVariable v : ruleUnitDescription.getUnitVarDeclarations()) {
             ClassOrInterfaceType t = new ClassOrInterfaceType()
-                    .setName(v.getType().getCanonicalName());
+                    .setName(rawType(v.getType()).getCanonicalName());
             FieldDeclaration f = new FieldDeclaration();
             VariableDeclarator vd = new VariableDeclarator(t, v.getName());
             f.getVariables().add(vd);
             if (v.isDataSource()) {
                 t.setTypeArguments(StaticJavaParser.parseType(v.getDataSourceParameterType().getCanonicalName()));
-                if (ruleUnitHelper.isAssignableFrom(DataStore.class, v.getType())) {
+                if (ruleUnitHelper.isAssignableFrom(DataStore.class, rawType(v.getType()))) {
                     vd.setInitializer("org.kie.kogito.rules.DataSource.createStore()");
                 } else {
                     vd.setInitializer("org.kie.kogito.rules.DataSource.createSingleton()");
