@@ -2,9 +2,7 @@
 
 = Rule Unit DSL
 
-As introduced in xref:getting-started/index.adoc#first-rule-project_getting-started[First Rule Project], using Rule Units is a recommended style for implementing rules in {PRODUCT} 8. Detailed information in relation to DRL can be found in xref:language-reference/index.adoc#con-drl-rule-units_drl-rules[Rule units in DRL].
-
-Additionally, {PRODUCT} 8 offers an alternative way of writing rules in combination with Rule Unit. You can now define the rules for Rule Units using a dedicated set of Java APIs. Let's learn with comments on the example.
+In addition to the standard Rule Unit API, {PRODUCT} 8 offers an alternative way of writing rules in combination with Rule Unit. You can now define the rules for Rule Units using a dedicated set of Java APIs. Let's learn with comments on the example.
 
 [source,java]
 ----
