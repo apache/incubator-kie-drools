@@ -190,7 +190,7 @@ public class PackageModel {
         this.configuration = configuration;
         this.exprIdGenerator = exprIdGenerator;
         this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
-        executableRulesClass = name + "_"  + rulesFileName;
+        executableRulesClass = name + "."  + rulesFileName;
         executableRulesClasses.add(executableRulesClass);
     }
 
