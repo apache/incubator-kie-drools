@@ -40,8 +40,6 @@ public class ExpressionActionSupplier extends ExpressionAction implements Expres
         private final String expr;
         private String inputVar = ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
         private String outputVar = ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
-        private String collectVar;
-        private String[] addInputVars = new String[0];
 
         private Builder(String lang, String expr) {
             this.lang = lang;
@@ -60,29 +58,16 @@ public class ExpressionActionSupplier extends ExpressionAction implements Expres
             return this;
         }
 
-        public Builder withCollectVar(String collectVar) {
-            this.collectVar = collectVar;
-            return this;
-        }
-
-        public Builder withAddInputVars(String[] addInputVars) {
-            this.addInputVars = addInputVars;
-            return this;
-        }
-
         public ExpressionActionSupplier build() {
-            return new ExpressionActionSupplier(lang, expr, inputVar, outputVar, collectVar, addInputVars);
+            return new ExpressionActionSupplier(lang, expr, inputVar, outputVar);
         }
     }
 
     private final ObjectCreationExpr expression;
 
-    private ExpressionActionSupplier(String lang, String expr, String inputVar, String outputVar, String collectVar, String[] addInputVars) {
-        super(lang, expr, inputVar, outputVar, collectVar, addInputVars);
-        expression = ExpressionUtils.getObjectCreationExpr(ExpressionAction.class, lang, expr, inputVar, outputVar, collectVar);
-        for (String addInputVar : addInputVars) {
-            expression.addArgument(ExpressionUtils.getLiteralExpr(addInputVar));
-        }
+    private ExpressionActionSupplier(String lang, String expr, String inputVar, String outputVar) {
+        super(lang, expr, inputVar, outputVar);
+        expression = ExpressionUtils.getObjectCreationExpr(ExpressionAction.class, lang, expr, inputVar, outputVar);
     }
 
     @Override

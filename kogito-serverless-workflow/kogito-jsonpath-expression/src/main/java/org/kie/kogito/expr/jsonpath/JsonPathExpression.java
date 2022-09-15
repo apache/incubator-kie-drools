@@ -19,6 +19,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
+import org.kie.kogito.serverless.workflow.utils.JsonNodeContext;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -56,20 +57,22 @@ public class JsonPathExpression implements Expression {
     }
 
     private <T> T eval(JsonNode context, Class<T> returnClass, KogitoProcessContext processInfo) {
-        Configuration jsonPathConfig = getConfiguration(processInfo);
-        DocumentContext parsedContext = JsonPath.using(jsonPathConfig).parse(context);
-        if (String.class.isAssignableFrom(returnClass)) {
-            StringBuilder sb = new StringBuilder();
-            // valid json path is $. or $[
-            for (String part : expr.split("((?=\\$\\.|\\$\\[))")) {
-                JsonNode partResult = parsedContext.read(part, JsonNode.class);
-                sb.append(partResult.isTextual() ? partResult.asText() : partResult.toPrettyString());
+        try (JsonNodeContext jsonNode = JsonNodeContext.from(context, processInfo)) {
+            Configuration jsonPathConfig = getConfiguration(processInfo);
+            DocumentContext parsedContext = JsonPath.using(jsonPathConfig).parse(jsonNode.getNode());
+            if (String.class.isAssignableFrom(returnClass)) {
+                StringBuilder sb = new StringBuilder();
+                // valid json path is $. or $[
+                for (String part : expr.split("((?=\\$\\.|\\$\\[))")) {
+                    JsonNode partResult = parsedContext.read(part, JsonNode.class);
+                    sb.append(partResult.isTextual() ? partResult.asText() : partResult.toPrettyString());
+                }
+                return (T) sb.toString();
+            } else {
+                Object result = parsedContext.read(expr);
+                return Boolean.class.isAssignableFrom(returnClass) && result instanceof ArrayNode ? (T) Boolean.valueOf(!((ArrayNode) result).isEmpty())
+                        : JsonObjectUtils.convertValue(jsonPathConfig.mappingProvider().map(result, returnClass, jsonPathConfig), returnClass);
             }
-            return (T) sb.toString();
-        } else {
-            Object result = parsedContext.read(expr);
-            return Boolean.class.isAssignableFrom(returnClass) && result instanceof ArrayNode ? (T) Boolean.valueOf(!((ArrayNode) result).isEmpty())
-                    : JsonObjectUtils.convertValue(jsonPathConfig.mappingProvider().map(result, returnClass, jsonPathConfig), returnClass);
         }
     }
 

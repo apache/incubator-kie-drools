@@ -27,6 +27,7 @@ import java.util.Optional;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstance;
+import org.jbpm.process.instance.ContextableInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.Metadata;
@@ -133,7 +134,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
         return getForEachNode().isSequential() || hasAsyncInstances;
     }
 
-    public class ForEachSplitNodeInstance extends NodeInstanceImpl {
+    public class ForEachSplitNodeInstance extends NodeInstanceImpl implements ContextableInstance {
 
         private static final long serialVersionUID = 510l;
 
@@ -211,6 +212,10 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                     "Unexpected collection type: " + collection.getClass());
         }
 
+        @Override
+        public ContextInstance getContextInstance(String contextId) {
+            return ForEachNodeInstance.this.getContextInstance(contextId);
+        }
     }
 
     private boolean checkAsyncInstance(NodeInstance nodeInstance) {
@@ -219,7 +224,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                         || (i instanceof LambdaSubProcessNodeInstance && ((LambdaSubProcessNodeInstance) i).isAsyncWaitingNodeInstance()));
     }
 
-    public class ForEachJoinNodeInstance extends NodeInstanceImpl {
+    public class ForEachJoinNodeInstance extends NodeInstanceImpl implements ContextableInstance {
 
         private static final long serialVersionUID = 510l;
 
@@ -331,6 +336,11 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                     throw new IllegalArgumentException("Could not evaluate completion condition  " + expression, t);
                 }
             }
+        }
+
+        @Override
+        public ContextInstance getContextInstance(String contextId) {
+            return ForEachNodeInstance.this.getContextInstance(contextId);
         }
     }
 

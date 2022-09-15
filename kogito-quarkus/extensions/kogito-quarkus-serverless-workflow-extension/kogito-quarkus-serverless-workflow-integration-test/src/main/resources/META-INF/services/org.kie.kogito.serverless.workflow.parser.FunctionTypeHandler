@@ -1,1 +1,2 @@
 org.kie.kogito.workflows.services.DummyAnsibleCustomType
+org.kie.kogito.workflows.services.DummyRPCCustomType 

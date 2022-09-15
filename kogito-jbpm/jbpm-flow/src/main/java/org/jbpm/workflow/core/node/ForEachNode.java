@@ -24,6 +24,7 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
@@ -248,6 +249,7 @@ public class ForEachNode extends CompositeContextNode {
         Variable variable = new Variable();
         variable.setId(varRef);
         variable.setName(variableName);
+        variable.setMetaData(Metadata.EVAL_VARIABLE, true);
         variable.setType(type);
         variables.add(variable);
     }

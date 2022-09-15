@@ -22,20 +22,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class ExpressionAction extends BaseExpressionAction {
 
     protected final String outputVar;
-    protected final String collectVar;
 
-    public ExpressionAction(String lang, String expr, String inputVar, String outputVar, String collectVar, String... addAttrs) {
-        super(lang, expr, inputVar, addAttrs);
+    public ExpressionAction(String lang, String expr, String inputVar, String outputVar) {
+        super(lang, expr, inputVar);
         this.outputVar = outputVar;
-        this.collectVar = collectVar;
     }
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
         JsonNode result = evaluate(context, JsonNode.class);
         context.setVariable(outputVar, result);
-        if (collectVar != null) {
-            context.setVariable(collectVar, result);
-        }
     }
 }

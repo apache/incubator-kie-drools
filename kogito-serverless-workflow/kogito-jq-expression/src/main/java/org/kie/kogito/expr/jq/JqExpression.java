@@ -24,6 +24,7 @@ import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
+import org.kie.kogito.serverless.workflow.utils.JsonNodeContext;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -144,10 +145,10 @@ public class JqExpression implements Expression {
     }
 
     private <T> T eval(JsonNode context, Class<T> returnClass, KogitoProcessContext processInfo) {
-        try {
+        try (JsonNodeContext jsonNode = JsonNodeContext.from(context, processInfo)) {
             TypedOutput output = output(returnClass);
             compile();
-            query.apply(getScope(processInfo), context, output);
+            query.apply(getScope(processInfo), jsonNode.getNode(), output);
             return JsonObjectUtils.convertValue(output.getResult(), returnClass);
         } catch (JsonQueryException e) {
             throw new IllegalArgumentException("Unable to evaluate content " + context + " using expr " + expr, e);

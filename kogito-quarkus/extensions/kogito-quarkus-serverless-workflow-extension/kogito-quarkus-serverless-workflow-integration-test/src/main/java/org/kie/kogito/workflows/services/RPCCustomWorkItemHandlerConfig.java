@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.actions;
+package org.kie.kogito.workflows.services;
 
-import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-public class SysoutAction extends BaseExpressionAction {
-    public SysoutAction(String lang, String expr, String inputVar) {
-        super(lang, expr, inputVar);
-    }
+import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 
-    @Override
-    public void execute(KogitoProcessContext context) throws Exception {
-        System.out.println(super.evaluate(context, String.class));
+@ApplicationScoped
+public class RPCCustomWorkItemHandlerConfig extends CachedWorkItemHandlerConfig {
+
+    @Inject
+    RPCCustomWorkItemHandler handler;
+
+    @PostConstruct
+    void init() {
+        register(handler.getName(), handler);
     }
 }

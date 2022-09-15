@@ -1,0 +1,37 @@
+{
+  "id": "forEachCustomType",
+  "version": "1.0",
+  "name": "For each custom type",
+  "description": "Test for each state with workitem handler",
+  "start": "start",
+  "functions": [
+    {
+      "name": "division",
+      "type": "custom",
+      "operation": "rpc:division"
+    }
+  ],
+  "states": [ {
+      "name": "start",
+      "type": "foreach",
+      "iterationParam" : "item",
+      "inputCollection": ".input",
+      "outputCollection": ".output",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "division",
+            "arguments": {
+              "dividend": ".item",
+              "divisor" : ".divisor"
+             }
+          }, 
+           "actionDataFilter" : {
+              "results" : ".+1"
+           }
+         }
+       ],
+       "end": true
+     }
+  ]
+}

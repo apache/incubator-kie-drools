@@ -393,21 +393,17 @@ public abstract class StateHandler<S extends State> {
             toExpr = eventFilter.getToStateData();
             useData = eventFilter.isUseData();
         }
-        return filterAndMergeNode(embeddedSubProcess, varName, null, dataExpr, toExpr, useData, nodeSupplier);
-    }
-
-    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String fromStateExpr, String resultExpr, String toStateExpr, boolean shouldMerge,
-            FilterableNodeSupplier nodeSupplier) {
-        return filterAndMergeNode(embeddedSubProcess, getVarName(), fromStateExpr, resultExpr, toStateExpr, shouldMerge, nodeSupplier);
+        return filterAndMergeNode(embeddedSubProcess, varName, null, dataExpr, toExpr, useData, true, nodeSupplier);
     }
 
     protected boolean isTempVariable(String varName) {
         return !varName.equals(ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
     }
 
-    private final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String actionVarName, String fromStateExpr, String resultExpr, String toStateExpr,
-            boolean shouldMerge,
-            FilterableNodeSupplier nodeSupplier) {
+    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String actionVarName, String fromStateExpr, String resultExpr, String toStateExpr,
+            boolean useData,
+            boolean shouldMerge, FilterableNodeSupplier nodeSupplier) {
+
         if (isTempVariable(actionVarName)) {
             embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()), Variable.VARIABLE_TAGS, Variable.INTERNAL_TAG);
         }
@@ -421,15 +417,16 @@ public abstract class StateHandler<S extends State> {
             startNode = currentNode = nodeSupplier.apply(embeddedSubProcess, DEFAULT_WORKFLOW_VAR, actionVarName);
         }
 
-        if (shouldMerge) {
-            if (resultExpr != null) {
-                currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow, resultExpr)
-                        .withVarNames(actionVarName, actionVarName).build()));
-            }
+        if (useData && resultExpr != null) {
+            currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow, resultExpr)
+                    .withVarNames(actionVarName, actionVarName).build()));
+        }
+
+        if (useData) {
             if (toStateExpr != null) {
                 currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId())
                         .action(new CollectorActionSupplier(workflow.getExpressionLang(), toStateExpr, DEFAULT_WORKFLOW_VAR, actionVarName)));
-            } else {
+            } else if (shouldMerge) {
                 currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId()).action(new MergeActionSupplier(actionVarName, DEFAULT_WORKFLOW_VAR)));
             }
         }

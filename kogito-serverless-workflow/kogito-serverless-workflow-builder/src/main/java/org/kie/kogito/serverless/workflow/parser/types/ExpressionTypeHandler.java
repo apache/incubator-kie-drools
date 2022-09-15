@@ -33,8 +33,7 @@ public class ExpressionTypeHandler extends ActionTypeHandler {
             FunctionRef functionRef,
             VariableInfo varInfo) {
         return node.action(ExpressionActionSupplier.of(workflow, functionDef.getOperation())
-                .withVarNames(varInfo.getInputVar(), varInfo.getOutputVar()).withCollectVar(varInfo.getCollectVar())
-                .withAddInputVars(varInfo.getExtraVariables()).build());
+                .withVarNames(varInfo.getInputVar(), varInfo.getOutputVar()).build());
     }
 
     @Override

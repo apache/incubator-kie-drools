@@ -72,6 +72,7 @@ public class Metadata {
     public static final String DATA_INPUT_SCHEMA_REF = "dataInputScheme";
     public static final String CORRELATION_ATTRIBUTES = "CorrelationAttributes";
     public static final String CONSTANTS = "Constants";
+    public static final String EVAL_VARIABLE = "evalVariable";
 
     private Metadata() {
     }
