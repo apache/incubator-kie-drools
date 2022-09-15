@@ -8,7 +8,7 @@ A rule unit is an atomic module defining a set of rules and a set of strongly ty
 
 image::KIE/BuildDeployUtilizeAndRun/RuleUnit01.png[align="center"]
 
-`DataSources` could be shared, so coordinate rule units.
+`DataSources` can be shared across different units, providing a coordination mechanism between them.
 
 image::KIE/BuildDeployUtilizeAndRun/RuleUnit02.png[align="center"]
 
