@@ -502,7 +502,7 @@ public class GlobalTest extends BaseModelTest {
 
     @Test
     public void testGenericOnGlobal() {
-        // DROOLS-
+        // DROOLS-7155
         String def =
                 "package org.drools.reproducer\n" +
                 "global java.util.List<String> globalList;\n" +
@@ -519,7 +519,7 @@ public class GlobalTest extends BaseModelTest {
 
     @Test
     public void testWrongGenericOnGlobal() {
-        // DROOLS-
+        // DROOLS-7155
         String def =
                 "package org.drools.reproducer\n" +
                 "global java.util.List<Integer> globalList;\n" +

@@ -73,4 +73,11 @@ public class TypeResolverTest {
         assertThat(((ParameterizedType) ((ParameterizedType) type).getActualTypeArguments()[1]).getActualTypeArguments().length).isEqualTo(1);
         assertThat(((ParameterizedType) ((ParameterizedType) type).getActualTypeArguments()[1]).getActualTypeArguments()[0]).isEqualTo(String.class);
     }
+
+    @Test
+    public void testResolveParametrizedTypesWithWildcardFallbackToRaw() throws Exception {
+        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+        Type type = resolver.resolveParametrizedType("java.util.Map<? extends Number, java.util.List<String>>");
+        assertThat(type).isEqualTo(Map.class);
+    }
 }

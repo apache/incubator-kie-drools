@@ -87,7 +87,12 @@ public interface TypeResolver {
         List<String> args = splitArgumentsList(typeArguments);
         Type[] types = new Type[args.size()];
         for (int i = 0; i < types.length; i++) {
-            types[i] = resolveParametrizedType( args.get(i) );
+            try {
+                types[i] = resolveParametrizedType(args.get(i));
+            } catch (ClassNotFoundException cnfe) {
+                // parametric types with wildcards are not managed, so fallback to the rawType if it meets one
+                return rawType;
+            }
         }
         return new ParsedParameterizedType(rawType, types);
     }
