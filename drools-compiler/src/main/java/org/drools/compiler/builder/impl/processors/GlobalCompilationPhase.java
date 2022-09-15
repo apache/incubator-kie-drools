@@ -17,6 +17,8 @@
 
 package org.drools.compiler.builder.impl.processors;
 
+import java.lang.reflect.Type;
+
 import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -37,10 +39,10 @@ public class GlobalCompilationPhase extends ImmutableGlobalCompilationPhase {
     }
 
     @Override
-    protected void addGlobal(InternalKnowledgePackage pkg, String identifier, Class<?> clazz) {
-        super.addGlobal(pkg, identifier, clazz);
+    protected void addGlobal(InternalKnowledgePackage pkg, String identifier, Type type) {
+        super.addGlobal(pkg, identifier, type);
         if (kBase != null) {
-            kBase.addGlobal(identifier, clazz);
+            kBase.addGlobal(identifier, type);
         }
     }
 

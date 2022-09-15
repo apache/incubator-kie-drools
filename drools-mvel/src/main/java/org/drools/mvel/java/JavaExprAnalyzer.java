@@ -14,6 +14,7 @@
 
 package org.drools.mvel.java;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,10 +27,10 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLexer;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
-import org.drools.compiler.rule.builder.EvaluatorWrapper;
 
 /**
  * Expression analyzer.
@@ -113,7 +114,7 @@ public class JavaExprAnalyzer {
         final Set<String> notBound = new HashSet<>( identifiers );
         
         Map<String, Class<?>> usedDecls = new HashMap<>();
-        Map<String, Class<?>> usedGlobals = new HashMap<>();
+        Map<String, Type> usedGlobals = new HashMap<>();
         Map<String, EvaluatorWrapper> usedOperators = new HashMap<>();
  
         for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclrClasses().entrySet() ) {
@@ -124,7 +125,7 @@ public class JavaExprAnalyzer {
         }
 
         for ( String identifier : identifiers ) {
-            Class<?> type = availableIdentifiers.resolveVarType( identifier );
+            Type type = availableIdentifiers.resolveVarType( identifier );
             if (type != null) {
                 usedGlobals.put( identifier, type );
                 notBound.remove( identifier );

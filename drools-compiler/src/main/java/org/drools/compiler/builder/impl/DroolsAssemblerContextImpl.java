@@ -15,18 +15,19 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.base.ObjectType;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
-
-import java.util.List;
-import java.util.Map;
 
 public class DroolsAssemblerContextImpl implements DroolsAssemblerContext, BuilderConfigurationProvider, InternalKnowledgeBaseProvider, RootClassLoaderProvider {
 
@@ -57,7 +58,7 @@ public class DroolsAssemblerContextImpl implements DroolsAssemblerContext, Build
     }
 
     @Override
-    public Map<String, Class<?>> getGlobals() {
+    public Map<String, Type> getGlobals() {
         return globalVariableContext.getGlobals();
     }
 

@@ -15,11 +15,15 @@
  */
 package org.drools.ruleunits.impl;
 
+import java.util.Objects;
+
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
+import org.kie.api.builder.CompilationErrorsException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class InterpretedRuleUnitTest {
 
@@ -90,5 +94,18 @@ public class InterpretedRuleUnitTest {
 
         assertThat(unitInstance.fire()).isEqualTo(2);
         assertThat(unit.getResults()).containsExactly("ok");
+    }
+
+    @Test
+    public void testWrongType() {
+        try {
+            InMemoryRuleUnitInstanceFactory.generateAndInstance(new WronglyTypedUnit());
+            fail("Compilation should fail");
+        } catch (CompilationErrorsException e) {
+            assertThat(
+                    e.getErrorMessages().stream().map(Objects::toString)
+                            .anyMatch( s -> s.contains("The method add(Integer) in the type DataStore<Integer> is not applicable for the arguments (String)"))
+            ).isTrue();
+        }
     }
 }

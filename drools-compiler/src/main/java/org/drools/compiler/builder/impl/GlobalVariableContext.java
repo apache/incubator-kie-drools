@@ -15,6 +15,7 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -23,7 +24,7 @@ import java.util.Map;
  * 
  */
 public interface GlobalVariableContext {
-    Map<String, Class<?>> getGlobals();
+    Map<String, Type> getGlobals();
 
-    void addGlobal(String identifier, Class<?> clazz);
+    void addGlobal(String identifier, Type type);
 }

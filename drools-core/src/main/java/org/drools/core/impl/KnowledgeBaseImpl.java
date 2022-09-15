@@ -16,6 +16,7 @@
 
 package org.drools.core.impl;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -108,7 +109,7 @@ public class KnowledgeBaseImpl implements RuleBase {
 
     private transient ClassLoader rootClassLoader;
 
-    private transient Map<String, Class<?>> globals;
+    private transient Map<String, Type> globals;
 
     private final transient Queue<DialectRuntimeRegistry> reloadPackageCompilationData = new ConcurrentLinkedQueue<>();
 
@@ -282,7 +283,7 @@ public class KnowledgeBaseImpl implements RuleBase {
 
     // TODO WARN: the below must be mutable as it's used by org.drools.compiler.builder.impl.KnowledgeBuilderTest
     @Override
-    public Map<String, Class<?>> getGlobals() {
+    public Map<String, Type> getGlobals() {
         return this.globals;
     }
 
@@ -720,11 +721,11 @@ public class KnowledgeBaseImpl implements RuleBase {
 
         // merge globals
         if (newPkg.getGlobals() != null && !newPkg.getGlobals().isEmpty()) {
-            Map<String, Class<?>> pkgGlobals = pkg.getGlobals();
+            Map<String, Type> pkgGlobals = pkg.getGlobals();
             // Add globals
-            for (final Map.Entry<String, Class<?>> entry : newPkg.getGlobals().entrySet()) {
+            for (final Map.Entry<String, Type> entry : newPkg.getGlobals().entrySet()) {
                 final String identifier = entry.getKey();
-                final Class<?> type = entry.getValue();
+                final Type type = entry.getValue();
                 if (pkgGlobals.containsKey( identifier ) && !pkgGlobals.get( identifier ).equals( type )) {
                     throw new RuntimeException(pkg.getName() + " cannot be integrated");
                 } else {
@@ -804,8 +805,9 @@ public class KnowledgeBaseImpl implements RuleBase {
         }
     }
 
-    public void addGlobal(String identifier, Class clazz) {
-        this.globals.put( identifier, clazz );
+    @Override
+    public void addGlobal(String identifier, Type type) {
+        this.globals.put( identifier, type );
     }
 
     public void removeGlobal(String identifier) {

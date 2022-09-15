@@ -16,6 +16,7 @@ package org.drools.mvel.java;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -180,7 +181,7 @@ public final class JavaRuleBuilderHelper {
                                                      final RuleBuildContext context,
                                                      final Declaration[] declarations,
                                                      final Declaration[] localDeclarations,
-                                                     final Map<String, Class<?>> globals) {
+                                                     final Map<String, Type> globals) {
         final Map<String, Object> map = new HashMap<>();
 
         map.put( "className", 
@@ -216,10 +217,9 @@ public final class JavaRuleBuilderHelper {
         String[] globalStr = new String[globals.size()];
         String[] globalTypes = new String[globals.size()];
         int i = 0;
-        for ( Entry<String, Class< ? >> entry : globals.entrySet() ) {
+        for ( Entry<String, Type> entry : globals.entrySet() ) {
             globalStr[i] = entry.getKey();
-            globalTypes[i] = entry.getValue().getName().replace( '$',
-                                                                 '.' );
+            globalTypes[i] = entry.getValue().getTypeName().replace( '$', '.' );
             i++;
         }
 

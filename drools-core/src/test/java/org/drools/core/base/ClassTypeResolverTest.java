@@ -31,40 +31,6 @@ import static org.assertj.core.api.Assertions.fail;
 public class ClassTypeResolverTest {
 
     @Test
-    public void testResolvePrimtiveTypes() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
-        assertThat(resolver.resolveType("boolean")).isEqualTo(boolean.class);
-        assertThat(resolver.resolveType("double")).isEqualTo(double.class);
-        assertThat(resolver.resolveType("float")).isEqualTo(float.class);
-        assertThat(resolver.resolveType("int")).isEqualTo(int.class);
-        assertThat(resolver.resolveType("char")).isEqualTo(char.class);
-        assertThat(resolver.resolveType("long")).isEqualTo(long.class);
-        assertThat(resolver.resolveType("byte")).isEqualTo(byte.class);
-        assertThat(resolver.resolveType("short")).isEqualTo(short.class);
-    }
-
-    @Test
-    public void testResolveArrayOfPrimitiveTypes() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
-        assertThat(resolver.resolveType("boolean[]")).isEqualTo(boolean[].class);
-        assertThat(resolver.resolveType("double[]")).isEqualTo(double[].class);
-        assertThat(resolver.resolveType("float[]")).isEqualTo(float[].class);
-        assertThat(resolver.resolveType("int[]")).isEqualTo(int[].class);
-        assertThat(resolver.resolveType("char[]")).isEqualTo(char[].class);
-        assertThat(resolver.resolveType("long[]")).isEqualTo(long[].class);
-        assertThat(resolver.resolveType("byte[]")).isEqualTo(byte[].class);
-        assertThat(resolver.resolveType("short[]")).isEqualTo(short[].class);
-    }
-
-    @Test
-    public void testResolveMultidimensionnalArrayOfPrimitiveTypes() throws Exception {
-        final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
-        assertThat(resolver.resolveType("int[][]")).isEqualTo(int[][].class);
-        assertThat(resolver.resolveType("int[][][]")).isEqualTo(int[][][].class);
-        assertThat(resolver.resolveType("int[][][][]")).isEqualTo(int[][][][].class);
-    }
-
-    @Test
     public void testResolveObjectNotFromImport() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
         assertThat(resolver.resolveType("String")).isEqualTo(String.class);

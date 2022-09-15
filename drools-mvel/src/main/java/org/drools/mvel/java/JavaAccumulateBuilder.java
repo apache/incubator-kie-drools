@@ -14,6 +14,7 @@
 
 package org.drools.mvel.java;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,10 +29,6 @@ import java.util.TreeSet;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.drl.ast.descr.AccumulateDescr;
-import org.drools.drl.ast.descr.AccumulateDescr.AccumulateFunctionCallDescr;
-import org.drools.drl.ast.descr.AndDescr;
-import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.compiler.rule.builder.AccumulateBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
@@ -50,10 +47,14 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.rule.accessor.Accumulator;
-import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.rule.accessor.DeclarationScopeResolver;
 import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.util.index.IndexUtil;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.AccumulateDescr.AccumulateFunctionCallDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.mvel.MVELConstraint;
 import org.drools.mvel.builder.MVELExprAnalyzer;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -356,7 +357,7 @@ public class JavaAccumulateBuilder
         requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
         requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
 
-        final Map<String, Class< ? >> requiredGlobals = new HashMap<>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
+        final Map<String, Type> requiredGlobals = new HashMap<>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
         requiredGlobals.putAll( actionCodeAnalysis.getBoundIdentifiers().getGlobals() );
         requiredGlobals.putAll( resultCodeAnalysis.getBoundIdentifiers().getGlobals() );
 

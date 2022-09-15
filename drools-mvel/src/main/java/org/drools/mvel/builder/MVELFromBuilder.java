@@ -81,7 +81,7 @@ public class MVELFromBuilder
                 return null;
             }
 
-            Class<?> returnType = ( (MVELAnalysisResult) analysis ).getReturnType();
+            Class<?> returnType = analysis.getReturnType();
             if ( prefixPattern != null && !prefixPattern.isCompatibleWithFromReturnType( returnType ) ) {
                 context.addError( new DescrBuildError( descr,
                                                        context.getRuleDescr(),

@@ -1020,11 +1020,13 @@ public class StringUtils {
                     case '(':
                     case '[':
                     case '{':
+                    case '<':
                         if (!isSingleQuoted && !isDoubleQuoted) nestedParam++;
                         break;
                     case ')':
                     case ']':
                     case '}':
+                    case '>':
                         if (!isSingleQuoted && !isDoubleQuoted) nestedParam--;
                         break;
                     case '"':

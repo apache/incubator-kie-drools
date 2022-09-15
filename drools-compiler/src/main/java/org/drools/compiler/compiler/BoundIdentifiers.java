@@ -15,6 +15,7 @@
 
 package org.drools.compiler.compiler;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -24,15 +25,17 @@ import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.XpathBackReference;
-import org.drools.core.base.ObjectType;
+
+import static org.drools.util.ClassUtils.rawType;
 
 public class BoundIdentifiers {
     private Map<String, Class< ? >>       declrClasses;
-    private Map<String, Class< ? >>       globals;
+    private Map<String, Type>             globals;
     private Map<String, EvaluatorWrapper> operators;
     private Class< ? >                    thisClass;
     private PackageBuildContext           context;
@@ -78,11 +81,11 @@ public class BoundIdentifiers {
         return declrClasses;
     }
 
-    public Map<String, Class< ? >> getGlobals() {
+    public Map<String, Type> getGlobals() {
         return globals;
     }
 
-    public void setGlobals( Map<String, Class<?>> globals ) {
+    public void setGlobals( Map<String, Type> globals ) {
         this.globals = globals;
     }
 
@@ -98,7 +101,7 @@ public class BoundIdentifiers {
         Class< ? > cls = declrClasses.get( identifier );
 
         if ( cls == null ) {
-            cls = resolveVarType(identifier);
+            cls = rawType( resolveVarType(identifier) );
         }
 
         if ( cls == null && operators.containsKey( identifier )) {
@@ -108,7 +111,7 @@ public class BoundIdentifiers {
         return cls;
     }
 
-    public Class< ? > resolveVarType(String identifier) {
+    public Type resolveVarType(String identifier) {
         return context == null ? null : context.resolveVarType(identifier);
     }
 

@@ -3,8 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.ruleunits.impl;
 
-package org.drools.compiler.builder.impl;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.RuleUnitData;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+public class WronglyTypedUnit implements RuleUnitData  {
 
-public class GlobalVariableContextImpl implements GlobalVariableContext {
-    private final Map<String, Type> globals = new HashMap<>();
+    private final DataStore<Integer> strings;
 
-    @Override
-    public Map<String, Type> getGlobals() {
-        return this.globals;
+    public WronglyTypedUnit() {
+        this.strings = DataSource.createStore();
     }
 
-    @Override
-    public void addGlobal(String name, Type type) {
-        globals.put(name, type);
+    public DataStore<Integer> getStrings() {
+        return strings;
     }
-
 }

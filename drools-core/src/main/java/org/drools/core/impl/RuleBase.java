@@ -17,6 +17,7 @@
 package org.drools.core.impl;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +87,7 @@ public interface RuleBase {
 
     FactHandleFactory newFactHandleFactory(long id, long counter) throws IOException;
 
-    Map<String, Class<?>> getGlobals();
+    Map<String, Type> getGlobals();
 
     int getNodeCount();
     int getMemoryCount();
@@ -128,7 +129,7 @@ public interface RuleBase {
     default void beforeIncrementalUpdate(KieBaseUpdate kieBaseUpdate) { }
     default void afterIncrementalUpdate(KieBaseUpdate kieBaseUpdate) { }
 
-    void addGlobal(String identifier, Class clazz);
+    void addGlobal(String identifier, Type type);
     void removeGlobal(String identifier);
 
     boolean removeObjectsGeneratedFromResource(Resource resource, Collection<InternalWorkingMemory> workingMemories);

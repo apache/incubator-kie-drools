@@ -21,10 +21,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
@@ -36,6 +36,7 @@ import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.mvel.MVELKnowledgePackageImpl;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.traits.core.factmodel.TraitRegistryImpl;
 import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -139,7 +140,7 @@ public class TraitKnowledgePackageImpl extends MVELKnowledgePackageImpl {
         this.functions = (Map<String, Function>) in.readObject();
         this.accumulateFunctions = (Map<String, AccumulateFunction>) in.readObject();
         this.factTemplates = (Map) in.readObject();
-        this.globals = (Map<String, Class<?>>) in.readObject();
+        this.globals = (Map<String, Type>) in.readObject();
         this.valid = in.readBoolean();
         this.needStreamMode = in.readBoolean();
         this.rules = (Map<String, RuleImpl>) in.readObject();

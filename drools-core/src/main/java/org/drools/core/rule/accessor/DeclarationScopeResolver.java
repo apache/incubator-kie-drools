@@ -16,8 +16,7 @@
 
 package org.drools.core.rule.accessor;
 
-import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
-
+import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -35,12 +34,15 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
+import static org.drools.util.ClassUtils.rawType;
+import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
+
 /**
  * A class capable of resolving a declaration in the current build context
  */
 public class DeclarationScopeResolver {
     private final Deque<RuleConditionElement>   buildList;
-    private final Map<String, Class<?>>              globalMap;
+    private final Map<String, Type>              globalMap;
     private final InternalKnowledgePackage           pkg;
 
     private RuleImpl rule;
@@ -50,17 +52,17 @@ public class DeclarationScopeResolver {
         this( new HashMap<>(), new ArrayDeque<>() );
     }
 
-    public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
+    public DeclarationScopeResolver(final Map<String, Type> globalMap,
             final Deque<RuleConditionElement> buildList) {
         this(globalMap, buildList, null);
     }
 
-    public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
+    public DeclarationScopeResolver(final Map<String, Type> globalMap,
                                     final InternalKnowledgePackage pkg) {
         this( globalMap, new ArrayDeque<>(), pkg );
     }
 
-    private DeclarationScopeResolver(Map<String, Class<?>> globalMap,
+    private DeclarationScopeResolver(Map<String, Type> globalMap,
                                      Deque<RuleConditionElement> buildList,
                                      InternalKnowledgePackage pkg) {
         this.globalMap = globalMap;
@@ -122,9 +124,9 @@ public class DeclarationScopeResolver {
         }
 
         // it may be a global or a rule unit variable
-        Class<?> cls = resolveVarType( identifier );
-        if ( cls != null ) {
-            ClassObjectType classObjectType = new ClassObjectType( cls );
+        Type type = resolveVarType( identifier );
+        if ( type != null ) {
+            ClassObjectType classObjectType = new ClassObjectType( rawType(type) );
 
             Declaration declaration;
             final Pattern dummy = new Pattern( 0,
@@ -144,7 +146,7 @@ public class DeclarationScopeResolver {
         return null;
     }
 
-    public Class<?> resolveVarType( String identifier ) {
+    public Type resolveVarType( String identifier ) {
         return ruleUnitDescr.flatMap( unit -> unit.getVarType( identifier ) ) // resolve identifier on rule unit ...
                             .orElseGet( () -> globalMap.get( identifier ) );  // ... or alternatively among globals
     }

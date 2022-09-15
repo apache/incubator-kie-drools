@@ -14,6 +14,11 @@
  */
 package org.drools.compiler.builder.impl;
 
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -25,10 +30,6 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 public class TypeDeclarationContextImpl implements TypeDeclarationContext {
 
@@ -142,12 +143,12 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
     }
 
     @Override
-    public Map<String, Class<?>> getGlobals() {
+    public Map<String, Type> getGlobals() {
         return globalVariableContext.getGlobals();
     }
 
     @Override
-    public void addGlobal(String identifier, Class<?> clazz) {
-        globalVariableContext.addGlobal(identifier, clazz);
+    public void addGlobal(String identifier, Type type) {
+        globalVariableContext.addGlobal(identifier, type);
     }
 }

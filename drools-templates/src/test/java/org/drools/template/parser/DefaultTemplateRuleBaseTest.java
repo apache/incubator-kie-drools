@@ -15,6 +15,7 @@
 
 package org.drools.template.parser;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class DefaultTemplateRuleBaseTest {
         DefaultTemplateRuleBase ruleBase = new DefaultTemplateRuleBase(tc);
         InternalKnowledgePackage[] packages = ((RuleBase)ruleBase.newStatefulSession().getKieBase()).getPackages();
         assertThat(packages.length).isEqualTo(1);
-        Map<String, Class<?>> globals = packages[0].getGlobals();
+        Map<String, Type> globals = packages[0].getGlobals();
         assertThat(globals.get("generator")).isEqualTo(DefaultGenerator.class);
         Collection<org.kie.api.definition.rule.Rule> rules = packages[0].getRules();
         assertThat(rules.size()).isEqualTo(1);

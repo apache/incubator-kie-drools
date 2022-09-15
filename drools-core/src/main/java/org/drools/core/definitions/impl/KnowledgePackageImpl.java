@@ -22,6 +22,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,8 +35,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.util.ClassTypeResolver;
-import org.drools.util.TypeResolver;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -53,8 +52,10 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
-import org.drools.util.ClassUtils;
 import org.drools.core.util.CloneUtil;
+import org.drools.util.ClassTypeResolver;
+import org.drools.util.ClassUtils;
+import org.drools.util.TypeResolver;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Global;
@@ -96,7 +97,7 @@ public class KnowledgePackageImpl
 
     protected Set<String> staticImports;
 
-    protected Map<String, Class<?>> globals;
+    protected Map<String, Type> globals;
 
     protected Map<String, FactTemplate> factTemplates;
 
@@ -205,8 +206,8 @@ public class KnowledgePackageImpl
 
     public Collection<Global> getGlobalVariables() {
         List<Global> list = new ArrayList<>(getGlobals().size());
-        for (Map.Entry<String, Class<?>> global : getGlobals().entrySet()) {
-            list.add(new GlobalImpl(global.getKey(), global.getValue().getName()));
+        for (Map.Entry<String, Type> global : getGlobals().entrySet()) {
+            list.add(new GlobalImpl(global.getKey(), global.getValue().getTypeName()));
         }
         return Collections.unmodifiableCollection(list);
     }
@@ -287,7 +288,7 @@ public class KnowledgePackageImpl
         this.functions = (Map<String, Function>) in.readObject();
         this.accumulateFunctions = (Map<String, AccumulateFunction>) in.readObject();
         this.factTemplates = (Map) in.readObject();
-        this.globals = (Map<String, Class<?>>) in.readObject();
+        this.globals = (Map<String, Type>) in.readObject();
         this.valid = in.readBoolean();
         this.needStreamMode = in.readBoolean();
         this.rules = (Map<String, RuleImpl>) in.readObject();
@@ -409,26 +410,30 @@ public class KnowledgePackageImpl
         this.staticImports.remove(functionImport);
     }
 
+    @Override
     public Set<String> getStaticImports() {
         return this.staticImports;
     }
 
-    public void addGlobal(final String identifier,
-                          final Class<?> clazz) {
+    @Override
+    public void addGlobal(String identifier, Type type) {
         if (this.globals == Collections.EMPTY_MAP) {
             this.globals = new HashMap<>(1);
         }
-        this.globals.put(identifier, clazz);
+        this.globals.put(identifier, type);
     }
 
+    @Override
     public void removeGlobal(final String identifier) {
         this.globals.remove(identifier);
     }
 
-    public Map<String, Class<?>> getGlobals() {
+    @Override
+    public Map<String, Type> getGlobals() {
         return this.globals;
     }
 
+    @Override
     public void removeFunction(final String functionName) {
         Function function = this.functions.remove(functionName);
         if (function != null) {
@@ -437,10 +442,12 @@ public class KnowledgePackageImpl
         }
     }
 
+    @Override
     public FactTemplate getFactTemplate(final String name) {
         return this.factTemplates.get(name);
     }
 
+    @Override
     public void addFactTemplate(final FactTemplate factTemplate) {
         if (this.factTemplates == Collections.EMPTY_MAP) {
             this.factTemplates = new HashMap<>(1);
