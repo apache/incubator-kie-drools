@@ -43,7 +43,7 @@ public class MeasurementUnit implements RuleUnitData {
 
 In this case, `Measurement` is your fact class, so you need to implement it as well.
 
-The name of the rule unit class `MeasurementUnit` is linked to DRL rules using `unit`.
+The name of the rule unit class `MeasurementUnit` is linked to DRL rules using the `unit` statement.
 
 [source]
 ----
