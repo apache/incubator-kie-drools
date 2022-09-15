@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
@@ -118,6 +119,13 @@ public class DroolsModelBuilder {
 
     private void handleDrl(DrlResourceHandler drlResourceHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException, IOException {
         PackageDescr packageDescr = drlResourceHandler.process(resource);
+        Collection<KnowledgeBuilderResult> results = drlResourceHandler.getResults();
+        if (!results.isEmpty()) {
+            throw new DroolsParserException(
+                    results.stream()
+                            .map(KnowledgeBuilderResult::toString)
+                            .collect(Collectors.joining("\n")));
+        }
         CompositePackageDescr compositePackageDescr =
                 packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new);
         compositePackageDescr.addPackageDescr(resource, packageDescr);
