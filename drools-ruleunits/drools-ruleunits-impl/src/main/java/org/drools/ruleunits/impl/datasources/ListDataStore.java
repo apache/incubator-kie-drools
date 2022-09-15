@@ -16,6 +16,7 @@
 package org.drools.ruleunits.impl.datasources;
 
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -31,11 +32,17 @@ import org.drools.ruleunits.impl.factory.DataHandleImpl;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleContext;
 
-public class ListDataStore<T> extends AbstractDataSource<T> implements DataStore<T>, InternalStoreCallback {
-    private final Map<Object, DataHandle> store = new IdentityHashMap<>();
+public class ListDataStore<T> extends AbstractDataSource<T> implements  Iterable<T>, DataStore<T>, InternalStoreCallback {
+
+    private final Map<T, DataHandle> store = new IdentityHashMap<>();
 
     protected ListDataStore() {
 
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return store.keySet().iterator();
     }
 
     public DataHandle add(T t) {
@@ -100,12 +107,12 @@ public class ListDataStore<T> extends AbstractDataSource<T> implements DataStore
 
     @Override
     public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        switchObjectOnDataHandle(dh, obj);
+        switchObjectOnDataHandle(dh, (T) obj);
         entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, activation));
         subscribers.forEach(s -> s.update(dh, (T) obj));
     }
 
-    private void switchObjectOnDataHandle(DataHandle handle, Object object) {
+    private void switchObjectOnDataHandle(DataHandle handle, T object) {
         if (handle.getObject() != object) {
             store.remove(handle.getObject());
             ((DataHandleImpl) handle).setObject(object);

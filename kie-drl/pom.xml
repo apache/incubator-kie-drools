@@ -18,6 +18,7 @@
   <description>Support for Rules</description>
 
   <modules>
+    <module>kie-drl-api</module>       
     <module>kie-drl-compilation-common</module>
     <module>kie-drl-implementations</module>
     <module>kie-drl-runtime-common</module>
@@ -111,7 +112,6 @@
         </property>
       </activation>
       <modules>
-        <module>kie-drl-api</module>
         <module>kie-drl-tests</module>
         <module>kie-drl-tests-without-index-file</module>
       </modules>
