@@ -41,7 +41,7 @@ However, you can go explore the original example at the following link: https://
 First, we need a new Quarkus project.
 To create a new Quarkus project, you can reference the link:{quarkus-guides-url}[Quarkus Guide]
 
-When you have your Quarkus project configured, you can add the Drools Quarkus extensions to your project by running by adding the following dependencies to your `pom.xml`:
+When you have your Quarkus project configured, you can add the Drools Quarkus extensions to your project by adding the following dependencies to your `pom.xml`:
 
 [source,xml,subs=attributes+]
 ----
